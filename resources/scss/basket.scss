@@ -1,0 +1,233 @@
+//basket
+.table-extra-info {
+	background: rgb(249 249 250 / 0.6);
+	@include md-max {
+		margin: 0 -16px;
+	}
+	.delivery,
+	.time,
+	.in-stock {
+		font-size: 13px;
+		line-height: 18px;
+		@include md-max {
+			padding: 0 1px;
+		}
+		&:before {
+			content: "";
+			width: 25px;
+			min-width: 25px;
+			height: 25px;
+			display: block;
+			margin-right: 20px;
+		}
+	}
+	.delivery {
+		&:before {
+			background: url('$img/icon.svg#i-delivery') no-repeat center;
+		}
+	}
+	.time {
+		&:before {
+			background: url('$img/icon.svg#i-delivery-time') no-repeat center;
+		}
+	}
+	.in-stock {
+		&:before {
+			background: url('$img/icon.svg#i-in-stock') no-repeat center;
+		}
+	}
+}
+.page-cart {
+	.left-content,
+	.basket-will-need-wrap {
+		@include lg-min {
+			width: calc(100% - (380px + 32px));
+		}
+		@include xxxl-min {
+			max-width: calc(100% - (440px + 32px));
+		}
+	}
+	.right-sidebar {
+		@include lg-min {
+			width: calc(380px + 32px);
+		}
+		@include xxxl-min {
+			width: calc(440px + 32px);
+		}
+	}
+}
+.basket-total-info {
+	@include lg-min {
+		width: 380px;
+		&.fixed {
+			position: fixed;
+			top: 0;
+		}
+	}
+	@include xxxl-min {
+		width: 440px;
+	}
+	@include md-max {
+		margin: 0 -16px;
+	}
+}
+.total-info {
+	&-top {
+		border-bottom: 4px solid $black-custom;
+		width: 100%;
+		background: rgb(249 249 250 / 0.6);
+		@include md-max {
+			padding: 0 16px;
+		}
+		.info-top {
+			&-delivery {
+			}
+			&-prices {
+				@include md-max {
+					box-shadow: 0px 10px 50px 15px rgba(29, 29, 35, 0.07);
+				}
+			}
+			&-count {
+				font-weight: 500;
+			}
+			&-item {
+				font-size: 17px;
+				line-height: 24px;
+				font-weight: 500;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				@include md-max {
+					font-size: 16px;
+				}
+				.old-price-delivery {
+					font-size: 16px;
+					opacity: 0.6;
+					text-decoration: line-through;
+				}
+				.total-price-delivery {
+					font-size: 22px;
+					line-height: 24px;
+					@include md-max {
+						font-size: 18px;
+					}
+				}
+                .total-price-without-delivery {
+                    font-size: 22px;
+                    line-height: 24px;
+                    @include md-max {
+                        font-size: 18px;
+                    }
+                }
+			}
+			&-pay {
+				.pay {
+					&-list {
+						&-item {
+							background: $white;
+							padding: 5px;
+							border-radius: 2px;
+							&:not(:last-child) {
+								margin-right: 4px;
+							}
+							img {
+								object-fit: cover;
+								width: 20px;
+								height: 10px;
+								object-fit: contain;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	&-bottom {
+		border: 1px dashed #919191;
+		width: 100%;
+		@include md-max {
+			padding: 0 16px;
+		}
+		.info-bottom {
+			&-title {
+				font-weight: 500;
+			}
+			&-form {
+				.form-control {
+					opacity: 0.6;
+					border: 1px solid $black-custom;
+					border-radius: unset;
+				}
+				.btn {
+					max-width: 118px;
+					padding: 0.625rem 1.8rem;
+				}
+			}
+		}
+	}
+}
+.list-product-table {
+	.table-head {
+		padding: 0 10px 10px 10px;
+		border-bottom: 2px solid $black-custom;
+	}
+	.table-product {
+		&:hover {
+			text-decoration: none;
+		}
+	}
+	.table-product-info {
+		padding: 7px 0 18px 0;
+		width: 100%;
+	}
+	.list-product-item {
+		@include md-max {
+			padding-top: 15px;
+		}
+		&:not(:last-child) {
+			padding-bottom: 50px;
+			@include lg-max {
+				padding-bottom: 5px;
+			}
+		}
+	}
+	.table-product-image {
+		img {
+			width: 115px;
+			height: 115px;
+			object-fit: cover;
+		}
+	}
+	.list-product-right {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding-top: 27px;
+		@include lg-max {
+			padding-top: 10px;
+		}
+		@include md-max {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+	}
+	.list-product-r-b {
+		.item {
+			max-width: max-content;
+		}
+	}
+}
+.basket-will-need {
+	.will-need-title {
+		font-size: 21px;
+		line-height: 32px;
+		font-weight: 500;
+	}
+}
+.swiper-will-need {
+	@include lg-min {
+		overflow: hidden;
+	}
+}

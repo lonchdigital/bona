@@ -1,0 +1,41 @@
+@import "files/custom-bootstrap";
+@import "files/helpers";
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/swiper/swiper-bundle";
+@import "node_modules/plyr/src/sass/plyr";
+@import "files/fancybox"; //@import "@fancyapps/ui/dist/fancybox/fancybox.css";
+@import "files/fastselect"; //@import "/node_modules/fastselect/dist/fastselect.css";;
+@import "node_modules/flatpickr/dist/flatpickr";
+
+//? відступи
+.container {
+    @each $breakpoint, $gutter in $grid-gutter-widths {
+        @include media-breakpoint-up($breakpoint) {
+            @include make-container($gutter);
+        }
+    }
+}
+.row {
+    @each $breakpoint, $gutter in $grid-gutter-widths {
+        @include media-breakpoint-up($breakpoint) {
+            @include make-row($gutter);
+        }
+    }
+    .row > .col,
+    .row > [class*="col-"] {
+        @each $breakpoint, $gutter in $grid-gutter-widths {
+            @include media-breakpoint-up($breakpoint) {
+                @include make-col-ready($gutter);
+            }
+        }
+    }
+}
+.no-gutters {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    .col,
+    [class*="col-"] {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+    }
+}

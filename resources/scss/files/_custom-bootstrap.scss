@@ -1,0 +1,269 @@
+//colors
+$white: #ffffff !default;
+$black: #000000 !default;
+
+$black-custom: #1d1d23 !default;
+$silver-custom: #88888e !default;
+$silver-light-custom: #f4f4f6 !default;
+$blue-custom: #22294f !default;
+$pink-custom: #e8bbb7 !default;
+$ocean-custom: #abdcd7 !default;
+$purple-custom: #8f667c !default;
+$green-custom: #88bd98 !default;
+$orange-custom: #ff5346 !default;
+$red-custom: #ff2727 !default;
+$red-light-custom: #ff6662 !default;
+$blockquote-custom: #5d5f6f !default;
+$share-custom: #59267c !default;
+$delete-custom: #cacad2 !default;
+$yellow-custom: #ffc93e !default;
+$success-custom: #39ab6b !default;
+
+$red-color: #f16464 !default;
+$orange-color: #ff9345 !default;
+$yellow-color: #feda1e !default;
+$green-color: #579965 !default;
+$blue-light-color: #3b87b1 !default;
+$blue-color: #22294f !default;
+$white-color: #ffffff !default;
+$black-color: #1d1d23 !default;
+$silver-color: #88888e !default;
+$purple-color: #8f667c !default;
+$milk-color: #f1e0d0 !default;
+$pink-color: #f1d7ef !default;
+$gradient-color: #4158d0 !default;
+$pink-light-color: #e8bbb7 !default;
+$sea-light-color: #abdcd7 !default;
+$black-light-color: #746666 !default;
+$sea-color: #6c7aa0 !default;
+$light-color: #f0f1f3 !default;
+$white-light-color: #f3f3f3 !default;
+$orange-light-color: #fbe9db !default;
+
+$colors: () !default;
+$colors: map-merge(
+	(
+		"white": $white,
+		"black": $black,
+		"black-custom": $black-custom,
+		"silver-custom": $silver-custom,
+		"silver-light-custom": $silver-light-custom,
+		"blue-custom": $blue-custom,
+		"pink-custom": $pink-custom,
+		"ocean-custom": $ocean-custom,
+		"purple-custom": $purple-custom,
+		"green-custom": $green-custom,
+		"orange-custom": $orange-custom,
+		"red-custom": $red-custom,
+		"red-light-custom": $red-light-custom,
+		"blockquote-custom": $blockquote-custom,
+		"share-custom": $share-custom,
+		"delete-custom": $delete-custom,
+		"yellow-custom": $yellow-custom,
+		"success-custom": $success-custom,
+		"red-color": $red-color,
+		"orange-color": $orange-color,
+		"yellow-color": $yellow-color,
+		"green-color": $green-color,
+		"blue-light-color": $blue-light-color,
+		"blue-color": $blue-color,
+		"white-color": $white-color,
+		"black-color": $black-color,
+		"silver-color": $silver-color,
+		"purple-color": $purple-color,
+		"milk-color": $milk-color,
+		"pink-color": $pink-color,
+		"gradient-color": $gradient-color,
+		"pink-light-color": $pink-light-color,
+		"sea-light-color": $sea-light-color,
+		"black-light-color": $black-light-color,
+		"sea-color": $sea-color,
+		"light-color": $light-color,
+		"white-light-color": $white-light-color,
+		"orange-light-color": $orange-light-color,
+	),
+	$colors
+);
+
+$theme-colors: () !default;
+$theme-colors: map-merge(
+	(
+		"white": $white,
+		"black": $black,
+		"black-custom": $black-custom,
+		"silver-custom": $silver-custom,
+		"silver-light-custom": $silver-light-custom,
+		"blue-custom": $blue-custom,
+		"pink-custom": $pink-custom,
+		"ocean-custom": $ocean-custom,
+		"purple-custom": $purple-custom,
+		"green-custom": $green-custom,
+		"orange-custom": $orange-custom,
+		"red-custom": $red-custom,
+		"red-light-custom": $red-light-custom,
+		"blockquote-custom": $blockquote-custom,
+		"share-custom": $share-custom,
+		"delete-custom": $delete-custom,
+		"yellow-custom": $yellow-custom,
+		"success-custom": $success-custom,
+		"red-color": $red-color,
+		"orange-color": $orange-color,
+		"yellow-color": $yellow-color,
+		"green-color": $green-color,
+		"blue-light-color": $blue-light-color,
+		"blue-color": $blue-color,
+		"white-color": $white-color,
+		"black-color": $black-color,
+		"silver-color": $silver-color,
+		"purple-color": $purple-color,
+		"milk-color": $milk-color,
+		"pink-color": $pink-color,
+		"gradient-color": $gradient-color,
+		"pink-light-color": $pink-light-color,
+		"sea-light-color": $sea-light-color,
+		"black-light-color": $black-light-color,
+		"sea-color": $sea-color,
+		"light-color": $light-color,
+		"white-light-color": $white-light-color,
+		"orange-light-color": $orange-light-color,
+	),
+	$theme-colors
+);
+
+$body-bg: $white !default;
+$body-color: $black-custom !default;
+
+//grid
+$container-max-widths: (
+	// sm: 576px,
+	// md: 768px,
+	// lg: 992px,
+	xxl: 1536px
+);
+
+$grid-breakpoints: (
+	xs: 0,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px,
+	xxl: 1400px,
+	xxxl: 1600px,
+) !default;
+
+$grid-gutter-widths: (
+	xs: 20px,
+	md: 16px,
+	lg: 32px,
+) !default;
+
+$grid-gutter-width: map-get($grid-gutter-widths, lg);
+
+//typography
+$font-family-sans-serif: "TTNorms", sans-serif !default;
+$font-family-base: $font-family-sans-serif !default;
+
+$font-size-base: 1rem !default; // Assumes the browser default, typically `16px`
+$line-height-base: 1.5 !default;
+
+//components
+//btn-sm
+$input-btn-padding-y-sm: 7px !default;
+$input-btn-padding-x-sm: 26px !default;
+
+//spacer
+$spacer: 10px;
+$spacers: ();
+$spacers: map-merge(
+	(
+		0: 0,
+		1: (
+			$spacer * 0.5,
+		),
+		2: $spacer,
+		3: (
+			$spacer * 1.5,
+		),
+		4: (
+			$spacer * 2,
+		),
+		5: (
+			$spacer * 2.5,
+		),
+		6: (
+			$spacer * 3,
+		),
+		7: (
+			$spacer * 3.5,
+		),
+		8: (
+			$spacer * 4,
+		),
+		9: (
+			$spacer * 4.5,
+		),
+		10: (
+			$spacer * 5,
+		),
+		11: (
+			$spacer * 5.5,
+		),
+		12: (
+			$spacer * 6,
+		),
+		13: (
+			$spacer * 6.5,
+		),
+		14: (
+			$spacer * 7,
+		),
+		15: (
+			$spacer * 7.5,
+		),
+		16: (
+			$spacer * 8,
+		),
+		17: (
+			$spacer * 8.5,
+		),
+		18: (
+			$spacer * 9,
+		),
+		19: (
+			$spacer * 9.5,
+		),
+		20: (
+			$spacer * 10,
+		),
+		21: (
+			$spacer * 10.5,
+		),
+		22: (
+			$spacer * 11,
+		),
+		23: (
+			$spacer * 11.5,
+		),
+		24: (
+			$spacer * 12,
+		),
+	),
+	$spacers
+);
+
+//link
+$link-color: $black-custom !default;
+$link-hover-color: darken($silver-custom, 15%) !default;
+
+//list
+$list-inline-padding: 36px !default;
+
+//btn
+$input-btn-padding-y: 0.875rem !default;
+$input-btn-padding-x: 0.875rem !default;
+
+// $paragraph-margin-bottom: 15px;
+
+// $border-radius: 10px;
+// $border-radius-lg: 15px;
+// $border-radius-sm: 5px;

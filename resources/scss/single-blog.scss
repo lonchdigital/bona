@@ -1,0 +1,478 @@
+.article {
+	.article-title {
+		font-family: "GaugePro";
+		font-size: 48px;
+		line-height: 56px;
+		@include sm-max {
+			font-weight: 300;
+			font-size: 28px;
+			line-height: 32px;
+		}
+	}
+	.article-subtitle {
+		@include md-min {
+			font-size: 24px;
+			line-height: 36px;
+		}
+	}
+	.article-img {
+		height: 600px;
+		object-fit: cover;
+		@include lg-max {
+			height: 450px;
+		}
+		@include sm-max {
+			height: 340px;
+		}
+	}
+	p {
+		margin-bottom: 0;
+		@include md-min {
+			font-size: 20px;
+			line-height: 32px;
+		}
+		&:not(:last-child) {
+			margin-bottom: 30px;
+			@include sm-max {
+				margin-bottom: 25px;
+			}
+		}
+		a {
+			color: $red-light-custom;
+			display: inline-block;
+		}
+	}
+	.quote {
+		.content {
+			font-family: "GaugePro";
+			font-style: italic;
+			font-size: 36px;
+			line-height: 48px;
+			font-weight: 300;
+			color: $blockquote-custom;
+			@include sm-max {
+				font-size: 20px;
+				line-height: 30px;
+			}
+		}
+		svg {
+			width: 36px;
+			height: 36px;
+		}
+		.quote-author {
+			img {
+				width: 80px;
+				height: 80px;
+				object-fit: cover;
+				border-radius: 50%;
+			}
+			.quote-author-name {
+				font-size: 20px;
+				line-height: 24px;
+			}
+			.quote-author-position {
+				font-size: 13px;
+				line-height: 18px;
+				text-transform: uppercase;
+			}
+		}
+	}
+	.article-img-preview {
+		img {
+			height: auto;
+			object-fit: contain;
+		}
+		.item {
+			&:last-child {
+				.wrap {
+					.tooltip-preview {
+						transform: translateX(-50%);
+					}
+				}
+			}
+		}
+		.wrap {
+            width: fit-content;
+            height: fit-content;
+			position: relative;
+		}
+	}
+	ol {
+		counter-reset: li;
+		li {
+			counter-increment: li;
+			position: relative;
+			padding-left: 70px;
+            list-style: none;
+			@include sm-max {
+				padding-left: 30px;
+			}
+			&::before {
+				content: counter(li) ". ";
+				color: $black-custom;
+				display: inline-block;
+				position: absolute;
+				left: 0;
+				top: 0;
+				font-family: "GaugePro";
+				font-size: 32px;
+				line-height: 35px;
+				@include sm-max {
+					font-size: 20px;
+					line-height: 22px;
+				}
+			}
+			&:not(:last-child) {
+				margin-bottom: 32px;
+				@include sm-max {
+					margin-bottom: 50px;
+				}
+			}
+		}
+	}
+	ul {
+		li {
+			position: relative;
+			padding-left: 70px;
+            list-style: none;
+			@include sm-max {
+				padding-left: 40px;
+			}
+			&::before {
+				content: "";
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background: $black-custom;
+				position: absolute;
+				left: 12px;
+				top: 9px;
+			}
+			&::after {
+				content: "";
+				width: 24px;
+				height: 24px;
+				border-radius: 50%;
+				border: 1px solid $black-custom;
+				position: absolute;
+				left: 4px;
+				top: 1px;
+			}
+			&:not(:last-child) {
+				margin-bottom: 32px;
+				@include sm-max {
+					margin-bottom: 50px;
+				}
+			}
+		}
+	}
+	.question,
+	.answer {
+		font-size: 24px;
+		line-height: 36px;
+		p,
+		.title {
+			font-size: inherit;
+			line-height: inherit;
+		}
+		.content {
+			padding-left: 96px;
+			@include sm-max {
+				padding-left: 0;
+			}
+		}
+		p {
+			@include sm-max {
+				font-size: 16px;
+				line-height: 24px;
+			}
+		}
+		.title {
+			position: relative;
+			margin-bottom: 30px;
+			display: flex;
+			align-items: baseline;
+			@include sm-max {
+				font-size: 18px;
+				line-height: 26px;
+			}
+			&::before {
+				font-family: "GaugePro";
+				position: relative;
+				color: $red-light-custom;
+				background: $white;
+				width: 64px;
+				min-width: 64px;
+				height: 64px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 50%;
+				box-shadow: 4px 6px 20px rgba(0, 0, 0, 0.15);
+				margin-right: 32px;
+				@include sm-max {
+					width: 50px;
+					min-width: 50px;
+					height: 50px;
+					margin-right: 15px;
+				}
+			}
+		}
+	}
+	.question {
+		.title {
+			&::before {
+				content: "Q";
+			}
+		}
+	}
+	.answer {
+		.title {
+			&::before {
+				content: "A";
+			}
+		}
+	}
+}
+.btn-tooltip-preview {
+	width: max-content;
+	line-height: 0;
+	padding: 14px;
+	background: $white;
+	border-radius: 50%;
+	border: none;
+	position: relative;
+	z-index: 3;
+	cursor: pointer;
+	&:hover {
+		background: $red-light-custom;
+		svg {
+			fill: $white;
+		}
+	}
+	svg {
+		width: 16px;
+		height: 16px;
+		fill: $black-custom;
+	}
+}
+.tooltip-preview {
+	position: absolute;
+	&.active,
+	&:hover {
+		.sub-menu {
+			opacity: 1;
+			visibility: visible;
+		}
+		.card-link {
+			box-shadow: 0px 4px 24px -8px rgba(0, 0, 0, 0.12);
+			@include transition(0.3s ease-out 0s);
+		}
+	}
+	&.active {
+		.btn-tooltip-preview {
+			background: $red-light-custom;
+			svg {
+				fill: $white;
+			}
+		}
+	}
+	.sub-menu {
+		width: 140px;
+		position: absolute;
+		top: 21px;
+		left: 50%;
+		transform: translateX(-50%);
+		opacity: 0;
+		visibility: hidden;
+		@include transition(0.3s ease-out 0s);
+		z-index: 2;
+	}
+	.cards-products {
+		.card-product .card-content {
+			.card-link {
+				padding: 0px 8px 8px 8px;
+			}
+			.card-link-image {
+				margin-right: -8px;
+				margin-left: -8px;
+				margin-bottom: 8px;
+			}
+			.card-link-title {
+				font-size: 14px;
+				line-height: 22px;
+			}
+			.card-link-price {
+				margin-bottom: 0;
+				font-size: 16px;
+			}
+		}
+	}
+}
+.article-brand-excerpt {
+	padding: 40px 25px;
+	box-shadow: 30px 40px 120px -4px rgba(0, 0, 0, 0.1);
+	@include sm-max {
+		padding: 20px;
+	}
+	img {
+		max-width: 160px;
+		height: 100%;
+	}
+	.btn-ahead {
+		font-weight: 600;
+	}
+	.content {
+		font-family: "GaugePro";
+		font-style: italic;
+		font-weight: 300;
+		font-size: 26px;
+		line-height: 36px;
+	}
+	.btn-article-brand {
+		display: inline-block;
+		@include sm-max {
+			display: block;
+			margin-left: auto;
+			margin-top: 20px;
+		}
+	}
+	.btn-ahead {
+		font-family: "TTNorms";
+		font-style: normal;
+		font-weight: 500;
+		font-size: 16px;
+		line-height: 24px;
+		@include sm-max {
+			margin-left: auto;
+		}
+	}
+}
+.article-slider {
+	.container {
+		.inner {
+			overflow: hidden;
+			@media (min-width: 1700px) {
+				margin: 0 -80px;
+			}
+			@include sm-max {
+				overflow: visible;
+			}
+		}
+	}
+	.swiper-control {
+		.swiper-pagination {
+			position: relative;
+			top: 0;
+			width: max-content;
+			padding: 0 36px;
+			z-index: unset;
+		}
+	}
+}
+.swiper-article {
+	height: 560px;
+	@include sm-max {
+		height: auto;
+	}
+	.swiper-slide {
+		width: fit-content !important;
+		img {
+			height: 100%;
+            @include sm-max {
+                height: auto;
+            }
+			object-fit: cover;
+		}
+		.item {
+			height: 100%;
+		}
+		.wrap {
+			height: 100%;
+			.item {
+                width: 95%;
+				//height: calc(100% - 6px);
+				position: relative;
+				@include sm-max {
+					//height: calc(50% - 10px);
+				}
+			}
+		}
+	}
+}
+.share {
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	.title {
+		font-weight: 700;
+		font-size: 12px;
+		line-height: 14px;
+		text-transform: uppercase;
+	}
+}
+.share-buttons {
+	gap: 16px;
+	@include xxl-max {
+		gap: 30px;
+	}
+	.btn-share {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		cursor: pointer;
+		@include xxl-max {
+			width: calc((100% - 30px * 7) / 8);
+		}
+		@include xl-max {
+			width: calc((100% - 30px * 5) / 6);
+		}
+		@include sm-max {
+			width: calc((100% - 30px * 4) / 5);
+		}
+		@include xs-max {
+			width: calc((100% - 30px * 3) / 4);
+		}
+		&:hover {
+			text-decoration: none;
+			.icon {
+				background: $black-custom;
+				svg {
+					fill: $white;
+				}
+			}
+		}
+		.icon {
+			width: 72px;
+			height: 72px;
+			background: rgba(138, 138, 154, 0.08);
+			border-radius: 50%;
+			display: block;
+			margin-bottom: 8px;
+			@include sm-max {
+				width: 50px;
+				height: 50px;
+			}
+			svg {
+				fill: $black-custom;
+				width: inherit;
+				height: inherit;
+				padding: 20px;
+				@include sm-max {
+					padding: 15px;
+				}
+			}
+		}
+		.btn-share-title {
+			font-size: 12px;
+			line-height: 28px;
+			text-align: center;
+		}
+	}
+}
+.swiper-article-preview {
+	@include lg-min {
+		overflow: hidden;
+	}
+	.card-article .card-content .plyr--video {
+		margin-bottom: 10px;
+	}
+}

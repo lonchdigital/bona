@@ -1,0 +1,260 @@
+//wish-list
+.wish-list-title {
+	@include md-max {
+		font-size: 28px;
+		line-height: 36px;
+	}
+	svg {
+		width: 20px;
+		height: 20px;
+		fill: $black-custom;
+	}
+}
+//sidebar wish-list
+#wish-list-main {
+	#wish-list-sidebar-info {
+		position: relative;
+		z-index: 2;
+	}
+	&.fix-bottom-VP,
+	&.fix-top-VP {
+		#wish-list-sidebar-info {
+			position: fixed;
+		}
+	}
+	&.fix-bottom-VP {
+		#wish-list-sidebar-info {
+			bottom: 0;
+		}
+	}
+	&.fix-top-VP {
+		#wish-list-sidebar-info {
+			top: 0;
+		}
+	}
+	&.flex-bottom {
+		align-items: flex-end;
+	}
+}
+.wish-list-data {
+	.list-product-item-wrap {
+		&:not(:last-child) {
+			.list-product-item {
+				padding-bottom: 30px;
+				@include md-max {
+					padding-bottom: 0;
+				}
+			}
+		}
+		&:last-child {
+			.list-product-item {
+				padding-bottom: 0;
+			}
+			hr {
+				@include lg-min {
+					display: none;
+				}
+			}
+		}
+	}
+	.list-product-table {
+		.table-product-info {
+			@include md-max {
+				padding-top: 0;
+			}
+		}
+		.list-product-right {
+			@include md-max {
+				padding-top: 20px;
+			}
+		}
+		.table-product-image img {
+			width: 115px;
+			height: 115px;
+			@include md-max {
+				width: 80px;
+				height: 80px;
+			}
+		}
+	}
+}
+.wish-list-button-wrap {
+	.btn {
+		min-width: 315px;
+		@include lg-max {
+			min-width: auto;
+			width: 50%;
+		}
+	}
+}
+.wish-list-sidebar-item {
+	box-shadow: 30px 40px 120px -4px rgba(52, 52, 57, 0.1);
+	a {
+		display: inline;
+	}
+	svg {
+		width: 76px;
+		height: 76px;
+	}
+}
+.wish-list {
+	.wish-list-empty {
+		display: none;
+	}
+	&.empty {
+		.wish-list-main {
+			display: none;
+		}
+		.wish-list-empty {
+			display: block;
+		}
+	}
+	.wish-list-left-content {
+		@include lg-min {
+			width: calc(100% - (380px + 32px));
+		}
+		@include xxl-min {
+			max-width: calc(100% - (480px + 32px));
+		}
+		@include md-max {
+			width: 100%;
+		}
+		.table-price {
+			@include lg-max {
+				white-space: nowrap;
+			}
+		}
+	}
+	.wish-list-right-sidebar {
+		@include lg-min {
+			width: calc(380px + 32px);
+		}
+		@include xxl-min {
+			width: calc(480px + 32px);
+		}
+		@include md-max {
+			width: 100%;
+		}
+	}
+}
+//empty
+.wish-list-empty {
+	.wish-list-empty-list-wrap {
+		box-shadow: 30px 40px 120px -4px rgba(0, 0, 0, 0.1);
+		.btn {
+			min-width: 315px;
+			@include sm-max {
+				min-width: 100%;
+			}
+		}
+		.btn-add {
+			@include sm-max {
+				justify-content: center;
+				flex-direction: row;
+			}
+			.i-plus {
+				background: $white;
+				width: 14px;
+				height: 14px;
+				svg {
+					fill: $black-custom;
+					width: 8px;
+					height: 8px;
+				}
+			}
+			&:hover {
+				color: $black-custom;
+				.i-plus {
+					background: $black-custom;
+					svg {
+						fill: $white;
+					}
+				}
+			}
+		}
+	}
+	.wish-list-empty-list {
+		gap: 20px;
+		@include lg-max {
+			gap: 50px;
+		}
+	}
+	.wish-list-empty-item {
+		max-width: 300px;
+		@include lg-max {
+			max-width: 100%;
+		}
+		&.wish-list-empty-item--save {
+			.wish-list-empty-item-example {
+				.wish-list-empty-heart {
+					height: 43px;
+					width: 43px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					background: $red-light-custom;
+					border-radius: 50%;
+					opacity: 1;
+					position: static;
+					svg {
+						width: 32px;
+						height: 32px;
+						fill: #ffffff;
+					}
+				}
+			}
+		}
+	}
+	.wish-list-empty-item-number {
+		font-size: 17px;
+		line-height: 24px;
+		width: 40px;
+		min-width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		background: rgba(29, 29, 35, 0.05);
+	}
+	.wish-list-empty-item-title {
+		font-size: 18px;
+		line-height: 24px;
+	}
+}
+.wish-list-empty-item-example {
+	display: flex;
+	gap: 6px;
+	.wish-list-empty-item-example-item {
+		width: 80px;
+		height: 80px;
+		border: 1px dashed;
+		position: relative;
+		@include md-max {
+			width: 90px;
+			height: 90px;
+		}
+		.i-calc {
+			svg {
+				width: 50px;
+				height: 50px;
+				fill: #909090;
+			}
+		}
+		.wish-list-empty-heart {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			height: 24px;
+			width: 24px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: $black-custom;
+			opacity: 0.3;
+			border-radius: 50%;
+			svg {
+				width: 18px;
+				height: 18px;
+				fill: #ffffff;
+			}
+		}
+	}
+}

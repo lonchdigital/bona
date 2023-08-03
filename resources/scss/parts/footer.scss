@@ -1,0 +1,135 @@
+//footer
+
+.footer {
+	&-info {
+		.info {
+			&-map {
+				font-family: "GaugePro";
+				font-weight: 600;
+				font-size: 15px;
+				line-height: 24px;
+				svg {
+					@include lg-min {
+						margin-left: -6px;
+					}
+					@include md-max {
+						margin-left: -12px;
+					}
+					margin-right: 7px;
+					width: 24px;
+					height: 24px;
+				}
+			}
+			&-text {
+				font-family: "GaugePro";
+				font-size: 13px;
+				line-height: 24px;
+				text-transform: uppercase;
+				font-weight: 500;
+				svg {
+					margin: -2px 0px 0;
+					vertical-align: middle;
+					width: 24px;
+					height: 24px;
+				}
+				a {
+					border-bottom: 1px dashed;
+					display: initial;
+					&:hover {
+						text-decoration: none;
+					}
+				}
+			}
+			&-phone {
+				.link-phone {
+					font-size: 20px;
+					line-height: 24px;
+					svg {
+						@include lg-min {
+							margin-left: -6px;
+						}
+						margin-right: 7px;
+						width: 24px;
+						height: 24px;
+					}
+				}
+			}
+		}
+	}
+	&-menu {
+		@include lg-max {
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+		}
+		@include md-max {
+			margin: 0 -10px;
+		}
+		li {
+			@include lg-max {
+				width: 50%;
+			}
+			@include sm-max {
+				width: 100%;
+			}
+			&:not(:last-child) {
+				margin-bottom: 8px;
+			}
+			@include md-max {
+				padding: 0 10px;
+			}
+		}
+	}
+	&-bottom {
+		.bottom {
+			&-socials {
+				li {
+					&:not(:last-child) {
+						margin-right: 16px;
+					}
+					a.link-soc {
+						width: 48px;
+						height: 48px;
+					}
+				}
+			}
+		}
+	}
+	&-image {
+		margin-right: 16px;
+		width: 100%;
+		@include xxl-max {
+			margin-right: 0;
+		}
+		img {
+			height: 200px;
+			object-fit: cover;
+			@include xl-min {
+				max-width: 384px;
+			}
+		}
+	}
+	&-logo {
+		max-width: 154px;
+		width: 100%;
+	}
+}
+
+#modal-visit {
+	.btn-dark {
+		min-width: 390px;
+		@include xs-max {
+			min-width: 100%;
+		}
+	}
+}
+.footer-center-side {
+	a {
+		display: initial;
+	}
+}
+.menu-mobile-footer {
+	.bottom-socials {
+		line-height: 0;
+	}
+}

@@ -1,0 +1,366 @@
+<?php
+
+namespace App\Http\Requests\Admin\Product;
+
+use App\DataClasses\ProductFieldTypeOptionsDataClass;
+use App\DataClasses\ProductSpecialOfferOptionsDataClass;
+use App\DataClasses\ProductStatusDataClass;
+use App\Http\Requests\BaseRequest;
+use App\Models\ProductType;
+use App\Services\Product\DTO\EditProductDTO;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
+use Illuminate\Validation\Rule;
+
+class ProductCreateRequest extends BaseRequest
+{
+    protected ProductType $productType;
+
+    public function createDefaultValidator(ValidationFactory $factory): \Illuminate\Contracts\Validation\Validator
+    {
+        $this->productType = $this->route('productType');
+        return parent::createDefaultValidator($factory);
+    }
+
+    public function baseRules(): array
+    {
+
+        $rules = [
+            'is_active' => [
+                'nullable',
+            ],
+            'name' => [
+                'required',
+                'array',
+                'min:1'
+            ],
+            'parent_product_id' => [
+                'nullable',
+                'integer',
+                'exists:products,id',
+            ],
+            'slug' => [
+                'required',
+                'unique:products,slug',
+                'string',
+            ],
+            'meta_title' => [
+                'required',
+                'array',
+                'min:1'
+            ],
+            'meta_description' => [
+                'required',
+                'array',
+                'min:1'
+            ],
+            'meta_keywords' => [
+                'required',
+                'array',
+                'min:1'
+            ],
+            'availability_status_id' => [
+                'required',
+                'in:' . ProductStatusDataClass::get()->pluck('id')->implode(','),
+            ],
+            'special_offer_id' => [
+                'nullable',
+                'array',
+                'in:' . ProductSpecialOfferOptionsDataClass::get()->pluck('id')->implode(','),
+            ],
+            'special_offer_id.*' => [
+                'integer'
+            ],
+            'sku' => [
+                'required',
+                'string',
+                'unique:products,sku'
+            ],
+            'old_price_in_currency' => [
+                'nullable',
+                'numeric',
+            ],
+            'price_in_currency' => [
+                'required',
+                'numeric',
+            ],
+            'purchase_price_in_currency' => [
+                'required',
+                'numeric',
+            ],
+            'currency_id' => [
+                'required',
+                'exists:currencies,id',
+            ],
+            'main_image_deleted_input' => [
+                'nullable',
+            ],
+            'pattern_image_deleted_input' => [
+                'nullable',
+            ],
+            'gallery_image_1_deleted_input' => [
+                'nullable',
+            ],
+            'gallery_image_2_deleted_input' => [
+                'nullable',
+            ],
+            'gallery_image_3_deleted_input' => [
+                'nullable',
+            ],
+            'gallery_image_4_deleted_input' => [
+                'nullable',
+            ],
+            'gallery_image_5_deleted_input' => [
+                'nullable',
+            ],
+            'gallery_image_1' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+            ],
+            'gallery_image_2' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+            ],
+            'gallery_image_3' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+            ],
+            'gallery_image_4' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+            ],
+            'gallery_image_5' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+            ],
+            'country_id' => [
+                'required',
+                'exists:countries,id'
+            ],
+            'length' => [
+                $this->productType->has_length ? 'required' : 'nullable',
+                'numeric',
+            ],
+            'width' => [
+                $this->productType->has_width ? 'required' : 'nullable',
+                'numeric',
+            ],
+            'height' => [
+                $this->productType->has_height ? 'required' : 'nullable',
+                'numeric',
+            ],
+        ];
+
+        if ($this->productType->has_brand) {
+            $rules['brand_id'] = [
+                'required',
+                'exists:brands,id',
+            ];
+        }
+
+        if ($this->productType->has_brand || $this->productType->has_collection) {
+            $rules['collection_id'] = [
+                'required',
+                Rule::exists('collections', 'id')->where('brand_id', $this->input('brand_id')),
+            ];
+        }
+
+        if ($this->productType->has_category) {
+            $rules['category_ids'] = [
+                'required',
+                'array',
+                'exists:categories,id',
+            ];
+        }
+
+        if ($this->productType->has_color) {
+            $rules['color_id'] = [
+                'required',
+                'exists:colors,id',
+            ];
+            $rules['all_color_ids'] = [
+                'nullable',
+                'array',
+                'exists:colors,id',
+            ];
+        }
+
+        if (count($this->productType->fields)) {
+            $rules['custom_field'] = [
+                'required',
+                'array',
+            ];
+        }
+
+        foreach ($this->productType->fields as $customField) {
+            $rules['custom_field.*.field_id'] = [
+                'required',
+                'integer',
+                'exists:product_fields,id',
+            ];
+
+            switch ($customField->field_type_id) {
+                case ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING:
+                    $rules['custom_field.' . $customField->id . '.value'] = [
+                        'required',
+                        'string',
+                    ];
+                    break;
+                case ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE:
+                case ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER:
+                    $rules['custom_field.' . $customField->id . '.value'] = [
+                        'required',
+                        'numeric',
+                    ];
+                    break;
+                case ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION:
+                    if ($customField->is_multiselectable) {
+                        $rules['custom_field.' . $customField->id . '.value'] = [
+                            'required',
+                            'array',
+                        ];
+                    } else {
+                        $rules['custom_field.' . $customField->id . '.value'] = [
+                            'required',
+                            'exists:product_field_options,id',
+                        ];
+                    }
+                    break;
+            }
+        }
+
+        foreach ($this->availableLanguages as $availableLanguage) {
+            $rules['name.' . $availableLanguage] = [
+                'required',
+                'string',
+            ];
+            $rules['meta_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_description.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_keywords.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+        }
+
+        return $rules;
+    }
+
+    public function rules(): array
+    {
+        $rules = $this->baseRules();
+
+        $rules['main_image' ] = [
+            'required',
+            'image',
+            'mimes:jpeg,png,jpg',
+        ];
+
+        $rules['pattern_image'] = [
+            'required',
+            'image',
+            'mimes:jpeg,png,jpg',
+        ];
+
+        return $rules;
+    }
+
+    public function attributes(): array
+    {
+        $attributes = [
+            'is_active' => mb_strtolower(trans('admin.product_is_active')),
+            'parent_product_id' => mb_strtolower(trans('admin.parent_product')),
+            'slug' => mb_strtolower(trans('admin.slug')),
+            'meta_title' => mb_strtolower(trans('admin.meta_title')),
+            'meta_description' => mb_strtolower(trans('admin.meta_description')),
+            'meta_keywords' => mb_strtolower(trans('admin.meta_keywords')),
+            'availability_status_id' => mb_strtolower(trans('admin.availability_status')),
+            'special_offer_id' => mb_strtolower(trans('admin.special_offer')),
+            'sku' => mb_strtolower(trans('admin.sku')),
+            'price' => mb_strtolower(trans('admin.price')),
+            'old_price' => mb_strtolower(trans('admin.old_price')),
+            'price_in_currency' => mb_strtolower(trans('admin.price_in_currency')),
+            'currency_id' => mb_strtolower(trans('admin.price_currency')),
+            'gallery_image_1' => mb_strtolower(trans('admin.gallery_image_1')),
+            'gallery_image_2' => mb_strtolower(trans('admin.gallery_image_2')),
+            'gallery_image_3' => mb_strtolower(trans('admin.gallery_image_3')),
+            'gallery_image_4' => mb_strtolower(trans('admin.gallery_image_4')),
+            'gallery_image_5' => mb_strtolower(trans('admin.gallery_image_5')),
+            'country_id' => mb_strtolower(trans('admin.country')),
+            'main_image' => mb_strtolower(trans('admin.product_main_image')),
+            'pattern_image' => mb_strtolower(trans('admin.product_image_pattern')),
+            'brand_id' => mb_strtolower(trans('admin.brand')),
+            'collection_id' => mb_strtolower(trans('admin.collection')),
+            'category_id' => mb_strtolower(trans('admin.category')),
+            'color_id' => mb_strtolower(trans('admin.color')),
+            'all_color_ids' => mb_strtolower(trans('admin.all_colors')),
+        ];
+
+        foreach ($this->availableLanguages as $availableLanguage) {
+            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+        }
+
+        foreach ($this->productType->fields as $customField) {
+            $attributes['custom_field.' . $customField->id . '.value'] = mb_strtolower($customField->field_name);
+        }
+
+        return $attributes;
+    }
+
+
+    public function toDTO(): EditProductDTO
+    {
+        return new EditProductDTO(
+            (bool) $this->input('is_active'),
+            $this->input('name'),
+            $this->input('slug'),
+            $this->input('meta_title'),
+            $this->input('meta_description'),
+            $this->input('meta_keywords'),
+            $this->input('parent_product_id'),
+            $this->input('availability_status_id'),
+            $this->input('special_offer_id') ? array_map('intval', $this->input('special_offer_id')) : null,
+            $this->input('sku'),
+            $this->input('old_price_in_currency'),
+            $this->input('price_in_currency'),
+            $this->input('purchase_price_in_currency'),
+            $this->input('currency_id'),
+            $this->file('main_image'),
+            (bool) $this->input('main_image_deleted_input'),
+            $this->file('pattern_image'),
+            (bool) $this->input('pattern_image_deleted_input'),
+            $this->file('gallery_image_1'),
+            (bool) $this->input('gallery_image_1_deleted_input'),
+            $this->file('gallery_image_2'),
+            (bool) $this->input('gallery_image_2_deleted_input'),
+            $this->file('gallery_image_3'),
+            (bool) $this->input('gallery_image_3_deleted_input'),
+            $this->file('gallery_image_4'),
+            (bool) $this->input('gallery_image_4_deleted_input'),
+            $this->file('gallery_image_5'),
+            (bool) $this->input('gallery_image_5_deleted_input'),
+            $this->input('country_id'),
+            $this->input('brand_id'),
+            $this->input('collection_id'),
+            $this->input('category_ids'),
+            $this->input('color_id'),
+            $this->input('all_color_ids'),
+            $this->input('custom_field'),
+            $this->input('length'),
+            $this->input('width'),
+            $this->input('height'),
+        );
+    }
+}

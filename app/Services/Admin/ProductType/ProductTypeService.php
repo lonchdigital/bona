@@ -1,0 +1,239 @@
+<?php
+
+namespace App\Services\Admin\ProductType;
+
+use App\DataClasses\NumericFieldFilerTypesDataClass;
+use App\DataClasses\ProductSizeTypesDataClass;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Color;
+use App\Models\Product;
+use App\Models\ProductType;
+use App\Models\ProductTypeSizeOption;
+use App\Services\Base\BaseService;
+use Illuminate\Support\Collection;
+use App\Services\Base\ServiceActionResult;
+use App\Services\Admin\ProductType\DTO\EditProductTypeDTO;
+
+class ProductTypeService extends BaseService
+{
+    public function getProductTypes(): Collection
+    {
+        return ProductType::get();
+    }
+
+    public function getProductTypesWithAllData(): Collection
+    {
+        $productTypes = ProductType::get();
+
+        $productTypeSizeOptions = ProductTypeSizeOption::get();
+
+        $productTypes->map(function (ProductType $productType) use($productTypeSizeOptions) {
+            $productType->categories = Category::select()->where('product_type_id', $productType->id)->get();
+            $productType->length_options = $productTypeSizeOptions->where('type', 'LENGTH')->where('product_type_id', $productType->id) ?? null;
+            $productType->width_options = $productTypeSizeOptions->where('type', 'WIDTH')->where('product_type_id', $productType->id) ?? null;
+            $productType->height_options = $productTypeSizeOptions->where('type', 'HEIGHT')->where('product_type_id', $productType->id) ?? null;
+            return $productType;
+        });
+
+        return $productTypes;
+    }
+
+    public function getProductTypesPaginated(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return ProductType::with('creator')->paginate(config('domain.items_per_page'));
+    }
+
+    public function getProductTypesWithCategoriesPaginated(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return ProductType::with('creator')
+            ->where('has_category', true)
+            ->paginate(config('domain.items_per_page'));
+    }
+
+    public function createProductType(EditProductTypeDTO $request): ServiceActionResult
+    {
+        $creator = $this->getAuthUser();
+
+        return $this->coverWithDBTransaction(function () use($request, $creator) {
+            $productType = ProductType::create([
+                'creator_id' => $creator->id,
+                'name' => $request->productTypeName,
+                'slug' => $request->slug,
+                'product_point_name' => $request->pointName,
+
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
+
+                'has_brand' => $request->productTypeHasBrand,
+                'has_color' => $request->productTypeHasColor,
+                'has_collection' => $request->productTypeHasCollection,
+                'has_category' => $request->productTypeHasCategory,
+                'has_size' => $request->productTypeHasSize,
+
+                'has_length' => $request->productTypeHasLength,
+                'filter_by_length' => $request->productTypeFilterByLength,
+                'product_size_length_filter_type_id' => $request->productTypeFilterByLengthFilterTypeId,
+                'product_size_length_show_on_main_filter' => $request->productTypeFilterByLengthShowOnMainFilter,
+                'product_size_length_filter_full_position_id' => $request->productTypeFilterByLengthFilterFullPositionId,
+                'product_size_length_filter_name' => $request->productTypeFilterByLengthName,
+
+                'has_width' => $request->productTypeHasWidth,
+                'filter_by_width' => $request->productTypeFilterByWidth,
+                'product_size_width_filter_type_id' => $request->productTypeFilterByWidthFilterTypeId,
+                'product_size_width_show_on_main_filter' => $request->productTypeFilterByWidthShowOnMainFilter,
+                'product_size_width_filter_full_position_id' => $request->productTypeFilterByWidthFilterFullPositionId,
+                'product_size_width_filter_name' => $request->productTypeFilterByWidthName,
+
+                'has_height' => $request->productTypeHasHeight,
+                'filter_by_height' => $request->productTypeFilterByHeight,
+                'product_size_height_filter_type_id' => $request->productTypeFilterByHeightFilterTypeId,
+                'product_size_height_show_on_main_filter' => $request->productTypeFilterByHeightShowOnMainFilter,
+                'product_size_height_filter_full_position_id' => $request->productTypeFilterByHeightFilterFullPositionId,
+                'product_size_height_filter_name' => $request->productTypeFilterByHeightName,
+
+                'size_points' => $request->productSizePoints,
+            ]);
+
+            $this->createSizeFilterOptions($productType, $request);
+
+            if ($request->productTypeFields) {
+                $productType->fields()->sync($this->prepareProductFieldsToSync($request->productTypeFields));
+            } else {
+                $productType->fields()->sync([]);
+            }
+
+            return ServiceActionResult::make(true, trans('admin.product_type_create_success'));
+        });
+    }
+
+    public function updateProductType(ProductType $productType, EditProductTypeDTO $request): ServiceActionResult
+    {
+        return $this->coverWithDBTransaction(function () use($productType, $request) {
+            $productType->update([
+                'name' => $request->productTypeName,
+                'slug' => $request->slug,
+                'product_point_name' => $request->pointName,
+
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
+
+                'has_brand' => $request->productTypeHasBrand,
+                'has_color' => $request->productTypeHasColor,
+                'has_collection' => $request->productTypeHasCollection,
+                'has_category' => $request->productTypeHasCategory,
+                'has_size' => $request->productTypeHasSize,
+
+                'has_length' => $request->productTypeHasLength,
+                'filter_by_length' => $request->productTypeFilterByLength,
+                'product_size_length_filter_type_id' => $request->productTypeFilterByLengthFilterTypeId,
+                'product_size_length_show_on_main_filter' => $request->productTypeFilterByLengthShowOnMainFilter,
+                'product_size_length_filter_full_position_id' => $request->productTypeFilterByLengthFilterFullPositionId,
+                'product_size_length_filter_name' => $request->productTypeFilterByLengthName,
+
+                'has_width' => $request->productTypeHasWidth,
+                'filter_by_width' => $request->productTypeFilterByWidth,
+                'product_size_width_filter_type_id' => $request->productTypeFilterByWidthFilterTypeId,
+                'product_size_width_show_on_main_filter' => $request->productTypeFilterByWidthShowOnMainFilter,
+                'product_size_width_filter_full_position_id' => $request->productTypeFilterByWidthFilterFullPositionId,
+                'product_size_width_filter_name' => $request->productTypeFilterByWidthName,
+
+                'has_height' => $request->productTypeHasHeight,
+                'filter_by_height' => $request->productTypeFilterByHeight,
+                'product_size_height_filter_type_id' => $request->productTypeFilterByHeightFilterTypeId,
+                'product_size_height_show_on_main_filter' => $request->productTypeFilterByHeightShowOnMainFilter,
+                'product_size_height_filter_full_position_id' => $request->productTypeFilterByHeightFilterFullPositionId,
+                'product_size_height_filter_name' => $request->productTypeFilterByHeightName,
+
+                'size_points' => $request->productSizePoints,
+            ]);
+
+            $productType->sizeFilterOptions()->delete();
+
+            $this->createSizeFilterOptions($productType, $request);
+
+            if ($request->productTypeFields) {
+                $productType->fields()->sync($this->prepareProductFieldsToSync($request->productTypeFields));
+            } else {
+                $productType->fields()->sync([]);
+            }
+
+
+            return ServiceActionResult::make(true, trans('admin.product_type_edit_success'));
+        });
+    }
+
+    public function deleteProductType(ProductType $productType): ServiceActionResult
+    {
+        return $this->coverWithDBTransaction(function () use($productType) {
+            if (Product::where('product_type_id', $productType->id)->exists()) {
+                return ServiceActionResult::make(false, trans('admin.product_type_in_use'));
+            } else {
+                 $productType->fields()->sync([]);
+
+                $productType->sizeFilterOptions()->delete();
+
+                 $productType->delete();
+
+                return ServiceActionResult::make(true, trans('admin.product_type_delete_success'));
+            }
+        });
+    }
+
+    private function prepareProductFieldsToSync(array $productFields): array
+    {
+        $result = [];
+        foreach ($productFields as $index => $productField) {
+            $id = $productField['id'];
+            unset($productField['id']);
+            $result[$id] = $productField;
+        }
+
+        return $result;
+    }
+
+    private function createSizeFilterOptions(ProductType $productType, EditProductTypeDTO $request): void
+    {
+        if ($request->productTypeFilterByLength &&
+            $request->productTypeFilterByLengthFilterTypeId ==
+            NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
+
+            $optionsPrepared = [];
+            foreach ($request->productTypeFilterByLengthOptions as $key => $option) {
+                $optionsPrepared[$key] = $option;
+                $optionsPrepared[$key]['type'] = ProductSizeTypesDataClass::LENGTH;
+            }
+
+            $productType->sizeFilterOptions()->createMany($optionsPrepared);
+        }
+
+        if ($request->productTypeFilterByWidth &&
+            $request->productTypeFilterByWidthFilterTypeId ==
+            NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
+
+            $optionsPrepared = [];
+            foreach ($request->productTypeFilterByWidthOptions as $key => $option) {
+                $optionsPrepared[$key] = $option;
+                $optionsPrepared[$key]['type'] = ProductSizeTypesDataClass::WIDTH;
+            }
+
+            $productType->sizeFilterOptions()->createMany($optionsPrepared);
+        }
+
+        if ($request->productTypeFilterByHeight &&
+            $request->productTypeFilterByHeightFilterTypeId ==
+            NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
+
+            $optionsPrepared = [];
+            foreach ($request->productTypeFilterByHeightOptions as $key => $option) {
+                $optionsPrepared[$key] = $option;
+                $optionsPrepared[$key]['type'] = ProductSizeTypesDataClass::WIDTH;
+            }
+
+
+            $productType->sizeFilterOptions()->createMany($optionsPrepared);
+        }
+    }
+}

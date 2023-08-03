@@ -1,0 +1,179 @@
+//brands
+.all-brands-list {
+	row-gap: 25px;
+	li {
+		font-size: 14px;
+		line-height: 20px;
+		&.empty {
+			opacity: 0.3;
+		}
+		&.stock {
+			position: relative;
+			cursor: pointer;
+            text-decoration: none;
+            a {
+                text-decoration: none;
+            }
+			@include transition(0.3s ease-out 0s);
+			&:after {
+				content: "";
+				display: block;
+				position: absolute;
+				bottom: -2px;
+				left: 0;
+				width: 0;
+				@include transition(0.3s ease-out 0s);
+				height: 4px;
+				background-color: $red-light-custom;
+			}
+			&.active {
+                a {
+                    color: $red-light-custom;
+                    @include transition(0.3s ease-out 0s);
+                }
+			}
+			@include lg-min {
+				&:hover {
+					color: $red-light-custom;
+					@include transition(0.3s ease-out 0s);
+					&:after {
+						@include transition(0.3s ease-out 0s);
+						width: 100%;
+					}
+				}
+			}
+		}
+		span {
+			text-transform: uppercase;
+		}
+		&:not(:last-child) {
+			margin-right: 24px;
+		}
+	}
+}
+.all-brands-content {
+	@include sm-max {
+		column-gap: 20px;
+	}
+	.all-brands-item {
+		width: 20%;
+		height: 232px;
+		border: 1px solid $silver-light-custom;
+		position: relative;
+		&:not(:nth-child(5n)) {
+			// всі крім кожного 5 елемента
+			border-left: unset;
+		}
+		&:nth-child(5n) {
+			//кожен 5 елемент
+			border-right: unset;
+			margin-left: -1px;
+		}
+		&:nth-last-child(n + 6) {
+			// всі крім 5 останніх
+			border-top: unset;
+		}
+		&:nth-last-child(-n + 5) {
+			//останні 5 елементів
+			border-bottom: unset;
+			margin-top: -1px;
+		}
+		@include xl-max {
+			width: 25%;
+			&:nth-child(n),
+			&:nth-last-child(n) {
+				border: 1px solid $silver-light-custom;
+				margin: unset;
+			}
+			&:not(:nth-child(4n)) {
+				border-left: unset;
+			}
+			&:nth-child(4n) {
+				border-right: unset;
+				margin-left: -1px;
+			}
+			&:nth-last-child(n + 5) {
+				border-top: unset;
+			}
+			&:nth-last-child(-n + 5) {
+				border-bottom: unset;
+				margin-top: -1px;
+			}
+		}
+		@include md-max {
+			width: calc(100% / 3);
+			&:nth-child(n),
+			&:nth-last-child(n) {
+				border: unset;
+				margin: unset;
+			}
+		}
+		@include sm-max {
+			width: calc((100% - 20px) / 2);
+			height: 125px;
+		}
+		@include lg-min {
+			&:hover {
+				.all-brands-item-inner {
+					position: absolute;
+					z-index: 2;
+					box-shadow: 0px 12px 50px rgba(0, 0, 0, 0.1);
+					width: 100%;
+				}
+				.btn {
+					opacity: 1;
+					visibility: visible;
+					height: 100%;
+				}
+			}
+		}
+		&.active {
+			.all-brands-item-inner {
+				position: absolute;
+				z-index: 2;
+				box-shadow: 0px 12px 50px rgba(0, 0, 0, 0.1);
+				width: 100%;
+			}
+			.btn {
+				opacity: 1;
+				visibility: visible;
+				height: 100%;
+			}
+		}
+		.all-brands-item-inner {
+			background: #fff;
+			padding: 30px 20px 30px 20px;
+			@include transition(0.3s ease-out 0s);
+			@include md-max {
+				padding: 10px;
+			}
+		}
+		.btn {
+			opacity: 0;
+			visibility: hidden;
+			height: 0;
+			padding: 5px 25px;
+			@include transition(0.3s ease-out 0s);
+			@include lg-max {
+				width: 100%;
+			}
+			@include xs-max {
+				font-size: 12px;
+				line-height: 14px;
+			}
+		}
+		img {
+			height: 145px;
+			margin: 0 auto;
+            object-fit: cover;
+			@include sm-max {
+				height: 80px;
+			}
+		}
+	}
+}
+.btn-all-brands {
+	@include xl-max {
+		width: max-content;
+	}
+}

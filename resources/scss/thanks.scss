@@ -1,0 +1,60 @@
+//thanks
+.thanks {
+	.i-congratulations {
+		@include md-max {
+			position: absolute;
+			top: -40px;
+			left: -10px;
+		}
+		svg {
+			width: 40px;
+			height: 40px;
+		}
+	}
+	.link-phone {
+		font-size: 18px;
+		line-height: 26px;
+		svg {
+			width: 24px;
+			height: 24px;
+		}
+	}
+	.thanks-subtitle {
+		font-size: 18px;
+		line-height: 26px;
+	}
+}
+.thancks-info {
+	.checkout-order-info {
+		.list-product-item {
+			width: calc(50% - 16px);
+			@include md-max {
+				width: 100%;
+			}
+		}
+	}
+	.checkout-order-list-product-descr {
+		gap: 32px;
+		@include md-max {
+			gap: 0;
+		}
+		.table-product-image {
+			@include sm-max {
+				width: 60px;
+				height: 60px;
+			}
+		}
+	}
+	.checkout-order-info .total-title-delivery {
+		font-size: 17px;
+	}
+}
+.thanks-info-checkout-data {
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: 500;
+	span {
+		opacity: 0.6;
+		font-weight: 400;
+	}
+}

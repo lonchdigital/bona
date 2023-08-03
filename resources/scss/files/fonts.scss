@@ -1,0 +1,203 @@
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Black-Italic.woff2") format("woff2"),
+		url("$fonts/GaugePro-Black-Italic.woff") format("woff");
+	font-weight: 900;
+	font-style: italic;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Black.woff2") format("woff2"), url("$fonts/GaugePro-Black.woff") format("woff");
+	font-weight: 900;
+	font-style: normal;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Bold-Italic.woff2") format("woff2"),
+		url("$fonts/GaugePro-Bold-Italic.woff") format("woff");
+	font-weight: 700;
+	font-style: italic;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Bold.woff2") format("woff2"), url("$fonts/GaugePro-Bold.woff") format("woff");
+	font-weight: 700;
+	font-style: normal;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-DemiBold-Italic.woff2") format("woff2"),
+		url("$fonts/GaugePro-DemiBold-Italic.woff") format("woff");
+	font-weight: 600;
+	font-style: italic;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-DemiBold.woff2") format("woff2"),
+		url("$fonts/GaugePro-DemiBold.woff") format("woff");
+	font-weight: 600;
+	font-style: normal;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Italic.woff2") format("woff2"), url("$fonts/GaugePro-Italic.woff") format("woff");
+	font-weight: 400;
+	font-style: italic;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Light-Italic.woff2") format("woff2"),
+		url("$fonts/GaugePro-Light-Italic.woff") format("woff");
+	font-weight: 300;
+	font-style: italic;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Light.woff2") format("woff2"), url("$fonts/GaugePro-Light.woff") format("woff");
+	font-weight: 300;
+	font-style: normal;
+}
+@font-face {
+	font-family: GaugePro;
+	font-display: swap;
+	src: url("$fonts/GaugePro-Regular.woff2") format("woff2"), url("$fonts/GaugePro-Regular.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Black-Italic.woff2") format("woff2"),
+		url("$fonts/TTNorms-Black-Italic.woff") format("woff");
+	font-weight: 900;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Black.woff2") format("woff2"), url("$fonts/TTNorms-Black.woff") format("woff");
+	font-weight: 900;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Bold-Italic.woff2") format("woff2"),
+		url("$fonts/TTNorms-Bold-Italic.woff") format("woff");
+	font-weight: 700;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Bold.woff2") format("woff2"), url("$fonts/TTNorms-Bold.woff") format("woff");
+	font-weight: 700;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-ExtraBold-Italic.woff2") format("woff2"),
+		url("$fonts/TTNorms-ExtraBold-Italic.woff") format("woff");
+	font-weight: 800;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-ExtraBold.woff2") format("woff2"),
+		url("$fonts/TTNorms-ExtraBold.woff") format("woff");
+	font-weight: 800;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-ExtraLight-Italic.woff2") format("woff2"),
+		url("$fonts/TTNorms-ExtraLight-Italic.woff") format("woff");
+	font-weight: 200;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-ExtraLight.woff2") format("woff2"),
+		url("$fonts/TTNorms-ExtraLight.woff") format("woff");
+	font-weight: 200;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Italic.woff2") format("woff2"), url("$fonts/TTNorms-Italic.woff") format("woff");
+	font-weight: 400;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Light-Italic.woff2") format("woff2"),
+		url("$fonts/TTNorms-Light-Italic.woff") format("woff");
+	font-weight: 300;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Light.woff2") format("woff2"), url("$fonts/TTNorms-Light.woff") format("woff");
+	font-weight: 300;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Medium-Italic.woff2") format("woff2"),
+		url("$fonts/TTNorms-Medium-Italic.woff") format("woff");
+	font-weight: 500;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Medium.woff2") format("woff2"), url("$fonts/TTNorms-Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Regular.woff2") format("woff2"), url("$fonts/TTNorms-Regular.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Thin Italic.woff2") format("woff2"),
+		url("$fonts/TTNorms-Thin Italic.woff") format("woff");
+	font-weight: 400;
+	font-style: italic;
+}
+@font-face {
+	font-family: TTNorms;
+	font-display: swap;
+	src: url("$fonts/TTNorms-Thin.woff2") format("woff2"), url("$fonts/TTNorms-Thin.woff") format("woff");
+	font-weight: 100;
+	font-style: normal;
+}
+@font-face {
+    font-family: StoreMalina;
+    font-display: swap;
+    src: url("$fonts/StoreMalina.woff2") format("woff2"), url("$fonts/StoreMalina.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+}
