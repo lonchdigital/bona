@@ -269,4 +269,5 @@ return [
     'payment_for_order' => 'Оплата заказа №',
     'payment' => 'Оплата',
     'meest_delivery' => 'Meest ПОЧТА №',
+    'see_full_pattern' => 'Просмотреть рисунок',
 ];

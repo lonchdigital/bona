@@ -150,6 +150,13 @@ function buildLinkWithParams(params)
     return window.location.pathname.split(separator)[0] + separator + '/filter/' + paramsJoined.join(';');
 }
 
+function buildLinksWithoutParams()
+{
+    const separator = catalog.category_slug ? catalog.category_slug : catalog.product_type_slug;
+
+    return window.location.pathname.split(separator)[0] + separator;
+}
+
 function filterGenerateArrayWithParams(form)
 {
     if (!catalog.product_type_slug) {
@@ -231,7 +238,12 @@ function filtersReset()
         paramsNew['per_page'] = paramsParsed['per_page'];
     }
 
-    window.location.href = buildLinkWithParams(paramsNew);
+    if (!paramsNew.length) {
+        window.location.href = buildLinksWithoutParams();
+    } else {
+        window.location.href = buildLinkWithParams(paramsNew);
+    }
+
 }
 
 function filterAdd(key, value)

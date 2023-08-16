@@ -28,6 +28,10 @@ async function loadJsByPage()
         pageToLoad = 'store.catalog.page';
     }
 
+    if (page === 'store.catalog-category.filter.page') {
+        pageToLoad = 'store.catalog.page';
+    }
+
     if (pages['./pages/' + pageToLoad + '.js']) {
         pages['./pages/' + pageToLoad + '.js']();
     }

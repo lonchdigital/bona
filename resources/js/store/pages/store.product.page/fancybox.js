@@ -21,4 +21,25 @@ export function init () {
         },
         Thumbs: false,
     });
+
+    Fancybox.bind('[data-fancybox="pattern"]', {
+        Toolbar: {
+            items: {
+                close_custom: {
+                    tpl: `<button class="f-button btn-fancybox-close" data-fancybox-close><svg><use xlink:href="${iconUrl}#i-close"></use></svg></button>`,
+                },
+            },
+            display: {
+                left: [],
+                right: ["close_custom"],
+            },
+        },
+        Carousel: {
+            Navigation: {
+                nextTpl: `<svg><use xlink:href="${iconUrl}#i-arrow-circle"></use></svg>`,
+                prevTpl: `<svg><use xlink:href="${iconUrl}#i-arrow-circle"></use></svg>`,
+            },
+        },
+        Thumbs: false,
+    });
 }

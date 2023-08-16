@@ -91,9 +91,6 @@
                                                                 <div class="swiper-slide">
                                                                     <img src="{{ $product->main_image_url }}" alt="img">
                                                                 </div>
-                                                                <div class="swiper-slide">
-                                                                    <img src="{{ $product->pattern_image_url }}" alt="img">
-                                                                </div>
                                                                 @if($product->gallery_image1_url)
                                                                     <div class="swiper-slide">
                                                                         <img src="{{ $product->gallery_image1_url }}" alt="img">
@@ -134,11 +131,6 @@
                                                             <div class="swiper-slide">
                                                                 <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
                                                                     <img src="{{ $product->main_image_url }}" alt="img">
-                                                                </a>
-                                                            </div>
-                                                            <div class="swiper-slide">
-                                                                <a data-fancybox="single-wallpaper-gallery" href="{{ $product->pattern_image_url }}">
-                                                                    <img src="{{ $product->pattern_image_url }}" alt="img">
                                                                 </a>
                                                             </div>
                                                             @if($product->gallery_image1_url)
@@ -184,6 +176,14 @@
                                                         </a>
                                                     </div>
                                                     <div class="swiper-pagination mt-5 d-sm-none"></div>
+                                                    <div class="d-flex justify-content-center pb-5">
+                                                        <a class="see-full-pattern-button" data-fancybox="pattern" data-src="{{ $product->pattern_image_url }}" data-caption="Hello world">
+                                                            <svg class="i-open-fancybox">
+                                                                <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-open-fancybox"></use>
+                                                            </svg>
+                                                            {{ trans('base.see_full_pattern') }}
+                                                        </a>
+                                                    </div>
                                                     <ul class="cta-socials list-inline mx-auto mb-0 d-none d-md-block">
                                                         <li class="list-inline-item">
                                                             <a href="viber://forward?text={{ url()->full() }}" class="link-soc" rel="noffolow" target="_blank">

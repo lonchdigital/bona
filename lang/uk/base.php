@@ -271,5 +271,5 @@ return [
     'checkout_select_np_department' => 'Оберіть відділення',
     'checkout_search_np_department' => 'Пошук відділення',
     'meest_delivery' => 'Meest ПОШТА №',
-
+    'see_full_pattern' => 'Переглянути малюнок',
 ];

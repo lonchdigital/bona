@@ -993,11 +993,7 @@
                                                     @endphp
                                                     @foreach($productsPaginated as $product)
                                                         @php
-                                                            if (isset($filtersData['color']) && !$colorIds->contains($product->main_color_id)) {
-                                                                 $productToShow = $product->children->filter(fn($child) => in_array($child->main_color_id, $colorIds->toArray()))->first();
-                                                            } else {
-                                                                $productToShow = $product;
-                                                            }
+                                                            $productToShow = $product;
                                                         @endphp
                                                         <div class="col-6 col-lg-6 col-xl-4 mb-8 mb-lg-10 content">
                                                             <div class="card card-product">
