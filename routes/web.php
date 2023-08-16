@@ -134,108 +134,108 @@ $optionalLanguageRoutes = function () {
 
     Route::name('store.home')->get('/', ShowHomePageAction::class);
 
-    Route::prefix('catalog/{productTypeSlug}')->group(function() {
-        Route::name('store.catalog.page')->get('/', ShowCatalogPageAction::class);
-        Route::name('store.catalog.filter-group.page')->get('/{filterGroupSlug}', ShowFilterGroupPageAction::class);
-        Route::name('store.catalog.filter.page')->get('/filter/{catalogFiltersString?}', ShowCatalogPageAction::class);
-
-
-        Route::name('store.catalog-category.page')->get('/category/{categorySlug}', ShowCatalogCategoryPageAction::class);
-        Route::name('store.catalog-category.filter.page')->get('/category/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogCategoryPageAction::class);
-
-        Route::name('store.catalog.products.by.filters')->get('/filteredCount/{catalogFiltersString?}', GetProductsCountByFilterAction::class);
-    });
-
-    Route::prefix('product')->group(function () {
-        Route::name('store.product.search')->get('/search', SearchProductAction::class);
-        Route::name('store.product.page')->get('/{productSlug}', ShowProductPageAction::class);
-        Route::name('store.product.similar-products')->get('/{productSlug}/similar', GetSimilarProductsPaginatedAction::class);
-
-    });
-
-    Route::prefix('wishList')
-        ->middleware([
-            AuthenticatedOnly::class,
-        ])
-        ->group(function () {
-            Route::name('store.wishlist.private.page')->get('/', ShowWishListPageAction::class);
-            Route::name('store.wishlist.private.add-product')->post('product/{productSlug}/add', ProductAddToWishListAction::class);
-            Route::name('store.wishlist.private.delete-product')->post('product/{productSlug}/delete', ProductRemoveFromWishListAction::class);
-        });
-
-    Route::prefix('wishList')->group(function () {
-        Route::name('store.wishlist.public')->get('/{wishListAccessToken}', ShowWishListByTokenPageAction::class);
-    });
-
-    Route::prefix('cart')->group(function () {
-        Route::name('store.cart.page')->get('/', ShowCartPageAction::class);
-
-        Route::name('store.cart.add-product')->post('product/{productSlug}/add', AddProductToCartAction::class);
-        Route::name('store.cart.change-product-count')->post('product{productSlug}/update', ChangeProductCountInCartAction::class);
-        Route::name('store.cart.delete-product')->post('product/{productSlug}/delete', DeleteProductFromCartAction::class);
-        Route::name('store.cart.products-with-summary')->get('product',GetProductsInCartWithSummaryAction::class);
-        Route::name('store.cart.add-promo-code')->post('promo',AddPromoCodeToCartAction::class);
-    });
-
-    Route::name('static-data.script')->get('static-data.js', GetStaticDataScript::class);
-
-    Route::prefix('emailSubscription')->group(function () {
-        Route::name('email-subscription.subscribe')->post('/subscribe', SubscribeEmailAction::class);
-        Route::name('email-subscription.confirm')->get('/confirm/{emailSubscriptionCode}', ConfirmSubscriptionAction::class);
-    });
-
-    Route::prefix('checkout')->group(function () {
-        Route::name('store.checkout.page')->get('/', ShowCheckoutPage::class);
-        Route::name('store.checkout.confirm')->post('/confirm', CheckoutConfirmOrderAction::class);
-        Route::name('store.checkout.thank-you')->get('{order}/thank', ShowCheckoutThankYouPageAction::class);
-    });
-
-    Route::prefix('brands')->group(function () {
-        Route::name('store.brands.list.page')->get('/list/{letter?}', ShowBrandsListPageAction::class);
-        Route::name('store.brand.search.page')->get('/search', ShowBrandSearchPageAction::class);
-        Route::name('store.brand.page')->get('/{brandSlug}', ShowBrandPageAction::class);
-
-    });
-
-    Route::prefix('collections')->group(function () {
-        Route::name('store.collection.page')->get('/{collectionSlug}/{catalogFiltersString?}', ShowCollectionPageAction::class);
-    });
-
-    Route::prefix('calculator')->group(function () {
-        Route::name('store.calculator.page')->get('/{productSlug?}', ShowCalculatorPageAction::class);
-        Route::name('store.calculator.calculate')->post('/calculate', CalculateCountOfProductsAction::class);
-    });
-
-    Route::prefix('page')->group(function () {
-        Route::name('store.static-page.page')->get('/{staticPageSlug}', ShowStaticPagePageAction::class);
-    });
-
-    Route::prefix('blog')->group(function () {
-        Route::name('blog.main.page')->get('/', ShowBlogMainPageAction::class);
-        Route::name('blog.articles-by-category.page')->get('/{blogCategorySlug}', ShowBlogArticlesByCategoryActionPage::class);
-        Route::name('blog.article.page')->get('/article/{blogArticleSlug}', ShowBlogArticlePageAction::class);
-    });
-
-    Route::prefix('visitRequest')->group(function () {
-        Route::name('store.visit-request.create')->post('/create', CreateVisitRequestAction::class);
-    });
-
-    Route::prefix('payment')->group(function () {
-       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class);
-    });
-
-    Route::prefix('delivery')->group(function () {
-        Route::prefix('np')->group(function () {
-            Route::name('delivery.np.cities')->get('/cities', GetNPCitiesAction::class);
-            Route::name('delivery.np.departments')->get('/departments', GetNpDepartmentsAction::class);
-        });
-
-        Route::prefix('meest')->group(function () {
-            Route::name('delivery.meest.cities')->get('/cities', GetMeestCitiesAction::class);
-            Route::name('delivery.meest.departments')->get('/departments', GetMeestDepartmentsAction::class);
-        });
-
-    });
+//    Route::prefix('catalog/{productTypeSlug}')->group(function() {
+//        Route::name('store.catalog.page')->get('/', ShowCatalogPageAction::class);
+//        Route::name('store.catalog.filter-group.page')->get('/{filterGroupSlug}', ShowFilterGroupPageAction::class);
+//        Route::name('store.catalog.filter.page')->get('/filter/{catalogFiltersString?}', ShowCatalogPageAction::class);
+//
+//
+//        Route::name('store.catalog-category.page')->get('/category/{categorySlug}', ShowCatalogCategoryPageAction::class);
+//        Route::name('store.catalog-category.filter.page')->get('/category/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogCategoryPageAction::class);
+//
+//        Route::name('store.catalog.products.by.filters')->get('/filteredCount/{catalogFiltersString?}', GetProductsCountByFilterAction::class);
+//    });
+//
+//    Route::prefix('product')->group(function () {
+//        Route::name('store.product.search')->get('/search', SearchProductAction::class);
+//        Route::name('store.product.page')->get('/{productSlug}', ShowProductPageAction::class);
+//        Route::name('store.product.similar-products')->get('/{productSlug}/similar', GetSimilarProductsPaginatedAction::class);
+//
+//    });
+//
+//    Route::prefix('wishList')
+//        ->middleware([
+//            AuthenticatedOnly::class,
+//        ])
+//        ->group(function () {
+//            Route::name('store.wishlist.private.page')->get('/', ShowWishListPageAction::class);
+//            Route::name('store.wishlist.private.add-product')->post('product/{productSlug}/add', ProductAddToWishListAction::class);
+//            Route::name('store.wishlist.private.delete-product')->post('product/{productSlug}/delete', ProductRemoveFromWishListAction::class);
+//        });
+//
+//    Route::prefix('wishList')->group(function () {
+//        Route::name('store.wishlist.public')->get('/{wishListAccessToken}', ShowWishListByTokenPageAction::class);
+//    });
+//
+//    Route::prefix('cart')->group(function () {
+//        Route::name('store.cart.page')->get('/', ShowCartPageAction::class);
+//
+//        Route::name('store.cart.add-product')->post('product/{productSlug}/add', AddProductToCartAction::class);
+//        Route::name('store.cart.change-product-count')->post('product{productSlug}/update', ChangeProductCountInCartAction::class);
+//        Route::name('store.cart.delete-product')->post('product/{productSlug}/delete', DeleteProductFromCartAction::class);
+//        Route::name('store.cart.products-with-summary')->get('product',GetProductsInCartWithSummaryAction::class);
+//        Route::name('store.cart.add-promo-code')->post('promo',AddPromoCodeToCartAction::class);
+//    });
+//
+//    Route::name('static-data.script')->get('static-data.js', GetStaticDataScript::class);
+//
+//    Route::prefix('emailSubscription')->group(function () {
+//        Route::name('email-subscription.subscribe')->post('/subscribe', SubscribeEmailAction::class);
+//        Route::name('email-subscription.confirm')->get('/confirm/{emailSubscriptionCode}', ConfirmSubscriptionAction::class);
+//    });
+//
+//    Route::prefix('checkout')->group(function () {
+//        Route::name('store.checkout.page')->get('/', ShowCheckoutPage::class);
+//        Route::name('store.checkout.confirm')->post('/confirm', CheckoutConfirmOrderAction::class);
+//        Route::name('store.checkout.thank-you')->get('{order}/thank', ShowCheckoutThankYouPageAction::class);
+//    });
+//
+//    Route::prefix('brands')->group(function () {
+//        Route::name('store.brands.list.page')->get('/list/{letter?}', ShowBrandsListPageAction::class);
+//        Route::name('store.brand.search.page')->get('/search', ShowBrandSearchPageAction::class);
+//        Route::name('store.brand.page')->get('/{brandSlug}', ShowBrandPageAction::class);
+//
+//    });
+//
+//    Route::prefix('collections')->group(function () {
+//        Route::name('store.collection.page')->get('/{collectionSlug}/{catalogFiltersString?}', ShowCollectionPageAction::class);
+//    });
+//
+//    Route::prefix('calculator')->group(function () {
+//        Route::name('store.calculator.page')->get('/{productSlug?}', ShowCalculatorPageAction::class);
+//        Route::name('store.calculator.calculate')->post('/calculate', CalculateCountOfProductsAction::class);
+//    });
+//
+//    Route::prefix('page')->group(function () {
+//        Route::name('store.static-page.page')->get('/{staticPageSlug}', ShowStaticPagePageAction::class);
+//    });
+//
+//    Route::prefix('blog')->group(function () {
+//        Route::name('blog.main.page')->get('/', ShowBlogMainPageAction::class);
+//        Route::name('blog.articles-by-category.page')->get('/{blogCategorySlug}', ShowBlogArticlesByCategoryActionPage::class);
+//        Route::name('blog.article.page')->get('/article/{blogArticleSlug}', ShowBlogArticlePageAction::class);
+//    });
+//
+//    Route::prefix('visitRequest')->group(function () {
+//        Route::name('store.visit-request.create')->post('/create', CreateVisitRequestAction::class);
+//    });
+//
+//    Route::prefix('payment')->group(function () {
+//       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class);
+//    });
+//
+//    Route::prefix('delivery')->group(function () {
+//        Route::prefix('np')->group(function () {
+//            Route::name('delivery.np.cities')->get('/cities', GetNPCitiesAction::class);
+//            Route::name('delivery.np.departments')->get('/departments', GetNpDepartmentsAction::class);
+//        });
+//
+//        Route::prefix('meest')->group(function () {
+//            Route::name('delivery.meest.cities')->get('/cities', GetMeestCitiesAction::class);
+//            Route::name('delivery.meest.departments')->get('/departments', GetMeestDepartmentsAction::class);
+//        });
+//
+//    });
 };
 
 Route::prefix('/{lang}/')

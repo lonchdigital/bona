@@ -33,6 +33,9 @@ class ShowCatalogPageAction extends BaseAction
         $productService = app()->make(ProductService::class);
         $wishListService = app()->make(WishListService::class);
 
+
+//        dd(ProductService::class);
+
         $filtersData = $request->toDTO();
 
         $baseCurrency = $currencyService->getBaseCurrency();
@@ -55,7 +58,7 @@ class ShowCatalogPageAction extends BaseAction
         $productsPaginated = $productService->getProductsByTypePaginated(
             $productType,
             $filtersData,
-            $filtersData->filters['per_page'] ?? 24,
+            $filtersData->filters['per_page'] ?? 5, // 24
             $page,
         );
 

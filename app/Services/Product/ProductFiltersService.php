@@ -197,9 +197,9 @@ class ProductFiltersService extends BaseService
                         'option_slug' => $filterValue,
                     ];
 
-                //SIZE
+                    //SIZE
 
-                //dynamic size filters
+                    //dynamic size filters
                 } elseif ($filterNameSlug === 'product_length_from') {
                     $options[] = [
                         'option_name' => trans('base.from') . ': ' . $filterValue . ' ' . $productType->size_points,
@@ -236,7 +236,7 @@ class ProductFiltersService extends BaseService
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
-                //fixes size options
+                    //fixes size options
                 } elseif ($filterNameSlug === 'product_length') {
                     $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 

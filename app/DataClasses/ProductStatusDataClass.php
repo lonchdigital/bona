@@ -24,7 +24,7 @@ class ProductStatusDataClass implements BaseDataClass
                 'id' => self::PRODUCT_STATUS_OUT_OF_STOCK,
                 'name' => trans('shop.product_status_out_of_stock'),
                 'trans_key' => 'shop.product_status_out_of_stock',
-            ],
+            ]
         ]);
 
         if ($item) {

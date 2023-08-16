@@ -15,6 +15,7 @@
                         <x-admin.multilanguage-switch/>
                     </div>
                     <div class="card-body">
+{{--                        @dd($productType->id)--}}
                         <x-admin.reactive-form method="POST"
                                                action="{{ isset($product) ?  route('admin.product.edit', ['productType' => $productType['id'], 'product' => $product->id]) : route('admin.product.create', ['productType' => $productType->id]) }}">
                             @csrf
