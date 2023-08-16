@@ -56,6 +56,8 @@
             <div class="w-100 mb-4 d-flex">
                 <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="{{ route('admin.dashboard.page') }}">
                     <img src="{{ Vite::asset('resources/img/logo-m.svg') }}" alt="logo">
+{{--                    <img src="{{ asset('resources/img/logo-m.svg') }}" alt="logo">--}}
+
                 </a>
             </div>
             <ul class="navbar-nav flex-fill w-100 mb-2">

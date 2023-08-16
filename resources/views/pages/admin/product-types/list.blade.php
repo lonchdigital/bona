@@ -54,6 +54,7 @@
                                                 </thead>
                                                 <tbody>
                                                 @foreach($productTypesPaginated as $productType)
+
                                                     <tr>
                                                         <td>{{ $productType->id }}</td>
                                                         <td>{{ $productType->name }}</td>

@@ -197,9 +197,9 @@ class ProductFiltersService extends BaseService
                         'option_slug' => $filterValue,
                     ];
 
-                //SIZE
+                    //SIZE
 
-                //dynamic size filters
+                    //dynamic size filters
                 } elseif ($filterNameSlug === 'product_length_from') {
                     $options[] = [
                         'option_name' => trans('base.from') . ': ' . $filterValue . ' ' . $productType->size_points,
@@ -236,7 +236,7 @@ class ProductFiltersService extends BaseService
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
-                //fixes size options
+                    //fixes size options
                 } elseif ($filterNameSlug === 'product_length') {
                     $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 
@@ -335,9 +335,20 @@ class ProductFiltersService extends BaseService
                     $filterValue = [$filterValue];
                 }
 
-                $colors = Color::whereIn('slug', $filterValue)->get();
-                $query->where(function (Builder $query) use($colors) {
-                    $query->whereIn('main_color_id', $colors->pluck('id'));
+                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
+
+                $colorsToFilter = $colors->pluck('id');
+
+                foreach ($colors as $color) {
+                    if (count($color->children)) {
+                        foreach ($color->children as $childColor) {
+                            $colorsToFilter[] = $childColor->id;
+                        }
+                    }
+                }
+
+                $query->where(function (Builder $query) use($colorsToFilter) {
+                    $query->whereIn('main_color_id', $colorsToFilter);
                 });
             } else if ($filterNameSlug === 'country') {
                 if (!is_array($filterValue)) {

@@ -13,8 +13,8 @@ class ShowHomePageAction extends BaseAction
     public function __invoke(
         HomePageService $homePageService,
         WishListService $wishListService,
-        CurrencyService $currencyService,
-        BlogArticleService $blogArticleService,
+//        CurrencyService $currencyService,
+//        BlogArticleService $blogArticleService,
     )
     {
         $wishList = null;
@@ -23,15 +23,15 @@ class ShowHomePageAction extends BaseAction
         }
 
         return view('pages.store.home', [
-            'config' => $homePageService->getHomePageConfig(),
-            'slides' => $homePageService->getHomePageSlides(),
+//            'config' => $homePageService->getHomePageConfig(),
+//            'slides' => $homePageService->getHomePageSlides(),
             'brands' => $homePageService->getHomePageBrands(),
-            'newProducts' => $homePageService->getNewProducts(),
-            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
-            'baseCurrency' => $currencyService->getBaseCurrency(),
-            'fieldFilterString' => $homePageService->getProductsCustomFieldOptionsName(),
-            'productsByField' => $homePageService->getProductsByCustomFieldOptions(),
-            'articles' => $blogArticleService->getLatestArticles(3),
+//            'newProducts' => $homePageService->getNewProducts(),
+//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
+//            'baseCurrency' => $currencyService->getBaseCurrency(),
+//            'fieldFilterString' => $homePageService->getProductsCustomFieldOptionsName(),
+//            'productsByField' => $homePageService->getProductsByCustomFieldOptions(),
+//            'articles' => $blogArticleService->getLatestArticles(3),
         ]);
     }
 }

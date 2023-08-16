@@ -1,8 +1,8 @@
-import 'bootstrap';
-import $ from 'jquery';
+// import 'bootstrap';
+// import $ from 'jquery';
 import.meta.glob(['../../img/**']);
 
-import Burger from './common/burger';
+/*import Burger from './common/burger';
 import ShowMenu from "./common/show-menu";
 import ScrollTop from "./common/scroll-top";
 import InputCounter from './common/input-counter';
@@ -11,7 +11,7 @@ import WishList from './common/wish-list';
 import Cart from './common/cart';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
 
-const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' })
+const pages = import.meta.glob(['../../js/store/pages/!*.js'], { eager: true, import: 'default' })*/
 
 async function loadJsByPage()
 {
@@ -47,8 +47,20 @@ async function init()
     ]);
 }
 
-$(function () {
-    init();
-    loadJsByPage();
-});
+// $(function () {
+//     init();
+//     loadJsByPage();
+// });
+
+
+
+
+// Import all js for frontend
+// import './front/jquery.min.js';
+// import './front/jquery.bootstrap.js';
+// import './front/jquery.magnific-popup.js';
+// import './front/jquery.owl.carousel.js';
+// import './front/jquery.ion.rangeSlider.js';
+// import './front/jquery.isotope.pkgd.js';
+// import './front/main.js';
 
