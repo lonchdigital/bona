@@ -1,0 +1,17 @@
+
+.card-header-wrapper .card-header.sticky .nav {
+    position: fixed;
+    top: 5px;
+    right: 6px;
+    z-index: 99;
+    background-color: #fff;
+}
+.card-body.art-mt-form {
+    margin-top: 54px;
+}
+
+.art-repeater-row {
+    border: 1px solid rgba(0,0,0, 0.2);
+    margin-bottom: 10px;
+    padding: 21px 5px 22px 5px;
+}

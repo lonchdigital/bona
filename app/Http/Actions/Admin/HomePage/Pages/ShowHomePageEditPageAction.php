@@ -4,28 +4,32 @@ namespace App\Http\Actions\Admin\HomePage\Pages;
 
 use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\Http\Actions\Admin\BaseAction;
-use App\Models\Brand;
+use App\Models\Product;
 use App\Models\ProductField;
 use App\Models\ProductFieldOption;
 use App\Models\ProductType;
 use App\Services\Admin\ProductField\ProductFieldService;
-use App\Services\Brand\BrandService;
 use App\Services\HomePage\HomePageService;
+use App\Services\Product\ProductService;
 
 class ShowHomePageEditPageAction extends BaseAction
 {
     public function __invoke(
-        BrandService $brandService,
         ProductFieldService $productFieldService,
         HomePageService $homePageService,
+        ProductService $productService,
     )
     {
-        $brands = $brandService->getBrands()->map(function (Brand $brand) {
-           $brand->text = $brand->name;
-           return $brand;
+
+        $products = $productService->getLimitedProducts(4)->map(function (Product $product) {
+            $product->text = $product->name;
+            return $product;
         });
 
+
         $wallpaperProductType = ProductType::where('slug', config('domain.wallpaper_product_type_slug'))->first();
+
+//        dd($wallpaperProductType);
 
         if ($wallpaperProductType) {
             $customFields = $wallpaperProductType->fields()->select(['product_field_id as id', 'field_name'])
@@ -50,13 +54,17 @@ class ShowHomePageEditPageAction extends BaseAction
         }
 
 
+//        dd($homePageService->getHomePageConfig());
+
         return view('pages.admin.home-page.edit', [
-            'brands' => $brands,
+            'products' => $products,
             'fields' => $customFields,
             'config' => $homePageService->getHomePageConfig(),
-            'selectedBrands' => $homePageService->getHomePageBrands(),
+            'selectedNewProducts' => $homePageService->getHomePageNewProducts(),
+            'selectedBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),
             'selectedProductFieldOptions' => $homePageService->getHomePageProductFieldOptions(),
             'slides' => $homePageService->getHomePageSlides(),
+            'faqs' => $homePageService->getHomePageFaqs(),
         ]);
     }
 }

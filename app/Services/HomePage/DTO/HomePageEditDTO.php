@@ -8,12 +8,15 @@ use Illuminate\Http\UploadedFile;
 class HomePageEditDTO implements BaseDTO
 {
     public function __construct(
-        public readonly array $sliderTitle,
-        public readonly int $collectionId,
-        public readonly ?UploadedFile $sliderLogo,
+//        public readonly array $sliderTitle,
+//        public readonly ?UploadedFile $sliderLogo,
+
         public readonly ?array $slides,
-        public readonly array $selectedBrandsId,
-        public readonly int $selectedFieldId,
-        public readonly array $selectedOptionsId,
+        public readonly ?array $selectedProductsId,
+        public readonly ?array $selectedBestSalesProductsId,
+        public readonly ?array $faqs,
+
+//        public readonly int $selectedFieldId,
+//        public readonly array $selectedOptionsId,
     ){ }
 }

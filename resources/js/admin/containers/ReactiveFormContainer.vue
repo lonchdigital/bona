@@ -66,9 +66,11 @@ export default {
 
 <template>
     <div class="card shadow mb-4">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <strong class="card-title m-0">{{ cardBodyTitle }}</strong>
-            <language-switcher-component v-model="selectedLanguage" :available-languages="availableLanguages" @update:model-value="() => $emit('onSelectedLanguageChange', selectedLanguage)"/>
+        <div class="card-header-wrapper">
+            <div id="form-header" class="card-header d-flex align-items-center justify-content-between">
+                <strong class="card-title m-0">{{ cardBodyTitle }}</strong>
+                <language-switcher-component v-model="selectedLanguage" :available-languages="availableLanguages" @update:model-value="() => $emit('onSelectedLanguageChange', selectedLanguage)"/>
+            </div>
         </div>
         <div class="card-body">
             <form @submit.prevent="submitForm">

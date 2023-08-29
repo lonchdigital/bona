@@ -177,7 +177,7 @@ $optionalLanguageRoutes = function () {
 //        Route::name('store.cart.add-promo-code')->post('promo',AddPromoCodeToCartAction::class);
 //    });
 //
-//    Route::name('static-data.script')->get('static-data.js', GetStaticDataScript::class);
+    Route::name('static-data.script')->get('static-data.js', GetStaticDataScript::class);
 //
 //    Route::prefix('emailSubscription')->group(function () {
 //        Route::name('email-subscription.subscribe')->post('/subscribe', SubscribeEmailAction::class);

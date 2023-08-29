@@ -23,8 +23,8 @@ class ShowHomePageAction extends BaseAction
         }
 
         return view('pages.store.home', [
-//            'config' => $homePageService->getHomePageConfig(),
-//            'slides' => $homePageService->getHomePageSlides(),
+            'config' => $homePageService->getHomePageConfig(),
+            'slides' => $homePageService->getHomePageSlides(),
             'brands' => $homePageService->getHomePageBrands(),
 //            'newProducts' => $homePageService->getNewProducts(),
 //            'wishListProducts' => $wishListService->getWishListProductsId($wishList),

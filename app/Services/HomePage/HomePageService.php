@@ -3,9 +3,12 @@
 namespace App\Services\HomePage;
 
 use App\DataClasses\ProductSpecialOfferOptionsDataClass;
+use App\Models\HomePageBestSalesProducts;
+use App\Models\HomePageNewProducts;
 use App\Models\HomePageBrands;
 use App\Models\HomePageConfig;
 use App\Models\HomePageProductOptions;
+use App\Models\HomePageFaqs;
 use App\Models\HomePageSlides;
 use App\Models\Product;
 use App\Models\ProductType;
@@ -30,7 +33,7 @@ class HomePageService extends BaseService
 
 
 
-            $existingConfig = HomePageConfig::first();
+            /*$existingConfig = HomePageConfig::first();
 
             $dataToUpdate = [
                 'slider_title' => $request->sliderTitle,
@@ -54,12 +57,14 @@ class HomePageService extends BaseService
                 $existingConfig->update($dataToUpdate);
             } else {
                 HomePageConfig::create($dataToUpdate);
-            }
+            }*/
 
             $this->syncSlides($request->slides);
+            $this->syncFaqs($request->faqs);
 
-            $this->syncBrands($request->selectedBrandsId);
-            $this->syncOptions($request->selectedOptionsId);
+            $this->syncNewProducts($request->selectedProductsId);
+            $this->syncBestSalesProducts($request->selectedBestSalesProductsId);
+//            $this->syncOptions($request->selectedOptionsId);
 
             foreach ($imagesToDelete as $imageToDelete) {
                 $this->deleteHomePageImage($imageToDelete);
@@ -69,6 +74,28 @@ class HomePageService extends BaseService
         });
     }
 
+
+
+    private function syncNewProducts(?array $productsId): void
+    {
+        HomePageNewProducts::query()->delete();
+
+        if (!empty($productsId) && $productsId[0] != '' ) {
+            foreach ($productsId as $productId) {
+                HomePageNewProducts::create(['product_id' => $productId]);
+            }
+        }
+    }
+    private function syncBestSalesProducts(?array $productsId): void
+    {
+        HomePageBestSalesProducts::query()->delete();
+
+        if (!empty($productsId) && $productsId[0] != '' ) {
+            foreach ($productsId as $productId) {
+                HomePageBestSalesProducts::create(['product_id' => $productId]);
+            }
+        }
+    }
     private function syncBrands(array $brandsId): void
     {
         HomePageBrands::query()->delete();
@@ -95,7 +122,9 @@ class HomePageService extends BaseService
         if ($slides) {
             foreach ($slides as $slide) {
                 $dataToUpdate = [
-                    'description' => $slide['description']
+                    'title' => $slide['title'],
+                    'button_text' => $slide['button_text'],
+                    'button_url' => $slide['button_url']
                 ];
 
                 if (isset($slide['image'])) {
@@ -138,8 +167,53 @@ class HomePageService extends BaseService
 
     }
 
+    private function syncFaqs(?array $faqs): void
+    {
+        $existingFaqs = HomePageFaqs::get();
+        if ($faqs) {
+            foreach ($faqs as $faq) {
+                $dataToUpdate = [
+                    'question' => $faq['question'],
+                    'answer' => $faq['answer'],
+                ];
+
+                if (isset($faq['id']) && $faq['id']) {
+                    $existingFaq = $existingFaqs->where('id', $faq['id'])->first();
+                    if (!$existingFaq) {
+                        throw new \Exception('Incorrect faq id: ' . $faq['id']);
+                    }
+
+                    $existingFaq->update($dataToUpdate);
+                } else {
+                    HomePageFaqs::create($dataToUpdate);
+                }
+            }
+        }
+
+        $existingFaqsInRequest = $faqs ? array_filter(array_column($faqs, 'id'), function ($item) {
+            return $item !== null;
+        }): [];
+
+        $faqsToDelete = $existingFaqs->whereNotIn('id', $existingFaqsInRequest);
+
+        foreach ($faqsToDelete as $faqToDelete) {
+            $faqToDelete->delete();
+        }
+
+    }
+
     public function getHomePageConfig(): ?HomePageConfig {
         return HomePageConfig::first();
+    }
+
+    public function getHomePageNewProducts(): Collection
+    {
+        return HomePageNewProducts::with(['product'])->get();
+    }
+
+    public function getHomePageBestSalesProducts(): Collection
+    {
+        return HomePageBestSalesProducts::with(['product'])->get();
     }
 
     public function getHomePageBrands(): Collection
@@ -155,6 +229,11 @@ class HomePageService extends BaseService
     public function getHomePageSlides(): Collection
     {
         return HomePageSlides::get();
+    }
+
+    public function getHomePageFaqs(): Collection
+    {
+        return HomePageFaqs::get();
     }
 
     public function getNewProducts(): Collection

@@ -3,12 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex">
     <title>{{ config('app.name') }} - {{ trans('admin.admin_panel') }}</title>
     <!-- Simple bar CSS -->
     <link rel="stylesheet" href="/static-admin/css/simplebar.css">
     <!-- Fonts CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <!-- Icons CSS -->
+    <link rel="stylesheet" href="/static-admin/css/custom.css">
     <link rel="stylesheet" href="/static-admin/css/feather.css">
     <link rel="stylesheet" href="/static-admin/css/select2.css">
     <link rel="stylesheet" href="/static-admin/css/uppy.min.css">
@@ -216,6 +218,7 @@
                         <span class="ml-1 item-text">{{ trans('admin.home_page_edit') }}</span>
                     </a>
                 </li>
+
             </ul>
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.seo') }}</span>
@@ -312,7 +315,7 @@
 </div> <!-- .wrapper -->
 @hasSection('vue')
     @vite('resources/js/admin/app.js')
-
+    @vite('resources/js/admin/scripts.js')
 @else
     <script src="/static-admin/js/tinycolor-min.js"></script>
     <script src="/static-admin/js/config.js"></script>

@@ -149,6 +149,21 @@ class ProductService extends BaseService
         return $query->limit(100)->get();
     }
 
+    public function searchAllProducts(SearchProductDTO $request): Collection
+    {
+        $query = Product::select(['id', 'name', 'sku'])->limit(10);
+
+        if ($request->query) {
+            $query->where(function ($query) use($request) {
+                return $query->where('name', 'like', '%' . $request->query . '%')
+                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request->query) . '%'])
+                    ->orWhere('sku', 'like', '%' . $request->query . '%');
+            });
+        }
+
+        return $query->get();
+    }
+
     public function createProduct(User $creator, ProductType $productType, EditProductDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($productType, $request, $creator) {
@@ -669,5 +684,10 @@ class ProductService extends BaseService
         }
 
         return $result;
+    }
+
+    public function getLimitedProducts(int $limit): Collection
+    {
+        return Product::all()->take($limit);
     }
 }

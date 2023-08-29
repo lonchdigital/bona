@@ -67,6 +67,7 @@ use App\Http\Actions\Admin\ProductFields\ProductFieldDeleteAction;
 use App\Http\Actions\Admin\ProductFields\ProductFieldEditAction;
 use App\Http\Actions\Admin\Products\GetParentProductDataAction;
 use App\Http\Actions\Admin\Products\GetProductsBySearchAction;
+use App\Http\Actions\Admin\Products\GetAllProductsBySearchAction;
 use App\Http\Actions\Admin\Products\Pages\ShowProductCreatePageAction;
 use App\Http\Actions\Admin\Products\Pages\ShowProductEditPageAction;
 use App\Http\Actions\Admin\Products\Pages\ShowProductsListPageAction;
@@ -264,6 +265,9 @@ Route::prefix('admin')->middleware([
     });
 
     //Products
+    Route::prefix('product/')->group(function () {
+        Route::name('admin.product.list.all')->get('/search', GetAllProductsBySearchAction::class);
+    });
     Route::prefix('product/{productType}')->group(function () {
         //List
         Route::name('admin.product.list.page')->get('/', ShowProductsListPageAction::class);

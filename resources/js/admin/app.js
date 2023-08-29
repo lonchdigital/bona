@@ -27,7 +27,7 @@ import HomePageEditForm from "./forms/HomePageEditForm.vue";
 import SeogenEditFrom from "./forms/SeogenEditForm.vue";
 import FilterGroupsEditForm from "./forms/FilterGroupsEditForm.vue";
 
-import Multiselect from '@vueform/multiselect'
+import Multiselect from '@vueform/multiselect';
 
 
 const app = createApp({});
@@ -68,7 +68,7 @@ app.component('home-page-edit-form', HomePageEditForm);
 app.component('seogen-edit-form', SeogenEditFrom);
 app.component('filter-groups-edit-form', FilterGroupsEditForm);
 
-app.component('multiselect-component', Multiselect)
+app.component('multiselect-component', Multiselect);
 
 app.mount('#app');
 

@@ -2,9 +2,10 @@
 
 import axios from "axios";
 import HomePageSlideComponent from "../components/HomePageSlideComponent.vue";
+import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 
 export default {
-    components: {HomePageSlideComponent},
+    components: {HomePageSlideComponent, HomePageFaqComponent},
     props: {
         submitRoute: {
             type: String,
@@ -18,6 +19,10 @@ export default {
             type: String,
             default: '',
         },
+        productSearchRoute: {
+            type: String,
+            default: '',
+        },
         availableLanguages: {
             type: Array,
             default: ['uk', 'ru'],
@@ -25,10 +30,6 @@ export default {
         baseLanguage: {
             type: String,
             default: 'uk',
-        },
-        sliderSelectedCollection: {
-            type: Object,
-            default: null,
         },
         sliderLogo: {
             type: String,
@@ -38,11 +39,19 @@ export default {
             type: Array,
             default: [],
         },
-        availableBrands: {
+        faqList: {
             type: Array,
             default: [],
         },
-        selectedBrands: {
+        availableProducts: {
+            type: Array,
+            default: [],
+        },
+        selectedNewProducts: {
+            type: Array,
+            default: [],
+        },
+        selectedBestSalesProducts: {
             type: Array,
             default: [],
         },
@@ -66,8 +75,13 @@ export default {
     data() {
         return {
             slides: [],
+            faqs: [],
+            test: [],
             selectedLanguage: '',
             collections: [],
+            products: [],
+            selectedNewProductsShow: [],
+            selectedBestSalesProductsShow: [],
             selectedFieldId: null,
             selectedOptions: [],
             errors: [],
@@ -80,17 +94,100 @@ export default {
             this.slides = this.sliderSlides;
         }
 
-        if (this.sliderSelectedCollection && this.sliderSelectedCollection.hasOwnProperty('id') && this.sliderSelectedCollection.hasOwnProperty('name') ) {
-            this.collections.push({id: this.sliderSelectedCollection.id, text: this.sliderSelectedCollection.name[this.selectedLanguage]});
-        } else {
-            this.loadCollections('');
+        if (this.faqList) {
+            this.faqs = this.faqList;
         }
+
+        /*this.faqList.forEach((item, i) => {
+            this.faqs.push(item);
+        });*/
+
+        console.log(this.faqs);
+
+
+        // this.test.push(this.faqList);
+        // console.log(this.faqList)
+
+
+        /*this.test.push({
+                "id": 6,
+                "question": {
+                    "ru": "22222222",
+                    "uk": "11111"
+                },
+                "answer": {
+                    "ru": "22222222",
+                    "uk": "1111"
+                },
+                "created_at": "2023-08-28T10:11:27.000000Z",
+                "updated_at": "2023-08-28T10:11:27.000000Z"
+            },
+            {
+                "id": 7,
+                "question": {
+                    "ru": "question 1 RU",
+                    "uk": "question 1 UK"
+                },
+                "answer": {
+                    "ru": "answer 1 ru",
+                    "uk": "answer 1 UK"
+                },
+                "created_at": "2023-08-28T10:11:27.000000Z",
+                "updated_at": "2023-08-28T10:11:27.000000Z"
+            },
+            {
+                "id": 8,
+                "question": {
+                    "ru": "333333333 ru",
+                    "uk": "33333333 uk"
+                },
+                "answer": {
+                    "ru": "33333333333 ru",
+                    "uk": "3333333333 uk"
+                },
+                "created_at": "2023-08-28T10:11:27.000000Z",
+                "updated_at": "2023-08-28T10:11:27.000000Z"
+            },)*/
+
+
+        // console.log(this.faqs.length);
+        // console.log(this.faqs);
+        // console.log('============================');
+        // this.faqs.splice(1, 1);
+        // console.log(this.faqs.length);
+        // console.log(this.faqs);
+
+
+        this.loadProducts('');
 
         if (this.wallpapersByFieldId) {
             this.selectedFieldId = this.wallpapersByFieldId;
         }
+
+        if( Array.isArray(this.selectedNewProducts) ) {
+            this.selectedNewProducts.forEach((item, i) => {
+                if (item.product && item.product.hasOwnProperty('id') && item.product.hasOwnProperty('name')) {
+                    this.selectedNewProductsShow.push(item.product.id);
+                    this.products.push({id: item.product.id, text: item.product.name[this.selectedLanguage] + ' ' + item.product.sku});
+                } else {
+                    this.loadProducts('');
+                }
+            });
+        }
+
+        if( Array.isArray(this.selectedBestSalesProducts) ) {
+            this.selectedBestSalesProducts.forEach((item, i) => {
+                if (item.product && item.product.hasOwnProperty('id') && item.product.hasOwnProperty('name')) {
+                    this.selectedBestSalesProductsShow.push(item.product.id);
+                    this.products.push({id: item.product.id, text: item.product.name[this.selectedLanguage] + ' ' + item.product.sku});
+                } else {
+                    this.loadProducts('');
+                }
+            });
+        }
+
     },
-    computed: {
+    /*computed: {
         availableProductFieldOptions() {
             if(this.selectedFieldId) {
                 const selectedWallpapersField = this.wallpapersFields.find((field) => field.id === this.selectedFieldId);
@@ -100,7 +197,7 @@ export default {
             }
             return [];
         }
-    },
+    },*/
     watch: {
         selectedFieldId() {
             this.selectedOptions = [];
@@ -112,6 +209,17 @@ export default {
         },
         deleteSlide(index) {
             this.slides.splice(index, 1);
+            console.log(this.slides);
+        },
+        addFaq() {
+            this.faqs.push({});
+        },
+        deleteFaq(index) {
+            // this.faqs.splice(index, 1);
+
+            this.faqs.splice(index, 1);
+            console.log(this.faqs);
+
         },
         changeSelectedLanguage(newSelectedLanguage) {
             this.selectedLanguage = newSelectedLanguage;
@@ -124,6 +232,13 @@ export default {
                 this.collections = result.data.data;
             }).catch(() => {
                 this.collections = [];
+            });
+        },
+        loadProducts(query) {
+            axios.get(this.productSearchRoute + '?query=' + query).then((result) => {
+                this.products = result.data.data;
+            }).catch(() => {
+                this.products = [];
             });
         },
     }
@@ -148,7 +263,7 @@ export default {
                     </strong>
                 </p>
 
-                <multi-language-input-component
+<!--                <multi-language-input-component
                     :title="$t('admin.slider_title')"
                     name="slider_title"
                     :selected-language="selectedLanguage"
@@ -156,28 +271,17 @@ export default {
                     :is-required="true"
                     :init-data="sliderTitle"
                     :errors="errors"
-                />
+                />-->
 
-                <select-component
-                    :model-value="sliderSelectedCollection && sliderSelectedCollection.hasOwnProperty('id') ? sliderSelectedCollection.id : null"
-                    :title="$t('admin.collection_on_slider')"
-                    :options="collections"
-                    label="text"
-                    value-prop="id"
-                    name="collection_id"
-                    @search-change="(query) => loadCollections(query)"
-                    :is-required="true"
-                    :errors="errors"
-                />
 
-                <image-file-input-component
+<!--                <image-file-input-component
                     :title="$t('admin.slider_logo')"
                     name="slider_logo"
                     image-deleted-name="slider_logo_deleted"
                     :is-required="true"
                     :errors="errors"
                     :init-data="sliderLogo"
-                />
+                />-->
 
                 <p>
                     <strong>
@@ -195,7 +299,6 @@ export default {
                     :available-languages="availableLanguages"
                     :errors="errors"
                     @delete-slide="() => deleteSlide(index)"
-                    :key="'blog-slide-' + index"
                 />
 
                 <div class="row">
@@ -204,62 +307,68 @@ export default {
                     </div>
                 </div>
 
-                <!-- featured collections slider end -->
 
-                <!-- featured brands start -->
-                <p class="mt-3">
-                    <strong>
-                        {{ $t('admin.brands') }}
-                    </strong>
-                </p>
+                <p class="mt-4"></p>
 
                 <select-component
                     :is-multi-select="true"
-                    :model-value="selectedBrands"
-                    :title="$t('admin.brands')"
-                    :options="availableBrands"
+                    :model-value="selectedNewProductsShow"
+                    :title="$t('admin.new_items')"
+                    :options="products"
                     label="text"
                     value-prop="id"
-                    name="selected_brands_id"
+                    name="selected_products_id"
                     :max-items="6"
-                    :is-required="true"
+                    @search-change="(query) => loadProducts(query)"
+                    :is-required="false"
                     :errors="errors"
                 />
-                <!-- featured brands end -->
 
-                <!-- featured products by custom option start -->
-                <p class="mt-3">
-                    <strong>
-                        {{ $t('admin.products_by_field') }}
-                    </strong>
-                </p>
 
-                <select-component
-                    :model-value="selectedFieldId"
-                    @model-value:update="selectedFieldId = $event"
-                    :title="$t('admin.field') + ' (' + $t('admin.products_by_field_explanation') + ')'"
-                    :options="wallpapersFields"
-                    label="text"
-                    value-prop="id"
-                    name="selected_field_id"
-                    :is-required="true"
-                    :errors="errors"
-                />
+                <p class="mt-4"></p>
 
                 <select-component
                     :is-multi-select="true"
-                    :model-value="selectedProductFieldOptions"
-                    :title="$t('admin.field_options')"
-                    :options="availableProductFieldOptions"
+                    :model-value="selectedBestSalesProductsShow"
+                    :title="$t('admin.new_best_sales_items')"
+                    :options="products"
                     label="text"
                     value-prop="id"
-                    name="selected_field_options_id"
-                    :key="'field_options_' + selectedFieldId"
-                    :is-required="true"
-                    :max-items="5"
+                    name="selected_best_sales_products_id"
+                    :max-items="6"
+                    @search-change="(query) => loadProducts(query)"
+                    :is-required="false"
                     :errors="errors"
                 />
-                <!-- featured products by custom option end -->
+
+
+
+
+                <p class="mt-4">
+                    <strong>
+                        {{ $t('admin.questions') }}
+                    </strong>
+                </p>
+
+
+                <home-page-faq-component
+                    v-for="(faq, index) in faqs"
+                    :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
+                    :faq="faq"
+                    :index="index"
+                    :base-language="baseLanguage"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :errors="errors"
+                    @delete-faq="() => deleteFaq(index)"
+                />
+
+                <div class="row">
+                    <div class="col">
+                        <a href="#" id="add-faq-option" class="btn mb-2 btn-secondary" @click.prevent="addFaq"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.question_add')}}</a>
+                    </div>
+                </div>
+
 
             </div>
         </div>
