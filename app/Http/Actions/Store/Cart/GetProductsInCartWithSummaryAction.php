@@ -18,7 +18,6 @@ class GetProductsInCartWithSummaryAction extends BaseAction
     {
         $cart = $this->getCart($cartService);
         $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
-
         return CartResource::make($cartService->getProductsInCartWithSummary($cart, $wishList));
     }
 }

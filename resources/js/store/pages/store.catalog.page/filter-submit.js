@@ -1,6 +1,8 @@
 import $ from "jquery";
 import window from "inputmask/lib/global/window";
 
+console.log('filter-submit.js');
+
 const tooltipClasses = [
     '.filter-item--type-custom .checkbox-preview',
     '.filter-item--brands .checkbox-preview',
@@ -9,6 +11,8 @@ const tooltipClasses = [
 ];
 
 export function init () {
+
+    console.log('filter-submit.js INIT');
 
     const mainFilterForm = $('#filter-left-form');
     const fullFilterForm = $('#filter-full-form');
@@ -22,6 +26,9 @@ export function init () {
     });
 
     $('.filter-submit-main').click(function (event) {
+
+        console.log('filter-submit-main click !!!!!!!!!!!!!!!!!!');
+
         event.preventDefault();
         filterSubmit(mainFilterForm);
     });
@@ -147,7 +154,12 @@ function buildLinkWithParams(params)
 
     const separator = catalog.category_slug ? catalog.category_slug : catalog.product_type_slug;
 
-    return window.location.pathname.split(separator)[0] + separator + '/filter/' + paramsJoined.join(';');
+    if(paramsJoined.length === 0) {
+        return window.location.pathname.split(separator)[0] + separator;
+    } else {
+        return window.location.pathname.split(separator)[0] + separator + '/filter/' + paramsJoined.join(';');
+    }
+
 }
 
 function buildLinksWithoutParams()

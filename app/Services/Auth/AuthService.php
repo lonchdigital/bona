@@ -47,7 +47,8 @@ class AuthService extends BaseService
                 'code' => Str::random(64),
             ]);
 
-            Mail::to($user->email)->send(new UserEmailConfirmationEmail($userEmailActivationCode->code));
+
+//            Mail::to($user->email)->send(new UserEmailConfirmationEmail($userEmailActivationCode->code));
 
             DB::commit();
         } catch (\Throwable $throwable) {

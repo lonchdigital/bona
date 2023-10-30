@@ -24,7 +24,7 @@ class ShowCatalogPageAction extends BaseAction
         $productType->load(['fields', 'fields.options']);
 
         //get services from service container
-        $categoryService = app()->make(CategoryService::class);
+//        $categoryService = app()->make(CategoryService::class);
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
         $countryService = app()->make(CountryService::class);
@@ -40,45 +40,46 @@ class ShowCatalogPageAction extends BaseAction
 
         $baseCurrency = $currencyService->getBaseCurrency();
         $colors = $colorService->getAvailableColorsByProductType($productType);
-        $countries = $countryService->getAvailableCountriesByProductType($productType);
+//        $countries = $countryService->getAvailableCountriesByProductType($productType);
         $brands = $brandService->getAvailableBrandsByProductType($productType);
         $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
 
-        $selectedFiltersOptions = $catalogService->getOptionsByFilterData(
+        /*$selectedFiltersOptions = $catalogService->getOptionsByFilterData(
             $productType,
             $filtersData->filters,
             $baseCurrency,
             $colors,
             $countries,
             $brands,
-        );
+        );*/
 
         $page = $filtersData->filters['page'] ?? 1;
 
+//        dd($productType);
         $productsPaginated = $productService->getProductsByTypePaginated(
             $productType,
             $filtersData,
-            $filtersData->filters['per_page'] ?? 5, // 24
+            $filtersData->filters['per_page'] ?? 6, // 24
             $page,
         );
 
-        $wishList = null;
+        /*$wishList = null;
         if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
-        }
+        }*/
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
-            'selectedFiltersOptions' => $selectedFiltersOptions,
+//            'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
-            'categories' => $categoryService->getProductCategories($productType),
+//            'categories' => $categoryService->getProductCategories($productType),
             'colors' => $colors,
-            'countries' => $countries,
+//            'countries' => $countries,
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
-            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
+//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
         ]);
     }
 }

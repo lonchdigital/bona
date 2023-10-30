@@ -14,6 +14,7 @@ class EditProductFieldDTO implements BaseDTO
         public readonly ?array $productFieldOptions,
         public readonly bool $isMultiselectable,
         public readonly bool $asImage,
+        public readonly bool $displayOnSingle,
         public readonly ?int $numericFieldFilterType,
         public readonly ?array $numericFiledFilterOptions,
     )

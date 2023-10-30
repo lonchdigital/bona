@@ -3,6 +3,7 @@
 namespace App\Services\Admin\ProductType\DTO;
 
 use App\Services\Base\DTO\BaseDTO;
+use Illuminate\Http\UploadedFile;
 
 class EditProductTypeDTO implements BaseDTO
 {
@@ -10,6 +11,7 @@ class EditProductTypeDTO implements BaseDTO
         public readonly array $productTypeName,
         public readonly string $slug,
         public readonly ?array $pointName,
+        public readonly ?UploadedFile $image,
 
         public readonly array $metaTitle,
         public readonly array $metaDescription,
@@ -47,6 +49,7 @@ class EditProductTypeDTO implements BaseDTO
 
         public readonly ?array $productSizePoints,
         public readonly ?array $productTypeFields,
+        public readonly ?array $productTypeAttributes,
     )
     { }
 }

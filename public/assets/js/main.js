@@ -119,7 +119,7 @@
     // Sticky header
     // ----------------------------------------------------------------
 
-    var navbarFixed = $('nav.navbar-fixed');
+    /*var navbarFixed = $('nav.navbar-fixed');
 
     // When reload page - check if page has offset
     if ($(document).scrollTop() > 94) {
@@ -133,7 +133,7 @@
         } else {
             navbarFixed.removeClass('navbar-sticked');
         }
-    });
+    });*/
 
     // Tooltip
     // ----------------------------------------------------------------
@@ -211,7 +211,7 @@
             stopOnHover: false
         });
 
-        animatetCaptions(); 
+        animatetCaptions();
 
         function animatetCaptions(event) {
             "use strict";
@@ -238,7 +238,7 @@
 
     $.each($(".quote-carousel"), function (i, n) {
         $(n).owlCarousel({
-            navigation: true, // Show next and prev buttons
+            // navigation: true, // Show next and prev buttons
             slideSpeed: 300,
             items: 3,
             paginationSpeed: 400,
@@ -249,7 +249,7 @@
             itemsTablet: [768, 1],
             itemsTabletSmall: false,
             itemsMobile: [479, 1],
-            autoPlay: 3000,
+            // autoPlay: 3000,
             stopOnHover: true
         });
     });
@@ -257,9 +257,9 @@
     // Icon slider
     // ----------------------------------------------------------------
 
-
     $.each($(".owl-icons"), function (i, n) {
         $(n).owlCarousel({
+            slideBy: 6,
             autoHeight: false,
             pagination: false,
             navigation: true,
@@ -289,6 +289,49 @@
             singleItem: true
         });
     });
+
+
+    // Products slider
+    // ----------------------------------------------------------------
+
+    //Products slider
+    $.each($(".art-products-owl-items"), function (i, n) {
+        $(n).owlCarousel({
+            //transitionStyle: "fadeUp",
+            // autoHeight: true,
+            slideSpeed: 800,
+            margin: 30,
+            navigation: true,
+            navigationText: arrowIcons,
+            pagination: true,
+            items: 4
+            // singleItem: true
+        });
+    });
+
+
+    // FAQs accordion
+    // ----------------------------------------------------------------
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+
+            if( !$(this).hasClass('active') ) {
+                $('.accordion').removeClass('active');
+                $('.art-panel').removeAttr("style");
+            }
+
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = (panel.scrollHeight + 100) + "px";
+            }
+        });
+    }
 
 
     // Scroll to top
@@ -412,7 +455,7 @@
         if ($(this).is(':checked')) {
             var $labelText = $(this).parent().find('label').text(),
                 $title = $(this).closest('.filter-box').find('.title');
-            
+
             $title.find('span').text($labelText);
         }
     });
@@ -461,7 +504,7 @@
         }
     });
 
-    // Coupon code 
+    // Coupon code
     // ----------------------------------------------------------------
 
     $(".form-coupon").hide();
@@ -555,14 +598,20 @@
         // Range slider
         // --------------------------------------
 
+        var art_irs_from = $('.art-irs-from'),
+            art_irs_to = $('.art-irs-to');
+
         $("#range-price-slider").ionRangeSlider({
             type: "double",
             min: 0,
             max: 4000,
-            from: 150,
-            to: 3800,
+            from: $('.art-irs-from').val() == '' ? 50 : $('.art-irs-from').val(),
+            to: $('.art-irs-to').val() == '' ? 3500 : $('.art-irs-to').val(),
             prefix: "$",
             onChange: function (data) {
+
+                art_irs_from.val(data.from);
+                art_irs_to.val(data.to);
 
                 $(".item").each(function () {
 

@@ -85,6 +85,20 @@
                                             </div>
                                         </div>
                                         <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="hidden" name="display_on_single" value="0">
+                                                    <input class="custom-control-input" value="1" type="checkbox"
+                                                           id="display_on_single" name="display_on_single"
+                                                           @if(isset($productField) && $productField->display_on_single) checked @endif>
+                                                    <label class="custom-control-label"
+                                                           for="display_on_single">{{ trans('admin.display_on_single') }}</label>
+                                                    <div class="mt-1 text-danger ajaxError"
+                                                         id="error-field-display_on_single"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
                                             <div class="col-md-12" id="options">
                                                 @if (isset($productField) && count($productField->options))
                                                     @foreach($productField->options as $option)

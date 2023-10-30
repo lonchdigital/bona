@@ -3,6 +3,8 @@ import 'bootstrap';
 
 let allTooltips = [];
 
+console.log('tooltip !!!');
+
 // новий шаблон
 const tooltipTemplate = ['<div class="tooltip tooltip-filter-item--type-custom" role="tooltip">',
     '<div class="tooltip-inner">',
@@ -10,6 +12,9 @@ const tooltipTemplate = ['<div class="tooltip tooltip-filter-item--type-custom" 
     '</div>'].join('');
 
 export function init () {
+
+    console.log('are we here?');
+
     //custom filters
     addToolTip(
         '.archive-catalog-filter-left .filter-item--type-custom',
@@ -92,6 +97,9 @@ export function init () {
 function addToolTip(blockClassName, previewClassName, labelClassName, checkboxClassName)
 {
     $(blockClassName).each(function () {
+
+        console.log('addToolTip !!!');
+
         const block = $(this);
 
         const tooltips = $(this).find(previewClassName);

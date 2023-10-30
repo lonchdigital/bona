@@ -4,12 +4,12 @@ namespace App\Http\Actions\Admin\StaticPages;
 
 use App\DataClasses\StaticPageTypesDataClass;
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\StaticPage\StaticPageService;
+use App\Services\StaticPage\SeoTextsService;
 use App\Http\Requests\Admin\StaticPage\StaticPageEditRequest;
 
 class StaticPageEditAction extends BaseAction
 {
-    public function __invoke(int $staticPage, StaticPageEditRequest $request, StaticPageService $staticPageService)
+    public function __invoke(int $staticPage, StaticPageEditRequest $request, SeoTextsService $staticPageService)
     {
         if (!StaticPageTypesDataClass::get($staticPage)) {
             abort(404);

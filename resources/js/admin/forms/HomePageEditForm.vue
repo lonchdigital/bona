@@ -2,10 +2,12 @@
 
 import axios from "axios";
 import HomePageSlideComponent from "../components/HomePageSlideComponent.vue";
+import HomePageTestimonialComponent from "../components/HomePageTestimonialComponent.vue";
 import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
+import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
 
 export default {
-    components: {HomePageSlideComponent, HomePageFaqComponent},
+    components: {MultiLanguageRichTextEditorComponent, HomePageSlideComponent, HomePageTestimonialComponent, HomePageFaqComponent},
     props: {
         submitRoute: {
             type: String,
@@ -39,6 +41,10 @@ export default {
             type: Array,
             default: [],
         },
+        testimonialList: {
+            type: Array,
+            default: [],
+        },
         faqList: {
             type: Array,
             default: [],
@@ -67,15 +73,21 @@ export default {
             type: Array,
             default: [],
         },
-        sliderTitle: {
+        seoTitle: {
             type: Object,
-            default: {},
+            default: [],
+        },
+        seoText: {
+            type: Object,
+            default: [],
         }
     },
     data() {
         return {
             slides: [],
+            testimonials: [],
             faqs: [],
+            faqDeleted: false,
             test: [],
             selectedLanguage: '',
             collections: [],
@@ -90,73 +102,22 @@ export default {
     mounted() {
         this.selectedLanguage = this.baseLanguage;
 
+        console.log(this.sliderSlides);
+
         if (this.sliderSlides) {
             this.slides = this.sliderSlides;
         }
 
+        if (this.testimonialList) {
+            this.testimonials = this.testimonialList;
+        }
+
+        console.log(this.slides);
+        console.log(this.testimonials);
+
         if (this.faqList) {
             this.faqs = this.faqList;
         }
-
-        /*this.faqList.forEach((item, i) => {
-            this.faqs.push(item);
-        });*/
-
-        console.log(this.faqs);
-
-
-        // this.test.push(this.faqList);
-        // console.log(this.faqList)
-
-
-        /*this.test.push({
-                "id": 6,
-                "question": {
-                    "ru": "22222222",
-                    "uk": "11111"
-                },
-                "answer": {
-                    "ru": "22222222",
-                    "uk": "1111"
-                },
-                "created_at": "2023-08-28T10:11:27.000000Z",
-                "updated_at": "2023-08-28T10:11:27.000000Z"
-            },
-            {
-                "id": 7,
-                "question": {
-                    "ru": "question 1 RU",
-                    "uk": "question 1 UK"
-                },
-                "answer": {
-                    "ru": "answer 1 ru",
-                    "uk": "answer 1 UK"
-                },
-                "created_at": "2023-08-28T10:11:27.000000Z",
-                "updated_at": "2023-08-28T10:11:27.000000Z"
-            },
-            {
-                "id": 8,
-                "question": {
-                    "ru": "333333333 ru",
-                    "uk": "33333333 uk"
-                },
-                "answer": {
-                    "ru": "33333333333 ru",
-                    "uk": "3333333333 uk"
-                },
-                "created_at": "2023-08-28T10:11:27.000000Z",
-                "updated_at": "2023-08-28T10:11:27.000000Z"
-            },)*/
-
-
-        // console.log(this.faqs.length);
-        // console.log(this.faqs);
-        // console.log('============================');
-        // this.faqs.splice(1, 1);
-        // console.log(this.faqs.length);
-        // console.log(this.faqs);
-
 
         this.loadProducts('');
 
@@ -209,17 +170,18 @@ export default {
         },
         deleteSlide(index) {
             this.slides.splice(index, 1);
-            console.log(this.slides);
+        },
+        addTestimonial() {
+            this.testimonials.push({});
+        },
+        deleteTestimonial(index) {
+            this.testimonials.splice(index, 1);
         },
         addFaq() {
             this.faqs.push({});
         },
         deleteFaq(index) {
-            // this.faqs.splice(index, 1);
-
             this.faqs.splice(index, 1);
-            console.log(this.faqs);
-
         },
         changeSelectedLanguage(newSelectedLanguage) {
             this.selectedLanguage = newSelectedLanguage;
@@ -262,16 +224,6 @@ export default {
                         {{ $t('admin.slider') }}
                     </strong>
                 </p>
-
-<!--                <multi-language-input-component
-                    :title="$t('admin.slider_title')"
-                    name="slider_title"
-                    :selected-language="selectedLanguage"
-                    :available-languages="availableLanguages"
-                    :is-required="true"
-                    :init-data="sliderTitle"
-                    :errors="errors"
-                />-->
 
 
 <!--                <image-file-input-component
@@ -346,11 +298,33 @@ export default {
 
                 <p class="mt-4">
                     <strong>
+                        {{ $t('admin.testimonial') }}
+                    </strong>
+                </p>
+                <home-page-testimonial-component
+                    v-for="(testimonial, index) in testimonials"
+                    :testimonial-id="testimonial.hasOwnProperty('id') ? testimonial.id : null"
+                    :testimonial="testimonial"
+                    :index="index"
+                    :base-language="baseLanguage"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :errors="errors"
+                    @delete-testimonial="() => deleteTestimonial(index)"
+                />
+                <div class="row">
+                    <div class="col">
+                        <a href="#" id="add-testimonial-option" class="btn mb-2 btn-secondary" @click.prevent="addTestimonial"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.testimonial_add')}}</a>
+                    </div>
+                </div>
+
+
+
+                <p class="mt-4">
+                    <strong>
                         {{ $t('admin.questions') }}
                     </strong>
                 </p>
-
-
                 <home-page-faq-component
                     v-for="(faq, index) in faqs"
                     :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
@@ -360,6 +334,7 @@ export default {
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
                     :errors="errors"
+                    :faq-deleted="faqDeleted"
                     @delete-faq="() => deleteFaq(index)"
                 />
 
@@ -369,6 +344,34 @@ export default {
                     </div>
                 </div>
 
+
+
+
+
+                <p class="mt-4">
+                    <strong>
+                        {{ $t('admin.seo') }}
+                    </strong>
+                </p>
+
+                <multi-language-input-component
+                    :title="$t('admin.seo_title')"
+                    name="seo_title"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="seoTitle"
+                    :errors="errors"
+                />
+
+                <multi-language-rich-text-editor-component
+                    :title="$t('admin.seo_text')"
+                    name="seo_text"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :content="seoText"
+                    :errors="errors"
+                />
 
             </div>
         </div>

@@ -172,6 +172,7 @@ class ProductFieldCreateRequest extends BaseRequest
             $this->validated('product_field_option'),
             (bool) $this->input('is_multiselectable'),
             (bool) $this->input('as_image'),
+            (bool) $this->input('display_on_single'),
             $this->input('numeric_field_filter_type_id'),
             $this->input('numeric_filter_option'),
         );

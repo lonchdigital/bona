@@ -5,8 +5,14 @@ namespace App\Services\Product;
 use App\Models\Category;
 use App\Models\Currency;
 use App\Models\Product;
+use App\Models\ProductText;
+use App\Models\ProductGalleries;
 use App\Models\ProductType;
 use App\Models\User;
+use App\Models\ProductCharacteristics;
+use App\Models\ProductSubItems;
+use App\Models\ProductVideos;
+use App\Models\ProductAttributeOptions;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Currency\CurrencyService;
@@ -115,6 +121,33 @@ class ProductService extends BaseService
         return ['count' => $query->count()];
     }
 
+    public function getProductText(int $id): array
+    {
+        $result = ProductText::where('product_id', $id)->get();
+
+
+        $data = [];
+
+        foreach ($result as $value) {
+            $data['content'][$value['language']] = $value['content'];
+        }
+
+        return $data;
+    }
+
+    public function getProductTextByLanguage(int $id, string $language)
+    {
+        $productTextData = ProductText::where('product_id', $id)->get();
+        $data = [];
+
+        if ($productTextData) {
+            $data['content'] = $productTextData->where('language', $language)->first()->content;
+            return $data;
+        }
+
+        return null;
+    }
+
     public function searchParentProducts(FilterProductAdminDTO $request): Collection
     {
         $query = Product::query();
@@ -164,6 +197,28 @@ class ProductService extends BaseService
         return $query->get();
     }
 
+    public function getSubProducts(int $subProductsTypeId): Collection
+    {
+        return Product::where('product_type_id', $subProductsTypeId)->get();
+    }
+
+    public function searchSubProducts(SearchProductDTO $request, int $subProductsTypeId): Collection
+    {
+        $query = Product::where('product_type_id', $subProductsTypeId)->select(['id', 'name', 'sku'])->limit(10);
+
+        if ($request->query) {
+            $query->where(function ($query) use($request) {
+                return $query->where('name', 'like', '%' . $request->query . '%')
+                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request->query) . '%'])
+                    ->orWhere('sku', 'like', '%' . $request->query . '%');
+            });
+        }
+
+        return $query->get();
+    }
+
+
+
     public function createProduct(User $creator, ProductType $productType, EditProductDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($productType, $request, $creator) {
@@ -171,7 +226,7 @@ class ProductService extends BaseService
             $currency = Currency::find($request->currencyId);
             $baseCurrency = $this->currencyService->getBaseCurrency();
 
-            $prices = $this->handleProductPriceInCurrency($currency, $baseCurrency, $request->priceInCurrency, $request->oldPriceInCurrency);
+//            $prices = $this->handleProductPriceInCurrency($currency, $baseCurrency, $request->priceInCurrency, $request->oldPriceInCurrency);
 
             $productData = [
                 'is_active' => $request->isActive,
@@ -181,11 +236,11 @@ class ProductService extends BaseService
                 'sku' => $request->sku,
                 'name' => $request->name,
                 'slug' => $request->slug,
-                'price' => $prices['price'],
-                'old_price' => $prices['old_price'],
-                'old_price_in_currency' => $request->oldPriceInCurrency,
+                'price' => $request->priceInCurrency,
+//                'old_price' => $prices['old_price'],
+//                'old_price_in_currency' => $request->oldPriceInCurrency,
                 'price_in_currency' => $request->priceInCurrency,
-                'purchase_price_in_currency' => $request->purchasePriceInCurrency,
+//                'purchase_price_in_currency' => $request->purchasePriceInCurrency,
                 'price_currency_id' => $request->currencyId,
                 'availability_status_id' => $request->availabilityStatusId,
                 'country_id' => $request->countryId,
@@ -213,49 +268,30 @@ class ProductService extends BaseService
             //handle images
             $previewImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_preview.jpg';
             $mainImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_main.jpg';
-            $patternImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_pattern.jpg';
 
             $productData['preview_image_path'] = $previewImagePath;
             $productData['main_image_path'] = $mainImagePath;
-            $productData['pattern_image_path'] = $patternImagePath;
 
-            $galleryImages = [];
-            if ($request->galleryImage1) {
-                $galleryImage1Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_1.jpg';
-                $galleryImages['image_1'] = $galleryImage1Path;
-            }
-
-            if ($request->galleryImage2) {
-                $galleryImage1Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_2.jpg';
-                $galleryImages['image_2'] = $galleryImage1Path;
-            }
-
-            if ($request->galleryImage3) {
-                $galleryImage1Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_3.jpg';
-                $galleryImages['image_3'] = $galleryImage1Path;
-            }
-
-            if ($request->galleryImage4) {
-                $galleryImage1Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_4.jpg';
-                $galleryImages['image_4'] = $galleryImage1Path;
-            }
-
-            if ($request->galleryImage5) {
-                $galleryImage1Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_5.jpg';
-                $galleryImages['image_5'] = $galleryImage1Path;
-            }
-
-            if ($galleryImages) {
-                $productData['gallery_images'] = $galleryImages;
-            } else {
-                $productData['gallery_images'] = [];
-            }
 
             if ($request->customFields && count($productType->fields)) {
                 $productData['custom_fields'] = $this->prepareCustomFieldsToSync($request->customFields);
             }
 
             $product = Product::create($productData);
+
+            if( !is_null($request->gallery) ) {
+                $this->syncGallery($product->id, $request->gallery);
+            }
+            if( !is_null($request->characteristics) ) {
+                $this->syncCharacteristics($product->id, $request->characteristics);
+            }
+            if( !is_null($request->videos) ) {
+                $this->syncVideos($product->id, $request->videos);
+            }
+            if( !is_null($request->attributes) ) {
+                $this->syncAttributes($product->id, $request->attributes);
+            }
+            ProductText::updateProductText($product->id, $request->productText);
 
             //all colors
             if ($productType->has_color) {
@@ -269,27 +305,6 @@ class ProductService extends BaseService
 
             $this->storePreviewImage($previewImagePath, $request->mainImage);
             $this->storeProductImage($mainImagePath, $request->mainImage);
-            $this->storeProductImage($patternImagePath, $request->patternImage);
-
-            if (isset($galleryImages['image_1'])) {
-                $this->storeProductImage($galleryImages['image_1'], $request->galleryImage1);
-            }
-
-            if (isset($galleryImages['image_2'])) {
-                $this->storeProductImage($galleryImages['image_2'], $request->galleryImage2);
-            }
-
-            if (isset($galleryImages['image_3'])) {
-                $this->storeProductImage($galleryImages['image_3'], $request->galleryImage3);
-            }
-
-            if (isset($galleryImages['image_4'])) {
-                $this->storeProductImage($galleryImages['image_4'], $request->galleryImage4);
-            }
-
-            if (isset($galleryImages['image_5'])) {
-                $this->storeProductImage($galleryImages['image_5'], $request->galleryImage5);
-            }
 
             return ServiceActionResult::make(true, trans('admin.product_create_success'));
         });
@@ -299,26 +314,34 @@ class ProductService extends BaseService
     {
         return $this->coverWithDBTransaction(function () use($productType, $product, $request) {
 
+
+            $this->syncGallery($product->id, $request->gallery);
+            $this->syncCharacteristics($product->id, $request->characteristics);
+            $this->syncVideos($product->id, $request->videos);
+            $this->syncAttributes($product->id, $request->attributes);
+            ProductText::updateProductText($product->id, $request->productText);
+
             $currency = Currency::find($request->currencyId);
             $baseCurrency = $this->currencyService->getBaseCurrency();
 
-            $prices = $this->handleProductPriceInCurrency($currency, $baseCurrency, $request->priceInCurrency, $request->oldPriceInCurrency);
+//            $prices = $this->handleProductPriceInCurrency($currency, $baseCurrency, $request->priceInCurrency, $request->oldPriceInCurrency);
 
             $dataToUpdate = [
                 'is_active' => $request->isActive,
                 'parent_product_id' => $request->parentProductId,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
+                'sub_products' => $request->selectedSubProductsId,
                 'name' => $request->name,
                 'slug' => $request->slug,
-                'price' => $prices['price'],
-                'old_price' => $prices['old_price'],
-                'old_price_in_currency' => $request->oldPriceInCurrency,
+                'price' => $request->priceInCurrency,
+//                'old_price' => $prices['old_price'],
+//                'old_price_in_currency' => $request->oldPriceInCurrency,
                 'price_in_currency' => $request->priceInCurrency,
-                'purchase_price_in_currency' => $request->purchasePriceInCurrency,
+//                'purchase_price_in_currency' => $request->purchasePriceInCurrency,
                 'price_currency_id' => $request->currencyId,
                 'availability_status_id' => $request->availabilityStatusId,
-                'country_id' => $request->countryId,
+//                'country_id' => $request->countryId,
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
@@ -340,8 +363,8 @@ class ProductService extends BaseService
                 $dataToUpdate['collection_id'] = $request->collectionId;
             }
 
-            //main image and pattern image can't be deleted but replaced
 
+            //main image and pattern image can't be deleted but replaced
             $imagesToStore = [];
             $imagesToDelete = [];
             $previewImage = null;
@@ -364,122 +387,8 @@ class ProductService extends BaseService
                 $previewImage['path'] = $previewImagePath;
             }
 
-            if ($request->patternImage) {
-                $imagesToDelete[] = $product->pattern_image_path;
 
-                $patternImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_pattern.jpg';
 
-                $dataToUpdate['pattern_image_path'] = $patternImagePath;
-
-                $imagesToStore[] = [
-                    'image' => $request->patternImage,
-                    'path' => $patternImagePath
-                ];
-            }
-
-            $galleryImages = $product->gallery_images;
-
-            if ($request->galleryImage1) {
-                if (isset($galleryImages['image_1'])) {
-                    $imagesToDelete[] = $galleryImages['image_1'];
-                }
-
-                $galleryImage1Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_1.jpg';
-
-                $galleryImages['image_1'] = $galleryImage1Path;
-
-                $imagesToStore[] = [
-                    'image' => $request->galleryImage1,
-                    'path' => $galleryImage1Path
-                ];
-            }
-
-            if ($request->galleryImage2) {
-                if (isset($galleryImages['image_2'])) {
-                    $imagesToDelete[] = $galleryImages['image_2'];
-                }
-
-                $galleryImage2Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_2.jpg';
-
-                $galleryImages['image_2'] = $galleryImage2Path;
-
-                $imagesToStore[] = [
-                    'image' => $request->galleryImage2,
-                    'path' => $galleryImage2Path
-                ];
-            }
-
-            if ($request->galleryImage3) {
-                if (isset($galleryImages['image_3'])) {
-                    $imagesToDelete[] = $galleryImages['image_3'];
-                }
-
-                $galleryImage3Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_3.jpg';
-
-                $galleryImages['image_3'] = $galleryImage3Path;
-
-                $imagesToStore[] = [
-                    'image' => $request->galleryImage3,
-                    'path' => $galleryImage3Path
-                ];
-            }
-
-            if ($request->galleryImage4) {
-                if (isset($galleryImages['image_4'])) {
-                    $imagesToDelete[] = $galleryImages['image_4'];
-                }
-
-                $galleryImage4Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_4.jpg';
-
-                $galleryImages['image_4'] = $galleryImage4Path;
-
-                $imagesToStore[] = [
-                    'image' => $request->galleryImage4,
-                    'path' => $galleryImage4Path
-                ];
-            }
-
-            if ($request->galleryImage5) {
-                if (isset($galleryImages['image_5'])) {
-                    $imagesToDelete[] = $galleryImages['image_5'];
-                }
-
-                $galleryImage5Path = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_5.jpg';
-
-                $galleryImages['image_5'] = $galleryImage5Path;
-
-                $imagesToStore[] = [
-                    'image' => $request->galleryImage5,
-                    'path' => $galleryImage5Path
-                ];
-            }
-
-            if ($request->galleryImage1Deleted && isset($galleryImages['image_1'])) {
-                $imagesToDelete[] = $galleryImages['image_1'];
-                unset($galleryImages['image_1']);
-            }
-
-            if ($request->galleryImage2Deleted && isset($galleryImages['image_2'])) {
-                $imagesToDelete[] = $galleryImages['image_2'];
-                unset($galleryImages['image_2']);
-            }
-
-            if ($request->galleryImage3Deleted && isset($galleryImages['image_3'])) {
-                $imagesToDelete[] = $galleryImages['image_3'];
-                unset($galleryImages['image_3']);
-            }
-
-            if ($request->galleryImage4Deleted && isset($galleryImages['image_4'])) {
-                $imagesToDelete[] = $galleryImages['image_4'];
-                unset($galleryImages['image_4']);
-            }
-
-            if ($request->galleryImage5Deleted && isset($galleryImages['image_5'])) {
-                $imagesToDelete[] = $galleryImages['image_5'];
-                unset($galleryImages['image_5']);
-            }
-
-            $dataToUpdate['gallery_images'] = $galleryImages;
 
             if ($request->customFields && count($productType->fields)) {
                 $dataToUpdate['custom_fields'] = $this->prepareCustomFieldsToSync($request->customFields);
@@ -506,7 +415,6 @@ class ProductService extends BaseService
                 $this->storePreviewImage($previewImage['path'], $previewImage['image']);
             }
 
-
             //delete images
             foreach ($imagesToDelete as $imageToDelete) {
                 $this->deleteProductImage($imageToDelete);
@@ -515,6 +423,297 @@ class ProductService extends BaseService
             return ServiceActionResult::make(true, trans('admin.product_edit_success'));
         });
     }
+
+    public function getProductCharacteristics(int $id): Collection
+    {
+        return ProductCharacteristics::where('product_id', $id)->get();
+    }
+
+    private function syncCharacteristics(int $product_id, ?array $characteristics): void
+    {
+        $existingCharacteristics = ProductCharacteristics::where('product_id', $product_id)->get();
+        if ($characteristics) {
+            foreach ($characteristics as $characteristic) {
+                $dataToUpdate = [
+                    'product_id' => $product_id,
+                    'name' => $characteristic['name'],
+                    'value' => $characteristic['value'],
+                ];
+
+                if (isset($characteristic['id']) && $characteristic['id']) {
+                    $existingCharacteristic = $existingCharacteristics->where('id', $characteristic['id'])->first();
+                    if (!$existingCharacteristic) {
+                        throw new \Exception('Incorrect faq id: ' . $characteristic['id']);
+                    }
+
+                    $existingCharacteristic->update($dataToUpdate);
+                } else {
+                    ProductCharacteristics::create($dataToUpdate);
+                }
+            }
+        }
+
+        $existingCharacteristicsInRequest = $characteristics ? array_filter(array_column($characteristics, 'id'), function ($item) {
+            return $item !== null;
+        }): [];
+
+        $faqsToDelete = $existingCharacteristics->whereNotIn('id', $existingCharacteristicsInRequest);
+
+        foreach ($faqsToDelete as $faqToDelete) {
+            $faqToDelete->delete();
+        }
+
+    }
+
+
+
+    public function getSelectedSubItems(?array $sub_products): Collection|array
+    {
+        if(!empty($sub_products)) {
+            return Product::whereIn('id', $sub_products)->get();
+        } else {
+            return [];
+        }
+    }
+    public function getSelectedSubItemsWithCategories(array $sub_products): array
+    {
+        $subProducts = Product::whereIn('id', $sub_products)->get();
+
+        $categoryProducts = [];
+        foreach ($subProducts as $item) {
+            $categoryName = $item->categories[0]->name;
+
+            if (!isset($categoryProducts[$categoryName])) {
+                $categoryProducts[$categoryName] = [];
+            }
+
+            $categoryProducts[$categoryName][] = $item;
+        }
+
+        return $categoryProducts;
+    }
+    private function syncSubProducts(int $product_id, ?array $subItems): void
+    {
+        $existingSubItems = ProductSubItems::where('product_id', $product_id)->get();
+        if ($subItems) {
+            foreach ($subItems as $subItem) {
+                $dataToUpdate = [
+                    'product_id' => $product_id,
+                    'sub_sub_item_id' => $subItem,
+                ];
+
+                if (isset($subItem['id']) && $subItem['id']) {
+                    $existingVideo = $existingSubItems->where('id', $subItem['id'])->first();
+                    if (!$existingVideo) {
+                        throw new \Exception('Incorrect faq id: ' . $subItem['id']);
+                    }
+
+                    $existingVideo->update($dataToUpdate);
+                } else {
+                    ProductSubItems::create($dataToUpdate);
+                }
+            }
+        }
+
+        $existingSubItemsInRequest = $subItems ? array_filter(array_column($subItems, 'id'), function ($item) {
+            return $item !== null;
+        }): [];
+
+        $subItemsToDelete = $existingSubItems->whereNotIn('id', $existingSubItemsInRequest);
+
+        foreach ($subItemsToDelete as $subItemToDelete) {
+            $subItemToDelete->delete();
+        }
+
+    }
+
+    public function getProductVideos(int $id): Collection
+    {
+        return ProductVideos::where('product_id', $id)->get();
+    }
+    public function getAttributeOptions(int $product_id, $productType): array
+    {
+        $attributeOptions = [];
+        /*foreach ($productType->attributes as $key => $attribute) {
+
+            //$attributeOptions[$attribute->id] = [];
+            $attributeOptions[$attribute->id] = [
+                [
+                    'name' => [
+                        'ru' => '11111 RU',
+                        'uk' => '11111 UK'
+                    ],
+                 'price' => 666
+                 ]
+                ];
+
+        }*/
+
+        $currentAttributeOptions = $productType->attributes()
+            ->with(['productAttributeOptions' => function ($query) use ($product_id) {
+                $query->where('product_id', $product_id);
+            }])
+            ->get();
+
+
+        foreach ($currentAttributeOptions as $key => $attribute) {
+
+            $atr_options = [];
+            foreach ($attribute->productAttributeOptions as $attributeOption){
+                $atr_options[] = $attributeOption;
+            }
+
+            $attributeOptions[$attribute->id] = $atr_options;
+        }
+
+        return $attributeOptions;
+    }
+    private function syncVideos(int $product_id, ?array $videos): void
+    {
+        $existingVideos = ProductVideos::where('product_id', $product_id)->get();
+        if ($videos) {
+            foreach ($videos as $video) {
+
+                $dataToUpdate = [
+                    'product_id' => $product_id,
+                    'tab' => $video['tab'],
+                    'iframe' => $video['iframe'],
+                ];
+
+                if (isset($video['id']) && $video['id']) {
+                    $existingVideo = $existingVideos->where('id', $video['id'])->first();
+                    if (!$existingVideo) {
+                        throw new \Exception('Incorrect faq id: ' . $video['id']);
+                    }
+
+                    $existingVideo->update($dataToUpdate);
+                } else {
+                    ProductVideos::create($dataToUpdate);
+                }
+            }
+        }
+
+        $existingVideosInRequest = $videos ? array_filter(array_column($videos, 'id'), function ($item) {
+            return $item !== null;
+        }): [];
+
+        $videosToDelete = $existingVideos->whereNotIn('id', $existingVideosInRequest);
+
+        foreach ($videosToDelete as $videoToDelete) {
+            $videoToDelete->delete();
+        }
+
+    }
+
+    private function syncAttributes(int $product_id, ?array $attributes): void
+    {
+
+        $allExistingAttributeOptions = ProductAttributeOptions::where('product_id', $product_id)->get();
+
+        if ($attributes) {
+            foreach ($attributes as $attribute_id => $attribute) :
+
+//                $existingAttributeOptions = ProductAttributeOptions::where('product_id', $product_id)->where('product_attribute_id', $attribute_id)->get();
+
+                foreach($attribute as $item):
+
+                    $dataToUpdate = [
+                        'product_id' => $product_id,
+                        'product_attribute_id' => $attribute_id,
+                        'name' => $item['name'],
+                        'price' => $item['price'],
+                    ];
+
+                    if (isset($attribute['id']) && $attribute['id']) {
+
+                        dd($attribute['id']);
+
+                        /*$existingAttributeOption = $existingAttributeOptions->where('id', $item['id'])->first();
+                        if (!$existingAttributeOption) {
+                            throw new \Exception('Incorrect faq id: ' . $item['id']);
+                        }
+
+                        $existingAttributeOption->update($dataToUpdate);*/
+                    } else {
+                        ProductAttributeOptions::create($dataToUpdate);
+                    }
+
+                endforeach;
+            endforeach;
+        }
+
+
+        $existingAttributeOptionsInRequest = $attributes ? array_filter(array_column($attributes, 'id'), function ($item) {
+            return $item !== null;
+        }): [];
+
+        $attributeOptionsToDelete = $allExistingAttributeOptions->whereNotIn('id', $existingAttributeOptionsInRequest);
+
+        foreach ($attributeOptionsToDelete as $attributeOptionToDelete) {
+            $attributeOptionToDelete->delete();
+        }
+
+    }
+
+
+    public function getProductGallery(int $id): Collection
+    {
+        return ProductGalleries::where('product_id', $id)->get();
+    }
+    private function syncGallery(int $product_id, ?array $gallery_images): void
+    {
+        $imagesToDelete = [];
+
+        $existingGalleryImages = ProductGalleries::where('product_id', $product_id)->get();
+
+        if ($gallery_images) {
+            foreach ($gallery_images as $gallery_image) {
+                $dataToUpdate = [
+                    'product_id' => $product_id,
+                ];
+
+                if (isset($gallery_image['image'])) {
+                    $galleryImagePath = self::PRODUCT_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                    $this->storeProductImage($galleryImagePath, $gallery_image['image']);
+                    $dataToUpdate['image_path'] = $galleryImagePath;
+                }
+
+                if (isset($gallery_image['id']) && $gallery_image['id']) {
+                    $existingGalleryImage = $existingGalleryImages->where('id', $gallery_image['id'])->first();
+                    if (!$existingGalleryImage) {
+                        throw new \Exception('Incorrect testimonial id: ' . $gallery_image['id']);
+                    }
+
+                    if (isset($gallery_image['image'])) {
+                        $imagesToDelete[] = $existingGalleryImage->image_path;
+                    }
+
+                    $existingGalleryImage->update($dataToUpdate);
+                } else {
+                    ProductGalleries::create($dataToUpdate);
+                }
+            }
+        }
+
+        $existingGalleryImagesInRequest = $gallery_images ? array_filter(array_column($gallery_images, 'id'), function ($item) {
+            return $item !== null;
+        }): [];
+
+        $galleryImagesToDelete = $existingGalleryImages->whereNotIn('id', $existingGalleryImagesInRequest);
+
+        foreach ($galleryImagesToDelete as $galleryImageToDelete) {
+            $imagesToDelete[] = $galleryImageToDelete->image_path;
+            $galleryImageToDelete->delete();
+        }
+
+//        dd($imagesToDelete);
+
+        foreach ($imagesToDelete as $imageToDelete) {
+            $this->deleteProductImage($imageToDelete);
+        }
+
+    }
+
 
     public function handleProductPriceInCurrency(Currency $currency, Currency $baseCurrency, float $priceInCurrency, ?float $oldPriceInCurrency): array
     {
@@ -561,13 +760,11 @@ class ProductService extends BaseService
             $imagesToDelete = [];
             if ($product->main_image_path) {
                 $imagesToDelete[] = $product->main_image_path;
+                $imagesToDelete[] = $product->preview_image_path;
             }
 
-            if (isset($product->pattern_image_path)) {
-                $imagesToDelete[] = $product->pattern_image_path;
-            }
 
-            if (isset($product->gallery_images['image_1'])) {
+            /*if (isset($product->gallery_images['image_1'])) {
                 $imagesToDelete[] = $product->gallery_images['image_1'];
             }
 
@@ -585,11 +782,20 @@ class ProductService extends BaseService
 
             if (isset($product->gallery_images['image_5'])) {
                 $imagesToDelete[] = $product->gallery_images['image_5'];
-            }
+            }*/
 
             $product->colors()->sync([]);
             $product->categories()->sync([]);
 
+
+            $this->syncGallery($product->id, []);
+            $this->syncCharacteristics($product->id, []);
+            $this->syncVideos($product->id, []);
+            $this->syncAttributes($product->id, []);
+            ProductText::deleteProductText($product->id);
+
+
+//            dd('hello! 1');
             $product->delete();
 
             foreach ($imagesToDelete as $imageToDelete) {
@@ -625,6 +831,11 @@ class ProductService extends BaseService
         return $query->get();
     }
 
+    public function getSameTypeProducts(Product $product): Collection
+    {
+        return Product::where('product_type_id', $product->product_type_id)->whereNot('id', $product->id)->limit(6)->get();
+    }
+
     public function updateProductsPriceByCurrencyRate(int $currencyId): void
     {
         $currency = Currency::find($currencyId);
@@ -646,16 +857,17 @@ class ProductService extends BaseService
     public function storePreviewImage(string $path, UploadedFile $image): void
     {
         $image = Image::make($image);
+//        $squareSize = $image->width();
 
-        $squareSize = $image->width();
+        $imageWidth = intval(round($image->width() / 2, 0));
+        $imageHeight = intval(round($image->height() / 2, 0));
 
-        if ($image->height() < $squareSize) {
+        /*if ($image->height() < $squareSize) {
             $squareSize = $image->height();
-        }
+        }*/
 
-        $image = $image->crop($squareSize, $squareSize)
-            ->resize(320, 320)
-            ->encode('jpg', 90);
+//        $image = $image->crop($squareSize, $squareSize)->encode('jpg', 100);
+        $image = $image->fit($imageWidth, $imageHeight)->encode('jpg', 100);
 
         Storage::disk(config('app.images_disk_default'))
             ->put($path, $image);
@@ -663,7 +875,7 @@ class ProductService extends BaseService
 
     public function storeProductImage(string $path, UploadedFile $image): void
     {
-        $image = Image::make($image)->encode('jpg', 85);
+        $image = Image::make($image)->encode('jpg', 100);
 
         Storage::disk(config('app.images_disk_default'))->put($path, $image);
     }

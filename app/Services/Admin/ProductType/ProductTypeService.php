@@ -14,9 +14,15 @@ use App\Services\Base\BaseService;
 use Illuminate\Support\Collection;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Admin\ProductType\DTO\EditProductTypeDTO;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
+use Intervention\Image\Facades\Image;
 
 class ProductTypeService extends BaseService
 {
+    public const PRODUCT_TYPE_IMAGES_FOLDER = 'product-type-images';
+
     public function getProductTypes(): Collection
     {
         return ProductType::get();
@@ -56,11 +62,23 @@ class ProductTypeService extends BaseService
         $creator = $this->getAuthUser();
 
         return $this->coverWithDBTransaction(function () use($request, $creator) {
+            $path = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+
+            $image = Image::make($request->image)
+                ->encode('jpg', 100);
+
+            /*$image = Image::make($request->image)
+                ->resize(60, 60)
+                ->encode('jpg', 85);*/
+
+            Storage::disk(config('app.images_disk_default'))->put($path, $image);
+
             $productType = ProductType::create([
                 'creator_id' => $creator->id,
                 'name' => $request->productTypeName,
                 'slug' => $request->slug,
                 'product_point_name' => $request->pointName,
+                'image_path' => $path,
 
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
@@ -111,7 +129,8 @@ class ProductTypeService extends BaseService
     public function updateProductType(ProductType $productType, EditProductTypeDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($productType, $request) {
-            $productType->update([
+
+            $dataToUpdate = [
                 'name' => $request->productTypeName,
                 'slug' => $request->slug,
                 'product_point_name' => $request->pointName,
@@ -148,7 +167,24 @@ class ProductTypeService extends BaseService
                 'product_size_height_filter_name' => $request->productTypeFilterByHeightName,
 
                 'size_points' => $request->productSizePoints,
-            ]);
+            ];
+
+
+            $imagesToDelete = [];
+            $postTypeImage = null;
+            if( !is_null($request->image) ) {
+                $imagesToDelete[] = $productType->image_path;
+
+                $newImagePath = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $dataToUpdate['image_path'] = $newImagePath;
+
+                $postTypeImage['image'] = $request->image;
+                $postTypeImage['path'] = $newImagePath;
+            }
+
+
+            $productType->update($dataToUpdate);
+
 
             $productType->sizeFilterOptions()->delete();
 
@@ -160,6 +196,19 @@ class ProductTypeService extends BaseService
                 $productType->fields()->sync([]);
             }
 
+            if ($request->productTypeAttributes) {
+                $productType->attributes()->sync($this->prepareProductAttributesToSync($request->productTypeAttributes));
+            } else {
+                $productType->attributes()->sync([]);
+            }
+
+            if( !is_null( $postTypeImage ) ) {
+                $this->storePostTypeImage($postTypeImage['path'], $postTypeImage['image']);
+            }
+
+            foreach ($imagesToDelete as $imageToDelete) {
+                $this->deletePostTypeImage($imageToDelete);
+            }
 
             return ServiceActionResult::make(true, trans('admin.product_type_edit_success'));
         });
@@ -177,6 +226,10 @@ class ProductTypeService extends BaseService
 
                  $productType->delete();
 
+                if (Storage::disk(config('app.images_disk_default'))->exists($productType->image_path)) {
+                    Storage::disk(config('app.images_disk_default'))->delete($productType->image_path);
+                }
+
                 return ServiceActionResult::make(true, trans('admin.product_type_delete_success'));
             }
         });
@@ -189,6 +242,18 @@ class ProductTypeService extends BaseService
             $id = $productField['id'];
             unset($productField['id']);
             $result[$id] = $productField;
+        }
+
+        return $result;
+    }
+
+    private function prepareProductAttributesToSync(array $productAttributes): array
+    {
+        $result = [];
+        foreach ($productAttributes as $index => $productAttribute) {
+            $id = $productAttribute['id'];
+            unset($productAttribute['id']);
+            $result[$id] = $productAttribute;
         }
 
         return $result;
@@ -234,6 +299,19 @@ class ProductTypeService extends BaseService
 
 
             $productType->sizeFilterOptions()->createMany($optionsPrepared);
+        }
+    }
+
+    public function storePostTypeImage(string $path, UploadedFile $image): void
+    {
+        $image = Image::make($image)->encode('jpg', 100);
+        Storage::disk(config('app.images_disk_default'))->put($path, $image);
+    }
+
+    public function deletePostTypeImage(string $imagePath): void
+    {
+        if (Storage::disk(config('app.images_disk_default'))->exists($imagePath)) {
+            Storage::disk(config('app.images_disk_default'))->delete($imagePath);
         }
     }
 }

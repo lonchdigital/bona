@@ -75,18 +75,18 @@ class ProductCreateRequest extends BaseRequest
                 'string',
                 'unique:products,sku'
             ],
-            'old_price_in_currency' => [
+/*            'old_price_in_currency' => [
                 'nullable',
                 'numeric',
-            ],
+            ],*/
             'price_in_currency' => [
                 'required',
                 'numeric',
             ],
-            'purchase_price_in_currency' => [
-                'required',
+            /*'purchase_price_in_currency' => [
+                'nullable', // required
                 'numeric',
-            ],
+            ],*/
             'currency_id' => [
                 'required',
                 'exists:currencies,id',
@@ -94,53 +94,28 @@ class ProductCreateRequest extends BaseRequest
             'main_image_deleted_input' => [
                 'nullable',
             ],
-            'pattern_image_deleted_input' => [
-                'nullable',
+            'gallery.*.id' => [
+                'nullable'
             ],
-            'gallery_image_1_deleted_input' => [
-                'nullable',
+            'videos.*.iframe' => [
+                'nullable'
             ],
-            'gallery_image_2_deleted_input' => [
-                'nullable',
+            'attributes.*.*.price' => [
+                'nullable'
             ],
-            'gallery_image_3_deleted_input' => [
-                'nullable',
+            /*'gallery.*.*' => [
+                'nullable'
             ],
-            'gallery_image_4_deleted_input' => [
-                'nullable',
+            'characteristics.*.id' => [
+                'nullable'
             ],
-            'gallery_image_5_deleted_input' => [
-                'nullable',
-            ],
-            'gallery_image_1' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg',
-            ],
-            'gallery_image_2' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg',
-            ],
-            'gallery_image_3' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg',
-            ],
-            'gallery_image_4' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg',
-            ],
-            'gallery_image_5' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg',
-            ],
-            'country_id' => [
+            'gallery.*.image' => [
+                'nullable'
+            ],*/
+            /*'country_id' => [
                 'required',
                 'exists:countries,id'
-            ],
+            ],*/
             'length' => [
                 $this->productType->has_length ? 'required' : 'nullable',
                 'numeric',
@@ -154,6 +129,15 @@ class ProductCreateRequest extends BaseRequest
                 'numeric',
             ],
         ];
+
+        if ($this->input('gallery')) {
+            foreach ($this->input('gallery') as $index => $gallery_item) {
+                $rules['gallery.' . $index . '.image'] = [
+                    (isset($gallery_item['id']) && $gallery_item['id']) ? 'nullable' : 'required',
+                    'image',
+                ];
+            }
+        }
 
         if ($this->productType->has_brand) {
             $rules['brand_id'] = [
@@ -177,7 +161,7 @@ class ProductCreateRequest extends BaseRequest
             ];
         }
 
-        if ($this->productType->has_color) {
+        /*if ($this->productType->has_color) {
             $rules['color_id'] = [
                 'required',
                 'exists:colors,id',
@@ -187,7 +171,7 @@ class ProductCreateRequest extends BaseRequest
                 'array',
                 'exists:colors,id',
             ];
-        }
+        }*/
 
         if (count($this->productType->fields)) {
             $rules['custom_field'] = [
@@ -250,6 +234,28 @@ class ProductCreateRequest extends BaseRequest
                 'nullable',
                 'string',
             ];
+
+            $rules['product_text.' . $availableLanguage] = [
+                'required',
+                'string',
+            ];
+
+            $rules['characteristics.*.name.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+            $rules['characteristics.*.value.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+            $rules['videos.*.tab.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+            $rules['attributes.*.*.name.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
         }
 
         return $rules;
@@ -260,12 +266,6 @@ class ProductCreateRequest extends BaseRequest
         $rules = $this->baseRules();
 
         $rules['main_image' ] = [
-            'required',
-            'image',
-            'mimes:jpeg,png,jpg',
-        ];
-
-        $rules['pattern_image'] = [
             'required',
             'image',
             'mimes:jpeg,png,jpg',
@@ -283,6 +283,7 @@ class ProductCreateRequest extends BaseRequest
             'meta_title' => mb_strtolower(trans('admin.meta_title')),
             'meta_description' => mb_strtolower(trans('admin.meta_description')),
             'meta_keywords' => mb_strtolower(trans('admin.meta_keywords')),
+            'product_text' => mb_strtolower(trans('admin.meta_keywords')),
             'availability_status_id' => mb_strtolower(trans('admin.availability_status')),
             'special_offer_id' => mb_strtolower(trans('admin.special_offer')),
             'sku' => mb_strtolower(trans('admin.sku')),
@@ -290,14 +291,8 @@ class ProductCreateRequest extends BaseRequest
             'old_price' => mb_strtolower(trans('admin.old_price')),
             'price_in_currency' => mb_strtolower(trans('admin.price_in_currency')),
             'currency_id' => mb_strtolower(trans('admin.price_currency')),
-            'gallery_image_1' => mb_strtolower(trans('admin.gallery_image_1')),
-            'gallery_image_2' => mb_strtolower(trans('admin.gallery_image_2')),
-            'gallery_image_3' => mb_strtolower(trans('admin.gallery_image_3')),
-            'gallery_image_4' => mb_strtolower(trans('admin.gallery_image_4')),
-            'gallery_image_5' => mb_strtolower(trans('admin.gallery_image_5')),
             'country_id' => mb_strtolower(trans('admin.country')),
             'main_image' => mb_strtolower(trans('admin.product_main_image')),
-            'pattern_image' => mb_strtolower(trans('admin.product_image_pattern')),
             'brand_id' => mb_strtolower(trans('admin.brand')),
             'collection_id' => mb_strtolower(trans('admin.collection')),
             'category_id' => mb_strtolower(trans('admin.category')),
@@ -310,6 +305,7 @@ class ProductCreateRequest extends BaseRequest
             $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
             $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
             $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['product_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.product_text'), $availableLanguage);
         }
 
         foreach ($this->productType->fields as $customField) {
@@ -329,28 +325,20 @@ class ProductCreateRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            explode(',', $this->input('selected_sub_products_id')),
             $this->input('parent_product_id'),
             $this->input('availability_status_id'),
             $this->input('special_offer_id') ? array_map('intval', $this->input('special_offer_id')) : null,
             $this->input('sku'),
-            $this->input('old_price_in_currency'),
             $this->input('price_in_currency'),
-            $this->input('purchase_price_in_currency'),
             $this->input('currency_id'),
+            $this->input('product_text'),
             $this->file('main_image'),
             (bool) $this->input('main_image_deleted_input'),
-            $this->file('pattern_image'),
-            (bool) $this->input('pattern_image_deleted_input'),
-            $this->file('gallery_image_1'),
-            (bool) $this->input('gallery_image_1_deleted_input'),
-            $this->file('gallery_image_2'),
-            (bool) $this->input('gallery_image_2_deleted_input'),
-            $this->file('gallery_image_3'),
-            (bool) $this->input('gallery_image_3_deleted_input'),
-            $this->file('gallery_image_4'),
-            (bool) $this->input('gallery_image_4_deleted_input'),
-            $this->file('gallery_image_5'),
-            (bool) $this->input('gallery_image_5_deleted_input'),
+            $this->validated('gallery'),
+            $this->validated('characteristics'),
+            $this->validated('videos'),
+            $this->validated('attributes'),
             $this->input('country_id'),
             $this->input('brand_id'),
             $this->input('collection_id'),

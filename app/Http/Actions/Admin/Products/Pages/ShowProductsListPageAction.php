@@ -9,6 +9,7 @@ use App\Services\Collection\CollectionService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
 use App\Services\Product\ProductService;
+use App\Services\ProductCategory\CategoryService;
 
 class ShowProductsListPageAction
 {
@@ -20,6 +21,7 @@ class ShowProductsListPageAction
         ColorService         $colorService,
         CollectionService    $collectionService,
         CountryService       $countryService,
+        CategoryService      $categoryService,
     )
     {
         $dto = $request->toDTO();
@@ -33,6 +35,7 @@ class ShowProductsListPageAction
             'colors' => $colorService->getColors(),
             'collections' => $collectionService->getCollections(),
             'countries' => $countryService->getCountries(),
+            'categories' => $categoryService->getProductCategories($productType),
             'searchData' => $dto,
         ]);
     }

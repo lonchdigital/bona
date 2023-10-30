@@ -12,5 +12,6 @@ class FilterProductAdminDTO implements BaseDTO
         public readonly ?int $colorId,
         public readonly ?int $collectionId,
         public readonly ?int $countryId,
+        public readonly ?int $categoryId,
     ) { }
 }

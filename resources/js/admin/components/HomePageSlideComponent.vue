@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-    <div class="row art-repeater-row">
+    <div class="row art-repeater-row" :key="slideId">
         <div class="col">
             <div class="row">
                 <div class="col">
@@ -60,6 +60,16 @@ export default {
                         :available-languages="availableLanguages"
                         :is-required="true"
                         :init-data="slide.hasOwnProperty('title') ? slide.title : []"
+                        :errors="errors"
+                    />
+
+                    <multi-language-input-component
+                        :title="$t('admin.slide_description')"
+                        :name="'slides[' + index + '][description]'"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :is-required="false"
+                        :init-data="(slide.hasOwnProperty('description') && slide.description !== null) ? slide.description : []"
                         :errors="errors"
                     />
 

@@ -38,8 +38,8 @@ export default defineConfig(({ mode }) => {
                     'resources/js/admin/scripts.js',
 
                     // store
-                    'resources/js/store/app.js',
-                    'resources/css/styles.js'
+                    'resources/js/store/app.js'
+                    // 'resources/css/styles.js'
                 ]
             }),
             vue(),

@@ -1,6 +1,11 @@
 import $ from 'jquery';
 
+console.log('store.catalog.page.js');
+
 export default async function () {
+
+    console.log('export default async function RUNS !!!');
+
     const customLabels = $('.filter-item--type-custom .custom-control-label');
     const countriesLabels = $('.filter-item--countries .custom-control-label');
     const searchableLabels = $('.filter-item--brands .custom-control-label');
@@ -20,7 +25,7 @@ export default async function () {
     handleShowMoreButton();
 
     const [
-        SvelteRangeSlider,
+        // SvelteRangeSlider,
         Tooltip,
         SyncFilters,
         SearchableList,
@@ -28,19 +33,19 @@ export default async function () {
         Swiper,
         Pagination,
     ] = await Promise.all([
-        import('./store.catalog.page/svelte-range-slider'),
+        // import('./store.catalog.page/svelte-range-slider'),
         import('./store.catalog.page/tooltip'),
         import('./store.catalog.page/sync-filters'),
         import('./store.catalog.page/searchable-list'),
         import('./store.catalog.page/filter-submit'),
         import('./store.catalog.page/swiper'),
-        import('./store.catalog.page/pagination'),
+        import('./store.catalog.page/pagination')
     ]);
 
     console.log('load');
 
     Swiper.init();
-    SvelteRangeSlider.init();
+    // SvelteRangeSlider.init();
     Tooltip.init();
     SyncFilters.init();
     SearchableList.init();

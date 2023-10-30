@@ -59,9 +59,7 @@ class CategoryService extends BaseService
                 $newImagePath = self::CATEGORY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
                 $oldImagePath = $productCategory->image_path;
 
-                $image = Image::make($request->image)
-                    ->resize(150, 150)
-                    ->encode('jpg', 100);
+                $image = Image::make($request->image)->encode('jpg', 100);
 
                 Storage::disk(config('app.images_disk_default'))->put($newImagePath, $image);
 

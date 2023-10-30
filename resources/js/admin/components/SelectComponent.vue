@@ -2,8 +2,13 @@
 export default {
     props: {
         title: String,
+
         modelValue: null,
         name: String,
+
+        modelValueSelected: null,
+        nameSelected: String,
+
         label: String,
         valueProp: String,
         options: {
@@ -34,6 +39,7 @@ export default {
     data() {
         return {
             value: null,
+            valueSelected: null,
         };
     },
     emits: [
@@ -48,6 +54,9 @@ export default {
     mounted() {
         if (this.modelValue) {
             this.value = this.modelValue
+        }
+        if (this.modelValueSelected) {
+            this.valueSelected = this.modelValueSelected
         }
     },
     computed: {
@@ -68,6 +77,7 @@ export default {
 
 <template>
     <input type="hidden" :name="name" v-model="value">
+    <input type="hidden" :name="nameSelected" v-model="valueSelected">
     <label>{{ title }}<strong class="text-danger" v-if="isRequired">*</strong></label>
     <multiselect-component
         :mode="isMultiSelect ? 'tags' : 'single'"

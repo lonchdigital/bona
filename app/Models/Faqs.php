@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
-class HomePageFaqs extends Model
+class Faqs extends Model
 {
     use HasTranslations;
 

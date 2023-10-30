@@ -28,6 +28,9 @@ class HomePageEditRequest extends BaseRequest
             'slides.*.id' => [
                 'nullable'
             ],
+            'testimonials.*.id' => [
+                'nullable'
+            ],
             'selected_products_id' => [
                 'nullable',
                 'exists:products,id',
@@ -48,26 +51,47 @@ class HomePageEditRequest extends BaseRequest
 
         if ($this->input('slides')) {
             foreach ($this->input('slides') as $index => $slide) {
-
                 $rules['slides.' . $index . '.image'] = [
                     (isset($slide['id']) && $slide['id']) ? 'nullable' : 'required',
                     'image',
                 ];
-
                 $rules['slides.' . $index . '.button_url'] = [
                     'required',
                     'string'
                 ];
-
             }
         }
+
+        if ($this->input('testimonials')) {
+            foreach ($this->input('testimonials') as $index => $testimonial) {
+                $rules['testimonials.' . $index . '.image'] = [
+                    (isset($testimonial['id']) && $testimonial['id']) ? 'nullable' : 'required',
+                    'image',
+                ];
+            }
+        }
+
+
 
         foreach ($this->availableLanguages as $availableLanguage) {
             $rules['slides.*.title.' . $availableLanguage] = [
                 'required',
                 'string'
             ];
+            $rules['slides.*.description.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
             $rules['slides.*.button_text.' . $availableLanguage] = [
+                'required',
+                'string'
+            ];
+
+            $rules['testimonials.*.name.' . $availableLanguage] = [
+                'required',
+                'string'
+            ];
+            $rules['testimonials.*.review.' . $availableLanguage] = [
                 'required',
                 'string'
             ];
@@ -78,6 +102,14 @@ class HomePageEditRequest extends BaseRequest
             ];
             $rules['faqs.*.answer.' . $availableLanguage] = [
                 'required',
+                'string'
+            ];
+            $rules['seo_title.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+            $rules['seo_text.' . $availableLanguage] = [
+                'nullable',
                 'string'
             ];
         }
@@ -105,6 +137,7 @@ class HomePageEditRequest extends BaseRequest
 
         foreach ($this->availableLanguages as $availableLanguage) {
             $attributes['slides.*.title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_title'), $availableLanguage);
+            $attributes['slides.*.description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_description'), $availableLanguage);
             $attributes['slides.*.button_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_text_button'), $availableLanguage);
         }
 
@@ -114,12 +147,15 @@ class HomePageEditRequest extends BaseRequest
     public function toDTO(): HomePageEditDTO
     {
         return new HomePageEditDTO(
-//            $this->input('slider_title'),
+
 //            $this->file('slider_logo'),
             $this->validated('slides'),
             explode(',', $this->input('selected_products_id')),
             explode(',', $this->input('selected_best_sales_products_id')),
+            $this->validated('testimonials'),
             $this->validated('faqs'),
+            $this->input('seo_title'),
+            $this->input('seo_text'),
 
 //            $this->input('selected_field_id'),
 //            explode(',', $this->input('selected_field_options_id')),

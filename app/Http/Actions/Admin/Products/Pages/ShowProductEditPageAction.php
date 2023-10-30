@@ -32,7 +32,8 @@ class ShowProductEditPageAction
             abort(404);
         }
 
-        $currencies = $currencyService->getCurrencies();
+
+//        dd($productsService->getSelectedSubItems($product->id));
 
         return view('pages.admin.products.edit', [
             'productType' => $productType,
@@ -40,11 +41,18 @@ class ShowProductEditPageAction
             'productStatuses' => ProductStatusDataClass::get(),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'availableLanguages' => $applicationService->getAvailableLanguages(),
-            'currencies' => $currencies,
+            'currencies' => $currencyService->getCurrencies(),
             'categories' => $productCategoryService->getProductCategories($productType),
             'brands' => $brandService->getBrands(),
             'colors' => $colorService->getColors(),
             'countries' => $countryService->getCountries(),
+//            'subProducts' => $productsService->getSubProducts(13),
+            'subProducts' => $productsService->getSelectedSubItems(json_decode($product->sub_products)),
+            'productText' => $productsService->getProductText($product->id),
+            'characteristics' => $productsService->getProductCharacteristics($product->id),
+            'productGallery' => $productsService->getProductGallery($product->id),
+            'productVideos' => $productsService->getProductVideos($product->id),
+            'attributeOptions' => $productsService->getAttributeOptions($product->id, $productType),
         ]);
     }
 }

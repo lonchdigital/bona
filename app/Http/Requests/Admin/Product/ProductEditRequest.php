@@ -10,15 +10,17 @@ class ProductEditRequest extends ProductCreateRequest
     {
         $rules = $this->baseRules();
 
-        $rules['main_image_deleted_input'] = [
+        /*$rules['main_image_deleted_input'] = [
             'required',
             new RequiredImageDeletedRule(mb_strtolower(trans('admin.product_main_image'))),
-        ];
+        ];*/
 
-        $rules['pattern_image_deleted_input'] = [
+        /*$rules['pattern_image_deleted_input'] = [
             'required',
             new RequiredImageDeletedRule(mb_strtolower(trans('admin.product_image_pattern'))),
-        ];
+        ];*/
+
+
 
         $rules['sku'] = [
             'required',

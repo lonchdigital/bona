@@ -42,16 +42,16 @@ export default {
         return {
             slideDescription: [],
         }
-    },
+    }
 }
 </script>
 
 <template>
-    <div class="row art-repeater-row">
+    <div class="row art-repeater-row" :key="faqId">
         <div class="col">
             <div class="row">
                 <div class="col">
-                    <input type="hidden" v-if="faqId !== null" :name="'faqs[' + index + '][id]'" :value="faqId">
+                    <input type="hidden" v-if="faqId !== null" :name="'faqs[' + index + '][id]'" :value="faqId" >
 
                     <multi-language-input-component
                         :title="$t('admin.faq_question')"

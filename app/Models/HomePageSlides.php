@@ -14,7 +14,7 @@ class HomePageSlides extends Model
 
     protected $guarded = [];
 
-    public $translatable = ['title', 'button_text'];
+    public $translatable = ['title', 'description', 'button_text'];
 
     public function slideImageUrl(): Attribute
     {

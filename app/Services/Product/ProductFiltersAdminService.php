@@ -59,6 +59,12 @@ class ProductFiltersAdminService extends BaseService
             });
         }
 
+        if ($request->categoryId) {
+            $query->whereHas('categories', function (Builder $query) use ($request) {
+                return $query->where('category_id', $request->categoryId);
+            });
+        }
+
         return $query;
     }
 

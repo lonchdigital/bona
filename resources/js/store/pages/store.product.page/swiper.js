@@ -3,23 +3,22 @@ import $ from "jquery";
 
 export function init () {
 //? swiper-single-wallpaper-thumbs
+
+    const swiperSingleWallpaperThumbsWrap = document.querySelector('.swiper-single-wallpaper-thumbs-wrap');
+    let imagesCount = swiperSingleWallpaperThumbsWrap.querySelectorAll('img').length;
+    imagesCount = imagesCount >= 5 ? 5 : imagesCount;
+
     const SwiperSingleWallpaperThumbs = new Swiper('.swiper-single-wallpaper-thumbs', {
-        direction: "vertical",
-        slidesPerView: 'auto',
+        slidesPerView: imagesCount,
         slidesPerGroupAuto: false,
         slidesPerGroup: 1,
         spaceBetween: 2,
         //watchSlidesProgress: true,
-        navigation: {
-            //enabled: true,
-            // nextEl: ".swiper-single-wallpaper-thumbs-wrap .button-slider-next",
-            // prevEl: ".swiper-single-wallpaper-thumbs-wrap .button-slider-prev",
-        },
         pagination: {
             //enabled: true,
             el: ".swiper-single-wallpaper-thumbs-wrap .swiper-pagination",
-            //clickable: true,
-        },
+            clickable: true
+        }
     });
 
     //SwiperSingleWallpaperThumbs.lockSwipeToNext();
@@ -30,11 +29,11 @@ export function init () {
         slidesPerView: 1,
         // simulateTouch: 0,
         thumbs: {
-            swiper: SwiperSingleWallpaperThumbs,
+            swiper: SwiperSingleWallpaperThumbs
         },
-        pagination: {
-            el: ".swiper-single-wallpaper-wrap .swiper-pagination",
-            clickable: true,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev"
         },
         on: {
             slideChange: function (event) {
@@ -44,15 +43,6 @@ export function init () {
     });
 
 
-    $('.swiper-single-wallpaper-thumbs-wrap .button-slider-next').click(function (event) {
-        event.preventDefault();
-        SwiperSingleWallpaper.slideNext();
-    });
-
-    $('.swiper-single-wallpaper-thumbs-wrap .button-slider-prev').click(function (event) {
-        event.preventDefault();
-        SwiperSingleWallpaper.slidePrev();
-    });
 
     //? swiper-cards-products
     const SwiperCardsProducts = new Swiper('.swiper-cards-products', {
@@ -95,7 +85,7 @@ function showGallerySwiper()
 
     const wrap = $('.swiper-single-wallpaper-thumbs-wrap');
     const inner = wrap.find('.inner');
-    const body = wrap.find('.swiper-single-wallpaper-thumbs')
+    const body = wrap.find('.swiper-single-wallpaper-thumbs');
     const prev = wrap.find('.button-slider-prev');
     const next = wrap.find('.button-slider-prev');
 

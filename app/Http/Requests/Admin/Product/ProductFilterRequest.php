@@ -34,6 +34,11 @@ class ProductFilterRequest extends BaseRequest
                 'integer',
                 'exists:countries,id',
             ],
+            'category_id' => [
+                'nullable',
+                'integer',
+                'exists:categories,id',
+            ],
         ];
     }
 
@@ -45,6 +50,7 @@ class ProductFilterRequest extends BaseRequest
             $this->input('color_id'),
             $this->input('collection_id'),
             $this->input('country_id'),
+            $this->input('category_id'),
         );
     }
 }

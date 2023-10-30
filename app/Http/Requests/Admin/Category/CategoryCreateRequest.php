@@ -38,7 +38,7 @@ class CategoryCreateRequest extends BaseRequest
         $rules['category_image'] = [
             'required',
             'mimes:jpeg,png,jpg',
-            'dimensions:min_width=150,min_height=150,ratio=1/1'
+            'dimensions:min_width=150,min_height=150'
         ];
 
         return $rules;

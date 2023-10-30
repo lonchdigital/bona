@@ -6,6 +6,24 @@
             <div class="col-12">
                 <h2 class="page-title">{{ trans('admin.home_page_edit_heading') }}</h2>
 
+{{--                @dd( json_encode($seoText['title']) )--}}
+
+                @php
+                    //var_dump( json_encode( $slides ))
+                    //print_r( json_encode($seoText['title']) )
+                @endphp
+
+                @php
+                    //print_r( json_encode($product->getTranslations('name') ));
+
+                    $arr = [
+                        "uk"=> "name UK",
+                        "ru"=>"name RU"
+                            ];
+                @endphp
+
+{{--                @dd(json_encode($testimonials))--}}
+
                 <home-page-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
@@ -14,6 +32,7 @@
                     submit-route="{{ route('admin.home-page.edit') }}"
                     :available-products="{{ json_encode($products) }}"
                     :wallpapers-fields="{{ json_encode($fields) }}"
+
                     @if ($config)
                         slider-logo="{{ $config->slider_logo_image_url }}"
                         :wallpapers-by-field-id="{{ $config->product_field_id }}"
@@ -36,14 +55,22 @@
                         :slider-slides="{{ json_encode($slides) }}"
                     @endif
 
+                    @if(count($testimonials))
+                        :testimonial-list="{{ json_encode($testimonials) }}"
+                    @endif
+
                     @if(count($faqs))
                         :faq-list="{{ json_encode($faqs) }}"
                     @endif
 
-
-
+                    @if(count($seoText))
+                        :seo-title="{{ json_encode($seoText['title']) }}"
+                        :seo-text="{{ json_encode($seoText['content']) }}"
+                    @endif
 
                 />
+
+
             </div>
         </div>
     </div>

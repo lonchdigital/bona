@@ -57,7 +57,7 @@
             <!-- nav bar -->
             <div class="w-100 mb-4 d-flex">
                 <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="{{ route('admin.dashboard.page') }}">
-                    <img src="{{ Vite::asset('resources/img/logo-m.svg') }}" alt="logo">
+                    <img src="{{ asset('storage/logo/logo-dark.svg') }}" alt="logo">
 {{--                    <img src="{{ asset('resources/img/logo-m.svg') }}" alt="logo">--}}
 
                 </a>
@@ -83,6 +83,21 @@
                     </li>
                 @endforeach
             </ul>
+
+<!--            <ul class="navbar-nav flex-fill w-100 mb-2">
+                <li class="nav-item dropdown">
+                    <a href="#product-subtype" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+                        <i class="fe fe-settings fe-16"></i>
+                        <span class="ml-3 item-text">{{ trans('admin.product_menu_subtypes') }}</span>
+                    </a>
+                    <ul class="collapse list-unstyled pl-4 w-100" id="product-subtype">-->
+                        {{--@foreach($productSubtypes as $productSubtype)
+                            <a class="nav-link pl-3" href="{{ route('admin.product.list.page', ['productType' => 0, 'productSubtype' => $productSubtype->id]) }}"><span class="ml-1">{{ $productSubtype->name }}</span></a>
+                        @endforeach--}}
+<!--                    </ul>
+                </li>
+            </ul>-->
+
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.orders') }}</span>
             </p>
@@ -115,10 +130,22 @@
                         <span class="ml-1 item-text">{{ trans('admin.product_types') }}</span>
                     </a>
                 </li>
+<!--                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.product-subtype.list.page') }}">
+                        <i class="fe fe-codesandbox fe-16"></i>
+                        <span class="ml-1 item-text">{{ trans('admin.product_subtypes') }}</span>
+                    </a>
+                </li>-->
                 <li class="nav-item w-100">
                     <a class="nav-link pl-3" href="{{ route('admin.product-field.list.page') }}">
                         <i class="fe fe-codepen fe-16"></i>
                         <span class="ml-1 item-text">{{ trans('admin.product_fields') }}</span>
+                    </a>
+                </li>
+                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.product-attribute.list.page') }}">
+                        <i class="fe fe-codepen fe-16"></i>
+                        <span class="ml-1 item-text">Атрибуты товаров</span>
                     </a>
                 </li>
                 <li class="nav-item w-100">

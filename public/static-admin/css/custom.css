@@ -15,3 +15,20 @@
     margin-bottom: 10px;
     padding: 21px 5px 22px 5px;
 }
+
+.art-admin-product-gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.art-admin-repeater-four-width {
+    display: flex;
+    flex-wrap: wrap;
+}
+.art-admin-repeater-four-width .art-repeater-row {
+    width: 25%;
+}
+
+.form-group.art-form-group-hidden {
+    display: none;
+}

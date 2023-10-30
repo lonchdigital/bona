@@ -28,6 +28,10 @@ class EditProductTypeRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'product_type_image' => [
+                'nullable',
+                'mimes:jpeg,png,jpg',
+            ],
             'meta_title' => [
                 'required',
                 'array',
@@ -81,6 +85,9 @@ class EditProductTypeRequest extends BaseRequest
             'product_field.*.filter_name' => [
                 'array',
                 'min:1',
+            ],
+            'product_attribute' => [
+                'array',
             ],
         ];
 
@@ -240,6 +247,7 @@ class EditProductTypeRequest extends BaseRequest
             $this->input('name'),
             $this->input('slug'),
             $this->input('product_point_name'),
+            $this->file('product_type_image'),
 
             $this->input('meta_title'),
             $this->input('meta_description'),
@@ -277,6 +285,7 @@ class EditProductTypeRequest extends BaseRequest
 
             $this->input('size_points'),
             $this->input('product_field'),
+            $this->input('product_attribute'),
         );
     }
 }

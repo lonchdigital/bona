@@ -27,6 +27,9 @@ export default {
             const countOfProductsBody = $('#count-of-products-body');
             const goToCartBody = $('.go-to-cart-body');
 
+            console.log('product add to cart CLICk');
+            console.log('countOfProductsBody: ' + countOfProductsBody);
+
             addProductToCart(
                 productSlug,
                 count,
@@ -35,13 +38,89 @@ export default {
                     countOfProductsBody.addClass('d-none');
                     goToCartBody.removeClass('d-none');
 
+                    /*console.log('==================');
+                    console.log('Product cart:');
+                    console.log(data);
+                    console.log('==================');*/
+
                     handleBasket(data);
                 },
                 function () {
                     console.error('[Cart]: init: error during adding product to cart.');
                 }
             );
+
         });
+
+        $('.single-sub-product-add-to-cart').click(function () {
+            console.log('SUB product add to cart CLICk');
+
+            var thisElement = $(this);
+            const productSlug = thisElement.attr('id');
+            const productName = thisElement.parent().find('a.art-product-link').find('.text').find('.product-title').text();
+
+            // Получить текущее значение атрибута data-count
+            var currentCount = parseInt(thisElement.data('count'));
+            var updatedCount = currentCount + 1;
+
+            // Обновить значение атрибута в объекте jQuery
+            thisElement.data('count', updatedCount);
+            //Обновить значение атрибута в DOM
+            thisElement.attr('data-count', updatedCount);
+
+
+            var wrapperSlug = thisElement.closest("div.art-popup-single-product").attr('id');
+            // $('[data-wrapper="'+ wrapperSlug +'"]').css( "border", "1px solid red" );
+            $('[data-wrapper="'+ wrapperSlug +'"]').prepend('<span class="added-line" data-slug="'+ productSlug +'"><i class="fa fa-close"></i>'+ productName +'</span>');
+
+            thisElement.closest("div.art-popup-single-product").find('.f-button.is-close-btn').trigger("click");
+
+
+            // console.log(wrapperSlug);
+
+            addSubProductToCart(
+                productSlug,
+                updatedCount,
+                function (data) {
+
+                    handleBasket(data);
+                },
+                function () {
+                    console.error('[Cart]: init: error during adding product to cart.');
+                }
+            );
+
+        });
+
+        // Remove added-line
+        $('.added-sub-products').on('click', '.added-line', function() {
+
+            var thisElement = $(this);
+            const productSlug = thisElement.attr('data-slug');
+
+
+            const subProduct =  $('#' + productSlug);
+            subProduct.data('count', 0);
+            subProduct.attr('data-count', 0);
+
+
+            thisElement.parent().find('[data-slug="'+ productSlug +'"]').remove();
+
+
+            deleteProductFromCart(
+                productSlug,
+                function (data) {
+                    $('.basket-with-products .count-of-products-in-basket').text(data.data.products.length);
+                    drawProductsInCartWindowHTML(data);
+                },
+                function () {
+                    console.error('[Cart]: addDeleteProductFromCartHandlers: error during product in cart update.');
+                }
+            );
+
+        });
+
+
 
         if (page === 'store.cart.page') {
             const promoCodeForm = $('#promo-code-form');
@@ -85,7 +164,7 @@ export default {
             handleWishListAddToCartButton();
         }
     }
-}
+};
 
 //api
 function addProductToCart(slug, count, success, fail)
@@ -106,6 +185,48 @@ function addProductToCart(slug, count, success, fail)
         fail();
     });
 }
+function addSubProductToCart(slug, updatedCount, success, fail)
+{
+
+    if( updatedCount === 1 ) {
+        const routeWithSlug = routes.cart.product_add_route.replace('PRODUCT_SLUG', slug);
+
+        $.ajax({
+            url: routeWithSlug,
+            type: 'post',
+            data: {
+                _token: csrf,
+                product_count: 1
+            },
+            dataType: 'json',
+        }).done(function(data) {
+            success(data);
+        }).fail(function () {
+            fail();
+        });
+
+    } else {
+
+        updateProductInCart(
+            slug,
+            updatedCount,
+            function (data) {
+                drawProductsInCartWindowHTML(data);
+            },
+            function () {
+                console.error('[Cart]: addChangeProductCountHandlers: error during product in cart update.');
+            }
+        );
+
+    }
+
+
+
+
+
+
+}
+
 
 function getProductsInCart(success, fail)
 {
@@ -384,6 +505,12 @@ function addChangeProductCountHandlers(elements)
         event.preventDefault();
         const slug = $(this).closest('.cart-item').find('input[name="product_slug"]').val();
 
+        const subProduct =  $('#' + slug);
+        subProduct.data('count', $(this).val());
+        subProduct.attr('data-count', $(this).val());
+
+        console.log('addChangeProductCountHandlers NOW');
+
         updateProductInCart(
             slug,
             $(this).val(),
@@ -406,6 +533,11 @@ function addDeleteProductFromCartHandlers(elements)
     elements.click(function (event) {
         event.preventDefault();
         const slug = $(this).closest('.cart-item').find('input[name="product_slug"]').val();
+
+        const subProduct =  $('#' + slug);
+        subProduct.data('count', 0);
+        subProduct.attr('data-count', 0);
+
 
         deleteProductFromCart(
             slug,
@@ -468,14 +600,16 @@ function handleBasket(data)
     const countOfProductsInBasket = basketWithProducts.find('.count-of-products-in-basket');
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');
+    let countOfProductsInBasketValue = parseInt( $('.basket .count-of-products-in-basket').text() );
 
-    if (count_of_products_in_cart <= 0) {
+
+    if (countOfProductsInBasketValue <= 0) {
         basketWithoutProducts.addClass('d-none');
         basketWithProducts.removeClass('d-none');
         countOfProductsInBasket.text(1);
         basketSubMenu.removeClass('d-none');
     } else {
-        countOfProductsInBasket.text(count_of_products_in_cart + 1);
+        countOfProductsInBasket.text(countOfProductsInBasketValue + 1);
     }
 
     basketSubMenuSuccess.removeClass('d-none');

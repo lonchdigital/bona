@@ -11,7 +11,7 @@ class CategoryEditRequest extends CategoryCreateRequest
         $rules['category_image'] = [
             'nullable',
             'mimes:jpeg,png,jpg',
-            'dimensions:min_width=150,min_height=150,ratio=1/1'
+            'dimensions:min_width=150,min_height=150'
         ];
 
         return $rules;

@@ -9,6 +9,8 @@
                 <div class="row">
                     <div class="col-md-12 d-flex justify-content-between">
                         <a href="{{ route('admin.product.create.page', ['productType' => $productType->id]) }}" class="btn mb-2 btn-dark">{{ trans('admin.product_create') }}</a>
+
+                        {{--search--}}
                         <x-admin.custom-dropdown>
                             <x-slot name="button">
                                 {{ trans('admin.search') }}
@@ -64,6 +66,19 @@
                                                 @endforeach
                                             </select>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="category_id">{{ trans('admin.category') }}</label>
+                                            <select class="form-control select2-multi" name="category_id" id="category_id">
+                                                @if(!$searchData->categoryId)
+                                                    <option value="" selected hidden>{{ trans('admin.select_category') }}</option>
+                                                @endif
+                                                @foreach($categories as $category)
+                                                    <option value="{{ $category->id }}" @if($searchData->categoryId === $category->id) selected @endif>{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
                                     </div>
 
                                     <div class="col-md-12 mb-3">
@@ -77,6 +92,8 @@
                                 </form>
                             </x-slot>
                         </x-admin.custom-dropdown>
+                        {{--End search--}}
+
                     </div>
                 </div>
                 <div class="row my-4">
@@ -106,6 +123,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <!-- table start -->
+
                                             <table class="table datatables" id="dataTable-1">
                                                 <thead>
                                                 <tr>
@@ -113,9 +131,12 @@
                                                     <th>#</th>
                                                     <th>{{ trans('admin.sku') }}</th>
                                                     <th>{{ trans('admin.name') }}</th>
-                                                    <th>{{ trans('admin.color') }}</th>
-                                                    <th>{{ trans('admin.brand') }}</th>
-                                                    <th>{{ trans('admin.collection') }}</th>
+                                                    @if( $productType->has_category )
+                                                        <th>{{ trans('admin.category') }}</th>
+                                                    @endif
+{{--                                                    <th>{{ trans('admin.color') }}</th>--}}
+{{--                                                    <th>{{ trans('admin.brand') }}</th>--}}
+{{--                                                    <th>{{ trans('admin.collection') }}</th>--}}
                                                     <th>{{ trans('admin.author') }}</th>
                                                     <th class="text-center">{{ trans('admin.created_at') }}</th>
                                                     <th class="text-right">{{ trans('admin.action') }}</th>
@@ -132,9 +153,12 @@
                                                         <td>{{ $product->id }}</td>
                                                         <td><strong>{{ $product->sku }}</strong></td>
                                                         <td><strong>{{ $product->name }}</strong></td>
-                                                        <td><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="3" fill="{{ $product->color->hex }}"></rect></svg></span> {{ $product->color->name }}</td>
-                                                        <td>{{ $product->brand->name }}</td>
-                                                        <td>{{ $product->collection->name }}</td>
+                                                        @if( $productType->has_category )
+                                                            <td><strong>{{ $product->categories[0]->name }}</strong></td>
+                                                        @endif
+{{--                                                        <td><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="3" fill="{{ $product->color->hex }}"></rect></svg></span> {{ $product->color->name }}</td>--}}
+{{--                                                        <td>{{ $product->brand->name }}</td>--}}
+{{--                                                        <td>{{ $product->collection->name }}</td>--}}
                                                         <td>{{ $product->creator->first_name }} {{ $product->creator->last_name }}</td>
                                                         <td class="text-center">{{ $product->created_at->format('d-m-Y') }}</td>
                                                         <td class="text-right">
@@ -147,15 +171,16 @@
                                                             </div>
                                                         </td>
                                                     </tr>
+
                                                     @foreach($product->children as $childProduct)
                                                         <tr class="bg-light parrent-{{$product->id}} d-none">
                                                             <td></td>
                                                             <td>{{ $childProduct->id }}</td>
                                                             <td><strong>{{ $childProduct->sku }}</strong></td>
                                                             <td><strong>{{ $childProduct->name }}</strong></td>
-                                                            <td><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="3" fill="{{ $childProduct->color->hex }}"></rect></svg></span> {{ $childProduct->color->name }}</td>
-                                                            <td>{{ $childProduct->brand->name }}</td>
-                                                            <td>{{ $childProduct->collection->name }}</td>
+{{--                                                            <td><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="3" fill="{{ $childProduct->color->hex }}"></rect></svg></span> {{ $childProduct->color->name }}</td>--}}
+{{--                                                            <td>{{ $childProduct->brand->name }}</td>--}}
+{{--                                                            <td>{{ $childProduct->collection->name }}</td>--}}
                                                             <td>{{ $childProduct->creator->first_name }} {{ $childProduct->creator->last_name }}</td>
                                                             <td class="text-center">{{ $childProduct->created_at->format('d-m-Y') }}</td>
                                                             <td class="text-right">
@@ -251,6 +276,9 @@
         });
 
         $('#collection_id').select2({
+            theme: 'bootstrap4',
+        });
+        $('#category_id').select2({
             theme: 'bootstrap4',
         });
 

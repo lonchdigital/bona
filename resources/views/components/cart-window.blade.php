@@ -1,18 +1,11 @@
 <li class="list-inline-item basket-list basket-basket-list">
     <div class="basket full nolink basket-link basket-with-products @if($countOfProductInCart <= 0) d-none @endif">
         <span class="after count-of-products-in-basket">{{ $countOfProductInCart }}</span>
-        <svg class="i-basket-static">
-            <use href="{{ Vite::asset('resources/img/icon.svg') }}#i-basket"></use>
-        </svg>
-        <svg class="i-basket-hover">
-            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-basket-hover"></use>
-        </svg>
+        <i class="icon icon-cart"></i>
     </div>
     <div class="basket full nolink basket-link basket-without-products @if($countOfProductInCart > 0) d-none @endif">
         <a href="{{ route('store.cart.page') }}">
-            <svg>
-                <use href="{{ Vite::asset('resources/img/icon.svg') }}#i-basket-only"></use>
-            </svg>
+            <i class="icon icon-cart"></i>
         </a>
     </div>
     <div class="sub-menu bg-white basket-sub-menu @if($countOfProductInCart <= 0 ||  request()->route()->getName() == 'store.checkout.page') d-none @endif">
@@ -30,9 +23,7 @@
             </div>
             <a href="{{ route('store.checkout.page') }}" class="btn btn-dark btn-block mb-1">{{ trans('base.make_order') }}</a>
             <a href="{{ route('store.cart.page') }}" class="btn btn-go-to-cart mb-1 btn-block">
-                <svg>
-                    <use href="{{ Vite::asset('resources/img/icon.svg') }}#i-basket-only"></use>
-                </svg>
+                <i class="icon icon-cart"></i>
                 <span>
                 {{ trans('base.go_to_cart') }}
             </span>

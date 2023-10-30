@@ -65,9 +65,18 @@ use App\Http\Actions\Admin\ProductFields\Pages\ShowProductFieldsListPageAction;
 use App\Http\Actions\Admin\ProductFields\ProductFieldCreateAction;
 use App\Http\Actions\Admin\ProductFields\ProductFieldDeleteAction;
 use App\Http\Actions\Admin\ProductFields\ProductFieldEditAction;
+
+use App\Http\Actions\Admin\ProductAttributes\Pages\ShowProductAttributesListPageAction;
+use App\Http\Actions\Admin\ProductAttributes\Pages\ShowProductAttributeCreatePageAction;
+use App\Http\Actions\Admin\ProductAttributes\Pages\ShowProductAttributeEditPageAction;
+use App\Http\Actions\Admin\ProductAttributes\ProductAttributeCreateAction;
+use App\Http\Actions\Admin\ProductAttributes\ProductAttributeEditAction;
+use App\Http\Actions\Admin\ProductAttributes\ProductAttributeDeleteAction;
+
 use App\Http\Actions\Admin\Products\GetParentProductDataAction;
 use App\Http\Actions\Admin\Products\GetProductsBySearchAction;
 use App\Http\Actions\Admin\Products\GetAllProductsBySearchAction;
+use App\Http\Actions\Admin\Products\GetSubProductsBySearchAction;
 use App\Http\Actions\Admin\Products\Pages\ShowProductCreatePageAction;
 use App\Http\Actions\Admin\Products\Pages\ShowProductEditPageAction;
 use App\Http\Actions\Admin\Products\Pages\ShowProductsListPageAction;
@@ -90,6 +99,12 @@ use App\Http\Actions\Admin\ProductTypes\Pages\ShowProductTypesListPageAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeCreateAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeDeleteAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeEditAction;
+use App\Http\Actions\Admin\ProductSubtypes\Pages\ShowProductSubtypesListPageAction;
+use App\Http\Actions\Admin\ProductSubtypes\Pages\ShowProductSubtypeCreatePageAction;
+use App\Http\Actions\Admin\ProductSubtypes\Pages\ShowProductSubtypeEditPageAction;
+use App\Http\Actions\Admin\ProductSubtypes\ProductSubtypeCreateAction;
+use App\Http\Actions\Admin\ProductSubtypes\ProductSubtypeEditAction;
+use App\Http\Actions\Admin\ProductSubtypes\ProductSubtypeDeleteAction;
 use App\Http\Actions\Admin\SEO\FilterGroupCreateAction;
 use App\Http\Actions\Admin\SEO\FilterGroupDeleteAction;
 use App\Http\Actions\Admin\SEO\FilterGroupEditAction;
@@ -141,6 +156,23 @@ Route::prefix('admin')->middleware([
         Route::name('admin.product-field.delete')->post('{productField}/delete', ProductFieldDeleteAction::class);
     });
 
+    //Product attributes
+    Route::prefix('productAttribute')->group(function () {
+        //List
+        Route::name('admin.product-attribute.list.page')->get('/',ShowProductAttributesListPageAction::class);
+
+        //Create
+        Route::name('admin.product-attribute.create.page')->get('create', ShowProductAttributeCreatePageAction::class);
+        Route::name('admin.product-attribute.create')->post('create', ProductAttributeCreateAction::class);
+
+        //Edit
+        Route::name('admin.product-attribute.edit.page')->get('{productAttribute}', ShowProductAttributeEditPageAction::class);
+        Route::name('admin.product-attribute.edit')->post('{productAttribute}', ProductAttributeEditAction::class);
+
+        //Delete
+        Route::name('admin.product-attribute.delete')->post('{productAttribute}/delete', ProductAttributeDeleteAction::class);
+    });
+
     //Product types
     Route::prefix('productType')->group(function () {
         //List
@@ -156,6 +188,23 @@ Route::prefix('admin')->middleware([
 
         //Delete
         Route::name('admin.product-type.delete')->post('{productType}/delete', ProductTypeDeleteAction::class);
+    });
+
+    //Product subtypes
+    Route::prefix('productSubtype')->group(function () {
+        //List
+        Route::name('admin.product-subtype.list.page')->get('/', ShowProductSubtypesListPageAction::class);
+
+        //Create
+        Route::name('admin.product-subtype.create.page')->get('create', ShowProductSubtypeCreatePageAction::class);
+        Route::name('admin.product-subtype.create')->post('create', ProductSubtypeCreateAction::class);
+
+        //Edit
+        Route::name('admin.product-subtype.edit.page')->get('{productSubtype}', ShowProductSubtypeEditPageAction::class);
+        Route::name('admin.product-subtype.edit')->post('{productSubtype}', ProductSubtypeEditAction::class);
+
+        //Delete
+        Route::name('admin.product-subtype.delete')->post('{productSubtype}/delete', ProductSubtypeDeleteAction::class);
     });
 
     //Product Categories
@@ -267,6 +316,7 @@ Route::prefix('admin')->middleware([
     //Products
     Route::prefix('product/')->group(function () {
         Route::name('admin.product.list.all')->get('/search', GetAllProductsBySearchAction::class);
+        Route::name('admin.product.list.sub')->get('/searchSub', GetSubProductsBySearchAction::class);
     });
     Route::prefix('product/{productType}')->group(function () {
         //List

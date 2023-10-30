@@ -10,7 +10,7 @@ export default async function () {
         import('./store.product.page/tooltip'),
         import('./store.product.page/swiper'),
         import('./store.product.page/fancybox'),
-        import('./store.product.page/similar-products'),
+        import('./store.product.page/similar-products')
     ]);
 
     Tooltip.init();

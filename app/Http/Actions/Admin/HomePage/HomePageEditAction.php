@@ -13,7 +13,7 @@ class HomePageEditAction extends BaseAction
         HomePageService $homePageService,
     )
     {
-//        dd($request->all());
+//        dd($request->slides);
 //        dd($request->toDTO());
         $result = $homePageService->editHomePage($request->toDTO());
 

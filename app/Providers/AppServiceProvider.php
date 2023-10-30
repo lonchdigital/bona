@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Admin\ProductType\ProductTypeService;
+use App\Services\Admin\ProductSubtype\ProductSubtypeService;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Brand\BrandService;
 use App\Services\Cart\CartService;
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(
         ProductTypeService       $productTypeService,
+        ProductSubtypeService    $productSubtypeService,
         ApplicationConfigService $applicationService,
         CartService              $cartService,
         BrandService             $brandService,
@@ -36,6 +38,16 @@ class AppServiceProvider extends ServiceProvider
             [
                 'layouts.admin-main',
                 'components.cart-window',
+            ],
+            function ($view) use ($productTypeService, $productSubtypeService) {
+                $view->with('productTypes', $productTypeService->getProductTypes());
+                $view->with('productSubtypes', $productSubtypeService->getProductSubtypes());
+            }
+        );
+
+        view()->composer(
+            [
+                'layouts.store-main',
             ],
             function ($view) use ($productTypeService) {
                 $view->with('productTypes', $productTypeService->getProductTypes());

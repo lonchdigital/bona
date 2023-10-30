@@ -64,7 +64,9 @@ class ShowHomePageEditPageAction extends BaseAction
             'selectedBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),
             'selectedProductFieldOptions' => $homePageService->getHomePageProductFieldOptions(),
             'slides' => $homePageService->getHomePageSlides(),
+            'testimonials' => $homePageService->getHomePageTestimonials(),
             'faqs' => $homePageService->getHomePageFaqs(),
+            'seoText' => $homePageService->getHomePageSeoText(),
         ]);
     }
 }

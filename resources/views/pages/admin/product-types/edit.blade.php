@@ -48,6 +48,22 @@
                                         :label="trans('admin.product_point_name')" field-name="product_point_name"
                                         :values="isset($productType) ? $productType->getTranslations('product_point_name') : []"/>
 
+
+                                    <div class="form-group">
+                                        <label for="product_type_image">{{ trans('admin.product_type_image') }} <strong class="text-danger">*</strong> (jpeg,png,jpg)</label>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <img @if(isset($productType) && isset($productType->image_url)) src="{{ $productType->image_url }}" @else style="display: none;" @endif id="product_type_image" alt="{{ trans('admin.product_category_image') }}" class="category-img rounded mb-3">
+                                            </div>
+                                        </div>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="product_type_image" id="product_type_image_input">
+                                            <label class="custom-file-label" for="product_type_image">{{ trans('admin.choose_file') }}</label>
+                                            <div class="mt-1 text-danger ajaxError" id="error-field-product_type_image"></div>
+                                        </div>
+                                    </div>
+
+
                                     <p class="mt-5">
                                         <strong>
                                             {{ trans('admin.product_type_seo_config') }}
@@ -262,6 +278,11 @@
                                         </strong>
                                     </p>
 
+
+{{--                                    @dd($productType->fields)--}}
+{{--                                    @dd($productType->attributes)--}}
+{{--                                    @dd($productFields)--}}
+{{--                                    @dd($productAttributes)--}}
                                     <div class="row">
                                         <div class="col-md-12" id="fields">
                                             @if(isset($productType) && $productType->fields)
@@ -458,6 +479,116 @@
                                             </a>
                                         </div>
                                     </div>
+
+
+
+                                    <p class="mt-5">
+                                        <strong>
+                                            {{ 'Attributes' }}
+                                        </strong>
+                                    </p>
+
+                                    <div class="row">
+                                        <div class="col-md-12" id="attributes">
+                                            @if(isset($productType) && $productType->attributes)
+                                                3333
+                                                @foreach($productType->attributes as $attribute)
+                                                    <div class="row field pb-1" id="attribute-id-{{ $attribute->id }}">
+                                                        <div class="col-md-12">
+                                                            <div class="border border-secondary rounded p-3">
+                                                                <div
+                                                                    class="row justify-content-between align-items-center">
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group mb-3">
+                                                                            <label
+                                                                                for="attribute-select-{{ $attribute->id }}">{{ trans('admin.product_field') }}
+                                                                                <strong
+                                                                                    class="text-danger">*</strong></label>
+                                                                            <select class="form-control select2"
+                                                                                    id="attribute-select-attribute-{{ $attribute->id }}"
+                                                                                    name="product_attribute[{{ $attribute->id }}][id]">
+                                                                                <option value=""
+                                                                                        @if(!isset($productType)) selected @endif disabled>
+                                                                                    {{ trans('admin.select') }}  {{ mb_strtolower(trans('admin.product_field'))  }}
+                                                                                </option>
+                                                                                @foreach($productAttributes as $productAttribute)
+                                                                                    <option
+                                                                                        value="{{ $productAttribute->id }}"
+                                                                                        @if($attribute->id == $productAttribute->id) selected @endif>{{ $productAttribute->attribute_name }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-2">
+                                                                        <a href="#" class="btn btn-danger"
+                                                                           onclick="artRemoveAttribute(event, {{ $attribute->id }})">
+                                                                            <span
+                                                                                class="fe fe-trash-2 fe-16 mr-2"></span>
+                                                                            {{ trans('admin.field_delete') }}
+                                                                        </a>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-1 text-danger ajaxError"
+                                                                 id="error-field-product_field.0.id"></div>
+                                                        </div>
+                                                    </div>
+
+                                                @endforeach
+                                            @else
+                                                444
+                                                <div class="row attribute pb-1" id="attribute-id-0">
+                                                    <div class="col-md-12">
+                                                        <div class="border border-secondary rounded p-3">
+                                                            <div class="row justify-content-between align-items-center">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group mb-3">
+                                                                        <label
+                                                                            for="attribute-select-0">{{ trans('admin.product_field') }}
+                                                                            <strong
+                                                                                class="text-danger">*</strong></label>
+                                                                        <select class="form-control select2"
+                                                                                id="attribute-select-0"
+                                                                                name="product_attribute[0][id]">
+                                                                            <option value="" selected
+                                                                                    disabled>{{ trans('admin.select') }}  {{ mb_strtolower(trans('admin.product_field'))  }}</option>
+                                                                            @foreach($productAttributes as $productAttribute)
+                                                                                <option
+                                                                                    value="{{ $productAttribute->id }}">{{ $productAttribute->attribute_name }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <a href="#" class="btn btn-danger"
+                                                                       onclick="artRemoveAttribute(event, 0)">
+                                                                        <span class="fe fe-trash-2 fe-16 mr-2"></span>
+                                                                        {{ trans('admin.field_delete') }}
+                                                                    </a>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-1 text-danger ajaxError"
+                                                             id="error-field-product_attribute.0.id"></div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="row pt-3">
+                                        <div class="col-md-12 text-center">
+                                            <a href="#" id="add-attribute" class="btn mb-2 btn-secondary">
+                                                <span class="fe fe-plus-square fe-16 mr-2"></span>
+                                                {{ 'Add attribute' }}
+                                            </a>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="row">
@@ -483,6 +614,13 @@
                 theme: 'bootstrap4'
             });
 
+            $('#product_type_image_input').change(function () {
+                const [file] = $(this).prop('files');
+                if (file) {
+                    $('#product_type_image').attr('src', URL.createObjectURL(file)).attr('style', '');
+                }
+            });
+
             let highestFieldId = 0;
             $('.field').each(function () {
                 const id = parseInt($(this).attr('id').replace('field-id-', ''));
@@ -499,6 +637,24 @@
                 highestFieldId++;
                 addField(highestFieldId);
             });
+
+            /* add attributes */
+            let highestAttributeId = 0;
+            $('.attribute').each(function () {
+                const id = parseInt($(this).attr('id').replace('attribute-id-', ''));
+                if (id >= highestAttributeId) {
+                    highestAttributeId = id;
+                }
+
+            });
+
+            $('#add-attribute').click(function (event) {
+                event.preventDefault();
+
+                highestAttributeId++;
+                addAttribute(highestAttributeId);
+            });
+            /* add attributes END */
 
             $('#product_has_size').change(function () {
                 if ($(this).is(':checked')) {
@@ -599,7 +755,51 @@
 
         function removeField(event, id) {
             event.preventDefault();
+
             $(`#field-id-${id}`).remove();
+        }
+
+        function addAttribute(id) {
+            $('#attributes').append(`
+            <div class="row attribute pb-1" id="attribute-id-${id}">
+                <div class="col-md-12">
+                    <div class="border border-secondary rounded p-3">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label for="attribute-select-${id}">{{ trans('admin.product_field') }} <strong class="text-danger">*</strong></label>
+                                    <select class="form-control select2" id="attribute-select-${id}" name="product_attribute[${id}][id]">
+                                        <option value="" selected disabled>{{ trans('admin.select') }}  {{ mb_strtolower(trans('admin.product_field'))  }}</option>
+                                        @foreach($productAttributes as $productAttribute)
+            <option value="{{ $productAttribute->id }}">{{ $productAttribute->attribute_name }}</option>
+                                        @endforeach
+            </select>
+        </div>
+    </div>
+<div class="col-md-2">
+<a href="#" class="btn btn-danger"
+onclick="artRemoveAttribute(event, ${id})">
+            <span class="fe fe-trash-2 fe-16 mr-2"></span>
+{{ trans('admin.field_delete') }}
+            </a>
+        </div>
+    </div>
+</div>
+<div class="mt-1 text-danger ajaxError"
+     id="error-field-product_attribute.${id}.id"></div>
+</div>
+</div>
+        `);
+
+            $(`#attribute-select-${id}`).select2({
+                theme: 'bootstrap4'
+            });
+
+        }
+        function artRemoveAttribute(event, id) {
+            event.preventDefault();
+
+            $(`#attribute-id-${id}`).remove();
         }
 
         function addFilterCheckBoxHandler(id) {
@@ -622,6 +822,7 @@
                 $('#slug').val(slugify(latValue));
             });
         }
+
 
         function slugify(s) {
             return s.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, "") //remove diacritics

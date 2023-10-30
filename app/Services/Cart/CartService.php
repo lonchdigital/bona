@@ -52,6 +52,11 @@ class CartService extends BaseService
         return $cart->products()->where('product_id', $product->id)->exists();
     }
 
+    public function getCountOfSpecificProduct(Product $product, Cart $cart): int
+    {
+        return $cart->products()->where('product_id', $product->id)->first()->pivot->count;
+    }
+
     public function getCountOfProductsInCart(Cart $cart): int
     {
         return $cart->products()->count();

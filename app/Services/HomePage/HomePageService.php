@@ -8,10 +8,12 @@ use App\Models\HomePageNewProducts;
 use App\Models\HomePageBrands;
 use App\Models\HomePageConfig;
 use App\Models\HomePageProductOptions;
-use App\Models\HomePageFaqs;
+use App\Models\Faqs;
 use App\Models\HomePageSlides;
+use App\Models\HomePageTestimonials;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Models\SeoText;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\HomePage\DTO\HomePageEditDTO;
@@ -59,8 +61,11 @@ class HomePageService extends BaseService
                 HomePageConfig::create($dataToUpdate);
             }*/
 
+
             $this->syncSlides($request->slides);
-            $this->syncFaqs($request->faqs);
+            $this->syncTestimonials($request->testimonials);
+            $this->syncFaqs(config('constants.HOMEPAGE_TYPE'), $request->faqs);
+            SeoText::updateSeoText(config('constants.HOMEPAGE_TYPE'), $request->seoTitle, $request->seoText);
 
             $this->syncNewProducts($request->selectedProductsId);
             $this->syncBestSalesProducts($request->selectedBestSalesProductsId);
@@ -123,6 +128,7 @@ class HomePageService extends BaseService
             foreach ($slides as $slide) {
                 $dataToUpdate = [
                     'title' => $slide['title'],
+                    'description' => $slide['description'],
                     'button_text' => $slide['button_text'],
                     'button_url' => $slide['button_url']
                 ];
@@ -167,12 +173,72 @@ class HomePageService extends BaseService
 
     }
 
-    private function syncFaqs(?array $faqs): void
+    private function syncTestimonials(?array $testimonials): void
     {
-        $existingFaqs = HomePageFaqs::get();
+        $imagesToDelete = [];
+
+        $existingTestimonials = HomePageTestimonials::get();
+
+        if ($testimonials) {
+            foreach ($testimonials as $testimonial) {
+                $dataToUpdate = [
+                    'name' => $testimonial['name'],
+                    'review' => $testimonial['review'],
+                ];
+
+
+                if (isset($testimonial['image'])) {
+//                    dd($testimonial['image']);
+                    $testimonialImagePath = self::HOME_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                    $this->storeHomePageImage($testimonialImagePath, $testimonial['image']);
+                    $dataToUpdate['testimonial_image_path'] = $testimonialImagePath;
+                }
+
+                if (isset($testimonial['id']) && $testimonial['id']) {
+                    $existingTestimonial = $existingTestimonials->where('id', $testimonial['id'])->first();
+                    if (!$existingTestimonial) {
+                        throw new \Exception('Incorrect testimonial id: ' . $testimonial['id']);
+                    }
+
+                    if (isset($testimonial['image'])) {
+                        $imagesToDelete[] = $existingTestimonial->testimonial_image_path;
+                    }
+
+                    $existingTestimonial->update($dataToUpdate);
+                } else {
+//                    dd('I am here?');
+                    HomePageTestimonials::create($dataToUpdate);
+                }
+            }
+        }
+
+        $existingTestimonialsInRequest = $testimonials ? array_filter(array_column($testimonials, 'id'), function ($item) {
+            return $item !== null;
+        }): [];
+
+        $testimonialsToDelete = $existingTestimonials->whereNotIn('id', $existingTestimonialsInRequest);
+
+        foreach ($testimonialsToDelete as $testimonialToDelete) {
+            $imagesToDelete[] = $testimonialToDelete->testimonial_image_path;
+            $testimonialToDelete->delete();
+        }
+
+        foreach ($imagesToDelete as $imageToDelete) {
+            $this->deleteHomePageImage($imageToDelete);
+        }
+
+    }
+
+    private function syncFaqs(string $pageType, ?array $faqs): void
+    {
+
+        dd($faqs);
+
+        $existingFaqs = Faqs::get();
         if ($faqs) {
             foreach ($faqs as $faq) {
                 $dataToUpdate = [
+                    'page_type' => $pageType,
                     'question' => $faq['question'],
                     'answer' => $faq['answer'],
                 ];
@@ -185,7 +251,7 @@ class HomePageService extends BaseService
 
                     $existingFaq->update($dataToUpdate);
                 } else {
-                    HomePageFaqs::create($dataToUpdate);
+                    Faqs::create($dataToUpdate);
                 }
             }
         }
@@ -211,6 +277,11 @@ class HomePageService extends BaseService
         return HomePageNewProducts::with(['product'])->get();
     }
 
+    public function getProductTypes(): Collection
+    {
+        return ProductType::get();
+    }
+
     public function getHomePageBestSalesProducts(): Collection
     {
         return HomePageBestSalesProducts::with(['product'])->get();
@@ -231,9 +302,41 @@ class HomePageService extends BaseService
         return HomePageSlides::get();
     }
 
+    public function getHomePageTestimonials(): Collection
+    {
+        return HomePageTestimonials::get();
+    }
+
     public function getHomePageFaqs(): Collection
     {
-        return HomePageFaqs::get();
+        return Faqs::where('page_type', config('constants.HOMEPAGE_TYPE'))->get();
+    }
+
+    public function getHomePageSeoText(): array
+    {
+        $result = SeoText::where('page_type', config('constants.HOMEPAGE_TYPE'))->get();
+        $data = [];
+
+        foreach ($result as $value) {
+            $data['title'][$value['language']] = $value['title'];
+            $data['content'][$value['language']] = $value['content'];
+        }
+
+        return $data;
+    }
+
+    public function getHomePageSeoTextByLanguage(string $language)
+    {
+        $seoTextData = SeoText::where('page_type', config('constants.HOMEPAGE_TYPE'))->get();
+        $data = [];
+
+        if ($seoTextData) {
+            $data['title'] = $seoTextData->where('language', $language)->first()->title;
+            $data['content'] = $seoTextData->where('language', $language)->first()->content;
+            return $data;
+        }
+
+        return null;
     }
 
     public function getNewProducts(): Collection

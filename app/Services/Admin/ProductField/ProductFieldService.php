@@ -45,6 +45,7 @@ class ProductFieldService extends BaseService
                 'field_size_name' => $request->productFieldSizeName,
                 'is_multiselectable' => $request->isMultiselectable,
                 'as_image' => $request->asImage,
+                'display_on_single' => $request->displayOnSingle,
                 'numeric_field_filter_type_id' => $request->numericFieldFilterType,
             ]);
 
@@ -97,6 +98,7 @@ class ProductFieldService extends BaseService
                 'field_size_name' => $request->productFieldSizeName,
                 'is_multiselectable' => $request->isMultiselectable,
                 'as_image' => $request->asImage,
+                'display_on_single' => $request->displayOnSingle,
                 'numeric_field_filter_type_id' => $request->numericFieldFilterType,
             ]);
 

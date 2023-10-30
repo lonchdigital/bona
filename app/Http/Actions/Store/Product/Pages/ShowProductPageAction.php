@@ -22,13 +22,15 @@ class ShowProductPageAction extends BaseAction
         SeogenService $seogenService,
     )
     {
+
+//        dd($product);
         $product->load([
             'color',
             'children.color',
             'productType',
             'productType.fields',
             'productType.fields.options',
-            ]);
+        ]);
 
         $wishList = null;
         if ($this->getAuthUser()) {
@@ -42,14 +44,23 @@ class ShowProductPageAction extends BaseAction
             $isProductInCart = $cartService->isProductInCart($product, $cart);
         }
 
-
         return view('pages.store.product', [
             'product' => $product,
+//            'categoryProducts' => $categoryProducts,
+            'categoryProducts' => $productService->getSelectedSubItemsWithCategories(json_decode($product->sub_products)),
             'baseCurrency' => $currencyService->getBaseCurrency(),
-            'productsInSameCollection' => $productService->getProductsBySameCollection($product),
+//            'productsInSameCollection' => $productService->getProductsBySameCollection($product),
+            'sameTypeProducts' => $productService->getSameTypeProducts($product),
             'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'isProductInCart' => $isProductInCart,
             'seogenData' => $seogenService->getTagsForProducts($product->productType, $product),
+            'productText' => $productService->getProductTextByLanguage($product->id, app()->getLocale()),
+            'characteristics' => $productService->getProductCharacteristics($product->id),
+            'productGallery' => $productService->getProductGallery($product->id),
+            'productVideos' => $productService->getProductVideos($product->id),
+
+            'cart' => $cart,
+            'cartService' => $cartService,
         ]);
     }
 }

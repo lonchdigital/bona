@@ -20,10 +20,12 @@ import SliderBlockComponent from "./components/blogArticleBlockComponents/Slider
 import QuestionsAndAnswersBlockComponent from "./components/blogArticleBlockComponents/QuestionsAndAnswersBlockComponent.vue";
 import InputComponent from "./components/InputComponent.vue";
 import SelectComponent from "./components/SelectComponent.vue";
+import SelectColorComponent from "./components/SelectColorComponent.vue";
 import ReactiveFormContainer from "./containers/ReactiveFormContainer.vue";
 import BlogSlidesEditForm from "./forms/BlogSlidesEditForm.vue";
 import BlogSlideComponent from "./components/BlogSlideComponent.vue";
 import HomePageEditForm from "./forms/HomePageEditForm.vue";
+import ProductPageEditForm from "./forms/ProductPageEditForm.vue";
 import SeogenEditFrom from "./forms/SeogenEditForm.vue";
 import FilterGroupsEditForm from "./forms/FilterGroupsEditForm.vue";
 
@@ -61,10 +63,12 @@ app.component('slider-block-component', SliderBlockComponent);
 app.component('questions-and-answers-block-component', QuestionsAndAnswersBlockComponent);
 app.component('input-component', InputComponent);
 app.component('select-component', SelectComponent);
+app.component('select-color-component', SelectColorComponent);
 app.component('reactive-form-container', ReactiveFormContainer);
 app.component('blog-slides-edit-form', BlogSlidesEditForm);
 app.component('blog-slide-component', BlogSlideComponent);
 app.component('home-page-edit-form', HomePageEditForm);
+app.component('product-page-edit-form', ProductPageEditForm);
 app.component('seogen-edit-form', SeogenEditFrom);
 app.component('filter-groups-edit-form', FilterGroupsEditForm);
 
