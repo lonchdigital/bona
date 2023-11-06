@@ -38,16 +38,21 @@ class ShowProductPageAction extends BaseAction
         }
 
         $cart = $this->getAuthUser() ? $cartService->getCartForAuthUser($this->getAuthUser()) : $cartService->getCartForGuestUser(session_id());
+        if( is_null($cart) ) {
+            $cart = $cartService->createCartByToken(session_id());
+        }
 
         $isProductInCart = false;
         if ($cart) {
             $isProductInCart = $cartService->isProductInCart($product, $cart);
         }
 
+        $sub_products = ( !is_null($product->sub_products) ) ? json_decode($product->sub_products): false;
+
         return view('pages.store.product', [
             'product' => $product,
 //            'categoryProducts' => $categoryProducts,
-            'categoryProducts' => $productService->getSelectedSubItemsWithCategories(json_decode($product->sub_products)),
+            'categoryProducts' => $productService->getSelectedSubItemsWithCategories($sub_products),
             'baseCurrency' => $currencyService->getBaseCurrency(),
 //            'productsInSameCollection' => $productService->getProductsBySameCollection($product),
             'sameTypeProducts' => $productService->getSameTypeProducts($product),
@@ -61,6 +66,8 @@ class ShowProductPageAction extends BaseAction
 
             'cart' => $cart,
             'cartService' => $cartService,
+
+            'attributeOptions' => $productService->getAttributeNamesWithOptions($product->id, $product->productType),
         ]);
     }
 }

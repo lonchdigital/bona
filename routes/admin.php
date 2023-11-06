@@ -190,8 +190,8 @@ Route::prefix('admin')->middleware([
         Route::name('admin.product-type.delete')->post('{productType}/delete', ProductTypeDeleteAction::class);
     });
 
-    //Product subtypes
-    Route::prefix('productSubtype')->group(function () {
+    //Product subtypes (delete)
+    /*Route::prefix('productSubtype')->group(function () {
         //List
         Route::name('admin.product-subtype.list.page')->get('/', ShowProductSubtypesListPageAction::class);
 
@@ -205,7 +205,7 @@ Route::prefix('admin')->middleware([
 
         //Delete
         Route::name('admin.product-subtype.delete')->post('{productSubtype}/delete', ProductSubtypeDeleteAction::class);
-    });
+    });*/
 
     //Product Categories
     Route::prefix('productCategory')->group(function () {

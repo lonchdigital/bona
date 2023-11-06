@@ -70,7 +70,7 @@ export default {
                 <input-component
                     :title="$t('admin.price')"
                     :name="'attributes['+ attributeOptionId +'][' + index + '][price]'"
-                    :model-value="attribute.hasOwnProperty('price') ? attribute.price : []"
+                    :model-value="attribute.price"
                     :errors="errors"
                     :is-required="false"
                 />

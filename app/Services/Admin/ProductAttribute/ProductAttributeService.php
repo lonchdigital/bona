@@ -66,7 +66,6 @@ class ProductAttributeService extends BaseService
 
         return $this->coverWithDBTransaction(function () use ($productAttribute) {
 
-//            $productField->fieldFilterOptions()->delete();
             $productAttribute->productAttributeOptions()->delete();
             $productAttribute->delete();
 

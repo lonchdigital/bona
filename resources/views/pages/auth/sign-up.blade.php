@@ -52,11 +52,7 @@
                                             <label class="custom-control-label2" for="password">{{ trans('auth.password') }}</label>
                                             <div class="d-flex flex-row align-items-center justify-content-end password-input">
                                                 <input id="password" class="form-control block w-full" type="password" name="password"/>
-                                                <a href="#" class="position-absolute mr-2 bg-white password-eye-toggle">
-                                                    <svg class="password-eye-icon">
-                                                        <use class="password-eye-icon-use" href="{{ Vite::asset('resources/img/icon.svg') }}#i-eye-off"></use>
-                                                    </svg>
-                                                </a>
+
                                             </div>
 
                                             @error('password')
@@ -68,11 +64,7 @@
                                             <label class="custom-control-label2" for="password_confirmation">{{ trans('auth.password_confirmation') }}</label>
                                             <div class="d-flex flex-row align-items-center justify-content-end password-input">
                                                 <input id="password_confirmation" class="form-control block w-full" type="password" name="password_confirmation"/>
-                                                <a href="#" class="position-absolute mr-2 bg-white password-eye-toggle">
-                                                    <svg class="password-eye-icon">
-                                                        <use class="password-eye-icon-use" href="{{ Vite::asset('resources/img/icon.svg') }}#i-eye-off"></use>
-                                                    </svg>
-                                                </a>
+
                                             </div>
                                             @error('password_confirmation')
                                             <div class="text-danger">{{ $message }}</div>

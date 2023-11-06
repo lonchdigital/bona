@@ -130,12 +130,6 @@
                         <span class="ml-1 item-text">{{ trans('admin.product_types') }}</span>
                     </a>
                 </li>
-<!--                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.product-subtype.list.page') }}">
-                        <i class="fe fe-codesandbox fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.product_subtypes') }}</span>
-                    </a>
-                </li>-->
                 <li class="nav-item w-100">
                     <a class="nav-link pl-3" href="{{ route('admin.product-field.list.page') }}">
                         <i class="fe fe-codepen fe-16"></i>

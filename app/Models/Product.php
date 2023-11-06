@@ -40,7 +40,7 @@ class Product extends Model implements Sitemapable
 
     public function colors()
     {
-        return $this->belongsToMany(Color::class, 'product_colors');
+        return $this->belongsToMany(Color::class, 'product_colors')->withPivot(['price']);
     }
 
     public function categories()
@@ -87,8 +87,9 @@ class Product extends Model implements Sitemapable
     public function getCustomFieldValue(int $fieldId): array | int | string | null
     {
         $field = $this->productType->fields->where('id', $fieldId)->first();
+        $custom_fields = (!is_null($this->custom_fields)) ? $this->custom_fields : [];
 
-        if (!array_key_exists($fieldId, $this->custom_fields)) {
+        if (!array_key_exists($fieldId, $custom_fields)) {
             return null;
         }
 

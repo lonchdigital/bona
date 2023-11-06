@@ -231,9 +231,6 @@ class HomePageService extends BaseService
 
     private function syncFaqs(string $pageType, ?array $faqs): void
     {
-
-        dd($faqs);
-
         $existingFaqs = Faqs::get();
         if ($faqs) {
             foreach ($faqs as $faq) {

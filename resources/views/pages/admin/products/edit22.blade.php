@@ -73,7 +73,7 @@
                     @endphp
 
 
-{{--                    @dd($product->colors)--}}
+{{--                    @dd($colors)--}}
 
 
                     <product-page-edit-form
@@ -113,9 +113,9 @@
                             :category-selected="{{ json_encode($category_selected) }}"
                         @endif
 
-                        :color-options="{{ json_encode( $colors ) }}"
-                        @if(isset($product) && $productType->has_color)
-                            :color-selected="{{ json_encode($product->colors) }}"
+                        @if($productType->has_color)
+                            :color-options="{{ json_encode( $colors ) }}"
+{{--                            :category-selected="{{ json_encode($category_selected) }}"--}}
                         @endif
 
                         @if(isset($productText['content']))

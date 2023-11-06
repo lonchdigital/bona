@@ -23,7 +23,7 @@ class ProductEditRequest extends ProductCreateRequest
 
 
         $rules['sku'] = [
-            'required',
+            'nullable',
             'string',
             'unique:products,sku,' . $this->route('product')->id,
         ];

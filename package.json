@@ -37,6 +37,7 @@
         "slug": "^8.2.2",
         "svelte-range-slider-pips": "latest",
         "swiper": "latest",
+        "transliteration": "^2.3.5",
         "vinyl-ftp": "latest",
         "vite": "^2.9.12",
         "webp-converter": "2.2.3",

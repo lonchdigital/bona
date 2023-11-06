@@ -293,9 +293,10 @@ class ProductService extends BaseService
             }
             ProductText::updateProductText($product->id, $request->productText);
 
+
             //all colors
             if ($productType->has_color) {
-                $product->colors()->sync($request->allColorIds);
+                $this->syncColors($request->allColorIds, $product);
             }
 
             //all categories
@@ -313,8 +314,6 @@ class ProductService extends BaseService
     public function productEdit(ProductType $productType, Product $product, EditProductDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($productType, $product, $request) {
-
-
             $this->syncGallery($product->id, $request->gallery);
             $this->syncCharacteristics($product->id, $request->characteristics);
             $this->syncVideos($product->id, $request->videos);
@@ -325,6 +324,9 @@ class ProductService extends BaseService
             $baseCurrency = $this->currencyService->getBaseCurrency();
 
 //            $prices = $this->handleProductPriceInCurrency($currency, $baseCurrency, $request->priceInCurrency, $request->oldPriceInCurrency);
+
+
+//            dd($request->selectedSubProductsId);
 
             $dataToUpdate = [
                 'is_active' => $request->isActive,
@@ -396,9 +398,10 @@ class ProductService extends BaseService
 
             $product->update($dataToUpdate);
 
+
             //all colors
             if ($productType->has_color) {
-                $product->colors()->sync($request->allColorIds);
+                $this->syncColors($request->allColorIds, $product);
             }
 
             //all categories
@@ -475,23 +478,28 @@ class ProductService extends BaseService
             return [];
         }
     }
-    public function getSelectedSubItemsWithCategories(array $sub_products): array
+    public function getSelectedSubItemsWithCategories(array|bool $sub_products): array
     {
-        $subProducts = Product::whereIn('id', $sub_products)->get();
+        if( $sub_products ) {
+            $subProducts = Product::whereIn('id', $sub_products)->get();
 
-        $categoryProducts = [];
-        foreach ($subProducts as $item) {
-            $categoryName = $item->categories[0]->name;
+            $categoryProducts = [];
+            foreach ($subProducts as $item) {
+                $categoryName = $item->categories[0]->name;
 
-            if (!isset($categoryProducts[$categoryName])) {
-                $categoryProducts[$categoryName] = [];
+                if (!isset($categoryProducts[$categoryName])) {
+                    $categoryProducts[$categoryName] = [];
+                }
+
+                $categoryProducts[$categoryName][] = $item;
             }
 
-            $categoryProducts[$categoryName][] = $item;
+            return $categoryProducts;
         }
 
-        return $categoryProducts;
+        return [];
     }
+
     private function syncSubProducts(int $product_id, ?array $subItems): void
     {
         $existingSubItems = ProductSubItems::where('product_id', $product_id)->get();
@@ -564,6 +572,28 @@ class ProductService extends BaseService
             }
 
             $attributeOptions[$attribute->id] = $atr_options;
+        }
+
+        return $attributeOptions;
+    }
+    public function getAttributeNamesWithOptions(int $product_id, $productType): array
+    {
+        $attributeOptions = [];
+
+        $currentAttributeOptions = $productType->attributes()
+            ->with(['productAttributeOptions' => function ($query) use ($product_id) {
+                $query->where('product_id', $product_id);
+            }])
+            ->get();
+
+        if(count($currentAttributeOptions)) {
+            foreach ($currentAttributeOptions as $key => $attribute) {
+                $atr_options = [];
+                foreach ($attribute->productAttributeOptions as $attributeOption){
+                    $atr_options[] = $attributeOption;
+                }
+                $attributeOptions[$attribute->attribute_name] = $atr_options;
+            }
         }
 
         return $attributeOptions;
@@ -655,6 +685,19 @@ class ProductService extends BaseService
 
     }
 
+    private function syncColors($allColors, $product)
+    {
+        if (!is_null($allColors) && count($allColors)) {
+            $colorsToUpdate = [];
+            foreach ( $allColors as $color ) {
+                $colorsToUpdate[$color['color_id']] = ['price' => $color['price']];
+            }
+
+            $product->colors()->sync($colorsToUpdate);
+        } else {
+            $product->colors()->sync([]);
+        }
+    }
 
     public function getProductGallery(int $id): Collection
     {

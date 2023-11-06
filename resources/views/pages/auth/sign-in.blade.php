@@ -20,11 +20,7 @@
                                     <label class="custom-control-label2" for="password">{{ trans('auth.password') }}</label>
                                     <div class="d-flex flex-row align-items-center justify-content-end password-input">
                                         <input id="password" class="form-control block w-full" placeholder="{{ trans('auth.password_placeholder') }}" type="password" name="password"/>
-                                        <a href="#" class="position-absolute mr-2 bg-white password-eye-toggle">
-                                            <svg class="password-eye-icon">
-                                                <use class="password-eye-icon-use" href="{{ Vite::asset('resources/img/icon.svg') }}#i-eye-off"></use>
-                                            </svg>
-                                        </a>
+
                                     </div>
                                 </div>
                                 @error('password')

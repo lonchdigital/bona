@@ -33,17 +33,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="color_id">{{ trans('admin.color') }}</label>
-                                            <select class="form-control select2" name="color_id" id="color_id">
-                                                @if(!$searchData->colorId)
-                                                    <option value="" selected hidden>{{ trans('admin.select_color') }}</option>
-                                                @endif
-                                                @foreach($colors as $color)
-                                                    <option value="{{ $color->id }}" data-value="{{ $color->hex }}" @if($searchData->colorId === $color->id) selected @endif>{{ $color->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+
                                         <div class="form-group">
                                             <label for="collection_id">{{ trans('admin.collection') }}</label>
                                             <select class="form-control select2-multi" name="collection_id" id="collection_id">

@@ -110,10 +110,12 @@
 
                                 <hr />
 
-                                <div class="info-box">
-                                    <span><strong>{{ trans('base.sku') }}</strong></span>
-                                    <span>{{ $product->sku }}</span>
-                                </div>
+                                @if($product->sku)
+                                    <div class="info-box">
+                                        <span><strong>{{ trans('base.sku') }}</strong></span>
+                                        <span>{{ $product->sku }}</span>
+                                    </div>
+                                @endif
 
                                 @foreach($product->productType->fields->where('as_image', '!=', true)->where('display_on_single', '==', true) as $customField)
                                     <div class="info-box">
@@ -143,21 +145,51 @@
                                     </span>
                                 </div>
 
-
                                 <hr />
 
-                                <!-- === info-box === -->
+                                @foreach($attributeOptions as $key => $option)
+                                    @if(count($option))
 
-                                <div class="info-box">
-                                    <span><strong>{{ trans('base.color') }}</strong></span>
-                                    <div class="product-colors clearfix">
+                                        <div class="info-box">
+                                            <span><strong>{{ $key }}</strong></span>
+                                            <select name="option" id="pet-select">
+                                                <option value="">- Обрати -</option>
+
+                                                @foreach($option as $item)
+                                                    <option value="parrot">
+                                                        {{ $item['name'] }}
+                                                        @if($item['price'])
+                                                            {{ ' ' . $item['price'] .' '. $baseCurrency->name_short }}
+                                                        @endif
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                @endforeach
+
+
+                                <!-- === info-box === -->
+                                @if(count($product->colors))
+                                    <div class="info-box">
+                                        <span><strong>{{ trans('base.color') }}</strong></span>
+                                        <div>
+                                            @foreach($product->colors as $color_item)
+                                                <span class="color-btn" style="background-color: {{ $color_item->hex }};"></span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+
+<!--                                    <div class="product-colors clearfix">
                                         <span class="color-btn color-btn-red"></span>
                                         <span class="color-btn color-btn-blue checked"></span>
                                         <span class="color-btn color-btn-green"></span>
                                         <span class="color-btn color-btn-gray"></span>
                                         <span class="color-btn color-btn-biege"></span>
-                                    </div>
-                                </div>
+                                    </div>-->
+
+                                @endif
 
 
                                 @foreach($categoryProducts as $cat => $subProducts)
@@ -433,8 +465,7 @@
                                     <div class="art-product-data">
                                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="">
                                             <div class="image">
-                                                {{--                                        <img src="{{ $product->product->preview_image_url }}" alt="">--}}
-                                                <img src="{{ $product->main_image_url }}" alt="">
+                                                <img src="{{ $product->preview_image_url }}" alt="">
                                             </div>
                                             <div class="text">
                                                 <h2 class="product-title">{{ $product->name }}</h2>

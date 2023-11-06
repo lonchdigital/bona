@@ -92,6 +92,10 @@ input.art-light-field {
 .art-light-field::-webkit-input-placeholder {
     color: #FFF;
 }
+select {
+    height: 36px;
+    border: 1px solid #E7E7E7;
+}
 
 
 /*
@@ -623,6 +627,12 @@ footer.art-site-footer .footer-bottom p {
     15. Product Single
     ----------------------------------
 */
+.product-flex-info select {
+    width: 100%;
+    max-width: 227px;
+    padding: 0 40px 0 17px;
+}
+
 .swiper-single-wallpaper-thumbs-wrap .swiper-pagination {
     bottom: var(--swiper-pagination-bottom, 20px);
 }
@@ -696,7 +706,7 @@ footer.art-site-footer .footer-bottom p {
 .custom-control-number input[type=number],
 .custom-control-number input[type=text] {
     -moz-appearance: textfield;
-    border: 1px solid #77777a;
+    border: 1px solid #E7E7E7;
     text-align: center;
     padding: 0.75rem 2.25rem;
     font-size: 19px;

@@ -31,7 +31,6 @@ import FilterGroupsEditForm from "./forms/FilterGroupsEditForm.vue";
 
 import Multiselect from '@vueform/multiselect';
 
-
 const app = createApp({});
 
 app.use(i18nVue, {

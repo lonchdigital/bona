@@ -6,8 +6,16 @@ export default {
         modelValue: null,
         name: String,
 
-        modelValueSelected: null,
-        nameSelected: String,
+
+        selectedColor: Number,
+        allColors: {
+            type: Array,
+            default: [],
+        },
+        index: {
+            type: Number,
+            default: 0,
+        },
 
         label: String,
         valueProp: String,
@@ -43,8 +51,7 @@ export default {
         };
     },
     emits: [
-        'searchChange',
-        'update:modelValue',
+        'deleteColor',
     ],
     watch: {
         modelValue(newValue) {
@@ -76,38 +83,64 @@ export default {
 </script>
 
 <template>
+    <div class="row1 art-repeater-row" :key="selectedColor">
 
-<!--    <input type="hidden" :name="name" v-model="value">
-    <input type="hidden" :name="nameSelected" v-model="valueSelected">
-    <label>{{ title }}<strong class="text-danger" v-if="isRequired">*</strong></label>
-    <multiselect-component
-        :mode="isMultiSelect ? 'tags' : 'single'"
-        v-model="value"
-        :options="options"
-        :label="label"
-        :value-prop="valueProp"
-        :searchable="true"
-        :max="maxItems"
-        @update:model-value="$emit('update:modelValue', $event)"
-        @search-change="(e) => $emit('searchChange', e)"
-    />-->
+        <div class="row1">
+            <div class="col">
+                <input type="hidden" v-if="selectedColor !== null" :name="'all_color_ids[' + index + '][id]'" :value="selectedColor" >
+
+                <select-component
+                    :is-multi-select="false"
+                    :model-value="selectedColor.id"
+                    :title="$t('admin.product_colors')"
+                    :options="allColors"
+                    label="text"
+                    value-prop="id"
+                    :name="'all_color_ids[' + index + '][color_id]'"
+                    :is-required="false"
+                    :errors="errors"
+                />
+
+                <input-component
+                    :title="'Price'"
+                    :name="'all_color_ids[' + index + '][price]'"
+                    :model-value="selectedColor.price"
+                    :errors="errors"
+                    :is-required="true"
+                />
 
 
+<!--                <multi-language-input-component
+                    :title="$t('admin.characteristic_name')"
+                    :name="'characteristics[' + index + '][name]'"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="true"
+                    :init-data="characteristic.hasOwnProperty('name') ? characteristic.name : []"
+                    :errors="errors"
+                />
 
-    <div class="form-group mb-3">
-        <label for="all_color_ids">{{ $t('admin.all_colors') }} <strong
-            class="text-danger">*</strong></label>
-        <select multiple class="form-control select2" name="all_color_ids[]" id="all_color_ids">
-            <option :data-value="option.hex" :value="option.id" v-for="option in options">{{ option.name }}</option>
-        </select>
-        <div class="mt-1 text-danger ajaxError" id="error-field-all_color_ids"></div>
+                <multi-language-input-component
+                    :title="$t('admin.characteristic_value')"
+                    :name="'characteristics[' + index + '][value]'"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="true"
+                    :init-data="characteristic.hasOwnProperty('value') ? characteristic.value : []"
+                    :errors="errors"
+                />-->
+
+            </div>
+
+        </div>
+
+        <div class="col mt-2">
+            <div class="row">
+                <div class="col">
+                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteColor', index)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.color_delete')}}</a>
+                </div>
+            </div>
+        </div>
+
     </div>
-
-    <div class="mt-1 text-danger">
-        <template v-for="errorsByField in errorsToDisplay">
-            <p v-for="error in errorsByField">{{ error }}</p>
-        </template>
-    </div>
-
-
 </template>

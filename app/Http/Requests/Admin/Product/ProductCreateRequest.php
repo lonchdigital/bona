@@ -71,7 +71,7 @@ class ProductCreateRequest extends BaseRequest
                 'integer'
             ],
             'sku' => [
-                'required',
+                'nullable',
                 'string',
                 'unique:products,sku'
             ],
@@ -102,6 +102,10 @@ class ProductCreateRequest extends BaseRequest
             ],
             'attributes.*.*.price' => [
                 'nullable'
+            ],
+            'all_color_ids.*.color_id' => [
+                'nullable',
+                'exists:colors,id',
             ],
             /*'gallery.*.*' => [
                 'nullable'
@@ -345,6 +349,7 @@ class ProductCreateRequest extends BaseRequest
             $this->input('category_ids'),
             $this->input('color_id'),
             $this->input('all_color_ids'),
+//            explode(',', $this->input('all_color_ids')),
             $this->input('custom_field'),
             $this->input('length'),
             $this->input('width'),

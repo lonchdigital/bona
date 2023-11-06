@@ -18,7 +18,7 @@ class EditProductDTO implements BaseDTO
         public readonly ?int          $parentProductId,
         public readonly int           $availabilityStatusId,
         public readonly ?array        $specialOfferIds,
-        public readonly string        $sku,
+        public readonly ?string       $sku,
         public readonly float         $priceInCurrency,
         public readonly int           $currencyId,
         public readonly ?array        $productText,

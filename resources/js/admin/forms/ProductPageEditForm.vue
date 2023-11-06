@@ -10,6 +10,7 @@ import ProductCharacteristicsComponent from "../components/ProductCharacteristic
 import ProductVideosComponent from "../components/ProductVideosComponent.vue";
 import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
 import ProductAttributesComponent from "../components/ProductAttributesComponent.vue";
+import * as transliteration from 'transliteration';
 
 
 export default {
@@ -22,7 +23,8 @@ export default {
         ProductCharacteristicsComponent,
         ProductVideosComponent,
         ImageFileInputComponent,
-        ProductAttributesComponent },
+        ProductAttributesComponent,
+    },
     props: {
         submitRoute: {
             type: String,
@@ -110,13 +112,13 @@ export default {
             default: null,
         },
         colorOptions: {
-            type: Object,
-            default: {},
+            type: Array,
+            default: [],
         },
-        /*categorySelected: {
-            type: Number,
-            default: null,
-        },*/
+        colorSelected: {
+            type: Array,
+            default: [],
+        },
         productMainImage: {
             type: String,
             default: '',
@@ -162,12 +164,15 @@ export default {
             selectedFieldId: null,
             // availabilityStatusArray: {},
             selectedSubProductsShow: [],
+            selectedColorsShow: [],
+            colors: [],
             products: [],
             selectedOptions: [],
             errors: [],
             displayCategory: [],
             displayColor: [],
             attributeOptions: [],
+            productSlugData: '',
         }
     },
     created() {
@@ -175,6 +180,7 @@ export default {
     },
     mounted() {
         this.selectedLanguage = this.baseLanguage;
+        this.productSlugData = this.productSlug;
 
         if (this.productCharacteristics) {
             this.characteristics = this.productCharacteristics;
@@ -182,6 +188,9 @@ export default {
         if (this.productVideos) {
             this.videos = this.productVideos;
         }
+        /*if (this.colorOptions) {
+            this.colors = this.colorOptions;
+        }*/
         if (this.productAttributeOptions) {
             this.attributeOptions = this.productAttributeOptions;
         }
@@ -204,15 +213,39 @@ export default {
         }
 
 
+        console.log(this.colorSelected);
 
-        console.log(this.availabilityStatusOptions);
-        console.log(this.colorOptions);
+        if( Array.isArray(this.colorSelected) ) {
+            this.colorSelected.forEach((item, i) => {
+                if (item && item.hasOwnProperty('id') && item.hasOwnProperty('name')) {
+                    this.selectedColorsShow.push({id: item.id, price: item.pivot.price});
+                    // this.colors.push({id: item.id, text: item.name[this.selectedLanguage]});
+                }
+            });
+        }
+        if( Array.isArray(this.colorOptions) ) {
+            this.colorOptions.forEach((item, i) => {
+                if (item && item.hasOwnProperty('id') && item.hasOwnProperty('name')) {
+                    this.colors.push({id: item.id, text: item.name[this.selectedLanguage]});
+                }
+            });
+        }
+
+
+
+        console.log('===');
+        console.log('selectedColorsShow | ' + this.selectedColorsShow);
+        console.log('===');
+        console.log(this.colors);
+        console.log('===');
 
 
     },
-    /*computed: {
-
-    },*/
+    computed: {
+        /*slug() {
+            return transliteration.slugify(this.produktName);
+        }*/
+    },
     watch: {
         selectedFieldId() {
             this.selectedOptions = [];
@@ -228,6 +261,12 @@ export default {
         },
         addGalleryItem() {
             this.gallery.push({});
+        },
+        addColor() {
+            this.selectedColorsShow.push({});
+        },
+        deleteColor(index) {
+            this.selectedColorsShow.splice(index, 1);
         },
         deleteCharacteristic(index) {
             this.characteristics.splice(index, 1);
@@ -270,6 +309,12 @@ export default {
                 this.products = [];
             });
         },
+        updateSlug(value) {
+            if(this.selectedLanguage === 'uk'){
+                value = event.target.value;
+                this.productSlugData = transliteration.slugify(value);
+            }
+        },
     }
 
 }
@@ -296,6 +341,7 @@ export default {
                     :is-required="true"
                     :init-data="productName"
                     :errors="errors"
+                    @input="updateSlug"
                 />
 
                 <div class="form-group mb-3">
@@ -304,7 +350,7 @@ export default {
                         :name="'sku'"
                         :model-value="productSku"
                         :errors="errors"
-                        :is-required="true"
+                        :is-required="false"
                     />
                 </div>
 
@@ -312,7 +358,7 @@ export default {
                     <input-component
                         :title="$t('admin.slug')"
                         :name="'slug'"
-                        :model-value="productSlug"
+                        :model-value="productSlugData"
                         :errors="errors"
                         :is-required="true"
                     />
@@ -356,7 +402,7 @@ export default {
                     label="text"
                     value-prop="id"
                     name="selected_sub_products_id"
-                    :max-items="6"
+                    :max-items="99"
                     @search-change="(query) => loadProducts(query)"
                     :is-required="false"
                     :errors="errors"
@@ -438,18 +484,43 @@ export default {
                 </div>
 
 
-                <div class="form-group mb-3" v-if="!displayColor">
-                    <select-color-component
+                <p class="mt-4">
+                    <strong>
+                        {{ $t('admin.color') }}
+                    </strong>
+                </p>
+                <div class="form-group mb-3 art-admin-repeater-four-width" v-if="!displayColor">
+<!--                    <select-component
+                        :is-multi-select="true"
+                        :model-value="selectedColorsShow"
                         :title="$t('admin.product_colors')"
-                        :options="colorOptions"
-                        :model-value="0"
-                        label="category"
-                        value-prop="all_color_ids"
-                        name="all_color_ids[]"
-                        :is-required="true"
+                        :options="colors"
+                        label="text"
+                        value-prop="id"
+                        name="all_color_ids"
+                        :is-required="false"
                         :errors="errors"
+                    />-->
+
+                    <select-color-component
+                        v-for="(selectedColor, index) in selectedColorsShow"
+
+                        :selected-color="selectedColor"
+                        :all-colors="colors"
+                        :index="index"
+                        :base-language="baseLanguage"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        @delete-color="() => deleteColor(index)"
                     />
                 </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <a href="#" id="add-color-option" class="btn mb-2 btn-secondary" @click.prevent="addColor"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.color_add')}}</a>
+                    </div>
+                </div>
+
 
                 <div class="form-group mb-3">
                     <image-file-input-component
@@ -563,9 +634,6 @@ export default {
                         :errors="errors"
                     />
                 </div>
-
-
-
 
 
 

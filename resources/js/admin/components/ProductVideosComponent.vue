@@ -66,7 +66,7 @@ export default {
                     <input-component
                         :title="'iframe'"
                         :name="'videos[' + index + '][iframe]'"
-                        :model-value="video.hasOwnProperty('iframe') ? video.iframe : []"
+                        :model-value="video.iframe"
                         :errors="errors"
                         :is-required="true"
                     />
