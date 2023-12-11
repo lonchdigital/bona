@@ -9,6 +9,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\ProductCategory\CategoryService;
 use App\Services\HomePage\HomePageService;
 use App\Services\WishList\WishListService;
+use Dymantic\InstagramFeed\InstagramFeed;
 
 class ShowHomePageAction extends BaseAction
 {
@@ -17,7 +18,7 @@ class ShowHomePageAction extends BaseAction
         HomePageService $homePageService,
 //        WishListService $wishListService,
         CurrencyService $currencyService,
-//        BlogArticleService $blogArticleService,
+        BlogArticleService $blogArticleService,
     )
     {
 //        $productType->load(['fields', 'fields.options']);
@@ -29,27 +30,27 @@ class ShowHomePageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
 
-        $productTypeDoors = $productType->find(3);
+        $instagramFeed = InstagramFeed::for('{instFeed}');
+
 
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),
             'slides' => $homePageService->getHomePageSlides(),
 //            'brands' => $homePageService->getHomePageBrands(),
-//            'categories' => $categoryService->getProductCategories($productTypeDoors),
             'productTypes' => $homePageService->getProductTypes(),
-//            'productTypeDoors' => $productTypeDoors,
             'homeNewProducts' => $homePageService->getHomePageNewProducts(),
             'homeBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),
             'homeTestimonials' => $homePageService->getHomePageTestimonials(),
             'faqs' => $homePageService->getHomePageFaqs(),
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
             'baseCurrency' => $currencyService->getBaseCurrency(),
+            'articles' => $blogArticleService->getLatestArticles(3),
+            'instagramFeed' => $instagramFeed,
 
 //            'newProducts' => $homePageService->getNewProducts(),
 //            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
 //            'fieldFilterString' => $homePageService->getProductsCustomFieldOptionsName(),
 //            'productsByField' => $homePageService->getProductsByCustomFieldOptions(),
-//            'articles' => $blogArticleService->getLatestArticles(3),
         ]);
     }
 }

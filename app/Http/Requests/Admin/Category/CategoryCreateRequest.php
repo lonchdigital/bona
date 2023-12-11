@@ -36,7 +36,7 @@ class CategoryCreateRequest extends BaseRequest
         $rules = $this->baseRules();
 
         $rules['category_image'] = [
-            'required',
+            'nullable',
             'mimes:jpeg,png,jpg',
             'dimensions:min_width=150,min_height=150'
         ];

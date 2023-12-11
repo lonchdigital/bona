@@ -34,17 +34,7 @@
                                             </select>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="collection_id">{{ trans('admin.collection') }}</label>
-                                            <select class="form-control select2-multi" name="collection_id" id="collection_id">
-                                                @if(!$searchData->collectionId)
-                                                    <option value="" selected hidden>{{ trans('admin.select_collection') }}</option>
-                                                @endif
-                                                @foreach($collections as $collection)
-                                                    <option value="{{ $collection->id }}" @if($searchData->collectionId === $collection->id) selected @endif>{{ $collection->brand->name }}, {{ $collection->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+
                                         <div class="form-group">
                                             <label for="country_id">{{ trans('admin.country') }}</label>
                                             <select class="form-control" name="country_id" id="country_id">
@@ -162,28 +152,6 @@
                                                         </td>
                                                     </tr>
 
-                                                    @foreach($product->children as $childProduct)
-                                                        <tr class="bg-light parrent-{{$product->id}} d-none">
-                                                            <td></td>
-                                                            <td>{{ $childProduct->id }}</td>
-                                                            <td><strong>{{ $childProduct->sku }}</strong></td>
-                                                            <td><strong>{{ $childProduct->name }}</strong></td>
-{{--                                                            <td><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="3" fill="{{ $childProduct->color->hex }}"></rect></svg></span> {{ $childProduct->color->name }}</td>--}}
-{{--                                                            <td>{{ $childProduct->brand->name }}</td>--}}
-{{--                                                            <td>{{ $childProduct->collection->name }}</td>--}}
-                                                            <td>{{ $childProduct->creator->first_name }} {{ $childProduct->creator->last_name }}</td>
-                                                            <td class="text-center">{{ $childProduct->created_at->format('d-m-Y') }}</td>
-                                                            <td class="text-right">
-                                                                <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <span class="text-muted sr-only">{{ trans('admin.action') }}</span>
-                                                                </button>
-                                                                <div class="dropdown-menu dropdown-menu-right">
-                                                                    <a class="dropdown-item" href="{{ route('admin.product.edit.page', ['productType' => $productType->id, 'product' => $childProduct->id]) }}">{{ trans('admin.edit') }}</a>
-                                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteProductModal-{{ $childProduct->id }}">{{ trans('admin.delete') }}</a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
                                                 @endforeach
                                                 </tbody>
                                             </table>
@@ -221,29 +189,7 @@
                 </div>
             </div>
         </div>
-        @foreach($product->children as $childProduct)
-            <div class="modal fade" id="deleteProductModal-{{ $childProduct->id }}" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="defaultModalLabel">{{ trans('admin.product_delete') }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">{{ trans('admin.product_delete_confirm_text', ['PRODUCT_NAME' => $childProduct->name]) }}</div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('admin.close') }}</button>
-                            <form action="{{ route('admin.product.delete', ['productType' => $childProduct->product_type_id, 'product' => $childProduct->id]) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-danger">{{ trans('admin.delete') }}</button>
-                            </form>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
     @endforeach
 @endsection
 @push('scripts')

@@ -10,6 +10,7 @@ use App\Models\Color;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\ProductTypeSizeOption;
+use App\Models\SeoText;
 use App\Services\Base\BaseService;
 use Illuminate\Support\Collection;
 use App\Services\Base\ServiceActionResult;
@@ -124,6 +125,12 @@ class ProductTypeService extends BaseService
                 $productType->fields()->sync([]);
             }
 
+            if( !is_null($request->faqs) ) {
+                $this->syncFaqs($productType->slug, $request->faqs);
+            }
+
+            SeoText::updateSeoText($productType->slug, $request->seoTitle, $request->seoText);
+
             return ServiceActionResult::make(true, trans('admin.product_type_create_success'));
         });
     }
@@ -212,6 +219,10 @@ class ProductTypeService extends BaseService
                 $this->deletePostTypeImage($imageToDelete);
             }
 
+            $this->syncFaqs($productType->slug, $request->faqs);
+
+            SeoText::updateSeoText($productType->slug, $request->seoTitle, $request->seoText);
+
             return ServiceActionResult::make(true, trans('admin.product_type_edit_success'));
         });
     }
@@ -225,6 +236,10 @@ class ProductTypeService extends BaseService
                  $productType->fields()->sync([]);
 
                 $productType->sizeFilterOptions()->delete();
+
+                $this->syncFaqs($productType->slug, []);
+
+                SeoText::where('page_type', $productType->slug)->delete();
 
                  $productType->delete();
 

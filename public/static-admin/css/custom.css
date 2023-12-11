@@ -1,4 +1,5 @@
 
+.card .card-header.sticky .nav,
 .card-header-wrapper .card-header.sticky .nav {
     position: fixed;
     top: 5px;
@@ -32,3 +33,11 @@
 .form-group.art-form-group-hidden {
     display: none;
 }
+
+.art-multiselect-height .multiselect {
+    height: unset;
+}
+.art-multiselect-height .multiselect .multiselect-wrapper {
+    height: unset;
+}
+

@@ -10,6 +10,7 @@ const routes = {
     cart: {
         products_list_route: '{{ route('store.cart.products-with-summary') }}',
         product_add_route: '{{ route('store.cart.add-product', ['productSlug' => 'PRODUCT_SLUG']) }}',
+        sub_product_add_route: '{{ route('store.cart.add-sub-product', ['productSlug' => 'PRODUCT_SLUG']) }}',
         product_update_route: '{{ route('store.cart.change-product-count', ['productSlug' => 'PRODUCT_SLUG']) }}',
         product_delete_route: '{{ route('store.cart.delete-product', ['productSlug' => 'PRODUCT_SLUG']) }}',
         promo_code_add_route: '{{ route('store.cart.add-promo-code') }}',
@@ -65,6 +66,7 @@ const translations = {
     door_height: '@lang('base.door_height')',
     product_add_to_cart_success: '@lang('base.product_add_to_cart_success')',
     in_cart: '@lang('base.in_cart')',
+    nothing_found: '@lang('base.nothing_found')',
     checkout_search_np_department: '@lang('base.checkout_search_np_department')',
     checkout_search_np_department_not_found: '@lang('base.checkout_search_np_department_not_found')',
 };

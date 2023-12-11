@@ -11,11 +11,6 @@ class BlogArticleCreateRequest extends BaseRequest
     public function baseRules(): array
     {
         $rules = [
-            'category_id' => [
-                'required',
-                'integer',
-                'exists:blog_categories,id',
-            ],
             'name' => [
                 'array',
             ],
@@ -23,7 +18,7 @@ class BlogArticleCreateRequest extends BaseRequest
                 'string',
                 'required',
             ],
-            'sub_title' => [
+            'preview_text' => [
                 'array',
             ],
             'hero_image_deleted' => [
@@ -64,7 +59,7 @@ class BlogArticleCreateRequest extends BaseRequest
                 'required',
                 'string'
             ];
-            $rules['sub_title.' . $availableLanguage] = [
+            $rules['preview_text.' . $availableLanguage] = [
                 'required',
                 'string'
             ];
@@ -242,13 +237,11 @@ class BlogArticleCreateRequest extends BaseRequest
     {
         $attributes = [];
 
-        $attributes['category_id'] = mb_strtolower(trans('admin.category'));
-
         $attributes['hero_image'] = mb_strtolower(trans('admin.blog_article_block_image_title'));
 
         foreach ($this->availableLanguages as $availableLanguage) {
             $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
-            $attributes['sub_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_sub_title'), $availableLanguage);
+            $attributes['preview_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_preview_text'), $availableLanguage);
         }
 
         if ($this->input('block')) {
@@ -291,13 +284,12 @@ class BlogArticleCreateRequest extends BaseRequest
     public function toDTO(): EditBlogArticleDTO
     {
         return new EditBlogArticleDTO(
-            $this->input('category_id'),
             $this->input('name'),
             $this->input('slug'),
+            $this->input('preview_text'),
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
-            $this->input('sub_title'),
             $this->file('hero_image'),
             $this->validated('block'),
         );

@@ -20,12 +20,6 @@ class AddProductToCartAction extends BaseAction
         WishListService $wishListService,
     )
     {
-//        dd($request);
-        /*
-         "_token" => "on5Mk3uQnom8HJcPPKY2YT8h9c88mUDnhwUOu59l"
-         "product_count" => "1"
-         */
-
         $cart = $this->getCart($cartService);
         $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
 

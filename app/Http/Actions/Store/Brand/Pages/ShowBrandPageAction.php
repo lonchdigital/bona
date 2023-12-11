@@ -5,7 +5,6 @@ namespace App\Http\Actions\Store\Brand\Pages;
 use App\Models\Brand;
 use App\Http\Actions\Admin\BaseAction;
 use App\Services\Brand\BrandService;
-use App\Services\Collection\CollectionService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductService;
 use App\Services\Seogen\SeogenService;
@@ -16,7 +15,6 @@ class ShowBrandPageAction extends BaseAction
     public function __invoke(
         Brand $brand,
         BrandService $brandService,
-        CollectionService $collectionService,
         ProductService $productService,
         WishListService $wishListService,
         CurrencyService $currencyService,
@@ -30,7 +28,6 @@ class ShowBrandPageAction extends BaseAction
 
         return view('pages.store.brand', [
             'brand' => $brand,
-            'collections' => $collectionService->getCollectionsByBrandId($brand->id),
             'bestsellers' => $productService->getBestSellersByBrandId($brand->id),
             'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'baseCurrency' => $currencyService->getBaseCurrency(),

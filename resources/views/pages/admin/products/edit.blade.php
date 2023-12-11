@@ -10,20 +10,7 @@
                     <h2 class="page-title">{{ trans('admin.product_new') }}</h2>
                 @endisset
 
-{{--                @dd(json_encode($productStatuses))--}}
-{{--                @dd(json_encode($product['price_in_currency']))--}}
-{{--                @dd( number_format($product['old_price_in_currency'], 2, '.', '') )--}}
-
-{{--                    @dd( json_encode($productType->fields) )--}}
-
                     @php
-                        //print_r( json_encode($product->getTranslations('name') ));
-
-                        $arr = [
-                            "uk"=> "name UK",
-                            "ru"=>"name RU"
-                                ];
-
                         // availability status
                         $availability_status_options = [];
                         $availability_status_option_selected = 1;
@@ -58,6 +45,21 @@
 
                         }
 
+
+                        // brands
+                        $brand_options = [];
+                        $brand_selected = 1;
+                        if(isset($product) && !is_null($product->brand)) {
+                            $brand_selected = $product->brand->id;
+                        }
+                        if( $productType->has_brand ) {
+                            foreach ($brands as $brand) {
+                                $brand_options[$brand->id] = $brand->name;
+                            }
+                        }
+
+
+
                         // custom options
                         foreach ($productType->fields as $key => $field) {
                             $optionsArray = [];
@@ -73,7 +75,7 @@
                     @endphp
 
 
-{{--                    @dd($product->colors)--}}
+{{--                    @dd($productType->has_brand)--}}
 
 
                     <product-page-edit-form
@@ -113,6 +115,11 @@
                             :category-selected="{{ json_encode($category_selected) }}"
                         @endif
 
+                        @if($productType->has_brand)
+                            :brand-options="{{ json_encode( $brand_options ) }}"
+                            :brand-selected="{{ json_encode($brand_selected) }}"
+                        @endif
+
                         :color-options="{{ json_encode( $colors ) }}"
                         @if(isset($product) && $productType->has_color)
                             :color-selected="{{ json_encode($product->colors) }}"
@@ -140,10 +147,20 @@
 
                         :product-custom-fields="{{ json_encode($productType->fields) }}"
 
-
                         :product-custom-attributes="{{ json_encode($productType->attributes) }}"
                         @if(isset($attributeOptions) && count($attributeOptions))
                             :product-attribute-options="{{ json_encode($attributeOptions) }}"
+                        @endif
+
+                        @if(isset($productFaqs) && count($productFaqs))
+                            :product-faqs="{{ json_encode($productFaqs) }}"
+                        @endif
+
+                        @if(isset($seoData['title']))
+                            :seo-title="{{ json_encode($seoData['title']) }}"
+                        @endif
+                        @if(isset($seoData['content']))
+                            :seo-text="{{ json_encode($seoData['content']) }}"
                         @endif
                         {{--end--}}
                     />

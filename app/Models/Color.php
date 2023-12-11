@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 class Color extends Model
@@ -26,6 +28,13 @@ class Color extends Model
     public function children()
     {
         return $this->hasMany(Color::class, 'parent_color_id');
+    }
+
+    public function imageUrl(): Attribute
+    {
+        return Attribute::make(function () {
+            return Storage::url($this->main_image);
+        });
     }
 
 }

@@ -6,7 +6,6 @@ use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Admin\ProductsImport\ProductImportFilterRequest;
 use App\Models\ProductType;
 use App\Services\Brand\BrandService;
-use App\Services\Collection\CollectionService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
 use App\Services\Product\ProductImportService;
@@ -19,7 +18,6 @@ class ShowImportedProductsListPageAction extends BaseAction
         ProductImportService $productImportService,
         BrandService         $brandService,
         ColorService         $colorService,
-        CollectionService    $collectionService,
         CountryService       $countryService,
     )
     {
@@ -34,7 +32,6 @@ class ShowImportedProductsListPageAction extends BaseAction
         return view('pages.admin.products-import.imported-products-list', [
             'brands' => $brandService->getBrands(),
             'colors' => $colorService->getColors(),
-            'collections' => $collectionService->getCollections(),
             'countries' => $countryService->getCountries(),
             'searchData' => $dto,
             'productType' => $productType,

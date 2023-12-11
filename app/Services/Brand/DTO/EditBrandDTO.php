@@ -12,10 +12,6 @@ class EditBrandDTO implements BaseDTO
         public readonly string $slug,
         public readonly array $description,
         public readonly ?UploadedFile $logo,
-        public readonly ?UploadedFile $head,
-        public readonly array $sliderMainText,
-        public readonly array $sliderDescriptionText,
-        public readonly array $slides,
     )
     { }
 }

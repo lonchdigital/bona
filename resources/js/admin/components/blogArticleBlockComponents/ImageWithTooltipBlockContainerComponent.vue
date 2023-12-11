@@ -73,13 +73,13 @@ export default {
                     :show-delete-button="index >= 1"
                     @delete-secondary-image="deleteSecondaryImage"
                 />
-                <div v-if="images.length < 2" class="col-md-6 d-flex justify-content-center align-content-center flex-wrap">
+<!--                <div v-if="images.length < 2" class="col-md-6 d-flex justify-content-center align-content-center flex-wrap">
                     <div class="row">
                         <div class="col">
                             <button class="btn btn-dark" @click.prevent="addSecondImage">{{ $t('admin.add_image') }}</button>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
             <div class="row">
                 <div class="col">

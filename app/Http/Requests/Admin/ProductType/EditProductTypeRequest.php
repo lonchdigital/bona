@@ -181,6 +181,24 @@ class EditProductTypeRequest extends BaseRequest
                 $this->input('has_size') ? 'required' : 'nullable',
                 'string',
             ];
+
+            $rules['faqs.*.question.' . $availableLanguage] = [
+                'required',
+                'string'
+            ];
+            $rules['faqs.*.answer.' . $availableLanguage] = [
+                'required',
+                'string'
+            ];
+
+            $rules['seo_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['seo_text.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
         }
 
 
@@ -286,6 +304,11 @@ class EditProductTypeRequest extends BaseRequest
             $this->input('size_points'),
             $this->input('product_field'),
             $this->input('product_attribute'),
+
+            $this->validated('faqs'),
+
+            $this->input('seo_title'),
+            $this->input('seo_text'),
         );
     }
 }

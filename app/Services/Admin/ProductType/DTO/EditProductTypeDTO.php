@@ -50,6 +50,11 @@ class EditProductTypeDTO implements BaseDTO
         public readonly ?array $productSizePoints,
         public readonly ?array $productTypeFields,
         public readonly ?array $productTypeAttributes,
+
+        public readonly ?array $faqs,
+
+        public readonly ?array $seoTitle,
+        public readonly ?array $seoText,
     )
     { }
 }

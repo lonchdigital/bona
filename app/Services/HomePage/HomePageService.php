@@ -229,42 +229,6 @@ class HomePageService extends BaseService
 
     }
 
-    private function syncFaqs(string $pageType, ?array $faqs): void
-    {
-        $existingFaqs = Faqs::get();
-        if ($faqs) {
-            foreach ($faqs as $faq) {
-                $dataToUpdate = [
-                    'page_type' => $pageType,
-                    'question' => $faq['question'],
-                    'answer' => $faq['answer'],
-                ];
-
-                if (isset($faq['id']) && $faq['id']) {
-                    $existingFaq = $existingFaqs->where('id', $faq['id'])->first();
-                    if (!$existingFaq) {
-                        throw new \Exception('Incorrect faq id: ' . $faq['id']);
-                    }
-
-                    $existingFaq->update($dataToUpdate);
-                } else {
-                    Faqs::create($dataToUpdate);
-                }
-            }
-        }
-
-        $existingFaqsInRequest = $faqs ? array_filter(array_column($faqs, 'id'), function ($item) {
-            return $item !== null;
-        }): [];
-
-        $faqsToDelete = $existingFaqs->whereNotIn('id', $existingFaqsInRequest);
-
-        foreach ($faqsToDelete as $faqToDelete) {
-            $faqToDelete->delete();
-        }
-
-    }
-
     public function getHomePageConfig(): ?HomePageConfig {
         return HomePageConfig::first();
     }

@@ -195,67 +195,7 @@
                             </div>
                         </div>
                         <div class="row collection-other-list justify-content-center">
-                            @foreach($collections as $collection)
-                                <div class="col-12 col-sm-6 col-lg-4 collection-other-item">
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.collection.page', ['collectionSlug' => $collection->slug]) }}">
-                                        <div class="collection-other-item-innner p-4 p-md-6">
-                                            <div class="collection-other-list-title text-center">{{ $collection->name }}</div>
-                                            <div class="collection-other-list-count text-center mb-6">{{ trans('base.products_in_collection') }}: <span class="count">{{ $collection->products_count }}</span></div>
-                                            <div class="collection-other-pic-wrap d-flex flex-wrap mb-4">
-                                                @if($collection->preview_image_1)
-                                                    @if(($collection->preview_image_1) && ($collection->preview_image_2) && ($collection->preview_image_3) && ($collection->preview_image_4))
-                                                        <div class="collection-other-pic">
-                                                            <img src="{{ $collection->preview_image_1_url }}" alt="img">
-                                                        </div>
-                                                        <div class="collection-other-pic">
-                                                            <img src="{{ $collection->preview_image_2_url }}" alt="img">
-                                                        </div>
-                                                        <div class="collection-other-pic">
-                                                            <img src="{{ $collection->preview_image_3_url }}" alt="img">
-                                                        </div>
-                                                        <div class="collection-other-pic">
-                                                            <img src="{{ $collection->preview_image_4_url }}" alt="img">
-                                                        </div>
-                                                    @else
-                                                        <div class="w-100">
-                                                            <img src="{{ $collection->preview_image_1_url }}" alt="img">
-                                                        </div>
-                                                    @endif
-                                                @elseif( $collection->products_count < 4)
-                                                    @if( $collection->products_count < 1)
-                                                        <div class="w-100">
-                                                            <img src="{{ $brand->logo_image_url }}" alt="img">
-                                                        </div>
-                                                    @else
-                                                        <div class="w-100">
-                                                            <img src="{{ $collection->products->first()->preview_image_url }}" alt="img">
-                                                        </div>
-                                                    @endif
-                                                @else
-                                                    @php
-                                                        $shownImages = 0;
-                                                    @endphp
-                                                    @foreach($collection->products as $product)
-                                                        @php
-                                                            if ($shownImages > 4) {
-                                                                break;
-                                                            }
 
-                                                            $shownImages++;
-                                                        @endphp
-                                                        <div class="collection-other-pic">
-                                                            <img src="{{ $product->preview_image_url }}" alt="img">
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                            <div class="collection-other-logo text-center">
-                                                <img src="{{ $brand->logo_image_url }}" alt="img">
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            @endforeach
                         </div>
                     </div>
                 </section>

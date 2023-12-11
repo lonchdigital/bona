@@ -102,7 +102,6 @@ export default {
     mounted() {
         this.selectedLanguage = this.baseLanguage;
 
-        console.log(this.sliderSlides);
 
         if (this.sliderSlides) {
             this.slides = this.sliderSlides;
@@ -112,8 +111,6 @@ export default {
             this.testimonials = this.testimonialList;
         }
 
-        console.log(this.slides);
-        console.log(this.testimonials);
 
         if (this.faqList) {
             this.faqs = this.faqList;
@@ -301,17 +298,19 @@ export default {
                         {{ $t('admin.testimonial') }}
                     </strong>
                 </p>
-                <home-page-testimonial-component
-                    v-for="(testimonial, index) in testimonials"
-                    :testimonial-id="testimonial.hasOwnProperty('id') ? testimonial.id : null"
-                    :testimonial="testimonial"
-                    :index="index"
-                    :base-language="baseLanguage"
-                    :selected-language="selectedLanguage"
-                    :available-languages="availableLanguages"
-                    :errors="errors"
-                    @delete-testimonial="() => deleteTestimonial(index)"
-                />
+                <div class="form-group mb-3 art-admin-repeater-four-width">
+                    <home-page-testimonial-component
+                        v-for="(testimonial, index) in testimonials"
+                        :testimonial-id="testimonial.hasOwnProperty('id') ? testimonial.id : null"
+                        :testimonial="testimonial"
+                        :index="index"
+                        :base-language="baseLanguage"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        @delete-testimonial="() => deleteTestimonial(index)"
+                    />
+                </div>
                 <div class="row">
                     <div class="col">
                         <a href="#" id="add-testimonial-option" class="btn mb-2 btn-secondary" @click.prevent="addTestimonial"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.testimonial_add')}}</a>
@@ -325,18 +324,20 @@ export default {
                         {{ $t('admin.questions') }}
                     </strong>
                 </p>
-                <home-page-faq-component
-                    v-for="(faq, index) in faqs"
-                    :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
-                    :faq="faq"
-                    :index="index"
-                    :base-language="baseLanguage"
-                    :selected-language="selectedLanguage"
-                    :available-languages="availableLanguages"
-                    :errors="errors"
-                    :faq-deleted="faqDeleted"
-                    @delete-faq="() => deleteFaq(index)"
-                />
+                <div class="form-group mb-3 art-admin-repeater-four-width">
+                    <home-page-faq-component
+                        v-for="(faq, index) in faqs"
+                        :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
+                        :faq="faq"
+                        :index="index"
+                        :base-language="baseLanguage"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        :faq-deleted="faqDeleted"
+                        @delete-faq="() => deleteFaq(index)"
+                    />
+                </div>
 
                 <div class="row">
                     <div class="col">

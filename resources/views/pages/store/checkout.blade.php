@@ -5,13 +5,28 @@
 @endsection
 
 @section('content')
+
+    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/catalog-header-bg.png') }})">
+        <header>
+            <div class="container">
+                <h1 class="h2 title">Checkout</h1>
+                <ol class="breadcrumb breadcrumb-inverted">
+                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
+                    <li><a class="active" href="#">Checkout</a></li>
+                </ol>
+            </div>
+        </header>
+    </section>
+
+
     <main id="checkout" class="checkout">
         <div class="content">
             <div class="entry-content">
                 <div class="container">
                     <form class="row checkout-main mb-lg-4" id="checkout-main"
                           action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST">
-                        <div class="left-content col-auto">
+
+                        <div class="left-content col-md-8">
                             <!-- checkout-order-data -->
                             <div id="checkout-order-data" class="checkout-order-data">
                                 <div class="checkout-order-data-form flex-column mb-10 mb-lg-20">
@@ -32,7 +47,7 @@
                                                         <div class="col-6">
                                                             <div
                                                                 class="field @if($errors->has('first_name')) field-error @endif mr-n1">
-                                                                <input type="text" class="form-control" id="name"
+                                                                <input type="text" class="art-form-light-control" id="name"
                                                                        name="first_name"
                                                                        placeholder="{{ trans('base.name') }}"
                                                                        value="{{ old('first_name') }}">
@@ -43,7 +58,7 @@
                                                         <div class="col-6">
                                                             <div
                                                                 class="field @if($errors->has('last_name')) field-error @endif ml-n1">
-                                                                <input type="text" class="form-control" id="surname"
+                                                                <input type="text" class="art-form-light-control" id="surname"
                                                                        name="last_name"
                                                                        placeholder="{{ trans('base.last_name') }}"
                                                                        value="{{ old('last_name') }}">
@@ -64,7 +79,7 @@
                                                     </div>
                                                     <div
                                                         class="field  @if($errors->has('phone')) field-error @endif  mb-1 mb-lg-1 mb-xl-1 d-flex flex-column-reverse">
-                                                        <input type="tel" class="form-control" id="phone" name="phone"
+                                                        <input type="tel" class="art-form-light-control" id="phone" name="phone"
                                                                placeholder="{{ trans('base.phone') }}"
                                                                value="{{ old('phone') }}">
                                                         <label class="form-label d-lg-none mb-1"
@@ -79,7 +94,7 @@
                                                     </div>
                                                     <div
                                                         class="field @if($errors->has('email')) field-error @endif mb-1 d-flex flex-column">
-                                                        <input type="email" class="form-control" id="email" name="email"
+                                                        <input type="email" class="art-form-light-control" id="email" name="email"
                                                                placeholder="{{ trans('base.email') }}"
                                                                value="{{ old('email') }}">
                                                         <label class="form-label d-lg-none mb-1"
@@ -106,8 +121,7 @@
                                     @endguest
                                     <div class="row">
                                         <div class="col">
-                                            <div
-                                                class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-6 mt-xl-12 mt-xxl-26 mb-4 mb-lg14">
+                                            <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-6 mt-xl-12 mt-xxl-26 mb-4 mb-lg14">
                                                 <div
                                                     class="h4 mb-4 mb-lg-0 mb-4 mb-lg-0">{{ trans('base.delivery') }}</div>
                                                 <div class="checkout-delivery-accordion w-100 mt-1"
@@ -182,7 +196,7 @@
                                                                         <div
                                                                             class="field @if($errors->has('district')) field-error @endif">
                                                                             <input type="text" name="district"
-                                                                                   class="form-control"
+                                                                                   class="art-form-light-control"
                                                                                    placeholder="{{ trans('base.district') }}"
                                                                                    value="{{ old('district') }}">
                                                                         </div>
@@ -201,7 +215,7 @@
                                                                         <div
                                                                             class="field @if($errors->has('city')) field-error @endif">
                                                                             <input type="text" name="city"
-                                                                                   class="form-control"
+                                                                                   class="art-form-light-control"
                                                                                    placeholder="{{ trans('base.city') }}"
                                                                                    value="{{ old('city') }}">
                                                                         </div>
@@ -219,28 +233,28 @@
                                                                     <div
                                                                         class="field @if($errors->has('street')) field-error @endif field--house">
                                                                         <input type="text" name="street"
-                                                                               class="form-control"
+                                                                               class="art-form-light-control"
                                                                                placeholder="{{ trans('base.checkout_street') }}"
                                                                                value="{{ old('street') }}">
                                                                     </div>
                                                                     <div
                                                                         class="field @if($errors->has('building_number')) field-error @endif field--house">
                                                                         <input type="text" name="building_number"
-                                                                               class="form-control"
+                                                                               class="art-form-light-control"
                                                                                placeholder="{{ trans('base.checkout_building_number') }}"
                                                                                value="{{ old('building_number') }}">
                                                                     </div>
                                                                     <div
                                                                         class="field @if($errors->has('apartment_number')) field-error @endif field--apart">
                                                                         <input type="text" name="apartment_number"
-                                                                               class="form-control"
+                                                                               class="art-form-light-control"
                                                                                placeholder="{{ trans('base.checkout_apartment_number') }}"
                                                                                value="{{ old('apartment_number') }}">
                                                                     </div>
                                                                     <div
                                                                         class="field @if($errors->has('floor_number')) field-error @endif field--floor">
                                                                         <input type="text" name="floor_number"
-                                                                               class="form-control"
+                                                                               class="art-form-light-control"
                                                                                placeholder="{{ trans('base.checkout_floor_number') }}"
                                                                                value="{{ old('floor_number') }}">
                                                                     </div>
@@ -302,7 +316,7 @@
                                                                                 <div
                                                                                     class="datepicker @if($errors->has('delivery_date')) datepicker-error @endif">
                                                                                     <input id="datepicker"
-                                                                                           class="flatpickr-input form-control"
+                                                                                           class="flatpickr-input art-form-light-control"
                                                                                            name="delivery_date"
                                                                                            type="date"
                                                                                            placeholder="{{ trans('base.checkout_select_date') }}"
@@ -437,139 +451,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="card delivery-ukr">
-                                                        <div class="card-header">
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-7 mb-2 mb-md-0">
-                                                                    <div class="custom-control custom-radio mb-0">
-                                                                        <input data-toggle="collapse"
-                                                                               data-target="#collapse3" type="radio"
-                                                                               id="delivery-radio-ukr-p"
-                                                                               @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY) checked
-                                                                               @endif name="delivery_type_id"
-                                                                               value="{{ App\DataClasses\DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY }}"
-                                                                               class="custom-control-input"/>
-                                                                        <label class="custom-control-label"
-                                                                               for="delivery-radio-ukr-p">
-                                                                            <div class="i-ukr mr-2">
-                                                                                <svg>
-                                                                                    <use
-                                                                                        xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-ukr"></use>
-                                                                                </svg>
-                                                                            </div>
-                                                                            {{ trans('base.checkout_ukr_p_delivery') }}
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-12 col-md-5">
-                                                                    <div
-                                                                        class="nav-item-info d-flex align-items-center justify-content-between">
-                                                                        <div
-                                                                            class="delivery-free mr-3">{{ trans('base.cart_delivery_price') }}</div>
-                                                                        <div class="i-info" data-toggle="tooltip"
-                                                                             title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
-                                                                            <span class="icon-i-info"><span
-                                                                                    class="path1"></span><span
-                                                                                    class="path2"></span></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div id="collapse3"
-                                                             class="collapse @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY) show @endif"
-                                                             data-parent="#checkout-delivery-accordion">
-                                                            <div class="card-body pt-8 px-0 pb-10 mb-4">
-                                                                <div
-                                                                    class="delivery-title mb-4">{{ trans('base.checkout_select_np_department') }}</div>
-                                                                <div class="city-search-wrap">
-                                                                    <div
-                                                                        class="field @if($errors->has('meest_city')) field-error @endif city-search mb-1">
-                                                                        <input value="{{ old('meest_city') }}"
-                                                                               @if(old('meest_city')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getMeestCityByRef(old('meest_city'))) }}'
-                                                                               @endif
-                                                                               type="text" class="meest-city-select"
-                                                                               name="meest_city"/>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-12 text-danger">
-                                                                            @error('meest_city')
-                                                                            <div
-                                                                                class="field-error-meest_city">{{ $message }}</div>
-                                                                            @enderror
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div id="meest-department-search-wrap">
-                                                                    <div
-                                                                        class="field @if($errors->has('meest_department')) field-error @endif city-search mb-1">
-                                                                        <input value="{{ old('meest_department') }}"
-                                                                               @if(old('meest_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getMeestDepartmentByRef(old('meest_department'))) }}'
-                                                                               @endif
-                                                                               type="text"
-                                                                               class="meest-department-select"
-                                                                               name="meest_department"/>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-12 text-danger">
-                                                                            @error('meest_department')
-                                                                            <div
-                                                                                class="field-error-meest_department">{{ $message }}</div>
-                                                                            @enderror
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card delivery-self">
-                                                        <div class="row">
-                                                            <div class="col-12 col-md-7 mb-2 mb-md-0">
-                                                                <div class="card-header">
-                                                                    <div class="custom-control custom-radio mb-0">
-                                                                        <input data-toggle="collapse"
-                                                                               data-target="#collapse4" type="radio"
-                                                                               id="delivery-radio-pick-up"
-                                                                               @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY) checked
-                                                                               @endif name="delivery_type_id"
-                                                                               value="{{ App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY }}"
-                                                                               class="custom-control-input"/>
-                                                                        <label class="custom-control-label"
-                                                                               for="delivery-radio-pick-up">{{ trans('base.checkout_pickup_from_store') }}
-                                                                            <div class="info-map mb-2">
-                                                                                <svg>
-                                                                                    <use
-                                                                                        xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-pin"></use>
-                                                                                </svg>
-                                                                                <a target="_blank"
-                                                                                   href="https://goo.gl/maps/xiXKdYTduy17NjMq6">{{ trans('base.showroom_address') }}</a>
-                                                                            </div>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-12 col-md-5">
-                                                                <div
-                                                                    class="nav-item-info d-flex align-items-center justify-content-between">
-                                                                    <div
-                                                                        class="delivery-free mr-3">{{ trans('base.checkout_free') }}</div>
-                                                                    <div class="i-info" data-toggle="tooltip"
-                                                                         title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
-                                                                        <span class="icon-i-info"><span
-                                                                                class="path1"></span><span
-                                                                                class="path2"></span></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div id="collapse4"
-                                                             class="collapse @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY) show @endif"
-                                                             data-parent="#checkout-delivery-accordion">
-                                                            <div class="card-body pt-8 px-0 pb-10 mb-4 d-none">
-                                                                // Collapse 4 content
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    
                                                 </div>
                                             </div>
                                             <div
@@ -667,7 +549,7 @@
                                                                         <div class="col-6">
                                                                             <div
                                                                                 class="field @if($errors->has('custom_first_name')) field-error @endif mr-n1">
-                                                                                <input type="text" class="form-control"
+                                                                                <input type="text" class="art-form-light-control"
                                                                                        id="custom_name"
                                                                                        name="custom_first_name"
                                                                                        placeholder="{{ trans('base.name') }}"
@@ -679,7 +561,7 @@
                                                                         <div class="col-6">
                                                                             <div
                                                                                 class="field @if($errors->has('custom_last_name')) field-error @endif ml-n1">
-                                                                                <input type="text" class="form-control"
+                                                                                <input type="text" class="art-form-light-control"
                                                                                        id="custom_surname"
                                                                                        name="custom_last_name"
                                                                                        placeholder="{{ trans('base.last_name') }}"
@@ -703,7 +585,7 @@
                                                                     </div>
                                                                     <div
                                                                         class="field  @if($errors->has('custom_phone')) field-error @endif  mb-1 mb-lg-1 mb-xl-1 d-flex flex-column-reverse">
-                                                                        <input type="tel" class="form-control"
+                                                                        <input type="tel" class="art-form-light-control"
                                                                                id="custom_phone" name="custom_phone"
                                                                                placeholder="{{ trans('base.phone') }}"
                                                                                value="{{ old('custom_phone') }}">
@@ -720,7 +602,7 @@
                                                                     </div>
                                                                     <div
                                                                         class="field @if($errors->has('custom_email')) field-error @endif mb-1 d-flex flex-column">
-                                                                        <input type="email" class="form-control"
+                                                                        <input type="email" class="art-form-light-control"
                                                                                id="custom_email" name="custom_email"
                                                                                placeholder="{{ trans('base.email') }}"
                                                                                value="{{ old('custom_email') }}">
@@ -746,7 +628,7 @@
                                                             <div
                                                                 class="delivery-title mb-4 d-none d-lg-block">{{ trans('base.checkout_order_comment') }}</div>
                                                             <div class="field mb-4">
-                                                                <textarea class="form-control h-100" name="comment"
+                                                                <textarea class="art-form-light-control h-100" name="comment"
                                                                           rows="4"
                                                                           placeholder="{{ trans('base.checkout_order_comment_placeholder') }}"></textarea>
                                                             </div>
@@ -761,14 +643,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="right-sidebar col-auto mb-16 mb-lg-0">
+
+                        <div class="right-sidebar col-md-4">
                             <!-- checkout-order-info -->
                             <div id="checkout-sidebar" class="checkout-sidebar">
                                 <div id="checkout-order-info" class="checkout-order-info">
                                     <div class="checkout-order-info-form">
                                         <div class="total-info-top pt-4 pt-xl-6 px-lg-2 px-xl-5 pb-4 pb-xl-6  w-100">
                                             <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <div class="h4">{{ trans('base.checkout_my_order') }}</div>
+                                                <div class="h4 art-total-info-title">{{ trans('base.checkout_my_order') }}</div>
                                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-edit p-0 m-0">
                                                     <div class="i-gear mr-2">
                                                         <svg>
@@ -779,8 +662,8 @@
                                                     <span>{{ trans('base.checkout_edit_order') }}</span>
                                                 </a>
                                             </div>
-                                            <div
-                                                class="checkout-order-list-product-descr bg-silver-light-custom p-5 mb-6">
+
+                                            <div class="checkout-order-list-product-descr art-checkout-order-list p-5 mb-6">
                                                 <div class="row">
                                                     <div class="col checkout-product-list">
                                                         @foreach($productsInCart as $product)
@@ -893,6 +776,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>

@@ -21,30 +21,21 @@
 
 @section('content')
 
-    <!-- ======================== Main header ======================== -->
-
-
-    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/catalog-header-bg.png') }})">
-        <header>
-            <div class="container">
-                <h1 class="h2 title">{{ $productType->name }}</h1>
-                <ol class="breadcrumb breadcrumb-inverted">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
-                    <li><a class="active" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
-                </ol>
-            </div>
-        </header>
-    </section>
-
+    <!-- ======================== Page header ======================== -->
+    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/header-bg.png') }})"></section>
+    <header class="art-page-header">
+        <div class="container">
+            <ol class="breadcrumb breadcrumb-inverted font-two">
+                <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
+                <li><a class="active" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
+            </ol>
+        </div>
+    </header>
 
     <!-- ======================== Products ======================== -->
 
-    <section class="products">
+    <section class="products art-products-catalog">
         <div class="container">
-
-            <header class="hidden">
-                <h3 class="h3 title">Product category grid</h3>
-            </header>
 
             <div class="row">
 
@@ -57,7 +48,7 @@
 
                             <!--Price-->
                             <div class="filter-box active">
-                                <div class="title">{{ trans('base.price') }}</div>
+                                <div class="title font-title">{{ trans('base.price') }}</div>
                                 <div class="filter-content">
                                     <div class="price-filter">
                                         <input type="hidden" name="price_from" class="art-irs-from"
@@ -80,7 +71,7 @@
                                 @foreach($filters['main'] as $filter)
 
                                     <div class="filter-box active"> {{-- archive-catalog-filter-left--}}
-                                        <div class="title">
+                                        <div class="title font-title">
                                             {{ $filter->pivot->filter_name }}
                                         </div>
 
@@ -118,7 +109,7 @@
                             @if($productType->has_color)
 
                                 <div class="filter-box filter-item--colors active"> {{-- archive-catalog-filter-left--}}
-                                    <div class="title">
+                                    <div class="title font-title">
                                         {{ trans('base.color') }}
                                     </div>
 
@@ -155,9 +146,7 @@
                             @endif
 
 
-                            <div class="toggle-filters-close btn btn-main filter-submit-main">
-                                Filter
-                            </div>
+                            <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark">{{trans('base.filter')}}</div>
 
                         </form>
 
@@ -168,29 +157,32 @@
 
                 <div class="col-md-9 col-xs-12">
 
-                    <div class="art-product-list art-three-column">
-                        @foreach($productsPaginated as $product)
-                            <div class="art-product-item">
-                                <div class="art-product-data">
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="">
-                                        <div class="image">
-                                            <img src="{{ $product->preview_image_url }}" alt="">
-{{--                                            <img src="{{ $product->main_image_url }}" alt="">--}}
-                                        </div>
-                                        <div class="text">
-                                            <h2 class="product-title">{{ $product->name }}</h2>
-                                            <span class="price-wrapper">
+                    <div class="products-catalog-wrapper">
+
+                        <h1 class="h2 title">{{ $productType->name }}</h1>
+
+                        <div class="art-product-list art-three-column">
+                            @foreach($productsPaginated as $product)
+                                <div class="art-product-item">
+                                    <div class="art-product-data">
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="">
+                                            <div class="image">
+                                                <img src="{{ $product->preview_image_url }}" alt="">
+                                            </div>
+                                            <div class="text">
+                                                <h2 class="product-title">{{ $product->name }}</h2>
+                                                <span class="price-wrapper">
                                         <span class="price">{{ $product->price }}</span>
-                                        <span class="currency">{{ $product->name_short }}</span>
+                                        <span class="currency">{{ $baseCurrency->name_short }}</span>
                                     </span>
-                                        </div>
-                                    </a>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
+
                     </div>
-
-
 
                     <!--Pagination-->
                 {{ $productsPaginated->links('pagination.store') }}
@@ -202,6 +194,87 @@
 
         </div><!--/container-->
     </section>
+
+
+
+
+    @if( count($faqs) )
+        <!-- ======================== FAQs ======================== -->
+        <section class="faqs-section">
+            <div class="container">
+
+                <header>
+                    <div class="row">
+                        <div class="col-md-offset-2 col-md-8 text-center">
+                            <h2 class="title">FAQs</h2>
+                            <div class="subtitle font-two">
+                                <p>{{trans('base.faqs_subtitle')}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="accordion-faqs">
+
+                    <div class="faq-col">
+                        @foreach($faqs as $index => $faq)
+                            @if($index % 2 == 0)
+                                <div class="accordion-item-wrapper">
+                                    <button class="accordion">
+                                        <span class="question">{{ $faq->question }}</span>
+                                    </button>
+                                    <div class="art-panel">
+                                        <div class="panel-data">{{ $faq->answer }}</div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+
+                    <div class="faq-col">
+                        @foreach($faqs as $index => $faq)
+                            @if($index % 2 != 0)
+                                <div class="accordion-item-wrapper">
+                                    <button class="accordion">
+                                        <span class="question">{{ $faq->question }}</span>
+                                    </button>
+                                    <div class="art-panel">
+                                        <div class="panel-data">{{ $faq->answer }}</div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    @endif
+
+    @if( !is_null($seoText) && (!is_null($seoText['title']) || !is_null($seoText['content'])) )
+        <!-- ======================== SEO ======================== -->
+        <section class="seo-section">
+            <div class="container">
+
+                <header>
+                    <div class="row">
+                        <div class="col-md-offset-2 col-md-8 text-center">
+                            <h2 class="title">{{$seoText['title']}}</h2>
+                            <div class="subtitle font-two">
+                                <p>Our seo text</p>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="seo-content">
+                    {!! $seoText['content'] !!}
+                </div>
+
+            </div>
+        </section>
+    @endif
 
 @stop
 @push('dynamic_scripts')

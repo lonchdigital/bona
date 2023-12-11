@@ -13,10 +13,8 @@ class HomePageEditAction extends BaseAction
         HomePageService $homePageService,
     )
     {
-//        dd($request->slides);
-//        dd($request->toDTO());
         $result = $homePageService->editHomePage($request->toDTO());
 
-        return $this->handleActionResult(route('admin.home-page.edit.page'), $request, $result);
+        return $this->handleActionResult(route('admin.pages.list.page'), $request, $result);
     }
 }

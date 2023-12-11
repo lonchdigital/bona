@@ -53,25 +53,9 @@ class Product extends Model implements Sitemapable
         return $this->belongsTo(Brand::class);
     }
 
-    public function collection()
-    {
-        return $this->belongsTo(Collection::class);
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(Product::class, 'parent_product_id');
-    }
-
     public function country()
     {
         return $this->belongsTo(Country::class);
-    }
-
-
-    public function children()
-    {
-        return $this->hasMany(Product::class, 'parent_product_id');
     }
 
     public function productType()
@@ -120,100 +104,6 @@ class Product extends Model implements Sitemapable
                 return Storage::url($this->main_image_path);
             }
             return null;
-        });
-    }
-
-    public function patternImageUrl(): Attribute
-    {
-        return Attribute::make(function () {
-            if ($this->pattern_image_path) {
-                return Storage::url($this->pattern_image_path);
-            }
-            return null;
-        });
-    }
-
-    //gallery_image_1_url
-    public function galleryImage1Url(): Attribute
-    {
-        return Attribute::make(function () {
-            if (isset($this->gallery_images['image_1'])) {
-                return Storage::url($this->gallery_images['image_1']);
-            }
-            return null;
-        });
-    }
-
-    public function galleryImage2Url(): Attribute
-    {
-        return Attribute::make(function () {
-            if (isset($this->gallery_images['image_2'])) {
-                return Storage::url($this->gallery_images['image_2']);
-            }
-            return null;
-        });
-    }
-
-    public function galleryImage3Url(): Attribute
-    {
-        return Attribute::make(function () {
-            if (isset($this->gallery_images['image_3'])) {
-                return Storage::url($this->gallery_images['image_3']);
-            }
-            return null;
-        });
-    }
-
-    public function galleryImage4Url(): Attribute
-    {
-        return Attribute::make(function () {
-            if (isset($this->gallery_images['image_4'])) {
-                return Storage::url($this->gallery_images['image_4']);
-            }
-            return null;
-        });
-    }
-
-    public function galleryImage5Url(): Attribute
-    {
-        return Attribute::make(function () {
-            if (isset($this->gallery_images['image_5'])) {
-                return Storage::url($this->gallery_images['image_5']);
-            }
-            return null;
-        });
-    }
-
-    public function galleryImagesCount(): Attribute
-    {
-        return Attribute::make(function () {
-            $countOfImages = 0;
-
-            if ($this->main_image_path) {
-                $countOfImages++;
-            }
-
-            if ($this->gallery_image1_url) {
-                $countOfImages++;
-            }
-
-            if ($this->gallery_image2_url) {
-                $countOfImages++;
-            }
-
-            if ($this->gallery_image3_url) {
-                $countOfImages++;
-            }
-
-            if ($this->gallery_image4_url) {
-                $countOfImages++;
-            }
-
-            if ($this->gallery_image5_url) {
-                $countOfImages++;
-            }
-
-            return $countOfImages;
         });
     }
 

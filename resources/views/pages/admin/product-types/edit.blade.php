@@ -27,6 +27,7 @@
                                         </strong>
                                     </p>
 
+
                                     <!-- PRODUCT NAME -->
                                     <x-admin.multilanguage-input :placeholder="trans('admin.product_type_name_example')"
                                                                  :label="trans('admin.name')" :is-required="true"
@@ -279,10 +280,6 @@
                                     </p>
 
 
-{{--                                    @dd($productType->fields)--}}
-{{--                                    @dd($productType->attributes)--}}
-{{--                                    @dd($productFields)--}}
-{{--                                    @dd($productAttributes)--}}
                                     <div class="row">
                                         <div class="col-md-12" id="fields">
                                             @if(isset($productType) && $productType->fields)
@@ -491,7 +488,7 @@
                                     <div class="row">
                                         <div class="col-md-12" id="attributes">
                                             @if(isset($productType) && $productType->attributes)
-                                                3333
+                                                {{-- always runs here --}}
                                                 @foreach($productType->attributes as $attribute)
                                                     <div class="row field pb-1" id="attribute-id-{{ $attribute->id }}">
                                                         <div class="col-md-12">
@@ -536,10 +533,8 @@
                                                                  id="error-field-product_field.0.id"></div>
                                                         </div>
                                                     </div>
-
                                                 @endforeach
                                             @else
-                                                444
                                                 <div class="row attribute pb-1" id="attribute-id-0">
                                                     <div class="col-md-12">
                                                         <div class="border border-secondary rounded p-3">
@@ -587,6 +582,110 @@
                                                 {{ 'Add attribute' }}
                                             </a>
                                         </div>
+                                    </div>
+
+
+
+                                    <p class="mt-5">
+                                        <strong>
+                                            {{ trans('admin.questions') }}
+                                        </strong>
+                                    </p>
+
+                                    <div class="row">
+                                        <div class="col-md-12" id="faqs">
+
+                                            @if(isset($productType) && $faqsData)
+                                                @foreach($faqsData as $faqItem)
+                                                    <div class="row faq-row pb-1" id="faq-id-{{ $faqItem->id }}">
+                                                        <div class="col-md-12">
+                                                            <div class="border border-secondary rounded p-3">
+                                                                <div class="row justify-content-between align-items-center">
+
+                                                                    <div class="col-md-12">
+                                                                        <div class="row" id="faq-name-{{ $faqItem->id }}">
+                                                                            <div class="col-md-12">
+                                                                                <x-admin.multilanguage-input
+                                                                                    :is-required="true"
+                                                                                    :label="trans('admin.faq_question')"
+                                                                                    field-name="faqs[{{ $faqItem->id }}][question]"
+                                                                                    :values="$faqItem->question ? $faqItem->getTranslations('question') : []"/>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-12">
+                                                                        <div class="row" id="faq-name-{{ $faqItem->id }}">
+                                                                            <div class="col-md-12">
+                                                                                <x-admin.multilanguage-text-area
+                                                                                    :is-required="true"
+                                                                                    :label="trans('admin.faq_answer')"
+                                                                                    field-name="faqs[{{ $faqItem->id }}][answer]"
+                                                                                    :values="$faqItem->answer ? $faqItem->getTranslations('answer') : []"/>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-2">
+                                                                        <a href="#" class="btn btn-danger"
+                                                                           onclick="artRemoveQuestion(event, {{ $faqItem->id }})">
+                                                                            <span
+                                                                                class="fe fe-trash-2 fe-16 mr-2"></span>
+                                                                            {{ trans('admin.delete_question') }}
+                                                                        </a>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="row pt-3">
+                                        <div class="col-md-12 text-center">
+                                            <a href="#" id="add-question" class="btn mb-2 btn-secondary">
+                                                <span class="fe fe-plus-square fe-16 mr-2"></span>
+                                                {{ trans('admin.add_question') }}
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+
+                                    <p class="mt-5">
+                                        <strong>
+                                            {{ 'SEO' }}
+                                        </strong>
+                                    </p>
+                                    <div class="row">
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <x-admin.multilanguage-input
+                                                        :is-required="true"
+                                                        :label="trans('admin.seo_title')"
+                                                        field-name="seo_title"
+                                                        :values="[]"
+                                                        :values="isset($seoData['title']) ? $seoData['title'] : []"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <x-admin.multilanguage-text-area
+                                                        :is-required="true"
+                                                        :label="trans('admin.seo_text')"
+                                                        field-name="seo_text"
+                                                        :values="isset($seoData['content']) ? $seoData['content'] : []"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                 </div>
@@ -655,6 +754,26 @@
                 addAttribute(highestAttributeId);
             });
             /* add attributes END */
+
+
+            /* add FAQs */
+            let highestFAQsId = 0;
+            $('.faq-row').each(function () {
+                const id = parseInt($(this).attr('id').replace('faq-id-', ''));
+                if (id >= highestFAQsId) {
+                    highestFAQsId = id;
+                }
+
+            });
+
+            $('#add-question').click(function (event) {
+                event.preventDefault();
+
+                highestFAQsId++;
+                addQuestion(highestFAQsId);
+            });
+            /* add FAQs END */
+
 
             $('#product_has_size').change(function () {
                 if ($(this).is(':checked')) {
@@ -800,6 +919,60 @@ onclick="artRemoveAttribute(event, ${id})">
             event.preventDefault();
 
             $(`#attribute-id-${id}`).remove();
+        }
+
+        function addQuestion(id) {
+            $('#faqs').append(`
+
+            <div class="row faq-row pb-1" id="faq-id-${id}">
+                <div class="col-md-12">
+                    <div class="border border-secondary rounded p-3">
+                        <div class="row justify-content-between align-items-center">
+
+                            <div class="col-md-12">
+                                <div class="row" id="faq-name-${id}">
+                                    <div class="col-md-12">
+                                        <x-admin.multilanguage-input
+                                            :is-required="true"
+                                            :label="trans('admin.faq_question')"
+                                            field-name="faqs[${id}][question]"
+                                            :values="[]"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="row" id="faq-name-${id}">
+                                    <div class="col-md-12">
+                                        <x-admin.multilanguage-text-area
+                                            :is-required="true"
+                                            :label="trans('admin.faq_answer')"
+                                            field-name="faqs[${id}][answer]"
+                                            :values="[]"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <a href="#" class="btn btn-danger"
+                                   onclick="artRemoveQuestion(event, ${id})">
+                                    <span
+                                        class="fe fe-trash-2 fe-16 mr-2"></span>
+                                    {{ trans('admin.delete_question') }}
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `);
+
+        }
+        function artRemoveQuestion(event, id) {
+            event.preventDefault();
+
+            $(`#faq-id-${id}`).remove();
         }
 
         function addFilterCheckBoxHandler(id) {

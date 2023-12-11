@@ -15,6 +15,8 @@ class ShowProductTypeEditPageAction
             'productType' => $productType,
             'productFields' => $productFieldService->getProductFields(),
             'productAttributes' => $productAttributeService->getProductAttributes(),
+            'faqsData' => $productFieldService->getProductTypeFaqs($productType->slug),
+            'seoData' => $productFieldService->getProductTypeSeoText($productType->slug),
         ]);
     }
 }

@@ -23,19 +23,32 @@ export default {
         $('.single-product-add-to-cart').click(function () {
             const productSlug = $(this).attr('id');
             const count = $('#count-of-products').val();
-            const button = $(this);
-            const countOfProductsBody = $('#count-of-products-body');
+
+            // const countOfProductsBody = $('#count-of-products-body');
             const goToCartBody = $('.go-to-cart-body');
 
-            console.log('product add to cart CLICk');
-            console.log('countOfProductsBody: ' + countOfProductsBody);
+            var selectAttributes = {};
+            $('select.art-select-attribute').each(function() {
+                selectAttributes[$(this).attr('id')] = $(this).val();
+            });
+
+            const selected_color = $('.color-btn.color-selected').first().attr('data-name');
+            if (selected_color !== undefined) {
+                selectAttributes['color'] = selected_color;
+            } else {
+                selectAttributes['color'] = null;
+            }
+
+            // console.log(selectAttributes);
+            /*console.log('countOfProductsBody: ' + countOfProductsBody);*/
 
             addProductToCart(
                 productSlug,
                 count,
+                selectAttributes,
                 function (data) {
-                    button.parent().addClass('d-none');
-                    countOfProductsBody.addClass('d-none');
+                    // button.parent().addClass('d-none');
+                    // countOfProductsBody.addClass('d-none');
                     goToCartBody.removeClass('d-none');
 
                     /*console.log('==================');
@@ -53,7 +66,6 @@ export default {
         });
 
         $('.single-sub-product-add-to-cart').click(function () {
-            console.log('SUB product add to cart CLICk');
 
             var thisElement = $(this);
             const productSlug = thisElement.attr('id');
@@ -68,25 +80,22 @@ export default {
             //Обновить значение атрибута в DOM
             thisElement.attr('data-count', updatedCount);
 
-
             var wrapperSlug = thisElement.closest("div.art-popup-single-product").attr('id');
             // $('[data-wrapper="'+ wrapperSlug +'"]').css( "border", "1px solid red" );
             $('[data-wrapper="'+ wrapperSlug +'"]').prepend('<span class="added-line" data-slug="'+ productSlug +'"><i class="fa fa-close"></i>'+ productName +'</span>');
 
             thisElement.closest("div.art-popup-single-product").find('.f-button.is-close-btn').trigger("click");
 
-
-            // console.log(wrapperSlug);
+            console.log('SUB product add to cart CLICk 111111111');
 
             addSubProductToCart(
                 productSlug,
                 updatedCount,
                 function (data) {
-
                     handleBasket(data);
                 },
                 function () {
-                    console.error('[Cart]: init: error during adding product to cart.');
+                    console.error('[Cart]: init: error during adding sub product to cart.');
                 }
             );
 
@@ -167,7 +176,7 @@ export default {
 };
 
 //api
-function addProductToCart(slug, count, success, fail)
+function addProductToCart(slug, count, selectAttributes, success, fail)
 {
     const routeWithSlug = routes.cart.product_add_route.replace('PRODUCT_SLUG', slug);
 
@@ -177,8 +186,9 @@ function addProductToCart(slug, count, success, fail)
         data: {
             _token: csrf,
             product_count: count,
+            product_attributes: selectAttributes
         },
-        dataType: 'json',
+        dataType: 'json'
     }).done(function(data) {
         success(data);
     }).fail(function () {
@@ -187,25 +197,26 @@ function addProductToCart(slug, count, success, fail)
 }
 function addSubProductToCart(slug, updatedCount, success, fail)
 {
+    // if( updatedCount === 1 ) {
+    const routeWithSlug = routes.cart.sub_product_add_route.replace('PRODUCT_SLUG', slug);
 
-    if( updatedCount === 1 ) {
-        const routeWithSlug = routes.cart.product_add_route.replace('PRODUCT_SLUG', slug);
+    $.ajax({
+        url: routeWithSlug,
+        type: 'post',
+        data: {
+            _token: csrf,
+            product_count: updatedCount
+            // product_count: 1
+        },
+        dataType: 'json',
+    }).done(function(data) {
+        success(data);
+    }).fail(function () {
+        fail();
+    });
 
-        $.ajax({
-            url: routeWithSlug,
-            type: 'post',
-            data: {
-                _token: csrf,
-                product_count: 1
-            },
-            dataType: 'json',
-        }).done(function(data) {
-            success(data);
-        }).fail(function () {
-            fail();
-        });
 
-    } else {
+    /*else {
 
         updateProductInCart(
             slug,
@@ -218,12 +229,7 @@ function addSubProductToCart(slug, updatedCount, success, fail)
             }
         );
 
-    }
-
-
-
-
-
+    }*/
 
 }
 
@@ -241,7 +247,7 @@ function getProductsInCart(success, fail)
     });
 }
 
-function deleteProductFromCart(slug, success, fail)
+function deleteProductFromCart(slug, productAttributes, success, fail)
 {
     const routeWithSlug = routes.cart.product_delete_route.replace('PRODUCT_SLUG', slug);
 
@@ -250,6 +256,7 @@ function deleteProductFromCart(slug, success, fail)
         type: 'post',
         data: {
             _token: csrf,
+            product_attributes: productAttributes
         },
         dataType: 'json',
     }).done(function(data) {
@@ -259,7 +266,7 @@ function deleteProductFromCart(slug, success, fail)
     });
 }
 
-function updateProductInCart(slug, count, success, fail)
+function updateProductInCart(slug, count, productAttributes, success, fail)
 {
     const routeWithSlug = routes.cart.product_update_route.replace('PRODUCT_SLUG', slug);
 
@@ -269,6 +276,8 @@ function updateProductInCart(slug, count, success, fail)
         data: {
             _token: csrf,
             product_count: count,
+            product_attributes: productAttributes,
+            // product_attributes_price: 100,
         },
         dataType: 'json',
     }).done(function(data) {
@@ -299,8 +308,20 @@ function addPromoCode(code, success, fail)
 function drawProductsInCartWindowHTML(data)
 {
     let productsToAppend = '';
+    let productAttributes = '';
+    let productAttributeClass = '';
     data.data.products.forEach(function (product) {
-        productsToAppend += getProductInCartWindowHTML(product);
+
+        let productAttributesHTML = '<div class="product-attributes">';
+        productAttributes = JSON.parse(product.attributes);
+
+        for (var key in productAttributes) {
+            productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
+            productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'"><span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributes[key] +'</span></div>';
+        }
+        productAttributesHTML += '</div>';
+
+        productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
     });
 
     $('.basket-sub-menu .sub-menu-list').html(productsToAppend);
@@ -327,8 +348,15 @@ function drawProductsInCartWindowHTML(data)
     }
 }
 
-function getProductInCartWindowHTML(productData)
+function getProductInCartWindowHTML(productData, productAttributesHTML)
 {
+    let artProductPrice = 0;
+    if(productData.attributes_price > 0) {
+        artProductPrice = (productData.attributes_price * productData.count) + productData.price;
+    } else {
+        artProductPrice = productData.price
+    }
+
     return `
         <li class="sub-menu-list-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
@@ -339,6 +367,7 @@ function getProductInCartWindowHTML(productData)
                     </span>
                     <div class="item-text">
                         ${productData.name}
+                        ${productAttributesHTML}
                     </div>
                 </a>
                 <div class="item-delete">
@@ -354,7 +383,7 @@ function getProductInCartWindowHTML(productData)
                     <span class="counter plus"></span>
                 </div>
                 <div class="item-price">
-                    <strong class="item-price-text">${productData.price}</strong> ${store.base_currency_name_short}
+                    <strong class="item-price-text">${artProductPrice}</strong> ${store.base_currency_name_short}
                 </div>
             </div>
         </li>
@@ -379,10 +408,10 @@ function drawProductsInCartPageHTML(data)
     }
 
     $('.cart-page-products-list').html(productsToAppend);
-    $('.total-info-top .price-products').text(data.data.summary.products + ' ' + store.base_currency_name_short);
+    $('.total-info-right .price-products').text(data.data.summary.products + ' ' + store.base_currency_name_short);
 
-    $('.total-info-top .total-price-delivery').text(data.data.summary.total + ' ' + store.base_currency_name_short);
-    $('.total-info-top .price-discount').text(data.data.summary.discount + ' ' + store.base_currency_name_short);
+    $('.total-info-right .total-price-delivery').text(data.data.summary.total + ' ' + store.base_currency_name_short);
+    $('.total-info-right .price-discount').text(data.data.summary.discount + ' ' + store.base_currency_name_short);
     InputCounter.addCounterHandler($('.cart-page-products-list .counter'));
     addChangeProductCountHandlers($('.cart-page-products-list .product-count-input'));
     addDeleteProductFromCartHandlers($('.cart-page-products-list .delete-product-from-cart-button'));
@@ -398,7 +427,7 @@ function drawProductsInCartPageHTML(data)
         });
     }
 
-    const freeDeliveryButton = $('.total-info-top .btn-free-shiping');
+    const freeDeliveryButton = $('.total-info-right .btn-free-shiping');
 
     if (data.data.has_free_delivery && freeDeliveryButton.hasClass('d-none')) {
         freeDeliveryButton.removeClass('d-none');
@@ -411,24 +440,6 @@ function drawProductsInCartPageHTML(data)
 
 function getProductInCartPageHTML(productData)
 {
-    const wishListButton = `
-        <div class="col-auto item d-none d-sm-block">
-            <div class="link-wrapper">
-                <a href="#" class="link-wish-list">
-                    <span class="wrapper-wish-list">
-                        <div class="i-heart ${productData.is_in_wish_list ? 'i-heart-active' : ''} product-wish-list-button">
-                            <svg>
-                                <use xlink:href="${iconUrl}#i-heart-hover"></use>
-                            </svg>
-                        </div>
-                        <span class="text-remove ${!productData.is_in_wish_list ? 'd-none' : ''}">${translations.remove_from_wish_list}</span>
-                        <span class="text-add ${productData.is_in_wish_list ? 'd-none' : ''}">${translations.add_to_wish_list}</span>
-                    </span>
-                </a>
-            </div>
-        </div>
-    `;
-
     return `
         <div class="row list-product-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
@@ -450,7 +461,7 @@ function getProductInCartPageHTML(productData)
                     </div>
                 </a>
             </div>
-            <div class="col-12 col-xl-6">
+            <div class="col-12 col-xl-6 d-flex align-items-center">
                 <div class="list-product-right">
                     <div class="row align-items-center">
                         <div class="col d-none d-lg-block">
@@ -475,8 +486,8 @@ function getProductInCartPageHTML(productData)
                             </div>
                         </div>
                     </div>
-                    <div class="row justify-content-end list-product-r-b">
-                        ${is_auth ? wishListButton : ''}
+                    <div class="row justify-content-end list-product-r-b art-delete-button">
+
                         <div class="col-auto item">
                             <div class="link-wrapper">
                                 <a href="#" class="link-wish-list delete-product-from-cart-button">
@@ -498,12 +509,17 @@ function getProductInCartPageHTML(productData)
     `;
 }
 
+
 //handlers
 function addChangeProductCountHandlers(elements)
 {
     elements.change(function (event) {
         event.preventDefault();
         const slug = $(this).closest('.cart-item').find('input[name="product_slug"]').val();
+
+        // Get All Product Attributes
+        var productAttributes = {};
+        productAttributes = getAllProductAttributes($(this));
 
         const subProduct =  $('#' + slug);
         subProduct.data('count', $(this).val());
@@ -514,6 +530,7 @@ function addChangeProductCountHandlers(elements)
         updateProductInCart(
             slug,
             $(this).val(),
+            productAttributes,
             function (data) {
                 drawProductsInCartWindowHTML(data);
 
@@ -538,9 +555,15 @@ function addDeleteProductFromCartHandlers(elements)
         subProduct.data('count', 0);
         subProduct.attr('data-count', 0);
 
+        console.log('112233 DELETE');
+
+        // Get All Product Attributes
+        var productAttributes = {};
+        productAttributes = getAllProductAttributes($(this));
 
         deleteProductFromCart(
             slug,
+            productAttributes,
             function (data) {
                 $('.basket-with-products .count-of-products-in-basket').text(data.data.products.length);
 
@@ -555,6 +578,24 @@ function addDeleteProductFromCartHandlers(elements)
             }
         )
     })
+}
+
+function getAllProductAttributes(art_this)
+{
+    var productAttributesLines = art_this.closest('.cart-item').find('.product-attributes').find('.product-attribute-line');
+    var productAttributes = {};
+    productAttributesLines.each(function(index, element) {
+        var attributeKey = $(element).find('.attribute-key').text();
+        var attributeValue = $(element).find('.attribute-value').text();
+
+        if(attributeValue === 'null') {
+            productAttributes[attributeKey] = null;
+        } else {
+            productAttributes[attributeKey] = attributeValue;
+        }
+    });
+
+    return productAttributes;
 }
 
 function handleCalculatorAddToCartButton()
@@ -595,23 +636,13 @@ function handleWishListAddToCartButton()
 
 function handleBasket(data)
 {
-    const basketWithoutProducts = $('.basket-without-products');
     const basketWithProducts = $('.basket-with-products');
     const countOfProductsInBasket = basketWithProducts.find('.count-of-products-in-basket');
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');
-    let countOfProductsInBasketValue = parseInt( $('.basket .count-of-products-in-basket').text() );
 
 
-    if (countOfProductsInBasketValue <= 0) {
-        basketWithoutProducts.addClass('d-none');
-        basketWithProducts.removeClass('d-none');
-        countOfProductsInBasket.text(1);
-        basketSubMenu.removeClass('d-none');
-    } else {
-        countOfProductsInBasket.text(countOfProductsInBasketValue + 1);
-    }
-
+    countOfProductsInBasket.text(data.data.products.length);
     basketSubMenuSuccess.removeClass('d-none');
 
     drawProductsInCartWindowHTML(data);

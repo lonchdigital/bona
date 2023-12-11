@@ -15,7 +15,6 @@ class EditProductDTO implements BaseDTO
         public readonly ?array         $metaDescription,
         public readonly ?array         $metaKeyWords,
         public readonly ?array        $selectedSubProductsId,
-        public readonly ?int          $parentProductId,
         public readonly int           $availabilityStatusId,
         public readonly ?array        $specialOfferIds,
         public readonly ?string       $sku,
@@ -38,5 +37,8 @@ class EditProductDTO implements BaseDTO
         public readonly ?float        $length,
         public readonly ?float        $width,
         public readonly ?float        $height,
+        public readonly ?array        $faqs,
+        public readonly ?array        $seoTitle,
+        public readonly ?array        $seoText,
     ) { }
 }

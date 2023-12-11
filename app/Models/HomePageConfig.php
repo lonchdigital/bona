@@ -15,10 +15,6 @@ class HomePageConfig extends Model
 
     protected $guarded = [];
 
-    public function collection()
-    {
-        return $this->belongsTo(Collection::class);
-    }
 
     public function productField()
     {

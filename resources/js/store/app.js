@@ -9,9 +9,10 @@ import InputCounter from './common/input-counter';
 import AnimateScroll from './common/animate-scroll';
 import WishList from './common/wish-list';
 import Cart from './common/cart';
+import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
 
-const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' })
+const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' });
 
 async function loadJsByPage()
 {
@@ -52,6 +53,7 @@ async function init()
         ShowMenu.init(),
         WishList.init(),
         Cart.init(),
+        AjaxSearchProducts.init(),
         ShowRoomVisitModal.init()
     ]);
 }

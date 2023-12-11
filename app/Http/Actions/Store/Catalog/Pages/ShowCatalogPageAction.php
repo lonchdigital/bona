@@ -55,7 +55,6 @@ class ShowCatalogPageAction extends BaseAction
 
         $page = $filtersData->filters['page'] ?? 1;
 
-//        dd($productType);
         $productsPaginated = $productService->getProductsByTypePaginated(
             $productType,
             $filtersData,
@@ -63,23 +62,17 @@ class ShowCatalogPageAction extends BaseAction
             $page,
         );
 
-        /*$wishList = null;
-        if ($this->getAuthUser()) {
-            $wishList = $wishListService->getWishListByUser($this->getAuthUser());
-        }*/
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
-//            'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
-//            'categories' => $categoryService->getProductCategories($productType),
             'colors' => $colors,
-//            'countries' => $countries,
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
-//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
+            'faqs' => $productService->getProductTypeFaqs($productType->slug),
+            'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
         ]);
     }
 }

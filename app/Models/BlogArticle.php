@@ -13,7 +13,7 @@ class BlogArticle extends Model implements Sitemapable
 {
     use HasTranslations;
 
-    public $translatable = ['name', 'sub_title', 'meta_title', 'meta_description', 'meta_keywords'];
+    public $translatable = ['name', 'preview_text', 'meta_title', 'meta_description', 'meta_keywords'];
 
     protected $guarded = [];
 

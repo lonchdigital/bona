@@ -76,7 +76,6 @@ export default {
             :base-language="baseLanguage"
             :selected-language="selectedLanguage"
             :available-languages="availableLanguages"
-            :collection-search-route="collectionSearchRoute"
             :errors="errors"
             @delete-slide="() => deleteSlide(index)"
             :key="'blog-slide-' + index"

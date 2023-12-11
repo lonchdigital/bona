@@ -24,25 +24,9 @@ class BlogArticleBlockTypesDataClass implements BaseDataClass
                 'name' => trans('admin.blog_article_block_image'),
             ],
             [
-                'id' => self::TYPE_QUOTE,
-                'name' => trans('admin.blog_article_block_quote'),
-            ],
-            [
-                'id' => self::TYPE_SPONSOR,
-                'name' => trans('admin.blog_article_block_sponsor'),
-            ],
-            [
                 'id' => self::TYPE_VIDEO,
                 'name' => trans('admin.blog_article_block_video'),
-            ],
-            [
-                'id' => self::TYPE_SLIDER,
-                'name' => trans('admin.blog_article_block_slider'),
-            ],
-            [
-                'id' => self::TYPE_QUESTIONS_AND_ANSWERS,
-                'name' => trans('admin.blog_article_block_questions_and_answers'),
-            ],
+            ]
         ]);
 
         if ($item) {

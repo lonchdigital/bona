@@ -58,8 +58,6 @@
             <div class="w-100 mb-4 d-flex">
                 <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="{{ route('admin.dashboard.page') }}">
                     <img src="{{ asset('storage/logo/logo-dark.svg') }}" alt="logo">
-{{--                    <img src="{{ asset('resources/img/logo-m.svg') }}" alt="logo">--}}
-
                 </a>
             </div>
             <ul class="navbar-nav flex-fill w-100 mb-2">
@@ -83,20 +81,6 @@
                     </li>
                 @endforeach
             </ul>
-
-<!--            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item dropdown">
-                    <a href="#product-subtype" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
-                        <i class="fe fe-settings fe-16"></i>
-                        <span class="ml-3 item-text">{{ trans('admin.product_menu_subtypes') }}</span>
-                    </a>
-                    <ul class="collapse list-unstyled pl-4 w-100" id="product-subtype">-->
-                        {{--@foreach($productSubtypes as $productSubtype)
-                            <a class="nav-link pl-3" href="{{ route('admin.product.list.page', ['productType' => 0, 'productSubtype' => $productSubtype->id]) }}"><span class="ml-1">{{ $productSubtype->name }}</span></a>
-                        @endforeach--}}
-<!--                    </ul>
-                </li>
-            </ul>-->
 
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.orders') }}</span>
@@ -124,6 +108,12 @@
                 <span>{{ trans('admin.customization') }}</span>
             </p>
             <ul class="navbar-nav flex-fill w-100 mb-2">
+                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.pages.list.page') }}">
+                        <i class="fe fe-list fe-16"></i>
+                        <span class="ml-1 item-text">{{ trans('admin.pages') }}</span>
+                    </a>
+                </li>
                 <li class="nav-item w-100">
                     <a class="nav-link pl-3" href="{{ route('admin.product-type.list.page') }}">
                         <i class="fe fe-codesandbox fe-16"></i>
@@ -161,24 +151,39 @@
                     </a>
                 </li>
                 <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.collection.list.page') }}">
-                        <i class="fe fe-list fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.collections') }}</span>
-                    </a>
-                </li>
-                <li class="nav-item w-100">
                     <a class="nav-link pl-3" href="{{ route('admin.color.list.page') }}">
                         <i class="fe fe-droplet fe-16"></i>
                         <span class="ml-1 item-text">{{ trans('admin.colors') }}</span>
                     </a>
                 </li>
-                <li class="nav-item w-100">
+<!--                <li class="nav-item w-100">
                     <a class="nav-link pl-3" href="{{ route('admin.country.list.page') }}">
                         <i class="fe fe-flag fe-16"></i>
                         <span class="ml-1 item-text">{{ trans('admin.countries') }}</span>
                     </a>
+                </li>-->
+                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.application-config.edit.page') }}">
+                        <i class="fe fe-list fe-16"></i>
+                        <span class="ml-1 item-text">{{ trans('admin.application_config') }}</span>
+                    </a>
                 </li>
             </ul>
+
+
+            <p class="text-muted nav-heading mt-4 mb-1">
+                <span>{{ trans('admin.our_works') }}</span>
+            </p>
+            <ul class="navbar-nav flex-fill w-100 mb-2">
+                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.work.list.page') }}">
+                        <i class="fe fe-list fe-16"></i>
+                        <span class="ml-1 item-text">{{ trans('admin.our_works_list') }}</span>
+                    </a>
+                </li>
+            </ul>
+
+
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.products_import') }}</span>
             </p>
@@ -195,17 +200,7 @@
                     </ul>
                 </li>
             </ul>
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.static_pages') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.static-pages.list.page') }}">
-                        <i class="fe fe-list fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.static_pages') }}</span>
-                    </a>
-                </li>
-            </ul>
+
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.blog') }}</span>
             </p>
@@ -216,31 +211,9 @@
                         <span class="ml-1 item-text">{{ trans('admin.blog_articles') }}</span>
                     </a>
                 </li>
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.blog-category.list.page') }}">
-                        <i class="fe fe-grid fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.blog_categories') }}</span>
-                    </a>
-                </li>
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.blog-slide.edit.page') }}">
-                        <i class="fe fe-square fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.blog_slides') }}</span>
-                    </a>
-                </li>
             </ul>
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.home_page') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.home-page.edit.page') }}">
-                        <i class="fe fe-align-justify fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.home_page_edit') }}</span>
-                    </a>
-                </li>
 
-            </ul>
+
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.seo') }}</span>
             </p>

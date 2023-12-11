@@ -6,6 +6,7 @@ import SelectColorComponent from "../components/SelectColorComponent.vue";
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
 import ProductGalleryComponent from "../components/ProductGalleryComponent.vue";
+import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 import ProductCharacteristicsComponent from "../components/ProductCharacteristicsComponent.vue";
 import ProductVideosComponent from "../components/ProductVideosComponent.vue";
 import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
@@ -24,6 +25,7 @@ export default {
         ProductVideosComponent,
         ImageFileInputComponent,
         ProductAttributesComponent,
+        HomePageFaqComponent
     },
     props: {
         submitRoute: {
@@ -111,6 +113,16 @@ export default {
             type: Number,
             default: null,
         },
+
+        brandOptions: {
+            type: Object,
+            default: {},
+        },
+        brandSelected: {
+            type: Number,
+            default: null,
+        },
+
         colorOptions: {
             type: Array,
             default: [],
@@ -139,6 +151,10 @@ export default {
             type: Array,
             default: [],
         },
+        productFaqs: {
+            type: Array,
+            default: [],
+        },
 
         productCustomFields: {
             type: Object,
@@ -153,6 +169,14 @@ export default {
             type: Object,
             default: {},
         },
+        seoTitle: {
+            type: Object,
+            default: [],
+        },
+        seoText: {
+            type: Object,
+            default: [],
+        }
 
     },
     data() {
@@ -170,9 +194,12 @@ export default {
             selectedOptions: [],
             errors: [],
             displayCategory: [],
+            displayBrand: [],
             displayColor: [],
             attributeOptions: [],
             productSlugData: '',
+            faqDeleted: false,
+            faqs: [],
         }
     },
     created() {
@@ -188,6 +215,9 @@ export default {
         if (this.productVideos) {
             this.videos = this.productVideos;
         }
+        if (this.productFaqs) {
+            this.faqs = this.productFaqs;
+        }
         /*if (this.colorOptions) {
             this.colors = this.colorOptions;
         }*/
@@ -198,8 +228,11 @@ export default {
             this.gallery = this.productGallery;
         }
         this.displayCategory = Object.keys(this.categoryOptions).length === 0;
+        this.displayBrand = Object.keys(this.brandOptions).length === 0;
         this.displayColor = Object.keys(this.colorOptions).length === 0;
 
+
+        this.loadProducts('');
 
         if( Array.isArray(this.selectedSubProducts) ) {
             this.selectedSubProducts.forEach((item, i) => {
@@ -230,14 +263,6 @@ export default {
                 }
             });
         }
-
-
-
-        console.log('===');
-        console.log('selectedColorsShow | ' + this.selectedColorsShow);
-        console.log('===');
-        console.log(this.colors);
-        console.log('===');
 
 
     },
@@ -314,6 +339,12 @@ export default {
                 value = event.target.value;
                 this.productSlugData = transliteration.slugify(value);
             }
+        },
+        addFaq() {
+            this.faqs.push({});
+        },
+        deleteFaq(index) {
+            this.faqs.splice(index, 1);
         },
     }
 
@@ -394,19 +425,22 @@ export default {
                     :errors="errors"
                 />
 
-                <select-component
-                    :is-multi-select="true"
-                    :model-value="selectedSubProductsShow"
-                    :title="$t('admin.product_subtypes')"
-                    :options="products"
-                    label="text"
-                    value-prop="id"
-                    name="selected_sub_products_id"
-                    :max-items="99"
-                    @search-change="(query) => loadProducts(query)"
-                    :is-required="false"
-                    :errors="errors"
-                />
+
+                <div class="form-group mb-3 art-multiselect-height">
+                    <select-component
+                        :is-multi-select="true"
+                        :model-value="selectedSubProductsShow"
+                        :title="$t('admin.product_subtypes')"
+                        :options="products"
+                        label="text"
+                        value-prop="id"
+                        name="selected_sub_products_id"
+                        :max-items="99"
+                        @search-change="(query) => loadProducts(query)"
+                        :is-required="false"
+                        :errors="errors"
+                    />
+                </div>
 
                 <div class="form-group mb-3">
                     <select-component
@@ -483,6 +517,19 @@ export default {
                     />
                 </div>
 
+                <div class="form-group mb-3" v-if="!displayBrand">
+                    <select-component
+                        :title="$t('admin.product_brand')"
+                        :options="brandOptions"
+                        :model-value="brandSelected"
+                        label="brand"
+                        value-prop="brand_id"
+                        name="brand_id"
+                        :is-required="true"
+                        :errors="errors"
+                    />
+                </div>
+
 
                 <p class="mt-4">
                     <strong>
@@ -524,7 +571,7 @@ export default {
 
                 <div class="form-group mb-3">
                     <image-file-input-component
-                        :title="$t('admin.product_main_image')"
+                        :title="$t('admin.product_main_image') + ' ' + $t('admin.product_main_image_requirements')"
                         name="main_image"
                         image-deleted-name="'main_image[image_deleted]'"
                         :is-required="true"
@@ -667,6 +714,59 @@ export default {
                     </div>
 
                 </div>
+
+
+
+                <p class="mt-4">
+                    <strong>
+                        {{ $t('admin.questions') }}
+                    </strong>
+                </p>
+                <div class="form-group mb-3 art-admin-repeater-four-width">
+                    <home-page-faq-component
+                        v-for="(faq, index) in faqs"
+                        :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
+                        :faq="faq"
+                        :index="index"
+                        :base-language="baseLanguage"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        :faq-deleted="faqDeleted"
+                        @delete-faq="() => deleteFaq(index)"
+                    />
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <a href="#" id="add-faq-option" class="btn mb-2 btn-secondary" @click.prevent="addFaq"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.question_add')}}</a>
+                    </div>
+                </div>
+
+
+
+                <p class="mt-4">
+                    <strong>
+                        {{ $t('admin.seo') }}
+                    </strong>
+                </p>
+                <multi-language-input-component
+                    :title="$t('admin.seo_title')"
+                    name="seo_title"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="seoTitle"
+                    :errors="errors"
+                />
+                <multi-language-rich-text-editor-component
+                    :title="$t('admin.seo_text')"
+                    name="seo_text"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :content="seoText"
+                    :errors="errors"
+                />
+
 
             </div>
         </div>

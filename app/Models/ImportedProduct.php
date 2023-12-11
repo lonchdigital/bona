@@ -51,11 +51,6 @@ class ImportedProduct extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function collection()
-    {
-        return $this->belongsTo(Collection::class);
-    }
-
     public function parent()
     {
         return $this->belongsTo(ImportedProduct::class, 'parent_product_id');

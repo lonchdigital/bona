@@ -10,10 +10,6 @@ export default {
         submitRoute: String,
         productsSearchRoute: String,
         backRoute: String,
-        categories: {
-            type: Array,
-            default: [],
-        },
 
         //data
         selectedCategory: {
@@ -28,7 +24,7 @@ export default {
             type: String,
             default: '',
         },
-        articleSubTitle: {
+        articlePreviewText: {
             type: Object,
             default: {},
         },
@@ -103,25 +99,12 @@ export default {
 
 <template>
     <div class="card shadow mb-4">
-        <div class="card-header d-flex align-items-center justify-content-between">
+        <div id="form-header" class="card-header d-flex align-items-center justify-content-between">
             <strong class="card-title m-0">{{ $t('admin.blog_article_information') }}</strong>
             <language-switcher-component v-model="selectedLanguage" :available-languages="availableLanguages" />
         </div>
         <div class="card-body">
             <form method="POST" :action="submitRoute" @submit.prevent="handleSubmit">
-                <div class="form-group mb-3">
-                    <select-component
-                        :model-value="selectedCategory"
-                        :title="$t('admin.category')"
-                        :options="categories"
-                        name="category_id"
-                        :is-required="true"
-                        label="name"
-                        value-prop="id"
-                        :errors="errors"
-                    />
-                </div>
-
 
                 <multi-language-input-component
                     :title="$t('admin.name')"
@@ -144,6 +127,17 @@ export default {
                         v-model="slugData"
                     />
                 </div>
+
+                <multi-language-text-area-component
+                    :title="$t('admin.blog_article_preview_text')"
+                    name="preview_text"
+                    :is-required="true"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :init-data="articlePreviewText"
+                    :key="'article-preview_text'"
+                    :errors="errors"
+                />
 
                 <multi-language-input-component
                     :title="$t('admin.meta_title')"
@@ -178,16 +172,6 @@ export default {
                     :errors="errors"
                 />
 
-                <multi-language-text-area-component
-                    :title="$t('admin.blog_article_sub_title')"
-                    name="sub_title"
-                    :is-required="true"
-                    :selected-language="selectedLanguage"
-                    :available-languages="availableLanguages"
-                    :init-data="articleSubTitle"
-                    :key="'article-subtitle'"
-                    :errors="errors"
-                />
                 <image-file-input-component
                     :title="$t('admin.blog_article_hero_image')"
                     name="hero_image"

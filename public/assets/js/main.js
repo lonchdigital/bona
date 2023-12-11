@@ -207,7 +207,8 @@
             addClassActive: true,
             transitionStyle: "fadeUp",
             afterMove: animatetCaptions,
-            autoPlay: 8000,
+            // autoPlay: 8000,
+            autoPlay: false,
             stopOnHover: false
         });
 
@@ -271,7 +272,8 @@
             itemsTabletSmall: false,
             itemsMobile: [479, 3],
             addClassActive: true,
-            autoPlay: 5500,
+            autoPlay: false,
+            // autoPlay: 5500,
             stopOnHover: true
         });
     });
@@ -305,6 +307,21 @@
             navigationText: arrowIcons,
             pagination: true,
             items: 4
+            // singleItem: true
+        });
+    });
+
+    // Brands slider
+    // ----------------------------------------------------------------
+
+    $.each($(".art-brands-owl-items"), function (i, n) {
+        $(n).owlCarousel({
+            slideSpeed: 800,
+            margin: 30,
+            navigation: true,
+            navigationText: arrowIcons,
+            pagination: true,
+            items: 5
             // singleItem: true
         });
     });
@@ -426,7 +443,7 @@
     $filtersTitle.append('<span>' + '</span>');
 
     // Toggle filter function
-    $filtersTitle.on('click', function (e) {
+    /*$filtersTitle.on('click', function (e) {
         var $this = $(this),
             $parent = $this.parent();
         $parent.toggleClass('active');
@@ -437,16 +454,16 @@
         else {
             $parent.find('.filter-content').slideUp(200);
         }
-    });
+    });*/
 
     // Update filter results - close dropdown filters
     // ----------------------------------------------------------------
 
-    $('.filters .filter-update').on('click', function (e) {
+    /*$('.filters .filter-update').on('click', function (e) {
         $(this).closest('.filter-box')
             .removeClass('active')
             .find('.filter-content').slideUp(200);
-    });
+    });*/
 
     // Only for filters topbar
     // ----------------------------------------------------------------

@@ -52,6 +52,8 @@ class ShowProductEditPageAction
             'characteristics' => $productsService->getProductCharacteristics($product->id),
             'productGallery' => $productsService->getProductGallery($product->id),
             'productVideos' => $productsService->getProductVideos($product->id),
+            'productFaqs' => $productsService->getProductFaqs($product->id),
+            'seoData' => $productsService->getProductSeoText($product->id),
             'attributeOptions' => $productsService->getAttributeOptions($product->id, $productType),
         ]);
     }

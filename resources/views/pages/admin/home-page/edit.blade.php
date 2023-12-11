@@ -6,28 +6,9 @@
             <div class="col-12">
                 <h2 class="page-title">{{ trans('admin.home_page_edit_heading') }}</h2>
 
-{{--                @dd( json_encode($seoText['title']) )--}}
-
-                @php
-                    //var_dump( json_encode( $slides ))
-                    //print_r( json_encode($seoText['title']) )
-                @endphp
-
-                @php
-                    //print_r( json_encode($product->getTranslations('name') ));
-
-                    $arr = [
-                        "uk"=> "name UK",
-                        "ru"=>"name RU"
-                            ];
-                @endphp
-
-{{--                @dd(json_encode($testimonials))--}}
-
                 <home-page-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
-                    collection-search-route="{{ route('admin.collection.search') }}"
                     product-search-route="{{ route('admin.product.list.all') }}"
                     submit-route="{{ route('admin.home-page.edit') }}"
                     :available-products="{{ json_encode($products) }}"

@@ -53,15 +53,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="collection_id">{{ trans('admin.collection') }}</label>
-                                                    <select class="form-control select2-multi" name="collection_id" id="collection_id">
-                                                        <option value="" @if(!$searchData->collectionId) selected @endif>{{ trans('admin.all') }}</option>
-                                                        @foreach($collections as $collection)
-                                                            <option value="{{ $collection->id }}" @if($searchData->collectionId === $collection->id) selected @endif>{{ $collection->brand->name }}, {{ $collection->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+
                                                 <div class="form-group col-md-6">
                                                     <label for="country_id">{{ trans('admin.country') }}</label>
                                                     <select class="form-control" name="country_id" id="country_id">

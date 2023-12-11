@@ -200,15 +200,7 @@ export default {
                 <div class="col">
                     <div class="form-group mb-1">
                         <input type="hidden" :name="name + '[product_id]'" v-model="productOnImage">
-                        <label for="name-uk">{{ $t('admin.blog_article_image_block_product') }}</label>
-                        <multiselect-component
-                            v-model="productOnImage"
-                            :options="products"
-                            label="text"
-                            value-prop="id"
-                            :searchable="true"
-                            @search-change="(query) => loadProducts(query)"
-                        />
+
                     </div>
                 </div>
             </div>

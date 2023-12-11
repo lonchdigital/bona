@@ -22,7 +22,7 @@ class BlogArticleService extends BaseService
 
     public function getBlogArticlesListPaginated()
     {
-        return BlogArticle::paginate(config('domain.items_per_page'));
+        return BlogArticle::paginate(config('domain.blog_items_per_page'));
     }
 
     public function getLatestArticlesExceptCurrent(int $currentArticleId)
@@ -49,10 +49,9 @@ class BlogArticleService extends BaseService
 
             $article = BlogArticle::create([
                 'creator_id' => $creator->id,
-                'blog_category_id' => $request->categoryId,
                 'name' => $request->name,
                 'slug' => $request->slug,
-                'sub_title' => $request->subTitle,
+                'preview_text' => $request->previewText,
                 'hero_image_path' => $heroImagePath,
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
@@ -89,10 +88,9 @@ class BlogArticleService extends BaseService
             $imagesToDelete = [];
 
             $fieldsToUpdate = [
-                'blog_category_id' => $request->categoryId,
                 'name' => $request->name,
                 'slug' => $request->slug,
-                'sub_title' => $request->subTitle,
+                'preview_text' => $request->previewText,
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeywords,

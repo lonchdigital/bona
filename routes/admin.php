@@ -6,28 +6,21 @@ use App\Http\Actions\Admin\BlogArticles\BlogArticleEditAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticleCreatePageAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticleEditPageAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticlesListPageAction;
-use App\Http\Actions\Admin\BlogCategories\BlogCategoryCreateAction;
+use App\Http\Actions\Admin\Pages\Pages\ShowPagesListPageAction;
+/*use App\Http\Actions\Admin\BlogCategories\BlogCategoryCreateAction;
 use App\Http\Actions\Admin\BlogCategories\BlogCategoryDeleteAction;
 use App\Http\Actions\Admin\BlogCategories\BlogCategoryEditAction;
 use App\Http\Actions\Admin\BlogCategories\Pages\ShowBlogCategoriesListPageAction;
 use App\Http\Actions\Admin\BlogCategories\Pages\ShowBlogCategoryCreatePageAction;
-use App\Http\Actions\Admin\BlogCategories\Pages\ShowBlogCategoryEditPageAction;
-use App\Http\Actions\Admin\BlogSlides\BlogSlidesEditAction;
-use App\Http\Actions\Admin\BlogSlides\Pages\ShowBlogSlidesEditPageAction;
+use App\Http\Actions\Admin\BlogCategories\Pages\ShowBlogCategoryEditPageAction;*/
+/*use App\Http\Actions\Admin\BlogSlides\BlogSlidesEditAction;
+use App\Http\Actions\Admin\BlogSlides\Pages\ShowBlogSlidesEditPageAction;*/
 use App\Http\Actions\Admin\Brands\BrandCreateAction;
 use App\Http\Actions\Admin\Brands\BrandDeleteAction;
 use App\Http\Actions\Admin\Brands\BrandEditAction;
-use App\Http\Actions\Admin\Brands\GetCollectionsByBrandAction;
 use App\Http\Actions\Admin\Brands\Pages\ShowBrandCreatePageAction;
 use App\Http\Actions\Admin\Brands\Pages\ShowBrandEditPageAction;
 use App\Http\Actions\Admin\Brands\Pages\ShowBrandsListPageAction;
-use App\Http\Actions\Admin\Collections\CollectionCreateAction;
-use App\Http\Actions\Admin\Collections\CollectionDeleteAction;
-use App\Http\Actions\Admin\Collections\CollectionEditAction;
-use App\Http\Actions\Admin\Collections\Pages\ShowCollectionCreatePageAction;
-use App\Http\Actions\Admin\Collections\Pages\ShowCollectionEditPageAction;
-use App\Http\Actions\Admin\Collections\Pages\ShowCollectionsListPageAction;
-use App\Http\Actions\Admin\Collections\SearchCollectionAction;
 use App\Http\Actions\Admin\Colors\ColorCreateAction;
 use App\Http\Actions\Admin\Colors\ColorDeleteAction;
 use App\Http\Actions\Admin\Colors\ColorEditAction;
@@ -49,6 +42,22 @@ use App\Http\Actions\Admin\Currencies\Pages\ShowCurrencyEditPageAction;
 use App\Http\Actions\Admin\Dashboard\Pages\ShowDashboardPageAction;
 use App\Http\Actions\Admin\HomePage\HomePageEditAction;
 use App\Http\Actions\Admin\HomePage\Pages\ShowHomePageEditPageAction;
+
+use App\Http\Actions\Admin\Services\Pages\ShowServiceEditPageAction;
+use App\Http\Actions\Admin\Services\ServiceEditAction;
+
+use App\Http\Actions\Admin\Delivery\Pages\ShowDeliveryEditPageAction;
+use App\Http\Actions\Admin\Delivery\DeliveryEditAction;
+
+use App\Http\Actions\Admin\AboutUs\Pages\ShowAboutUsEditPageAction;
+use App\Http\Actions\Admin\AboutUs\AboutUsEditAction;
+
+use App\Http\Actions\Admin\Contacts\Pages\ShowContactsEditPageAction;
+use App\Http\Actions\Admin\Contacts\ContactsEditAction;
+
+use App\Http\Actions\Admin\ApplicationConfig\Pages\ShowApplicationConfigEditPageAction;
+use App\Http\Actions\Admin\ApplicationConfig\ApplicationConfigEditAction;
+
 use App\Http\Actions\Admin\Orders\Pages\ShowOrderDetailsPageAction;
 use App\Http\Actions\Admin\Orders\Pages\ShowOrdersListPageAction;
 use App\Http\Actions\Admin\Orders\UpdateOrderAction;
@@ -99,12 +108,14 @@ use App\Http\Actions\Admin\ProductTypes\Pages\ShowProductTypesListPageAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeCreateAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeDeleteAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeEditAction;
-use App\Http\Actions\Admin\ProductSubtypes\Pages\ShowProductSubtypesListPageAction;
-use App\Http\Actions\Admin\ProductSubtypes\Pages\ShowProductSubtypeCreatePageAction;
-use App\Http\Actions\Admin\ProductSubtypes\Pages\ShowProductSubtypeEditPageAction;
-use App\Http\Actions\Admin\ProductSubtypes\ProductSubtypeCreateAction;
-use App\Http\Actions\Admin\ProductSubtypes\ProductSubtypeEditAction;
-use App\Http\Actions\Admin\ProductSubtypes\ProductSubtypeDeleteAction;
+
+use App\Http\Actions\Admin\Works\Pages\ShowWorksListPageAction;
+use App\Http\Actions\Admin\Works\Pages\ShowWorkCreatePageAction;
+use App\Http\Actions\Admin\Works\Pages\ShowWorkEditPageAction;
+use App\Http\Actions\Admin\Works\WorkCreateAction;
+use App\Http\Actions\Admin\Works\WorkEditAction;
+use App\Http\Actions\Admin\Works\WorkDeleteAction;
+
 use App\Http\Actions\Admin\SEO\FilterGroupCreateAction;
 use App\Http\Actions\Admin\SEO\FilterGroupDeleteAction;
 use App\Http\Actions\Admin\SEO\FilterGroupEditAction;
@@ -137,7 +148,8 @@ Route::prefix('admin')->middleware([
     AdminsOnly::class,
     SetLocaleAdmin::class,
 ])->group(function () {
-    Route::name('admin.dashboard.page')->get('dashboard', ShowDashboardPageAction::class);
+//    Route::name('admin.dashboard.page')->get('dashboard', ShowDashboardPageAction::class);
+    Route::name('admin.dashboard.page')->get('/', ShowDashboardPageAction::class);
 
     //Product fields
     Route::prefix('productField')->group(function () {
@@ -190,22 +202,22 @@ Route::prefix('admin')->middleware([
         Route::name('admin.product-type.delete')->post('{productType}/delete', ProductTypeDeleteAction::class);
     });
 
-    //Product subtypes (delete)
-    /*Route::prefix('productSubtype')->group(function () {
+    //Works
+    Route::prefix('work')->group(function () {
         //List
-        Route::name('admin.product-subtype.list.page')->get('/', ShowProductSubtypesListPageAction::class);
+        Route::name('admin.work.list.page')->get('/', ShowWorksListPageAction::class);
 
         //Create
-        Route::name('admin.product-subtype.create.page')->get('create', ShowProductSubtypeCreatePageAction::class);
-        Route::name('admin.product-subtype.create')->post('create', ProductSubtypeCreateAction::class);
+        Route::name('admin.work.create.page')->get('create', ShowWorkCreatePageAction::class);
+        Route::name('admin.work.create')->post('create', WorkCreateAction::class);
 
         //Edit
-        Route::name('admin.product-subtype.edit.page')->get('{productSubtype}', ShowProductSubtypeEditPageAction::class);
-        Route::name('admin.product-subtype.edit')->post('{productSubtype}', ProductSubtypeEditAction::class);
+        Route::name('admin.work.edit.page')->get('{work}', ShowWorkEditPageAction::class);
+        Route::name('admin.work.edit')->post('{work}', WorkEditAction::class);
 
         //Delete
-        Route::name('admin.product-subtype.delete')->post('{productSubtype}/delete', ProductSubtypeDeleteAction::class);
-    });*/
+        Route::name('admin.work.delete')->post('{work}/delete', WorkDeleteAction::class);
+    });
 
     //Product Categories
     Route::prefix('productCategory')->group(function () {
@@ -246,7 +258,7 @@ Route::prefix('admin')->middleware([
     Route::prefix('brand')->group(function () {
         //List
         Route::name('admin.brand.list.page')->get('/', ShowBrandsListPageAction::class);
-        Route::name('admin.brand.collections.list')->get('{brand}/collections', GetCollectionsByBrandAction::class);
+//        Route::name('admin.brand.collections.list')->get('{brand}/collections', GetCollectionsByBrandAction::class);
 
         //Create
         Route::name('admin.brand.create.page')->get('create', ShowBrandCreatePageAction::class);
@@ -260,23 +272,6 @@ Route::prefix('admin')->middleware([
         Route::name('admin.brand.delete')->post('{brand}/delete', BrandDeleteAction::class);
     });
 
-    //Collections
-    Route::prefix('collection')->group(function () {
-        //List
-        Route::name('admin.collection.list.page')->get('/', ShowCollectionsListPageAction::class);
-        Route::name('admin.collection.search')->get('/search', SearchCollectionAction::class);
-
-        //Create
-        Route::name('admin.collection.create.page')->get('create', ShowCollectionCreatePageAction::class);
-        Route::name('admin.collection.create')->post('create', CollectionCreateAction::class);
-
-        //Edit
-        Route::name('admin.collection.edit.page')->get('{collection}', ShowCollectionEditPageAction::class);
-        Route::name('admin.collection.edit')->post('{collection}', CollectionEditAction::class);
-
-        //Delete
-        Route::name('admin.collection.delete')->post('{collection}/delete', CollectionDeleteAction::class);
-    });
 
     //Colors
     Route::prefix('color')->group(function () {
@@ -371,7 +366,7 @@ Route::prefix('admin')->middleware([
     });
 
     //Blog category
-    Route::prefix('blogCategory')->group(function () {
+    /*Route::prefix('blogCategory')->group(function () {
         //List
         Route::name('admin.blog-category.list.page')->get('/', ShowBlogCategoriesListPageAction::class);
 
@@ -385,7 +380,7 @@ Route::prefix('admin')->middleware([
 
         //Delete
         Route::name('admin.blog-category.delete')->post('{blogCategory}/delete', BlogCategoryDeleteAction::class);
-    });
+    });*/
 
     //Blog article
     Route::prefix('blogArticle')->group(function () {
@@ -405,16 +400,48 @@ Route::prefix('admin')->middleware([
     });
 
     //Blog slides
-    Route::prefix('blogSlide')->group(function () {
+    /*Route::prefix('blogSlide')->group(function () {
         Route::name('admin.blog-slide.edit.page')->get('edit', ShowBlogSlidesEditPageAction::class);
         Route::name('admin.blog-slide.edit')->post('edit', BlogSlidesEditAction::class);
-    });
+    });*/
 
+
+    //All pages
+    Route::prefix('pages')->group(function () {
+        Route::name('admin.pages.list.page')->get('/', ShowPagesListPageAction::class);
+    });
     //Home page
     Route::prefix('homePage')->group(function () {
         Route::name('admin.home-page.edit.page')->get('edit', ShowHomePageEditPageAction::class);
         Route::name('admin.home-page.edit')->post('edit', HomePageEditAction::class);
     });
+    //Services
+    Route::prefix('services')->group(function () {
+        Route::name('admin.services.edit.page')->get('edit', ShowServiceEditPageAction::class);
+        Route::name('admin.services.edit')->post('edit', ServiceEditAction::class);
+    });
+    //Delivery
+    Route::prefix('delivery')->group(function () {
+        Route::name('admin.delivery.edit.page')->get('edit', ShowDeliveryEditPageAction::class);
+        Route::name('admin.delivery.edit')->post('edit', DeliveryEditAction::class);
+    });
+    //About Us
+    Route::prefix('aboutUs')->group(function () {
+        Route::name('admin.about-us.edit.page')->get('edit', ShowAboutUsEditPageAction::class);
+        Route::name('admin.about-us.edit')->post('edit', AboutUsEditAction::class);
+    });
+    //Contacts
+    Route::prefix('contacts')->group(function () {
+        Route::name('admin.contacts.edit.page')->get('edit', ShowContactsEditPageAction::class);
+        Route::name('admin.contacts.edit')->post('edit', ContactsEditAction::class);
+    });
+
+    //Application Config
+    Route::prefix('applicationConfig')->group(function () {
+        Route::name('admin.application-config.edit.page')->get('edit', ShowApplicationConfigEditPageAction::class);
+        Route::name('admin.application-config.edit')->post('edit', ApplicationConfigEditAction::class);
+    });
+
 
     //Visit requests
     Route::prefix('visitRequest')->group(function () {

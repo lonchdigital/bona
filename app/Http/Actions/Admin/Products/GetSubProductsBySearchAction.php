@@ -10,6 +10,6 @@ class GetSubProductsBySearchAction
 {
     public function __invoke(SearchProductRequest $request, ProductService $productsService)
     {
-        return ProductSearchResource::collection($productsService->searchSubProducts($request->toDTO(), 13));
+        return ProductSearchResource::collection($productsService->searchSubProducts($request->toDTO(), config('constants.SUB_PRODUCTS_ID')));
     }
 }

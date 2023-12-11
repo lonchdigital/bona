@@ -28,20 +28,19 @@
 
 @section('content')
 
-    <!-- ========================  Main header ======================== -->
 
-    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/catalog-header-bg.png') }})">
-        <header>
-            <div class="container">
-                <h1 class="h2 title">{{ $product->name }}</h1>
-                <ol class="breadcrumb breadcrumb-inverted">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $product->productType->slug]) }}">{{ $product->productType->name }}</a></li>
-                    <li><span class="active">{{ $product->name }}</span></li>
-                </ol>
-            </div>
-        </header>
-    </section>
+    <!-- ======================== Page header ======================== -->
+    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/header-bg.png') }})"></section>
+    <header class="art-page-header">
+        <div class="container">
+            <ol class="breadcrumb breadcrumb-inverted font-two">
+                <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
+                <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $product->productType->slug]) }}">{{ $product->productType->name }}</a></li>
+                <li><span class="active">{{ $product->name }}</span></li>
+            </ol>
+        </div>
+    </header>
+
 
     <!-- ========================  Product ======================== -->
 
@@ -100,104 +99,93 @@
                     <div class="col-md-5 col-sm-12 product-flex-info">
                         <div class="clearfix">
 
-                            <!-- === product-title === -->
-
-{{--                            @dd($product->productType->fields)--}}
-
                             <h1 class="title" data-title="Sofa">{{ $product->name }}</h1>
-
                             <div class="clearfix">
 
-                                <hr />
-
                                 @if($product->sku)
-                                    <div class="info-box">
-                                        <span><strong>{{ trans('base.sku') }}</strong></span>
-                                        <span>{{ $product->sku }}</span>
+                                    <div class="info-box font-two">
+                                        <span class="art-option-name">{{ trans('base.sku') }}</span>
+                                        <span class="art-option-value">{{ $product->sku }}</span>
                                     </div>
                                 @endif
 
                                 @foreach($product->productType->fields->where('as_image', '!=', true)->where('display_on_single', '==', true) as $customField)
-                                    <div class="info-box">
-                                        <span><strong>{{ $customField->field_name }}</strong></span>
+                                    <div class="info-box font-two">
+                                        <span class="art-option-name">{{ $customField->field_name }}</span>
 
                                         @if ($customField->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING)
-                                            <span>{{ $product->getCustomFieldValue($customField->id) }}</span>
+                                            <span class="art-option-value">{{ $product->getCustomFieldValue($customField->id) }}</span>
                                         @elseif($customField->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
                                             @if ($customField->is_multiselectable)
-                                                <span>{{ $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->pluck('name')->implode(', ') }}</span>
+                                                <span class="art-option-value">{{ $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->pluck('name')->implode(', ') }}</span>
                                             @else
-                                                <span>{{ $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->first()->name }}</span>
+                                                <span class="art-option-value">{{ $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->first()->name }}</span>
                                             @endif
                                         @endif
                                     </div>
                                 @endforeach
 
-                                <div class="info-box">
-                                    <span><strong>{{ trans('base.availability') }}</strong></span>
-                                    <span>
-                                        @if ($product->availability_status_id == 1)
+                                <div class="info-box font-two">
+                                    <span class="art-option-name">{{ trans('base.availability') }}</span>
+                                    @if ($product->availability_status_id == 1)
+                                        <span class="art-option-value check-square">
                                             <i class="fa fa-check-square-o"></i>
-                                        @elseif($product->availability_status_id == 3)
+                                            {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
+                                        </span>
+                                    @elseif($product->availability_status_id == 3)
+                                        <span class="art-option-value">
                                             <i class="fa fa-truck"></i>
-                                        @endif
-                                        {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
-                                    </span>
+                                            {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
+                                        </span>
+                                    @endif
                                 </div>
 
-                                <hr />
+                                @foreach($attributeOptions as $id => $allOptions)
+                                    @foreach($allOptions as $name => $option)
+                                        @if(count($option))
+                                            <div class="info-box font-two">
+                                                <span class="art-option-name">{{ $name }}</span>
+                                                <select name="option" id="option-id-{{ $id }}" class="art-select-attribute">
+                                                    <option value="">- Обрати -</option>
 
-                                @foreach($attributeOptions as $key => $option)
-                                    @if(count($option))
-
-                                        <div class="info-box">
-                                            <span><strong>{{ $key }}</strong></span>
-                                            <select name="option" id="pet-select">
-                                                <option value="">- Обрати -</option>
-
-                                                @foreach($option as $item)
-                                                    <option value="parrot">
-                                                        {{ $item['name'] }}
-                                                        @if($item['price'])
-                                                            {{ ' ' . $item['price'] .' '. $baseCurrency->name_short }}
-                                                        @endif
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    @endif
+                                                    @foreach($option as $item)
+                                                        <option value="{{ $item['name'] }}" data-price="{{$item['price']}}">
+                                                            {{ $item['name'] }}
+                                                            @if($item['price'])
+                                                                {{ ' ' . $item['price'] .' '. $baseCurrency->name_short }}
+                                                            @endif
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+                                    @endforeach
                                 @endforeach
-
 
                                 <!-- === info-box === -->
                                 @if(count($product->colors))
-                                    <div class="info-box">
-                                        <span><strong>{{ trans('base.color') }}</strong></span>
-                                        <div>
+                                    <div class="info-box font-two">
+                                        <span class="art-option-name">{{ trans('base.color') }}</span>
+                                        <div class="art-colors-list">
                                             @foreach($product->colors as $color_item)
-                                                <span class="color-btn" style="background-color: {{ $color_item->hex }};"></span>
+                                                @if($color_item->display_as_image)
+                                                    <span class="color-btn" data-name="{{ $color_item->name }}" data-price="{{ $color_item->pivot->price }}">
+                                                        <img src="{{$color_item->image_url}}">
+                                                    </span>
+                                                @else
+                                                    <span class="color-btn" data-name="{{ $color_item->name }}" data-price="{{ $color_item->pivot->price }}" style="background-color: {{ $color_item->hex }};"></span>
+                                                @endif
                                             @endforeach
                                         </div>
                                     </div>
-
-
-<!--                                    <div class="product-colors clearfix">
-                                        <span class="color-btn color-btn-red"></span>
-                                        <span class="color-btn color-btn-blue checked"></span>
-                                        <span class="color-btn color-btn-green"></span>
-                                        <span class="color-btn color-btn-gray"></span>
-                                        <span class="color-btn color-btn-biege"></span>
-                                    </div>-->
-
                                 @endif
-
 
                                 @foreach($categoryProducts as $cat => $subProducts)
 
                                     <div class="sub-product-wrapper">
 
-                                        <div class="info-box art-popup-link">
-                                            <span><strong>{{ $cat }}</strong></span>
+                                        <div class="info-box font-two art-popup-link">
+                                            <span class="art-option-name">{{ $cat }}</span>
                                             <span class="art-dialog-link" data-fancybox data-src="#dialog-content-{{ Illuminate\Support\Str::slug($cat) }}">{{ trans('base.select') }}</span>
                                         </div>
 
@@ -251,42 +239,30 @@
 
                                 @endforeach
 
-
-                                <hr />
-
-                                <div class="info-box">
-                                    <span><strong>{{ trans('base.quantity') }}</strong></span>
-
-                                    <div class="@if($isProductInCart) d-none @endif" id="count-of-products-body">
+                                <div class="info-box font-two">
+                                    <span class="art-option-name">{{ trans('base.quantity') }}</span>
+                                    <div class="" id="count-of-products-body">
                                         <div class="custom-control-number mr-2">
                                             <span class="counter minus"></span>
                                             <input type="number" class="" id="count-of-products" min="1" value="1">
                                             <span class="counter plus"></span>
                                         </div>
                                     </div>
-
                                 </div>
 
-                                <div class="info-box price">
-                                    <span><strong>{{ trans('base.price') }}</strong></span>
-                                    <span class="h3">{{ $product->price }} {{ $baseCurrency->name_short }}</span>
+                                <div class="price">
+                                    <div>
+                                        <span id="product-price" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
+                                        <span class="currency">{{ $baseCurrency->name_short }}</span>
+                                    </div>
+                                    <span class="product-cost-description font-two">{{trans('base.product_cost_description')}}</span>
                                 </div>
 
                                 <div class="info-content-add d-flex align-items-center justify-content-between flex-wrap">
                                     <div class="d-flex flex-wrap align-items-center no-gutters w-100">
 
-                                        <!--id="count-of-products-body-->
-
-                                        <div class="col col-sm-auto col-lg col-xl-auto order-last order-sm-0 order-lg-last order-xl-2 mt-4 mt-sm-0 mt-lg-4 mt-xl-0 @if($isProductInCart) d-none @endif">
+                                        <div class="col col-sm-auto col-lg col-xl-auto order-last order-sm-0 order-lg-last order-xl-2 mt-4 mt-sm-0 mt-lg-4 mt-xl-0">
                                             <button type="button" class="btn btn-black-custom w-100 single-product-add-to-cart" id="{{ $product->slug }}">{{ trans('base.add_to_cart') }}</button>
-                                        </div>
-
-
-                                        <div class="go-to-cart-body col-6 col-sm-auto col-lg-6 col-xl-auto order-xl-1 @if(!$isProductInCart) d-none @endif">
-                                            <span class="mr-2">{{ trans('base.in_cart') }}</span>
-                                        </div>
-                                        <div class="go-to-cart-body col col-sm-auto col-lg col-xl-auto order-last order-sm-0 order-lg-last order-xl-2 mt-4 mt-sm-0 mt-lg-4 mt-xl-0 @if(!$isProductInCart) d-none @endif">
-                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-black-custom w-100">{{ trans('base.go_to_cart') }}</a>
                                         </div>
 
                                     </div>
@@ -313,7 +289,7 @@
                     <!-- === nav-tabs === -->
                     <div class="col-md-12">
 
-                        <ul class="nav nav-tabs" role="tablist">
+                        <ul class="nav nav-tabs product-tabs-nav" role="tablist">
                             <li role="presentation" class="active">
                                 <a href="#characteristics" aria-controls="characteristics" role="tab" data-toggle="tab">
                                     <span>{{ trans('base.characteristics') }}</span>
@@ -411,16 +387,25 @@
 
 
     <!-- ======================== Contact Form ======================== -->
-
     <section class="art-contact-form-section" style="background-image:url({{ asset('storage/bg-images/form-bg.png') }})">
         <div class="container">
+
+            <header class="art-light">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8 text-center">
+                        <h2 class="title">Не знаєте які двері обрати?</h2>
+                        <div class="subtitle font-two">
+                            <p>
+                                We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy
+                                to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
             <div class="row">
                 <div class="col-md-offset-2 col-md-8 text-center">
-                    <h2 class="title">Не знаєте які двері обрати?</h2>
-                    <p>
-                        We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy
-                        to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
-                    </p>
 
                     <form action="#" method="post" class="art-contact-form">
                         @csrf
@@ -428,9 +413,12 @@
                             <input type="text" class="art-light-field" placeholder="Ім’я">
                             <input type="text" class="art-light-field" placeholder="Телефон">
                         </p>
-                        <p><a href="about.html" class="btn btn-clean">Відправити</a></p>
+                        <!--                        <div class="checkbox">
+                                                    <input type="checkbox" name="agree" value="value">
+                                                    <label for="fieldName">Даю згоду на обробку персональних даних</label>
+                                                </div>-->
+                        <p><a href="#" class="btn btn-empty">{{trans('base.send')}}</a></p>
                     </form>
-
 
                 </div>
             </div>
@@ -444,17 +432,13 @@
 
             <div class="container">
 
-                <header>
+                <header class="art-header-left">
                     <div class="row">
-                        <div class="col-md-offset-2 col-md-8 text-center">
-                            <h2 class="title">{{ trans('base.see_more') }}</h2>
-                            <div class="text">
-                                <p>Check out our latest collections</p>
-                            </div>
+                        <div>
+                            <h2 class="title">{{trans('base.see_more')}}</h2>
                         </div>
                     </div>
                 </header>
-
 
                 <div class="art-products-slider-wrapper">
                     <div class="art-products-owl-items">
@@ -489,6 +473,99 @@
 @endsection
 
 @push('dynamic_scripts')
+
+    <script type="text/javascript">
+        var priceOptions = {}; // Пустой объект для хранения опций цен
+        var selectElements = document.getElementsByClassName("art-select-attribute");
+
+        var productPriceElement = document.getElementById("product-price");
+        var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
+
+        for (var i = 0; i < selectElements.length; i++) {
+            selectElements[i].addEventListener("change", function() {
+                var selectedIndex = this.selectedIndex;
+                var selectedOption = this.options[selectedIndex];
+                var price = parseFloat(selectedOption.getAttribute("data-price"));
+                var selectID = this.id;
+                var attributePrices = 0;
+
+                if (!priceOptions[selectID]) {
+                    priceOptions[selectID] = {};
+                }
+
+                // Обновляем цену в объекте опций цен для выбранного атрибута
+                priceOptions[selectID].price = (isNaN(price)) ? 0 : price;
+
+                for(var key in priceOptions) {
+                    if(priceOptions.hasOwnProperty(key)) {
+                        var value = priceOptions[key];
+                        attributePrices += value.price;
+                    }
+                }
+
+                var totalPrice = currentPrice + attributePrices;
+                productPriceElement.innerText = totalPrice.toFixed(2);
+            });
+        }
+
+        /**/
+        // var spans = document.querySelectorAll('.art-colors-list span');
+
+
+        const colorList = document.querySelector(".art-colors-list");
+
+        colorList.addEventListener("click", function(event) {
+
+            // console.log(priceOptions);
+            // console.log(event.target.getAttribute("data-price"));
+
+
+            const clickedElement = event.target;
+
+            // Проверяем, есть ли <img> внутри элемента или в одном из его родительских элементов
+            const imgElement = clickedElement.closest("span").querySelector("img");
+
+            if (imgElement || clickedElement.closest("span").tagName === "SPAN") {
+                // Если есть <img>, на котором было событие click
+                const clickedImg = imgElement || clickedElement.closest("span");
+
+                // Проверяем, является ли родительский элемент <span>
+                const clickedSpan = clickedImg.tagName === "SPAN" ? clickedImg : clickedImg.closest("span");
+
+                if (clickedSpan) {
+                    // Удаление класса 'color-selected' у всех span внутри контейнера
+                    const allSpans = colorList.querySelectorAll("span");
+                    allSpans.forEach(function(span) {
+                        span.classList.remove("color-selected");
+                    });
+
+                    // Добавление класса 'color-selected' к родительскому span
+                    clickedSpan.classList.add("color-selected");
+
+
+                    var attributePrices = 0;
+                    priceOptions['color'] = {};
+                    priceOptions['color'] = {'price': parseFloat(clickedSpan.getAttribute("data-price"))};
+
+                    // priceOptions[selectID].price = (isNaN(price)) ? 0 : price;
+
+                    for(var key in priceOptions) {
+                        if(priceOptions.hasOwnProperty(key)) {
+                            var value = priceOptions[key];
+                            attributePrices += value.price;
+                        }
+                    }
+
+                    var totalPrice = currentPrice + attributePrices;
+                    productPriceElement.innerText = totalPrice.toFixed(2);
+
+                }
+            }
+        });
+
+    </script>
+
+
     <script type="text/javascript">
         const product = {
             similar_products_route: '{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.similar-products', ['productSlug' => $product->slug]) }}',

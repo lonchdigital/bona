@@ -4,6 +4,8 @@ namespace App\Services\Admin\ProductField;
 
 use App\DataClasses\NumericFieldFilerTypesDataClass;
 use App\Models\Product;
+use App\Models\Faqs;
+use App\Models\SeoText;
 use App\Models\ProductCustomField;
 use App\Services\Base\ServiceActionResult;
 use Carbon\Carbon;
@@ -289,4 +291,24 @@ class ProductFieldService extends BaseService
 
         return [];
     }
+
+    public function getProductTypeFaqs(string $productTypeSlug): Collection
+    {
+        return Faqs::where('page_type', $productTypeSlug)->get();
+    }
+
+    public function getProductTypeSeoText(string $productTypeSlug): array
+    {
+        $result = SeoText::where('page_type', $productTypeSlug)->get();
+        $data = [];
+
+        foreach ($result as $value) {
+            $data['title'][$value['language']] = $value['title'];
+            $data['content'][$value['language']] = $value['content'];
+        }
+
+        return $data;
+    }
+
+
 }

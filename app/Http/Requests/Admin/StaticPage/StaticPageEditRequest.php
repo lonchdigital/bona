@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin\StaticPage;
 
 use App\Http\Requests\BaseRequest;
-use App\Services\StaticPage\DTO\SeoTextsEditDTO;
+use App\Services\StaticPage\DTO\StaticPageEditDTO;
 
 class StaticPageEditRequest extends BaseRequest
 {
@@ -26,9 +26,9 @@ class StaticPageEditRequest extends BaseRequest
     }
 
 
-    public function toDTO(): SeoTextsEditDTO
+    public function toDTO(): StaticPageEditDTO
     {
-        return new SeoTextsEditDTO(
+        return new StaticPageEditDTO(
             $this->input('content')
         );
     }

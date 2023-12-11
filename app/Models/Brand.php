@@ -39,19 +39,12 @@ class Brand extends Model implements Sitemapable
         });
     }
 
-    public function headImageUrl(): Attribute
-    {
-        return Attribute::make(function () {
-            return Storage::url($this->head_image_path);
-        });
-    }
 
     public function toArray()
     {
         $array = parent::toArray();
 
         $array['logo_image_url'] = $this->logo_image_url;
-        $array['head_image_url'] = $this->head_image_path;
 
         return $array;
     }

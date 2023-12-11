@@ -7,6 +7,7 @@ use App\Models\StaticPageContent;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\StaticPage\DTO\SeoTextsEditDTO;
+use App\Services\StaticPage\DTO\StaticPageEditDTO;
 use Illuminate\Support\Collection;
 
 class StaticPageService extends BaseService
@@ -33,7 +34,7 @@ class StaticPageService extends BaseService
         return null;
     }
 
-    public function update(int $staticPageTypeId, SeoTextsEditDTO $request): ServiceActionResult
+    public function update(int $staticPageTypeId, StaticPageEditDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($staticPageTypeId, $request) {
             $staticPage = StaticPage::where('type_id', $staticPageTypeId)->first();

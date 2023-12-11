@@ -4,6 +4,7 @@ namespace App\Services\Cart;
 
 use App\DataClasses\DeliveryTypesDataClass;
 use App\Models\Cart;
+use App\Models\CartProducts;
 use App\Models\PromoCode;
 use App\Models\User;
 use App\Models\Product;
@@ -12,6 +13,7 @@ use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Cart\DTO\AddPromoCodeToCartDTO;
 use App\Services\Cart\DTO\ChangeProductCountInCartDTO;
+use App\Services\Cart\DTO\DeleteProductFromCartDTO;
 use App\Services\Cart\DTO\GetProductsSummaryWithDeliveryDTO;
 use App\Services\WishList\WishListService;
 use Illuminate\Support\Collection;
@@ -67,7 +69,86 @@ class CartService extends BaseService
         return $cart->products;
     }
 
+    public function getAttributesWithOptions(int $product_id, $productType): array
+    {
+        $attributeOptions = [];
+
+        $currentAttributeOptions = $productType->attributes()
+            ->with(['productAttributeOptions' => function ($query) use ($product_id) {
+                $query->where('product_id', $product_id);
+            }])
+            ->get();
+
+        if(count($currentAttributeOptions)) {
+            foreach ($currentAttributeOptions as $attribute) {
+                $atr_options = [];
+                foreach ($attribute->productAttributeOptions as $attributeOption){
+                    $atr_options[] = $attributeOption;
+                }
+                $attributeOptions[$attribute->id] = $atr_options;
+            }
+        }
+
+        return $attributeOptions;
+    }
+
     public function addProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
+    {
+        $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
+        $requestProductAttributes = $request->productAttributes;
+        $isProductInCart = false;
+
+        foreach ($allProductVariations as $allProductVariation) {
+            $difference = array_diff_assoc(json_decode($allProductVariation['attributes'], true), $requestProductAttributes);
+
+            if(empty($difference)) {
+                $count = $allProductVariation->count + 1;
+                $allProductVariation->update(['count' => $count]);
+
+                $isProductInCart = true;
+                break;
+            }
+        }
+
+        if( !$isProductInCart ) {
+            $attributeOptions = $this->getAttributesWithOptions($product->id, $product->productType);
+
+            $productAttributeColor['color'] = $requestProductAttributes['color'];
+            unset($requestProductAttributes['color']);
+
+            $productAttributesSum = [];
+            foreach ($requestProductAttributes as $attributeKey => $productAttributeName ) {
+                if( !is_null($productAttributeName) ) {
+                    $productAtrID = preg_replace('/[^0-9]/', '', $attributeKey);
+                    $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('name', $productAttributeName)->price;
+                }
+            }
+//            dd($productAttributesSum);
+
+            if( !is_null($productAttributeColor['color']) ) {
+                $color_price = $product->colors->firstWhere('name', $productAttributeColor['color'])->pivot->price;
+                if( is_numeric($color_price) || is_float($color_price) )
+                    $productAttributesSum[] = $color_price;
+            }
+
+            $productAttributesSum = array_sum($productAttributesSum);
+
+            $cart->products()->attach([$product->id => [
+                'count' => $request->productCount,
+                'price' => $product->price,
+                'attributes' => json_encode($request->productAttributes),
+                'attributes_price' => $productAttributesSum
+            ]]);
+        }
+
+        /*if (!$cart->products()->where('product_id', $product->id)->exists()) {
+            $cart->products()->attach([$product->id => ['count' => $request->productCount, 'attributes' => json_encode($request->productAttributes), 'price' => $product->price]]);
+        } else {
+            $cart->products()->updateExistingPivot($product->id, ['count' => $request->productCount]);
+        }*/
+    }
+
+    public function addSubProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
         if (!$cart->products()->where('product_id', $product->id)->exists()) {
             $cart->products()->attach([$product->id => ['count' => $request->productCount, 'price' => $product->price]]);
@@ -78,14 +159,50 @@ class CartService extends BaseService
 
     public function changeProductCount(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
-        if ($cart->products()->where('product_id', $product->id)->exists()) {
-            $cart->products()->updateExistingPivot($product->id, ['count' => $request->productCount]);
+        if( !is_null($request->productAttributes) ) { // all sub products have productAttributes as null
+
+            $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
+            $requestProductAttributes = $request->productAttributes;
+
+            foreach ($allProductVariations as $allProductVariation) {
+                $difference = array_diff_assoc(json_decode($allProductVariation['attributes'], true), $requestProductAttributes);
+
+                if(empty($difference)) {
+                    $allProductVariation->update(['count' => $request->productCount]);
+                    break;
+                }
+            }
+
+        } else {
+
+            if ($cart->products()->where('product_id', $product->id)->exists()) {
+                $cart->products()->updateExistingPivot($product->id, ['count' => $request->productCount]);
+            }
+
         }
+
     }
 
-    public function deleteProductFromCart(Cart $cart, Product $product): void
+    public function deleteProductFromCart(Cart $cart, Product $product, DeleteProductFromCartDTO $request): void
     {
-        $cart->products()->detach($product->id);
+        if( !is_null($request->productAttributes) ) { // all sub products have productAttributes as null
+
+            $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
+            $requestProductAttributes = $request->productAttributes;
+
+            foreach ($allProductVariations as $allProductVariation) {
+                $difference = array_diff_assoc(json_decode($allProductVariation['attributes'], true), $requestProductAttributes);
+
+                if(empty($difference)) {
+                    $allProductVariation->delete();
+                    break;
+                }
+            }
+
+        } else {
+            $cart->products()->detach($product->id);
+        }
+
     }
 
     public function getSummary(Cart $cart, ?WishList $wishList): array
@@ -127,9 +244,44 @@ class CartService extends BaseService
         ];
     }
 
+    public function getCartSummary(Cart $cart): array
+    {
+        $totalPrice = 0;
+        $allProductsWithVariations = CartProducts::where('cart_id', $cart->id)->get();
+
+        foreach ($allProductsWithVariations as $productInCart) {
+            $totalPrice += ($productInCart->price + $productInCart->attributes_price) * $productInCart->count;
+        }
+        /*foreach ($cart->products as $product) {
+            $totalPrice += $product->pivot->price * $product->pivot->count;
+        }*/
+
+        $hasFreeDelivery = false;
+        /*if ($totalPrice >= config('domain.free_delivery_from_price')) {
+            $hasFreeDelivery = true;
+        }*/
+
+        $discount = 0;
+        /*if ($cart->promoCode) {
+            $discount = $totalPrice / 100 * $cart->promoCode->discount;
+            $totalPrice = $totalPrice - $discount;
+        }*/
+
+        return [
+            'summary' => [
+                'products' =>  round($totalPrice, 2),
+                'total' => round($totalPrice, 2),
+                'discount' => round($discount, 2),
+            ],
+            'has_free_delivery' => $hasFreeDelivery,
+            'promo_code' => $cart->promoCode,
+        ];
+    }
+
     public function getProductsInCartWithSummary(Cart $cart, ?WishList $wishList): array
     {
-        $summary = $this->getSummary($cart, $wishList);
+        $summary = $this->getCartSummary($cart);
+//        $summary = $this->getSummary($cart, $wishList);
         $summary['products'] = $cart->products;
 
         return $summary;

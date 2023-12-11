@@ -3,10 +3,13 @@
 namespace App\Services\Application;
 
 use App\Models\ApplicationConfig;
+use App\Services\Application\DTO\ApplicationConfigEditDTO;
 use App\Services\Application\DTO\EditRobotsTxtDto;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class ApplicationConfigService extends BaseService
 {
@@ -15,6 +18,7 @@ class ApplicationConfigService extends BaseService
      */
     const AVAILABLE_LANGUAGES_CONFIG = 'AVAILABLE_LANGUAGES';
     const ROBOTS_TXT_CONFIG = 'ROBOTS_TXT';
+    const APPLICATION_IMAGES_FOLDER = 'application-images';
 
     public function getAvailableLanguages(): array
     {
@@ -56,4 +60,73 @@ class ApplicationConfigService extends BaseService
              return ServiceActionResult::make(true, trans('admin.robots_txt_edit_success'));
         });
     }
+
+    public function editApplicationConfig(ApplicationConfigEditDTO $request): ServiceActionResult
+    {
+        return $this->coverWithDBTransaction(function () use($request) {
+
+            $dataToUpdate = [];
+            foreach ($request as $key => $value) {
+                $dataToUpdate[$key] = $value;
+            }
+
+            $existinglogoLight = ApplicationConfig::where('config_name', 'logoLight')->first();
+            $existinglogoDark = ApplicationConfig::where('config_name', 'logoDark')->first();
+            $dataToUpdate['logoLight'] = (!is_null($existinglogoLight)) ? $existinglogoLight->data : null;
+            $dataToUpdate['logoDark'] = (!is_null($existinglogoDark)) ? $existinglogoDark->data : null;
+
+
+            // logo Light
+            if( !is_null($request->logoLight) ) {
+                $logoLightImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $this->storeImage($logoLightImagePath, $request->logoLight, 'png');
+                $dataToUpdate['logoLight'] = $logoLightImagePath;
+
+                if(!is_null($existinglogoLight) && !is_null($existinglogoLight->data)) {
+                    $this->deleteImage($existinglogoLight->data);
+                }
+            }
+            if( $dataToUpdate['logoLightDeleted'] ) {
+                $this->deleteImage($existinglogoLight->data);
+                $dataToUpdate['logoLight'] = null;
+            }
+
+            // logo Dark
+            if( !is_null($request->logoDark) ) {
+                $logoDarkImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $this->storeImage($logoDarkImagePath, $request->logoDark, 'png');
+                $dataToUpdate['logoDark'] = $logoDarkImagePath;
+
+                if(!is_null($existinglogoDark) && !is_null($existinglogoDark->data)) {
+                    $this->deleteImage($existinglogoDark->data);
+                }
+            }
+            if( $dataToUpdate['logoDarkDeleted'] ) {
+                $this->deleteImage($existinglogoDark->data);
+                $dataToUpdate['logoDark'] = null;
+            }
+
+            unset($dataToUpdate['logoLightDeleted']);
+            unset($dataToUpdate['logoDarkDeleted']);
+            foreach ($dataToUpdate as $key => $value) {
+                ApplicationConfig::updateOrCreate(['config_name' => $key], ['data' => $value]);
+            }
+
+            return ServiceActionResult::make(true, trans('admin.settings_updated_success'));
+        });
+    }
+
+    public function getAllApplicationConfigOptions(): array
+    {
+        $data = ApplicationConfig::all();
+        $dataArray = [];
+
+        foreach ($data as $item) {
+            $dataArray[$item->config_name] = $item->data;
+        }
+
+        return $dataArray;
+    }
+
+
 }

@@ -15,11 +15,6 @@ class ProductEditRequest extends ProductCreateRequest
             new RequiredImageDeletedRule(mb_strtolower(trans('admin.product_main_image'))),
         ];*/
 
-        /*$rules['pattern_image_deleted_input'] = [
-            'required',
-            new RequiredImageDeletedRule(mb_strtolower(trans('admin.product_image_pattern'))),
-        ];*/
-
 
 
         $rules['sku'] = [
@@ -40,11 +35,6 @@ class ProductEditRequest extends ProductCreateRequest
             'mimes:jpeg,png,jpg',
         ];
 
-        $rules['pattern_image'] = [
-            'nullable',
-            'image',
-            'mimes:jpeg,png,jpg',
-        ];
 
         return $rules;
     }

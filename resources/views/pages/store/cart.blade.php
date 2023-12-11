@@ -6,21 +6,31 @@
 @endsection
 
 @section('content')
+
+    <!-- ======================== Main header ======================== -->
+    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/catalog-header-bg.png') }})">
+        <header>
+            <div class="container">
+                <h1 class="h2 title">Cart</h1>
+                <ol class="breadcrumb breadcrumb-inverted">
+                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
+                    <li><a class="active" href="#">Cart</a></li>
+                </ol>
+            </div>
+        </header>
+    </section>
+
+
     <main id="page-cart" class="page-cart">
         <div class="content">
             <div class="entry-content">
                 <div class="container">
+
                     <div class="row">
-                        <div class="col">
-                            <div class="list-product-title head mt-4 mt-md-0 mb-2 mb-lg-5">
-                                {{ trans('base.cart') }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="left-content col-12 col-lg-auto">
-                            <div id="basket-list-product" class="basket-list-product mb-lg-5">
+                        <div class="art-cart-products-wrapper col-md-12">
+                            <div id="basket-list-product" class="basket-list-product">
                                 <div class="list-product-table">
+
                                     <div class="table-head mb-8 d-none d-xl-block">
                                         <div class="row">
                                             <div class="col-6">
@@ -32,7 +42,7 @@
                                                         <div class="table-title">{{ trans('base.price_per_product') }}</div>
                                                     </div>
                                                     <div class="col">
-                                                        <div class="table-title text-center">{{ trans('base.count_of_products') }}</div>
+                                                        <div class="table-title">{{ trans('base.count_of_products') }}</div>
                                                     </div>
                                                     <div class="col">
                                                         <div class="table-title text-right">{{ trans('base.price') }}</div>
@@ -41,28 +51,44 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="row">
                                         <div class="col cart-page-products-list">
 
                                         </div>
                                     </div>
+
                                 </div>
-                                <div class="table-extra-info p-3 mt-5 mt-lg-4">
-                                    <div class="delivery d-flex align-items-center mb-3">
-                                        {{ trans('base.delivery_over_ukraine') }}
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="art-cart-bottom">
+                        <div id="basket-total-info" class="row">
+
+                            <div class="col-md-8">
+                                <div class="total-info-left">
+                                    <div class="info-bottom-title mb-3 text-center">
+                                        {{ trans('base.enter_promo_code') }}
                                     </div>
-                                    <div class="time d-flex align-items-center mb-3">
-                                        {{ trans('base.delivery_estimate') }}
-                                    </div>
-                                    <div class="in-stock d-flex align-items-center">
-                                        {{ trans('base.products_are_in_stock') }}
+                                    <div class="info-bottom-form mt-3">
+                                        <form id="promo-code-form">
+                                            <div class="d-flex">
+                                                <input type="text" name="code" class="form-control" placeholder="{{ trans('base.your_promo_code') }}">
+                                                <button type="button" class="btn btn-dark ml-1 add-promo-code-button">{{ trans('base.enter') }}</button>
+                                            </div>
+                                            <div class="success-text text-success d-none">{{ trans('base.promo_code_add_success') }}</div>
+                                            <div class="error-text text-danger"></div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="right-sidebar sticky-wrap col-12 col-lg-auto d-lg-flex justify-content-lg-end mb-8 mb-lg-0">
-                            <div id="basket-total-info" class="basket-total-info d-flex flex-column align-items-end">
-                                <div class="total-info-top pt-4 pt-xl-6 pb-8 pb-xl-9 px-lg-2 px-xl-5 mb-3">
+
+                            <div class="col-md-4">
+                                <div class="total-info-right">
+
                                     <div class="info-top-count d-none d-lg-block mb-2 text-center">
                                         {!! trans('base.products_in_cart') !!}
                                     </div>
@@ -74,7 +100,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="info-top-prices bg-white mb-6">
+                                    <div class="info-top-prices mb-6">
                                         <div class="info-top-item py-3 px-5">
                                             <span class="mr-6">{{ trans('base.products_price') }}</span>
                                             <span class="text-nowrap price-products"></span>
@@ -109,25 +135,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="total-info-bottom pt-4 pb-6 px-lg-4 px-xxl-8">
-                                    <div class="info-bottom-title mb-3 text-center">
-                                        {{ trans('base.enter_promo_code') }}
-                                    </div>
-                                    <div class="info-bottom-form mt-3">
-                                        <form id="promo-code-form">
-                                            <div class="d-flex">
-                                                <input type="text" name="code" class="form-control" placeholder="{{ trans('base.your_promo_code') }}">
-                                                <button type="button" class="btn btn-dark ml-1 add-promo-code-button">{{ trans('base.enter') }}</button>
-                                            </div>
-                                            <div class="success-text text-success d-none">{{ trans('base.promo_code_add_success') }}</div>
-                                            <div class="error-text text-danger"></div>
-                                        </form>
-                                    </div>
+
                                 </div>
                             </div>
+
                         </div>
                     </div>
+
                     <!-- upsale here -->
                 </div>
                 @guest

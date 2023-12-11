@@ -18,9 +18,17 @@ class EditColorRequest extends BaseRequest
                 'required',
                 'string',
             ],
+            'display_as_image' => [
+                'nullable',
+            ],
             'hex' => [
                 'nullable',
                 'string',
+            ],
+            'main_image' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
             ],
             'parent_color_id' => [
                 'nullable',
@@ -28,6 +36,7 @@ class EditColorRequest extends BaseRequest
                 'exists:colors,id',
             ]
         ];
+
 
         foreach ($this->availableLanguages as $availableLanguage) {
             $rules['name.' . $availableLanguage] = [
@@ -57,7 +66,9 @@ class EditColorRequest extends BaseRequest
         return new EditColorDTO(
             $this->input('name'),
             $this->input('slug'),
+            $this->input('display_as_image'),
             $this->input('hex'),
+            $this->file('main_image'),
             $this->input('parent_color_id'),
         );
     }

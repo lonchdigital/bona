@@ -11,9 +11,12 @@ use App\Services\Color\DTO\EditColorDTO;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class ColorService extends BaseService
 {
+    const COLOR_IMAGES_FOLDER = 'color-images';
+
     public function getColors(): Collection
     {
         return Color::get();
@@ -47,13 +50,28 @@ class ColorService extends BaseService
 
         return $this->coverWithTryCatch(function () use($request, $creator) {
 
-            Color::create([
+            $dataToUpdate = [
                 'creator_id' => $creator->id,
                 'name' => $request->name,
                 'slug' => $request->slug,
+                'display_as_image' => $request->displayAsImage,
                 'hex' => $request->hex,
                 'parent_color_id' => $request->parentColorId,
-            ]);
+            ];
+
+            $colorImage = null;
+            if( !is_null($request->mainImage) ) {
+                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $dataToUpdate['main_image'] = $newImagePath;
+
+                $colorImage['image'] = $request->mainImage;
+                $colorImage['path'] = $newImagePath;
+            }
+            if( !is_null( $colorImage ) ) {
+                $this->storeImage($colorImage['path'], $colorImage['image']);
+            }
+
+            Color::create($dataToUpdate);
 
             return ServiceActionResult::make(true, trans('admin.color_create_success'));
         });
@@ -63,12 +81,36 @@ class ColorService extends BaseService
     {
         return $this->coverWithTryCatch(function () use ($color, $request) {
 
-            $color->update([
+            $dataToUpdate = [
                 'name' => $request->name,
                 'slug' => $request->slug,
+                'display_as_image' => $request->displayAsImage,
                 'hex' => $request->hex,
                 'parent_color_id' => $request->parentColorId,
-            ]);
+            ];
+
+
+            $imageToDelete = null;
+            $colorImage = null;
+            if( !is_null($request->mainImage) ) {
+                $imageToDelete = $color->main_image;
+
+                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $dataToUpdate['main_image'] = $newImagePath;
+
+                $colorImage['image'] = $request->mainImage;
+                $colorImage['path'] = $newImagePath;
+            }
+
+            if( !is_null( $colorImage ) ) {
+                $this->storeImage($colorImage['path'], $colorImage['image']);
+            }
+            if(!is_null($imageToDelete)) {
+                $this->deleteImage($imageToDelete);
+            }
+
+
+            $color->update($dataToUpdate);
 
             return ServiceActionResult::make(true, trans('admin.color_edit_success'));
         });
@@ -84,6 +126,10 @@ class ColorService extends BaseService
 
             if ($productWithColorExists) {
                 return ServiceActionResult::make(false, trans('admin.color_in_use'));
+            }
+
+            if(!is_null($color->main_image)) {
+                $this->deleteImage($color->main_image);
             }
 
             $color->delete();

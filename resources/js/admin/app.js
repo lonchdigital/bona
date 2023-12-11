@@ -26,6 +26,11 @@ import BlogSlidesEditForm from "./forms/BlogSlidesEditForm.vue";
 import BlogSlideComponent from "./components/BlogSlideComponent.vue";
 import HomePageEditForm from "./forms/HomePageEditForm.vue";
 import ProductPageEditForm from "./forms/ProductPageEditForm.vue";
+import WorkPageEditForm from "./forms/WorkPageEditForm.vue";
+import ServicesPageEditForm from "./forms/ServicesPageEditForm.vue";
+import CommonSectionPageEditForm from "./forms/CommonSectionPageEditForm.vue";
+import ContactPageEditForm from "./forms/ContactPageEditForm.vue";
+import ApplicationConfigsPageEditForm from "./forms/ApplicationConfigsPageEditForm.vue";
 import SeogenEditFrom from "./forms/SeogenEditForm.vue";
 import FilterGroupsEditForm from "./forms/FilterGroupsEditForm.vue";
 
@@ -68,6 +73,11 @@ app.component('blog-slides-edit-form', BlogSlidesEditForm);
 app.component('blog-slide-component', BlogSlideComponent);
 app.component('home-page-edit-form', HomePageEditForm);
 app.component('product-page-edit-form', ProductPageEditForm);
+app.component('work-page-edit-form', WorkPageEditForm);
+app.component('services-page-edit-form', ServicesPageEditForm);
+app.component('common-section-page-edit-form', CommonSectionPageEditForm);
+app.component('contact-page-edit-form', ContactPageEditForm);
+app.component('application-configs-page-edit-form', ApplicationConfigsPageEditForm);
 app.component('seogen-edit-form', SeogenEditFrom);
 app.component('filter-groups-edit-form', FilterGroupsEditForm);
 

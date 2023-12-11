@@ -8,7 +8,6 @@
                 <blog-slides-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
-                    collection-search-route="{{ route('admin.collection.search') }}"
                     submit-route="{{ route('admin.blog-slide.edit') }}"
                     :init-data="{{ json_encode($slides) }}"
                 />

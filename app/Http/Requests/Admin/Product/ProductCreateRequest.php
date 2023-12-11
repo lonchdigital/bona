@@ -33,11 +33,6 @@ class ProductCreateRequest extends BaseRequest
                 'array',
                 'min:1'
             ],
-            'parent_product_id' => [
-                'nullable',
-                'integer',
-                'exists:products,id',
-            ],
             'slug' => [
                 'required',
                 'unique:products,slug',
@@ -150,12 +145,12 @@ class ProductCreateRequest extends BaseRequest
             ];
         }
 
-        if ($this->productType->has_brand || $this->productType->has_collection) {
+        /*if ($this->productType->has_brand || $this->productType->has_collection) {
             $rules['collection_id'] = [
                 'required',
                 Rule::exists('collections', 'id')->where('brand_id', $this->input('brand_id')),
             ];
-        }
+        }*/
 
         if ($this->productType->has_category) {
             $rules['category_ids'] = [
@@ -260,6 +255,24 @@ class ProductCreateRequest extends BaseRequest
                 'nullable',
                 'string'
             ];
+
+            $rules['faqs.*.question.' . $availableLanguage] = [
+                'required',
+                'string'
+            ];
+            $rules['faqs.*.answer.' . $availableLanguage] = [
+                'required',
+                'string'
+            ];
+
+            $rules['seo_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['seo_text.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
         }
 
         return $rules;
@@ -282,7 +295,6 @@ class ProductCreateRequest extends BaseRequest
     {
         $attributes = [
             'is_active' => mb_strtolower(trans('admin.product_is_active')),
-            'parent_product_id' => mb_strtolower(trans('admin.parent_product')),
             'slug' => mb_strtolower(trans('admin.slug')),
             'meta_title' => mb_strtolower(trans('admin.meta_title')),
             'meta_description' => mb_strtolower(trans('admin.meta_description')),
@@ -330,7 +342,6 @@ class ProductCreateRequest extends BaseRequest
             $this->input('meta_description'),
             $this->input('meta_keywords'),
             explode(',', $this->input('selected_sub_products_id')),
-            $this->input('parent_product_id'),
             $this->input('availability_status_id'),
             $this->input('special_offer_id') ? array_map('intval', $this->input('special_offer_id')) : null,
             $this->input('sku'),
@@ -354,6 +365,9 @@ class ProductCreateRequest extends BaseRequest
             $this->input('length'),
             $this->input('width'),
             $this->input('height'),
+            $this->validated('faqs'),
+            $this->input('seo_title'),
+            $this->input('seo_text'),
         );
     }
 }

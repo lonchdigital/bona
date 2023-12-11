@@ -26,7 +26,7 @@
                                         <div class="mt-1 text-danger ajaxError" id="error-field-slug"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="category_image">{{ trans('admin.product_category_image') }} <strong class="text-danger">*</strong> ({{ trans('admin.product_category_image_requirements') }}, jpeg,png,jpg)</label>
+                                        <label for="category_image">{{ trans('admin.product_category_image') }} ({{ trans('admin.product_category_image_requirements') }}, jpeg,png,jpg)</label>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <img @if(isset($productCategory) && isset($productCategory->image_url)) src="{{ $productCategory->image_url }}" @else style="display: none;" @endif id="category_image" alt="{{ trans('admin.product_category_image') }}" class="category-img rounded mb-3">

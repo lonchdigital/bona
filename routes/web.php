@@ -11,8 +11,8 @@ use App\Http\Actions\Auth\Pages\ShowSignUpPageAction;
 use App\Http\Actions\Auth\SignInAction;
 use App\Http\Actions\Auth\SignUpAction;
 use App\Http\Actions\Blog\Pages\ShowBlogArticlePageAction;
-use App\Http\Actions\Blog\Pages\ShowBlogArticlesByCategoryActionPage;
 use App\Http\Actions\Blog\Pages\ShowBlogMainPageAction;
+use App\Http\Actions\Store\Work\ShowWorkPageAction;
 use App\Http\Actions\EmailSubscription\ConfirmSubscriptionAction;
 use App\Http\Actions\EmailSubscription\SubscribeEmailAction;
 use App\Http\Actions\Locale\ChangeLocaleAction;
@@ -23,6 +23,7 @@ use App\Http\Actions\Store\Brand\Pages\ShowBrandsListPageAction;
 use App\Http\Actions\Store\Calculator\CalculateCountOfProductsAction;
 use App\Http\Actions\Store\Calculator\Pages\ShowCalculatorPageAction;
 use App\Http\Actions\Store\Cart\AddProductToCartAction;
+use App\Http\Actions\Store\Cart\AddSubProductToCartAction;
 use App\Http\Actions\Store\Cart\AddPromoCodeToCartAction;
 use App\Http\Actions\Store\Cart\ChangeProductCountInCartAction;
 use App\Http\Actions\Store\Cart\DeleteProductFromCartAction;
@@ -33,14 +34,17 @@ use App\Http\Actions\Store\Catalog\GetProductsCountByFilterAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogCategoryPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowFilterGroupPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductByBrandPageAction;
 use App\Http\Actions\Store\Checkout\CheckoutConfirmOrderAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutPage;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
-use App\Http\Actions\Store\Collection\Pages\ShowCollectionPageAction;
 use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
 use App\Http\Actions\Store\Delivery\GetMeestDepartmentsAction;
 use App\Http\Actions\Store\Delivery\GetNPCitiesAction;
 use App\Http\Actions\Store\Delivery\GetNpDepartmentsAction;
+use App\Http\Actions\Store\DeliveryPage\Pages\ShowDeliveryPageAction;
+use App\Http\Actions\Store\AboutUsPage\Pages\ShowAboutUsPageAction;
+use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
 use App\Http\Actions\Store\Home\Pages\ShowHomePageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowGoToPaymentPageAction;
 use App\Http\Actions\Store\Payment\UpdateOrderPaymentStatusAction;
@@ -48,6 +52,7 @@ use App\Http\Actions\Store\Product\GetSimilarProductsPaginatedAction;
 use App\Http\Actions\Store\Product\Pages\ShowProductPageAction;
 use App\Http\Actions\Store\Product\SearchProductAction;
 use App\Http\Actions\Store\Seo\ShowRobotsTxtFileContent;
+use App\Http\Actions\Store\ServicesPage\Pages\ShowServicesPageAction;
 use App\Http\Actions\Store\StaticPage\Pages\ShowStaticPagePageAction;
 use App\Http\Actions\Store\VisitRequests\CreateVisitRequestAction;
 use App\Http\Actions\Store\WishList\Pages\ShowWishListByTokenPageAction;
@@ -134,6 +139,13 @@ $optionalLanguageRoutes = function () {
 
     Route::name('store.home')->get('/', ShowHomePageAction::class);
 
+    Route::name('store.services')->get('/services', ShowServicesPageAction::class);
+    Route::name('store.delivery-info')->get('/delivery-info', ShowDeliveryPageAction::class);
+    Route::name('store.about-us')->get('/about-us', ShowAboutUsPageAction::class);
+    Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);
+    Route::name('store.catalog-by-brand.page')->get('/catalog/brand/{brand}/', ShowProductByBrandPageAction::class);
+
+
     Route::prefix('catalog/{productTypeSlug}')->group(function() {
         Route::name('store.catalog.page')->get('/', ShowCatalogPageAction::class);
         Route::name('store.catalog.filter-group.page')->get('/{filterGroupSlug}', ShowFilterGroupPageAction::class);
@@ -147,10 +159,9 @@ $optionalLanguageRoutes = function () {
     });
 
     Route::prefix('product')->group(function () {
-        Route::name('store.product.search')->get('/search', SearchProductAction::class);
+        Route::name('store.product.search')->post('/search', SearchProductAction::class);
         Route::name('store.product.page')->get('/{productSlug}', ShowProductPageAction::class);
         Route::name('store.product.similar-products')->get('/{productSlug}/similar', GetSimilarProductsPaginatedAction::class);
-
     });
 
     Route::prefix('wishList')
@@ -171,6 +182,7 @@ $optionalLanguageRoutes = function () {
         Route::name('store.cart.page')->get('/', ShowCartPageAction::class);
 
         Route::name('store.cart.add-product')->post('product/{productSlug}/add', AddProductToCartAction::class);
+        Route::name('store.cart.add-sub-product')->post('subProduct/{productSlug}/add', AddSubProductToCartAction::class);
         Route::name('store.cart.change-product-count')->post('product{productSlug}/update', ChangeProductCountInCartAction::class);
         Route::name('store.cart.delete-product')->post('product/{productSlug}/delete', DeleteProductFromCartAction::class);
         Route::name('store.cart.products-with-summary')->get('product',GetProductsInCartWithSummaryAction::class);
@@ -197,9 +209,6 @@ $optionalLanguageRoutes = function () {
 
     });
 
-    Route::prefix('collections')->group(function () {
-        Route::name('store.collection.page')->get('/{collectionSlug}/{catalogFiltersString?}', ShowCollectionPageAction::class);
-    });
 
     Route::prefix('calculator')->group(function () {
         Route::name('store.calculator.page')->get('/{productSlug?}', ShowCalculatorPageAction::class);
@@ -212,8 +221,12 @@ $optionalLanguageRoutes = function () {
 
     Route::prefix('blog')->group(function () {
         Route::name('blog.main.page')->get('/', ShowBlogMainPageAction::class);
-        Route::name('blog.articles-by-category.page')->get('/{blogCategorySlug}', ShowBlogArticlesByCategoryActionPage::class);
+//        Route::name('blog.articles-by-category.page')->get('/{blogCategorySlug}', ShowBlogArticlesByCategoryActionPage::class);
         Route::name('blog.article.page')->get('/article/{blogArticleSlug}', ShowBlogArticlePageAction::class);
+    });
+
+    Route::prefix('works')->group(function () {
+        Route::name('store.works.page')->get('/', ShowWorkPageAction::class);
     });
 
     Route::prefix('visitRequest')->group(function () {

@@ -25,8 +25,8 @@ class ShowProductPageAction extends BaseAction
 
 //        dd($product);
         $product->load([
-            'color',
-            'children.color',
+//            'color',
+//            'children.color',
             'productType',
             'productType.fields',
             'productType.fields.options',

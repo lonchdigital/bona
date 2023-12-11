@@ -3,13 +3,11 @@
 namespace App\Providers;
 
 use App\Services\Admin\ProductType\ProductTypeService;
-use App\Services\Admin\ProductSubtype\ProductSubtypeService;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Brand\BrandService;
 use App\Services\Cart\CartService;
 use App\Services\WishList\WishListService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,7 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(
         ProductTypeService       $productTypeService,
-        ProductSubtypeService    $productSubtypeService,
         ApplicationConfigService $applicationService,
         CartService              $cartService,
         BrandService             $brandService,
@@ -39,9 +36,8 @@ class AppServiceProvider extends ServiceProvider
                 'layouts.admin-main',
                 'components.cart-window',
             ],
-            function ($view) use ($productTypeService, $productSubtypeService) {
+            function ($view) use ($productTypeService) {
                 $view->with('productTypes', $productTypeService->getProductTypes());
-                $view->with('productSubtypes', $productSubtypeService->getProductSubtypes());
             }
         );
 
@@ -89,6 +85,7 @@ class AppServiceProvider extends ServiceProvider
             '*',
             function ($view) use ($applicationService) {
                 $view->with('availableLanguages', $applicationService->getAvailableLanguages())
+                    ->with('applicationGlobalOptions', $applicationService->getAllApplicationConfigOptions())
                     ->with('baseLanguage', config('app.locale'));
             }
         );

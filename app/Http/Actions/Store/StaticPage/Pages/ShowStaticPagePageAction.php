@@ -4,11 +4,11 @@ namespace App\Http\Actions\Store\StaticPage\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\DataClasses\StaticPageTypesDataClass;
-use App\Services\StaticPage\SeoTextsService;
+use App\Services\StaticPage\StaticPageService;
 
 class ShowStaticPagePageAction extends BaseAction
 {
-    public function __invoke(string $staticPageSlug, SeoTextsService $staticPageService)
+    public function __invoke(string $staticPageSlug, StaticPageService $staticPageService)
     {
         $staticPage = StaticPageTypesDataClass::get()->where('slug', $staticPageSlug)->first();
 

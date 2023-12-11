@@ -22,21 +22,6 @@ class BrandCreateRequest extends BaseRequest
             'description' => [
                 'array',
             ],
-            'slider_main_text' => [
-                'array',
-            ],
-            'slider_description_text' => [
-                'array',
-            ],
-            'slide' => [
-                'array',
-                'required',
-                'min:1',
-            ],
-            'slide.*.id' => [
-                'nullable',
-                'exists:collection_slides,id',
-            ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
@@ -49,16 +34,6 @@ class BrandCreateRequest extends BaseRequest
                 'required',
                 'string'
             ];
-
-            $rules['slider_main_text.' . $availableLanguage] = [
-                'required',
-                'string',
-            ];
-
-            $rules['slider_description_text.' . $availableLanguage] = [
-                'required',
-                'string',
-            ];
         }
 
         return $rules;
@@ -69,21 +44,8 @@ class BrandCreateRequest extends BaseRequest
         $rules = $this->baseRules();
 
         $rules['logo'] = [
-            'required',
-            'mimes:jpeg,png,jpg',
-            'dimensions:min_width=300,min_height=300,max_width=600,max_height=600,ratio=1/1'
-        ];
-
-        $rules['head'] = [
-            'required',
-            'mimes:jpeg,png,jpg',
-            'dimensions:min_width=1000,min_height=1000,max_width=2500,max_height=2500,ratio=1/1'
-        ];
-
-        $rules['slide.*.image'] = [
-            'required',
-            'image',
-            'dimensions:min_width=1000,min_height=1000,max_width=2500,max_height=2500,ratio=1/1'
+            'nullable',
+            'mimes:jpeg,png,jpg'
         ];
 
         return $rules;
@@ -94,26 +56,21 @@ class BrandCreateRequest extends BaseRequest
         $attributes = [
             'name' => mb_strtolower(trans('admin.brand_name')),
             'logo' => mb_strtolower(trans('admin.brand_logo')),
-            'head' => mb_strtolower(trans('admin.brand_head')),
             'slug' => mb_strtolower(trans('admin.slug')),
-            'slide.*.image' => mb_strtolower(trans('admin.brand_slide_image')),
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
             $attributes['description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.brand_description'), $availableLanguage);
             $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.brand_name'), $availableLanguage);
-            $attributes['slider_main_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.brand_slider_main_text'), $availableLanguage);
-            $attributes['slider_description_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.brand_slider_description_text'), $availableLanguage);
         }
 
         return $attributes;
     }
 
     public function messages(): array
-    {   $messages = parent::messages();
-
-        $messages['slide.*.image.required_if'] = trans('validation.required');
-
+    {
+        $messages = parent::messages();
+//        $messages['slide.*.image.required_if'] = trans('validation.required');
         return $messages;
     }
 
@@ -124,10 +81,6 @@ class BrandCreateRequest extends BaseRequest
             $this->input('slug'),
             $this->input('description'),
             $this->file('logo'),
-            $this->file('head'),
-            $this->input('slider_main_text'),
-            $this->input('slider_description_text'),
-            $this->validated('slide'),
         );
     }
 }

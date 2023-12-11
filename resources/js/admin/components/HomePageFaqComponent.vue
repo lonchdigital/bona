@@ -47,7 +47,7 @@ export default {
 </script>
 
 <template>
-    <div class="row art-repeater-row" :key="faqId">
+    <div class="row1 art-repeater-row" :key="faqId">
         <div class="col">
             <div class="row">
                 <div class="col">
