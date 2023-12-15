@@ -82,7 +82,7 @@ export default {
         <div class="col mt-4">
             <div class="row">
                 <div class="col">
-                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteAttribute', attribute, index, attributeOptionId)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.attribute_delete')}}</a>
+                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteAttribute', attribute, index, attributeOptionId)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.delete')}}</a>
                 </div>
             </div>
         </div>

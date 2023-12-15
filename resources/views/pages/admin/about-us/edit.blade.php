@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h2 class="page-title">About us</h2>
+                <h2 class="page-title">{{trans('base.about_us')}}</h2>
 
                 <common-section-page-edit-form
                     base-language="{{ $baseLanguage }}"

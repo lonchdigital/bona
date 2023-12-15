@@ -104,13 +104,13 @@ export default {
         :back-route="backRoute"
         @on-selected-language-change="changeSelectedLanguage"
         @on-errors-change="handleFormSubmit"
-        :card-body-title="$t('admin.delivery_edit_page') "
+        :card-body-title="$t('admin.edit_page') "
     >
         <div class="row">
             <div class="col">
 
                 <multi-language-input-component
-                    :title="$t('admin.delivery_title')"
+                    :title="$t('admin.title')"
                     name="title"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -120,7 +120,7 @@ export default {
                 />
 
                 <multi-language-rich-text-editor-component
-                    :title="$t('admin.delivery_description')"
+                    :title="$t('admin.description')"
                     name="description"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -130,7 +130,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.section_text_button')"
+                    :title="$t('admin.text_button')"
                     name="button_text"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -141,7 +141,7 @@ export default {
 
                 <div class="form-group mb-3">
                     <input-component
-                        :title="$t('admin.section_text_link')"
+                        :title="$t('admin.button_link')"
                         name="button_url"
                         :model-value="buttonUrl"
                         :errors="errors"

@@ -54,7 +54,7 @@ export default {
 
 
                     <image-file-input-component
-                        :title="$t('admin.testimonial_image')"
+                        :title="$t('admin.image')"
                         :name="'testimonials[' + index + '][image]'"
                         :image-deleted-name="'testimonials[' + index + '][image_deleted]'"
                         :is-required="true"
@@ -87,7 +87,7 @@ export default {
             </div>
             <div class="row">
                 <div class="col">
-                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteTestimonial', index)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.slide_testimonial')}}</a>
+                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteTestimonial', index)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.delete')}}</a>
                 </div>
             </div>
         </div>

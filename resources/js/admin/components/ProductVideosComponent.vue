@@ -76,7 +76,7 @@ export default {
             </div>
             <div class="row mt-3">
                 <div class="col">
-                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteVideo', index)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.video_delete')}}</a>
+                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteVideo', index)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.delete')}}</a>
                 </div>
             </div>
         </div>

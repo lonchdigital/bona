@@ -295,7 +295,7 @@ export default {
 
                 <p class="mt-4">
                     <strong>
-                        {{ $t('admin.testimonial') }}
+                        {{ $t('admin.testimonials') }}
                     </strong>
                 </p>
                 <div class="form-group mb-3 art-admin-repeater-four-width">

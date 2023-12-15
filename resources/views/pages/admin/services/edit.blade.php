@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h2 class="page-title">Services 1112</h2>
+                <h2 class="page-title">{{trans('admin.services')}}</h2>
 
 
                 <services-page-edit-form

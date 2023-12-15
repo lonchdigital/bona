@@ -306,10 +306,21 @@
             navigation: true,
             navigationText: arrowIcons,
             pagination: true,
-            items: 4
+            items: 4,
+            itemsDesktopSmall: [991, 3],
+            itemsMobile: [410, 1]
             // singleItem: true
         });
     });
+
+
+    // Products slider
+    // ----------------------------------------------------------------
+
+    $('.hamburger--collapse-r').on('click', function () {
+        $(this).toggleClass('is-active');
+    });
+
 
     // Brands slider
     // ----------------------------------------------------------------

@@ -33,12 +33,6 @@
 
     <section class="owl-icons-wrapper owl-icons-frontpage">
 
-        <!-- === header === -->
-
-        <header class="hidden">
-            <h2>Product categories</h2>
-        </header>
-
         <div class="container">
 
             <div class="owl-icons">
@@ -110,8 +104,12 @@
                 <a href="#">
                     <figure>
                         <div class="icon-wrapper">
-                            <svg width="29" height="54" viewBox="0 0 29 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M28.6737 49.7866V48.1291V0H0.000758171V48.1292V49.7867V52.3424L0 54H28.6737V52.3424V49.7866ZM27.0162 52.3422H1.65831V1.65744H27.0163L27.0162 52.3422Z" fill="white"/>
+                            <svg width="30" height="54" viewBox="0 0 93 175" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M37 95H18V100H37V95Z" fill="white"/>
+                                <path d="M29 102.674H23.6428V110.748H15.3572V89.2518H23.6428V91.9741H29V84H10V116H29V102.674Z" fill="white"/>
+                                <path d="M93 161.346V155.974V0H0.00245904V155.974V161.346V169.628L0 175H93V169.628V161.346ZM87.6239 169.628H5.37853V5.37135H87.6243L87.6239 169.628Z" fill="white"/>
+                                <ellipse cx="69.3184" cy="23.3184" rx="15.5067" ry="0.5" transform="rotate(45 69.3184 23.3184)" fill="white"/>
+                                <ellipse cx="75.1688" cy="17.1674" rx="6.88613" ry="0.421624" transform="rotate(45 75.1688 17.1674)" fill="white"/>
                             </svg>
                         </div>
                         <figcaption>Дзеркальні двері</figcaption>
@@ -142,78 +140,6 @@
                     </figure>
                 </a>
 
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-bookcase"></i>
-                        <figcaption>Bookcase</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-bedroom"></i>
-                        <figcaption>Bedroom</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-nightstand"></i>
-                        <figcaption>Nightstand</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-children-room"></i>
-                        <figcaption>Children room</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-kitchen"></i>
-                        <figcaption>Kitchen</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-bathroom"></i>
-                        <figcaption>Bathroom</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-wardrobe"></i>
-                        <figcaption>Wardrobe</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-shoe-cabinet"></i>
-                        <figcaption>Shoe cabinet</figcaption>
-                    </figure>
-                </a>
-
-                <!-- === icon item === -->
-                <a href="#">
-                    <figure>
-                        <i class="f-icon f-icon-office"></i>
-                        <figcaption>Office</figcaption>
-                    </figure>
-                </a>
-
             </div> <!--/owl-icons-->
         </div> <!--/container-->
     </section>
@@ -225,8 +151,8 @@
 
             <header>
                 <div class="row">
-                    <div class="col-md-offset-2 col-md-8 text-center">
-                        <h2 class="title">{{trans('base.doors_by_type')}}</h2>
+                    <div class="col-12 text-center">
+                        <h2 class="title h2">{{trans('base.doors_by_type')}}</h2>
                         <div class="subtitle font-two">
                             <p>{{trans('base.doors_category')}}</p>
                         </div>
@@ -292,45 +218,8 @@
         </section>
     @endif
 
-    <!-- ======================== Contact Form ======================== -->
-    <section class="art-contact-form-section" style="background-image:url({{ asset('storage/bg-images/form-bg.png') }})">
-        <div class="container">
 
-            <header class="art-light">
-                <div class="row">
-                    <div class="col-md-offset-2 col-md-8 text-center">
-                        <h2 class="title">Не знаєте які двері обрати?</h2>
-                        <div class="subtitle font-two">
-                            <p>
-                                We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy
-                                to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <div class="row">
-                <div class="col-md-offset-2 col-md-8 text-center">
-
-                    <form action="#" method="post" class="art-contact-form">
-                        @csrf
-                        <p class="art-fields-row">
-                            <input type="text" class="art-light-field" placeholder="Ім’я">
-                            <input type="text" class="art-light-field" placeholder="Телефон">
-                        </p>
-<!--                        <div class="checkbox">
-                            <input type="checkbox" name="agree" value="value">
-                            <label for="fieldName">Даю згоду на обробку персональних даних</label>
-                        </div>-->
-                        <p><a href="#" class="btn btn-empty">{{trans('base.send')}}</a></p>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <x-precise-form-component />
 
     @if(count($homeBestSalesProducts))
         <!-- ======================== Best Sales Products  ======================== -->
@@ -338,10 +227,16 @@
         <section class="products">
 
             <div class="container">
+
+                <div class="checkbox">
+                    <input type="checkbox" name="agree" value="value">
+                    <label for="fieldName">Даю згоду на обробку персональних даних</label>
+                </div>
+
                 <header>
                     <div class="row">
-                        <div class="col-md-offset-2 col-md-8 text-center">
-                            <h2 class="title">{{trans('base.best_sales')}}</h2>
+                        <div class="col-12 text-center">
+                            <h2 class="title h2">{{trans('base.best_sales')}}</h2>
                             <div class="subtitle font-two">
                                 <p>Check out our latest collections</p>
                             </div>
@@ -384,8 +279,8 @@
     <section class="instagram">
         <header>
             <div class="row">
-                <div class="col-md-offset-2 col-md-8 text-center">
-                    <h2 class="title">Follow us <i class="fa fa-instagram fa-2x"></i> Instagram </h2>
+                <div class="col-12 text-center">
+                    <h2 class="title h2">Follow us <i class="fa fa-instagram fa-2x"></i> Instagram </h2>
                     <div class="subtitle font-two">
                         <p>@InstaFurnitureFactory</p>
                     </div>
@@ -395,7 +290,7 @@
 
         <!-- === instagram gallery === -->
 
-        @dd($instagramFeed)
+{{--        @dd($instagramFeed)--}}
 
         <div class="gallery clearfix">
             <a class="item" href="#">
@@ -428,8 +323,8 @@
 
             <header>
                 <div class="row">
-                    <div class="col-md-offset-2 col-md-8 text-center">
-                        <h2 class="title">{{trans('base.blog')}}</h2>
+                    <div class="col-12 text-center">
+                        <h2 class="title h2">{{trans('base.blog')}}</h2>
                         <div class="subtitle font-two">
                             <p>{{trans('base.blog_latest')}}</p>
                         </div>
@@ -437,9 +332,9 @@
                 </div>
             </header>
 
-            <div class="row">
+            <div class="row art-blog-wrapper">
                 @foreach($articles as $article)
-                    <div class="col-sm-4">
+                    <div class="col-md-6 col-lg-4">
                         <article class="art-post-archive-item">
                             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]) }}">
                                 <div class="image" style="background-image:url({{ $article->hero_image_url }})">
@@ -481,7 +376,7 @@
 
             <!-- === quotes header === -->
             <header>
-                <h2 class="title">What clients say</h2>
+                <h2 class="title h2">What clients say</h2>
             </header>
 
             <div class="row">
@@ -514,8 +409,8 @@
 
             <header>
                 <div class="row">
-                    <div class="col-md-offset-2 col-md-8 text-center">
-                        <h2 class="title">FAQs</h2>
+                    <div class="col-12 text-center">
+                        <h2 class="title h2">FAQs</h2>
                         <div class="subtitle font-two">
                             <p>{{trans('base.faqs_subtitle')}}</p>
                         </div>
@@ -567,8 +462,8 @@
 
             <header>
                 <div class="row">
-                    <div class="col-md-offset-2 col-md-8 text-center">
-                        <h2 class="title">{{$seoText['title']}}</h2>
+                    <div class="col-12 text-center">
+                        <h2 class="title h2">{{$seoText['title']}}</h2>
                         <div class="subtitle font-two">
                             <p>Our seo text</p>
                         </div>

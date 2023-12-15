@@ -136,7 +136,7 @@ export default {
         :back-route="backRoute"
         @on-selected-language-change="changeSelectedLanguage"
         @on-errors-change="handleFormSubmit"
-        :card-body-title="$t('admin.delivery_edit_page') "
+        :card-body-title="$t('admin.edit_page') "
     >
         <div class="row">
             <div class="col">
@@ -148,7 +148,7 @@ export default {
                 </p>
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_city')"
+                    :title="$t('admin.city')"
                     name="city_one"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -158,7 +158,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_address')"
+                    :title="$t('admin.address')"
                     name="address_one"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -168,7 +168,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_phone')"
+                    :title="$t('admin.phone')"
                     name="phone_one"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -178,7 +178,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_email')"
+                    :title="$t('admin.email')"
                     name="email_one"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -208,7 +208,7 @@ export default {
                 </p>
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_city')"
+                    :title="$t('admin.city')"
                     name="city_two"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -218,7 +218,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_address')"
+                    :title="$t('admin.address')"
                     name="address_two"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -228,7 +228,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_phone')"
+                    :title="$t('admin.phone')"
                     name="phone_two"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -238,7 +238,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_email')"
+                    :title="$t('admin.email')"
                     name="email_two"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -266,7 +266,7 @@ export default {
                 </p>
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_city')"
+                    :title="$t('admin.city')"
                     name="city_three"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -276,7 +276,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_address')"
+                    :title="$t('admin.address')"
                     name="address_three"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -286,7 +286,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_phone')"
+                    :title="$t('admin.phone')"
                     name="phone_three"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
@@ -296,7 +296,7 @@ export default {
                 />
 
                 <multi-language-input-component
-                    :title="$t('admin.contact_email')"
+                    :title="$t('admin.email')"
                     name="email_three"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"

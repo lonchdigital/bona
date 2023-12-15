@@ -102,33 +102,12 @@ export default {
                 />
 
                 <input-component
-                    :title="'Price'"
+                    :title="$t('admin.price')"
                     :name="'all_color_ids[' + index + '][price]'"
                     :model-value="selectedColor.price"
                     :errors="errors"
                     :is-required="true"
                 />
-
-
-<!--                <multi-language-input-component
-                    :title="$t('admin.characteristic_name')"
-                    :name="'characteristics[' + index + '][name]'"
-                    :selected-language="selectedLanguage"
-                    :available-languages="availableLanguages"
-                    :is-required="true"
-                    :init-data="characteristic.hasOwnProperty('name') ? characteristic.name : []"
-                    :errors="errors"
-                />
-
-                <multi-language-input-component
-                    :title="$t('admin.characteristic_value')"
-                    :name="'characteristics[' + index + '][value]'"
-                    :selected-language="selectedLanguage"
-                    :available-languages="availableLanguages"
-                    :is-required="true"
-                    :init-data="characteristic.hasOwnProperty('value') ? characteristic.value : []"
-                    :errors="errors"
-                />-->
 
             </div>
 

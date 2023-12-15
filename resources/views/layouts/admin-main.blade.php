@@ -178,7 +178,7 @@
                 <li class="nav-item w-100">
                     <a class="nav-link pl-3" href="{{ route('admin.work.list.page') }}">
                         <i class="fe fe-list fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.our_works_list') }}</span>
+                        <span class="ml-1 item-text">{{ trans('admin.our_works') }}</span>
                     </a>
                 </li>
             </ul>

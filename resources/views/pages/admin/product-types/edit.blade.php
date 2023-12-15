@@ -579,7 +579,7 @@
                                         <div class="col-md-12 text-center">
                                             <a href="#" id="add-attribute" class="btn mb-2 btn-secondary">
                                                 <span class="fe fe-plus-square fe-16 mr-2"></span>
-                                                {{ 'Add attribute' }}
+                                                {{ trans('admin.attribute_add') }}
                                             </a>
                                         </div>
                                     </div>

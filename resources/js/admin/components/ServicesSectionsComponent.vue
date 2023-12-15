@@ -58,7 +58,7 @@ export default {
 
 
                     <multi-language-input-component
-                        :title="$t('admin.section_title')"
+                        :title="$t('admin.title')"
                         :name="'sections[' + index + '][title]'"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
@@ -68,7 +68,7 @@ export default {
                     />
 
                     <multi-language-rich-text-editor-component
-                        :title="$t('admin.section_description')"
+                        :title="$t('admin.description')"
                         :name="'sections[' + index + '][description]'"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
@@ -78,7 +78,7 @@ export default {
                     />
 
                     <multi-language-input-component
-                        :title="$t('admin.section_text_button')"
+                        :title="$t('admin.text_button')"
                         :name="'sections[' + index + '][button_text]'"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
@@ -89,7 +89,7 @@ export default {
 
                     <div class="form-group mb-3">
                         <input-component
-                            :title="$t('admin.section_text_link')"
+                            :title="$t('admin.button_link')"
                             :name="'sections[' + index + '][button_url]'"
                             :model-value="section.button_url"
                             :errors="errors"
@@ -98,7 +98,7 @@ export default {
                     </div>
 
                     <image-file-input-component
-                        :title="$t('admin.section_image')"
+                        :title="$t('admin.image')"
                         :name="'sections[' + index + '][image]'"
                         :image-deleted-name="'sections[' + index + '][image_deleted]'"
                         :is-required="true"

@@ -92,6 +92,7 @@
                     </ul>
                 </div>
 
+
                 <div class="navigation-right-side">
                     <ul class="header-main-others">
                         @if(array_key_exists('instagram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['instagram']))

@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h2 class="page-title">Contacts</h2>
+                <h2 class="page-title">{{trans('base.contacts')}}</h2>
 
                 <contact-page-edit-form
                     base-language="{{ $baseLanguage }}"
