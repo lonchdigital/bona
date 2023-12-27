@@ -19,12 +19,17 @@ class CheckLocale
                 $userLang = session()->get('language');
             }
 
-            if (app()->getLocale() !== $userLang) {
+            if (auth()->user() && app()->getLocale() !== $userLang) {
                 if($userLang !== config('app.fallback_locale')) {
                     $newPath = $userLang . '/' . $request->path();
                     return redirect()->to($newPath);
                 } else {
-                    $newPath = str_replace(app()->getLocale() . '/', '', $request->path());
+                    //main page
+                    if (app()->getLocale() === $request->path()) {
+                        $newPath = '/';
+                    } else {
+                        $newPath = str_replace(app()->getLocale() . '/', '', $request->path());
+                    }
                     return redirect()->to($newPath);
                 }
             }
