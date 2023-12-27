@@ -13,15 +13,20 @@
     <section class="art-common-page-section">
         <div class="container">
             <div class="art-row-block art-even">
+{{--                @dd($aboutUsConfig)--}}
                 @if( !empty($aboutUsConfig->iframe) )
                     <div class="col-md-5 video-side">{!! $aboutUsConfig->iframe !!}</div>
                 @else
-                    <div class="col-md-5 image-side" style="background-image:url({{ $aboutUsConfig->imageUrl }})"></div>
+                    <div class="col-md-5 image-side">
+                        <img src="{{ $aboutUsConfig->imageUrl }}" alt="block image">
+                    </div>
                 @endif
                 <div class="col-md-7 desc-side">
                     <div class="h5 title">{{ $aboutUsConfig->title }}</div>
                     {!! $aboutUsConfig->description !!}
-                    <a href="{{ $aboutUsConfig->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $aboutUsConfig->button_text }}</a>
+                    @if( !empty($aboutUsConfig->button_url) )
+                        <a href="{{ $aboutUsConfig->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $aboutUsConfig->button_text }}</a>
+                    @endif
                 </div>
             </div>
         </div>

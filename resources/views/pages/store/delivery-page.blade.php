@@ -17,12 +17,16 @@
                     @if( !empty($deliveryConfig->iframe) )
                         <div class="col-md-5 video-side">{!! $deliveryConfig->iframe !!}</div>
                     @else
-                        <div class="col-md-5 image-side" style="background-image:url({{ $deliveryConfig->imageUrl }})"></div>
+                        <div class="col-md-5 image-side">
+                            <img src="{{ $deliveryConfig->imageUrl }}" alt="block image">
+                        </div>
                     @endif
                     <div class="col-md-7 desc-side">
                         <div class="h5 title">{{ $deliveryConfig->title }}</div>
                         {!! $deliveryConfig->description !!}
-                        <a href="{{ $deliveryConfig->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $deliveryConfig->button_text }}</a>
+                        @if( !empty($deliveryConfig->button_url) )
+                            <a href="{{ $deliveryConfig->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $deliveryConfig->button_text }}</a>
+                        @endif
                     </div>
                 </div>
             </div>

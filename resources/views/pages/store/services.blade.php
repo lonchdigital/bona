@@ -21,7 +21,9 @@
                         <div class="col-md-7 desc-side">
                             <div class="h5 title">{{ $section->title }}</div>
                             {!! $section->description !!}
-                            <a href="{{ $section->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $section->button_text }}</a>
+                            @if( !empty($section->button_url) )
+                                <a href="{{ $section->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $section->button_text }}</a>
+                            @endif
                         </div>
                     </div>
                 </div>

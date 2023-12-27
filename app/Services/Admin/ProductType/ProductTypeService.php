@@ -63,18 +63,13 @@ class ProductTypeService extends BaseService
         $creator = $this->getAuthUser();
 
         return $this->coverWithDBTransaction(function () use($request, $creator) {
-            $path = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
 
+            $path = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
 
             if( !is_null($request->image) ) {
                 $image = Image::make($request->image)->encode('jpg', 100);
-                /*$image = Image::make($request->image)
-                ->resize(60, 60)
-                ->encode('jpg', 85);*/
                 Storage::disk(config('app.images_disk_default'))->put($path, $image);
             }
-
-
 
             $productType = ProductType::create([
                 'creator_id' => $creator->id,
