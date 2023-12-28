@@ -37,9 +37,9 @@ class ShowProductPageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }
 
-        $cart = $this->getAuthUser() ? $cartService->getCartForAuthUser($this->getAuthUser()) : $cartService->getCartForGuestUser(session_id());
+        $cart = $this->getAuthUser() ? $cartService->getCartForAuthUser($this->getAuthUser()) : $cartService->getCartForGuestUser(request()->session()->getId());
         if( is_null($cart) ) {
-            $cart = $cartService->createCartByToken(session_id());
+            $cart = $cartService->createCartByToken(request()->session()->getId());
         }
 
         $isProductInCart = false;
