@@ -25,21 +25,11 @@ jobs:
       run: npm run build
 
     - name: Copy files to remote server
-      uses: appleboy/ssh-action@master
+      uses: appleboy/scp-action@v0.1.6
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         port: 22
-        script: |
-          # Replace 'public/build' with the actual path to your local directory
-          local_path="public/build"
-
-          # Replace '~/lonch.digital/bona/public/build-dep/' with the actual path on the remote server
-          remote_path="~/lonch.digital/bona/public/build-dep/"
-
-          # Create the remote directory if it doesn't exist
-          mkdir -p "$remote_path"
-
-          # Copy files from local machine to remote server
-          rsync -r "$local_path"/* "$remote_path"
+        source: "public/build/*"
+        target: "~/lonch.digital/bona/public/build-dep/"
