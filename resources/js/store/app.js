@@ -9,6 +9,7 @@ import InputCounter from './common/input-counter';
 import AnimateScroll from './common/animate-scroll';
 import WishList from './common/wish-list';
 import Cart from './common/cart';
+import PopUps from './common/pop-ups';
 import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
 
@@ -53,6 +54,7 @@ async function init()
         ShowMenu.init(),
         WishList.init(),
         Cart.init(),
+        PopUps.init(),
         AjaxSearchProducts.init(),
         ShowRoomVisitModal.init()
     ]);

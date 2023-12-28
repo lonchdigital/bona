@@ -308,6 +308,11 @@ input, textarea, select {
     font-size: 14px;
     line-height: 20px;
 }
+.btn:focus, .btn.focus {
+    outline: none !important;
+    outline-offset: unset !important;
+    box-shadow: none !important;
+}
 
 /* btn-main */
 .btn.btn-main {
@@ -318,10 +323,10 @@ input, textarea, select {
     background-color: #3a3d45;
 }
 
-.btn.btn-main, .btn.btn-main:hover, .btn.btn-main:focus, .btn.btn-main:active {
+.btn.btn-main, .btn.btn-main:hover, .btn.btn-main:active {
     color: #000;
 }
-.btn.btn-main:hover, .btn.btn-main:focus, .btn.btn-main:active {
+.btn.btn-main:hover, .btn.btn-main:active {
     color: #fff;
 }
 
@@ -331,6 +336,7 @@ input, textarea, select {
     border: 2px solid #D59958;
     color: #fff;
     padding: 13px 38px;
+    outline: none;
 }
 .btn.btn-empty:hover {
     background-color: #D59958;
@@ -603,7 +609,7 @@ input, textarea, select {
 
 
 .checkbox input[type="radio"]:checked + label:before {
-    content: "\e814";
+    /*content: "\e814";*/
 }
 
 .checkbox input[type="radio"]:checked + label:after {

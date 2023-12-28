@@ -23,7 +23,7 @@
                         <input type="text" class="art-light-field" placeholder="{{ trans('base.name') }}">
                         <input type="text" class="art-light-field" placeholder="{{ trans('base.phone') }}">
                     </p>
-                    <div class="checkbox">
+                    <div class="checkbox checkbox-white agreement-line">
                         <input type="checkbox" name="agree" value="value">
                         <label for="fieldName">Даю згоду на обробку персональних даних</label>
                     </div>
