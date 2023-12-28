@@ -32,6 +32,34 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         port: 22
         source: "public/build/*"
-        target: "~/lonch.digital/bona/public/build-dep/"
+        target: "~/lonch.digital/bona/public/build/"
         strip_components: 2
         rm: true
+        timeout: 60
+
+    - name: Execute commands on remote server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        script: |
+          # Change to the deployment directory
+          cd ~/lonch.digital/bona
+
+          # Pull changes from the git repository
+          git pull
+
+          # Install dependencies
+          composer install
+
+          # Run migrations
+          php artisan migrate
+
+          # Clear cache
+          php artisan cache:clear
+
+          # Done
+          echo "Done"
+
