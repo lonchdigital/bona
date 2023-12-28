@@ -51,18 +51,22 @@ jobs:
           # Pull changes from the git repository
           git pull
 
+          echo =============== VERSIONS START ===============
+
           # Check versions
-          /usr/local/bin/composer -V
-          php -v
+          /usr/bin/php8.1 /usr/local/bin/composer -V
+          /usr/bin/php8.1 -v
+
+          echo ================ VERSIONS END ================
 
           # Install dependencies
-          composer install
+          /usr/bin/php8.1 /usr/local/bin/composer install
 
           # Run migrations
-          php artisan migrate
+          /usr/bin/php8.1 artisan migrate
 
           # Clear cache
-          php artisan cache:clear
+          /usr/bin/php8.1 artisan cache:clear
 
           # Done
           echo "Done"
