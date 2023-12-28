@@ -82,7 +82,7 @@
 
                                                         {{--custom-checkbox--}}
                                                         <div class="custom-control position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
-                                                            <input type="checkbox"
+                                                            <input type="radio"
                                                                    id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
                                                                    name="{{ $filter->slug }}"
                                                                    value="{{ $option->slug }}"
@@ -94,7 +94,7 @@
 
                                             @elseif($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER || $filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE)
 
-                                                @dd('oh!')
+{{--                                                @dd('oh!')--}}
 
                                             @endif
                                         </div>
