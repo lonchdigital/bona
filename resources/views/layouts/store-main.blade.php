@@ -197,7 +197,6 @@
                             </div>
                             <div class="art-list-items d-none" data-id="art-nav">
                                 <ul>
-                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">{{ trans('base.menu_home') }}</a></li>
                                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'mizkimnatni-dveri']) }}">{{ trans('base.mizkimnatni_dveri') }}</a></li>
                                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'pryhovani-dveri']) }}">{{ trans('base.pryhovani_dveri') }}</a></li>
                                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'vhidni-dveri']) }}">{{ trans('base.vhidni_dveri') }}</a></li>
@@ -246,7 +245,6 @@
 
             <div class="navigation navigation-main">
                 <ul class="main-menu-container">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">{{ trans('base.menu_home') }}</a></li>
                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'mizkimnatni-dveri']) }}">{{ trans('base.mizkimnatni_dveri') }}</a></li>
                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'pryhovani-dveri']) }}">{{ trans('base.pryhovani_dveri') }}</a></li>
                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'vhidni-dveri']) }}">{{ trans('base.vhidni_dveri') }}</a></li>

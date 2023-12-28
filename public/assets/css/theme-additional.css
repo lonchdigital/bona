@@ -34,6 +34,8 @@
     26. Page Header
     27. Contacts Page
     28. Hamburger
+    29. Home Page Slider
+    30. Brands Owl Items
 
     ----------------------------------
  */
@@ -198,6 +200,14 @@ select:focus {
     z-index: 99999;
 }
 
+.art-blog-archive-wrapper {
+    width: 100%;
+}
+.art-blog-archive-wrapper,
+.art-products-owl-items.art-big-wrapper.owl-carousel .owl-wrapper-outer {
+    padding-top: 40px;
+}
+
 /*
     ----------------------------------
     2. Product Section list
@@ -238,7 +248,7 @@ select:focus {
     ----------------------------------
 */
 .art-products-slider-wrapper {
-    margin: 0 -15px;
+    margin: 0 -15px; /* important */
 }
 .art-products-owl-items.owl-carousel {
 
@@ -1403,8 +1413,12 @@ nav .navigation-bottom .navigation-bottom-left a.logo img {
         max-width: 210px;
     }
 }
-
-
+@media (max-width: 445px) {
+    nav .navigation-bottom .navigation-bottom-left a.logo img {
+        width: 150px;
+        max-width: 150px;
+    }
+}
 
 nav .navigation-bottom .navigation-bottom-left .header-search {
     position: relative;
@@ -1465,8 +1479,12 @@ nav .navigation-bottom .navigation-bottom-right .art-header-phone {
 }
 nav .navigation-bottom .navigation-bottom-right .art-header-phone a.phone-icon {
     margin-left: 28px;
+    margin-right: 24px;
     position: relative;
     bottom: 1px;
+}
+nav .navigation-bottom .navigation-bottom-right .art-hamburger-button {
+    margin-left: 28px;
 }
 nav .navigation-bottom .navigation-bottom-right .art-header-phone a.phone-icon svg {
 
@@ -1482,6 +1500,9 @@ nav .navigation-bottom .navigation-bottom-right .art-header-phone a.phone-icon s
 @media (max-width: 991px) {
     nav .navigation-bottom .navigation-bottom-right .art-header-phone .phone-full-number {
         display: none;
+    }
+    nav .navigation-bottom .navigation-bottom-right .header-main-others .icon-cart:before {
+        font-size: 20px;
     }
 }
 nav .navigation-bottom .navigation-bottom-right .art-header-coll-button {
@@ -2178,6 +2199,7 @@ header.art-page-header li span.icon-home {
     27. Contacts Page
     ----------------------------------
 */
+
 section.art-contacts-page-section {
     font-weight: 400;
 }
@@ -2321,6 +2343,49 @@ section.art-contacts-page-section .art-contacts-line .art-contacts-right iframe 
 
 
 
+/*
+    ----------------------------------
+    29. Home Page Slider
+    ----------------------------------
+*/
 
+@media (max-width: 991px) {
+
+    .header-content .item {
+        height: 600px;
+    }
+    .header-content .item .title {
+        font-size: 36px;
+    }
+    .header-content .item .box {
+        top: 43%;
+    }
+    .owl-icons-wrapper.owl-icons-frontpage {
+        margin-top: -166px;
+    }
+
+}
+
+
+
+/*
+    ----------------------------------
+    30. Brands Owl Items
+    ----------------------------------
+*/
+
+.art-brands-owl-items {
+
+}
+.art-brands-owl-items .owl-item {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 25px;
+}
+.art-brands-owl-items .owl-controls .owl-pagination {
+    top: 90%;
+}
 
 

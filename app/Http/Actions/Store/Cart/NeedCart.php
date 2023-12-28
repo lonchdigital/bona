@@ -12,11 +12,11 @@ trait NeedCart
         if ($this->getAuthUser()) {
             $cart = $cartService->getCartForAuthUser($this->getAuthUser());
         } else {
-            $cart = $cartService->getCartForGuestUser(session_id());
+            $cart = $cartService->getCartForGuestUser(request()->session()->getId());
         }
 
         if (!$cart) {
-            $cart = $this->getAuthUser() ? $cartService->createCartByUser($this->getAuthUser()) : $cartService->createCartByToken(session_id());
+            $cart = $this->getAuthUser() ? $cartService->createCartByUser($this->getAuthUser()) : $cartService->createCartByToken(request()->session()->getId());
         }
 
         return $cart;

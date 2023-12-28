@@ -367,6 +367,12 @@
     });
 
 
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 992) {
+            $hamburgerHeaderIcon.removeClass('is-active');
+            $hamburgerMenu.hide();
+        }
+    });
 
 
     // Brands slider
