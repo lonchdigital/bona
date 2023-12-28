@@ -4,6 +4,7 @@ import laravel from 'laravel-vite-plugin';
 import { svgSprite } from 'rollup-plugin-svgsprite-generator';
 import vue from '@vitejs/plugin-vue';
 import i18n from 'laravel-vue-i18n/vite';
+import fs from 'fs';
 
 export default defineConfig(({ mode }) => {
     return {
@@ -23,6 +24,26 @@ export default defineConfig(({ mode }) => {
             }
         },
         plugins: [
+            {
+                name: 'build-index',
+                async buildStart(options) {
+                    const filePath = './resources/img/icon.svg';
+
+                    fs.access(filePath, fs.constants.F_OK, (err) => {
+                        if (err) {
+                            fs.writeFile(filePath, '', (err) => {
+                                if (err) {
+                                    console.error('Error while creating dummy icon file!');
+                                    return;
+                                }
+                                console.log('Dummy icon file has been created!');
+                            });
+                        } else {
+                            console.log('Icon file exists.');
+                        }
+                    });
+                },
+            },
             svgSprite({
                 input: './resources/icons/',
                 output: './resources/img/icon.svg',

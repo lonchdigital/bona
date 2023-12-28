@@ -1,9 +1,4 @@
-name: Node.js CI/CD
-
-on:
-  push:
-    branches:
-      - main
+name: Deployment to the server
 
 jobs:
   build:
