@@ -432,16 +432,16 @@
 
             <div class="container">
 
-                <header class="art-header-left">
-                    <div class="row">
+                <div class="row">
+                    <header class="col-12 art-header-left">
                         <div>
                             <h2 class="title">{{trans('base.see_more')}}</h2>
                         </div>
-                    </div>
-                </header>
+                    </header>
+                </div>
 
                 <div class="art-products-slider-wrapper">
-                    <div class="art-products-owl-items">
+                    <div class="art-products-owl-items art-big-wrapper">
                         @foreach($sameTypeProducts as $product)
                             <div class="item">
 
@@ -454,9 +454,9 @@
                                             <div class="text">
                                                 <h2 class="product-title">{{ $product->name }}</h2>
                                                 <span class="price-wrapper">
-                                                <span class="price">{{ $product->price }}</span>
-                                                <span class="currency">{{ $baseCurrency->name_short }}</span>
-                                            </span>
+                                                    <span class="price">{{ $product->price }}</span>
+                                                    <span class="currency">{{ $baseCurrency->name_short }}</span>
+                                                </span>
                                             </div>
                                         </a>
                                     </div>
@@ -465,7 +465,8 @@
                             </div>
                         @endforeach
                     </div>
-                </div> <!--/row-->
+                </div>
+
             </div> <!--/container-->
         </section>
     @endif
