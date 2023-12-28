@@ -35,7 +35,7 @@ jobs:
         target: "~/lonch.digital/bona/public/build/"
         strip_components: 2
         rm: true
-        timeout: 60s
+        timeout: 120s
 
     - name: Execute commands on remote server
       uses: appleboy/ssh-action@master
