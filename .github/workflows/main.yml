@@ -51,6 +51,10 @@ jobs:
           # Pull changes from the git repository
           git pull
 
+          # Check versions
+          /usr/local/bin/composer -V
+          php -v
+
           # Install dependencies
           composer install
 
