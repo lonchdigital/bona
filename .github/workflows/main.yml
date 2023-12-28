@@ -1,5 +1,10 @@
 name: Deployment to the server
 
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
