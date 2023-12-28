@@ -33,3 +33,5 @@ jobs:
         port: 22
         source: "public/build/*"
         target: "~/lonch.digital/bona/public/build-dep/"
+        strip_components: 1
+        rm: true
