@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Kernel;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\ViewErrorBag;
 use Throwable;
@@ -49,6 +50,11 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e): mixed
     {
+        \Route::any(request()->path(), function () use ($e, $request) {
+            return parent::render($request, $e);
+        })->middleware('web');
+        app()->make(Kernel::class)->handle($request);
+
         //custom 404 page
         if ($this->isHttpException($e)) {
             if (request()->is('admin/*') || request()->is('static-admin/*')) {

@@ -95,7 +95,7 @@ input[type="checkbox"]::before {
     width: 18px;
     height: 18px;
     /*border: 1px solid #000;*/
-    background-image: url(../icons/checkbox-unchecked-dark.svg);
+    background-image: url(../../public/assets/icons/checkbox-unchecked-dark.svg);
     background-size: cover;
     background-position: center center;
     cursor: pointer;
@@ -106,15 +106,15 @@ input[type="checkbox"]:checked::before {
     width: 18px;
     height: 18px;
     /*border: 1px solid #000;*/
-    background-image: url(../icons/checkbox-checked-dark.svg);
+    background-image: url(../../public/assets/icons/checkbox-checked-dark.svg);
     background-size: cover;
     background-position: center center;
 }
 .checkbox-white input[type="checkbox"]::before {
-    background-image: url(../icons/checkbox-unchecked-white.svg);
+    background-image: url(../../public/assets/icons/checkbox-unchecked-white.svg);
 }
 .checkbox-white input[type="checkbox"]:checked::before {
-    background-image: url(../icons/checkbox-checked-white.svg);
+    background-image: url(../../public/assets/icons/checkbox-checked-white.svg);
 }
 
 /*
@@ -1069,13 +1069,13 @@ footer.art-site-footer .footer-bottom p {
     left: 0;
 }
 .custom-control-number .minus:before {
-    background: url(/build/assets/icon-f3a86aaa.svg#i-minus) no-repeat center;
+    background: url('$img/icon.svg#i-minus') no-repeat center;
 }
 .custom-control-number .plus {
     right: 0;
 }
 .custom-control-number .plus:before {
-    background: url(/build/assets/icon-f3a86aaa.svg#i-plus) no-repeat center;
+    background: url('$img/icon.svg#i-plus') no-repeat center;
 }
 .custom-control-number .minus,
 .custom-control-number .plus {
