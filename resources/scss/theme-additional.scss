@@ -801,7 +801,8 @@ select:focus {
 .filter-item--colors .link-color:after {
     content: "";
     display: block;
-    background: url('$img/icon.svg#i-check-dark') no-repeat center;
+    background: url(/build/assets/icon-f3a86aaa.svg#i-check-dark) no-repeat center;
+    /*background: url(/build/assets/icon-f3a86aaa.svg) no-repeat center;*/
     left: 0;
     top: 0;
     bottom: 0;
