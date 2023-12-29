@@ -48,7 +48,7 @@ class AppServiceProvider extends ServiceProvider
             ],
             function ($view) use ($productTypeService) {
                 $view->with('productTypes', $productTypeService->getProductTypes());
-                $view->wuth('locationService', app()->make(LocaleService::class));
+                $view->with('locationService', app()->make(LocaleService::class));
             }
         );
 
