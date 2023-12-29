@@ -6,6 +6,7 @@ use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Brand\BrandService;
 use App\Services\Cart\CartService;
+use App\Services\Locale\LocaleService;
 use App\Services\WishList\WishListService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -47,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
             ],
             function ($view) use ($productTypeService) {
                 $view->with('productTypes', $productTypeService->getProductTypes());
+                $view->wuth('locationService', app()->make(LocaleService::class));
             }
         );
 

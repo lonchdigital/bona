@@ -109,7 +109,7 @@
                                 @foreach(app()->make(\App\Services\Application\ApplicationConfigService::class)->getAvailableLanguages() as $availableLanguage)
                                     @if (mb_strtoupper($availableLanguage) !== mb_strtoupper(app()->getLocale()))
                                         <li>
-                                            <a href="{{ route('locale.change', ['newLocale' => mb_strtolower($availableLanguage)]) }}">
+                                            <a href="{{ $locationService->generateLinkByLocale(url()->current(), app()->getLocale(), $availableLanguage) }}">
                                                 {{ mb_strtoupper($availableLanguage) }}
                                             </a>
                                         </li>
