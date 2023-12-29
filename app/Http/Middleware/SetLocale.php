@@ -16,6 +16,12 @@ class SetLocale
 
         $request->route()->forgetParameter('lang');
 
+        if (auth()->user()) {
+            auth()->user()->update([
+                'language' => $request->segment(1)
+            ]);
+        }
+
         return $next($request);
     }
 }
