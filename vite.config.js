@@ -55,6 +55,7 @@ export default defineConfig(({ mode }) => {
                     // admin
                     'resources/scss/libs.scss',
                     'resources/scss/main.scss',
+                    'resources/scss/theme-additional.scss',
                     'resources/js/admin/app.js',
                     'resources/js/admin/scripts.js',
 
