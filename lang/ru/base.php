@@ -305,4 +305,11 @@ return [
     'filter' => 'Фильтровать',
     'product_cost_description' => '*Стоимость ориентировочная. За точным просчетом обратитесь к консультанту',
     'our_works' => 'Наши работы',
+    'want_choose_door' => 'Не знаєте какие двери выбрать?',
+    'agreement_line_start' => 'Даю согласие на обработку',
+    'agreement_line_end' => 'персональних даних',
+    'what_clients_say' => 'Что говорят клиенты',
+    'faqs' => 'Частые вопросы',
+    'checkout' => 'Оформление заказа',
+    'checkout_sat_delivery' => 'Доставка SAT',
 ];

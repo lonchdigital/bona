@@ -15,6 +15,7 @@ use App\Models\ProductSeoText;
 use App\Models\ProductGalleries;
 use App\Models\ProductType;
 use App\Models\User;
+use App\Models\CartProducts;
 use App\Models\ProductCharacteristics;
 use App\Models\ProductSubItems;
 use App\Models\ProductVideos;
@@ -774,6 +775,14 @@ class ProductService extends BaseService
             if (HomePageNewProducts::where('product_id', $product->id)->exists() || HomePageBestSalesProducts::where('product_id', $product->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.product_in_use_on_homepage'));
             }
+
+            $cartProducts = CartProducts::where('product_id', $product->id)->get();
+            if( count($cartProducts) >= 1 ) {
+                foreach ($cartProducts as $cartProduct) {
+                    $cartProduct->delete();
+                }
+            }
+
 
             $imagesToDelete = [];
             if ($product->main_image_path) {

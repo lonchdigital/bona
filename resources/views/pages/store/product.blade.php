@@ -262,7 +262,7 @@
                                     <div class="d-flex flex-wrap align-items-center no-gutters w-100">
 
                                         <div class="col col-sm-auto col-lg col-xl-auto order-last order-sm-0 order-lg-last order-xl-2 mt-4 mt-sm-0 mt-lg-4 mt-xl-0">
-                                            <button type="button" class="btn btn-black-custom w-100 single-product-add-to-cart" id="{{ $product->slug }}">{{ trans('base.add_to_cart') }}</button>
+                                            <button type="button" class="btn btn-main single-product-add-to-cart" id="{{ $product->slug }}">{{ trans('base.add_to_cart') }}</button>
                                         </div>
 
                                     </div>

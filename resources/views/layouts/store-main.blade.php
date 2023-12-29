@@ -64,7 +64,7 @@
 
 <body>
 
-<div class="page-loader"></div>
+{{--<div class="page-loader"></div>--}}
 
 <div class="wrapper">
 
@@ -184,7 +184,7 @@
                                             </p>
                                             <div class="checkbox checkbox-white agreement-line">
                                                 <input type="checkbox" name="agree" value="value">
-                                                <label for="fieldName">Даю згоду на обробку персональних даних</label>
+                                                <label for="fieldName">{{ trans('base.agreement_line_start') . ' ' . trans('base.agreement_line_end') }}</label>
                                             </div>
                                             <p><a href="#" class="btn btn-empty">{{trans('base.send')}}</a></p>
                                         </form>

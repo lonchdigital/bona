@@ -820,11 +820,13 @@
 
 });
 
-$(window).bind('load', function () {
+// loader
+
+/*$(window).bind('load', function () {
     setTimeout(function () {
         $('.page-loader').addClass('loaded');
     }, 1000);
-});
+});*/
 
 
 
