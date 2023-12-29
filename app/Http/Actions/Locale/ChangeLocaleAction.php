@@ -9,7 +9,7 @@ class ChangeLocaleAction extends BaseAction
 {
     public function __invoke(string $newLocale, LocaleService $localeService)
     {
-        $localeService->setLocale($this->getAuthUser(), $newLocale);
+        $localeService->setLocale($newLocale, $this->getAuthUser());
 
         return redirect()->back();
     }
