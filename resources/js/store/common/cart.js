@@ -3,6 +3,9 @@ import iconUrl from '$img/icon.svg';
 import InputCounter from "./input-counter";
 import wishList from "./wish-list";
 
+const $basket_with_products = $('.header-main-others .basket-basket-list .basket-with-products');
+const $basket_without_products = $('.header-main-others .basket-basket-list .basket-without-products');
+
 export default {
     init: async function () {
         if (count_of_products_in_cart > 0) {
@@ -39,8 +42,6 @@ export default {
                 selectAttributes['color'] = null;
             }
 
-            // console.log(selectAttributes);
-            /*console.log('countOfProductsBody: ' + countOfProductsBody);*/
 
             addProductToCart(
                 productSlug,
@@ -50,11 +51,6 @@ export default {
                     // button.parent().addClass('d-none');
                     // countOfProductsBody.addClass('d-none');
                     goToCartBody.removeClass('d-none');
-
-                    /*console.log('==================');
-                    console.log('Product cart:');
-                    console.log(data);
-                    console.log('==================');*/
 
                     handleBasket(data);
                 },
@@ -638,10 +634,15 @@ function handleBasket(data)
 {
     const basketWithProducts = $('.basket-with-products');
     const countOfProductsInBasket = basketWithProducts.find('.count-of-products-in-basket');
+
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');
 
-
+    if(parseInt(data.data.products.length) === 1){
+        $basket_with_products.removeClass('d-none');
+        $basket_without_products.addClass('d-none');
+        $('.sub-menu.basket-sub-menu').removeClass('d-none');
+    }
     countOfProductsInBasket.text(data.data.products.length);
     basketSubMenuSuccess.removeClass('d-none');
 

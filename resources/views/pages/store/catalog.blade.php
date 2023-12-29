@@ -206,7 +206,7 @@
                 <header>
                     <div class="row">
                         <div class="col-md-offset-2 col-md-8 text-center">
-                            <h2 class="title">FAQs</h2>
+                            <h2 class="title">{{ trans('base.faqs') }}</h2>
                             <div class="subtitle font-two">
                                 <p>{{trans('base.faqs_subtitle')}}</p>
                             </div>
@@ -261,9 +261,6 @@
                     <div class="row">
                         <div class="col-md-offset-2 col-md-8 text-center">
                             <h2 class="title">{{$seoText['title']}}</h2>
-                            <div class="subtitle font-two">
-                                <p>Our seo text</p>
-                            </div>
                         </div>
                     </div>
                 </header>

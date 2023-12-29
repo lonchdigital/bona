@@ -6,18 +6,10 @@
 
 @section('content')
 
-    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/catalog-header-bg.png') }})">
-        <header>
-            <div class="container">
-                <h1 class="h2 title">Checkout</h1>
-                <ol class="breadcrumb breadcrumb-inverted">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
-                    <li><a class="active" href="#">Checkout</a></li>
-                </ol>
-            </div>
-        </header>
-    </section>
 
+    <x-header-component :data="[
+        '#' => 'checkout'
+    ]" />
 
     <main id="checkout" class="checkout">
         <div class="content">
@@ -41,8 +33,8 @@
                                                 <div
                                                     class="h4 mb-4 d-none d-lg-block">{{ trans('base.personal_data') }}</div>
                                             </div>
-                                            <div class="col-12 order-3 col-xl-6 order-lg-3">
-                                                <div class="checkout-personal-data mb-6 mb-xl-0">
+                                            <div class="col-12 order-3 order-lg-3">
+                                                <div class="checkout-personal-data pr-xl-18 mb-4 mb-lg14">
                                                     <div class="row mb-1">
                                                         <div class="col-6">
                                                             <div
@@ -109,37 +101,30 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div
-                                                class="regular-customer col-12 order-1 col-xl-6 order-lg-4 mb-18 mb-lg-0 mt-6 mt-lg-0">
-                                                <div class="px-xl-2 px-xxl-8">
-                                                    <p>{{ trans('base.checkout_existing_user_explanation') }}</p>
-                                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in') }}"
-                                                       class="btn btn-black-custom px-9">{{ trans('base.checkout_existing_user') }}</a>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     @endguest
                                     <div class="row">
                                         <div class="col">
                                             <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-6 mt-xl-12 mt-xxl-26 mb-4 mb-lg14">
-                                                <div
-                                                    class="h4 mb-4 mb-lg-0 mb-4 mb-lg-0">{{ trans('base.delivery') }}</div>
                                                 <div class="checkout-delivery-accordion w-100 mt-1"
                                                      id="checkout-delivery-accordion">
+
+                                                    <h4>{{ trans('base.delivery') }}</h4>
+
                                                     <div class="card delivery-address">
                                                         <div class="card-header">
                                                             <div class="row">
-                                                                <div class="col-12 col-md-7 mb-2 mb-md-0">
-                                                                    <div class="custom-control custom-radio mb-0">
+                                                                <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox">
+                                                                    <div class="position-relative">
                                                                         <input data-toggle="collapse"
                                                                                data-target="#collapse1" type="radio"
                                                                                @if(!old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) checked
                                                                                @endif id="delivery-radio-address"
                                                                                name="delivery_type_id"
                                                                                value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}"
-                                                                               class="custom-control-input"/>
-                                                                        <label class="custom-control-label"
-                                                                               for="delivery-radio-address">{{ trans('base.checkout_address_delivery') }}</label>
+                                                                               >
+                                                                        <label class="custom-control-label" for="delivery-radio-address">{{ trans('base.checkout_address_delivery') }}</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-12 col-md-5">
@@ -258,7 +243,7 @@
                                                                                placeholder="{{ trans('base.checkout_floor_number') }}"
                                                                                value="{{ old('floor_number') }}">
                                                                     </div>
-                                                                    <div
+<!--                                                                    <div
                                                                         class="custom-control custom-checkbox custom-checkbox-lift position-relative d-flex justify-content-end justify-content-sm-start mb-0 order-last order-sm-0">
                                                                         <input type="hidden" name="has_elevator"
                                                                                value="0">
@@ -268,7 +253,7 @@
                                                                                @if(old('has_elevator')) checked @endif>
                                                                         <label class="custom-control-label"
                                                                                for="lift">{{ trans('base.checkout_has_elevator') }}</label>
-                                                                    </div>
+                                                                    </div>-->
                                                                 </div>
                                                                 <div class="row my-1">
                                                                     <div class="col-12 text-danger">
@@ -290,73 +275,8 @@
                                                                         @enderror
                                                                     </div>
                                                                 </div>
-                                                                <div class="address-search-wrap mb-10 mb-sm-0">
-                                                                    <div
-                                                                        class="custom-control custom-checkbox custom-checkbox-save-address position-relative mb-0 mb-sm-10 mt-sm-4">
-                                                                        <input type="hidden"
-                                                                               name="save_delivery_address" value="0">
-                                                                        <input type="checkbox"
-                                                                               name="save_delivery_address"
-                                                                               class="custom-control-input"
-                                                                               id="save-address" value="1"
-                                                                               @if(old('save_delivery_address')) checked @endif>
-                                                                        <label class="custom-control-label"
-                                                                               for="save-address">{{ trans('base.save_delivery_address') }}</label>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="delivery-time">
-                                                                    <div
-                                                                        class="delivery-title mb-4">{{ trans('base.checkout_delivery_date_and_time') }}</div>
-                                                                    <div
-                                                                        class="d-flex flex-column flex-xxxl-row  align-items-xxxl-center justify-content-between">
-                                                                        <div class="delivery-time-item mb-4 mb-xxxl-0">
-                                                                            <div class="d-flex align-items-center">
-                                                                                <div
-                                                                                    class="delivery-title mr-4 d-none d-md-block">{{ trans('base.checkout_delivery_date') }}</div>
-                                                                                <div
-                                                                                    class="datepicker @if($errors->has('delivery_date')) datepicker-error @endif">
-                                                                                    <input id="datepicker"
-                                                                                           class="flatpickr-input art-form-light-control"
-                                                                                           name="delivery_date"
-                                                                                           type="date"
-                                                                                           placeholder="{{ trans('base.checkout_select_date') }}"
-                                                                                           data-input
-                                                                                           value="{{ old('delivery_date') }}">
-                                                                                    <a class="input-button"
-                                                                                       title="toggle" data-toggle>
-                                                                                        <svg>
-                                                                                            <use
-                                                                                                xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-calendar"></use>
-                                                                                        </svg>
-                                                                                    </a>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div
-                                                                            class="delivery-time-item d-flex align-items-center">
-                                                                            <div class="d-flex align-items-center">
-                                                                                <div
-                                                                                    class="delivery-title mr-4 d-none d-md-block">
-                                                                                    {{ trans('base.checkout_delivery_time') }}</div>
-                                                                            </div>
-                                                                            <ul class="list-unstyled mb-0 delivery-time-buttons d-flex align-items-center w-100">
-                                                                                @foreach(\App\DataClasses\DeliveryTimesDataClass::get() as $index => $deliveryTime)
-                                                                                    <li class="d-flex @if($index === 0) active @endif">
-                                                                                        <label
-                                                                                            for="delivery_{{ $deliveryTime['id'] }}"
-                                                                                            class="btn">{{ $deliveryTime['name'] }}</label>
-                                                                                        <input class="d-none"
-                                                                                               type="radio"
-                                                                                               id="delivery_{{ $deliveryTime['id'] }}"
-                                                                                               name="delivery_time_id"
-                                                                                               value="{{ $deliveryTime['id'] }}"
-                                                                                               @if($index === 0) checked @endif>
-                                                                                    </li>
-                                                                                @endforeach
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+
+
                                                                 <div class="row mt-1">
                                                                     <div class="col-12 text-danger">
                                                                         @error('delivery_date')
@@ -365,21 +285,22 @@
                                                                         @enderror
                                                                     </div>
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="card delivery-np">
                                                         <div class="card-header">
                                                             <div class="row">
-                                                                <div class="col-12 col-md-7 mb-2 mb-md-0">
-                                                                    <div class="custom-control custom-radio mb-0">
+                                                                <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox">
+                                                                    <div class="position-relative">
                                                                         <input data-toggle="collapse"
                                                                                data-target="#collapse2" type="radio"
                                                                                id="delivery-radio-np"
                                                                                @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) checked
                                                                                @endif name="delivery_type_id"
                                                                                value="{{ App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY }}"
-                                                                               class="custom-control-input"/>
+                                                                               >
                                                                         <label class="custom-control-label"
                                                                                for="delivery-radio-np">
                                                                             <div class="i-np mr-2">
@@ -451,25 +372,185 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+                                                    <div class="card delivery-sat">
+                                                        <div class="card-header">
+                                                            <div class="row">
+                                                                <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox">
+                                                                    <div class="position-relative">
+                                                                        <input data-toggle="collapse"
+                                                                               data-target="#collapse3" type="radio"
+                                                                               @if(!old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) checked
+                                                                               @endif id="delivery-radio-sat"
+                                                                               name="delivery_type_id"
+                                                                               value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}"
+                                                                        >
+                                                                        <label class="custom-control-label" for="delivery-radio-sat">{{ trans('base.checkout_sat_delivery') }}</label>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div id="collapse3"
+                                                             class="collapse @if(!old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) show @endif"
+                                                             data-parent="#checkout-delivery-accordion">
+                                                            <div class="card-body pt-8 px-0 pb-10 mb-4">
+                                                                <div
+                                                                    class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}
+                                                                    :
+                                                                </div>
+                                                                <div
+                                                                    class="delivery-title mb-4">{{ trans('base.checkout_address_to_delivery') }}</div>
+                                                                <div class="city-search-wrap">
+                                                                    <div
+                                                                        class="field @if($errors->has('region_id')) field-error @endif city-search mb-1">
+                                                                        <select class="region-select" name="region_id">
+                                                                            <option disabled
+                                                                                    @if(!old('region_id')) selected @endif>{{ trans('base.checkout_select_region') }}</option>
+                                                                            @foreach($regions as $region)
+                                                                                <option
+                                                                                    @if(old('region_id') == $region->id) selected
+                                                                                    @endif value="{{ $region->id }}">{{ $region->name }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-12 text-danger">
+                                                                            @error('region_id')
+                                                                            <div
+                                                                                class="field-error-help-descr">{{ $message }}</div>
+                                                                            @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-1">
+                                                                    <div class="col-12">
+                                                                        <div
+                                                                            class="field @if($errors->has('district')) field-error @endif">
+                                                                            <input type="text" name="district"
+                                                                                   class="art-form-light-control"
+                                                                                   placeholder="{{ trans('base.district') }}"
+                                                                                   value="{{ old('district') }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12 text-danger">
+                                                                        @error('district')
+                                                                        <div
+                                                                            class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-1">
+                                                                    <div class="col-12">
+                                                                        <div
+                                                                            class="field @if($errors->has('city')) field-error @endif">
+                                                                            <input type="text" name="city"
+                                                                                   class="art-form-light-control"
+                                                                                   placeholder="{{ trans('base.city') }}"
+                                                                                   value="{{ old('city') }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12 text-danger">
+                                                                        @error('city')
+                                                                        <div
+                                                                            class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+                                                                <div class="address-search-wrap mb-10 mb-sm-0">
+                                                                    <div
+                                                                        class="field @if($errors->has('street')) field-error @endif field--house">
+                                                                        <input type="text" name="street"
+                                                                               class="art-form-light-control"
+                                                                               placeholder="{{ trans('base.checkout_street') }}"
+                                                                               value="{{ old('street') }}">
+                                                                    </div>
+                                                                    <div
+                                                                        class="field @if($errors->has('building_number')) field-error @endif field--house">
+                                                                        <input type="text" name="building_number"
+                                                                               class="art-form-light-control"
+                                                                               placeholder="{{ trans('base.checkout_building_number') }}"
+                                                                               value="{{ old('building_number') }}">
+                                                                    </div>
+                                                                    <div
+                                                                        class="field @if($errors->has('apartment_number')) field-error @endif field--apart">
+                                                                        <input type="text" name="apartment_number"
+                                                                               class="art-form-light-control"
+                                                                               placeholder="{{ trans('base.checkout_apartment_number') }}"
+                                                                               value="{{ old('apartment_number') }}">
+                                                                    </div>
+                                                                    <div
+                                                                        class="field @if($errors->has('floor_number')) field-error @endif field--floor">
+                                                                        <input type="text" name="floor_number"
+                                                                               class="art-form-light-control"
+                                                                               placeholder="{{ trans('base.checkout_floor_number') }}"
+                                                                               value="{{ old('floor_number') }}">
+                                                                    </div>
+                                                                <!--                                                                    <div
+                                                                        class="custom-control custom-checkbox custom-checkbox-lift position-relative d-flex justify-content-end justify-content-sm-start mb-0 order-last order-sm-0">
+                                                                        <input type="hidden" name="has_elevator"
+                                                                               value="0">
+                                                                        <input type="checkbox"
+                                                                               class="custom-control-input" id="lift"
+                                                                               name="has_elevator" value="1"
+                                                                               @if(old('has_elevator')) checked @endif>
+                                                                        <label class="custom-control-label"
+                                                                               for="lift">{{ trans('base.checkout_has_elevator') }}</label>
+                                                                    </div>-->
+                                                                </div>
+                                                                <div class="row my-1">
+                                                                    <div class="col-12 text-danger">
+                                                                        @error('street')
+                                                                        <div
+                                                                            class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                        @error('building_number')
+                                                                        <div
+                                                                            class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                        @error('apartment_number')
+                                                                        <div
+                                                                            class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                        @error('floor_number')
+                                                                        <div
+                                                                            class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div class="row mt-1">
+                                                                    <div class="col-12 text-danger">
+                                                                        @error('delivery_date')
+                                                                        <div
+                                                                            class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
-                                            <div
-                                                class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-20">
-                                                <div class="h4 mb-4 mb-lg-0">{{ trans('base.checkout_payment') }}</div>
-                                                <div class="w-100">
+                                            <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-20 ">
+                                                <div class="w-100 checkbox">
                                                     <div class="row mt-1">
                                                         <div class="col-10">
-                                                            <div
-                                                                class="delivery-title mb-4">{{ trans('base.checkout_payment_upon_receipt') }}
+                                                            <h4>{{ trans('base.checkout_payment') }}</h4>
+                                                            <div class="delivery-title mb-4">{{ trans('base.checkout_payment_upon_receipt') }}
                                                                 :
                                                             </div>
-                                                            <div class="custom-control custom-radio mb-0">
+                                                            <div class="position-relative">
                                                                 <input type="radio"
                                                                        @if(!old('payment_type_id') || old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT) checked
                                                                        @endif id="payment-cash" name="payment_type_id"
-                                                                       class="custom-control-input"
-                                                                       value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}"/>
+                                                                       value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}">
                                                                 <label class="custom-control-label"
                                                                        for="payment-cash">{{ trans('base.checkout_payment_cash') }}</label>
                                                             </div>
@@ -485,12 +566,11 @@
                                                     <div class="w-100 mb-6"></div>
                                                     <div class="row">
                                                         <div class="col-10">
-                                                            <div class="custom-control custom-radio mb-0">
+                                                            <div class="position-relative">
                                                                 <input type="radio"
                                                                        @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT) checked
                                                                        @endif id="payment-card" name="payment_type_id"
-                                                                       class="custom-control-input"
-                                                                       value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}"/>
+                                                                       value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}">
                                                                 <label class="custom-control-label"
                                                                        for="payment-card">{{ trans('base.checkout_payment_card') }}</label>
                                                             </div>
@@ -498,14 +578,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div
-                                                class="checkout-delivery d-flex flex-column flex-xl-row checkout-recipient pr-xl-18">
-                                                <div
-                                                    class="h4 mb-4 mb-lg-0">{{ trans('base.checkout_recipient') }}</div>
-                                                <div class="w-100">
+                                            <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-recipient pr-xl-18">
+                                                <div class="w-100 checkbox">
                                                     <div class="row mt-1">
+
+                                                        <h4>{{ trans('base.checkout_recipient') }}</h4>
+
                                                         <div class="col-3 col-xxl-4">
-                                                            <div class="custom-control custom-radio mb-0">
+                                                            <div class="position-relative">
                                                                 <input type="radio"
                                                                        @if(!old('recipient_type_id') || (old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER)) checked
                                                                        @endif id="recipient-user"
@@ -514,12 +594,11 @@
                                                                        value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER }}"/>
                                                                 <label data-toggle="collapse"
                                                                        data-target="#collapse-self-recipient"
-                                                                       class="custom-control-label"
                                                                        for="recipient-user">{{ trans('base.checkout_recipient_me') }}</label>
                                                             </div>
                                                         </div>
                                                         <div class="col-7 col-xxl-4">
-                                                            <div class="custom-control custom-radio mb-0">
+                                                            <div class="position-relative">
                                                                 <input type="radio"
                                                                        @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) checked
                                                                        @endif id="recipient-other"
@@ -528,7 +607,6 @@
                                                                        value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM }}"/>
                                                                 <label data-toggle="collapse"
                                                                        data-target="#collapse-custom-recipient"
-                                                                       class="custom-control-label"
                                                                        for="recipient-other">{{ trans('base.checkout_recipient_another_person') }}</label>
                                                             </div>
                                                         </div>

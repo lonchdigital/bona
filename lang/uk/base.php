@@ -307,4 +307,11 @@ return [
     'filter' => 'Фiльтрувати',
     'product_cost_description' => '*Вартість орієнтовна. За точним прорахунком зверніться до консультанта',
     'our_works' => 'Нашi работи',
+    'want_choose_door' => 'Не знаєте які двері обрати?',
+    'agreement_line_start' => 'Даю згоду на обробку',
+    'agreement_line_end' => 'персональних даних',
+    'what_clients_say' => 'Що кажуть кліенти',
+    'faqs' => 'Поширені запитання',
+    'checkout' => 'Оформлення замовлення',
+    'checkout_sat_delivery' => 'Доставка SAT',
 ];

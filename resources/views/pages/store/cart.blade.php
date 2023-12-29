@@ -7,19 +7,9 @@
 
 @section('content')
 
-    <!-- ======================== Main header ======================== -->
-    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/catalog-header-bg.png') }})">
-        <header>
-            <div class="container">
-                <h1 class="h2 title">Cart</h1>
-                <ol class="breadcrumb breadcrumb-inverted">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
-                    <li><a class="active" href="#">Cart</a></li>
-                </ol>
-            </div>
-        </header>
-    </section>
-
+    <x-header-component :data="[
+        '#' => 'cart'
+    ]" />
 
     <main id="page-cart" class="page-cart">
         <div class="content">

@@ -307,6 +307,7 @@ input, textarea, select {
     border-radius: 30px;
     font-size: 14px;
     line-height: 20px;
+    font-weight: 500;
 }
 .btn:focus, .btn.focus {
     outline: none !important;
@@ -317,7 +318,7 @@ input, textarea, select {
 /* btn-main */
 .btn.btn-main {
     background-color: #D59958;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);*/
 }
 .btn.btn-main:hover {
     background-color: #3a3d45;
@@ -553,7 +554,7 @@ input, textarea, select {
 
 .checkbox label {
     padding-left: 35px;
-    line-height: 1.8;
+    line-height: 30px;
 }
 
 .checkbox label a {
