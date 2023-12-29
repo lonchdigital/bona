@@ -1,9 +1,10 @@
 {
     "private": true,
     "scripts": {
-        "dev": "vite",
-        "build": "vite build --mode=development",
-        "watch": "vite build --watch.exclude resources/img/icon.svg --mode=development"
+        "icon": "node icon.js",
+        "dev": "npm run icon && vite",
+        "build": "npm run icon && vite build --mode=development",
+        "watch": "npm run icon && vite build --watch.exclude resources/img/icon.svg --mode=development"
     },
     "devDependencies": {
         "axios": "^1.1.2",
