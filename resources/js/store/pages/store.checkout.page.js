@@ -54,6 +54,29 @@ export default async function () {
             $('.selected-payment-type').text($('label[for="' + id + '"]').text());
         }
     });
+
+
+    // Accordion
+    $('input.art-accordion-delivery').on('change', function() {
+
+        if ($(this).is(':checked')) {
+            $('.accordion-delivery-data').slideUp(300);
+
+            let accordionData = $(this).attr('data-accordion');
+            $('#' + accordionData).slideDown(300);
+        }
+    });
+
+    $('input.art-accordion-recipient').on('change', function() {
+
+        if ($(this).is(':checked')) {
+            $('.accordion-recipient-data').slideUp(300);
+
+            let accordionData = $(this).attr('data-accordion');
+            $('#' + accordionData).slideDown(300);
+        }
+    });
+
 }
 
 function showSummaryWithDelivery(data)

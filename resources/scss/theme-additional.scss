@@ -46,6 +46,9 @@
     1. Common styles
     ----------------------------------
 */
+.art-hide {
+    display: none;
+}
 img {
     border: 0;
     height: auto;
@@ -135,6 +138,11 @@ input {
     padding: 0 18px;
     border-radius: 30px;
     font-size: 13px;
+}
+textarea {
+    padding: 9px 18px;
+    outline: none;
+    border: 1px solid #ABABAB;
 }
 .fstElement {
     background-color: #FFF;
@@ -889,7 +897,12 @@ footer.art-site-footer .footer-content .footer-content-left > img {
 footer.art-site-footer .footer-content .footer-content-left .art-footer-description {
     font-size: 14px;
     line-height: 22.4px;
-    margin: 34px 0 34px 0;
+    margin: 34px 0 45px 0;
+}
+footer.art-site-footer .footer-content .footer-content-left .art-footer-additional {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 footer.art-site-footer .footer-content .footer-content-left .art-footer-social {
     display: flex;
@@ -905,6 +918,15 @@ footer.art-site-footer .footer-content .footer-content-left .art-footer-social l
     fill: #DCB14A;
     position: relative;
     bottom: 1px;
+}
+footer.art-site-footer .footer-content .footer-content-left .art-card-icons {
+
+}
+footer.art-site-footer .footer-content .footer-content-left .art-card-icons .card-dss {
+    width: 68px;
+}
+footer.art-site-footer .footer-content .footer-content-left .art-card-icons .visa-mastercard {
+    width: 132px;
 }
 footer.art-site-footer .footer-content .footer-content-right {
     width: 40%;
@@ -1353,6 +1375,7 @@ a:focus,
     position: relative;
     font-size: 12px;
     line-height: 14px;
+    text-align: center;
 }
 .header-main-others li.list-inline-item.basket-list .sub-menu-total {
     border-top: 1px solid #f0f0f0;
@@ -2124,7 +2147,7 @@ section.art-common-page-section .art-row-block.art-odd .desc-side {
     border-bottom: 2px solid #f4f4f6;
 }
 .checkout .checkout-delivery-accordion .card {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 .checkout .checkout-delivery-accordion .card-header {
     all: unset;

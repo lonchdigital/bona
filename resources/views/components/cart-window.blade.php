@@ -12,7 +12,7 @@
         <div class="sub-menu-title py-3 text-center font-weight-bold text-uppercase">
             {{ trans('base.cart') }}
         </div>
-        <div class="sub-menu-success py-1 pl-14 pr-6 font-weight-bold text-uppercase text-white bg-success-custom d-none">
+        <div class="sub-menu-success py-1 pl-2 pr-2 font-weight-bold text-uppercase text-white bg-success-custom d-none">
             {{ trans('base.product_successfully_added_to_cart') }}
         </div>
         <ul class="sub-menu-list list-unstyled mb-0 px-4 pt-4">
