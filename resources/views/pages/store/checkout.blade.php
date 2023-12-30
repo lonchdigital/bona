@@ -25,13 +25,8 @@
                                     @csrf
                                     @guest
                                         <div class="row flex-column flex-lg-row">
-                                            <div class="col-12 order-2 order-lg-1">
-                                                <div
-                                                    class="head mb-8 mb-lg-6 mb-xl-10 text-center text-lg-left">{{ trans('base.order_creation') }}</div>
-                                            </div>
                                             <div class="col-12 order-lg-2">
-                                                <div
-                                                    class="h4 mb-4 d-none d-lg-block">{{ trans('base.personal_data') }}</div>
+                                                <div class="h4 mb-4 d-none d-lg-block">{{ trans('base.personal_data') }}</div>
                                             </div>
                                             <div class="col-12 order-3 order-lg-3">
                                                 <div class="checkout-personal-data pr-xl-18 mb-4 mb-lg14">
@@ -106,9 +101,9 @@
                                     @endguest
                                     <div class="row">
                                         <div class="col">
+
                                             <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-6 mt-xl-12 mt-xxl-26 mb-4 mb-lg14">
-                                                <div class="checkout-delivery-accordion w-100 mt-1"
-                                                     id="checkout-delivery-accordion">
+                                                <div class="checkout-delivery-accordion w-100 mt-1" id="checkout-delivery-accordion">
 
                                                     <h4>{{ trans('base.delivery') }}</h4>
 
@@ -117,9 +112,10 @@
                                                             <div class="row">
                                                                 <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox">
                                                                     <div class="position-relative">
-                                                                        <input data-toggle="collapse"
-                                                                               data-target="#collapse1" type="radio"
-                                                                               @if(!old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) checked
+                                                                        <input data-accordion="delivery-1"
+                                                                               class="art-accordion-delivery"
+                                                                               type="radio"
+                                                                               @if(old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) checked
                                                                                @endif id="delivery-radio-address"
                                                                                name="delivery_type_id"
                                                                                value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}"
@@ -144,10 +140,10 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div id="collapse1"
-                                                             class="collapse @if(!old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) show @endif"
+                                                        <div id="delivery-1"
+                                                             class="accordion-delivery-data @if(old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)show @else art-hide @endif"
                                                              data-parent="#checkout-delivery-accordion">
-                                                            <div class="card-body pt-8 px-0 pb-10 mb-4">
+                                                            <div class="card-body pt-5 px-0 pb-5 mb-4">
                                                                 <div
                                                                     class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}
                                                                     :
@@ -294,8 +290,9 @@
                                                             <div class="row">
                                                                 <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox">
                                                                     <div class="position-relative">
-                                                                        <input data-toggle="collapse"
-                                                                               data-target="#collapse2" type="radio"
+                                                                        <input data-accordion="delivery-2"
+                                                                               class="art-accordion-delivery"
+                                                                               type="radio"
                                                                                id="delivery-radio-np"
                                                                                @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) checked
                                                                                @endif name="delivery_type_id"
@@ -328,10 +325,10 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div id="collapse2"
-                                                             class="collapse @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) show @endif"
+                                                        <div id="delivery-2"
+                                                             class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) show @else art-hide @endif"
                                                              data-parent="#checkout-delivery-accordion">
-                                                            <div class="card-body pt-8 px-0 pb-10 mb-4">
+                                                            <div class="card-body pt-5 px-0 pb-5 mb-4">
                                                                 <div
                                                                     class="delivery-title mb-4">{{ trans('base.checkout_select_np_department') }}</div>
                                                                 <div class="city-search-wrap">
@@ -377,9 +374,10 @@
                                                             <div class="row">
                                                                 <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox">
                                                                     <div class="position-relative">
-                                                                        <input data-toggle="collapse"
-                                                                               data-target="#collapse3" type="radio"
-                                                                               @if(!old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) checked
+                                                                        <input data-accordion="delivery-3"
+                                                                               class="art-accordion-delivery"
+                                                                               type="radio"
+                                                                               @if(old('sat_type_id') || old('sat_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) checked
                                                                                @endif id="delivery-radio-sat"
                                                                                name="delivery_type_id"
                                                                                value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}"
@@ -390,10 +388,10 @@
 
                                                             </div>
                                                         </div>
-                                                        <div id="collapse3"
-                                                             class="collapse @if(!old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) show @endif"
+                                                        <div id="delivery-3"
+                                                             class="accordion-delivery-data @if(old('sat_type_id') || old('sat_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) show @else art-hide @endif"
                                                              data-parent="#checkout-delivery-accordion">
-                                                            <div class="card-body pt-8 px-0 pb-10 mb-4">
+                                                            <div class="card-body pt-5 px-0 pb-5 mb-4">
                                                                 <div
                                                                     class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}
                                                                     :
@@ -537,8 +535,11 @@
                                                     </div>
 
                                                 </div>
+
                                             </div>
-                                            <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-20 ">
+
+
+                                            <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-16">
                                                 <div class="w-100 checkbox">
                                                     <div class="row mt-1">
                                                         <div class="col-10">
@@ -563,7 +564,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="w-100 mb-6"></div>
+                                                    <div class="w-100 mb-4"></div>
                                                     <div class="row">
                                                         <div class="col-10">
                                                             <div class="position-relative">
@@ -578,19 +579,22 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+
                                             <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-recipient pr-xl-18">
                                                 <div class="w-100 checkbox">
+
+                                                    <h4>{{ trans('base.checkout_recipient') }}</h4>
+
                                                     <div class="row mt-1">
-
-                                                        <h4>{{ trans('base.checkout_recipient') }}</h4>
-
                                                         <div class="col-3 col-xxl-4">
                                                             <div class="position-relative">
-                                                                <input type="radio"
+                                                                <input data-accordion="recipient-1"
+                                                                       class="art-accordion-recipient"
+                                                                       type="radio"
                                                                        @if(!old('recipient_type_id') || (old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER)) checked
                                                                        @endif id="recipient-user"
                                                                        name="recipient_type_id"
-                                                                       class="custom-control-input"
                                                                        value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER }}"/>
                                                                 <label data-toggle="collapse"
                                                                        data-target="#collapse-self-recipient"
@@ -599,30 +603,26 @@
                                                         </div>
                                                         <div class="col-7 col-xxl-4">
                                                             <div class="position-relative">
-                                                                <input type="radio"
+                                                                <input data-accordion="recipient-2"
+                                                                       class="art-accordion-recipient"
+                                                                       type="radio"
                                                                        @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) checked
                                                                        @endif id="recipient-other"
                                                                        name="recipient_type_id"
-                                                                       class="custom-control-input"
                                                                        value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM }}"/>
                                                                 <label data-toggle="collapse"
                                                                        data-target="#collapse-custom-recipient"
                                                                        for="recipient-other">{{ trans('base.checkout_recipient_another_person') }}</label>
                                                             </div>
                                                         </div>
-                                                        <div class="col-2 offset-xxl-2">
-                                                            <div class="i-info ml-auto" data-toggle="tooltip"
-                                                                 title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
-                                                                <span class="icon-i-info"><span
-                                                                        class="path1"></span><span class="path2"></span></span>
-                                                            </div>
-                                                        </div>
+
                                                         <div class="w-100 mb-4"></div>
+
                                                         <div class="col-12" id="checkout-custom-recipient-accordion">
-                                                            <div id="collapse-custom-recipient"
-                                                                 class="collapse @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) show @endif"
+                                                            <div id="recipient-2"
+                                                                 class="accordion-recipient-data  @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) show @else art-hide @endif"
                                                                  data-parent="#checkout-custom-recipient-accordion">
-                                                                <div class="checkout-personal-data mb-6 mb-xl-0">
+                                                                <div class="checkout-personal-data mb-6 mb-xl-0 pt-5 pb-5">
                                                                     <div class="row mb-1">
                                                                         <div class="col-6">
                                                                             <div
@@ -697,11 +697,8 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div id="collapse-self-recipient" class="collapse"
-                                                                 data-parent="#checkout-custom-recipient-accordion">
-                                                            </div>
                                                         </div>
-                                                        <div class="w-100 mb-4"></div>
+
                                                         <div class="col">
                                                             <div
                                                                 class="delivery-title mb-4 d-none d-lg-block">{{ trans('base.checkout_order_comment') }}</div>
@@ -728,7 +725,7 @@
                                 <div id="checkout-order-info" class="checkout-order-info">
                                     <div class="checkout-order-info-form">
                                         <div class="total-info-top pt-4 pt-xl-6 px-lg-2 px-xl-5 pb-4 pb-xl-6  w-100">
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="d-flex align-items-center justify-content-between mb-4">
                                                 <div class="h4 art-total-info-title">{{ trans('base.checkout_my_order') }}</div>
                                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-edit p-0 m-0">
                                                     <div class="i-gear mr-2">
@@ -741,7 +738,7 @@
                                                 </a>
                                             </div>
 
-                                            <div class="checkout-order-list-product-descr art-checkout-order-list p-5 mb-6">
+                                            <div class="checkout-order-list-product-descr art-checkout-order-list mb-6">
                                                 <div class="row">
                                                     <div class="col checkout-product-list">
                                                         @foreach($productsInCart as $product)

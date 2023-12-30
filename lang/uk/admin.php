@@ -548,7 +548,7 @@ return [
     'show_as_image' => 'Відображати як картинку',
     'color_main_image' => 'Картинка для кольору',
     'delivery' => 'Доставка',
-    'about-us' => 'О нас',
+    'about-us' => 'Про нас',
     'settings_updated_success' => 'Налаштування успішно оновлені',
     'application_config' => 'Налаштування сайту',
     'faq_question' => 'Питання',

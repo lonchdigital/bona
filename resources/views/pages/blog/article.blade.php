@@ -64,11 +64,11 @@
                                     @endif
                                 @endforeach
 
-                                <div class="art-post-author">
+<!--                                <div class="art-post-author">
                                     <span class="post-author-label">{{ trans('base.author') }}</span>
                                     <span class="post-author-itself">{{ $blogArticle->creator->first_name . ' ' . $blogArticle->creator->last_name }}</span>
                                     <span class="post-author-status">{{ trans('base.door_expert') }}</span>
-                                </div>
+                                </div>-->
 
                             </div>
 
