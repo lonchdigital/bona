@@ -24,7 +24,7 @@
                                 <div class="checkout-order-data-form flex-column mb-10 mb-lg-20">
                                     @csrf
                                     @guest
-                                        <div class="row flex-column flex-lg-row">
+                                        <div class="row flex-column flex-lg-row mb-xl-8">
                                             <div class="col-12 order-lg-2">
                                                 <div class="h4 mb-4 d-none d-lg-block">{{ trans('base.personal_data') }}</div>
                                             </div>
@@ -102,7 +102,7 @@
                                     <div class="row">
                                         <div class="col">
 
-                                            <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-6 mt-xl-12 mt-xxl-26 mb-4 mb-lg14">
+                                            <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-6 mt-xxl-26 mb-4 mb-lg14">
                                                 <div class="checkout-delivery-accordion w-100 mt-1" id="checkout-delivery-accordion">
 
                                                     <h4>{{ trans('base.delivery') }}</h4>
