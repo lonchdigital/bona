@@ -8,8 +8,9 @@ use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Currency\CurrencyService;
 use App\Services\ProductCategory\CategoryService;
 use App\Services\HomePage\HomePageService;
-use App\Services\WishList\WishListService;
-use Dymantic\InstagramFeed\InstagramFeed;
+use App\Services\Brand\BrandService;
+/*use App\Services\WishList\WishListService;
+use Dymantic\InstagramFeed\InstagramFeed;*/
 
 class ShowHomePageAction extends BaseAction
 {
@@ -18,6 +19,7 @@ class ShowHomePageAction extends BaseAction
         HomePageService $homePageService,
 //        WishListService $wishListService,
         CurrencyService $currencyService,
+        BrandService $brandService,
         BlogArticleService $blogArticleService,
     )
     {
@@ -36,7 +38,7 @@ class ShowHomePageAction extends BaseAction
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),
             'slides' => $homePageService->getHomePageSlides(),
-//            'brands' => $homePageService->getHomePageBrands(),
+            'brands' => $brandService->getBrands(),
             'productTypes' => $homePageService->getProductTypes(),
             'homeNewProducts' => $homePageService->getHomePageNewProducts(),
             'homeBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),

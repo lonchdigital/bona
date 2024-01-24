@@ -230,6 +230,9 @@ select:focus {
 .art-products-owl-items.art-big-wrapper.owl-carousel .owl-wrapper-outer {
     padding-top: 40px;
 }
+.pt-none {
+    padding-top: 0;
+}
 /*
     ----------------------------------
     1.4 PopUp Call Measurer
@@ -1892,46 +1895,67 @@ section.art-services-blocks .row-block .history-desc .btn {
         padding-bottom: 46px;
     }
 }
+
+.art-blog-archive-wrapper {
+    display: flex;
+}
+
 .art-blog-wrapper {
     padding-top: 20px;
 }
 
 .art-post-archive-item {
+    background-color: #fff;
+    height: calc( 100% - 30px );
+
+    .image {
+
+    }
+
+    .entry-post {
+        padding: 10px 15px;
+        position: relative;
+
+        .preview-post-left {
+
+            .date-wrapper {
+
+                .date {
+                    padding: 0;
+                    border: none;
+                    background-color: #29201B;
+                    color: #fff;
+                    height: 50px;
+
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+        }
+
+        .preview-post-right {
+            margin-left: 18px;
+            margin-top: 2px;
+
+            .title {
+                margin-bottom: 9px;
+            }
+        }
+
+
+    }
+
+
 
 }
-.art-post-archive-item .image {
 
-}
 .blog .art-post-archive-item .entry-post {
     display: flex;
     padding: 20px 20px;
 }
-.art-post-archive-item .entry-post .preview-post-left {
-
-}
-.art-post-archive-item .entry-post .preview-post-left .date-wrapper {
-
-}
-.art-post-archive-item .entry-post .preview-post-left .date-wrapper .date {
-    padding: 0;
-    border: none;
-    background-color: #29201B;
-    color: #fff;
-    height: 50px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-.art-post-archive-item .entry-post .preview-post-right {
-    margin-left: 18px;
-    margin-top: 2px;
-}
-.art-post-archive-item .entry-post .preview-post-right .title {
-    margin-bottom: 9px;
-}
-
 
 
 /*

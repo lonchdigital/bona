@@ -33,7 +33,7 @@
 
                         // category
                         $category_options = [];
-                        $category_selected = 1;
+                        $category_selected = $categories[0]['id'];
                         if( $productType->has_category ) {
 
                             foreach ($categories as $category) {
@@ -73,6 +73,7 @@
                             $productType->fields[$key]->custom_options = $optionsArray;
                         }
                     @endphp
+
 
                     <product-page-edit-form
                         base-language="{{ $baseLanguage }}"

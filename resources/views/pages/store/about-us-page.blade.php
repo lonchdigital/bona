@@ -32,20 +32,11 @@
         </div>
     </section>
 
-
     <section class="art-brands-list">
         <div class="container">
             <div class="art-brands-owl-items">
                 @foreach( $brands as $brand )
-                    <div class="item">
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-by-brand.page', ['brand' => $brand]) }}">
-                            @if(!is_null($brand->logo_image_path))
-                                <img src="{{$brand->logo_image_url}}" alt="Brand logo">
-                            @else
-                                {{ $brand->name }}
-                            @endif
-                        </a>
-                    </div>
+                    @include('pages.store.partials.brand_item', ['brand' => $brand])
                 @endforeach
             </div>
         </div>

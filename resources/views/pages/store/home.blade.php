@@ -195,11 +195,8 @@
 
     @if(count($homeBestSalesProducts))
         <!-- ======================== Best Sales Products  ======================== -->
-
         <section class="products">
-
             <div class="container">
-
                 <header>
                     <div class="row">
                         <div class="col-12 text-center">
@@ -210,7 +207,6 @@
                         </div>
                     </div>
                 </header>
-
                 <div class="art-products-slider-wrapper">
                     <div class="art-products-owl-items">
                         @foreach($homeBestSalesProducts as $product)
@@ -221,12 +217,10 @@
                     </div>
                 </div> <!--/row-->
             </div> <!--/container-->
-
         </section>
     @endif
 
     <!-- ========================  Instagram ======================== -->
-
     <section class="instagram">
         <header>
             <div class="row">
@@ -407,8 +401,28 @@
     </section>
 
 
+    <!-- ======================== Our Partners ======================== -->
+    <section class="art-brands-list">
+        <div class="container">
+
+            <header>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="title h2">{{trans('base.our_partners')}}</h2>
+                    </div>
+                </div>
+            </header>
+
+            <div class="art-brands-owl-items mt-6">
+                @foreach( $brands as $brand )
+                    @include('pages.store.partials.brand_item', ['brand' => $brand])
+                @endforeach
+            </div>
+        </div>
+    </section>
+
     <!-- ======================== SEO ======================== -->
-    <section class="seo-section">
+    <section class="seo-section pt-none11">
         <div class="container">
 
             <header>
