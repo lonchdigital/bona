@@ -85,11 +85,11 @@ export default {
             type: Number,
             default: null,
         },
-        oldPriceInCurrency: {
+        oldPrice: {
             type: Number,
             default: null,
         },
-        priceInCurrency: {
+        price: {
             type: Number,
             default: null,
         },
@@ -203,9 +203,11 @@ export default {
         }
     },
     created() {
-        this.availabilityStatusArray = Object.values(this.availabilityStatusOptions); // преобразуем объект в массив
+        // this.availabilityStatusArray = Object.values(this.availabilityStatusOptions); // преобразуем объект в массив
     },
     mounted() {
+        console.log(this.availabilityStatusOptionsSelected);
+
         this.selectedLanguage = this.baseLanguage;
         this.productSlugData = this.productSlug;
 
@@ -246,13 +248,10 @@ export default {
         }
 
 
-        console.log(this.colorSelected);
-
         if( Array.isArray(this.colorSelected) ) {
             this.colorSelected.forEach((item, i) => {
                 if (item && item.hasOwnProperty('id') && item.hasOwnProperty('name')) {
                     this.selectedColorsShow.push({id: item.id, price: item.pivot.price});
-                    // this.colors.push({id: item.id, text: item.name[this.selectedLanguage]});
                 }
             });
         }
@@ -301,10 +300,8 @@ export default {
         },
         addAttribute(attribute) {
             if (Array.isArray(this.attributeOptions[attribute.id])) {
-                // console.log('it is an array !!!');
                 this.attributeOptions[attribute.id].push({});
             } else {
-                // console.log('it is NOT an array !!!');
                 this.attributeOptions[attribute.id] = [];
                 this.attributeOptions[attribute.id].push({});
             }
@@ -450,21 +447,21 @@ export default {
                         label="name"
                         value-prop="availability_status_id"
                         name="availability_status_id"
-                        :is-required="true"
+                        :is-required="false"
                         :errors="errors"
                     />
                 </div>
 
                 <!--SPECIAL OFFERS miss-->
 
-                <div class="form-group mb-3 art-form-group-hidden">
+                <div class="form-group mb-3">
                     <input-component
-                        :title="$t('admin.old_price_in_currency')"
+                        :title="$t('admin.old_price')"
                         :type="'number'"
-                        :name="'old_price_in_currency'"
-                        :model-value="oldPriceInCurrency"
+                        :name="'old_price'"
+                        :model-value="oldPrice"
                         :errors="errors"
-                        :is-required="true"
+                        :is-required="false"
                     />
                 </div>
 
@@ -472,8 +469,8 @@ export default {
                     <input-component
                         :title="$t('admin.price')"
                         :type="'number'"
-                        :name="'price_in_currency'"
-                        :model-value="priceInCurrency"
+                        :name="'price'"
+                        :model-value="price"
                         :errors="errors"
                         :is-required="true"
                     />
@@ -525,7 +522,7 @@ export default {
                         label="brand"
                         value-prop="brand_id"
                         name="brand_id"
-                        :is-required="true"
+                        :is-required="false"
                         :errors="errors"
                     />
                 </div>
@@ -537,17 +534,17 @@ export default {
                     </strong>
                 </p>
                 <div class="form-group mb-3 art-admin-repeater-four-width" v-if="!displayColor">
-<!--                    <select-component
-                        :is-multi-select="true"
-                        :model-value="selectedColorsShow"
-                        :title="$t('admin.product_colors')"
-                        :options="colors"
-                        label="text"
-                        value-prop="id"
-                        name="all_color_ids"
-                        :is-required="false"
-                        :errors="errors"
-                    />-->
+                    <!--                    <select-component
+                                            :is-multi-select="true"
+                                            :model-value="selectedColorsShow"
+                                            :title="$t('admin.product_colors')"
+                                            :options="colors"
+                                            label="text"
+                                            value-prop="id"
+                                            name="all_color_ids"
+                                            :is-required="false"
+                                            :errors="errors"
+                                        />-->
 
                     <select-color-component
                         v-for="(selectedColor, index) in selectedColorsShow"
@@ -574,7 +571,7 @@ export default {
                         :title="$t('admin.product_main_image') + ' ' + $t('admin.product_main_image_requirements')"
                         name="main_image"
                         image-deleted-name="'main_image[image_deleted]'"
-                        :is-required="true"
+                        :is-required="false"
                         :errors="errors"
                         :init-data="productMainImage"
                     />
@@ -588,13 +585,13 @@ export default {
 
                 <div class="form-group mb-3 art-admin-product-gallery">
                     <product-gallery-component
-                    v-for="(item, index) in gallery"
-                    :gallery-id="item.hasOwnProperty('id') ? item.id : null"
-                    :single-item="item"
-                    :index="index"
-                    :errors="errors"
-                    @delete-gallery-item="() => deleteGalleryItem(index)"
-                />
+                        v-for="(item, index) in gallery"
+                        :gallery-id="item.hasOwnProperty('id') ? item.id : null"
+                        :single-item="item"
+                        :index="index"
+                        :errors="errors"
+                        @delete-gallery-item="() => deleteGalleryItem(index)"
+                    />
                 </div>
                 <div class="row mb-3">
                     <div class="col">
@@ -609,7 +606,7 @@ export default {
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
                     :content="productText"
-                    :is-required="true"
+                    :is-required="false"
                     :errors="errors"
                 />
 

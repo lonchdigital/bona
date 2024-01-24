@@ -92,8 +92,10 @@ class Product extends Model implements Sitemapable
         return Attribute::make(function () {
             if ($this->main_image_path) {
                 return Storage::url($this->preview_image_path);
+            } else {
+                return '/assets/images/no-image.png';
             }
-            return null;
+//            return null;
         });
     }
 

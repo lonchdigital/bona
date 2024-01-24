@@ -51,50 +51,49 @@
                 <div class="row product-flex">
 
                     <div class="col col-md-7 art-single-product-gallery">
-
-                        <div class="">
-                            <div class="swiper-single-wallpaper-wrap d-flex">
-                                <div class="swiper-single-wallpaper mb-md-5">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
-                                                <img src="{{ $product->main_image_url }}" alt="img">
-                                            </a>
-                                        </div>
-                                        @foreach($productGallery as $image)
-                                            <div class="swiper-slide">
-                                                <a data-fancybox="single-wallpaper-gallery" href="{{ $image->gallery_image_url }}">
-                                                    <img src="{{ $image->gallery_image_url }}" alt="img">
-                                                </a>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    <div class="swiper-button-next"></div>
-                                    <div class="swiper-button-prev"></div>
-                                </div>
-                                <div class="swiper-pagination mt-5 d-sm-none"></div>
-                            </div>
-                            <div class="swiper-single-wallpaper-thumbs-wrap d-none d-sm-flex align-items-center mb-md-13">
-                                <div class="swiper-pagination mr-4 mr-xl-10"></div>
-                                <div class="art-single-wallpaper-thumbs-wrapper">
-                                    <div class="swiper-single-wallpaper-thumbs">
+                        @if( !is_null($product->main_image_url) )
+                            <div class="">
+                                <div class="swiper-single-wallpaper-wrap d-flex">
+                                    <div class="swiper-single-wallpaper mb-md-5">
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide">
-                                                <img src="{{ $product->main_image_url }}" alt="img">
+                                                <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
+                                                    <img src="{{ $product->main_image_url }}" alt="img">
+                                                </a>
                                             </div>
                                             @foreach($productGallery as $image)
                                                 <div class="swiper-slide">
-                                                    <img src="{{ $image->gallery_image_url }}" alt="img">
+                                                    <a data-fancybox="single-wallpaper-gallery" href="{{ $image->gallery_image_url }}">
+                                                        <img src="{{ $image->gallery_image_url }}" alt="img">
+                                                    </a>
                                                 </div>
                                             @endforeach
+                                        </div>
+                                        <div class="swiper-button-next"></div>
+                                        <div class="swiper-button-prev"></div>
+                                    </div>
+                                    <div class="swiper-pagination mt-5 d-sm-none"></div>
+                                </div>
+                                <div class="swiper-single-wallpaper-thumbs-wrap d-none d-sm-flex align-items-center mb-md-13">
+                                    <div class="swiper-pagination mr-4 mr-xl-10"></div>
+                                    <div class="art-single-wallpaper-thumbs-wrapper">
+                                        <div class="swiper-single-wallpaper-thumbs">
+                                            <div class="swiper-wrapper">
+                                                <div class="swiper-slide">
+                                                    <img src="{{ $product->main_image_url }}" alt="img">
+                                                </div>
+                                                @foreach($productGallery as $image)
+                                                    <div class="swiper-slide">
+                                                        <img src="{{ $image->gallery_image_url }}" alt="img">
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
+                        @endif
                     </div>
-
 
                     <div class="col-md-5 col-sm-12 product-flex-info">
                         <div class="clearfix">
@@ -125,20 +124,26 @@
                                     </div>
                                 @endforeach
 
-                                <div class="info-box font-two">
-                                    <span class="art-option-name">{{ trans('base.availability') }}</span>
-                                    @if ($product->availability_status_id == 1)
-                                        <span class="art-option-value check-square">
-                                            <i class="fa fa-check-square-o"></i>
-                                            {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
-                                        </span>
-                                    @elseif($product->availability_status_id == 3)
-                                        <span class="art-option-value">
-                                            <i class="fa fa-truck"></i>
-                                            {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
-                                        </span>
-                                    @endif
-                                </div>
+                                @if( $product->availability_status_id != 1 )
+                                    <div class="info-box font-two">
+                                        <span class="art-option-name">{{ trans('base.availability') }}</span>
+                                        @if ($product->availability_status_id == 2)
+                                            <span class="art-option-value check-square">
+                                                <i class="fa fa-check-square-o"></i>
+                                                {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
+                                            </span>
+                                        @elseif($product->availability_status_id == 3)
+                                            <span class="art-option-value">
+                                                {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
+                                            </span>
+                                        @elseif($product->availability_status_id == 4)
+                                            <span class="art-option-value">
+                                                <i class="fa fa-truck"></i>
+                                                {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                @endif
 
                                 @foreach($attributeOptions as $id => $allOptions)
                                     @foreach($allOptions as $name => $option)
@@ -252,8 +257,14 @@
 
                                 <div class="price">
                                     <div>
-                                        <span id="product-price" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
-                                        <span class="currency">{{ $baseCurrency->name_short }}</span>
+                                        @if($product->old_price > $product->price)
+                                            <span id="product-price" data-product-price="{{ $product->price }}" class="card-link-price--hot">{{ $product->price }} {{ $baseCurrency->name_short }} </span>
+                                            <span class="card-link-price--old">{{ $product->old_price }} {{ $baseCurrency->name_short }}</span>
+                                        @else
+                                            <span id="product-price" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
+                                            <span class="currency">{{ $baseCurrency->name_short }}</span>
+                                        @endif
+
                                     </div>
                                     <span class="product-cost-description font-two">{{trans('base.product_cost_description')}}</span>
                                 </div>
@@ -444,24 +455,7 @@
                     <div class="art-products-owl-items art-big-wrapper">
                         @foreach($sameTypeProducts as $product)
                             <div class="item">
-
-                                <div class="art-product-item">
-                                    <div class="art-product-data">
-                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="">
-                                            <div class="image">
-                                                <img src="{{ $product->preview_image_url }}" alt="">
-                                            </div>
-                                            <div class="text">
-                                                <h2 class="product-title">{{ $product->name }}</h2>
-                                                <span class="price-wrapper">
-                                                    <span class="price">{{ $product->price }}</span>
-                                                    <span class="currency">{{ $baseCurrency->name_short }}</span>
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-
+                                @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
                             </div>
                         @endforeach
                     </div>

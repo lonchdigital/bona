@@ -1,3 +1,12 @@
+#art-dialog-warning {
+    padding: 40px;
+
+    h2 {
+        margin: 0;
+    }
+}
+
+
 /*!
     ----------------------------------
 
@@ -229,6 +238,7 @@ select:focus {
 
 .art-popup-call-measurer {
     display: none;
+    //display: block;
     background-color: #191715;
     padding-top: 118px;
     padding-bottom: 118px;
@@ -372,58 +382,82 @@ select:focus {
 */
 .art-product-item {
     background-color: #fff;
-}
-.art-product-item .art-product-data {
-    -moz-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    -webkit-transition: all 0.3s;
-    transition: all 0.3s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    height: 100%;
-}
-.art-product-item .art-product-data:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-.art-product-item .art-product-data a {
-    display: block;
-    padding: 33px 33px 16px 33px;
-}
-.art-product-item .art-product-data a .image {
-    display: flex;
-    justify-content: center;
-}
-.art-product-item .art-product-data a .image img {
-    /*max-height: 374px;*/
-}
-.art-product-item .art-product-data a .text {
-    text-align: center;
-}
-.art-product-item .art-product-data a .text .product-title {
-    text-transform: unset;
-    font-size: 16px;
-    line-height: 29px;
-    font-weight: 400;
-    margin-bottom: 0;
-    margin-top: 13px;
-}
-.art-product-item .art-product-data a .text .price-wrapper {
-    font-size: 16px;
-    line-height: 29px;
-    display: inline-block;
-}
-.art-product-item .art-product-data a .text .price-wrapper .price {
-    font-weight: 600;
-}
-.art-product-item .art-product-data a .text .price-wrapper .currency {
 
+    .art-product-data {
+        -moz-transition: all 0.3s;
+        -o-transition: all 0.3s;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        height: 100%;
+
+        &:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        a {
+            display: block;
+            padding: 33px 33px 16px 33px;
+
+            .image {
+                display: flex;
+                justify-content: center;
+
+                img {
+                    /*max-height: 374px;*/
+                }
+            }
+
+            .text {
+                text-align: center;
+
+                .product-title {
+                    text-transform: unset;
+                    font-size: 16px;
+                    line-height: 29px;
+                    font-weight: 400;
+                    margin-bottom: 0;
+                    margin-top: 13px;
+                }
+
+                .price-wrapper {
+                    font-size: 16px;
+                    line-height: 29px;
+                    display: inline-block;
+
+                    .price {
+                        font-weight: 600;
+                    }
+
+                    .currency {
+
+                    }
+
+                    // if discount active
+                    .card-link-price--hot {
+                        color: #ff6662;
+                        font-weight: 600;
+                    }
+                    .card-link-price--old {
+                        font-size: 14px;
+                        font-weight: 400;
+                        text-decoration: line-through;
+                    }
+                }
+
+            }
+
+        }
+
+    }
 }
 
 
-/*
-    ----------------------------------
-    5. Contact Form Section
-    ----------------------------------
-*/
+    /*
+        ----------------------------------
+        5. Contact Form Section
+        ----------------------------------
+    */
 .art-contact-form-section {
     position: relative;
     background-attachment: fixed;
@@ -1054,22 +1088,39 @@ footer.art-site-footer .footer-bottom p {
 
 }
 
-.product .price {
-    margin-top: 14px;
+.product {
+
+    .price {
+        margin-top: 14px;
+
+        .product-cost-description {
+            font-size: 11px;
+        }
+
+        #product-price {
+            font-size: 26px;
+            font-weight: 600;
+            line-height: 26px;
+        }
+
+        .card-link-price--hot {
+            color: #ff6662;
+        }
+        .card-link-price--old {
+            font-size: 14px;
+            font-weight: 400;
+            text-decoration: line-through;
+        }
+
+        .currency {
+            font-size: 24px;
+            line-height: 26px;
+            margin-left: 2px;
+        }
+    }
+
 }
-.product .price .product-cost-description {
-    font-size: 11px;
-}
-.product .price #product-price {
-    font-size: 26px;
-    font-weight: 600;
-    line-height: 26px;
-}
-.product .price .currency {
-    font-size: 24px;
-    line-height: 26px;
-    margin-left: 2px;
-}
+
 
 .custom-control-number {
     width: 112px;

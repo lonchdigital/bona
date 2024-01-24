@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'not_chosen' => 'Не обрано',
     'admin_panel' => 'Адмін панель',
     'dashboard' => 'Головна',
     'shop' => 'Магазин',
@@ -155,8 +156,7 @@ return [
     'parent_sku' => 'Актикул базового товару',
     'sku' => 'Артикул',
     'price' => 'Ціна',
-    'old_price_in_currency' => 'Стара ціна у валюті',
-    'old_price_in_currency_description' => 'Залишити порожнім якщо знижки немає',
+    'old_price' => 'Стара ціна (Залишити порожнім якщо знижки немає)',
     'price_in_currency' => 'Ціна у валюті',
     'price_currency' => 'Валюта',
     'product_main_image' => 'Основне зображення',

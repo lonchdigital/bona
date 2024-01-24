@@ -66,8 +66,16 @@
 
 {{--<div class="page-loader"></div>--}}
 
-<div class="wrapper">
 
+
+<a href="" id="dialog-content-warning" data-fancybox data-src="#art-dialog-warning" style="display: none">Launch Dialog</a>
+<div id="art-dialog-warning" style="display: none">
+    <div class="">
+        <h2>Наразі сайт знаходиться у розробці</h2>
+    </div>
+</div>
+
+<div class="wrapper">
 
 
     <!-- ======================== Navigation ======================== -->
@@ -156,7 +164,7 @@
                         </div>
                     @endif
 
-                    <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
+                    <a href="" class="btn btn-main art-header-coll-button" id="testttt" data-fancybox data-src="#dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
 
                     <div id="dialog-call-measurer" class="art-popup-call-measurer">
                         <div class="art-measurer-form-wrapper">
