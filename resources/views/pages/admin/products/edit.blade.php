@@ -33,8 +33,9 @@
 
                         // category
                         $category_options = [];
-                        $category_selected = $categories[0]['id'];
+                        $category_selected = 1;
                         if( $productType->has_category ) {
+                            $category_selected = (is_array($categories)) ? $categories[0]['id']: 1;
 
                             foreach ($categories as $category) {
                                 if(isset($product) && $product->categories->contains('id', $category->id)) {
