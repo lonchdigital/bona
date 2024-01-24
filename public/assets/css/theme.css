@@ -2939,12 +2939,6 @@ nav .cart-wrapper.open {
     width: 100%;
 }
 
-.blog article .entry {
-    background-color: white;
-    padding: 10px 15px;
-    position: relative;
-}
-
 .blog article .entry.entry-table {
     display: table;
     width: 100%;
