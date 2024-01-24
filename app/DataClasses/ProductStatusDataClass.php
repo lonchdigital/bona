@@ -4,12 +4,18 @@ namespace App\DataClasses;
 
 class ProductStatusDataClass implements BaseDataClass
 {
-    const PRODUCT_STATUS_STOCK = 1;
-    const PRODUCT_STATUS_ORDER = 2;
-    const PRODUCT_STATUS_OUT_OF_STOCK = 3;
+    const PRODUCT_STATUS_NONE = 1;
+    const PRODUCT_STATUS_STOCK = 2;
+    const PRODUCT_STATUS_ORDER = 3;
+    const PRODUCT_STATUS_OUT_OF_STOCK = 4;
     public static function get(?int $item = null): mixed
     {
         $collection = collect([
+            [
+                'id' => self::PRODUCT_STATUS_NONE,
+                'name' => trans('admin.not_chosen'),
+                'trans_key' => 'admin.not_chosen',
+            ],
             [
                 'id' => self::PRODUCT_STATUS_STOCK,
                 'name' => trans('shop.product_status_stock'),

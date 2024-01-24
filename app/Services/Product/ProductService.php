@@ -236,14 +236,15 @@ class ProductService extends BaseService
         return $this->coverWithDBTransaction(function () use($productType, $request, $creator) {
 
             $productData = [
-                'is_active' => $request->isActive,
+                'is_active' => 0,
                 'creator_id' => $creator->id,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
                 'name' => $request->name,
                 'slug' => $request->slug,
-                'price' => $request->priceInCurrency,
-                'price_in_currency' => $request->priceInCurrency,
+                'old_price' => $request->oldPrice,
+                'price' => $request->price,
+//                'price_in_currency' => $request->priceInCurrency,
                 'price_currency_id' => $request->currencyId,
                 'availability_status_id' => $request->availabilityStatusId,
                 'country_id' => $request->countryId,
@@ -256,20 +257,23 @@ class ProductService extends BaseService
                 'special_offers' => $request->specialOfferIds,
             ];
 
-            if ($productType->has_color) {
+            // TODO: do we need main color when we have array of colors?
+            /*if ($productType->has_color) {
                 $productData['main_color_id'] = $request->colorId;
-            }
+            }*/
 
             if ($productType->has_brand) {
                 $productData['brand_id'] = $request->brandId;
             }
 
             //handle images
-            $previewImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_preview.jpg';
-            $mainImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_main.jpg';
+            if( !is_null($request->mainImage) ) {
+                $previewImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_preview.jpg';
+                $mainImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_main.jpg';
 
-            $productData['preview_image_path'] = $previewImagePath;
-            $productData['main_image_path'] = $mainImagePath;
+                $productData['preview_image_path'] = $previewImagePath;
+                $productData['main_image_path'] = $mainImagePath;
+            }
 
             if ($request->customFields && count($productType->fields)) {
                 $productData['custom_fields'] = $this->prepareCustomFieldsToSync($request->customFields);
@@ -305,8 +309,10 @@ class ProductService extends BaseService
                 $product->categories()->sync($request->categoryIds);
             }
 
-            $this->storePreviewImage($previewImagePath, $request->mainImage);
-            $this->storeProductImage($mainImagePath, $request->mainImage);
+            if( !is_null($request->mainImage) ) {
+                $this->storePreviewImage($previewImagePath, $request->mainImage);
+                $this->storeProductImage($mainImagePath, $request->mainImage);
+            }
 
             return ServiceActionResult::make(true, trans('admin.product_create_success'));
         });
@@ -324,14 +330,16 @@ class ProductService extends BaseService
             ProductSeoText::updateProductSeoText($product->id, $request->seoTitle, $request->seoText);
 
             $dataToUpdate = [
-                'is_active' => $request->isActive,
+//                'is_active' => $request->isActive,
+                'is_active' => 0,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
                 'sub_products' => $request->selectedSubProductsId,
                 'name' => $request->name,
                 'slug' => $request->slug,
-                'price' => $request->priceInCurrency,
-                'price_in_currency' => $request->priceInCurrency,
+                'old_price' => $request->oldPrice,
+                'price' => $request->price,
+//                'price_in_currency' => $request->priceInCurrency,
                 'price_currency_id' => $request->currencyId,
                 'availability_status_id' => $request->availabilityStatusId,
                 'meta_title' => $request->metaTitle,
@@ -343,9 +351,10 @@ class ProductService extends BaseService
                 'special_offers' => $request->specialOfferIds,
             ];
 
-            if ($productType->has_color) {
+            // TODO: do we need main color when we have array of colors?
+            /*if ($productType->has_color) {
                 $dataToUpdate['main_color_id'] = $request->colorId;
-            }
+            }*/
 
             if ($productType->has_brand) {
                 $dataToUpdate['brand_id'] = $request->brandId;
@@ -400,7 +409,9 @@ class ProductService extends BaseService
 
             //delete images
             foreach ($imagesToDelete as $imageToDelete) {
-                $this->deleteProductImage($imageToDelete);
+                if( !is_null($imageToDelete) ) {
+                    $this->deleteProductImage($imageToDelete);
+                }
             }
 
             return ServiceActionResult::make(true, trans('admin.product_edit_success'));
@@ -804,7 +815,9 @@ class ProductService extends BaseService
             $product->delete();
 
             foreach ($imagesToDelete as $imageToDelete) {
-                $this->deleteProductImage($imageToDelete);
+                if( !is_null($imageToDelete) ) {
+                    $this->deleteProductImage($imageToDelete);
+                }
             }
 
             return ServiceActionResult::make(true, trans('admin.product_delete_success'));

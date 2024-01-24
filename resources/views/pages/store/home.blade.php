@@ -180,24 +180,7 @@
                     <div class="art-products-owl-items">
                         @foreach($homeNewProducts as $product)
                             <div class="item">
-
-                                <div class="art-product-item">
-                                    <div class="art-product-data">
-                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->product->slug]) }}" class="">
-                                            <div class="image">
-                                                <img src="{{ $product->product->preview_image_url }}" alt="">
-                                            </div>
-                                            <div class="text">
-                                                <h2 class="product-title">{{ $product->product->name }}</h2>
-                                                <span class="price-wrapper">
-                                                <span class="price">{{ $product->product->price }}</span>
-                                                <span class="currency">{{ $baseCurrency->name_short }}</span>
-                                            </span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-
+                                @include('pages.store.partials.product_item', ['product' => $product->product, 'baseCurrency' => $baseCurrency])
                             </div>
                         @endforeach
                     </div>
@@ -232,23 +215,7 @@
                     <div class="art-products-owl-items">
                         @foreach($homeBestSalesProducts as $product)
                             <div class="item">
-
-                                <div class="art-product-item">
-                                    <div class="art-product-data">
-                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->product->slug]) }}" class="">
-                                            <div class="image">
-                                                <img src="{{ $product->product->preview_image_url }}" alt="">
-                                            </div>
-                                            <div class="text">
-                                                <h2 class="product-title">{{ $product->product->name }}</h2>
-                                                <span class="price-wrapper">
-                                                <span class="price">{{ $product->product->price }}</span>
-                                                <span class="currency">{{ $baseCurrency->name_short }}</span>
-                                            </span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
+                                @include('pages.store.partials.product_item', ['product' => $product->product, 'baseCurrency' => $baseCurrency])
                             </div>
                         @endforeach
                     </div>

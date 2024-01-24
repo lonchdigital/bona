@@ -163,22 +163,7 @@
 
                         <div class="art-product-list art-three-column">
                             @foreach($productsPaginated as $product)
-                                <div class="art-product-item">
-                                    <div class="art-product-data">
-                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="">
-                                            <div class="image">
-                                                <img src="{{ $product->preview_image_url }}" alt="">
-                                            </div>
-                                            <div class="text">
-                                                <h2 class="product-title">{{ $product->name }}</h2>
-                                                <span class="price-wrapper">
-                                        <span class="price">{{ $product->price }}</span>
-                                        <span class="currency">{{ $baseCurrency->name_short }}</span>
-                                    </span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
+                                @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
                             @endforeach
                         </div>
 

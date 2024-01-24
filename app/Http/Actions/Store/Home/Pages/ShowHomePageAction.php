@@ -30,7 +30,7 @@ class ShowHomePageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
 
-        $instagramFeed = InstagramFeed::for('{instFeed}');
+//        $instagramFeed = InstagramFeed::for('{instFeed}');
 
 
         return view('pages.store.home', [
@@ -45,7 +45,7 @@ class ShowHomePageAction extends BaseAction
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'articles' => $blogArticleService->getLatestArticles(3),
-            'instagramFeed' => $instagramFeed,
+            'instagramFeed' => [],
 
 //            'newProducts' => $homePageService->getNewProducts(),
 //            'wishListProducts' => $wishListService->getWishListProductsId($wishList),

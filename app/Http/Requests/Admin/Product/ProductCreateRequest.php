@@ -23,15 +23,9 @@ class ProductCreateRequest extends BaseRequest
 
     public function baseRules(): array
     {
-
         $rules = [
             'is_active' => [
                 'nullable',
-            ],
-            'name' => [
-                'required',
-                'array',
-                'min:1'
             ],
             'slug' => [
                 'required',
@@ -39,19 +33,16 @@ class ProductCreateRequest extends BaseRequest
                 'string',
             ],
             'meta_title' => [
-                'required',
+                'nullable',
                 'array',
-                'min:1'
             ],
             'meta_description' => [
-                'required',
+                'nullable',
                 'array',
-                'min:1'
             ],
             'meta_keywords' => [
-                'required',
+                'nullable',
                 'array',
-                'min:1'
             ],
             'availability_status_id' => [
                 'required',
@@ -74,7 +65,7 @@ class ProductCreateRequest extends BaseRequest
                 'nullable',
                 'numeric',
             ],*/
-            'price_in_currency' => [
+            'price' => [
                 'required',
                 'numeric',
             ],
@@ -102,19 +93,6 @@ class ProductCreateRequest extends BaseRequest
                 'nullable',
                 'exists:colors,id',
             ],
-            /*'gallery.*.*' => [
-                'nullable'
-            ],
-            'characteristics.*.id' => [
-                'nullable'
-            ],
-            'gallery.*.image' => [
-                'nullable'
-            ],*/
-            /*'country_id' => [
-                'required',
-                'exists:countries,id'
-            ],*/
             'length' => [
                 $this->productType->has_length ? 'required' : 'nullable',
                 'numeric',
@@ -235,7 +213,7 @@ class ProductCreateRequest extends BaseRequest
             ];
 
             $rules['product_text.' . $availableLanguage] = [
-                'required',
+                'nullable',
                 'string',
             ];
 
@@ -282,11 +260,11 @@ class ProductCreateRequest extends BaseRequest
     {
         $rules = $this->baseRules();
 
-        $rules['main_image' ] = [
+        /*$rules['main_image' ] = [
             'required',
             'image',
             'mimes:jpeg,png,jpg',
-        ];
+        ];*/
 
         return $rules;
     }
@@ -294,7 +272,7 @@ class ProductCreateRequest extends BaseRequest
     public function attributes(): array
     {
         $attributes = [
-            'is_active' => mb_strtolower(trans('admin.product_is_active')),
+//            'is_active' => mb_strtolower(trans('admin.product_is_active')),
             'slug' => mb_strtolower(trans('admin.slug')),
             'meta_title' => mb_strtolower(trans('admin.meta_title')),
             'meta_description' => mb_strtolower(trans('admin.meta_description')),
@@ -305,7 +283,6 @@ class ProductCreateRequest extends BaseRequest
             'sku' => mb_strtolower(trans('admin.sku')),
             'price' => mb_strtolower(trans('admin.price')),
             'old_price' => mb_strtolower(trans('admin.old_price')),
-            'price_in_currency' => mb_strtolower(trans('admin.price_in_currency')),
             'currency_id' => mb_strtolower(trans('admin.price_currency')),
             'country_id' => mb_strtolower(trans('admin.country')),
             'main_image' => mb_strtolower(trans('admin.product_main_image')),
@@ -335,7 +312,7 @@ class ProductCreateRequest extends BaseRequest
     public function toDTO(): EditProductDTO
     {
         return new EditProductDTO(
-            (bool) $this->input('is_active'),
+//            (bool) $this->input('is_active'),
             $this->input('name'),
             $this->input('slug'),
             $this->input('meta_title'),
@@ -345,7 +322,8 @@ class ProductCreateRequest extends BaseRequest
             $this->input('availability_status_id'),
             $this->input('special_offer_id') ? array_map('intval', $this->input('special_offer_id')) : null,
             $this->input('sku'),
-            $this->input('price_in_currency'),
+            $this->input('old_price'),
+            $this->input('price'),
             $this->input('currency_id'),
             $this->input('product_text'),
             $this->file('main_image'),
@@ -358,9 +336,9 @@ class ProductCreateRequest extends BaseRequest
             $this->input('brand_id'),
             $this->input('collection_id'),
             $this->input('category_ids'),
-            $this->input('color_id'),
+//            $this->input('color_id'),
             $this->input('all_color_ids'),
-//            explode(',', $this->input('all_color_ids')),
+    //            explode(',', $this->input('all_color_ids')),
             $this->input('custom_field'),
             $this->input('length'),
             $this->input('width'),

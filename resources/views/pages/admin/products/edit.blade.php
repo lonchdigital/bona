@@ -74,10 +74,6 @@
                         }
                     @endphp
 
-
-{{--                    @dd($productType->has_brand)--}}
-
-
                     <product-page-edit-form
                         base-language="{{ $baseLanguage }}"
                         :available-languages="{{ json_encode($availableLanguages) }}"
@@ -99,11 +95,11 @@
                         @endif
 
                         :availability-status-options="{{ json_encode( $availability_status_options ) }}"
-                        :availability-status-options-selected="{{ json_encode($availability_status_option_selected) }}"
+                        :availability-status-options-selected="{{ $availability_status_option_selected }}"
 
                         @if(isset($product))
-                            :old-price-in-currency="{{ number_format($product['old_price_in_currency'], 2, '.', '') }}"
-                            :price-in-currency="{{ json_encode($product['price_in_currency']) }}"
+                            :old-price="{{ number_format($product['old_price'], 2, '.', '') }}"
+                            :price="{{ json_encode($product['price']) }}"
                             :purchase-price-in-currency="{{ json_encode($product['purchase_price_in_currency']) }}"
                         @endif
 

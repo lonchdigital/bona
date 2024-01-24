@@ -1,6 +1,7 @@
 import 'bootstrap';
 import $ from 'jquery';
 import.meta.glob(['../../img/**']);
+import { Fancybox } from "@fancyapps/ui/dist/fancybox/fancybox.esm.js";
 
 import Burger from './common/burger';
 import ShowMenu from "./common/show-menu";
@@ -42,6 +43,14 @@ async function loadJsByPage()
 
         pages['./pages/' + pageToLoad + '.js']();
     }
+
+
+
+
+
+
+
+
 }
 
 async function init()

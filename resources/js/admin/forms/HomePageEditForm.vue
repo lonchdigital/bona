@@ -184,6 +184,8 @@ export default {
             this.selectedLanguage = newSelectedLanguage;
         },
         handleFormSubmit(errors) {
+            console.log('33333333333333333');
+            console.log(errors);
             this.errors = errors;
         },
         loadCollections(query) {
