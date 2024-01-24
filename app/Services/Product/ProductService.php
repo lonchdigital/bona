@@ -399,6 +399,7 @@ class ProductService extends BaseService
                 $product->categories()->sync($request->categoryIds);
             }
 
+
             //store images
             if ($mainImage) {
                 $this->storeProductImage($mainImage['path'], $mainImage['image']);
