@@ -56,7 +56,8 @@
                                                                      :values="isset($productField) ? $productField->getTranslations('field_size_name') : []"/>
                                     </div>
                                     <div id="field-type-option" style="display: none;">
-                                        <div class="row">
+                                        {{-- TODO: do we need multiselectable for options? --}}
+                                        <div class="row d-none">
                                             <div class="col-md-12">
                                                 <div class="custom-control custom-checkbox mb-3">
                                                     <input type="hidden" name="is_multiselectable" value="0">

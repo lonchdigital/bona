@@ -241,7 +241,7 @@
                                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'vhidni-dveri']) }}">{{ trans('base.vhidni_dveri') }}</a></li>
                                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'laminat']) }}">{{ trans('base.laminat') }}</a></li>
                                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'rozsuvni-dveri']) }}">{{ trans('base.rozsuvni_dveri') }}</a></li>
-                                    <li><a href="">Скляні перегородки</a></li>
+                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'cklyanni-peregorodky']) }}">{{ trans('base.cklyanni_peregorodky') }}</a></li>
                                     <li><a href="">Фурнітура</a></li>
                                 </ul>
                             </div>
@@ -289,7 +289,7 @@
                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'vhidni-dveri']) }}">{{ trans('base.vhidni_dveri') }}</a></li>
                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'laminat']) }}">{{ trans('base.laminat') }}</a></li>
                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'rozsuvni-dveri']) }}">{{ trans('base.rozsuvni_dveri') }}</a></li>
-                    <li><a href="">Скляні перегородки</a></li>
+                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'cklyanni-peregorodky']) }}">{{ trans('base.cklyanni_peregorodky') }}</a></li>
                     <li><a href="">Фурнітура</a></li>
                 </ul>
             </div> <!--/navigation-main-->
@@ -348,24 +348,28 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                                <div class="col-two">
-                                    <h5 class="art-footer-title">{{ trans('base.footer_address') }}</h5>
-                                    <div class="art-address-wrapper">
-                                        <span class="city">м. Київ</span>
-                                        <span class="phone">+380 (67) 953 44 44</span>
-                                        <span class="email">bona-doors@ukr.net</span>
+
+                                @if( !is_null($contactsFooter) )
+                                    <div class="col-two">
+                                        <h5 class="art-footer-title">{{ trans('base.footer_address') }}</h5>
+                                        <div class="art-address-wrapper">
+                                            <span class="city">{{ $contactsFooter['city_one'] }}</span>
+                                            <span class="phone">{{ $contactsFooter['phone_one'] }}</span>
+                                            <span class="email">{{ $contactsFooter['email_one'] }}</span>
+                                        </div>
+                                        <div class="art-address-wrapper">
+                                            <span class="city">{{ $contactsFooter['city_two'] }}</span>
+                                            <span class="phone">{{ $contactsFooter['phone_two'] }}</span>
+                                            <span class="email">{{ $contactsFooter['email_two'] }}</span>
+                                        </div>
+                                        <div class="art-address-wrapper">
+                                            <span class="city">{{ $contactsFooter['city_three'] }}</span>
+                                            <span class="phone">{{ $contactsFooter['phone_three'] }}</span>
+                                            <span class="email">{{ $contactsFooter['email_three'] }}</span>
+                                        </div>
                                     </div>
-                                    <div class="art-address-wrapper">
-                                        <span class="city">м. Київ</span>
-                                        <span class="phone">+380 (67) 953 44 44</span>
-                                        <span class="email">bona-doors@ukr.net</span>
-                                    </div>
-                                    <div class="art-address-wrapper">
-                                        <span class="city">м. Київ</span>
-                                        <span class="phone">+380 (67) 953 44 44</span>
-                                        <span class="email">bona-doors@ukr.net</span>
-                                    </div>
-                                </div>
+                                @endif
+
                             </div>
                         </div>
                     </div>

@@ -10,6 +10,7 @@
                     <h2 class="page-title">{{ trans('admin.product_new') }}</h2>
                 @endisset
 
+
                     @php
                         // availability status
                         $availability_status_options = [];
@@ -32,10 +33,9 @@
                         }
 
                         // category
-                        $category_options = [];
-                        $category_selected = 1;
                         if( $productType->has_category ) {
-                            $category_selected = (is_array($categories)) ? $categories[0]['id']: 1;
+                            $category_options = [];
+                            $category_selected = (isset($categories[0])) ? $categories[0]['id']: 1;
 
                             foreach ($categories as $category) {
                                 if(isset($product) && $product->categories->contains('id', $category->id)) {
@@ -43,7 +43,6 @@
                                 }
                                 $category_options[$category->id] = $category->name;
                             }
-
                         }
 
 
@@ -63,18 +62,33 @@
 
                         // custom options
                         foreach ($productType->fields as $key => $field) {
+
+                            // custom fields with images return array,
+                            // custom fields with NO images return number as string,
+                            if( isset($product) ) {
+                                $selectedFieldValue = $product->getCustomFieldValue($field->id);
+                                $selectedFieldValue = ( is_array($selectedFieldValue) ) ? $selectedFieldValue[0] : $selectedFieldValue;
+                            }
+
                             $optionsArray = [];
                             foreach ($field->options as $optionSingle) {
                                 $optionsArray[$optionSingle->id] = $optionSingle->name;
 
-                                if(isset($product) && $product->getCustomFieldValue($field->id) == $optionSingle->id) {
+                                if(isset($product) && $selectedFieldValue == $optionSingle->id) {
                                     $productType->fields[$key]->custom_options_selected = $optionSingle->id;
                                 }
                             }
                             $productType->fields[$key]->custom_options = $optionsArray;
                         }
+
+
                     @endphp
 
+{{--                    @dd($productType->fields[0]->options)--}}
+                    {{--@dd($productType->fields[0]->options)
+                    @dd($productType->fields[1]->options)--}}
+
+{{--                    @dd( $productType->fields[1]->options[1]->id, $product->getCustomFieldValue(46) )--}}
 
                     <product-page-edit-form
                         base-language="{{ $baseLanguage }}"
@@ -110,7 +124,7 @@
 
                         @if($productType->has_category)
                             :category-options="{{ json_encode( $category_options ) }}"
-                            :category-selected="{{ json_encode($category_selected) }}"
+                            :category-selected="{{ $category_selected }}"
                         @endif
 
                         @if($productType->has_brand)

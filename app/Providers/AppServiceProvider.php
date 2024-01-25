@@ -4,12 +4,13 @@ namespace App\Providers;
 
 use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\Application\ApplicationConfigService;
-use App\Services\Brand\BrandService;
 use App\Services\Cart\CartService;
 use App\Services\Locale\LocaleService;
-use App\Services\WishList\WishListService;
+//use App\Services\WishList\WishListService;
+//use App\Services\Brand\BrandService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use App\Services\Contacts\ContactsPageService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,8 +29,11 @@ class AppServiceProvider extends ServiceProvider
         ProductTypeService       $productTypeService,
         ApplicationConfigService $applicationService,
         CartService              $cartService,
-        BrandService             $brandService,
-        WishListService          $wishListService,
+        ContactsPageService      $contactsService
+
+        // TODO: remove WishListService and BrandService if we do not need them
+        //WishListService          $wishListService,
+        //BrandService             $brandService,
     ): void
     {
         view()->composer(
@@ -46,9 +50,10 @@ class AppServiceProvider extends ServiceProvider
             [
                 'layouts.store-main',
             ],
-            function ($view) use ($productTypeService) {
+            function ($view) use ($productTypeService, $contactsService) {
                 $view->with('productTypes', $productTypeService->getProductTypes());
                 $view->with('locationService', app()->make(LocaleService::class));
+                $view->with('contactsFooter', $contactsService->getContactsFooter());
             }
         );
 
@@ -68,7 +73,8 @@ class AppServiceProvider extends ServiceProvider
             }
         );
 
-        view()->composer([
+        // TODO: remove if we do not need it
+        /*view()->composer([
             'layouts.store-main',
         ], function ($view) use ($brandService, $wishListService) {
             $user = Auth::user();
@@ -81,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with('brands', $brandService->sortBrandsByFirstLetterByProductType($brandService->getBrands()));
             $view->with('wishlistEmpty', $isWishListEmpty);
-        });
+        });*/
 
         view()->composer(
             '*',

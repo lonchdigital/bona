@@ -123,7 +123,7 @@ class CategoryService extends BaseService
                 $countOfProducts = Product::whereHas('categories', function (Builder $query) use($category) {
                     return $query->where('category_id', $category->id);
                 })
-                    ->whereNull('parent_product_id')
+//                    ->whereNull('parent_product_id')
                     ->count();
 
                 $category->update([
