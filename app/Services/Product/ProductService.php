@@ -397,6 +397,7 @@ class ProductService extends BaseService
             //all categories
             if ($productType->has_category) {
                 $product->categories()->sync($request->categoryIds);
+//                $product->categories()->sync([19]);
             }
 
 
@@ -689,12 +690,12 @@ class ProductService extends BaseService
             foreach ( $allColors as $color ) {
                 $colorsToUpdate[$color['color_id']] = ['price' => $color['price']];
             }
-
             $product->colors()->sync($colorsToUpdate);
         } else {
             $product->colors()->sync([]);
         }
     }
+
 
     public function getProductGallery(int $id): Collection
     {

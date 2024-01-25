@@ -10,7 +10,7 @@
         '#' => 'contacts'
     ]" />
 
-    <section class="art-contacts-page-section">
+    <section class="art-contacts-page-section art-section-pd">
         <div class="container">
 
             <h1>{{ trans('base.contacts') }}</h1>

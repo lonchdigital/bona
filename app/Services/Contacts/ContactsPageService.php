@@ -38,8 +38,6 @@ class ContactsPageService extends BaseService
             ];
 
 
-
-
             if( !is_null($existingConfig)){
                 $existingConfig->update($dataToUpdate);
             } else {
@@ -54,5 +52,10 @@ class ContactsPageService extends BaseService
     public function getContactsConfig(): ?ContactConfig
     {
         return ContactConfig::first();
+    }
+
+    public function getContactsFooter()
+    {
+        return ContactConfig::select('city_one', 'phone_one', 'email_one', 'city_two', 'phone_two', 'email_two', 'city_three', 'phone_three', 'email_three')->first();
     }
 }

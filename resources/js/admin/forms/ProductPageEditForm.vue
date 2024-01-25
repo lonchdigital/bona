@@ -206,8 +206,6 @@ export default {
         // this.availabilityStatusArray = Object.values(this.availabilityStatusOptions); // преобразуем объект в массив
     },
     mounted() {
-        console.log(this.availabilityStatusOptionsSelected);
-
         this.selectedLanguage = this.baseLanguage;
         this.productSlugData = this.productSlug;
 
