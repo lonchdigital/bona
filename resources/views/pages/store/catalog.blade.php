@@ -107,7 +107,6 @@
 
 
                             @if($productType->has_color)
-
                                 <div class="filter-box filter-item--colors active"> {{-- archive-catalog-filter-left--}}
                                     <div class="title font-title">
                                         {{ trans('base.color') }}
@@ -147,9 +146,7 @@
                                             @endforeach
                                         </div>
                                     </div>
-
-                                </div> <!--/filter-box-->
-
+                                </div>
                             @endif
 
 
