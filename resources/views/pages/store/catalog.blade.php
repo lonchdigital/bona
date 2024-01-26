@@ -112,8 +112,7 @@
                                     <div class="title font-title">
                                         {{ trans('base.color') }}
                                     </div>
-
-                                    <div class="filter-content"> {{-- filter-item--type-custom--}}
+                                    <div class="filter-content">
                                         <div class="art-filter-color-content">
                                             @foreach($colors->whereNull('parent_color_id') as $color)
                                                 <div
