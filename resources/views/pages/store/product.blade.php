@@ -118,7 +118,7 @@
                                             @if ($customField->is_multiselectable)
                                                 <span class="art-option-value">{{ $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->pluck('name')->implode(', ') }}</span>
                                             @else
-                                                <span class="art-option-value">{{ $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->first()->name }}</span>
+                                                <span class="art-option-value">{{ optional( $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->first() )->name }}</span>
                                             @endif
                                         @endif
                                     </div>
@@ -299,56 +299,62 @@
 
                     <!-- === nav-tabs === -->
                     <div class="col-md-12">
-
                         <ul class="nav nav-tabs product-tabs-nav" role="tablist">
-                            <li role="presentation" class="active">
-                                <a href="#characteristics" aria-controls="characteristics" role="tab" data-toggle="tab">
-                                    <span>{{ trans('base.characteristics') }}</span>
-                                </a>
-                            </li>
-                            <li role="presentation">
-                                <a href="#open-systems" aria-controls="open-systems" role="tab" data-toggle="tab">
-                                    <span>{{ trans('base.open_systems') }}</span>
-                                </a>
-                            </li>
-                            <li role="presentation">
-                                <a href="#description" aria-controls="description" role="tab" data-toggle="tab">
-                                    <span>{{ trans('base.description') }}</span>
-                                </a>
-                            </li>
+                            @if( count( $characteristics ) > 0 )
+                                <li role="presentation" class="active">
+                                    <a href="#characteristics" aria-controls="characteristics" role="tab" data-toggle="tab">
+                                        <span>{{ trans('base.characteristics') }}</span>
+                                    </a>
+                                </li>
+                            @endif
+
+                            @if( count( $productVideos ) > 0 )
+                                <li role="presentation" class="{{ count($characteristics) == 0 ? 'active' : '' }}">
+                                    <a href="#open-systems" aria-controls="open-systems" role="tab" data-toggle="tab">
+                                        <span>{{ trans('base.open_systems') }}</span>
+                                    </a>
+                                </li>
+                            @endif
+
+                            @if( !is_null($productText['content']))
+                                <li role="presentation" class="{{ (count($characteristics) == 0 && count($productVideos) == 0) ? 'active' : '' }}">
+                                    <a href="#description" aria-controls="description" role="tab" data-toggle="tab">
+                                        <span>{{ trans('base.description') }}</span>
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
 
                         <!-- === tab-panes === -->
                         <div class="tab-content">
 
-                            <div role="tabpanel" class="tab-pane active" id="characteristics">
-                                <div class="content">
-
-                                    <h3>{{ trans('base.characteristics') }}</h3>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="art-product-characteristics">
-                                                @foreach($characteristics as $characteristic)
-                                                    <div class="art-characteristic-line">
-                                                        <span class="art-characteristic-name">{{ $characteristic['name'] }}</span>
-                                                        <span class="art-characteristic-value">{{ $characteristic['value'] }}</span>
-                                                    </div>
-                                                @endforeach
+                            @if( count( $characteristics ) > 0 )
+                                <div role="tabpanel" class="tab-pane active" id="characteristics">
+                                    <div class="content">
+                                        <h3>{{ trans('base.characteristics') }}</h3>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="art-product-characteristics">
+                                                    @foreach($characteristics as $characteristic)
+                                                        <div class="art-characteristic-line">
+                                                            <span class="art-characteristic-name">{{ $characteristic['name'] }}</span>
+                                                            <span class="art-characteristic-value">{{ $characteristic['value'] }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
                                         </div>
-                                    </div> <!--/row-->
+                                    </div>
+                                </div>
+                            @endif
 
-                                </div> <!--/content-->
-                            </div> <!--/tab-pane-->
-
-                            <div role="tabpanel" class="tab-pane" id="open-systems">
-                                <div class="content">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="art-product-video">
-                                                <h3>{{ trans('base.open_systems') }}</h3>
-
-                                                @if($productVideos)
+                            @if( count( $productVideos ) > 0 )
+                                <div role="tabpanel" class="tab-pane {{ count($characteristics) == 0 ? 'active' : '' }}" id="open-systems">
+                                    <div class="content">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="art-product-video">
+                                                    <h3>{{ trans('base.open_systems') }}</h3>
                                                     <ul class="nav nav-tabs art-product-video-tabs" role="tablist">
                                                         @foreach($productVideos as $item)
                                                             <li role="presentation" class="{{ $loop->first ? 'active' : '' }}">
@@ -363,30 +369,26 @@
                                                             {!! $item->iframe !!}
                                                         </div>
                                                     @endforeach
-                                                @endif
+                                                </div>
+                                            </div>
+                                        </div> <!--/row-->
+                                    </div> <!--/content-->
+                                </div> <!--/tab-pane-->
+                            @endif
 
+                            @if( !is_null($productText['content']))
+                                <div role="tabpanel" class="tab-pane {{ (count($characteristics) == 0 && count($productVideos) == 0) ? 'active' : '' }}" id="description">
+                                    <div class="content">
+                                        <h3>{{ trans('base.description') }}</h3>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                {!! $productText['content'] !!}
                                             </div>
                                         </div>
-                                    </div> <!--/row-->
-                                </div> <!--/content-->
-                            </div> <!--/tab-pane-->
+                                    </div>
+                                </div>
+                            @endif
 
-                            <div role="tabpanel" class="tab-pane" id="description">
-
-                                <!-- ============ ratings ============ -->
-
-                                <div class="content">
-                                    <h3>{{ trans('base.description') }}</h3>
-
-                                    <div class="row">
-
-                                        <div class="col-md-12">
-                                            {!! $productText['content'] !!}
-                                        </div>
-
-                                    </div> <!--/row-->
-                                </div> <!--/content-->
-                            </div> <!--/tab-pane-->
                         </div> <!--/tab-content-->
 
 

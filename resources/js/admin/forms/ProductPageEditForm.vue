@@ -637,7 +637,7 @@ export default {
 
                 <p class="mt-4">
                     <strong>
-                        {{ $t('admin.product_videos') }}
+                        {{ $t('admin.opening_systems') }}
                     </strong>
                 </p>
 

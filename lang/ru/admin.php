@@ -439,6 +439,7 @@ return [
     'characteristic_name' => 'Название характеристики',
     'characteristic_value' => 'Знчение характеристики',
     'product_videos' => 'Видео для товара',
+    'opening_systems' => 'Системы открывания',
     'add_question' => 'Добавить вопрос',
     'delete_question' => 'Удалить вопрос',
     'blog_article_block_question' => 'Вопрос',
