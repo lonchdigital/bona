@@ -21,43 +21,30 @@
 
 @section('content')
 
-    <!-- ======================== Main header ======================== -->
-    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/catalog-header-bg.png') }})">
-        <header>
-            <div class="container">
-                <h1 class="h2 title">{{$brand->name}}</h1>
-                <ol class="breadcrumb breadcrumb-inverted">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
-                    <li><a class="active" href="">{{$brand->name}}</a></li>
-                </ol>
-            </div>
-        </header>
-    </section>
+    @include('pages.store.partials.page_header', ['links' => ['own' => $brand->name]])
 
 
     <!-- ======================== Products ======================== -->
-    <section class="products">
+    <section class="products art-section-pd">
         <div class="container">
 
-            <header>
-                <h3 class="h3 title">{{ trans('base.brands_products') . ' ' . $brand->name }}</h3>
-            </header>
 
             <div class="row">
+                <header class=" col-12 art-header-left">
+                    <div>
+                        <h2 class="title">{{ trans('base.brands_products') . ' ' . $brand->name }}</h2>
+                    </div>
+                </header>
+            </div>
 
-                <!-- === product-filters === -->
-
-
-                <!--product items-->
-
+            <div class="row">
                 <div class="col-md-12 col-xs-12">
 
-                    <div class="art-product-list art-four-column">
+                    <div class="art-product-list art-product-filtered-by-brand art-four-column">
                         @foreach($productsPaginated as $product)
                             @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
                         @endforeach
                     </div>
-
 
                     <!--Pagination-->
                 {{ $productsPaginated->links('pagination.common') }}

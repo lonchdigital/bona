@@ -39,6 +39,10 @@ class ApplicationConfigsEditRequest extends BaseRequest
             'nullable',
             'string'
         ];
+        $rules['facebook'] = [
+            'nullable',
+            'string'
+        ];
         $rules['phone_one'] = [
             'nullable',
             'string'
@@ -65,6 +69,7 @@ class ApplicationConfigsEditRequest extends BaseRequest
     public function attributes(): array
     {
         $attributes = [];
+        // TODO: clean this up
         /*$attributes = [
             'sections.*.image' => mb_strtolower(trans('admin.slide_image')),
         ];
@@ -96,6 +101,7 @@ class ApplicationConfigsEditRequest extends BaseRequest
             $this->input('instagram'),
             $this->input('telegram'),
             $this->input('viber'),
+            $this->input('facebook'),
             $this->input('phone_one'),
         );
     }

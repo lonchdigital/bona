@@ -51,7 +51,11 @@ export default {
             type: String,
             default: '',
         },
-        whatsapp: {
+        viber: {
+            type: String,
+            default: '',
+        },
+        facebook: {
             type: String,
             default: '',
         },
@@ -152,7 +156,17 @@ export default {
                     <input-component
                         title="Viber"
                         name="viber"
-                        :model-value="whatsapp"
+                        :model-value="viber"
+                        :errors="errors"
+                        :is-required="false"
+                    />
+                </div>
+
+                <div class="form-group mb-3">
+                    <input-component
+                        title="Facebook"
+                        name="facebook"
+                        :model-value="facebook"
                         :errors="errors"
                         :is-required="false"
                     />

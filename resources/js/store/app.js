@@ -10,6 +10,7 @@ import InputCounter from './common/input-counter';
 import AnimateScroll from './common/animate-scroll';
 import WishList from './common/wish-list';
 import Cart from './common/cart';
+import CommonEmails from './common/common-emails';
 import PopUps from './common/pop-ups';
 import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
@@ -37,18 +38,12 @@ async function loadJsByPage()
 
     if (pages['./pages/' + pageToLoad + '.js']) {
 
-        console.log('===');
+        /*console.log('===');
         console.log('./pages/' + pageToLoad + '.js');
-        console.log('===');
+        console.log('===');*/
 
         pages['./pages/' + pageToLoad + '.js']();
     }
-
-
-
-
-
-
 
 
 }
@@ -63,6 +58,7 @@ async function init()
         ShowMenu.init(),
         WishList.init(),
         Cart.init(),
+        CommonEmails.init(),
         PopUps.init(),
         AjaxSearchProducts.init(),
         ShowRoomVisitModal.init()

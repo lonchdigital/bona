@@ -51,7 +51,11 @@
                         @endif
 
                         @if(array_key_exists('viber', $applicationConfig))
-                            :whatsapp="{{ json_encode($applicationConfig['viber']) }}"
+                            :viber="{{ json_encode($applicationConfig['viber']) }}"
+                        @endif
+
+                        @if(array_key_exists('facebook', $applicationConfig))
+                            :facebook="{{ json_encode($applicationConfig['facebook']) }}"
                         @endif
 
                         @if(array_key_exists('phoneOne', $applicationConfig))

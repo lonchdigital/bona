@@ -7,11 +7,7 @@
 
 @section('content')
 
-    <x-header-component :data="[
-        '#' => 'cart'
-    ]" />
-
-
+    @include('pages.store.partials.page_header', ['links' => ['#' => 'cart']])
 
     <main id="page-cart" class="page-cart">
         <div class="content">

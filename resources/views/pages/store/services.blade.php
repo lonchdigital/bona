@@ -6,9 +6,7 @@
 
 @section('content')
 
-    <x-header-component :data="[
-        '#' => 'services'
-    ]" />
+    @include('pages.store.partials.page_header', ['links' => ['#' => 'services']])
 
     <div class="common-page-section-wrapper">
         @foreach( $sections as $section )

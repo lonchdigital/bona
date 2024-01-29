@@ -1,3 +1,6 @@
+.navbar-brand .main-logo-admin {
+    width: 215px;
+}
 
 .card .card-header.sticky .nav,
 .card-header-wrapper .card-header.sticky .nav {
@@ -40,4 +43,3 @@
 .art-multiselect-height .multiselect .multiselect-wrapper {
     height: unset;
 }
-
