@@ -146,6 +146,7 @@ $optionalLanguageRoutes = function () {
     Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);
     Route::name('store.catalog-by-brand.page')->get('/catalog/brand/{brand}/', ShowProductByBrandPageAction::class);
 
+
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
 //    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
 
