@@ -57,7 +57,7 @@
             <!-- nav bar -->
             <div class="w-100 mb-4 d-flex">
                 <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="{{ route('admin.dashboard.page') }}">
-                    <img src="{{ asset('storage/logo/logo-dark.svg') }}" alt="logo">
+                    <img class="main-logo-admin" src="{{ asset('storage/logo/logo-dark.jpg') }}" alt="logo">
                 </a>
             </div>
             <ul class="navbar-nav flex-fill w-100 mb-2">

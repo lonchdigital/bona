@@ -1989,7 +1989,7 @@ nav .cart-wrapper.open {
     ----------------------------------
 */
 .products {
-    background-color: #eeeeee;
+    /*background-color: #eeeeee;*/
 }
 .products.art-products-catalog {
     padding-top: 0;
@@ -2557,10 +2557,10 @@ nav .cart-wrapper.open {
     display: block;
     float: left;
     position: relative;
-    width: 25px;
-    height: 25px;
+    width: 26px;
+    height: 26px;
     background-color: #f8f8f8;
-    border: 2px solid transparent;
+    /*border: 2px solid transparent;*/
     margin-right: 10px;
     text-align: center;
     font-size: 10px;

@@ -16,6 +16,9 @@ const routes = {
         promo_code_add_route: '{{ route('store.cart.add-promo-code') }}',
         summary_with_delivery_route: '{{ route('store.cart.summary-with-delivery') }}',
     },
+    email: {
+        user_choose_doors_route: '{{ route('store.choose.doors') }}',
+    },
     emailSubscription: {
         email_subscription_subscribe: '{{ route('email-subscription.subscribe') }}',
     },

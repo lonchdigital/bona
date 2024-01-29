@@ -28,22 +28,10 @@
 
 @section('content')
 
-
-    <!-- ======================== Page header ======================== -->
-    <section class="main-header" style="background-image:url({{ asset('storage/bg-images/header-bg.png') }})"></section>
-    <header class="art-page-header">
-        <div class="container">
-            <ol class="breadcrumb breadcrumb-inverted font-two">
-                <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a></li>
-                <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $product->productType->slug]) }}">{{ $product->productType->name }}</a></li>
-                <li><span class="active">{{ $product->name }}</span></li>
-            </ol>
-        </div>
-    </header>
+    @include('pages.store.partials.page_header', ['links' => [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $product->productType->slug]) => $product->productType->name, 'own' => $product->name]])
 
 
     <!-- ========================  Product ======================== -->
-
     <section class="product">
 
         <div class="main">

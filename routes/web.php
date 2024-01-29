@@ -67,6 +67,7 @@ use App\Http\Middleware\AuthenticatedOnly;
 use App\Http\Middleware\NotAuthenticatedOnly;
 use App\Services\Application\ApplicationConfigService;
 use Illuminate\Support\Facades\Route;
+use App\Http\Actions\Store\Mail\UserChooseDoorsAction;
 
 /*
 |--------------------------------------------------------------------------
@@ -145,6 +146,9 @@ $optionalLanguageRoutes = function () {
     Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);
     Route::name('store.catalog-by-brand.page')->get('/catalog/brand/{brand}/', ShowProductByBrandPageAction::class);
 
+    Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
+//    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
+
 
     Route::prefix('catalog/{productTypeSlug}')->group(function() {
         Route::name('store.catalog.page')->get('/', ShowCatalogPageAction::class);
@@ -206,7 +210,6 @@ $optionalLanguageRoutes = function () {
         Route::name('store.brands.list.page')->get('/list/{letter?}', ShowBrandsListPageAction::class);
         Route::name('store.brand.search.page')->get('/search', ShowBrandSearchPageAction::class);
         Route::name('store.brand.page')->get('/{brandSlug}', ShowBrandPageAction::class);
-
     });
 
 

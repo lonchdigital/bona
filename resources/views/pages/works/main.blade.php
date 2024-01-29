@@ -6,10 +6,7 @@
 
 @section('content')
 
-    <x-header-component :data="[
-        '#' => 'our_works'
-    ]" />
-
+    @include('pages.store.partials.page_header', ['links' => ['#' => 'our_works']])
 
     <!-- ========================  Works ======================== -->
     <section class="blog art-section-pd">

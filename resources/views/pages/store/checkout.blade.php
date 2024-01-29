@@ -6,10 +6,7 @@
 
 @section('content')
 
-
-    <x-header-component :data="[
-        '#' => 'checkout'
-    ]" />
+    @include('pages.store.partials.page_header', ['links' => ['#' => 'checkout']])
 
     <main id="checkout" class="checkout">
         <div class="content">
