@@ -66,8 +66,6 @@
 
 {{--<div class="page-loader"></div>--}}
 
-
-
 <a href="" id="dialog-content-warning" data-fancybox data-src="#art-dialog-warning" style="display: none">Launch Dialog</a>
 <div id="art-dialog-warning" style="display: none">
     <div class="">
@@ -83,7 +81,6 @@
 </div>
 
 <div class="wrapper">
-
 
     <!-- ======================== Navigation ======================== -->
     <nav class="main-website-header">
