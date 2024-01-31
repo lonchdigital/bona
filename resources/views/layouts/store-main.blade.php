@@ -88,7 +88,6 @@
         <div class="container">
 
             <div class="navigation navigation-top">
-
                 <div class="navigation-left-side">
                     <ul>
                         <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{trans('base.about_us')}}</a></li>
