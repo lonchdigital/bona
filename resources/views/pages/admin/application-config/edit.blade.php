@@ -25,7 +25,8 @@
                     </div>
                 @endif
 
-{{--                @dd($applicationConfig['footerText'])--}}
+
+{{--                @dd($applicationConfig)--}}
 
                 <application-configs-page-edit-form
                     base-language="{{ $baseLanguage }}"
