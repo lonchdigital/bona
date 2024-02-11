@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin\ApplicationConfigs;
 
 use App\Http\Requests\BaseRequest;
-use App\Models\HomePageConfig;
-use App\Rules\RequiredImageDeletedRule;
 use App\Services\Application\DTO\ApplicationConfigEditDTO;
 
 class ApplicationConfigsEditRequest extends BaseRequest
@@ -48,20 +46,12 @@ class ApplicationConfigsEditRequest extends BaseRequest
             'string'
         ];
 
-        /*foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['title.' . $availableLanguage] = [
+        foreach ($this->availableLanguages as $availableLanguage) {
+            $rules['footer_text.' . $availableLanguage] = [
                 'nullable',
                 'string'
             ];
-            $rules['description.' . $availableLanguage] = [
-                'nullable',
-                'string'
-            ];
-            $rules['button_text.' . $availableLanguage] = [
-                'nullable',
-                'string'
-            ];
-        }*/
+        }
 
         return  $rules;
     }
@@ -69,24 +59,6 @@ class ApplicationConfigsEditRequest extends BaseRequest
     public function attributes(): array
     {
         $attributes = [];
-        // TODO: clean this up
-        /*$attributes = [
-            'sections.*.image' => mb_strtolower(trans('admin.slide_image')),
-        ];
-
-        if ($this->input('sections')) {
-            foreach ($this->input('sections') as $index => $slide) {
-                $attributes['sections.' . $index . '.image'] = mb_strtolower(trans('admin.slide_image'));
-
-                $attributes['sections.' . $index . '.button_url'] = mb_strtolower(trans('admin.slide_text_link'));
-            }
-        }
-
-        foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['sections.*.title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_title'), $availableLanguage);
-            $attributes['sections.*.description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_description'), $availableLanguage);
-            $attributes['sections.*.button_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_text_button'), $availableLanguage);
-        }*/
 
         return $attributes;
     }
@@ -103,6 +75,7 @@ class ApplicationConfigsEditRequest extends BaseRequest
             $this->input('viber'),
             $this->input('facebook'),
             $this->input('phone_one'),
+            $this->input('footer_text'),
         );
     }
 }

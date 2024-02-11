@@ -25,7 +25,7 @@
                     </div>
                 @endif
 
-{{--                @dd($applicationConfig)--}}
+{{--                @dd($applicationConfig['footerText'])--}}
 
                 <application-configs-page-edit-form
                     base-language="{{ $baseLanguage }}"
@@ -61,12 +61,11 @@
                         @if(array_key_exists('phoneOne', $applicationConfig))
                             :phone-one="{{ json_encode($applicationConfig['phoneOne']) }}"
                         @endif
-                    @endif
-                    {{--
-                        @if(!empty($aboutUsConfig->image))
 
+                        @if(array_key_exists('footerText', $applicationConfig))
+                            :footer-text="{{ json_encode($applicationConfig['footerText']) }}"
                         @endif
-                    @endif--}}
+                    @endif
                 />
 
             </div>
