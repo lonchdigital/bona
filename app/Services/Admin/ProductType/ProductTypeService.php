@@ -29,6 +29,11 @@ class ProductTypeService extends BaseService
         return ProductType::get();
     }
 
+    public function getSortedProductTypes(): Collection
+    {
+        return ProductType::where('sort_order', '>', 0)->orderBy('sort_order')->get();
+    }
+
     public function getProductTypesWithAllData(): Collection
     {
         $productTypes = ProductType::get();

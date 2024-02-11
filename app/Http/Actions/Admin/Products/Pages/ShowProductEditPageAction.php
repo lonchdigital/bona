@@ -32,9 +32,6 @@ class ShowProductEditPageAction
             abort(404);
         }
 
-
-//        dd($productsService->getSelectedSubItems($product->id));
-
         return view('pages.admin.products.edit', [
             'productType' => $productType,
             'product' => $product,
@@ -46,7 +43,6 @@ class ShowProductEditPageAction
             'brands' => $brandService->getBrands(),
             'colors' => $colorService->getColors(),
             'countries' => $countryService->getCountries(),
-//            'subProducts' => $productsService->getSubProducts(13),
             'subProducts' => $productsService->getSelectedSubItems(json_decode($product->sub_products)),
             'productText' => $productsService->getProductText($product->id),
             'characteristics' => $productsService->getProductCharacteristics($product->id),

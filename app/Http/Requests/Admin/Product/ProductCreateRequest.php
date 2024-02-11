@@ -131,9 +131,9 @@ class ProductCreateRequest extends BaseRequest
         }*/
 
         if ($this->productType->has_category) {
-            $rules['category_ids'] = [
+            $rules['category_ids.*'] = [
                 'required',
-                'array',
+//                'array',
                 'exists:categories,id',
             ];
         }
@@ -289,6 +289,7 @@ class ProductCreateRequest extends BaseRequest
             'brand_id' => mb_strtolower(trans('admin.brand')),
             'collection_id' => mb_strtolower(trans('admin.collection')),
             'category_id' => mb_strtolower(trans('admin.category')),
+            'category_ids.*' => mb_strtolower(trans('admin.category')),
             'color_id' => mb_strtolower(trans('admin.color')),
             'all_color_ids' => mb_strtolower(trans('admin.all_colors')),
         ];

@@ -132,9 +132,13 @@
                                                         </td>
                                                         <td>{{ $product->id }}</td>
                                                         <td><strong>{{ $product->sku }}</strong></td>
-                                                        <td><strong>{{ $product->name }}</strong></td>
+                                                        <td><a href="{{ route('admin.product.edit.page', ['productType' => $productType->id, 'product' => $product->id]) }}"><strong>{{ $product->name }}</strong></a></td>
                                                         @if( $productType->has_category )
-                                                            <td><strong>{{ $product->categories[0]->name }}</strong></td>
+                                                            @if(count($product->categories) >= 1)
+                                                                <td><strong>{{ $product->categories[0]->name }}</strong></td>
+                                                            @else
+                                                                <td>-</td>
+                                                            @endif
                                                         @endif
 {{--                                                        <td><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="3" fill="{{ $product->color->hex }}"></rect></svg></span> {{ $product->color->name }}</td>--}}
 {{--                                                        <td>{{ $product->brand->name }}</td>--}}
