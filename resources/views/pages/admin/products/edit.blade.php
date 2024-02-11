@@ -10,7 +10,7 @@
                     <h2 class="page-title">{{ trans('admin.product_new') }}</h2>
                 @endisset
 
-
+                    {{-- TODO: I have to clean this --}}
                     @php
                         // availability status
                         $availability_status_options = [];
@@ -123,11 +123,13 @@
                         :currency-selected="{{ json_encode($currency_selected) }}"
 
                         @if($productType->has_category)
+                            :category-display="{{ $productType->has_category }}"
                             :category-options="{{ json_encode( $category_options ) }}"
                             :category-selected="{{ $category_selected }}"
                         @endif
 
                         @if($productType->has_brand)
+                            :brand-display="{{ $productType->has_brand }}"
                             :brand-options="{{ json_encode( $brand_options ) }}"
                             :brand-selected="{{ json_encode($brand_selected) }}"
                         @endif

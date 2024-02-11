@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
                 'layouts.store-main',
             ],
             function ($view) use ($productTypeService, $contactsService) {
-                $view->with('productTypes', $productTypeService->getProductTypes());
+                $view->with('productTypes', $productTypeService->getSortedProductTypes());
                 $view->with('locationService', app()->make(LocaleService::class));
                 $view->with('contactsFooter', $contactsService->getContactsFooter());
             }

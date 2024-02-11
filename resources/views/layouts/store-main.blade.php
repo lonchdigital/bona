@@ -266,13 +266,9 @@
                             </div>
                             <div class="art-list-items d-none" data-id="art-nav">
                                 <ul>
-                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'mizkimnatni-dveri']) }}">{{ trans('base.mizkimnatni_dveri') }}</a></li>
-                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'pryhovani-dveri']) }}">{{ trans('base.pryhovani_dveri') }}</a></li>
-                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'vhidni-dveri']) }}">{{ trans('base.vhidni_dveri') }}</a></li>
-                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'laminat']) }}">{{ trans('base.laminat') }}</a></li>
-                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'rozsuvni-dveri']) }}">{{ trans('base.rozsuvni_dveri') }}</a></li>
-                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'cklyanni-peregorodky']) }}">{{ trans('base.cklyanni_peregorodky') }}</a></li>
-                                    <li><a href="">Фурнітура</a></li>
+                                    @foreach($productTypes as $productType)
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -307,20 +303,14 @@
                     </div>
                 </div>
 
-
             </div>
 
             <!-- ==========  Main navigation ========== -->
-
             <div class="navigation navigation-main">
                 <ul class="main-menu-container">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'mizkimnatni-dveri']) }}">{{ trans('base.mizkimnatni_dveri') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'pryhovani-dveri']) }}">{{ trans('base.pryhovani_dveri') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'vhidni-dveri']) }}">{{ trans('base.vhidni_dveri') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'laminat']) }}">{{ trans('base.laminat') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'rozsuvni-dveri']) }}">{{ trans('base.rozsuvni_dveri') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => 'cklyanni-peregorodky']) }}">{{ trans('base.cklyanni_peregorodky') }}</a></li>
-                    <li><a href="">Фурнітура</a></li>
+                    @foreach($productTypes as $productType)
+                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
+                    @endforeach
                 </ul>
             </div> <!--/navigation-main-->
 

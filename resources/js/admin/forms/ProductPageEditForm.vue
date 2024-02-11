@@ -105,6 +105,10 @@ export default {
             type: Number,
             default: null,
         },
+        categoryDisplay: {
+            type: Number,
+            default: false,
+        },
         categoryOptions: {
             type: Object,
             default: {},
@@ -114,6 +118,10 @@ export default {
             default: null,
         },
 
+        brandDisplay: {
+            type: Number,
+            default: false,
+        },
         brandOptions: {
             type: Object,
             default: {},
@@ -193,8 +201,8 @@ export default {
             products: [],
             selectedOptions: [],
             errors: [],
-            displayCategory: [],
-            displayBrand: [],
+            displayCategoryField: [],
+            displayBrandField: [],
             displayColor: [],
             attributeOptions: [],
             productSlugData: '',
@@ -227,8 +235,9 @@ export default {
         if (this.productGallery) {
             this.gallery = this.productGallery;
         }
-        this.displayCategory = Object.keys(this.categoryOptions).length === 0;
-        this.displayBrand = Object.keys(this.brandOptions).length === 0;
+
+        this.displayCategoryField = this.categoryDisplay;
+        this.displayBrandField = this.brandDisplay;
         this.displayColor = Object.keys(this.colorOptions).length === 0;
 
 
@@ -499,7 +508,7 @@ export default {
                 </div>
 
 
-                <div class="form-group mb-3" v-if="!displayCategory">
+                <div class="form-group mb-3" v-if="displayCategoryField">
                     <select-component
                         :title="$t('admin.product_categories')"
                         :options="categoryOptions"
@@ -512,7 +521,7 @@ export default {
                     />
                 </div>
 
-                <div class="form-group mb-3" v-if="!displayBrand">
+                <div class="form-group mb-3" v-if="displayBrandField">
                     <select-component
                         :title="$t('admin.product_brand')"
                         :options="brandOptions"
