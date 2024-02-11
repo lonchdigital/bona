@@ -72,8 +72,8 @@ class ApplicationConfigService extends BaseService
 
             $existinglogoLight = ApplicationConfig::where('config_name', 'logoLight')->first();
             $existinglogoDark = ApplicationConfig::where('config_name', 'logoDark')->first();
-            $dataToUpdate['logoLight'] = (!is_null($existinglogoLight)) ? $existinglogoLight->data : null;
-            $dataToUpdate['logoDark'] = (!is_null($existinglogoDark)) ? $existinglogoDark->data : null;
+            $dataToUpdate['logoLight'] = (!is_null($existinglogoLight)) ? $existinglogoLight->config_data : null;
+            $dataToUpdate['logoDark'] = (!is_null($existinglogoDark)) ? $existinglogoDark->config_data : null;
 
 
             // logo Light
@@ -82,12 +82,12 @@ class ApplicationConfigService extends BaseService
                 $this->storeImage($logoLightImagePath, $request->logoLight, 'png');
                 $dataToUpdate['logoLight'] = $logoLightImagePath;
 
-                if(!is_null($existinglogoLight) && !is_null($existinglogoLight->data)) {
-                    $this->deleteImage($existinglogoLight->data);
+                if(!is_null($existinglogoLight) && !is_null($existinglogoLight->config_data)) {
+                    $this->deleteImage($existinglogoLight->config_data);
                 }
             }
             if( $dataToUpdate['logoLightDeleted'] ) {
-                $this->deleteImage($existinglogoLight->data);
+                $this->deleteImage($existinglogoLight->config_data);
                 $dataToUpdate['logoLight'] = null;
             }
 
@@ -97,12 +97,12 @@ class ApplicationConfigService extends BaseService
                 $this->storeImage($logoDarkImagePath, $request->logoDark, 'png');
                 $dataToUpdate['logoDark'] = $logoDarkImagePath;
 
-                if(!is_null($existinglogoDark) && !is_null($existinglogoDark->data)) {
-                    $this->deleteImage($existinglogoDark->data);
+                if(!is_null($existinglogoDark) && !is_null($existinglogoDark->config_data)) {
+                    $this->deleteImage($existinglogoDark->config_data);
                 }
             }
             if( $dataToUpdate['logoDarkDeleted'] ) {
-                $this->deleteImage($existinglogoDark->data);
+                $this->deleteImage($existinglogoDark->config_data);
                 $dataToUpdate['logoDark'] = null;
             }
 
