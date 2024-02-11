@@ -10,4 +10,8 @@ class ApplicationConfig extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'config_data' => 'json',
+    ];
+
 }

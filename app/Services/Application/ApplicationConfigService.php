@@ -108,8 +108,9 @@ class ApplicationConfigService extends BaseService
 
             unset($dataToUpdate['logoLightDeleted']);
             unset($dataToUpdate['logoDarkDeleted']);
+
             foreach ($dataToUpdate as $key => $value) {
-                ApplicationConfig::updateOrCreate(['config_name' => $key], ['data' => $value]);
+                ApplicationConfig::updateOrCreate(['config_name' => $key], ['config_data' => $value]);
             }
 
             return ServiceActionResult::make(true, trans('admin.settings_updated_success'));
@@ -119,10 +120,12 @@ class ApplicationConfigService extends BaseService
     public function getAllApplicationConfigOptions(): array
     {
         $data = ApplicationConfig::all();
+
+//        dd($data->getTranslations['footerText']);
         $dataArray = [];
 
         foreach ($data as $item) {
-            $dataArray[$item->config_name] = $item->data;
+            $dataArray[$item->config_name] = $item->config_data;
         }
 
         return $dataArray;

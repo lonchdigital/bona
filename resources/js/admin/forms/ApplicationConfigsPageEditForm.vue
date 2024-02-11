@@ -4,7 +4,8 @@ import axios from "axios";
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
 import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
 import ServicesSectionsComponent from "../components/ServicesSectionsComponent.vue";
-import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
+// import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
+import MultiLanguageTextAreaComponent from "../components/MultiLanguageTextAreaComponent.vue";
 import * as transliteration from 'transliteration';
 
 
@@ -13,7 +14,8 @@ export default {
         MultiLanguageInputComponent,
         ImageFileInputComponent,
         ServicesSectionsComponent,
-        MultiLanguageRichTextEditorComponent,
+        MultiLanguageTextAreaComponent
+        // MultiLanguageRichTextEditorComponent,
     },
     props: {
         submitRoute: {
@@ -63,6 +65,10 @@ export default {
             type: String,
             default: '',
         },
+        footerText: {
+            type: Object,
+            default: [],
+        },
 
     },
     data() {
@@ -77,6 +83,8 @@ export default {
     },
     mounted() {
         this.selectedLanguage = this.baseLanguage;
+
+        console.log(this.footerText)
 
     },
     computed: {
@@ -181,6 +189,16 @@ export default {
                         :is-required="false"
                     />
                 </div>
+
+                <multi-language-text-area-component
+                    title="Footer text"
+                    name="footer_text"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="footerText"
+                    :errors="errors"
+                />
 
             </div>
         </div>

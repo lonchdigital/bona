@@ -336,9 +336,12 @@
                                 @if(array_key_exists('logoLight', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['logoLight']))
                                     <img src="{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}" alt="Logo">
                                 @endif
-                                <p class="art-footer-description">{{ trans('base.footer_part_one') }}</p>
-                                <div class="art-footer-additional">
 
+                                @if(array_key_exists('footerText', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['footerText']))
+                                    <p class="art-footer-description">{{ $applicationGlobalOptions['footerText'][app()->getLocale()] }}</p>
+                                @endif
+
+                                <div class="art-footer-additional">
                                     <ul class="art-footer-social">
                                         @if(array_key_exists('instagram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['instagram']))
                                             <li class="instagram-item">
@@ -377,13 +380,10 @@
                                             </li>
                                         @endif
                                     </ul>
-
                                     <div class="art-card-icons">
                                         <img src="{{ asset('storage/bg-images/dss.png') }}" class="card-dss" alt="">
                                         <img src="{{ asset('storage/bg-images/cards.png') }}" class="visa-mastercard" alt="">
                                     </div>
-
-
                                 </div>
                             </div>
                             <div class="footer-content-right">
