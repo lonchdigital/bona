@@ -75,7 +75,6 @@ class ApplicationConfigService extends BaseService
             $dataToUpdate['logoLight'] = (!is_null($existinglogoLight)) ? $existinglogoLight->config_data : null;
             $dataToUpdate['logoDark'] = (!is_null($existinglogoDark)) ? $existinglogoDark->config_data : null;
 
-
             // logo Light
             if( !is_null($request->logoLight) ) {
                 $logoLightImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
