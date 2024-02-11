@@ -243,6 +243,11 @@ class HomePageService extends BaseService
         return ProductType::get();
     }
 
+    public function getHomePageProductTypes(): Collection
+    {
+        return ProductType::whereIn('id', [1, 2, 3, 4, 7, 13, 14])->get();
+    }
+
     public function getHomePageBestSalesProducts(): Collection
     {
         return HomePageBestSalesProducts::with(['product'])->get();
