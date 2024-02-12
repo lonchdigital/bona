@@ -4,6 +4,7 @@ namespace App\Services\Locale;
 
 use App\Models\User;
 use App\Services\Base\BaseService;
+use Illuminate\Support\Facades\Route;
 
 class LocaleService extends BaseService
 {
@@ -28,7 +29,12 @@ class LocaleService extends BaseService
             $path = '/' . $newLocale . $currentPath;
         } else {
             //has lang prefix
-            $path = str_replace('/' . $currentLocale . '/', '/', $currentPath);
+            if (Route::currentRouteName() == 'store.home') {
+                $path = str_replace('/' . $currentLocale , '/', $currentPath);
+            } else {
+                $path = str_replace('/' . $currentLocale . '/', '/', $currentPath);
+            }
+
             if ($newLocale !== config('app.fallback_locale')) {
                 $path = '/' . $newLocale . $path;
             }

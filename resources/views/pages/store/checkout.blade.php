@@ -26,7 +26,7 @@
                                                 <div class="h4 mb-4 d-none d-lg-block">{{ trans('base.personal_data') }}</div>
                                             </div>
                                             <div class="col-12 order-3 order-lg-3">
-                                                <div class="checkout-personal-data pr-xl-18 mb-4 mb-lg14">
+                                                <div class="checkout-personal-data pr-xl-18 mb-4 mb-lg-10">
                                                     <div class="row mb-1">
                                                         <div class="col-6">
                                                             <div
@@ -99,7 +99,7 @@
                                     <div class="row">
                                         <div class="col">
 
-                                            <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-6 mt-xxl-26 mb-4 mb-lg14">
+                                            <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-4 mt-xxl-26 mb-4 mb-lg-10">
                                                 <div class="checkout-delivery-accordion w-100 mt-1" id="checkout-delivery-accordion">
 
                                                     <h4>{{ trans('base.delivery') }}</h4>
@@ -536,7 +536,7 @@
                                             </div>
 
 
-                                            <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-16">
+                                            <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-10">
                                                 <div class="w-100 checkbox">
                                                     <div class="row mt-1">
                                                         <div class="col-10">
@@ -544,13 +544,15 @@
                                                             <div class="delivery-title mb-4">{{ trans('base.checkout_payment_upon_receipt') }}
                                                                 :
                                                             </div>
-                                                            <div class="position-relative">
-                                                                <input type="radio"
-                                                                       @if(!old('payment_type_id') || old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT) checked
-                                                                       @endif id="payment-cash" name="payment_type_id"
-                                                                       value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}">
-                                                                <label class="custom-control-label"
-                                                                       for="payment-cash">{{ trans('base.checkout_payment_cash') }}</label>
+                                                            <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox art-mb-10">
+                                                                <div class="position-relative">
+                                                                    <input type="radio"
+                                                                           @if(!old('payment_type_id') || old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT) checked
+                                                                           @endif id="payment-cash" name="payment_type_id"
+                                                                           value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}">
+                                                                    <label class="custom-control-label"
+                                                                           for="payment-cash">{{ trans('base.checkout_payment_cash') }}</label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-2">
@@ -561,16 +563,17 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="w-100 mb-4"></div>
                                                     <div class="row">
                                                         <div class="col-10">
-                                                            <div class="position-relative">
-                                                                <input type="radio"
-                                                                       @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT) checked
-                                                                       @endif id="payment-card" name="payment_type_id"
-                                                                       value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}">
-                                                                <label class="custom-control-label"
-                                                                       for="payment-card">{{ trans('base.checkout_payment_card') }}</label>
+                                                            <div class="col-12 col-md-7 mb-2 mb-md-0 checkbox art-mb-10">
+                                                                <div class="position-relative">
+                                                                    <input type="radio"
+                                                                           @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT) checked
+                                                                           @endif id="payment-card" name="payment_type_id"
+                                                                           value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}">
+                                                                    <label class="custom-control-label"
+                                                                           for="payment-card">{{ trans('base.checkout_payment_card') }}</label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -612,8 +615,6 @@
                                                                        for="recipient-other">{{ trans('base.checkout_recipient_another_person') }}</label>
                                                             </div>
                                                         </div>
-
-                                                        <div class="w-100 mb-4"></div>
 
                                                         <div class="col-12" id="checkout-custom-recipient-accordion">
                                                             <div id="recipient-2"
@@ -781,7 +782,7 @@
                                                 <div class="info-top-item pb-3 normal-delivery">
                                                     <span class="mr-6">{{ trans('base.delivery') }}</span>
                                                     <div class="d-flex">
-                                                        <span class="old-price-delivery text-nowrap mr-1"></span>
+                                                        <span class="old-price-delivery text-nowrap"></span>
                                                         <span class="text-nowrap price-delivery"></span>
                                                     </div>
                                                 </div>
@@ -827,13 +828,12 @@
                                             <div class="info-bottom-title mb-7 text-center">
                                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}">{{ trans('base.checkout_apply_promo_code') }}</a>
                                             </div>
-                                            <div class="custom-control custom-checkbox position-relative">
+                                            <div class="custom-control custom-checkbox position-relative art-checkout-agreement">
                                                 <input type="hidden" name="agreement" value="0">
-                                                <input type="checkbox" class="custom-control-input"
-                                                       id="checkout-order-info-form-check" name="agreement" value="1">
-                                                <label class="custom-control-label"
-                                                       for="checkout-order-info-form-check">{{ trans('base.checkout_by_confirm_i_agree') }}
-                                                    <a href="#">{{ mb_strtolower(trans('base.conditions')) }}</a></label>
+                                                <input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1">
+                                                <label for="checkout-order-info-form-check">{{ trans('base.checkout_by_confirm_i_agree') }}
+                                                    <a href="#">{{ mb_strtolower(trans('base.conditions')) }}</a>
+                                                </label>
                                             </div>
                                             @error('agreement')
                                             <div class="row">

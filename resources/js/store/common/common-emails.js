@@ -6,7 +6,7 @@ import InputCounter from "./input-counter";
 export default {
     init: async function () {
 
-        $('#user-choose-doors').submit(function(event) {
+        $('#user-choose-doors, #user-call-measurer').submit(function(event) {
             event.preventDefault();
 
             let formData = new FormData(this);
@@ -19,8 +19,6 @@ export default {
             userChooseDoors(
                 data,
                 function (data) {
-                    // $('.choose-doors-errors').html('<p style="color: green">Ваш запит успішно відправленно!</p>');
-
                     var button = document.getElementById("user-choose-doors-success");
                     button.click();
                 },
@@ -68,5 +66,5 @@ function userChooseDoorsErrors(errors)
         errorsToAppend += `<p>${errors[key]}</p>`;
     }
 
-    $('.choose-doors-errors').html(errorsToAppend);
+    $('.form-errors').html(errorsToAppend);
 }
