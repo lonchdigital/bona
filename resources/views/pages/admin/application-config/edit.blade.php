@@ -25,9 +25,6 @@
                     </div>
                 @endif
 
-
-{{--                @dd($applicationConfig)--}}
-
                 <application-configs-page-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"

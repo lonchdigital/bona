@@ -161,6 +161,10 @@ textarea {
     font-size: 16px;
     line-height: 44px;
     height: 44px;
+    overflow: hidden;
+}
+.field.city-search {
+    height: 44px;
 }
 
 input.art-light-field {
@@ -215,6 +219,9 @@ select:focus {
 */
 .art-dark-bg {
     background-color: #eee;
+}
+.art-mb-10 {
+    margin-bottom: 10px !important;
 }
 .art-section-pd {
     padding-top: 45px;
@@ -2280,8 +2287,19 @@ section.art-common-page-section .art-row-block.art-odd .desc-side {
 }
 .field textarea.art-form-light-control {
     width: 100%;
+    border-radius: 30px;
 }
+.art-checkout-agreement {
 
+    input[type=checkbox] {
+        position: absolute;
+        margin-left: -15px;
+    }
+
+    label {
+        margin-left: 16px;
+    }
+}
 
 .checkout .right-sidebar {
 

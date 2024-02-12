@@ -28,7 +28,7 @@
                         <label for="fieldName">{{ trans('base.agreement_line_start') . ' ' . trans('base.agreement_line_end') }}</label>
                     </div>
                     <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
-                    <div class="choose-doors-errors"></div>
+                    <div class="form-errors"></div>
                 </form>
 
             </div>
