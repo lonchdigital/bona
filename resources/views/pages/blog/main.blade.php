@@ -24,7 +24,7 @@
             <div class="row">
                 <div class="art-blog-archive-wrapper">
                     @foreach($articles as $article)
-                        <div class="col-sm-4">
+                        <div class="col-lg-4">
                             <article class="art-post-archive-item">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]) }}">
                                     <div class="image" style="background-image:url({{ $article->hero_image_url }})">

@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="swiper-pagination mt-5 d-sm-none"></div>
                                 </div>
-                                <div class="swiper-single-wallpaper-thumbs-wrap d-none d-sm-flex align-items-center mb-md-13">
+                                <div class="swiper-single-wallpaper-thumbs-wrap d-none-1111 d-sm-flex align-items-center mb-md-13">
                                     <div class="swiper-pagination mr-4 mr-xl-10"></div>
                                     <div class="art-single-wallpaper-thumbs-wrapper">
                                         <div class="swiper-single-wallpaper-thumbs">
@@ -273,14 +273,11 @@
                         </div> <!--/product-info-wrapper-->
                     </div>
 
-
                 </div>
             </div>
         </div>
 
-
         <!-- === Product tabs === -->
-
         <div class="info art-product-tabs">
             <div class="container">
                 <div class="row">
@@ -386,46 +383,7 @@
         </div> <!--/info-->
     </section>
 
-
-    <!-- ======================== Contact Form ======================== -->
-    <section class="art-contact-form-section" style="background-image:url({{ asset('storage/bg-images/form-bg.png') }})">
-        <div class="container">
-
-            <header class="art-light">
-                <div class="row">
-                    <div class="col-md-offset-2 col-md-8 text-center">
-                        <h2 class="title">Не знаєте які двері обрати?</h2>
-                        <div class="subtitle font-two">
-                            <p>
-                                We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy
-                                to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <div class="row">
-                <div class="col-md-offset-2 col-md-8 text-center">
-
-                    <form action="#" method="post" class="art-contact-form">
-                        @csrf
-                        <p class="art-fields-row">
-                            <input type="text" class="art-light-field" placeholder="Ім’я">
-                            <input type="text" class="art-light-field" placeholder="Телефон">
-                        </p>
-                        <!--                        <div class="checkbox">
-                                                    <input type="checkbox" name="agree" value="value">
-                                                    <label for="fieldName">Даю згоду на обробку персональних даних</label>
-                                                </div>-->
-                        <p><a href="#" class="btn btn-empty">{{trans('base.send')}}</a></p>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <x-precise-form-component />
 
     @if(count($sameTypeProducts))
         <!-- ======================== Products  ======================== -->

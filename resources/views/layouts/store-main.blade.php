@@ -328,11 +328,11 @@
         <!-- ================== Footer  ================== -->
             <footer class="art-site-footer">
 
-
                 <div class="footer-content">
 
                     <div class="container">
                         <div class="art-flex-row">
+
                             <div class="footer-content-left">
                                 @if(array_key_exists('logoLight', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['logoLight']))
                                     <img src="{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}" alt="Logo">
@@ -387,8 +387,22 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="footer-content-right">
+
                                 <div class="col-one">
+                                    <h5 class="art-footer-title">{{ trans('base.navigation') }}</h5>
+                                    <ul>
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{trans('base.about_us')}}</a></li>
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{trans('base.delivery')}}</a></li>
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{trans('base.blog')}}</a></li>
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{trans('base.services')}}</a></li>
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{trans('base.contacts')}}</a></li>
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{trans('base.our_works')}}</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-two">
                                     <h5 class="art-footer-title">{{ trans('base.footer_cat') }}</h5>
                                     <ul>
                                         @foreach($productTypes as $productType)
@@ -398,7 +412,7 @@
                                 </div>
 
                                 @if( !is_null($contactsFooter) )
-                                    <div class="col-two">
+                                    <div class="col-three">
                                         <h5 class="art-footer-title">{{ trans('base.footer_address') }}</h5>
                                         <div class="art-address-wrapper">
                                             <span class="city">{{ $contactsFooter['city_one'] }}</span>
@@ -424,11 +438,15 @@
 
                 </div>
 
-
                 <div class="footer-bottom">
                     <div class="container">
-                        <p>BONA © 2023 Всі права захищені</p>
-                        <p><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ trans('base.agreement') }}</a></p>
+                        <div class="row">
+                            <div class="col-12 art-footer-bottom-wrapper">
+                                <p class="art-copyright">BONA © 2024 Всі права захищені</p>
+                                <p><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ trans('base.agreement') }}</a></p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

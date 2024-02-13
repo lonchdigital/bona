@@ -1,10 +1,6 @@
 import $ from 'jquery';
 
-console.log('store.catalog.page.js');
-
 export default async function () {
-
-    console.log('export default async function RUNS !!!');
 
     const customLabels = $('.filter-item--type-custom .custom-control-label');
     const countriesLabels = $('.filter-item--countries .custom-control-label');
@@ -41,8 +37,6 @@ export default async function () {
         import('./store.catalog.page/swiper'),
         import('./store.catalog.page/pagination')
     ]);
-
-    console.log('load');
 
     Swiper.init();
     // SvelteRangeSlider.init();

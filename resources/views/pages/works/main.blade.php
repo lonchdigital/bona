@@ -17,7 +17,7 @@
 
             <div class="row">
                 @foreach($works as $work)
-                    <div class="col-sm-4">
+                    <div class="col-lg-4">
                         <article class="art-post-archive-item">
                             <a data-fancybox="works-gallery" href="{{ $work->image_url }}">
                                 <div class="image" style="background-image:url({{ $work->image_url }})"></div>

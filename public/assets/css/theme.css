@@ -682,42 +682,6 @@ header .text p:last-child {
 
 /*
     ----------------------------------
-    10. Main Header
-    ----------------------------------
-*/
-.main-header {
-    padding-top: 155px;
-    padding-bottom: 20px;
-    background-color: #3a3d45;
-    background-size: cover;
-    background-position: center;
-}
-
-.main-header header, .main-header .title {
-    color: white;
-}
-
-.main-header header {
-    margin-bottom: 5px;
-}
-
-@media (min-width: 992px) {
-    .main-header {
-        padding-top: 155px;
-    }
-    .main-header.main-header-blog {
-        padding-bottom: 100px;
-    }
-}
-
-@media print {
-    .main-header {
-        padding: 40px 0 !important;
-    }
-}
-
-/*
-    ----------------------------------
     11. Main navigation
     ----------------------------------
 */
@@ -1941,47 +1905,6 @@ nav .cart-wrapper.open {
     width: 100%;
 }
 
-@media (max-width: 991px) {
-    .filters {
-        background-color: white;
-        position: fixed;
-        width: 50%;
-        height: 100%;
-        z-index: 9999;
-        top: 0;
-        left: auto;
-        right: 0;
-        overflow: auto;
-        -moz-transform: translate3d(100%, 0, 0);
-        -ms-transform: translate3d(100%, 0, 0);
-        -o-transform: translate3d(100%, 0, 0);
-        -webkit-transform: translate3d(100%, 0, 0);
-        transform: translate3d(100%, 0, 0);
-        -moz-transition: all 0.3s;
-        -o-transition: all 0.3s;
-        -webkit-transition: all 0.3s;
-        transition: all 0.3s;
-    }
-    .filters .row {
-        margin: 0;
-    }
-    .filters .row > div {
-        padding: 0;
-    }
-    .filters.active {
-        -moz-transform: translate3d(0, 0, 0);
-        -ms-transform: translate3d(0, 0, 0);
-        -o-transform: translate3d(0, 0, 0);
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
-    }
-    .filters .toggle-filters-close {
-        -moz-border-radius: 0;
-        -webkit-border-radius: 0;
-        border-radius: 0;
-    }
-}
 
 /*
     ----------------------------------
@@ -2535,18 +2458,7 @@ nav .cart-wrapper.open {
     }
 }
 
-@media (max-width: 991px) {
-    .product .product-flex {
-        display: flex;
-        flex-flow: column;
-    }
-    .product .product-flex .product-flex-gallery {
-        order: 1;
-    }
-    .product .product-flex .product-flex-info {
-        order: 2;
-    }
-}
+
 
 /*
     ----------------------------------
@@ -2931,7 +2843,7 @@ nav .cart-wrapper.open {
     background-position: center;
     background-size: cover;
     overflow: hidden;
-    height: auto;
+    height: 220px;
 }
 
 .blog article .image img {
@@ -3145,9 +3057,6 @@ nav .cart-wrapper.open {
         transform: translate3d(0, 0, 0);
         opacity: 1;
     }
-    .blog article .image {
-        height: 220px;
-    }
     .blog article .image img {
         display: none;
     }
@@ -3301,8 +3210,14 @@ nav .cart-wrapper.open {
 
 .blog .blog-post .blog-post-content {
     background-color: white;
-    padding: 20px;
+    padding: 40px;
 }
+@media (max-width: 500px) {
+    .blog .blog-post .blog-post-content {
+        padding: 0;
+    }
+}
+
 
 @media (min-width: 992px) {
     .blog .blog-post .blog-post-content {
@@ -5562,9 +5477,7 @@ footer {
 }
 
 @media (max-width: 767px) {
-    footer {
-        text-align: center;
-    }
+
 }
 
 footer h1, footer h2, footer h3, footer h4, footer h5, footer h6,

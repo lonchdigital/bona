@@ -1,8 +1,6 @@
 import $ from "jquery";
 import window from "inputmask/lib/global/window";
 
-console.log('filter-submit.js');
-
 const tooltipClasses = [
     '.filter-item--type-custom .checkbox-preview',
     '.filter-item--brands .checkbox-preview',
@@ -11,8 +9,6 @@ const tooltipClasses = [
 ];
 
 export function init () {
-
-    console.log('filter-submit.js INIT');
 
     const mainFilterForm = $('#filter-left-form');
     const fullFilterForm = $('#filter-full-form');
@@ -26,9 +22,6 @@ export function init () {
     });
 
     $('.filter-submit-main').click(function (event) {
-
-        console.log('filter-submit-main click !!!!!!!!!!!!!!!!!!');
-
         event.preventDefault();
         filterSubmit(mainFilterForm);
     });
