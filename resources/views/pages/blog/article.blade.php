@@ -28,7 +28,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+                <div class="col-lg-10 col-md-offset-1">
                     <div class="blog-post">
 
                         <div class="blog-post-content">
@@ -41,7 +41,6 @@
                             </div>
 
                             <!-- === blog post text === -->
-
                             <div class="blog-post-text">
 
                                 @foreach($blogArticle->blocks as $block)
@@ -97,7 +96,7 @@
             <div class="row">
                 <div class="art-blog-archive-wrapper">
                     @foreach($latestArticles as $latestArticle)
-                        <div class="col-sm-4">
+                        <div class="col-lg-4">
                             <article class="art-post-archive-item">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $latestArticle->slug]) }}">
                                     <div class="image" style="background-image:url({{ $latestArticle->hero_image_url }})">

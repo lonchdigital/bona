@@ -1,4 +1,5 @@
-import Swiper, { Navigation, Pagination } from 'swiper';
+// import Swiper, { Navigation, Pagination } from 'swiper';
+import Swiper from 'swiper/bundle';
 import $ from "jquery";
 
 export function init () {
@@ -6,22 +7,41 @@ export function init () {
 
     const swiperSingleWallpaperThumbsWrap = document.querySelector('.swiper-single-wallpaper-thumbs-wrap');
     let imagesCount = swiperSingleWallpaperThumbsWrap.querySelectorAll('img').length;
-    imagesCount = imagesCount >= 5 ? 5 : imagesCount;
+
+    console.log('length ' + imagesCount);
+    imagesCount = imagesCount >= 4 ? 4 : imagesCount;
+    console.log('imagesCount ' + imagesCount);
 
     const SwiperSingleWallpaperThumbs = new Swiper('.swiper-single-wallpaper-thumbs', {
-        slidesPerView: imagesCount,
-        slidesPerGroupAuto: false,
-        slidesPerGroup: 1,
+        // slidesPerView: imagesCount,
+        // slidesPerView: 4,
+        // slidesPerGroupAuto: false,
+        // slidesPerGroup: 1,
         spaceBetween: 2,
+        freeMode: true,
         //watchSlidesProgress: true,
         pagination: {
             //enabled: true,
             el: ".swiper-single-wallpaper-thumbs-wrap .swiper-pagination",
             clickable: true
+        },
+        breakpoints: {
+            300: {
+                slidesPerView: 3
+            },
+            /*768: {
+                slidesPerView: 3
+            },*/
+            1200: {
+                slidesPerView: imagesCount
+            }
+
         }
     });
+    window.addEventListener('resize', () => {
+        SwiperSingleWallpaperThumbs.update(); // Обновление Swiper при изменении размера окна
+    });
 
-    //SwiperSingleWallpaperThumbs.lockSwipeToNext();
 
 //? swiper-single-wallpaper
     const SwiperSingleWallpaper = new Swiper('.swiper-single-wallpaper', {
@@ -45,7 +65,7 @@ export function init () {
 
 
     //? swiper-cards-products
-    const SwiperCardsProducts = new Swiper('.swiper-cards-products', {
+    /*const SwiperCardsProducts = new Swiper('.swiper-cards-products', {
         spaceBetween: 16,
         navigation: {
             nextEl: ".product-collection-slider .swiper-buttons .button-slider-next",
@@ -77,7 +97,7 @@ export function init () {
                 showProductsFromSameCollectionSwiper();
             }
         }
-    });
+    });*/
 }
 
 function showGallerySwiper()

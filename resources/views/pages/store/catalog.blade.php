@@ -32,9 +32,18 @@
             <div class="row">
 
                 <!-- === product-filters === -->
+                <div class="col-md-3 col-xs-12 art-products-catalog-sidebar">
+                    <div id="art-products-filter" class="filters">
 
-                <div class="col-md-3 col-xs-12">
-                    <div class="filters">
+                        <div class="filter-top-wrapper">
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 12L12 1M12 12L1 1" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div class="art-filter-heading">
+                                <h4 class="h1 title">{{ trans('base.filter_noun') }}</h4>
+                            </div>
+                        </div>
+
 
                         <form action="" id="filter-left-form">
 
@@ -56,12 +65,8 @@
 
 
                             <!--Discount-->
-
-{{--                            @dd($filters['main'])--}}
                             @if(count($filters['main']))
-
                                 @foreach($filters['main'] as $filter)
-
                                     <div class="filter-box active"> {{-- archive-catalog-filter-left--}}
                                         <div class="title font-title">
                                             {{ $filter->pivot->filter_name }}
@@ -85,16 +90,11 @@
                                                 @endforeach
 
                                             @elseif($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER || $filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE)
-
 {{--                                                @dd('oh!')--}}
-
                                             @endif
                                         </div>
-
                                     </div> <!--/filter-box-->
-
                                 @endforeach
-
                             @endif
 
 
@@ -150,25 +150,27 @@
                 </div>
 
                 <!--product items-->
-
-                <div class="col-md-9 col-xs-12">
-
+                <div class="col-lg-9 col-xs-12">
                     <div class="products-catalog-wrapper">
-
                         <h1 class="h2 title">{{ $productType->name }}</h1>
+
+                        <div class="art-catalog-top">
+                            <div id="art-filter-display" class="art-filter-display">
+                                <span>{{ trans('base.filter_noun') }}</span>
+                                <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3.87479 8.426V0.973999H4.68479V8.426H3.87479ZM0.454789 5.096V4.322H8.10479V5.096H0.454789Z" fill="black"/>
+                                </svg>
+                            </div>
+                        </div>
 
                         <div class="art-product-list art-three-column">
                             @foreach($productsPaginated as $product)
                                 @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
                             @endforeach
                         </div>
-
                     </div>
-
-                    <!--Pagination-->
+                <!--Pagination-->
                 {{ $productsPaginated->links('pagination.store') }}
-
-
                 </div> <!--/product items-->
 
             </div><!--/row-->
