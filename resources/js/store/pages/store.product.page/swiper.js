@@ -8,9 +8,8 @@ export function init () {
     const swiperSingleWallpaperThumbsWrap = document.querySelector('.swiper-single-wallpaper-thumbs-wrap');
     let imagesCount = swiperSingleWallpaperThumbsWrap.querySelectorAll('img').length;
 
-    console.log('length ' + imagesCount);
     imagesCount = imagesCount >= 4 ? 4 : imagesCount;
-    console.log('imagesCount ' + imagesCount);
+
 
     const SwiperSingleWallpaperThumbs = new Swiper('.swiper-single-wallpaper-thumbs', {
         // slidesPerView: imagesCount,

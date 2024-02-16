@@ -153,7 +153,8 @@ class CartService extends BaseService
         if (!$cart->products()->where('product_id', $product->id)->exists()) {
             $cart->products()->attach([$product->id => ['count' => $request->productCount, 'price' => $product->price]]);
         } else {
-            $cart->products()->updateExistingPivot($product->id, ['count' => $request->productCount]);
+            $productCount = $cart->products()->where('product_id', $product->id)->first()->pivot->count;
+            $cart->products()->updateExistingPivot($product->id, ['count' => $productCount + $request->productCount]);
         }
     }
 

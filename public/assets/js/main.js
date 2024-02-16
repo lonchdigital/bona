@@ -706,7 +706,12 @@
         // Range slider
         // --------------------------------------
 
-        var art_irs_from = $('.art-irs-from'),
+
+
+
+
+        // TODO: remove old price range slider
+        /*var art_irs_from = $('.art-irs-from'),
             art_irs_to = $('.art-irs-to');
 
         $("#range-price-slider").ionRangeSlider({
@@ -738,7 +743,7 @@
                     filter: filters
                 });
             }
-        });
+        });*/
 
     });
 

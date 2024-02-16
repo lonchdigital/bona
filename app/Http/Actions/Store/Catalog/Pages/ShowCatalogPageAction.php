@@ -71,6 +71,7 @@ class ShowCatalogPageAction extends BaseAction
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
+            'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
             'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
         ]);

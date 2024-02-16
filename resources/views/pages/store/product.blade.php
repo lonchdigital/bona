@@ -166,7 +166,7 @@
                                                         <img src="{{$color_item->image_url}}">
                                                     </span>
                                                 @else
-                                                    <span class="color-btn" data-name="{{ $color_item->name }}" data-price="{{ $color_item->pivot->price }}" style="background-color: {{ $color_item->hex }};"></span>
+                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-name="{{ $color_item->name }}" data-price="{{ $color_item->pivot->price != null ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
                                                 @endif
                                             @endforeach
                                         </div>
@@ -182,22 +182,13 @@
                                             <span class="art-dialog-link" data-fancybox data-src="#dialog-content-{{ Illuminate\Support\Str::slug($cat) }}">{{ trans('base.select') }}</span>
                                         </div>
 
-                                        <div class="added-sub-products" data-wrapper="dialog-content-{{ Illuminate\Support\Str::slug($cat) }}">
-                                            @foreach($subProducts as $subProduct)
-                                                @if( $cartService->isProductInCart($subProduct, $cart) )
-
-                                                    @for($i = 0; $i < $cartService->getCountOfSpecificProduct($subProduct, $cart); $i++)
-                                                        <span class="added-line" data-slug="{{ $subProduct->slug }}"><i class="fa fa-close"></i>{{ $subProduct->name }}</span>
-                                                    @endfor
-                                                @endif
-                                            @endforeach
-                                        </div>
+                                        {{-- SubProducts --}}
+                                        <div class="added-sub-products" data-wrapper="dialog-content-{{ Illuminate\Support\Str::slug($cat) }}"></div>
 
                                         <div id="dialog-content-{{ Illuminate\Support\Str::slug($cat) }}" class="art-popup-single-product">
                                             <span class="art-category-title">{{ $cat }}</span>
                                             <div class="art-popup-list-sub-products">
                                                 @foreach($subProducts as $subProduct)
-
                                                     <div class="art-product-item">
                                                         <div class="art-product-data">
                                                             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $subProduct->slug]) }}" class="art-product-link">
@@ -215,15 +206,10 @@
                                                             <button type="button"
                                                                     class="btn w-100 single-sub-product-add-to-cart"
                                                                     id="{{ $subProduct->slug }}"
-                                                                    @if( $cartService->isProductInCart($subProduct, $cart) )
-                                                                        data-count="{{ $cartService->getCountOfSpecificProduct($subProduct, $cart) }}"
-                                                                    @else
-                                                                        data-count="0"
-                                                                    @endif
+                                                                    data-count="0"
                                                             >{{ trans('base.select') }}</button>
                                                         </div>
                                                     </div>
-
                                                 @endforeach
                                             </div>
                                         </div>
@@ -244,9 +230,12 @@
                                 </div>
 
                                 <div class="price">
-                                    <div>
+                                    <div class="price-hot-wrapper">
                                         @if($product->old_price > $product->price)
-                                            <span id="product-price" data-product-price="{{ $product->price }}" class="card-link-price--hot">{{ $product->price }} {{ $baseCurrency->name_short }} </span>
+                                            <div class="art-hot-price-data">
+                                                <span id="product-price" data-product-price="{{ $product->price }}" class="card-link-price--hot">{{ $product->price }}</span>
+                                                <span class="currency">{{ $baseCurrency->name_short }}</span>
+                                            </div>
                                             <span class="card-link-price--old">{{ $product->old_price }} {{ $baseCurrency->name_short }}</span>
                                         @else
                                             <span id="product-price" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
@@ -421,11 +410,13 @@
         var priceOptions = {}; // Пустой объект для хранения опций цен
         var selectElements = document.getElementsByClassName("art-select-attribute");
 
-        var productPriceElement = document.getElementById("product-price");
-        var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
 
         for (var i = 0; i < selectElements.length; i++) {
             selectElements[i].addEventListener("change", function() {
+
+                var productPriceElement = document.getElementById("product-price");
+                var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
+
                 var selectedIndex = this.selectedIndex;
                 var selectedOption = this.options[selectedIndex];
                 var price = parseFloat(selectedOption.getAttribute("data-price"));
@@ -447,7 +438,7 @@
                 }
 
                 var totalPrice = currentPrice + attributePrices;
-                productPriceElement.innerText = totalPrice.toFixed(2);
+                productPriceElement.innerText = totalPrice.toFixed();
             });
         }
 
@@ -456,12 +447,10 @@
 
 
         const colorList = document.querySelector(".art-colors-list");
-
         colorList.addEventListener("click", function(event) {
 
-            // console.log(priceOptions);
-            // console.log(event.target.getAttribute("data-price"));
-
+            var productPriceElement = document.getElementById("product-price");
+            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
 
             const clickedElement = event.target;
 
@@ -485,7 +474,6 @@
                     // Добавление класса 'color-selected' к родительскому span
                     clickedSpan.classList.add("color-selected");
 
-
                     var attributePrices = 0;
                     priceOptions['color'] = {};
                     priceOptions['color'] = {'price': parseFloat(clickedSpan.getAttribute("data-price"))};
@@ -500,7 +488,7 @@
                     }
 
                     var totalPrice = currentPrice + attributePrices;
-                    productPriceElement.innerText = totalPrice.toFixed(2);
+                    productPriceElement.innerText = totalPrice.toFixed();
 
                 }
             }

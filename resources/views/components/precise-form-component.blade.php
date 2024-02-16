@@ -1,15 +1,16 @@
 <!-- ======================== Precise Form ======================== -->
-<section class="art-contact-form-section" style="background-image:url({{ asset('storage/bg-images/form-bg.png') }})">
+<section class="art-contact-form-section" @if(array_key_exists('formImage', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formImage'])) style="background-image:url({{ '/storage/' . $applicationGlobalOptions['formImage'] }})" @endif>
     <div class="container">
 
         <header class="art-light">
             <div class="text-center">
-                <h2 class="title h2">{{ trans('base.want_choose_door') }}</h2>
+                @if(array_key_exists('formTitle', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formTitle']))
+                    <h2 class="title h2">{{ $applicationGlobalOptions['formTitle'][app()->getLocale()] }}</h2>
+                @endif
                 <div class="subtitle font-two">
-                    <p class="art-form-description">
-                        We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy
-                        to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
-                    </p>
+                    @if(array_key_exists('formText', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formText']))
+                        <p class="art-form-description">{{ $applicationGlobalOptions['formText'][app()->getLocale()] }}</p>
+                    @endif
                 </div>
             </div>
         </header>

@@ -1182,6 +1182,26 @@ footer.art-site-footer {
 .art-single-product-gallery .swiper-single-wallpaper-thumbs .swiper-slide {
     //width: 134px !important;
     text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.art-single-product-gallery .swiper-single-wallpaper-thumbs .swiper-slide::selection {
+    background-color: transparent;
+    color: inherit;
+}
+.art-single-product-gallery .swiper-single-wallpaper .swiper-wrapper .swiper-slide a,
+.art-single-product-gallery .swiper-single-wallpaper .swiper-wrapper .swiper-slide img {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.art-single-product-gallery .swiper-single-wallpaper .swiper-wrapper .swiper-slide a::selection,
+.art-single-product-gallery .swiper-single-wallpaper .swiper-wrapper .swiper-slide img::selection {
+    background-color: transparent;
+    color: inherit;
 }
 
 .art-single-product-gallery .swiper-button-prev:after,
@@ -1196,27 +1216,30 @@ footer.art-site-footer {
         position: relative;
     }
 
-    > span.color-selected::after {
-        content: '';
-        position: absolute;
-        top: -6px;
-        left: -6px;
-        /*height: 33px;
-        width: 33px;*/
+    > span {
 
-        width: calc(100% + 12px);
-        height: calc(100% + 12px);
+        &.color-selected::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
 
-        border: 1px solid #000;
-        border-radius: 100%;
+            width: calc(100% + 12px);
+            height: calc(100% + 12px);
 
-        /*background: url(/build/assets/icon-f3a86aaa.svg#i-check-dark) no-repeat center;*/
-    }
+            border: 1px solid #000;
+            border-radius: 100%;
+        }
 
-    img {
-        width: 26px;
-        height: 26px;
-        border-radius: 100%;
+        &.art-white {
+            border: 1px solid #ccc;
+        }
+
+        img {
+            width: 26px;
+            height: 26px;
+            border-radius: 100%;
+        }
     }
 
 }
@@ -1238,14 +1261,30 @@ footer.art-site-footer {
             line-height: 26px;
         }
 
-        .card-link-price--hot {
-            color: #ff6662;
+        .price-hot-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: self-end;
+
+            .art-hot-price-data {
+                margin-right: 10px;
+
+                .card-link-price--hot {
+                    color: #ff6662;
+                }
+
+                .currency {
+                    color: #ff6662;
+                }
+            }
+
+            .card-link-price--old {
+                font-size: 14px;
+                font-weight: 400;
+                text-decoration: line-through;
+            }
         }
-        .card-link-price--old {
-            font-size: 14px;
-            font-weight: 400;
-            text-decoration: line-through;
-        }
+
 
         .currency {
             font-size: 24px;
@@ -2994,6 +3033,52 @@ section.art-contacts-page-section {
                 display: block;
             }
         }
+
+
+        form {
+
+            .filter-item--price {
+
+                .slider-range {
+                    display: flex;
+                    flex-direction: column-reverse;
+
+                    .rangeBar-full {
+
+                    }
+                    .rangeSlider {
+                        background: rgba(228,228,235,.5);;
+                        margin: 35px 10px;
+                        border-radius: 0;
+                        z-index: 2;
+
+                        .rangeNub {
+                            background: #D59958;
+                        }
+
+                        .rangeBar {
+                            background: #e4e4eb;
+                        }
+                        &.focus {
+                            .rangeFloat,
+                            .rangeBar {
+                                background: #D59958;
+                            }
+                        }
+                    }
+
+                    .currency-wrap {
+
+                    }
+                }
+
+                .filter-submit-main {
+                    width: 100%;
+                }
+            }
+
+        }
+
     }
 }
 

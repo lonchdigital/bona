@@ -17,6 +17,13 @@ class ApplicationConfigEditDTO implements BaseDTO
         public readonly ?string $viber,
         public readonly ?string $facebook,
         public readonly ?string $phoneOne,
+
         public readonly ?array $footerText,
+
+        public readonly ?array $formTitle,
+        public readonly ?array $formText,
+        public readonly ?UploadedFile $formImage,
+        public readonly bool $formImageDeleted,
+
     ){ }
 }

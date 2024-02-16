@@ -36,7 +36,7 @@
         "rollup-plugin-svgsprite-generator": "file:node_modules_local/rollup-plugin-svgsprite-generator",
         "select2": "^4.1.0-rc.0",
         "slug": "^8.2.2",
-        "svelte-range-slider-pips": "latest",
+        "svelte-range-slider-pips": "^2.3.1",
         "swiper": "latest",
         "transliteration": "^2.3.5",
         "vinyl-ftp": "latest",

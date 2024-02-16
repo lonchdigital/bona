@@ -70,6 +70,19 @@ export default {
             default: [],
         },
 
+        formTitle: {
+            type: Object,
+            default: [],
+        },
+        formText: {
+            type: Object,
+            default: [],
+        },
+        formImageUrl: {
+            type: String,
+            default: '',
+        },
+
     },
     data() {
         return {
@@ -84,7 +97,6 @@ export default {
     mounted() {
         this.selectedLanguage = this.baseLanguage;
 
-        console.log(this.footerText)
 
     },
     computed: {
@@ -190,6 +202,12 @@ export default {
                     />
                 </div>
 
+                <p class="mt-5">
+                    <strong>
+                        {{ $t('admin.footer_settings') }}
+                    </strong>
+                </p>
+
                 <multi-language-text-area-component
                     title="Footer text"
                     name="footer_text"
@@ -199,6 +217,43 @@ export default {
                     :init-data="footerText"
                     :errors="errors"
                 />
+
+
+                <p class="mt-5">
+                    <strong>
+                        {{ $t('admin.contact_form') }}
+                    </strong>
+                </p>
+
+                <multi-language-input-component
+                    title="Form title"
+                    name="form_title"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="formTitle"
+                    :errors="errors"
+                />
+
+                <multi-language-text-area-component
+                    title="Form text"
+                    name="form_text"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="formText"
+                    :errors="errors"
+                />
+
+                <image-file-input-component
+                    title="Form Image"
+                    name="form_image"
+                    image-deleted-name="form_image_deleted"
+                    :is-required="false"
+                    :errors="errors"
+                    :init-data="(formImageUrl) ? formImageUrl : null"
+                />
+
 
             </div>
         </div>

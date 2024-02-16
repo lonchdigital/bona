@@ -65,6 +65,8 @@ class ApplicationConfigService extends BaseService
     {
         return $this->coverWithDBTransaction(function () use($request) {
 
+//            dd($request);
+
             $dataToUpdate = [];
             foreach ($request as $key => $value) {
                 $dataToUpdate[$key] = $value;
@@ -72,8 +74,10 @@ class ApplicationConfigService extends BaseService
 
             $existinglogoLight = ApplicationConfig::where('config_name', 'logoLight')->first();
             $existinglogoDark = ApplicationConfig::where('config_name', 'logoDark')->first();
+            $existingFormImage = ApplicationConfig::where('config_name', 'formImage')->first();
             $dataToUpdate['logoLight'] = (!is_null($existinglogoLight)) ? $existinglogoLight->config_data : null;
             $dataToUpdate['logoDark'] = (!is_null($existinglogoDark)) ? $existinglogoDark->config_data : null;
+            $dataToUpdate['formImage'] = (!is_null($existingFormImage)) ? $existingFormImage->config_data : null;
 
             // logo Light
             if( !is_null($request->logoLight) ) {
@@ -105,8 +109,24 @@ class ApplicationConfigService extends BaseService
                 $dataToUpdate['logoDark'] = null;
             }
 
+            // form Image
+            if( !is_null($request->formImage) ) {
+                $formImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $this->storeImage($formImagePath, $request->formImage);
+                $dataToUpdate['formImage'] = $formImagePath;
+
+                if(!is_null($existingFormImage) && !is_null($existingFormImage->config_data)) {
+                    $this->deleteImage($existingFormImage->config_data);
+                }
+            }
+            if( $dataToUpdate['formImageDeleted'] ) {
+                $this->deleteImage($existingFormImage->config_data);
+                $dataToUpdate['formImage'] = null;
+            }
+
             unset($dataToUpdate['logoLightDeleted']);
             unset($dataToUpdate['logoDarkDeleted']);
+            unset($dataToUpdate['formImageDeleted']);
 
             foreach ($dataToUpdate as $key => $value) {
                 ApplicationConfig::updateOrCreate(['config_name' => $key], ['config_data' => $value]);

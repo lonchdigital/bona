@@ -19,7 +19,7 @@ export default {
                 },
                 function () {
                     console.error('[Cart]: showProductsInCart: error during getting products from cart.');
-                },
+                }
             );
         }
 
@@ -42,16 +42,13 @@ export default {
                 selectAttributes['color'] = null;
             }
 
-
+            // Add main Product to cart
             addProductToCart(
                 productSlug,
                 count,
                 selectAttributes,
                 function (data) {
-                    // button.parent().addClass('d-none');
-                    // countOfProductsBody.addClass('d-none');
                     goToCartBody.removeClass('d-none');
-
                     handleBasket(data);
                 },
                 function () {
@@ -59,70 +56,91 @@ export default {
                 }
             );
 
+
+            // add SubProducts to cart
+            $(".art-popup-single-product").each(function () {
+                $(this).find(".art-product-item").each(function () {
+                    var artButton = $(this).find('.single-sub-product-add-to-cart');
+                    var productCount = artButton.data("count");
+
+                    if( productCount > 0 ) {
+                        addSubProductToCart(
+                            artButton.attr("id"), // product slug
+                            productCount,
+                            function (data) {
+                                // handleBasket(data);
+                            },
+                            function () {
+                                console.error('[Cart]: init: error during adding sub product to cart.');
+                            }
+                        );
+                    }
+
+                });
+            });
+
+            location.reload();
         });
 
+        // SubProducts
+        // Add SubProduct
         $('.single-sub-product-add-to-cart').click(function () {
-
             var thisElement = $(this);
             const productSlug = thisElement.attr('id');
-            const productName = thisElement.parent().find('a.art-product-link').find('.text').find('.product-title').text();
+            const productLink = thisElement.parent().find('a.art-product-link');
+            const productPrice = productLink.find('.price').text();
+            const productName = productLink.find('.text').find('.product-title').text();
 
-            // Получить текущее значение атрибута data-count
+            // Get current attribute data-count
             var currentCount = parseInt(thisElement.data('count'));
             var updatedCount = currentCount + 1;
 
-            // Обновить значение атрибута в объекте jQuery
+            // update object jQuery
             thisElement.data('count', updatedCount);
-            //Обновить значение атрибута в DOM
+            // update attribute in DOM
             thisElement.attr('data-count', updatedCount);
 
             var wrapperSlug = thisElement.closest("div.art-popup-single-product").attr('id');
-            // $('[data-wrapper="'+ wrapperSlug +'"]').css( "border", "1px solid red" );
             $('[data-wrapper="'+ wrapperSlug +'"]').prepend('<span class="added-line" data-slug="'+ productSlug +'"><i class="fa fa-close"></i>'+ productName +'</span>');
 
+            // Increase Product Price
+            var productPriceElement = document.getElementById("product-price");
+            var currentPriceTag = productPriceElement.innerText;
+            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
+
+            var newPrice = parseFloat(currentPrice) + parseFloat(productPrice);
+            productPriceElement.setAttribute("data-product-price", newPrice.toString());
+            productPriceElement.innerText = parseFloat(currentPriceTag) + parseFloat(productPrice);
+
             thisElement.closest("div.art-popup-single-product").find('.f-button.is-close-btn').trigger("click");
-
-            console.log('SUB product add to cart CLICk 111111111');
-
-            addSubProductToCart(
-                productSlug,
-                updatedCount,
-                function (data) {
-                    handleBasket(data);
-                },
-                function () {
-                    console.error('[Cart]: init: error during adding sub product to cart.');
-                }
-            );
-
         });
 
-        // Remove added-line
+        // Remove SubProduct (added-line)
         $('.added-sub-products').on('click', '.added-line', function() {
 
             var thisElement = $(this);
             const productSlug = thisElement.attr('data-slug');
 
-
             const subProduct =  $('#' + productSlug);
+            var productPrice = subProduct.parent().find('.art-product-link').find('.price').text();
+            var countOfProducts = subProduct.data('count');
             subProduct.data('count', 0);
             subProduct.attr('data-count', 0);
 
-
             thisElement.parent().find('[data-slug="'+ productSlug +'"]').remove();
 
+            /*console.log(countOfProducts);
+            console.log(productPrice);*/
 
-            deleteProductFromCart(
-                productSlug,
-                function (data) {
-                    $('.basket-with-products .count-of-products-in-basket').text(data.data.products.length);
-                    drawProductsInCartWindowHTML(data);
-                },
-                function () {
-                    console.error('[Cart]: addDeleteProductFromCartHandlers: error during product in cart update.');
-                }
-            );
+            var productPriceElement = document.getElementById("product-price");
+            var currentPriceTag = productPriceElement.innerText;
+            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
 
+            var sumOfSubProducts = parseFloat(productPrice) * parseFloat(countOfProducts);
+
+            var newPrice = parseFloat(currentPrice) - sumOfSubProducts;
+            productPriceElement.setAttribute("data-product-price", newPrice.toString());
+            productPriceElement.innerText = parseFloat(currentPriceTag) - sumOfSubProducts;
         });
 
 
@@ -157,8 +175,8 @@ export default {
                             promoCodeErrorText.text(translations.action_unexpected_error);
                         }
                     }
-                )
-            })
+                );
+            });
         }
 
         if (page === 'store.calculator.page') {
@@ -193,7 +211,6 @@ function addProductToCart(slug, count, selectAttributes, success, fail)
 }
 function addSubProductToCart(slug, updatedCount, success, fail)
 {
-    // if( updatedCount === 1 ) {
     const routeWithSlug = routes.cart.sub_product_add_route.replace('PRODUCT_SLUG', slug);
 
     $.ajax({
@@ -202,7 +219,6 @@ function addSubProductToCart(slug, updatedCount, success, fail)
         data: {
             _token: csrf,
             product_count: updatedCount
-            // product_count: 1
         },
         dataType: 'json',
     }).done(function(data) {
@@ -210,22 +226,6 @@ function addSubProductToCart(slug, updatedCount, success, fail)
     }).fail(function () {
         fail();
     });
-
-
-    /*else {
-
-        updateProductInCart(
-            slug,
-            updatedCount,
-            function (data) {
-                drawProductsInCartWindowHTML(data);
-            },
-            function () {
-                console.error('[Cart]: addChangeProductCountHandlers: error during product in cart update.');
-            }
-        );
-
-    }*/
 
 }
 
@@ -570,7 +570,7 @@ function addDeleteProductFromCartHandlers(elements)
                 }
             },
             function () {
-                console.error('[Cart]: addDeleteProductFromCartHandlers: error during product in cart update.');
+                console.error('[Cart]: addDeleteProductFromCartHandlers: error during products in cart update.');
             }
         )
     })

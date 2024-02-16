@@ -48,7 +48,8 @@
                         <form action="" id="filter-left-form">
 
                             <!--Price-->
-                            <div class="filter-box active">
+                            <!--TODO: remove old price range slider-->
+<!--                            <div class="filter-box active">
                                 <div class="title font-title">{{ trans('base.price') }}</div>
                                 <div class="filter-content">
                                     <div class="price-filter">
@@ -60,6 +61,36 @@
                                         >
                                         <input type="text" id="range-price-slider" value="">
                                     </div>
+                                </div>
+                            </div>-->
+
+                            <div class="filter-item filter-item--price filter-box">
+                                <div class="title font-title">{{ trans('base.price') }}</div>
+                                <div class="position-relative">
+                                    <div id="price-slider" class="price-slider slider-range mb-3">
+                                        <div class="currency-wrap">
+                                            <div class="input-currency mb-3">
+{{--                                                <span class="currency">{{ $baseCurrency->name_short }}</span>--}}
+                                                <input id="currency-first-main"
+                                                       class="currency-first-main sync-input art-form-light-control"
+                                                       type="number"
+                                                       @isset($filtersData['price_from']) value="{{ $filtersData['price_from'] }}"
+                                                       @endisset min="0" max="{{ $productsMaxPrice }}" step="1"
+                                                       name="price_from" placeholder="0">
+                                            </div>
+                                            <div class="input-currency">
+{{--                                                <span class="currency">{{ $baseCurrency->name_short }}</span>--}}
+                                                <input id="currency-last-main"
+                                                       class="currency-last-main sync-input art-form-light-control"
+                                                       type="number"
+                                                       @isset($filtersData['price_to']) value="{{ $filtersData['price_to'] }}"
+                                                       @endisset min="0" max="{{ $productsMaxPrice }}" step="1"
+                                                       name="price_to" placeholder="{{ $productsMaxPrice }}">
+                                            </div>
+                                        </div>
+                                        <div class="rangeBar-full"></div>
+                                    </div>
+                                    <button type="button" class="btn btn-empty color-dark filter-submit-main">{{ trans('base.apply') }}</button>
                                 </div>
                             </div>
 

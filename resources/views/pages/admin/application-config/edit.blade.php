@@ -63,6 +63,18 @@
                         @if(array_key_exists('footerText', $applicationConfig))
                             :footer-text="{{ json_encode($applicationConfig['footerText']) }}"
                         @endif
+
+
+                        @if(array_key_exists('formTitle', $applicationConfig))
+                            :form-title="{{ json_encode($applicationConfig['formTitle']) }}"
+                        @endif
+                        @if(array_key_exists('formText', $applicationConfig))
+                            :form-text="{{ json_encode($applicationConfig['formText']) }}"
+                        @endif
+                        @if(array_key_exists('formImage', $applicationConfig) && !is_null($applicationConfig['formImage']))
+                            :form-image-url="{{ json_encode( '/storage/' . $applicationConfig['formImage']) }}"
+                        @endif
+
                     @endif
                 />
 
