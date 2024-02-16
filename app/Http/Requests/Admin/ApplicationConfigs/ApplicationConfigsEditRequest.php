@@ -46,8 +46,22 @@ class ApplicationConfigsEditRequest extends BaseRequest
             'string'
         ];
 
+        $rules['form_image'] = [
+            'nullable',
+            'image',
+        ];
+
         foreach ($this->availableLanguages as $availableLanguage) {
             $rules['footer_text.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+
+            $rules['form_title.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+            $rules['form_text.' . $availableLanguage] = [
                 'nullable',
                 'string'
             ];
@@ -75,7 +89,13 @@ class ApplicationConfigsEditRequest extends BaseRequest
             $this->input('viber'),
             $this->input('facebook'),
             $this->input('phone_one'),
+
             $this->input('footer_text'),
+
+            $this->input('form_title'),
+            $this->input('form_text'),
+            $this->file('form_image'),
+            (bool) $this->input('form_image_deleted'),
         );
     }
 }

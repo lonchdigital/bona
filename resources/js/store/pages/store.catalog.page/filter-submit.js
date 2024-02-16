@@ -1,5 +1,6 @@
 import $ from "jquery";
 import window from "inputmask/lib/global/window";
+import RangeSliderPips from 'svelte-range-slider-pips';
 
 const tooltipClasses = [
     '.filter-item--type-custom .checkbox-preview',
@@ -9,6 +10,31 @@ const tooltipClasses = [
 ];
 
 export function init () {
+
+    const CurrencyFirst = $("#currency-first-main");
+    const CurrencyLast = $("#currency-last-main");
+    /*const CurrencyFirstFull = $("#currency-first-full");
+    const CurrencyLastFull = $("#currency-last-full");
+    const CurrencyFirstFullMobile = $("#currency-first-full-m");
+    const CurrencyLastFullMobile = $("#currency-last-full-m");*/
+
+    let PriceSlider = new RangeSliderPips({
+        target: $('#price-slider')[0],
+        props: {
+            min: parseFloat(CurrencyFirst.attr('min')),
+            max: parseFloat(CurrencyLast.attr('max')),
+            values: [CurrencyFirst.val() ? CurrencyFirst.val() : CurrencyFirst.attr('min'), CurrencyLast.val() ? CurrencyLast.val() : CurrencyLast.attr('max')],
+            step: 1,
+            range: true,
+            float: true,
+            suffix: ' ' + store.base_currency_name_short
+        }
+    });
+    PriceSlider.$on('change', function (e) {
+        CurrencyFirst.val(e.detail.values[0]).trigger('change');
+        CurrencyLast.val(e.detail.values[1]).trigger('change');
+    });
+
 
     const mainFilterForm = $('#filter-left-form');
     const fullFilterForm = $('#filter-full-form');
