@@ -35,6 +35,8 @@ return [
     'name' => 'Імʼя',
     'your_name' => 'Ваше імʼя',
     'phone' => 'Телефон',
+    'phone_validation' => 'Введіть лише 10 цифр Вашого телефону',
+    'agree' => 'Згоду',
     'email' => 'Email',
     'day' => 'День',
     'month' => 'Місяць',
