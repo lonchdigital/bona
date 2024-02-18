@@ -129,9 +129,7 @@ export default {
 
             thisElement.parent().find('[data-slug="'+ productSlug +'"]').remove();
 
-            /*console.log(countOfProducts);
-            console.log(productPrice);*/
-
+            // Reduce Product Price
             var productPriceElement = document.getElementById("product-price");
             var currentPriceTag = productPriceElement.innerText;
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));

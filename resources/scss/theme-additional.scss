@@ -292,20 +292,40 @@ select:focus {
     }
 }
 
-.art-popup-call-measurer .art-contact-form {
+.art-popup-call-measurer {
 
+    .art-contact-form {
+
+        .art-fields-row {
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: center;
+
+            div {
+                width: 229px;
+
+                &:first-child {
+                    margin-right: 14px;
+                }
+            }
+        }
+
+        .field-error {
+            margin-bottom: 0;
+            font-size: 11px;
+            line-height: 13px;
+            margin-top: 7px;
+            color: #ff8a8a;
+
+            &.agree {
+                margin-bottom: 15px;
+                margin-top: -4px;
+            }
+        }
+    }
 }
-.art-popup-call-measurer .art-contact-form .art-fields-row {
-    margin-bottom: 14px;
-    display: flex;
-    justify-content: center;
-}
-.art-popup-call-measurer .art-contact-form .art-fields-row input {
-    width: 229px;
-}
-.art-popup-call-measurer .art-contact-form .art-fields-row input:first-child {
-    margin-right: 14px;
-}
+
+
 .art-popup-call-measurer .art-contact-form .agreement-line {
     font-size: 9px;
     margin-bottom: 5px;
@@ -510,22 +530,41 @@ select:focus {
     }
 }
 
-.art-contact-form-section .art-contact-form {
+.art-contact-form-section {
 
+    .art-contact-form {
+
+        .art-fields-row {
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: center;
+
+            div {
+                width: 229px;
+
+                &:first-child {
+                    margin-right: 14px;
+                }
+            }
+        }
+
+        .field-error {
+            margin-bottom: 0;
+            font-size: 11px;
+            line-height: 13px;
+            margin-top: 7px;
+            color: #ff8a8a;
+
+            &.agree {
+                margin-bottom: 15px;
+                margin-top: -4px;
+            }
+        }
+    }
 }
-.art-contact-form-section .art-contact-form .art-fields-row {
-    margin-bottom: 14px;
-    display: flex;
-    justify-content: center;
-}
-.art-contact-form-section .art-contact-form .art-fields-row input {
-    width: 229px;
-}
-.art-contact-form-section .art-contact-form .art-fields-row input:first-child {
-    margin-right: 14px;
-}
+
 .art-contact-form-section .art-contact-form .agreement-line {
-    font-size: 9px;
+    font-size: 12px;
     margin-bottom: 5px;
 }
 .art-contact-form-section .art-contact-form .agreement-line label {

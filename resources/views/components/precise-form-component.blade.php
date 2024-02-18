@@ -20,16 +20,19 @@
 
                 <form action="#" id="user-choose-doors" method="post" class="art-contact-form">
                     @csrf
-                    <p class="art-fields-row">
-                        <input type="text" class="art-light-field" name="name" placeholder="{{ trans('base.name') }}">
-                        <input type="text" class="art-light-field" name="phone" placeholder="{{ trans('base.phone') }}">
-                    </p>
-                    <div class="checkbox checkbox-white agreement-line">
+                    <div class="art-fields-row">
+                        <div>
+                            <input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}">
+                        </div>
+                        <div>
+                            <input type="text" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}">
+                        </div>
+                    </div>
+                    <div class="checkbox checkbox-white agreement-line agree-field">
                         <input type="checkbox" name="agree" value="1">
                         <label for="fieldName">{{ trans('base.agreement_line_start') . ' ' . trans('base.agreement_line_end') }}</label>
                     </div>
                     <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
-                    <div class="form-errors"></div>
                 </form>
 
             </div>

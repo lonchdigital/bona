@@ -25,6 +25,23 @@ class UserChooseDoorsRequest extends BaseRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        $attributes = [
+            'name' => mb_strtolower(trans('base.name')),
+            'phone' => mb_strtolower(trans('base.phone')),
+            'agree' => mb_strtolower(trans('base.agree')),
+        ];
+
+        return $attributes;
+    }
+
+    public function messages()
+    {
+        return [
+            'phone.digits' => trans('base.phone_validation'),
+        ];
+    }
 
     public function toDTO(): UserChooseDoorsDTO
     {
