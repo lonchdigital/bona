@@ -86,7 +86,7 @@ export default {
         // Add SubProduct
         $('.single-sub-product-add-to-cart').click(function () {
             var thisElement = $(this);
-            const productSlug = thisElement.attr('id');
+            const productSubID = thisElement.data('id');
             const productLink = thisElement.parent().find('a.art-product-link');
             const productPrice = productLink.find('.price').text();
             const productName = productLink.find('.text').find('.product-title').text();
@@ -101,7 +101,7 @@ export default {
             thisElement.attr('data-count', updatedCount);
 
             var wrapperSlug = thisElement.closest("div.art-popup-single-product").attr('id');
-            $('[data-wrapper="'+ wrapperSlug +'"]').prepend('<span class="added-line" data-slug="'+ productSlug +'"><i class="fa fa-close"></i>'+ productName +'</span>');
+            $('[data-wrapper="'+ wrapperSlug +'"]').prepend('<span class="added-line" data-sub-id="'+ productSubID +'"><i class="fa fa-close"></i>'+ productName +'</span>');
 
             // Increase Product Price
             var productPriceElement = document.getElementById("product-price");
@@ -119,15 +119,16 @@ export default {
         $('.added-sub-products').on('click', '.added-line', function() {
 
             var thisElement = $(this);
-            const productSlug = thisElement.attr('data-slug');
+            const productSubID = thisElement.attr('data-sub-id');
 
-            const subProduct =  $('#' + productSlug);
+            const subProduct =  $('.art-popup-single-product [data-id="'+ productSubID +'"]');
+
             var productPrice = subProduct.parent().find('.art-product-link').find('.price').text();
             var countOfProducts = subProduct.data('count');
             subProduct.data('count', 0);
             subProduct.attr('data-count', 0);
 
-            thisElement.parent().find('[data-slug="'+ productSlug +'"]').remove();
+            thisElement.parent().find('[data-sub-id="'+ productSubID +'"]').remove();
 
             // Reduce Product Price
             var productPriceElement = document.getElementById("product-price");

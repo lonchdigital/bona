@@ -62,17 +62,22 @@
                                     </div>
                                     <div class="swiper-pagination mt-5 d-sm-none"></div>
                                 </div>
-                                <div class="swiper-single-wallpaper-thumbs-wrap d-none-1111 d-sm-flex align-items-center mb-md-13">
+
+                                <div class="777777777777777777 swiper-single-wallpaper-thumbs-wrap d-none-1111 d-sm-flex align-items-center mb-md-13">
                                     <div class="swiper-pagination mr-4 mr-xl-10"></div>
                                     <div class="art-single-wallpaper-thumbs-wrapper">
-                                        <div class="swiper-single-wallpaper-thumbs">
+                                        <div class="swiper-single-wallpaper-thumbs swiper swiper-initialized swiper-horizontal swiper-free-mode swiper-watch-progress swiper-backface-hidden swiper-thumbs">
                                             <div class="swiper-wrapper">
                                                 <div class="swiper-slide">
-                                                    <img src="{{ $product->main_image_url }}" alt="img">
+                                                    <div class="art-swiper-slide">
+                                                        <img src="{{ $product->main_image_url }}" alt="img">
+                                                    </div>
                                                 </div>
                                                 @foreach($productGallery as $image)
                                                     <div class="swiper-slide">
-                                                        <img src="{{ $image->gallery_image_url }}" alt="img">
+                                                        <div class="art-swiper-slide">
+                                                            <img src="{{ $image->gallery_image_url }}" alt="img">
+                                                        </div>
                                                     </div>
                                                 @endforeach
                                             </div>
@@ -205,8 +210,8 @@
                                                             </a>
                                                             <button type="button"
                                                                     class="btn w-100 single-sub-product-add-to-cart"
-                                                                    id="{{ $subProduct->slug }}"
                                                                     data-count="0"
+                                                                    data-id="{{  $subProduct->id }}"
                                                             >{{ trans('base.select') }}</button>
                                                         </div>
                                                     </div>
