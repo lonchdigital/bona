@@ -10,15 +10,18 @@ export function init () {
 
     imagesCount = imagesCount >= 4 ? 4 : imagesCount;
 
+    console.log(imagesCount);
+    if(imagesCount < 4) {
+        $('.swiper-single-wallpaper-thumbs').find('.swiper-wrapper').addClass('art-few-thumbs');
+    }
 
     const SwiperSingleWallpaperThumbs = new Swiper('.swiper-single-wallpaper-thumbs', {
         // slidesPerView: imagesCount,
         // slidesPerView: 4,
         // slidesPerGroupAuto: false,
         // slidesPerGroup: 1,
-        spaceBetween: 2,
+        spaceBetween: 0,
         freeMode: true,
-        //watchSlidesProgress: true,
         pagination: {
             //enabled: true,
             el: ".swiper-single-wallpaper-thumbs-wrap .swiper-pagination",
@@ -26,20 +29,46 @@ export function init () {
         },
         breakpoints: {
             300: {
-                slidesPerView: 3
+                slidesPerView: 2
+                // spaceBetween: 20
             },
-            /*768: {
+            768: {
                 slidesPerView: 3
-            },*/
+                // spaceBetween: 50
+            },
             1200: {
-                slidesPerView: imagesCount
+                // slidesPerView: imagesCount,
+                slidesPerView: 4,
+                spaceBetween: calculateSpaceBetween()
             }
-
+        },
+        on: {
+            init: function () {
+                // При инициализации Swiper
+                this.params.spaceBetween = calculateSpaceBetween();
+                this.update(); // Обновление Swiper
+            },
+            resize: function () {
+                // При изменении размеров окна
+                // this.params.spaceBetween = calculateSpaceBetween();
+                this.update(); // Обновление Swiper
+            }
         }
     });
-    window.addEventListener('resize', () => {
+
+    /*window.addEventListener('resize', () => {
         SwiperSingleWallpaperThumbs.update(); // Обновление Swiper при изменении размера окна
-    });
+    });*/
+    function calculateSpaceBetween() {
+        let spaceBetween = 0;
+        if(imagesCount === 3) {
+            spaceBetween = 20;
+        } else if(imagesCount === 2) {
+            spaceBetween = 20;
+        }
+
+        return spaceBetween;
+    }
 
 
 //? swiper-single-wallpaper

@@ -1149,49 +1149,84 @@ footer.art-site-footer {
 }
 .art-single-wallpaper-thumbs-wrapper {
     margin: 0 auto;
+    max-width: 100%;
+    //overflow: hidden;
 }
+
+
 .swiper-single-wallpaper-thumbs {
-    overflow: hidden;
-    max-height: 250px;
-    max-width: 690px;
+    //overflow: hidden;
+    //max-width: 690px;
+
 
     @media (max-width: 1199px) {
-        max-width: 530px;
+        //max-width: 530px;
     }
 
     @media (max-width: 991px) {
-        max-width: 440px;
+        //max-width: 440px;
     }
 
     @media (max-width: 767px) {
-        max-width: 530px;
+        //max-width: 530px;
+    }
+
+    .swiper-wrapper {
+
+        &.art-few-thumbs {
+            display: flex;
+            justify-content: center;
+        }
     }
 
     .swiper-slide {
         cursor: pointer;
+        display: flex;
+        justify-content: center;
+        width: 25% !important;
+        padding: 10px;
+
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+
+            @media (max-width: 767px) {
+                width: 90px;
+            }
+        }
+        .art-swiper-slide {
+            //padding: 20px 35px;
+            padding: 10px;
+            //width: 191px;
+        }
+
+        &.swiper-slide-thumb-active {
+            position: relative;
+
+            .art-swiper-slide {
+                position: relative;
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 1;
+                    background: rgba(255,255,255,.5);
+                    border: 1px solid #1d1d23;
+                }
+
+                img {
+
+                }
+            }
+
+        }
     }
 
-    .swiper-slide img {
-        height: 100%;
-        object-fit: cover;
-        width: 90px;
-    }
-
-    .swiper-slide.swiper-slide-thumb-active {
-        position: relative;
-    }
-
-    .swiper-slide.swiper-slide-thumb-active:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1;
-        background: rgba(255,255,255,.5);
-        border: 2px solid #1d1d23;
-    }
 
 }
 .swiper-single-wallpaper-wrap {
@@ -1219,7 +1254,7 @@ footer.art-site-footer {
 }
 
 .art-single-product-gallery .swiper-single-wallpaper-thumbs .swiper-slide {
-    //width: 134px !important;
+    //width: 171px !important;
     text-align: center;
     user-select: none;
     -webkit-user-select: none;
