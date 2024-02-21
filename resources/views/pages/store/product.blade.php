@@ -63,6 +63,7 @@
                                     <div class="swiper-pagination mt-5 d-sm-none"></div>
                                 </div>
 
+
                                 <div class="swiper-single-wallpaper-thumbs-wrap d-none-1111 d-sm-flex align-items-center mb-md-13">
                                     <div class="swiper-pagination mr-4 mr-xl-10"></div>
                                     <div class="art-single-wallpaper-thumbs-wrapper">
