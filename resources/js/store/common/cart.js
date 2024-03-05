@@ -447,9 +447,7 @@ function getProductInCartPageHTML(productData)
                         <div class="table-price mb-3 text-right d-lg-none">
                             ${productData.price} ${store.base_currency_name_short}
                         </div>
-                        <div class="table-product-code mb-2">
-                           ${translations.sku} <span>${productData.sku}</span>
-                        </div>
+                        ${productData.sku !== null ? `<div class="table-product-code mb-2">${translations.sku} <span>${productData.sku}</span></div>` : ''}
                         <div class="table-product-name h4 mb-0 d-block">
                             ${productData.name}
                         </div>

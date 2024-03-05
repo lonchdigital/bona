@@ -11,8 +11,10 @@
 
     <main id="page-cart" class="page-cart">
         <div class="content">
-            <div class="entry-content">
+            <div class="entry-content common-page-section-wrapper art-section-pd">
                 <div class="container">
+
+                    <h1>{{ trans('base.cart') }}</h1>
 
                     <div class="row">
                         <div class="art-cart-products-wrapper col-md-12">
