@@ -15,8 +15,7 @@
 
                     <h1>{{ trans('base.checkout') }}</h1>
 
-                    <form class="row checkout-main mb-lg-4" id="checkout-main"
-                          action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST">
+                    <form class="row checkout-main mb-lg-4" id="checkout-main" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST">
 
                         <div class="left-content col-lg-8">
                             <!-- checkout-order-data -->
