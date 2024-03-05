@@ -338,14 +338,14 @@
                                                     <ul class="nav nav-tabs art-product-video-tabs" role="tablist">
                                                         @foreach($productVideos as $item)
                                                             <li role="presentation" class="{{ $loop->first ? 'active' : '' }}">
-                                                                <a href="#{{ Illuminate\Support\Str::slug($item->tab) }}" aria-controls="{{ Illuminate\Support\Str::slug($item->tab) }}" role="tab" data-toggle="tab">
+                                                                <a href="#{{ Illuminate\Support\Str::slug($item->tab) .'-'. $loop->index }}" aria-controls="{{ Illuminate\Support\Str::slug($item->tab) .'-'. $loop->index }}" role="tab" data-toggle="tab">
                                                                     <span>{{ $item->tab }}</span>
                                                                 </a>
                                                             </li>
                                                         @endforeach
                                                     </ul>
                                                     @foreach($productVideos as $item)
-                                                        <div role="tabpanel" class="tab-pane{{ $loop->first ? ' active' : '' }}" id="{{ Illuminate\Support\Str::slug($item->tab) }}">
+                                                        <div role="tabpanel" class="tab-pane{{ $loop->first ? ' active' : '' }}" id="{{ Illuminate\Support\Str::slug($item->tab) .'-'. $loop->index }}">
                                                             {!! $item->iframe !!}
                                                         </div>
                                                     @endforeach
@@ -448,11 +448,17 @@
             });
         }
 
-        /**/
-        // var spans = document.querySelectorAll('.art-colors-list span');
 
-
+        // Colors
         const colorList = document.querySelector(".art-colors-list");
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const firstColorSpan = colorList.querySelector("span"); // get the first span
+            if (firstColorSpan) {
+                firstColorSpan.click();
+            }
+        });
+
         colorList.addEventListener("click", function(event) {
 
             var productPriceElement = document.getElementById("product-price");

@@ -87,7 +87,8 @@ class ProductService extends BaseService
 
     public function getProductsMaxPrice(ProductType $productType): int
     {
-        return Product::where('product_type_id', $productType->id)->max('price');
+        $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
+        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
     }
 
     public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
