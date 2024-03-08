@@ -1,3 +1,5 @@
+$accent: #D59958;
+
 #art-dialog-warning {
     padding: 40px;
 
@@ -444,6 +446,7 @@ select:focus {
         a {
             display: block;
             padding: 33px 33px 16px 33px;
+            //padding: 3.3rem 3.3rem 1.6rem 3.3rem;
 
             .image {
                 display: flex;
@@ -961,14 +964,14 @@ footer.art-site-footer {
     color: #E6DCD7;
 
     .art-footer-title {
-        color: #D59958;
+        color: $accent;
     }
 
     a {
         color: #E6DCD7;
 
         &:hover {
-            color: #D59958;
+            color: $accent;
         }
     }
 
@@ -1305,9 +1308,24 @@ footer.art-site-footer {
 
 .art-colors-list {
     display: flex;
+    flex-wrap: wrap;
+    margin-bottom: -10px;
 
-    span {
+    span.color-btn {
+        display: block;
+        float: left;
         position: relative;
+        width: 26px;
+        height: 26px;
+        background-color: #f8f8f8;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+        font-size: 10px;
+        line-height: 21px;
+        color: black;
+        border-radius: 100%;
+
     }
 
     > span {
@@ -1650,7 +1668,7 @@ a:focus,
     font-weight: 500;
 }
 .header-main-others li.list-inline-item.basket-list .basket.full .after {
-    background: #D59958;
+    background: $accent;
 }
 .header-main-others li.list-inline-item svg {
     fill: #1d1d23;
@@ -2034,8 +2052,8 @@ nav .navigation-bottom #art-hamburger-menu .art-hamburger-header span {
     padding-bottom: 6px;
 }
 nav .navigation-bottom #art-hamburger-menu .art-hamburger-header span.active {
-    color: #D59958;
-    border-color: #D59958;
+    color: $accent;
+    border-color: $accent;
 }
 nav .navigation-bottom #art-hamburger-menu .art-hamburger-data {
     margin-bottom: 40px;
@@ -2799,7 +2817,7 @@ header .title:after {
 
     width: 91px;
     height: 3px;
-    background-color: #D59958;
+    background-color: $accent;
 }
 header .subtitle {
     margin-bottom: 0;
@@ -3213,6 +3231,16 @@ section.art-contacts-page-section {
                     display: flex;
                     flex-direction: column-reverse;
 
+                    .currency-wrap {
+                        display: flex;
+                        margin: 0 -7px;
+
+                        .input-currency {
+                            padding: 0 7px;
+                            width: 100%;
+                        }
+                    }
+
                     .rangeBar-full {
 
                     }
@@ -3223,16 +3251,22 @@ section.art-contacts-page-section {
                         z-index: 2;
 
                         .rangeNub {
-                            background: #D59958;
+                            background: $accent;
+                        }
+
+                        .rangeFloat {
+                            /*background: $accent !important;
+                            opacity: 1 !important;
+                            top: -4px !important;*/
                         }
 
                         .rangeBar {
-                            background: #e4e4eb;
+                            background: $accent;
                         }
                         &.focus {
                             .rangeFloat,
                             .rangeBar {
-                                background: #D59958;
+                                background: $accent;
                             }
                         }
                     }
@@ -3273,6 +3307,7 @@ section.art-contacts-page-section {
 
     .art-catalog-top {
         display: none;
+        margin-top: 20px;
 
         @media (max-width: 991px) {
             display: block;
@@ -3285,6 +3320,10 @@ section.art-contacts-page-section {
             padding: 9px 16px;
             border: 1px solid #E5E5E5;
             width: 300px;
+
+            @media (max-width: 767px) {
+                width: 100%;
+            }
         }
     }
 

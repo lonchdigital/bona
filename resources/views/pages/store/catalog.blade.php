@@ -23,9 +23,7 @@
 
     @include('pages.store.partials.page_header', ['links' => [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) => $productType->name]])
 
-
     <!-- ======================== Products ======================== -->
-
     <section class="products art-products-catalog">
         <div class="container">
 
@@ -44,32 +42,14 @@
                             </div>
                         </div>
 
-
                         <form action="" id="filter-left-form">
-
                             <!--Price-->
-                            <!--TODO: remove old price range slider-->
-<!--                            <div class="filter-box active">
-                                <div class="title font-title">{{ trans('base.price') }}</div>
-                                <div class="filter-content">
-                                    <div class="price-filter">
-                                        <input type="hidden" name="price_from" class="art-irs-from"
-                                               @isset($filtersData['price_from']) value="{{ $filtersData['price_from'] }}"@endisset
-                                        >
-                                        <input type="hidden" name="price_to" class="art-irs-to"
-                                               @isset($filtersData['price_to']) value="{{ $filtersData['price_to'] }}"@endisset
-                                        >
-                                        <input type="text" id="range-price-slider" value="">
-                                    </div>
-                                </div>
-                            </div>-->
-
                             <div class="filter-item filter-item--price filter-box">
                                 <div class="title font-title">{{ trans('base.price') }}</div>
                                 <div class="position-relative">
                                     <div id="price-slider" class="price-slider slider-range mb-3">
                                         <div class="currency-wrap">
-                                            <div class="input-currency mb-3">
+                                            <div class="input-currency">
 {{--                                                <span class="currency">{{ $baseCurrency->name_short }}</span>--}}
                                                 <input id="currency-first-main"
                                                        class="currency-first-main sync-input art-form-light-control"
@@ -93,7 +73,6 @@
                                     <button type="button" class="btn btn-empty color-dark filter-submit-main">{{ trans('base.apply') }}</button>
                                 </div>
                             </div>
-
 
                             <!--Discount-->
                             @if(count($filters['main']))
@@ -127,7 +106,6 @@
                                     </div> <!--/filter-box-->
                                 @endforeach
                             @endif
-
 
                             @if($productType->has_color)
                                 <div class="filter-box filter-item--colors active">
@@ -172,7 +150,6 @@
                                 </div>
                             @endif
 
-
                             <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark">{{trans('base.filter')}}</div>
 
                         </form>
@@ -208,8 +185,6 @@
 
         </div><!--/container-->
     </section>
-
-
 
 
     @if( count($faqs) )

@@ -168,11 +168,11 @@
                                         <div class="art-colors-list">
                                             @foreach($product->colors as $color_item)
                                                 @if($color_item->display_as_image)
-                                                    <span class="color-btn" data-name="{{ $color_item->name }}" data-price="{{ $color_item->pivot->price }}">
+                                                    <span class="color-btn" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}">
                                                         <img src="{{$color_item->image_url}}">
                                                     </span>
                                                 @else
-                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-name="{{ $color_item->name }}" data-price="{{ $color_item->pivot->price != null ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
+                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
                                                 @endif
                                             @endforeach
                                         </div>
@@ -213,6 +213,7 @@
                                                                     class="btn w-100 single-sub-product-add-to-cart"
                                                                     data-count="0"
                                                                     data-id="{{  $subProduct->id }}"
+                                                                    data-slug="{{  $subProduct->slug }}"
                                                             >{{ trans('base.select') }}</button>
                                                         </div>
                                                     </div>
@@ -244,7 +245,7 @@
                                             </div>
                                             <span class="card-link-price--old">{{ $product->old_price }} {{ $baseCurrency->name_short }}</span>
                                         @else
-                                            <span id="product-price" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
+                                            <span id="product-price" data-count="1" data-start-price="{{ $product->price }}" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
                                             <span class="currency">{{ $baseCurrency->name_short }}</span>
                                         @endif
 
@@ -411,104 +412,6 @@
 @endsection
 
 @push('dynamic_scripts')
-
-    <script type="text/javascript">
-        var priceOptions = {}; // Пустой объект для хранения опций цен
-        var selectElements = document.getElementsByClassName("art-select-attribute");
-
-
-        for (var i = 0; i < selectElements.length; i++) {
-            selectElements[i].addEventListener("change", function() {
-
-                var productPriceElement = document.getElementById("product-price");
-                var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
-
-                var selectedIndex = this.selectedIndex;
-                var selectedOption = this.options[selectedIndex];
-                var price = parseFloat(selectedOption.getAttribute("data-price"));
-                var selectID = this.id;
-                var attributePrices = 0;
-
-                if (!priceOptions[selectID]) {
-                    priceOptions[selectID] = {};
-                }
-
-                // Обновляем цену в объекте опций цен для выбранного атрибута
-                priceOptions[selectID].price = (isNaN(price)) ? 0 : price;
-
-                for(var key in priceOptions) {
-                    if(priceOptions.hasOwnProperty(key)) {
-                        var value = priceOptions[key];
-                        attributePrices += value.price;
-                    }
-                }
-
-                var totalPrice = currentPrice + attributePrices;
-                productPriceElement.innerText = totalPrice.toFixed();
-            });
-        }
-
-
-        // Colors
-        const colorList = document.querySelector(".art-colors-list");
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const firstColorSpan = colorList.querySelector("span"); // get the first span
-            if (firstColorSpan) {
-                firstColorSpan.click();
-            }
-        });
-
-        colorList.addEventListener("click", function(event) {
-
-            var productPriceElement = document.getElementById("product-price");
-            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
-
-            const clickedElement = event.target;
-
-            // Проверяем, есть ли <img> внутри элемента или в одном из его родительских элементов
-            const imgElement = clickedElement.closest("span").querySelector("img");
-
-            if (imgElement || clickedElement.closest("span").tagName === "SPAN") {
-                // Если есть <img>, на котором было событие click
-                const clickedImg = imgElement || clickedElement.closest("span");
-
-                // Проверяем, является ли родительский элемент <span>
-                const clickedSpan = clickedImg.tagName === "SPAN" ? clickedImg : clickedImg.closest("span");
-
-                if (clickedSpan) {
-                    // Удаление класса 'color-selected' у всех span внутри контейнера
-                    const allSpans = colorList.querySelectorAll("span");
-                    allSpans.forEach(function(span) {
-                        span.classList.remove("color-selected");
-                    });
-
-                    // Добавление класса 'color-selected' к родительскому span
-                    clickedSpan.classList.add("color-selected");
-
-                    var attributePrices = 0;
-                    priceOptions['color'] = {};
-                    priceOptions['color'] = {'price': parseFloat(clickedSpan.getAttribute("data-price"))};
-
-                    // priceOptions[selectID].price = (isNaN(price)) ? 0 : price;
-
-                    for(var key in priceOptions) {
-                        if(priceOptions.hasOwnProperty(key)) {
-                            var value = priceOptions[key];
-                            attributePrices += value.price;
-                        }
-                    }
-
-                    var totalPrice = currentPrice + attributePrices;
-                    productPriceElement.innerText = totalPrice.toFixed();
-
-                }
-            }
-        });
-
-    </script>
-
-
     <script type="text/javascript">
         const product = {
             similar_products_route: '{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.similar-products', ['productSlug' => $product->slug]) }}',

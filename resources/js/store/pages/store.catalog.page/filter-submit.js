@@ -13,10 +13,6 @@ export function init () {
 
     const CurrencyFirst = $("#currency-first-main");
     const CurrencyLast = $("#currency-last-main");
-    /*const CurrencyFirstFull = $("#currency-first-full");
-    const CurrencyLastFull = $("#currency-last-full");
-    const CurrencyFirstFullMobile = $("#currency-first-full-m");
-    const CurrencyLastFullMobile = $("#currency-last-full-m");*/
 
     let PriceSlider = new RangeSliderPips({
         target: $('#price-slider')[0],
