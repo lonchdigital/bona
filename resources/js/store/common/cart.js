@@ -65,7 +65,8 @@ export default {
 
                     if( productCount > 0 ) {
                         addSubProductToCart(
-                            artButton.attr("id"), // product slug
+                            //artButton.attr("id"), // product slug
+                            artButton.data("slug"), // product slug
                             productCount,
                             function (data) {
                                 // handleBasket(data);
@@ -82,6 +83,12 @@ export default {
             location.reload();
         });
 
+
+
+        /*************************   Change Price on WEB   *************************/
+
+        const productPriceElement = document.getElementById("product-price");
+
         // SubProducts
         // Add SubProduct
         $('.single-sub-product-add-to-cart').click(function () {
@@ -90,10 +97,11 @@ export default {
             const productLink = thisElement.parent().find('a.art-product-link');
             const productPrice = productLink.find('.price').text();
             const productName = productLink.find('.text').find('.product-title').text();
+            var countProducts = parseFloat(productPriceElement.getAttribute("data-count"));
 
             // Get current attribute data-count
             var currentCount = parseInt(thisElement.data('count'));
-            var updatedCount = currentCount + 1;
+            var updatedCount = (currentCount + 1) * parseInt(countProducts);
 
             // update object jQuery
             thisElement.data('count', updatedCount);
@@ -104,13 +112,12 @@ export default {
             $('[data-wrapper="'+ wrapperSlug +'"]').prepend('<span class="added-line" data-sub-id="'+ productSubID +'"><i class="fa fa-close"></i>'+ productName +'</span>');
 
             // Increase Product Price
-            var productPriceElement = document.getElementById("product-price");
             var currentPriceTag = productPriceElement.innerText;
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
 
-            var newPrice = parseFloat(currentPrice) + parseFloat(productPrice);
+            var newPrice = parseFloat(currentPrice) + parseFloat(productPrice) * parseInt(countProducts);
             productPriceElement.setAttribute("data-product-price", newPrice.toString());
-            productPriceElement.innerText = parseFloat(currentPriceTag) + parseFloat(productPrice);
+            productPriceElement.innerText = parseFloat(currentPriceTag) + parseFloat(productPrice) * parseInt(countProducts);
 
             thisElement.closest("div.art-popup-single-product").find('.f-button.is-close-btn').trigger("click");
         });
@@ -131,7 +138,6 @@ export default {
             thisElement.parent().find('[data-sub-id="'+ productSubID +'"]').remove();
 
             // Reduce Product Price
-            var productPriceElement = document.getElementById("product-price");
             var currentPriceTag = productPriceElement.innerText;
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
 
@@ -142,6 +148,123 @@ export default {
             productPriceElement.innerText = parseFloat(currentPriceTag) - sumOfSubProducts;
         });
 
+
+
+
+        var priceOptions = {}; // Object for ALL options
+        var selectElements = document.getElementsByClassName("art-select-attribute");
+
+        $(document).ready(function() {
+            var firstColorSpan = colorList.querySelector("span"); // get the first span
+            if (firstColorSpan) {
+                firstColorSpan.click();
+            }
+        });
+
+
+        // all Attributes + Color
+        function updateTotalPriceWithAttributes(clickedSpan) {
+            var productPriceElement = document.getElementById("product-price");
+            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
+            var countProducts = parseFloat(productPriceElement.getAttribute("data-count"));
+            var attributePrices = 0;
+
+            // color
+            if (clickedSpan) {
+                priceOptions['color'] = {'price': parseFloat(clickedSpan.getAttribute("data-price"))};
+            }
+
+            for (var key in priceOptions) {
+                if (priceOptions.hasOwnProperty(key)) {
+                    var value = priceOptions[key];
+                    attributePrices += value.price;
+                }
+            }
+
+            var totalPrice = currentPrice + attributePrices * countProducts;
+            productPriceElement.innerText = totalPrice.toFixed();
+        }
+
+        for (var i = 0; i < selectElements.length; i++) {
+            selectElements[i].addEventListener("change", function() {
+                var selectedIndex = this.selectedIndex;
+                var selectedOption = this.options[selectedIndex];
+                var price = parseFloat(selectedOption.getAttribute("data-price"));
+                var selectID = this.id;
+
+                if (!priceOptions[selectID]) {
+                    priceOptions[selectID] = {};
+                }
+
+                // Обновляем цену в объекте опций цен для выбранного атрибута
+                priceOptions[selectID].price = (isNaN(price)) ? 0 : price;
+
+                updateTotalPriceWithAttributes();
+            });
+        }
+
+        const colorList = document.querySelector(".art-colors-list");
+        colorList.addEventListener("click", function(event) {
+            const clickedElement = event.target;
+
+            // Check if there is an <img> inside the element or one of its parent elements
+            const imgElement = clickedElement.closest("span").querySelector("img");
+
+            if (imgElement || clickedElement.closest("span").tagName === "SPAN") {
+                // If there is an <img> where the click event occurred
+                const clickedImg = imgElement || clickedElement.closest("span");
+
+                // Check if the parent element is <span>
+                const clickedSpan = clickedImg.tagName === "SPAN" ? clickedImg : clickedImg.closest("span");
+
+                if (clickedSpan) {
+                    // Remove the 'color-selected' class from all spans within the container
+                    const allSpans = colorList.querySelectorAll("span");
+                    allSpans.forEach(function(span) {
+                        span.classList.remove("color-selected");
+                    });
+
+                    // Add the 'color-selected' class to the parent span
+                    clickedSpan.classList.add("color-selected");
+                    updateTotalPriceWithAttributes(clickedSpan);
+                }
+            }
+        });
+
+
+
+        // Increase Product Price
+        const $countOfProductsBodyPlus = $('#count-of-products-body .counter.plus');
+        $countOfProductsBodyPlus.on('click', function() {
+            var currentPriceTag = productPriceElement.innerText;
+            var startPrice = parseFloat(productPriceElement.getAttribute("data-start-price"));
+            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
+            var newPrice = parseFloat(startPrice) + parseFloat(currentPrice);
+            var countProducts = parseFloat(productPriceElement.getAttribute("data-count"));
+
+            productPriceElement.setAttribute("data-product-price", newPrice.toString());
+            productPriceElement.setAttribute("data-count", parseFloat(countProducts) + 1);
+            productPriceElement.innerText = parseFloat(currentPriceTag) + parseFloat(startPrice.toString());
+
+            updateTotalPriceWithAttributes();
+        });
+        // Reduce Product Price
+        const $countOfProductsBodyMinus = $('#count-of-products-body .counter.minus');
+        $countOfProductsBodyMinus.on('click', function() {
+            var currentPriceTag = productPriceElement.innerText;
+            var startPrice = parseFloat(productPriceElement.getAttribute("data-start-price"));
+            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
+            var newPrice = parseFloat(currentPrice) - parseFloat(startPrice);
+            var countProducts = parseFloat(productPriceElement.getAttribute("data-count"));
+
+            productPriceElement.setAttribute("data-product-price", newPrice.toString());
+            productPriceElement.setAttribute("data-count", parseFloat(countProducts) - 1);
+            productPriceElement.innerText = parseFloat(currentPriceTag) - parseFloat(startPrice.toString());
+
+            updateTotalPriceWithAttributes();
+        });
+
+        /*************************   Change Price on WEB END   *************************/
 
 
         if (page === 'store.cart.page') {
@@ -518,8 +641,6 @@ function addChangeProductCountHandlers(elements)
         subProduct.data('count', $(this).val());
         subProduct.attr('data-count', $(this).val());
 
-        console.log('addChangeProductCountHandlers NOW');
-
         updateProductInCart(
             slug,
             $(this).val(),
@@ -547,8 +668,6 @@ function addDeleteProductFromCartHandlers(elements)
         const subProduct =  $('#' + slug);
         subProduct.data('count', 0);
         subProduct.attr('data-count', 0);
-
-        console.log('112233 DELETE');
 
         // Get All Product Attributes
         var productAttributes = {};
