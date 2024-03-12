@@ -262,17 +262,19 @@
                         <div class="art-hamburger-data">
                             <div class="art-list-items d-block" data-id="art-cat">
                                 <ul>
-                                    <li><a href="">Білі двері</a></li>
-                                    <li><a href="">ФАРБОВАні двері</a></li>
-                                    <li><a href="">вуличні двері</a></li>
-                                    <li><a href="">Акційні пропозиції</a></li>
+                                    @foreach($productTypes as $productType)
+                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
+                                    @endforeach
                                 </ul>
                             </div>
                             <div class="art-list-items d-none" data-id="art-nav">
                                 <ul>
-                                    @foreach($productTypes as $productType)
-                                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
-                                    @endforeach
+                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{trans('base.about_us')}}</a></li>
+                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{trans('base.delivery')}}</a></li>
+                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{trans('base.blog')}}</a></li>
+                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{trans('base.services')}}</a></li>
+                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{trans('base.contacts')}}</a></li>
+                                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{trans('base.our_works')}}</a></li>
                                 </ul>
                             </div>
                         </div>
