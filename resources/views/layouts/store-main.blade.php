@@ -252,7 +252,6 @@
 
                 </div>
 
-
                 <div id="art-hamburger-menu">
                     <div class="container">
                         <div class="art-hamburger-header font-title">
