@@ -212,6 +212,7 @@
                                                             <button type="button"
                                                                     class="btn w-100 single-sub-product-add-to-cart"
                                                                     data-count="0"
+                                                                    data-added="0"
                                                                     data-id="{{  $subProduct->id }}"
                                                                     data-slug="{{  $subProduct->slug }}"
                                                             >{{ trans('base.select') }}</button>
@@ -240,7 +241,7 @@
                                     <div class="price-hot-wrapper">
                                         @if($product->old_price > $product->price)
                                             <div class="art-hot-price-data">
-                                                <span id="product-price" data-product-price="{{ $product->price }}" class="card-link-price--hot">{{ $product->price }}</span>
+                                                <span id="product-price" data-count="1" data-start-price="{{ $product->price }}" data-product-price="{{ $product->price }}" class="card-link-price--hot">{{ $product->price }}</span>
                                                 <span class="currency">{{ $baseCurrency->name_short }}</span>
                                             </div>
                                             <span class="card-link-price--old">{{ $product->old_price }} {{ $baseCurrency->name_short }}</span>
@@ -378,6 +379,33 @@
             </div> <!--/container-->
         </div> <!--/info-->
     </section>
+
+    <!-- Popup Added Product -->
+    <a href="" class="btn btn-main art-header-coll-button d-none" id="product-added-to-cart-button" data-fancybox data-src="#product-added-to-cart"></a>
+    <div id="product-added-to-cart" class="art-popup-window">
+        <div class="art-measurer-form-wrapper">
+            <div class="container">
+
+                <header class="art-light">
+                    <div class="text-center">
+                        <h2 class="title no-line h2">{{ trans('base.product_add_to_cart_success') }}</h2>
+                        <div class="art-popup-content font-two">
+                            <div class="art-buttons-line">
+                                <div>
+                                    <a href="#" data-fancybox-close class="btn btn-empty is-close-btn" title="Close">{{ trans('base.continue_shopping') }}</a>
+                                </div>
+                                <div>
+                                    <a href="{{ route('store.cart.page') }}" class="btn btn-empty">{{ trans('base.go_to_cart') }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+            </div>
+        </div>
+    </div>
+    <!-- /Popup Added Product -->
 
     <x-precise-form-component />
 

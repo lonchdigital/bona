@@ -304,6 +304,7 @@ return [
     'blog_all' => 'Все новости',
     'services' => 'Услуги',
     'call_measurer' => 'Вызов замерщика',
+    'product_added_to_cart' => 'Товар добавлен в корзину',
     'faqs_subtitle' => 'Нас часто спрашивают',
     'filter' => 'Фильтровать',
     'filter_noun' => 'Фильтр',

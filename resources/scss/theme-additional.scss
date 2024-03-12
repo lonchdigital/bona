@@ -19,6 +19,7 @@ $accent: #D59958;
         1.2 Flex
         1.3 Common Global
         1.4 PopUp Call Measurer
+        1.5 PopUp Common
     2. Product Section list
     3. Product list slider
     4. Product item
@@ -361,6 +362,60 @@ select:focus {
         margin-bottom: 17px;
     }
 }
+
+
+/*
+
+    ----------------------------------
+    1.5 PopUp Common
+    ----------------------------------
+*/
+
+.art-popup-window {
+    display: none;
+    //display: block;
+    background-color: #191715;
+    padding-top: 118px;
+    padding-bottom: 103px;
+    color: white;
+
+    .title.no-line {
+
+        &:after {
+            display: none;
+        }
+    }
+}
+
+@media (max-width: 991px) {
+
+    .art-popup-window {
+        padding-top: 38px;
+        padding-bottom: 48px;
+    }
+}
+
+.art-popup-window header {
+
+    .art-popup-content {
+        margin-top: 43px;
+        display: flex;
+        justify-content: center;
+
+        .art-buttons-line {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0 -15px;
+
+            div {
+                padding: 0 15px;
+                margin-bottom: 15px;
+            }
+        }
+    }
+}
+
 
 
 
