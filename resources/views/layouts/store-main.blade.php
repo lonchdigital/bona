@@ -253,6 +253,7 @@
                 </div>
 
                 <div id="art-hamburger-menu">
+
                     <div class="container">
                         <div class="art-hamburger-header font-title">
                             <span data-id="art-cat" class="active">Категорії</span>
