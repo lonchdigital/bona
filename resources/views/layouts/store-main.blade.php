@@ -194,7 +194,7 @@
                         </div>
                     @endif
 
-                    <a href="" class="btn btn-main art-header-coll-button" id="testttt" data-fancybox data-src="#dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
+                    <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
 
                     <div id="dialog-call-measurer" class="art-popup-call-measurer">
                         <div class="art-measurer-form-wrapper">

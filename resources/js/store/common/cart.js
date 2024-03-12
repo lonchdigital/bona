@@ -23,9 +23,11 @@ export default {
             );
         }
 
+
         $('.single-product-add-to-cart').click(function () {
             const productSlug = $(this).attr('id');
             const count = $('#count-of-products').val();
+            const productAddedToCartButton = document.getElementById("product-added-to-cart-button");
 
             // const countOfProductsBody = $('#count-of-products-body');
             const goToCartBody = $('.go-to-cart-body');
@@ -48,6 +50,7 @@ export default {
                 count,
                 selectAttributes,
                 function (data) {
+                    productAddedToCartButton.click();
                     goToCartBody.removeClass('d-none');
                     handleBasket(data);
                 },
@@ -55,7 +58,6 @@ export default {
                     console.error('[Cart]: init: error during adding product to cart.');
                 }
             );
-
 
             // add SubProducts to cart
             $(".art-popup-single-product").each(function () {
@@ -65,11 +67,11 @@ export default {
 
                     if( productCount > 0 ) {
                         addSubProductToCart(
-                            //artButton.attr("id"), // product slug
                             artButton.data("slug"), // product slug
                             productCount,
                             function (data) {
-                                // handleBasket(data);
+                                goToCartBody.removeClass('d-none');
+                                handleBasket(data);
                             },
                             function () {
                                 console.error('[Cart]: init: error during adding sub product to cart.');
@@ -80,7 +82,7 @@ export default {
                 });
             });
 
-            location.reload();
+
         });
 
 
@@ -89,35 +91,51 @@ export default {
 
         const productPriceElement = document.getElementById("product-price");
 
+        function countProductDynamicPrice(countProducts, subProductPrice, countSubProduct, additionalCount, oldCountSubProducts, decrease) {
+            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
+            var newPrice = 0;
+
+            if(additionalCount === true) {
+                if(decrease === true) {
+                    newPrice = parseFloat(currentPrice) - (parseFloat(subProductPrice) * (oldCountSubProducts - countSubProduct));
+                } else {
+                    newPrice = parseFloat(currentPrice) + (parseFloat(subProductPrice) * (countSubProduct - oldCountSubProducts));
+                }
+            } else {
+                newPrice = parseFloat(currentPrice) + parseFloat(subProductPrice) * parseInt(countProducts);
+            }
+
+            productPriceElement.setAttribute("data-product-price", newPrice.toString());
+            productPriceElement.innerText = newPrice.toString();
+        }
+
         // SubProducts
         // Add SubProduct
         $('.single-sub-product-add-to-cart').click(function () {
             var thisElement = $(this);
             const productSubID = thisElement.data('id');
             const productLink = thisElement.parent().find('a.art-product-link');
-            const productPrice = productLink.find('.price').text();
+            const subProductPrice = productLink.find('.price').text();
             const productName = productLink.find('.text').find('.product-title').text();
             var countProducts = parseFloat(productPriceElement.getAttribute("data-count"));
+            var addedProducts = parseInt(thisElement.data('added'));
 
-            // Get current attribute data-count
-            var currentCount = parseInt(thisElement.data('count'));
-            var updatedCount = (currentCount + 1) * parseInt(countProducts);
+            var addedSum = addedProducts + 1;
+            thisElement.data('added', addedSum);
+            thisElement.attr('data-added', addedSum);
 
-            // update object jQuery
-            thisElement.data('count', updatedCount);
-            // update attribute in DOM
-            thisElement.attr('data-count', updatedCount);
+            // update object jQuery and after that update attribute in DOM
+            var updatedSubCount = addedSum * parseInt(countProducts);
+            thisElement.data('count', updatedSubCount);
+            thisElement.attr('data-count', updatedSubCount);
+
+            // Increase Product
+            countProductDynamicPrice(countProducts, subProductPrice, updatedSubCount, false);
+
+            updateTotalPriceWithAttributes();
 
             var wrapperSlug = thisElement.closest("div.art-popup-single-product").attr('id');
             $('[data-wrapper="'+ wrapperSlug +'"]').prepend('<span class="added-line" data-sub-id="'+ productSubID +'"><i class="fa fa-close"></i>'+ productName +'</span>');
-
-            // Increase Product Price
-            var currentPriceTag = productPriceElement.innerText;
-            var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
-
-            var newPrice = parseFloat(currentPrice) + parseFloat(productPrice) * parseInt(countProducts);
-            productPriceElement.setAttribute("data-product-price", newPrice.toString());
-            productPriceElement.innerText = parseFloat(currentPriceTag) + parseFloat(productPrice) * parseInt(countProducts);
 
             thisElement.closest("div.art-popup-single-product").find('.f-button.is-close-btn').trigger("click");
         });
@@ -135,6 +153,9 @@ export default {
             subProduct.data('count', 0);
             subProduct.attr('data-count', 0);
 
+            subProduct.data('added', 0);
+            subProduct.attr('data-added', 0);
+
             thisElement.parent().find('[data-sub-id="'+ productSubID +'"]').remove();
 
             // Reduce Product Price
@@ -149,8 +170,7 @@ export default {
         });
 
 
-
-
+        // all Attributes + Colors
         var priceOptions = {}; // Object for ALL options
         var selectElements = document.getElementsByClassName("art-select-attribute");
 
@@ -161,8 +181,6 @@ export default {
             }
         });
 
-
-        // all Attributes + Color
         function updateTotalPriceWithAttributes(clickedSpan) {
             var productPriceElement = document.getElementById("product-price");
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
@@ -181,10 +199,11 @@ export default {
                 }
             }
 
-            var totalPrice = currentPrice + attributePrices * countProducts;
+            var totalPrice = currentPrice + (attributePrices * countProducts);
             productPriceElement.innerText = totalPrice.toFixed();
         }
 
+        // Attributes
         for (var i = 0; i < selectElements.length; i++) {
             selectElements[i].addEventListener("change", function() {
                 var selectedIndex = this.selectedIndex;
@@ -203,6 +222,7 @@ export default {
             });
         }
 
+        // Colors
         const colorList = document.querySelector(".art-colors-list");
         colorList.addEventListener("click", function(event) {
             const clickedElement = event.target;
@@ -232,7 +252,28 @@ export default {
         });
 
 
+        // Increase and Reduce Product Price
+        function walkThroughAllSubProducts(countProducts, decrease) {
+            $(".art-popup-single-product").each(function () {
+                $(this).find(".art-product-item").each(function () {
+                    var thisElement = $(this).find('.single-sub-product-add-to-cart');
+                    var addedSubProducts = parseInt(thisElement.data('added'));
 
+                    if( addedSubProducts > 0 ) {
+                        var oldCountSubProducts = parseInt(thisElement.data('count'));
+                        const productLink = thisElement.parent().find('a.art-product-link');
+                        const subProductPrice = productLink.find('.price').text();
+
+                        // update object jQuery and after that update attribute in DOM
+                        var updatedSubCount = addedSubProducts * parseInt(countProducts);
+                        thisElement.data('count', updatedSubCount);
+                        thisElement.attr('data-count', updatedSubCount);
+
+                        countProductDynamicPrice(countProducts, subProductPrice, updatedSubCount, true, oldCountSubProducts, decrease);
+                    }
+                });
+            });
+        }
         // Increase Product Price
         const $countOfProductsBodyPlus = $('#count-of-products-body .counter.plus');
         $countOfProductsBodyPlus.on('click', function() {
@@ -241,10 +282,14 @@ export default {
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
             var newPrice = parseFloat(startPrice) + parseFloat(currentPrice);
             var countProducts = parseFloat(productPriceElement.getAttribute("data-count"));
+            countProducts = parseFloat(countProducts) + 1;
 
+            // update data count on Price TAG
             productPriceElement.setAttribute("data-product-price", newPrice.toString());
-            productPriceElement.setAttribute("data-count", parseFloat(countProducts) + 1);
+            productPriceElement.setAttribute("data-count", countProducts);
             productPriceElement.innerText = parseFloat(currentPriceTag) + parseFloat(startPrice.toString());
+
+            walkThroughAllSubProducts(countProducts, false);
 
             updateTotalPriceWithAttributes();
         });
@@ -257,11 +302,17 @@ export default {
             var newPrice = parseFloat(currentPrice) - parseFloat(startPrice);
             var countProducts = parseFloat(productPriceElement.getAttribute("data-count"));
 
-            productPriceElement.setAttribute("data-product-price", newPrice.toString());
-            productPriceElement.setAttribute("data-count", parseFloat(countProducts) - 1);
-            productPriceElement.innerText = parseFloat(currentPriceTag) - parseFloat(startPrice.toString());
+            if( countProducts >= 2 ) {
+                countProducts = parseFloat(countProducts) - 1;
 
-            updateTotalPriceWithAttributes();
+                productPriceElement.setAttribute("data-product-price", newPrice.toString());
+                productPriceElement.setAttribute("data-count", countProducts);
+                productPriceElement.innerText = parseFloat(currentPriceTag) - parseFloat(startPrice.toString());
+
+                walkThroughAllSubProducts(countProducts, true);
+
+                updateTotalPriceWithAttributes();
+            }
         });
 
         /*************************   Change Price on WEB END   *************************/

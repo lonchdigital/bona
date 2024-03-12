@@ -306,6 +306,7 @@ return [
     'blog_all' => 'Всі новини',
     'services' => 'Послуги',
     'call_measurer' => 'Виклик замірника',
+    'product_added_to_cart' => 'Товар доданий до кошика',
     'faqs_subtitle' => 'Нас часто запитують',
     'filter' => 'Фільтрувати',
     'filter_noun' => 'Фільтр',
