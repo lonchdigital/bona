@@ -16,49 +16,49 @@
 
                     <h1>{{ trans('base.cart') }}</h1>
 
-                    <div class="row">
-                        <div class="art-cart-products-wrapper col-md-12">
-                            <div id="basket-list-product" class="basket-list-product">
-                                <div class="list-product-table">
 
-                                    <div class="table-head mb-8 d-none d-xl-block">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="table-title">{{ trans('base.name_of_product') }}</div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <div class="table-title">{{ trans('base.price_per_product') }}</div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="table-title">{{ trans('base.count_of_products') }}</div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="table-title text-right">{{ trans('base.price') }}</div>
-                                                    </div>
+                    <div class="art-cart-products-wrapper">
+                        <div id="basket-list-product" class="basket-list-product">
+                            <div class="list-product-table">
+
+                                <div class="table-head mb-8 d-none d-xl-block">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="table-title">{{ trans('base.name_of_product') }}</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="table-title">{{ trans('base.price_per_product') }}</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="table-title">{{ trans('base.count_of_products') }}</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="table-title text-right">{{ trans('base.price') }}</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col cart-page-products-list">
-
-                                        </div>
-                                    </div>
-
                                 </div>
 
+                                <div class="row">
+                                    <div class="col cart-page-products-list">
+
+                                    </div>
+                                </div>
 
                             </div>
+
+
                         </div>
                     </div>
+
 
                     <div class="art-cart-bottom">
                         <div id="basket-total-info" class="row">
 
-                            <div class="col-md-8">
+                            <div class="col-lg-8">
                                 <div class="total-info-left">
                                     <div class="info-bottom-title mb-3 text-center">
                                         {{ trans('base.enter_promo_code') }}
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-lg-4">
                                 <div class="total-info-right">
 
                                     <div class="info-top-count d-none d-lg-block mb-2 text-center">

@@ -610,7 +610,7 @@ function drawProductsInCartPageHTML(data)
 function getProductInCartPageHTML(productData)
 {
     return `
-        <div class="row list-product-item cart-item">
+        <div class="list-product-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
             <div class="col-12 col-xl-6">
                 <a href="${productData.link}" class="table-product d-flex align-items-center">

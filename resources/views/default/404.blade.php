@@ -1,65 +1,28 @@
 @extends('layouts.store-main')
 
 @section('content')
-    <main class="main">
-        <div class="content">
-            <section class="not-found position-relative">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-1 d-none d-lg-block"></div>
-                        <div class="col col-lg-auto text-center text-lg-left">
-                            <div class="not-found-content mx-auto mx-lg-0">
-                                <div class="head mb-5">{{ trans('base.page_is_not_exists') }}</div>
-                                <a href="{{ route('store.home') }}" class="btn-back mx-auto mb-20 mr-lg-0 ml-lg-0">
-                                    <span class="mr-2">{{ trans('base.wish_list_go_to_main') }}</span>
-                                    <svg>
-                                        <use xlink:href="{{ asset('/static/img/icon.svg#i-arrow') }}"></use>
-                                    </svg>
-                                </a>
-                            </div>
-                            <ul class="bottom-socials list-inline mb-0">
-                                <li class="list-inline-item">
-                                    <a href="tel:+" class="link-soc" target="_blank">
-                                        <svg>
-                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-instagram"></use>
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="##" class="link-soc" target="_blank">
-                                        <svg>
-                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-twitter"></use>
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="##" class="link-soc" target="_blank">
-                                        <svg>
-                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-facebook"></use>
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="##" class="link-soc" target="_blank">
-                                        <svg>
-                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-pinterest"></use>
-                                        </svg>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="w-100 d-lg-none"></div>
-                        <div class="col position-relative mt-4 mt-lg-0">
-                            <img class="not-found-img d-none d-md-block" src="{{ Vite::asset('resources/img/404.png') }}" alt="Not-found">
-                            <img class="not-found-img d-md-none" src="{{ Vite::asset('resources/img/404-m.png') }}" alt="Not-found">
+
+    @include('pages.store.partials.page_header', ['links' => ['own' => 404]])
+
+    <div class="common-page-section-wrapper">
+        <section class="art-common-page-section">
+            <div class="container">
+                <div class="art-row-block">
+
+                    <div class="col-md-5 left-side desc-side art-404">
+                        <div class="left-side-content">
+                            <h1 class="title">404</h1>
+                            <p>Сторінку не знайдено</p>
+                            <a href="{{ route('store.home') }}" class="btn btn-empty color-dark">{{ trans('base.go_to_main') }}</a>
                         </div>
                     </div>
-                </div>
-            </section>
-        </div>
-    </main>
-@endsection
+                    <div class="col-md-7 right-side">
+                        <img class="main-logo-admin" src="{{ asset('storage/bg-images/404.png') }}" alt="404">
+                    </div>
 
-@section('noFooter')
-    <div></div>
-@endsection
+                </div>
+            </div>
+        </section>
+    </div>
+
+@stop

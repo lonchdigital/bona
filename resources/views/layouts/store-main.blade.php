@@ -204,10 +204,7 @@
                                     <div class="text-center">
                                         <h2 class="title h2">{{ trans('base.call_measurer') }}</h2>
                                         <div class="subtitle font-two">
-                                            <p class="art-form-description">
-                                                We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy
-                                                to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
-                                            </p>
+                                            <p class="art-form-description">{{ trans('base.call_measurer_description') }}</p>
                                         </div>
                                     </div>
                                 </header>
@@ -253,7 +250,6 @@
                 </div>
 
                 <div id="art-hamburger-menu">
-
                     <div class="container">
                         <div class="art-hamburger-header font-title">
                             <span data-id="art-cat" class="active">Категорії</span>
@@ -315,7 +311,10 @@
             <div class="navigation navigation-main">
                 <ul class="main-menu-container">
                     @foreach($productTypes as $productType)
-                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
+                        <li><a
+                                @if(request()->routeIs('store.catalog.page') && request()->route('productTypeSlug')['slug'] == $productType->slug) class="current-menu" @endif
+                                href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}"
+                            >{{ $productType->name }}</a></li>
                     @endforeach
                 </ul>
             </div> <!--/navigation-main-->
