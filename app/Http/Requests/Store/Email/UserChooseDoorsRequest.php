@@ -10,18 +10,9 @@ class UserChooseDoorsRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'string',
-            ],
-            'phone' => [
-                'required',
-                'string',
-                'digits:10',
-            ],
-            'agree' => [
-                'accepted',
-            ],
+            'name' => ['required', 'string'],
+            'phone' => ['required', 'string', 'regex:/^[0-9\+]+$/u', 'max:13'],
+            'agree' => ['accepted']
         ];
     }
 

@@ -171,12 +171,17 @@
                             </div>
                         </div>
 
-                        <div class="art-product-list art-three-column">
-                            @foreach($productsPaginated as $product)
-                                @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
-                            @endforeach
-                        </div>
+                        @if( count($productsPaginated) > 0 )
+                            <div class="art-product-list art-three-column">
+                                @foreach($productsPaginated as $product)
+                                    @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                        @endif
                     </div>
+
                 <!--Pagination-->
                 {{ $productsPaginated->links('pagination.store') }}
                 </div> <!--/product items-->

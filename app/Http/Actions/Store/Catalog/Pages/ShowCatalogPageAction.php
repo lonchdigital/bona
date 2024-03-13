@@ -23,27 +23,27 @@ class ShowCatalogPageAction extends BaseAction
     {
         $productType->load(['fields', 'fields.options']);
 
+        /* TODO:: remove when finish */
         //get services from service container
 //        $categoryService = app()->make(CategoryService::class);
+//        $countryService = app()->make(CountryService::class);
+//        $wishListService = app()->make(WishListService::class);
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
-        $countryService = app()->make(CountryService::class);
         $brandService = app()->make(BrandService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
-        $wishListService = app()->make(WishListService::class);
 
-
-//        dd(ProductService::class);
 
         $filtersData = $request->toDTO();
 
+//        $countries = $countryService->getAvailableCountriesByProductType($productType);
         $baseCurrency = $currencyService->getBaseCurrency();
         $colors = $colorService->getAvailableColorsByProductType($productType);
-//        $countries = $countryService->getAvailableCountriesByProductType($productType);
         $brands = $brandService->getAvailableBrandsByProductType($productType);
         $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
 
+        /* TODO:: remove when finish */
         /*$selectedFiltersOptions = $catalogService->getOptionsByFilterData(
             $productType,
             $filtersData->filters,

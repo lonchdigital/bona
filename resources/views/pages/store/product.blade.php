@@ -388,14 +388,14 @@
 
                 <header class="art-light">
                     <div class="text-center">
-                        <h2 class="title no-line h2">{{ trans('base.product_add_to_cart_success') }}</h2>
+                        <h2 class="title h2">{{ trans('base.product_add_to_cart_success') }}</h2>
                         <div class="art-popup-content font-two">
                             <div class="art-buttons-line">
                                 <div>
                                     <a href="#" data-fancybox-close class="btn btn-empty is-close-btn" title="Close">{{ trans('base.continue_shopping') }}</a>
                                 </div>
                                 <div>
-                                    <a href="{{ route('store.cart.page') }}" class="btn btn-empty">{{ trans('base.go_to_cart') }}</a>
+                                    <a href="{{ route('store.cart.page') }}" class="btn btn-main">{{ trans('base.go_to_cart') }}</a>
                                 </div>
                             </div>
                         </div>

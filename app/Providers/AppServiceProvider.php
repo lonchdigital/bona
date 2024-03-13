@@ -63,10 +63,12 @@ class AppServiceProvider extends ServiceProvider
                 'components.cart-window',
             ],
             function ($view) use ($cartService) {
-                $cart = Auth::user() ? $cartService->getCartForAuthUser(Auth::user()) : $cartService->getCartForGuestUser(request()->session()->getId());
                 $countOfProductInCart = 0;
-                if ($cart) {
-                    $countOfProductInCart = $cartService->getCountOfProductsInCart($cart);
+                if (request()->hasSession() && request()->session()) { // Проверяем доступность и наличие сессии
+                    $cart = Auth::user() ? $cartService->getCartForAuthUser(Auth::user()) : $cartService->getCartForGuestUser(request()->session()->getId());
+                    if ($cart) {
+                        $countOfProductInCart = $cartService->getCountOfProductsInCart($cart);
+                    }
                 }
 
                 $view->with('countOfProductInCart', $countOfProductInCart);
