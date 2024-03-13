@@ -3446,25 +3446,63 @@ section.art-contacts-page-section {
     }
 
     .art-catalog-top {
-        display: none;
-        margin-top: 20px;
 
-        @media (max-width: 991px) {
-            display: block;
-        }
 
         .art-filter-display {
-            display: flex;
+            display: none;
+            margin-top: 20px;
+
             align-items: center;
             justify-content: space-between;
             padding: 9px 16px;
             border: 1px solid #E5E5E5;
             width: 300px;
 
+            @media (max-width: 991px) {
+                display: flex;
+            }
+
             @media (max-width: 767px) {
                 width: 100%;
             }
         }
+
+        .menu-right-dropdown {
+            padding: 0 33px;
+
+            @media (max-width: 991px) {
+                margin-top: 15px;
+                padding: 0;
+            }
+
+            .right-dropdown-row {
+                display: flex;
+                justify-content: space-between;
+
+                @media (max-width: 480px) {
+                    flex-direction: column;
+                }
+            }
+
+            .btn-dropdown {
+                @media (max-width: 991px) {
+                    padding-left: 0;
+                }
+            }
+
+            .art-sort-count-wrapper {
+
+                .btn-dropdown {
+                    margin-left: auto;
+
+                    @media (max-width: 991px) {
+                        margin-left: 0;
+                    }
+                }
+            }
+        }
+
+
     }
 
 }
