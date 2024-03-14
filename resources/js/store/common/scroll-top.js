@@ -5,7 +5,7 @@ let bgEnabled = false;
 export default {
     init: async function () {
         $(window).scroll(function () {
-            const btnArrowUp = $('.btn-arrow-up')
+            const btnArrowUp = $('.btn-arrow-up');
             if ($(document).scrollTop() > 500 && btnArrowUp.length) {
                 btnArrowUp.addClass('visible');
             } else {
@@ -19,7 +19,7 @@ export default {
             if (!bgEnabled) {
                 handleScrollTop();
             }
-        })
+        });
     }
 }
 

@@ -123,7 +123,6 @@ class CartService extends BaseService
                     $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('name', $productAttributeName)->price;
                 }
             }
-//            dd($productAttributesSum);
 
             if( !is_null($productAttributeColor['color']) ) {
                 $color_price = $product->colors->firstWhere('name', $productAttributeColor['color'])->pivot->price;
@@ -141,11 +140,6 @@ class CartService extends BaseService
             ]]);
         }
 
-        /*if (!$cart->products()->where('product_id', $product->id)->exists()) {
-            $cart->products()->attach([$product->id => ['count' => $request->productCount, 'attributes' => json_encode($request->productAttributes), 'price' => $product->price]]);
-        } else {
-            $cart->products()->updateExistingPivot($product->id, ['count' => $request->productCount]);
-        }*/
     }
 
     public function addSubProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void

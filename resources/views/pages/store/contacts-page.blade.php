@@ -11,7 +11,13 @@
     <section class="art-contacts-page-section common-page-section-wrapper art-section-pd">
         <div class="container">
 
-            <h1>{{ trans('base.contacts') }}</h1>
+            <div class="row">
+                <header class=" col-12 art-header-left">
+                    <div>
+                        <h1 class="title">{{ trans('base.contacts') }}</h1>
+                    </div>
+                </header>
+            </div>
 
             @if( !is_null($contactsConfig) )
 
