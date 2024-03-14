@@ -8,6 +8,18 @@
 
     @include('pages.store.partials.page_header', ['links' => ['#' => 'about_us']])
 
+    <div class="art-section-pd">
+        <div class="container">
+            <div class="row">
+                <header class=" col-12 art-header-left">
+                    <div>
+                        <h1 class="title">{{ trans('base.about_us') }}</h1>
+                    </div>
+                </header>
+            </div>
+        </div>
+    </div>
+
     <section class="art-common-page-section">
         <div class="container">
             <div class="art-row-block art-even">

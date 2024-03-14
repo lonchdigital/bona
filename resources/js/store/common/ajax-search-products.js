@@ -4,9 +4,6 @@ const $search_result = $('#main-header-search-result');
 export default {
     init: async function () {
 
-        // var $window = window;
-
-
         const input = document.getElementById('main-header-search');
         input.addEventListener('input', function(event) {
             const query = event.target.value;
@@ -26,10 +23,7 @@ export default {
         document.addEventListener('click', function(event) {
             const target = event.target;
 
-            // Проверить, является ли цель клика input или его потомком
             const isClickInsideInput = target === input || input.contains(target);
-
-            // Если клик был выполнен вне input, очистить его значение
             if (!isClickInsideInput) {
                 input.value = '';
                 $search_result.html('');

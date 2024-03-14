@@ -56,7 +56,7 @@ async function init()
         Burger.init(),
         ScrollTop.init(),
         ShowMenu.init(),
-        WishList.init(),
+        // WishList.init(),
         Cart.init(),
         CommonEmails.init(),
         PopUps.init(),

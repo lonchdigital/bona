@@ -10,13 +10,12 @@
 
     <!-- ========================  Works ======================== -->
     <section class="blog art-section-pd">
-
         <div class="container">
 
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h2 class="title">{{ trans('base.our_works') }}</h2>
+                        <h1 class="title">{{ trans('base.our_works') }}</h1>
                     </div>
                 </header>
             </div>

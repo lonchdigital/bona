@@ -13,7 +13,14 @@
             <div class="entry-content common-page-section-wrapper art-section-pd">
                 <div class="container">
 
-                    <h1>{{ trans('base.checkout') }}</h1>
+                    <div class="row">
+                        <header class=" col-12 art-header-left">
+                            <div>
+                                <h1 class="title">{{ trans('base.checkout') }}</h1>
+                            </div>
+                        </header>
+                    </div>
+
 
                     <form class="row checkout-main mb-lg-4" id="checkout-main" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST">
                         <div class="left-content col-lg-8">
@@ -86,6 +93,7 @@
                                         </div>
                                     @endguest
 
+
                                     <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-4 mt-xxl-26 mb-4 mb-lg-10">
                                         <div class="checkout-delivery-accordion w-100 mt-1" id="checkout-delivery-accordion">
 
@@ -99,21 +107,17 @@
                                                                 <input data-accordion="delivery-1"
                                                                        class="art-accordion-delivery"
                                                                        type="radio"
-                                                                       @if(old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) checked
+                                                                       @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) checked
                                                                        @endif id="delivery-radio-address"
                                                                        name="delivery_type_id"
                                                                        value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}"
-                                                                       >
+                                                                >
                                                                 <label class="custom-control-label" for="delivery-radio-address">{{ trans('base.checkout_address_delivery') }}</label>
                                                             </div>
                                                         </div>
                                                         <div class="card-header-right">
-                                                            <div
-                                                                class="nav-item-info d-flex align-items-center justify-content-between">
-                                                                <div
-                                                                    class="delivery-free mr-3">{{ config('domain.delivery_price') }}
-                                                                    грн.
-                                                                </div>
+                                                            <div class="nav-item-info d-flex align-items-center justify-content-between">
+                                                                <div class="delivery-free mr-3">{{ config('domain.delivery_price') }}грн.</div>
                                                                 <div class="i-info" data-toggle="tooltip"
                                                                      title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
                                                                     <span class="icon-i-info"><span
@@ -125,18 +129,13 @@
                                                     </div>
                                                 </div>
                                                 <div id="delivery-1"
-                                                     class="accordion-delivery-data @if(old('delivery_type_id') || old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)show @else art-hide @endif"
+                                                     class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)art-show @else art-hide @endif"
                                                      data-parent="#checkout-delivery-accordion">
                                                     <div class="card-body pt-5 px-0 pb-5 mb-4">
-                                                        <div
-                                                            class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}
-                                                            :
-                                                        </div>
-                                                        <div
-                                                            class="delivery-title mb-4">{{ trans('base.checkout_address_to_delivery') }}</div>
+                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}:</div>
+                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_address_to_delivery') }}</div>
                                                         <div class="city-search-wrap">
-                                                            <div
-                                                                class="field @if($errors->has('region_id')) field-error @endif city-search mb-1">
+                                                            <div class="field @if($errors->has('region_id')) field-error @endif city-search mb-1">
                                                                 <select class="region-select" name="region_id">
                                                                     <option disabled
                                                                             @if(!old('region_id')) selected @endif>{{ trans('base.checkout_select_region') }}</option>
@@ -156,10 +155,11 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
+
                                                         <div class="row mb-1">
                                                             <div class="col-12">
-                                                                <div
-                                                                    class="field @if($errors->has('district')) field-error @endif">
+                                                                <div class="field @if($errors->has('district')) field-error @endif">
                                                                     <input type="text" name="district"
                                                                            class="art-form-light-control"
                                                                            placeholder="{{ trans('base.district') }}"
@@ -167,6 +167,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
+
                                                         <div class="row mb-3">
                                                             <div class="col-12 text-danger">
                                                                 @error('district')
@@ -223,17 +225,6 @@
                                                                        placeholder="{{ trans('base.checkout_floor_number') }}"
                                                                        value="{{ old('floor_number') }}">
                                                             </div>
-<!--                                                                    <div
-                                                                class="custom-control custom-checkbox custom-checkbox-lift position-relative d-flex justify-content-end justify-content-sm-start mb-0 order-last order-sm-0">
-                                                                <input type="hidden" name="has_elevator"
-                                                                       value="0">
-                                                                <input type="checkbox"
-                                                                       class="custom-control-input" id="lift"
-                                                                       name="has_elevator" value="1"
-                                                                       @if(old('has_elevator')) checked @endif>
-                                                                <label class="custom-control-label"
-                                                                       for="lift">{{ trans('base.checkout_has_elevator') }}</label>
-                                                            </div>-->
                                                         </div>
                                                         <div class="row my-1">
                                                             <div class="col-12 text-danger">
@@ -282,7 +273,7 @@
                                                                        @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) checked
                                                                        @endif name="delivery_type_id"
                                                                        value="{{ App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY }}"
-                                                                       >
+                                                                >
                                                                 <label class="custom-control-label"
                                                                        for="delivery-radio-np">
                                                                     <div class="i-np mr-2">
@@ -311,7 +302,7 @@
                                                     </div>
                                                 </div>
                                                 <div id="delivery-2"
-                                                     class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) show @else art-hide @endif"
+                                                     class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) art-show @else art-hide @endif"
                                                      data-parent="#checkout-delivery-accordion">
                                                     <div class="card-body pt-5 px-0 pb-5 mb-4">
                                                         <div
@@ -362,7 +353,7 @@
                                                                 <input data-accordion="delivery-3"
                                                                        class="art-accordion-delivery"
                                                                        type="radio"
-                                                                       @if(old('sat_type_id') || old('sat_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) checked
+                                                                       @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) checked
                                                                        @endif id="delivery-radio-sat"
                                                                        name="delivery_type_id"
                                                                        value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}"
@@ -373,7 +364,7 @@
                                                     </div>
                                                 </div>
                                                 <div id="delivery-3"
-                                                     class="accordion-delivery-data @if(old('sat_type_id') || old('sat_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) show @else art-hide @endif"
+                                                     class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) art-show @else art-hide @endif"
                                                      data-parent="#checkout-delivery-accordion">
                                                     <div class="card-body pt-5 px-0 pb-5 mb-4">
                                                         <div
@@ -384,20 +375,20 @@
                                                             class="delivery-title mb-4">{{ trans('base.checkout_address_to_delivery') }}</div>
                                                         <div class="city-search-wrap">
                                                             <div
-                                                                class="field @if($errors->has('region_id')) field-error @endif city-search mb-1">
-                                                                <select class="region-select" name="region_id">
+                                                                class="field @if($errors->has('sat_region_id')) field-error @endif city-search mb-1">
+                                                                <select class="region-select" name="sat_region_id">
                                                                     <option disabled
-                                                                            @if(!old('region_id')) selected @endif>{{ trans('base.checkout_select_region') }}</option>
+                                                                            @if(!old('sat_region_id')) selected @endif>{{ trans('base.checkout_select_region') }}</option>
                                                                     @foreach($regions as $region)
                                                                         <option
-                                                                            @if(old('region_id') == $region->id) selected
+                                                                            @if(old('sat_region_id') == $region->id) selected
                                                                             @endif value="{{ $region->id }}">{{ $region->name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-12 text-danger">
-                                                                    @error('region_id')
+                                                                    @error('sat_region_id')
                                                                     <div
                                                                         class="field-error-help-descr">{{ $message }}</div>
                                                                     @enderror
@@ -407,17 +398,18 @@
                                                         <div class="row mb-1">
                                                             <div class="col-12">
                                                                 <div
-                                                                    class="field @if($errors->has('district')) field-error @endif">
-                                                                    <input type="text" name="district"
+                                                                    class="field @if($errors->has('sat_district')) field-error @endif">
+                                                                    <input type="text"
+                                                                           name="sat_district"
                                                                            class="art-form-light-control"
                                                                            placeholder="{{ trans('base.district') }}"
-                                                                           value="{{ old('district') }}">
+                                                                           value="{{ old('sat_district') }}">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="row mb-3">
                                                             <div class="col-12 text-danger">
-                                                                @error('district')
+                                                                @error('sat_district')
                                                                 <div
                                                                     class="field-error-help-descr">{{ $message }}</div>
                                                                 @enderror
@@ -426,91 +418,13 @@
                                                         <div class="row mb-1">
                                                             <div class="col-12">
                                                                 <div
-                                                                    class="field @if($errors->has('city')) field-error @endif">
-                                                                    <input type="text" name="city"
+                                                                    class="field @if($errors->has('sat_city')) field-error @endif">
+                                                                    <input type="text"
+                                                                           name="sat_city"
                                                                            class="art-form-light-control"
                                                                            placeholder="{{ trans('base.city') }}"
-                                                                           value="{{ old('city') }}">
+                                                                           value="{{ old('sat_city') }}">
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-12 text-danger">
-                                                                @error('city')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="address-search-wrap mb-10 mb-sm-0">
-                                                            <div
-                                                                class="field @if($errors->has('street')) field-error @endif field--house">
-                                                                <input type="text" name="street"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_street') }}"
-                                                                       value="{{ old('street') }}">
-                                                            </div>
-                                                            <div
-                                                                class="field @if($errors->has('building_number')) field-error @endif field--house">
-                                                                <input type="text" name="building_number"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_building_number') }}"
-                                                                       value="{{ old('building_number') }}">
-                                                            </div>
-                                                            <div
-                                                                class="field @if($errors->has('apartment_number')) field-error @endif field--apart">
-                                                                <input type="text" name="apartment_number"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_apartment_number') }}"
-                                                                       value="{{ old('apartment_number') }}">
-                                                            </div>
-                                                            <div
-                                                                class="field @if($errors->has('floor_number')) field-error @endif field--floor">
-                                                                <input type="text" name="floor_number"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_floor_number') }}"
-                                                                       value="{{ old('floor_number') }}">
-                                                            </div>
-                                                        <!--                                                                    <div
-                                                                class="custom-control custom-checkbox custom-checkbox-lift position-relative d-flex justify-content-end justify-content-sm-start mb-0 order-last order-sm-0">
-                                                                <input type="hidden" name="has_elevator"
-                                                                       value="0">
-                                                                <input type="checkbox"
-                                                                       class="custom-control-input" id="lift"
-                                                                       name="has_elevator" value="1"
-                                                                       @if(old('has_elevator')) checked @endif>
-                                                                <label class="custom-control-label"
-                                                                       for="lift">{{ trans('base.checkout_has_elevator') }}</label>
-                                                            </div>-->
-                                                        </div>
-                                                        <div class="row my-1">
-                                                            <div class="col-12 text-danger">
-                                                                @error('street')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                                @error('building_number')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                                @error('apartment_number')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                                @error('floor_number')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row mt-1">
-                                                            <div class="col-12 text-danger">
-                                                                @error('delivery_date')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
                                                             </div>
                                                         </div>
 
@@ -521,6 +435,8 @@
                                         </div>
 
                                     </div>
+
+
 
                                     <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-10">
                                         <div class="w-100 checkbox">
@@ -549,7 +465,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="">
+                                                {{-- TODO:: add payment cart --}}
+<!--                                            <div class="">
                                                 <div class="">
                                                     <div class="checkbox art-mb-10">
                                                         <div class="position-relative">
@@ -562,7 +479,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </div>
 
@@ -603,7 +520,7 @@
 
                                                 <div class="" id="checkout-custom-recipient-accordion">
                                                     <div id="recipient-2"
-                                                         class="accordion-recipient-data  @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) show @else art-hide @endif"
+                                                         class="accordion-recipient-data  @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) art-show @else art-hide @endif"
                                                          data-parent="#checkout-custom-recipient-accordion">
                                                         <div class="checkout-personal-data mb-6 mb-xl-0 pt-5">
                                                             <div class="art-row-line mb-1">

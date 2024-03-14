@@ -14,7 +14,13 @@
             <div class="entry-content common-page-section-wrapper art-section-pd">
                 <div class="container">
 
-                    <h1>{{ trans('base.cart') }}</h1>
+                    <div class="row">
+                        <header class=" col-12 art-header-left">
+                            <div>
+                                <h1 class="title">{{ trans('base.cart') }}</h1>
+                            </div>
+                        </header>
+                    </div>
 
 
                     <div class="art-cart-products-wrapper">

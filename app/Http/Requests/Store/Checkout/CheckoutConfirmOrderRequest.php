@@ -116,15 +116,15 @@ class CheckoutConfirmOrderRequest extends BaseRequest
                 'nullable',
             ];
 
-            $rules['delivery_date'] = [
+            /*$rules['delivery_date'] = [
                 'required',
                 'date_format:d/m/Y',
-            ];
+            ];*/
 
-            $rules['delivery_time_id'] = [
+            /*$rules['delivery_time_id'] = [
                 'required',
                 'int',
-            ];
+            ];*/
         } elseif ($this->input('delivery_type_id') == DeliveryTypesDataClass::NP_DELIVERY) {
             $rules['np_city'] = [
                 'required',
@@ -135,16 +135,23 @@ class CheckoutConfirmOrderRequest extends BaseRequest
                 'required',
                 'string',
             ];
-        } elseif ($this->input('delivery_type_id') == DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY) {
-            $rules['meest_city'] = [
+        } elseif ($this->input('delivery_type_id') == DeliveryTypesDataClass::SAT_DELIVERY) {
+            $rules['sat_region_id'] = [
                 'required',
-                'string',
+                'integer',
+                'exists:regions,id'
             ];
 
-            $rules['meest_department'] = [
+            $rules['sat_city'] = [
                 'required',
-                'string',
+                'string'
             ];
+
+            $rules['sat_district'] = [
+                'required',
+                'string'
+            ];
+
         }
 
         if ($this->input('recipient_type_id') == RecipientTypesDataClass::RECIPIENT_CUSTOM) {
@@ -181,8 +188,11 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             'phone' => mb_strtolower(trans('base.phone')),
             'email' => mb_strtolower(trans('base.email')),
             'region_id' => mb_strtolower(trans('base.region')),
+            'sat_region_id' => mb_strtolower(trans('base.region')),
             'district' => mb_strtolower(trans('base.district')),
+            'sat_district' => mb_strtolower(trans('base.district')),
             'city' => mb_strtolower(trans('base.city')),
+            'sat_city' => mb_strtolower(trans('base.city')),
             'street' => mb_strtolower(trans('base.checkout_street')),
             'building_number' => mb_strtolower(trans('base.checkout_building_number')),
             'apartment_number' => mb_strtolower(trans('base.checkout_apartment_number')),
@@ -209,14 +219,17 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $this->input('delivery_type_id'),
             $this->input('payment_type_id'),
             $this->input('region_id'),
+            $this->input('sat_region_id'),
             $this->input('district'),
+            $this->input('sat_district'),
             $this->input('city'),
+            $this->input('sat_city'),
             $this->input('street'),
             $this->input('building_number'),
             $this->input('apartment_number'),
             $this->input('floor_number'),
-            $this->input('has_elevator'),
-            $this->input('save_delivery_address'),
+//            $this->input('has_elevator'),
+//            $this->input('save_delivery_address'),
             $this->input('delivery_date'),
             $this->input('delivery_time_id'),
             $this->input('recipient_type_id'),

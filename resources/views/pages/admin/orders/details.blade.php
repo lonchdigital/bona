@@ -147,18 +147,20 @@
                                     <striong class="text-dark">{{ trans('admin.order_delivery_floor_number') }}</striong>
                                     <div class="mt-1">{{ $order->floor_number }}</div>
                                 </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.order_delivery_has_elevator') }}</striong>
-                                    <div class="mt-1">{{ $order->has_elevator ? trans('admin.yes') : trans('admin.no') }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.order_delivery_date') }}</striong>
-                                    <div class="mt-1">{{ $order->delivery_date }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.order_delivery_time_idr') }}</striong>
-                                    <div class="mt-1">{{ \App\DataClasses\DeliveryTimesDataClass::get($order->delivery_time_id)['name'] }}</div>
-                                </div>
+                                {{--                                <div class="mb-3">
+                                                                    <striong class="text-dark">{{ trans('admin.order_delivery_has_elevator') }}</striong>
+                                                                    <div class="mt-1">{{ $order->has_elevator ? trans('admin.yes') : trans('admin.no') }}</div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <striong class="text-dark">{{ trans('admin.order_delivery_date') }}</striong>
+                                                                    <div class="mt-1">{{ $order->delivery_date }}</div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <striong class="text-dark">{{ trans('admin.order_delivery_time_idr') }}</striong>
+                                                                    <div class="mt-1">{{ \App\DataClasses\DeliveryTimesDataClass::get($order->delivery_time_id)['name'] }}</div>
+                                                                </div>
+
+                                                                --}}
                             @elseif($order->delivery_type_id == \App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)
                                 <div class="mb-3">
                                     <striong class="text-dark">{{ trans('base.np_city') }}</striong>
@@ -202,9 +204,11 @@
                                     <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
                                     <td>{{ $product->name }}</td>
                                     <td>
-                                        <div class="border rounded p-1 text-center" style="background-color: {{ $product->color->hex }}; ">
-                                            <span class="color-invert">{{ $product->color->name }}</span>
-                                        </div>
+                                        @if( !is_null($product->color) )
+                                            <div class="border rounded p-1 text-center" style="background-color: {{ $product->color->hex }}; ">
+                                                <span class="color-invert">{{ $product->color->name }}</span>
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>{{ $product->pivot->count }}</td>
                                     <td>{{ $product->pivot->price }}</td>

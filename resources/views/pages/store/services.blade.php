@@ -8,6 +8,18 @@
 
     @include('pages.store.partials.page_header', ['links' => ['#' => 'services']])
 
+    <div class="art-section-pd">
+        <div class="container">
+            <div class="row">
+                <header class=" col-12 art-header-left">
+                    <div>
+                        <h1 class="title">{{ trans('base.services') }}</h1>
+                    </div>
+                </header>
+            </div>
+        </div>
+    </div>
+
     <div class="common-page-section-wrapper">
         @foreach( $sections as $section )
             <section class="art-common-page-section">

@@ -3,23 +3,16 @@ import Swiper from 'swiper/bundle';
 import $ from "jquery";
 
 export function init () {
-//? swiper-single-wallpaper-thumbs
 
     const swiperSingleWallpaperThumbsWrap = document.querySelector('.swiper-single-wallpaper-thumbs-wrap');
     let imagesCount = swiperSingleWallpaperThumbsWrap.querySelectorAll('img').length;
 
     imagesCount = imagesCount >= 4 ? 4 : imagesCount;
-
-    console.log(imagesCount);
     if(imagesCount < 4) {
         $('.swiper-single-wallpaper-thumbs').find('.swiper-wrapper').addClass('art-few-thumbs');
     }
 
     const SwiperSingleWallpaperThumbs = new Swiper('.swiper-single-wallpaper-thumbs', {
-        // slidesPerView: imagesCount,
-        // slidesPerView: 4,
-        // slidesPerGroupAuto: false,
-        // slidesPerGroup: 1,
         spaceBetween: 0,
         freeMode: true,
         pagination: {
@@ -44,21 +37,15 @@ export function init () {
         },
         on: {
             init: function () {
-                // При инициализации Swiper
                 this.params.spaceBetween = calculateSpaceBetween();
-                this.update(); // Обновление Swiper
+                this.update(); // update Swiper
             },
             resize: function () {
-                // При изменении размеров окна
-                // this.params.spaceBetween = calculateSpaceBetween();
-                this.update(); // Обновление Swiper
+                this.update(); // update Swiper
             }
         }
     });
 
-    /*window.addEventListener('resize', () => {
-        SwiperSingleWallpaperThumbs.update(); // Обновление Swiper при изменении размера окна
-    });*/
     function calculateSpaceBetween() {
         let spaceBetween = 0;
         if(imagesCount === 3) {
@@ -90,42 +77,6 @@ export function init () {
         }
     });
 
-
-
-    //? swiper-cards-products
-    /*const SwiperCardsProducts = new Swiper('.swiper-cards-products', {
-        spaceBetween: 16,
-        navigation: {
-            nextEl: ".product-collection-slider .swiper-buttons .button-slider-next",
-            prevEl: ".product-collection-slider .swiper-buttons .button-slider-prev",
-        },
-        pagination: {
-            el: ".product-collection-slider .swiper-pagination",
-            clickable: true,
-        },
-        breakpoints: {
-            1200: {
-                slidesPerView: 4,
-                spaceBetween: 32,
-            },
-            768: {
-                slidesPerView: 3,
-            },
-            375: {
-                spaceBetween: 20,
-                slidesPerView: 2,
-                grid: {
-                    rows: 2,
-                    fill: "row",
-                },
-            }
-        },
-        on: {
-            init: function () {
-                showProductsFromSameCollectionSwiper();
-            }
-        }
-    });*/
 }
 
 function showGallerySwiper()
