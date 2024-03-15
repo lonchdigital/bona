@@ -56,13 +56,4 @@
     </section>
 
 
-    <main class="main blog-p">
-        <div class="content">
-            @guest
-                @if(!\Illuminate\Support\Facades\Session::exists('email_subscription_sent'))
-                    <x-email-subscription-form/>
-                @endif
-            @endguest
-        </div>
-    </main>
 @endsection

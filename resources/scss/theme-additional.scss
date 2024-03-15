@@ -51,6 +51,7 @@ $accent: #D59958;
     30. Brands Owl Items
     31. Main Header
     32. Product Archive
+    33. Thank you Page
 
     ----------------------------------
  */
@@ -2035,13 +2036,14 @@ nav .navigation-bottom .navigation-bottom-right .art-header-phone a.phone-icon {
     margin-left: 28px;
     margin-right: 24px;
     position: relative;
-    bottom: 1px;
+    //bottom: 1px;
 }
 nav .navigation-bottom .navigation-bottom-right .art-hamburger-button {
     margin-left: 28px;
 }
 nav .navigation-bottom .navigation-bottom-right .art-header-phone a.phone-icon svg {
-
+    height: 19px;
+    width: 19px;
 }
 @media (min-width: 992px) {
     nav .navigation-bottom .navigation-bottom-right .art-search-mobile-icon {
@@ -2072,7 +2074,7 @@ nav .navigation-bottom .navigation-bottom-right .header-main-others .basket i:be
 }
 @media (max-width: 991px) {
     nav .navigation-bottom .navigation-bottom-right .header-main-others .basket a > i {
-        margin: 0 27px 0 22px;
+        //margin: 0 27px 0 22px;
         position: relative;
         bottom: 0;
     }
@@ -2641,12 +2643,14 @@ section.art-common-page-section {
     margin-bottom: 70px;
 }
 #page-cart .art-cart-bottom .total-info-left {
+    display: none;
+
     background-color: #f9f9f9;
     padding: 40px;
 }
 #page-cart .art-cart-bottom .total-info-right {
     background-color: #f9f9f9;
-    padding: 40px;
+    padding: 30px;
 }
 #page-cart .art-cart-bottom .total-info-right .info-top-delivery img {
     width: 64px;
@@ -3287,6 +3291,7 @@ section.art-contacts-page-section {
 }
 
 
+
 /*
     ----------------------------------
     32. Product Archive
@@ -3301,7 +3306,7 @@ section.art-contacts-page-section {
     .filters {
 
         @media (max-width: 991px) {
-            padding: 20px;
+            padding: 28px;
             background-color: white;
             position: fixed;
             width: 50%;
@@ -3510,3 +3515,34 @@ section.art-contacts-page-section {
 
 }
 
+
+
+/*
+    ----------------------------------
+    33. Thank you Page
+    ----------------------------------
+*/
+.thanks {
+
+    .i-congratulations svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    .link-phone,
+    .thanks-subtitle {
+        font-size: 16px;
+        line-height: 26px;
+    }
+
+    .link-phone {
+        font-weight: 600;
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+
+}

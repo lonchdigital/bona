@@ -156,9 +156,9 @@
                                 </div>
                             @endif
 
-                            <div
-                                class="toggle-filters-close filter-submit-main btn btn-empty color-dark">{{trans('base.filter')}}</div>
-
+                            @if( count($filters['main']) || $productType->has_color )
+                                <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark">{{trans('base.filter')}}</div>
+                            @endif
                         </form>
 
                     </div> <!--/filters-->
