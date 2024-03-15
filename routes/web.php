@@ -196,6 +196,7 @@ $optionalLanguageRoutes = function () {
 
     Route::name('static-data.script')->get('static-data.js', GetStaticDataScript::class);
 
+    // TODO: Product adding to cart was broken when I deleted these
     Route::prefix('emailSubscription')->group(function () {
         Route::name('email-subscription.subscribe')->post('/subscribe', SubscribeEmailAction::class);
         Route::name('email-subscription.confirm')->get('/confirm/{emailSubscriptionCode}', ConfirmSubscriptionAction::class);

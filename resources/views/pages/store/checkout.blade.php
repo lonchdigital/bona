@@ -93,7 +93,6 @@
                                         </div>
                                     @endguest
 
-
                                     <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-4 mt-xxl-26 mb-4 mb-lg-10">
                                         <div class="checkout-delivery-accordion w-100 mt-1" id="checkout-delivery-accordion">
 
@@ -117,7 +116,10 @@
                                                         </div>
                                                         <div class="card-header-right">
                                                             <div class="nav-item-info d-flex align-items-center justify-content-between">
+                                                                {{--
                                                                 <div class="delivery-free mr-3">{{ config('domain.delivery_price') }}грн.</div>
+                                                                --}}
+
                                                                 <div class="i-info" data-toggle="tooltip"
                                                                      title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
                                                                     <span class="icon-i-info"><span
@@ -662,10 +664,8 @@
                                                     :&nbsp;<span
                                                         class="selected-payment-type">{{ trans('base.checkout_payment_cash') }}</span>
                                                 </div>
-                                                <div
-                                                    class="checkout-delivery checkout-order-info-delivery-title">{{ trans('base.delivery') }}
-                                                    : <span
-                                                        class="selected-delivery-type">{{ trans('base.checkout_address_delivery') }}</span>
+                                                <div class="checkout-delivery checkout-order-info-delivery-title">{{ trans('base.delivery') }}
+                                                    : <span class="selected-delivery-type">{{ trans('base.checkout_address_delivery') }}</span>
                                                 </div>
                                             </div>
                                             <div class="info-top-prices mb-3">
@@ -673,16 +673,20 @@
                                                     <span class="mr-6">{{ trans('base.products_price') }}</span>
                                                     <span class="text-nowrap price-products"></span>
                                                 </div>
-                                                <div class="info-top-item pb-3 normal-delivery">
-                                                    <span class="mr-6">{{ trans('base.delivery') }}</span>
-                                                    <span class="text-nowrap price-delivery"></span>
 
-                                                        {{-- TODO: Do we need this? --}}
+                                                {{-- TODO: Price delivery --}}
+                                            {{--
+                                            <div class="info-top-item pb-3 normal-delivery">
+                                                <span class="mr-6">{{ trans('base.delivery') }}</span>
+                                                <span class="text-nowrap price-delivery"></span>
+
+
 <!--                                                    <div class="d-flex">
                                                         <span class="old-price-delivery text-nowrap"></span>
                                                         <span class="text-nowrap price-delivery"></span>
                                                     </div>-->
                                                 </div>
+                                            --}}
                                                 <div class="info-top-item pb-3">
                                                     <span class="mr-6">{{ trans('base.products_price_discount') }}</span>
                                                     <span class="text-nowrap price-discount"></span>

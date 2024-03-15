@@ -5,6 +5,7 @@ namespace App\Http\Actions\Store\Checkout\Pages;
 use App\Models\Order;
 use App\Http\Actions\Admin\BaseAction;
 use App\Services\Currency\CurrencyService;
+use App\Models\ProductType;
 
 class ShowCheckoutThankYouPageAction extends BaseAction
 {
@@ -16,6 +17,7 @@ class ShowCheckoutThankYouPageAction extends BaseAction
         return view('pages.store.checkout-thank-you', [
             'order' => $order,
             'baseCurrency' => $currencyService->getBaseCurrency(),
+            'productType' => ProductType::first(),
         ]);
     }
 }

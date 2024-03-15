@@ -22,7 +22,6 @@
                         </header>
                     </div>
 
-
                     <div class="art-cart-products-wrapper">
                         <div id="basket-list-product" class="basket-list-product">
                             <div class="list-product-table">
@@ -85,9 +84,10 @@
                             <div class="col-lg-4">
                                 <div class="total-info-right">
 
-                                    <div class="info-top-count d-none d-lg-block mb-2 text-center">
+                                    <div class="info-top-count d-none d-lg-block mb-2 py-3 px-5">
                                         {!! trans('base.products_in_cart') !!}
                                     </div>
+                                    {{-- TODO:: hided temporary
                                     <div class="info-top-delivery text-center d-none d-lg-flex mb-3">
                                         <div class="btn-free-shiping font-weight-bold d-none">
                                             <img src="{{ Vite::asset('resources/img/gift-box-delivery.png') }}" alt="{{ trans('base.free_shipment') }}">
@@ -96,24 +96,29 @@
                                             </span>
                                         </div>
                                     </div>
+                                    --}}
                                     <div class="info-top-prices mb-6">
                                         <div class="info-top-item py-3 px-5">
-                                            <span class="mr-6">{{ trans('base.products_price') }}</span>
+                                            <span class="">{{ trans('base.products_price') }}: </span>
                                             <span class="text-nowrap price-products"></span>
                                         </div>
-                                        <div class="info-top-item py-3 px-5">
-                                            <span class="mr-6">{{ trans('base.delivery') }}</span>
-                                            <div class="d-flex">
-                                                <span class="text-nowrap price-delivery">{{ trans('base.cart_delivery_price') }}</span>
-                                            </div>
-                                        </div>
+
+                                        {{-- TODO:: hided temporary
                                         <div class="info-top-item py-3 px-5">
                                             <span class="mr-6 total-title-delivery">{{ trans('base.products_price_discount') }}</span>
                                             <span class="text-nowrap price-discount"></span>
                                         </div>
+                                        --}}
                                         <div class="info-top-item py-3 px-5">
-                                            <span class="mr-6 total-title-delivery">{{ trans('base.products_price_total') }}</span>
+                                            <span class="total-title-delivery">{{ trans('base.products_price_total') }}: </span>
                                             <span class="text-nowrap total-price-delivery"></span>
+                                        </div>
+
+                                        <div class="info-top-item py-3 px-5">
+                                            <span class="">{{ trans('base.delivery') }}</span>
+                                            <span class="">
+                                                <span class="text-nowrap price-delivery">{{ trans('base.cart_delivery_price') }}</span>
+                                            </span>
                                         </div>
                                     </div>
                                     <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="btn btn-black-custom w-100 mb-5 mb-lg-9">{{ trans('base.make_order') }}</a>
@@ -140,11 +145,7 @@
 
                     <!-- upsale here -->
                 </div>
-                @guest
-                    @if(!\Illuminate\Support\Facades\Session::exists('email_subscription_sent'))
-                        <x-email-subscription-form/>
-                    @endif
-                @endguest
+
             </div>
         </div>
     </main>

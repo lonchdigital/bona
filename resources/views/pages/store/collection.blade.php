@@ -276,11 +276,6 @@
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brand.page', ['brandSlug' => $collection->brand->slug]) }}" class="btn btn-outline-black-custom d-block mx-auto">{{ trans('base.all_collections_of_brand') }}</a>
                     </div>
                 </section>
-                @guest
-                    @if(!\Illuminate\Support\Facades\Session::exists('email_subscription_sent'))
-                        <x-email-subscription-form/>
-                    @endif
-                @endguest
             </div>
         </div>
     </main>
