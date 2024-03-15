@@ -20,6 +20,7 @@ use App\Services\Order\DTO\CheckoutConfirmOrderDTO;
 use App\Services\Order\DTO\OrderFilterDTO;
 use App\Services\Order\DTO\UpdateOrderDTO;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\SuccessOrder;
 
 class OrderService extends BaseService
 {
@@ -134,7 +135,11 @@ class OrderService extends BaseService
             $cart->delete();
 
             if ($newUserCreated) {
-                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
+//                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
+                Mail::to($request->email)->send(new SuccessOrder($order));
+            } else {
+//                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
+                Mail::to($user->email)->send( new SuccessOrder($order) );
             }
 
             if (config('domain.admin_notification_emails')) {
@@ -142,7 +147,6 @@ class OrderService extends BaseService
                     Mail::to($email)->send(new AdminNotificationEmail(trans('admin.new_order_email_subject'), route('admin.order.edit', ['order' => $order->id])));
                 }
             }
-
 
             return $order;
         });

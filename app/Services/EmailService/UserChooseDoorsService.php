@@ -18,7 +18,6 @@ class UserChooseDoorsService extends BaseService
 
 //            dd('sendUserData', $request);
 
-
             Mail::to('andreyss100@gmail.com')->send( new UserChooseDoors($request->name, $request->phone) );
             return ServiceActionResult::make(true, trans('base.subscription_email_sent'));
         });
