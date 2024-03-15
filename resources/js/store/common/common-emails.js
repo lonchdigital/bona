@@ -32,7 +32,8 @@ export default {
                     } else {
                         console.error('[Email]: init: error during sending the email.');
                     }
-                }
+                },
+                $userChooseDoorsForm
             );
 
         });
@@ -74,7 +75,8 @@ export default {
                     } else {
                         console.error('[Email]: init: error during sending the email.');
                     }
-                }
+                },
+                $userCallMeasurerForm
             );
 
         });
@@ -92,8 +94,11 @@ export default {
 };
 
 
-function userChooseDoors(data, success, fail)
+function userChooseDoors(data, success, fail, form)
 {
+    form.find('input').val('');
+    form.find('input[type="checkbox"]').prop('checked', false);
+
     const routeWithSlug = routes.email.user_choose_doors_route;
 
     $.ajax({
