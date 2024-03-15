@@ -136,10 +136,10 @@ class OrderService extends BaseService
 
             if ($newUserCreated) {
 //                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
-                Mail::to($request->email)->send(new SuccessOrder($order));
+//                Mail::to($request->email)->send(new SuccessOrder($order));
             } else {
 //                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
-                Mail::to($user->email)->send( new SuccessOrder($order) );
+//                Mail::to($user->email)->send( new SuccessOrder($order) );
             }
 
             if (config('domain.admin_notification_emails')) {
