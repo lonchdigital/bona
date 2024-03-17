@@ -5,6 +5,7 @@ import wishList from "./wish-list";
 
 const $basket_with_products = $('.header-main-others .basket-basket-list .basket-with-products');
 const $basket_without_products = $('.header-main-others .basket-basket-list .basket-without-products');
+const $main_basket_count = $('.art-main-basket-count.count-of-products-in-basket');
 
 export default {
     init: async function () {
@@ -53,6 +54,8 @@ export default {
                 function (data) {
                     productAddedToCartButton.click();
                     // goToCartBody.removeClass('d-none');
+
+                    $main_basket_count.removeClass('d-none');
                     handleBasket(data);
                 },
                 function () {
