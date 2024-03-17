@@ -34,10 +34,14 @@
             mso-table-lspace: 0pt;
             mso-table-rspace: 0pt;
             width: 100%; }
+        table thead tr th {
+            padding: 15px 15px;
+        }
         table td {
             font-family: sans-serif;
             font-size: 14px;
             vertical-align: top;
+            text-align: center;
         }
 
         /* -------------------------------------
@@ -54,9 +58,9 @@
             display: block;
             margin: 0 auto !important;
             /* makes it centered */
-            max-width: 580px;
+            max-width: 1600px;
             padding: 10px;
-            width: 580px;
+            width: 1600px;
         }
 
         /* This should also be a block element, so that it will fill 100% of the .container */
@@ -64,7 +68,7 @@
             box-sizing: border-box;
             display: block;
             margin: 0 auto;
-            max-width: 580px;
+            max-width: 1600px;
             padding: 10px;
         }
 

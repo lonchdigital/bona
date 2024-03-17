@@ -49,4 +49,13 @@ return [
     'admin-notification-email' => [
         'call_to_action' => 'Переглянути',
     ],
+
+    'your_order' => 'Ваше замовлення',
+    'table_image' => 'Зображення',
+    'table_attributes' => 'Атрибути',
+    'table_sku' => 'Артикул',
+    'table_product_name' => 'Назва',
+    'table_product_count' => 'Кількість',
+    'table_product_single_price' => 'Ціна за одиницю',
+    'table_product_total_price' => 'Ціна',
 ];

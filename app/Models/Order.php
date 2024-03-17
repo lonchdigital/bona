@@ -23,7 +23,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, 'order_products')
             ->withTimestamps()
-            ->withPivot(['count', 'price']);
+            ->withPivot(['count', 'price', 'attributes', 'attributes_price']);
     }
 
     public function user()
@@ -37,7 +37,7 @@ class Order extends Model
             $summary = 0;
 
             foreach ($this->products as $product) {
-                $summary += round($product->pivot->price * $product->pivot->count);
+                $summary += round(($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count);
             }
 
             return $summary;

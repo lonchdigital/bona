@@ -321,6 +321,7 @@ return [
     'count' => 'Кількість',
     'price_per_one' => 'Ціна за одиницю',
     'image' => 'Зображення',
+    'attributes' => 'Атрибути',
     'order_status_new' => 'Нове',
     'order_status_in_progress' => 'В обробці',
     'order_status_sent' => 'Надіслано',

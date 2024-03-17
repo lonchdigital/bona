@@ -43,6 +43,8 @@ class OrderService extends BaseService
     }
     public function createOrderByCart(Cart $cart, CheckoutConfirmOrderDTO $request, ?User $user): Order
     {
+//        dd('AWESOME !!! !!! 777');
+
         return $this->coverWithDBTransactionWithoutResponse(function () use($cart, $request, $user) {
             $newUserCreated = false;
             $newUserPassword = '';
@@ -74,7 +76,11 @@ class OrderService extends BaseService
                 $npCity = ['uk' => $npCity['Description'] . ' ' . $npCity['AreaDescription'] . ' ' . mb_strtolower(trans('base.region')), 'ru' => $npCity['DescriptionRu'] . ' ' . $npCity['AreaDescriptionRu'] . ' ' . mb_strtolower(trans('base.region'))];
 
                 $npDepartment = $this->deliveryService->getNpDepartmentByRef($request->npCity, $request->npDepartment);
-                $npDepartment = ['uk' => $npDepartment['Description'], 'ru' => $npDepartment['DescriptionRu']];
+                if( isset($npDepartment['Description']) && isset($npDepartment['DescriptionRu']) ) {
+                    $npDepartment = ['uk' => $npDepartment['Description'], 'ru' => $npDepartment['DescriptionRu']];
+                } else {
+                    $npDepartment = ['uk' => 'Уточнити у покупця', 'ru' => 'Уточнить у покупателя'];
+                }
             }
 
             $meestCity = null;
@@ -122,31 +128,42 @@ class OrderService extends BaseService
 
             $productsToSync = [];
 
-            foreach ($cart->products as $product) {
+            // TODO: Remove when finish
+            /*foreach ($cart->products as $product) {
                 $productsToSync[$product->id] = [
                     'count' => $product->pivot->count,
                     'price' => $product->pivot->price,
                 ];
+            }*/
+
+            foreach ($cart->products as $product) {
+                $productsToSync[] = [
+                    'product_id' => $product->id,
+                    'count' => $product->pivot->count,
+                    'price' => $product->pivot->price,
+                    'attributes' => $product->pivot->attributes,
+                    'attributes_price' => $product->pivot->attributes_price,
+                ];
             }
 
+//            dd($productsToSync);
             $order->products()->sync($productsToSync);
 
             $cart->products()->sync([]);
             $cart->delete();
 
-            if ($newUserCreated) {
-//                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
-//                Mail::to($request->email)->send(new SuccessOrder($order));
+            /*if ($newUserCreated) {
+                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
+                Mail::to($request->email)->send(new SuccessOrder($order));
             } else {
-//                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
-//                Mail::to($user->email)->send( new SuccessOrder($order) );
+                Mail::to($user->email)->send( new SuccessOrder($order) );
             }
 
             if (config('domain.admin_notification_emails')) {
                 foreach (explode(',', config('domain.admin_notification_emails')) as $email) {
                     Mail::to($email)->send(new AdminNotificationEmail(trans('admin.new_order_email_subject'), route('admin.order.edit', ['order' => $order->id])));
                 }
-            }
+            }*/
 
             return $order;
         });

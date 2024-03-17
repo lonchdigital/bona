@@ -204,7 +204,9 @@ class CartService extends BaseService
     {
         $totalPrice = 0;
         foreach ($cart->products as $product) {
-            $totalPrice += $product->pivot->price * $product->pivot->count;
+            // TODO: we counted products without attributes. Do we need to do it?
+//            $totalPrice += $product->pivot->price * $product->pivot->count;
+            $totalPrice += ( $product->pivot->price + $product->pivot->attributes_price ) * $product->pivot->count;
         }
 
         $productsInWishList = $this->wishListService->getWishListProductsId($wishList);
@@ -233,6 +235,7 @@ class CartService extends BaseService
                 'products' =>  round($totalPrice, 2),
                 'total' => round($totalPrice, 2),
                 'discount' => round($discount, 2),
+//                'products_with_attributes' => round($discount, 2),
             ],
             'has_free_delivery' => $hasFreeDelivery,
             'promo_code' => $cart->promoCode,

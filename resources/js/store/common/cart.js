@@ -44,6 +44,7 @@ export default {
                 selectAttributes['color'] = null;
             }
 
+
             // Add main Product to cart
             addProductToCart(
                 productSlug,
@@ -51,7 +52,7 @@ export default {
                 selectAttributes,
                 function (data) {
                     productAddedToCartButton.click();
-                    goToCartBody.removeClass('d-none');
+                    // goToCartBody.removeClass('d-none');
                     handleBasket(data);
                 },
                 function () {
@@ -70,7 +71,7 @@ export default {
                             artButton.data("slug"), // product slug
                             productCount,
                             function (data) {
-                                goToCartBody.removeClass('d-none');
+                                // goToCartBody.removeClass('d-none');
                                 handleBasket(data);
                             },
                             function () {
@@ -563,14 +564,30 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
 function drawProductsInCartPageHTML(data)
 {
     let productsToAppend = '';
+    let productAttributes = '';
+    let productAttributeClass = '';
+    data.data.products.forEach(function (product) {
+
+        let productAttributesHTML = '<div class="product-attributes">';
+        productAttributes = JSON.parse(product.attributes);
+
+        for (var key in productAttributes) {
+            productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
+            productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'"><span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributes[key] +'</span></div>';
+        }
+        productAttributesHTML += '</div>';
+
+        // productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
+        productsToAppend += getProductInCartPageHTML(product, productAttributesHTML);
+    });
 
     if (data.data.products.length > 0) {
         productsToAppend += '<hr class="d-lg-none">';
     }
 
-    data.data.products.forEach(function (product) {
+    /*data.data.products.forEach(function (product) {
         productsToAppend += getProductInCartPageHTML(product);
-    });
+    });*/
 
     if (data.data.products.length > 0) {
         productsToAppend += '<hr class="d-lg-none">';
@@ -607,8 +624,15 @@ function drawProductsInCartPageHTML(data)
     $('.products-in-cart').text(data.data.products.length);
 }
 
-function getProductInCartPageHTML(productData)
+function getProductInCartPageHTML(productData, productAttributesHTML)
 {
+    let artProductPrice = 0;
+    if(productData.attributes_price > 0) {
+        artProductPrice = (productData.attributes_price * productData.count) + productData.price;
+    } else {
+        artProductPrice = productData.price
+    }
+
     return `
         <div class="list-product-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
@@ -625,6 +649,7 @@ function getProductInCartPageHTML(productData)
                         <div class="table-product-name h4 mb-0 d-block">
                             ${productData.name}
                         </div>
+                        ${productAttributesHTML}
                     </div>
                 </a>
             </div>
@@ -633,7 +658,7 @@ function getProductInCartPageHTML(productData)
                     <div class="row align-items-center">
                         <div class="col d-none d-lg-block">
                             <div class="table-price">
-                                 ${productData.price_per_product} ${store.base_currency_name_short}
+                                 ${productData.price_per_product_with_attributes} ${store.base_currency_name_short}
                             </div>
                         </div>
                         <div class="col">
@@ -648,7 +673,7 @@ function getProductInCartPageHTML(productData)
                         <div class="col d-none d-lg-block">
                             <div class="table-total-price position-relative text-right">
                                 <div class="price">
-                                    ${productData.price} ${store.base_currency_name_short}
+                                    ${artProductPrice} ${store.base_currency_name_short}
                                 </div>
                             </div>
                         </div>

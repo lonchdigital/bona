@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Sitemap\Contracts\Sitemapable;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Support\Facades\URL as FacadeURL;
 
 class Product extends Model implements Sitemapable
 {
@@ -95,7 +96,20 @@ class Product extends Model implements Sitemapable
             } else {
                 return '/assets/images/no-image.png';
             }
-//            return null;
+        });
+    }
+
+    public function previewImageFullUrl(): Attribute
+    {
+        return Attribute::make(function () {
+            if ($this->main_image_path) {
+
+//                return storage_path('app\public\\' . $this->preview_image_path);
+
+                return FacadeURL::to('') . Storage::url($this->preview_image_path);
+            } else {
+                return FacadeURL::to('') . '/assets/images/no-image.png';
+            }
         });
     }
 

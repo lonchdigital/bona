@@ -139,12 +139,9 @@
                                                         <div class="city-search-wrap">
                                                             <div class="field @if($errors->has('region_id')) field-error @endif city-search mb-1">
                                                                 <select class="region-select" name="region_id">
-                                                                    <option disabled
-                                                                            @if(!old('region_id')) selected @endif>{{ trans('base.checkout_select_region') }}</option>
+                                                                    <option disabled @if(!old('region_id')) selected @endif value="">{{ trans('base.checkout_select_region') }}</option>
                                                                     @foreach($regions as $region)
-                                                                        <option
-                                                                            @if(old('region_id') == $region->id) selected
-                                                                            @endif value="{{ $region->id }}">{{ $region->name }}</option>
+                                                                        <option @if(old('region_id') == $region->id) selected @endif value="{{ $region->id }}">{{ $region->name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
@@ -380,7 +377,7 @@
                                                                 class="field @if($errors->has('sat_region_id')) field-error @endif city-search mb-1">
                                                                 <select class="region-select" name="sat_region_id">
                                                                     <option disabled
-                                                                            @if(!old('sat_region_id')) selected @endif>{{ trans('base.checkout_select_region') }}</option>
+                                                                            @if(!old('sat_region_id')) selected @endif value="">{{ trans('base.checkout_select_region') }}</option>
                                                                     @foreach($regions as $region)
                                                                         <option
                                                                             @if(old('sat_region_id') == $region->id) selected
@@ -640,17 +637,29 @@
                                                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}"
                                                                    class="table-product d-flex align-items-center">
                                                                     <div class="table-product-image mr-3 d-block">
-                                                                        <img src="{{ $product->main_image_url }}"
-                                                                             alt="img">
+                                                                        <img src="{{ $product->main_image_url }}" alt="img">
                                                                     </div>
                                                                     <div class="table-product-info d-block">
                                                                         <div class="table-product-name mb-0 d-block">
-                                                                            {{ $product->name }}
+                                                                            @if($product->pivot->count > 1)
+                                                                                {{ $product->name }}<span>{{ ' ( x'.$product->pivot->count.' )' }}</span>
+                                                                            @else
+                                                                                {{ $product->name }}
+                                                                            @endif
                                                                         </div>
-                                                                        <div
-                                                                            class="table-total-price position-relative">
+                                                                        {{--@if($product->pivot->attributes)
+                                                                            <div class="product-attributes">
+                                                                                @foreach(json_decode($product->pivot->attributes) as $key => $value)
+                                                                                    <div class="product-attribute-line">
+                                                                                        <div class="attribute-value">{{ $value }}</div>
+                                                                                    </div>
+                                                                                @endforeach
+                                                                            </div>
+                                                                        @endif--}}
+                                                                        <div class="table-total-price position-relative">
                                                                             <div class="price">
-                                                                                {{ $product->price }} {{ $baseCurrency->name_short }}
+{{--                                                                                {{ $product->price }} {{ $baseCurrency->name_short }}--}}
+                                                                                {{ $product->price + $product->pivot->attributes_price }} {{ $baseCurrency->name_short }}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -670,7 +679,7 @@
                                             </div>
                                             <div class="info-top-prices mb-3">
                                                 <div class="info-top-item pb-3">
-                                                    <span class="mr-6">{{ trans('base.products_price') }}</span>
+                                                    <span class="">{{ trans('base.products_price') }}: </span>
                                                     <span class="text-nowrap price-products"></span>
                                                 </div>
 
@@ -688,17 +697,35 @@
                                                 </div>
                                             --}}
                                                 <div class="info-top-item pb-3">
-                                                    <span class="mr-6">{{ trans('base.products_price_discount') }}</span>
+                                                    <span class="">{{ trans('base.products_price_discount') }}: </span>
                                                     <span class="text-nowrap price-discount"></span>
                                                 </div>
                                                 <div class="info-top-item pb-3 normal-total">
-                                                    <span class="mr-6 total-title-delivery">{{ trans('base.products_price_total') }}</span>
+                                                    <span class="total-title-delivery">{{ trans('base.products_price_total') }}: </span>
                                                     <span class="text-nowrap total-price-delivery"></span>
                                                 </div>
                                             </div>
                                             <hr class="pb-4">
 
                                             <div class="total-info-bottom">
+
+                                                <div class="agreement-wrapper">
+                                                    <div class="custom-control custom-checkbox position-relative art-checkout-agreement">
+                                                        <input type="hidden" name="agreement" value="0">
+                                                        <input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1">
+                                                        <label for="checkout-order-info-form-check">{{ trans('base.checkout_by_confirm_i_agree') }}
+                                                            <a href="#">{{ mb_strtolower(trans('base.conditions')) }}</a>
+                                                        </label>
+                                                    </div>
+                                                    @error('agreement')
+                                                    <div class="row">
+                                                        <div class="col-12 text-danger">
+                                                            {{ $message }}
+                                                        </div>
+                                                    </div>
+                                                    @enderror
+                                                </div>
+
                                                 <div class="buttons-wrapper">
                                                     <button type="submit" class="btn btn-black-custom w-100 mb-4">{{ trans('base.checkout_confirm_order') }}</button>
                                                     <div class="info-top-pay text-center d-flex flex-column flex-lg-row justify-content-center mb-lg-6">
@@ -720,22 +747,6 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="agreement-wrapper">
-                                                    <div class="custom-control custom-checkbox position-relative art-checkout-agreement">
-                                                        <input type="hidden" name="agreement" value="0">
-                                                        <input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1">
-                                                        <label for="checkout-order-info-form-check">{{ trans('base.checkout_by_confirm_i_agree') }}
-                                                            <a href="#">{{ mb_strtolower(trans('base.conditions')) }}</a>
-                                                        </label>
-                                                    </div>
-                                                    @error('agreement')
-                                                    <div class="row">
-                                                        <div class="col-12 text-danger">
-                                                            {{ $message }}
-                                                        </div>
-                                                    </div>
-                                                    @enderror
-                                                </div>
                                             </div>
 
                                         </div>
