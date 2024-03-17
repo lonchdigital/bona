@@ -1,4 +1,4 @@
-@extends('layouts.email-main')
+@extends('layouts.email-product-list')
 
 @section('content')
     <!-- START CENTERED WHITE CONTAINER -->
@@ -10,29 +10,47 @@
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                         <td>
-{{--                            <h2 class="align-center">{{ $subject }}</h2>--}}
-                            <h2 class="align-center">{{ 'subject' }}</h2>
+                            <h2 class="align-center">{{ trans('emails.your_order') }}</h2>
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="">
                                 <tbody>
                                 <tr>
                                     <td align="center">
                                         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                            <thead>
+                                            <tr>
+                                                <th>{{ trans('emails.table_image') }}</th>
+                                                <th>{{ trans('emails.table_product_name') }}</th>
+                                                <th>{{ trans('emails.table_attributes') }}</th>
+                                                <th>{{ trans('emails.table_sku') }}</th>
+                                                <th>{{ trans('emails.table_product_count') }}</th>
+                                                <th>{{ trans('emails.table_product_single_price') }}</th>
+                                                <th>{{ trans('emails.table_product_total_price') }}</th>
+                                            </tr>
+                                            </thead>
                                             <tbody>
                                             @foreach($order->products as $product)
                                                 <tr>
-                                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}"><img class="order-product-image" src="{{ $product->preview_image_url }}"></a></td>
-                                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
-                                                    <td>{{ $product->name }}</td>
                                                     <td>
-                                                        @if( !is_null($product->color) )
-                                                            <div class="border rounded p-1 text-center" style="background-color: {{ $product->color->hex }}; ">
-                                                                <span class="color-invert">{{ $product->color->name }}</span>
+                                                        <a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">
+                                                            <img class="order-product-image" src="{{ $product->preview_image_full_url }}" alt="Product image">
+                                                        </a>
+                                                    </td>
+                                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a></td>
+                                                    <td>
+                                                        @if($product->pivot->attributes)
+                                                            <div class="product-attributes">
+                                                                @foreach(json_decode($product->pivot->attributes) as $key => $value)
+                                                                    <div class="product-attribute-line">
+                                                                        <div class="attribute-value">{{ $value }}</div>
+                                                                    </div>
+                                                                @endforeach
                                                             </div>
                                                         @endif
                                                     </td>
+                                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
                                                     <td>{{ $product->pivot->count }}</td>
-                                                    <td>{{ $product->pivot->price }}</td>
-                                                    <td>{{ round($product->pivot->count * $product->pivot->price, 2) }}</td>
+                                                    <td>{{ round( $product->pivot->price + $product->pivot->attributes_price, 2) }}</td>
+                                                    <td>{{ round( ($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count, 2) }}</td>
                                                 </tr>
                                             @endforeach
                                             </tbody>

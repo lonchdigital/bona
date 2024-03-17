@@ -78,6 +78,7 @@
                                 </div>
                             @endif
 
+
                             <p>
                                 <strong>
                                     {{ trans('admin.order_payment_details') }}
@@ -93,22 +94,8 @@
                                 <striong class="text-dark">{{ trans('admin.order_payment_type') }}</striong>
                                 <div class="mt-1">{{ \App\DataClasses\PaymentTypesDataClass::get($order->payment_type_id)['name'] }}</div>
                             </div>
-                            <div class="mb-3">
-                                <striong class="text-dark">{{ trans('admin.order_products_price') }}</striong>
-                                <div class="mt-1">{{ $orderSummaryDetailed['products'] }} {{ $baseCurrency->name_short }}</div>
-                            </div>
-                            <div class="mb-3">
-                                <striong class="text-dark">{{ trans('admin.order_delivery_price') }}</striong>
-                                <div class="mt-1">{{ $orderSummaryDetailed['delivery'] }} {{ $baseCurrency->name_short }}</div>
-                            </div>
-                            <div class="mb-3">
-                                <striong class="text-dark">{{ trans('admin.order_discount_price') }}</striong>
-                                <div class="mt-1">{{ $orderSummaryDetailed['discount'] }} {{ $baseCurrency->name_short }}</div>
-                            </div>
-                            <div class="mb-3">
-                                <striong class="text-dark">{{ trans('admin.order_total_price') }}</striong>
-                                <div class="mt-1">{{ $orderSummaryDetailed['total'] }} {{ $baseCurrency->name_short }}</div>
-                            </div>
+
+
                             <p>
                                 <strong>
                                     {{ trans('admin.order_delivery_details') }}
@@ -189,9 +176,10 @@
                                 <thead>
                                 <tr>
                                     <th class="text-dark">{{ trans('admin.image') }}</th>
+                                    <th class="text-dark">{{ trans('admin.attributes') }}</th>
                                     <th class="text-dark">{{ trans('admin.sku') }}</th>
                                     <th class="text-dark">{{ trans('admin.name') }}</th>
-                                    <th class="text-dark">{{ trans('admin.color') }}</th>
+{{--                                    <th class="text-dark">{{ trans('admin.color') }}</th>--}}
                                     <th class="text-dark">{{ trans('admin.count') }}</th>
                                     <th class="text-dark">{{ trans('admin.price_per_one') }}</th>
                                     <th class="text-dark">{{ trans('admin.price') }}</th>
@@ -201,8 +189,20 @@
                                 @foreach($order->products as $product)
                                 <tr>
                                     <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}"><img class="order-product-image" src="{{ $product->main_image_url }}"></a></td>
+                                    <td>
+                                        @if($product->pivot->attributes)
+                                            <div class="product-attributes">
+                                                @foreach(json_decode($product->pivot->attributes) as $key => $value)
+                                                    <div class="product-attribute-line">
+                                                        <div class="attribute-value">{{ $value }}</div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
-                                    <td>{{ $product->name }}</td>
+                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a></td>
+                                    {{--
                                     <td>
                                         @if( !is_null($product->color) )
                                             <div class="border rounded p-1 text-center" style="background-color: {{ $product->color->hex }}; ">
@@ -210,9 +210,10 @@
                                             </div>
                                         @endif
                                     </td>
+                                    --}}
                                     <td>{{ $product->pivot->count }}</td>
-                                    <td>{{ $product->pivot->price }}</td>
-                                    <td>{{ round($product->pivot->count * $product->pivot->price, 2) }}</td>
+                                    <td>{{ round( $product->pivot->price + $product->pivot->attributes_price, 2) }}</td>
+                                    <td>{{ round( ($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count, 2) }}</td>
                                 </tr>
                                 @endforeach
                                 </tbody>

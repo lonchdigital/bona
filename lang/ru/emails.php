@@ -55,4 +55,12 @@ return [
         'call_to_action' => 'Просмотреть',
     ],
 
+    'your_order' => 'Ваш заказ',
+    'table_image' => 'Изображение',
+    'table_attributes' => 'Атрибуты',
+    'table_sku' => 'Артикул',
+    'table_product_name' => 'Название',
+    'table_product_count' => 'Количество',
+    'table_product_single_price' => 'Цена за единицу',
+    'table_product_total_price' => 'Цена',
 ];

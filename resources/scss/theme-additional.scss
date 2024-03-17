@@ -2587,6 +2587,22 @@ section.art-common-page-section {
         .table-product-name {
             margin-top: 0;
         }
+
+        .product-attributes {
+            margin-top: 9px;
+
+            .product-attribute-line {
+                line-height: 18px;
+
+                .attribute-key {
+                    font-size:0;
+                }
+
+                .attribute-value {
+
+                }
+            }
+        }
     }
 
     .wrapper-wish-list {
@@ -2702,17 +2718,18 @@ section.art-common-page-section {
 
         .buttons-wrapper {
 
-            @media (max-width: 991px) {
+            /*@media (max-width: 991px) {
                 order: 2;
-            }
+            }*/
         }
 
         .agreement-wrapper {
+            margin-bottom: 20px;
 
-            @media (max-width: 991px) {
+            /*@media (max-width: 991px) {
                 order: 1;
                 margin-bottom: 20px;
-            }
+            }*/
         }
     }
 

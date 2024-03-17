@@ -111,7 +111,7 @@ function getSummaryByDeliveryTypeId(deliveryTypeId, success)
         url: routes.cart.summary_with_delivery_route,
         type: 'get',
         data: {
-            delivery_type_id: deliveryTypeId,
+            delivery_type_id: deliveryTypeId
         },
         dataType: 'json',
     }).done(function(data) {

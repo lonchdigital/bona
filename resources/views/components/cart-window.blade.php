@@ -1,14 +1,9 @@
 <li class="list-inline-item basket-list basket-basket-list">
-    <div class="basket full nolink basket-link basket-with-products @if($countOfProductInCart <= 0) d-none @endif">
+    <div class="basket full nolink basket-link basket-with-products">
         <span class="after count-of-products-in-basket">{{ $countOfProductInCart }}</span>
         <i class="icon icon-cart"></i>
     </div>
-    <div class="basket full nolink basket-link basket-without-products @if($countOfProductInCart > 0) d-none @endif">
-        <a href="{{ route('store.cart.page') }}">
-            <i class="icon icon-cart"></i>
-        </a>
-    </div>
-    <div class="sub-menu bg-white basket-sub-menu @if($countOfProductInCart <= 0 ||  request()->route()->getName() == 'store.checkout.page') d-none @endif">
+    <div class="sub-menu bg-white basket-sub-menu @if(request()->route()->getName() == 'store.checkout.page') d-none @endif">
         <div class="sub-menu-title py-3 text-center font-weight-bold text-uppercase">
             {{ trans('base.cart') }}
         </div>
