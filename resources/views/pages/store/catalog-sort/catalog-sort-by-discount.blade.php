@@ -40,9 +40,13 @@
                 <div class="col-md-12 col-xs-12">
 
                     <div class="art-product-list art-product-filtered-by-brand art-four-column">
-                        @foreach($productsPaginated as $product)
-                            @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
-                        @endforeach
+                        @if( count($productsPaginated) > 0 )
+                            @foreach($productsPaginated as $product)
+                                @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
+                            @endforeach
+                        @else
+                            <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                        @endif
                     </div>
 
                     <!--Pagination-->
