@@ -71,7 +71,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'dvery-na-ulycu')->first()->slug]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="56" height="54" viewBox="0 0 56 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,7 +101,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'dzerkalni-dveri')->first()->slug]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="30" height="54" viewBox="0 0 93 175" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,7 +132,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'plyntus')->first()->slug]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="84" height="84" viewBox="0 0 175 139" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -144,7 +144,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'klassyceskye-dvery')->first()->slug]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 93 175" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -193,7 +193,10 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ route('store.catalog-category.page', [
+                        'categorySlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->categories()->where('code_name', 'rucky')->first()->slug,
+                        'productTypeSlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->slug
+                        ]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="48" height="54" viewBox="0 0 48 54" fill="none" xmlns="http://www.w3.org/2000/svg">

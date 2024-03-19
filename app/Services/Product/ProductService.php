@@ -155,7 +155,8 @@ class ProductService extends BaseService
 
     public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::with(['children']);
+//        $query = Product::with(['children']);
+        $query = Product::query();
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
