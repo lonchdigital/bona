@@ -3,6 +3,7 @@
 namespace App\Services\Product;
 
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Currency;
 use App\Models\HomePageBestSalesProducts;
 use App\Models\HomePageNewProducts;
@@ -75,13 +76,30 @@ class ProductService extends BaseService
         return Product::where('brand_id', $brandId)->limit(6)->orderBy('orders_count')->get();
     }
 
+    // TODO: Remove when finish
+    /*public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $query = Product::query();
+
+        $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
+
+        return $query->where('product_type_id', 8)
+            ->paginate($perPage, '*', null, $page);
+    }*/
+
+
     public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = Product::query();
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
-        return $query->where('product_type_id', $productType->id)
+        return $query->where(function($query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function($query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })
             ->paginate($perPage, '*', null, $page);
     }
 
@@ -89,6 +107,28 @@ class ProductService extends BaseService
     {
         $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
         return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+    }
+
+    public function getProductsByColorPaginated(int $perPage, int $page, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return Product::whereHas('colors', function($query) use ($color) {
+            $query->where('colors.id', $color->id);
+        })
+            ->paginate($perPage, ['*'], null, $page);
+
+    }
+
+    public function getProductsByDiscountPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return Product::where('old_price', '>', 0)
+            ->whereNotNull('old_price')
+            ->paginate($perPage, ['*'], null, $page);
+    }
+
+    public function getProductsByAvailabilityPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return Product::where('availability_status_id', 2)
+            ->paginate($perPage, ['*'], null, $page);
     }
 
     public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): \Illuminate\Contracts\Pagination\LengthAwarePaginator

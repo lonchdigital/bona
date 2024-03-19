@@ -35,6 +35,9 @@ use App\Http\Actions\Store\Catalog\Pages\ShowCatalogCategoryPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowFilterGroupPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByBrandPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductByColorPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductByDiscountPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductByAvailabilityPageAction;
 use App\Http\Actions\Store\Checkout\CheckoutConfirmOrderAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutPage;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
@@ -145,6 +148,9 @@ $optionalLanguageRoutes = function () {
     Route::name('store.about-us')->get('/about-us', ShowAboutUsPageAction::class);
     Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);
     Route::name('store.catalog-by-brand.page')->get('/catalog/brand/{brand}/', ShowProductByBrandPageAction::class);
+    Route::name('store.products-by-color.page')->get('/catalog/color/{color}/', ShowProductByColorPageAction::class);
+    Route::name('store.products-by-discount.page')->get('/catalog/discount/', ShowProductByDiscountPageAction::class);
+    Route::name('store.products-by-availability.page')->get('/catalog/available/', ShowProductByAvailabilityPageAction::class);
 
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);

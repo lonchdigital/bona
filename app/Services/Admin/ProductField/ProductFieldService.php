@@ -34,6 +34,26 @@ class ProductFieldService extends BaseService
             ->paginate(config('domain.items_per_page'));
     }
 
+    public function getProductsNames($productType): array
+    {
+        return $productType->products->map(function ($product) {
+            return ['id' => $product->id, 'name' => $product->name];
+        })->all();
+    }
+
+    public function getDocsIds($docs): string|null
+    {
+        if( count($docs) ) {
+            $docIds = null;
+            foreach ($docs as $doc) {
+                $docIds .= $doc['id'] . ',';
+            }
+            return rtrim($docIds, ',');
+        }
+
+        return null;
+    }
+
     public function createProductField(EditProductFieldDTO $request): ServiceActionResult
     {
         $creator = $this->getAuthUser();

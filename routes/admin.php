@@ -108,6 +108,7 @@ use App\Http\Actions\Admin\ProductTypes\Pages\ShowProductTypesListPageAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeCreateAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeDeleteAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeEditAction;
+use App\Http\Actions\Admin\ProductTypes\ProductTypeSearchProductsAction;
 
 use App\Http\Actions\Admin\Works\Pages\ShowWorksListPageAction;
 use App\Http\Actions\Admin\Works\Pages\ShowWorkCreatePageAction;
@@ -197,6 +198,7 @@ Route::prefix('admin')->middleware([
         //Edit
         Route::name('admin.product-type.edit.page')->get('{productType}', ShowProductTypeEditPageAction::class);
         Route::name('admin.product-type.edit')->post('{productType}', ProductTypeEditAction::class);
+        Route::name('admin.additional-product.search')->post('/{productType}/additional-products-search', ProductTypeSearchProductsAction::class);
 
         //Delete
         Route::name('admin.product-type.delete')->post('{productType}/delete', ProductTypeDeleteAction::class);

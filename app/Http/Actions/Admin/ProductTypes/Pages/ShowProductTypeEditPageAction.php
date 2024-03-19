@@ -10,6 +10,7 @@ class ShowProductTypeEditPageAction
 {
     public function __invoke(ProductType $productType, ProductFieldService $productFieldService, ProductAttributeService $productAttributeService)
     {
+        $additionalProducts = $productFieldService->getProductsNames($productType);
 
         return view('pages.admin.product-types.edit', [
             'productType' => $productType,
@@ -17,6 +18,8 @@ class ShowProductTypeEditPageAction
             'productAttributes' => $productAttributeService->getProductAttributes(),
             'faqsData' => $productFieldService->getProductTypeFaqs($productType->slug),
             'seoData' => $productFieldService->getProductTypeSeoText($productType->slug),
+            'additionalProducts' => $additionalProducts,
+            'additionalProductIds' => $productFieldService->getDocsIds($additionalProducts),
         ]);
     }
 }

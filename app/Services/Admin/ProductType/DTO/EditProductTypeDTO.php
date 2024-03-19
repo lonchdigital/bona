@@ -52,6 +52,7 @@ class EditProductTypeDTO implements BaseDTO
         public readonly ?array $productTypeAttributes,
 
         public readonly ?array $faqs,
+        public readonly ?string $additionalProducts,
 
         public readonly ?array $seoTitle,
         public readonly ?array $seoText,
