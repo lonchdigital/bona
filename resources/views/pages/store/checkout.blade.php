@@ -629,7 +629,7 @@
                                                 </a>
                                             </div>
 
-                                            <div class="checkout-order-list-product-descr art-checkout-order-list mb-6">
+                                            <div class="checkout-order-list-product-descr art-checkout-order-list ">
                                                 <div class="row">
                                                     <div class="col checkout-product-list">
                                                         @foreach($productsInCart as $product)
@@ -673,12 +673,12 @@
                                                     :&nbsp;<span
                                                         class="selected-payment-type">{{ trans('base.checkout_payment_cash') }}</span>
                                                 </div>
-                                                <div class="checkout-delivery checkout-order-info-delivery-title">{{ trans('base.delivery') }}
+                                                <div class="checkout-delivery checkout-order-info-delivery-title mb-1 pt-1">{{ trans('base.delivery') }}
                                                     : <span class="selected-delivery-type">{{ trans('base.checkout_address_delivery') }}</span>
                                                 </div>
                                             </div>
                                             <div class="info-top-prices mb-3">
-                                                <div class="info-top-item pb-3">
+                                                <div class="info-top-item mb-1 pt-1">
                                                     <span class="">{{ trans('base.products_price') }}: </span>
                                                     <span class="text-nowrap price-products"></span>
                                                 </div>
@@ -696,16 +696,16 @@
                                                     </div>-->
                                                 </div>
                                             --}}
-                                                <div class="info-top-item pb-3">
+                                                <div class="info-top-item mb-1 pt-1">
                                                     <span class="">{{ trans('base.products_price_discount') }}: </span>
                                                     <span class="text-nowrap price-discount"></span>
                                                 </div>
-                                                <div class="info-top-item pb-3 normal-total">
+                                                <div class="info-top-item pb-3 normal-total pt-1">
                                                     <span class="total-title-delivery">{{ trans('base.products_price_total') }}: </span>
                                                     <span class="text-nowrap total-price-delivery"></span>
                                                 </div>
                                             </div>
-                                            <hr class="pb-4">
+                                            <hr class="pb-2">
 
                                             <div class="total-info-bottom">
 
