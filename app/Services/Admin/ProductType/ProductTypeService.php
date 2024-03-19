@@ -194,6 +194,12 @@ class ProductTypeService extends BaseService
 
             $productType->update($dataToUpdate);
 
+            if(!is_null($request->additionalProducts)) {
+                $articleIds = explode(",", $request->additionalProducts);
+                $productType->products()->sync($articleIds);
+            } else {
+                $productType->products()->sync([]);
+            }
 
             $productType->sizeFilterOptions()->delete();
 
@@ -250,6 +256,27 @@ class ProductTypeService extends BaseService
                 return ServiceActionResult::make(true, trans('admin.product_type_delete_success'));
             }
         });
+    }
+
+    public function searchAdditionalProducts($productType, array $request)
+    {
+        $query = Product::query();
+
+        if( !is_null($request['excludePostIds']) ) {
+            $excludePostIds = explode(",", $request['excludePostIds']);
+            $query->whereNotIn('id', $excludePostIds);
+        }
+
+        if( !is_null($request['search']) ) {
+            $searchTerm = str_replace(' ', '\s*', $request['search']);
+            $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
+            $query->where('name', 'REGEXP', '.*' . $searchTerm . '.*')
+                ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request['search']) . '%']);
+        }
+
+        return [
+            'documents' => $query->select(['id', 'name'])->limit(6)->get()
+        ];
     }
 
     private function prepareProductFieldsToSync(array $productFields): array

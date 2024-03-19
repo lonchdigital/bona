@@ -64,6 +64,11 @@ class Product extends Model implements Sitemapable
         return $this->belongsTo(ProductType::class);
     }
 
+    public function productTypes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(ProductType::class, 'product_type_products');
+    }
+
     public function currency()
     {
         return $this->belongsTo(Currency::class, 'price_currency_id');

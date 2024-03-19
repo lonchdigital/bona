@@ -89,6 +89,10 @@ class EditProductTypeRequest extends BaseRequest
             'product_attribute' => [
                 'array',
             ],
+            'additional_products' => [
+                'nullable',
+                'string',
+            ],
         ];
 
         foreach ($this->sizeTypes as $sizeType) {
@@ -306,6 +310,7 @@ class EditProductTypeRequest extends BaseRequest
             $this->input('product_attribute'),
 
             $this->validated('faqs'),
+            $this->validated('additional_products'),
 
             $this->input('seo_title'),
             $this->input('seo_text'),

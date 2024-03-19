@@ -43,3 +43,55 @@
 .art-multiselect-height .multiselect .multiselect-wrapper {
     height: unset;
 }
+
+
+
+/* Search Posts Field */
+
+.art-above-all {
+    z-index: 999 !important;
+}
+.art-above-all-two {
+    z-index: 900 !important;
+}
+.doc-search-wrapper {
+    position: relative;
+}
+.doc-search-wrapper .doc-search-result {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+
+    box-shadow: 0 0 8px #0000001a;
+    background-color: #fff;
+    padding: 10px 20px;
+    z-index: 99;
+}
+.doc-search-wrapper .doc-search-result .doc-item-nothing,
+.doc-search-wrapper .doc-search-result .doc-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+.doc-search-wrapper .doc-search-result .doc-item-nothing:last-child,
+.doc-search-wrapper .doc-search-result .doc-item:last-child {
+    border-bottom: none;
+}
+
+.art-tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+.art-tags button.btn {
+    color: #2641b2;
+    border-radius: 20px;
+    background-color: #f2f9ff;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+.art-tags button.btn svg {
+    width: 22px;
+    height: 22px;
+    margin-left: 15px;
+}

@@ -45,6 +45,11 @@ class ProductType extends Model implements Sitemapable
         return $this->belongsToMany(ProductAttribute::class);
     }
 
+    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_type_products');
+    }
+
     public function sizeFilterOptions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ProductTypeSizeOption::class);

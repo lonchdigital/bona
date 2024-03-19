@@ -38,7 +38,7 @@
             <div class="owl-icons">
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ route('store.products-by-color.page', ['color' => 7]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +88,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ route('store.products-by-discount.page') }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 146 146" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -117,7 +117,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="{{ route('store.products-by-availability.page') }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 176 175" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -205,7 +205,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <a href="viber://chat?number=%2B380679534774">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 93 175" fill="none" xmlns="http://www.w3.org/2000/svg">
