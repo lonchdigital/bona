@@ -83,6 +83,9 @@ class ShowCatalogCategoryPageAction extends BaseAction
             'productsPaginated' => $productsPaginated,
             'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'seogenData' => $seogenService->getTagsForCategories($productType, $category),
+            'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
+            'faqs' => $productService->getProductTypeFaqs($productType->slug),
+            'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
         ]);
     }
 }

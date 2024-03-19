@@ -40,6 +40,7 @@ class ShowHomePageAction extends BaseAction
             'slides' => $homePageService->getHomePageSlides(),
             'brands' => $brandService->getBrands(),
             'productTypes' => $homePageService->getHomePageProductTypes(),
+            'specificProductTypes' => $homePageService->getSpecificProductTypes(),
             'homeNewProducts' => $homePageService->getHomePageNewProducts(),
             'homeBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),
             'homeTestimonials' => $homePageService->getHomePageTestimonials(),

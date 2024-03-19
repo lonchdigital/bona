@@ -55,6 +55,11 @@ class ProductType extends Model implements Sitemapable
         return $this->hasMany(ProductTypeSizeOption::class);
     }
 
+    public function categories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
     public function imageUrl(): Attribute
     {
         return Attribute::make(function () {

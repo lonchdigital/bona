@@ -248,6 +248,11 @@ class HomePageService extends BaseService
         return ProductType::whereIn('id', [1, 2, 3, 4, 7, 13, 14])->get();
     }
 
+    public function getSpecificProductTypes(): Collection
+    {
+        return ProductType::whereNotNull('code_name')->with(['categories'])->get();
+    }
+
     public function getHomePageBestSalesProducts(): Collection
     {
         return HomePageBestSalesProducts::with(['product'])->get();
