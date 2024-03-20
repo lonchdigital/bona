@@ -33,34 +33,13 @@ class HomePageService extends BaseService
         return $this->coverWithDBTransaction(function () use($request) {
             $imagesToDelete = [];
 
-
-
-            /*$existingConfig = HomePageConfig::first();
-
+            $homePageConfig = $this->getHomePageConfig();
             $dataToUpdate = [
-                'slider_title' => $request->sliderTitle,
-                'collection_id' => $request->collectionId,
-                'product_field_id' => $request->selectedFieldId,
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
             ];
-
-            if ($request->sliderLogo) {
-                $sliderLogoImagePath = self::HOME_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.jpg';
-
-                $dataToUpdate['slider_logo_image_path'] = $sliderLogoImagePath;
-
-                $this->storeHomePageImage($sliderLogoImagePath, $request->sliderLogo);
-            }
-
-            if ($existingConfig) {
-                if ($request->sliderLogo) {
-                    $imagesToDelete[] = $existingConfig->slider_logo_image_path;
-                }
-
-                $existingConfig->update($dataToUpdate);
-            } else {
-                HomePageConfig::create($dataToUpdate);
-            }*/
-
+            $homePageConfig->update($dataToUpdate);
 
             $this->syncSlides($request->slides);
             $this->syncTestimonials($request->testimonials);
@@ -69,7 +48,6 @@ class HomePageService extends BaseService
 
             $this->syncNewProducts($request->selectedProductsId);
             $this->syncBestSalesProducts($request->selectedBestSalesProductsId);
-//            $this->syncOptions($request->selectedOptionsId);
 
             foreach ($imagesToDelete as $imageToDelete) {
                 $this->deleteHomePageImage($imageToDelete);

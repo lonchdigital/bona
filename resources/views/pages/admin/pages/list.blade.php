@@ -47,7 +47,7 @@
 
                                                     <tr>
                                                         <td>#</td>
-                                                        <td>{{ trans('admin.home_page') }}</td>
+                                                        <td><a href="{{ route('admin.home-page.edit.page') }}">{{ trans('admin.home_page') }}</a></td>
                                                         <td>#</td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -61,7 +61,7 @@
 
                                                     <tr>
                                                         <td>#</td>
-                                                        <td>{{ trans('admin.services') }}</td>
+                                                        <td><a href="{{ route('admin.services.edit.page') }}">{{ trans('admin.services') }}</a></td>
                                                         <td>#</td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -75,7 +75,7 @@
 
                                                     <tr>
                                                         <td>#</td>
-                                                        <td>{{ trans('admin.delivery') }}</td>
+                                                        <td><a href="{{ route('admin.delivery.edit.page') }}">{{ trans('admin.delivery') }}</a></td>
                                                         <td>#</td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -89,7 +89,7 @@
 
                                                     <tr>
                                                         <td>#</td>
-                                                        <td>{{ trans('admin.about-us') }}</td>
+                                                        <td><a href="{{ route('admin.about-us.edit.page') }}">{{ trans('admin.about-us') }}</a></td>
                                                         <td>#</td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -103,7 +103,7 @@
 
                                                     <tr>
                                                         <td>#</td>
-                                                        <td>{{ trans('admin.contacts') }}</td>
+                                                        <td><a href="{{ route('admin.contacts.edit.page') }}">{{ trans('admin.contacts') }}</a></td>
                                                         <td>#</td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -119,7 +119,7 @@
                                                     @foreach(\App\DataClasses\StaticPageTypesDataClass::get() as $staticPage)
                                                         <tr>
                                                             <td>{{ $staticPage['id'] }}</td>
-                                                            <td>{{ $staticPage['name'] }}</td>
+                                                            <td><a href="{{ route('admin.static-pages.edit.page', ['staticPage' => $staticPage['id']]) }}">{{ $staticPage['name'] }}</a></td>
                                                             <td>#</td>
                                                             <td class="text-right">
                                                                 <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

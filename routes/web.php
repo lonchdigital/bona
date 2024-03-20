@@ -147,17 +147,18 @@ $optionalLanguageRoutes = function () {
     Route::name('store.delivery-info')->get('/delivery-info', ShowDeliveryPageAction::class);
     Route::name('store.about-us')->get('/about-us', ShowAboutUsPageAction::class);
     Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);
-    Route::name('store.catalog-by-brand.page')->get('/catalog/brand/{brand}/', ShowProductByBrandPageAction::class);
-    Route::name('store.products-by-color.page')->get('/catalog/color/{color}/', ShowProductByColorPageAction::class);
-    Route::name('store.products-by-discount.page')->get('/catalog/discount/', ShowProductByDiscountPageAction::class);
-    Route::name('store.products-by-availability.page')->get('/catalog/available/', ShowProductByAvailabilityPageAction::class);
+    Route::name('store.catalog-by-brand.page')->get('/product-category/brand/{brand}/', ShowProductByBrandPageAction::class);
+    Route::name('store.products-by-color.page')->get('/product-category/color/{color}/', ShowProductByColorPageAction::class);
+    Route::name('store.products-by-discount.page')->get('/product-category/discount/', ShowProductByDiscountPageAction::class);
+    Route::name('store.products-by-availability.page')->get('/product-category/available/', ShowProductByAvailabilityPageAction::class);
 
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
 //    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
 
 
-    Route::prefix('catalog/{productTypeSlug}')->group(function() {
+    // Product Types
+    Route::prefix('product-category/{productTypeSlug}')->group(function() {
         Route::name('store.catalog.page')->get('/', ShowCatalogPageAction::class);
         Route::name('store.catalog.filter-group.page')->get('/{filterGroupSlug}', ShowFilterGroupPageAction::class);
         Route::name('store.catalog.filter.page')->get('/filter/{catalogFiltersString?}', ShowCatalogPageAction::class);

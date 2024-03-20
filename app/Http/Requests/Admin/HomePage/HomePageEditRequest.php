@@ -12,6 +12,18 @@ class HomePageEditRequest extends BaseRequest
     public function rules(): array
     {
         $rules = [
+            'meta_title' => [
+                'nullable',
+                'array',
+            ],
+            'meta_description' => [
+                'nullable',
+                'array',
+            ],
+            'meta_keywords' => [
+                'nullable',
+                'array',
+            ],
             /*
             'slider_logo' => [
                 HomePageConfig::first() ? 'nullable' : 'required',
@@ -74,6 +86,18 @@ class HomePageEditRequest extends BaseRequest
 
 
         foreach ($this->availableLanguages as $availableLanguage) {
+            $rules['meta_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_description.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_keywords.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
             $rules['slides.*.title.' . $availableLanguage] = [
                 'required',
                 'string'
@@ -120,6 +144,9 @@ class HomePageEditRequest extends BaseRequest
     public function attributes(): array
     {
         $attributes = [
+            'meta_title' => mb_strtolower(trans('admin.meta_title')),
+            'meta_description' => mb_strtolower(trans('admin.meta_description')),
+            'meta_keywords' => mb_strtolower(trans('admin.meta_keywords')),
             'slider_logo' => mb_strtolower(trans('admin.slider_logo')),
             'slides.*.image' => mb_strtolower(trans('admin.slide_image')),
             'selected_field_id' => mb_strtolower(trans('admin.field')),
@@ -136,6 +163,9 @@ class HomePageEditRequest extends BaseRequest
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
+            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
             $attributes['slides.*.title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_title'), $availableLanguage);
             $attributes['slides.*.description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_description'), $availableLanguage);
             $attributes['slides.*.button_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_text_button'), $availableLanguage);
@@ -147,8 +177,9 @@ class HomePageEditRequest extends BaseRequest
     public function toDTO(): HomePageEditDTO
     {
         return new HomePageEditDTO(
-
-//            $this->file('slider_logo'),
+            $this->input('meta_title'),
+            $this->input('meta_description'),
+            $this->input('meta_keywords'),
             $this->validated('slides'),
             explode(',', $this->input('selected_products_id')),
             explode(',', $this->input('selected_best_sales_products_id')),

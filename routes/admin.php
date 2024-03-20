@@ -367,6 +367,7 @@ Route::prefix('admin')->middleware([
         Route::name('admin.static-pages.edit')->post('/{staticPage}', StaticPageEditAction::class);
     });
 
+    // TODO: remove when finish
     //Blog category
     /*Route::prefix('blogCategory')->group(function () {
         //List
@@ -401,6 +402,7 @@ Route::prefix('admin')->middleware([
         Route::name('admin.blog-article.delete')->post('{blogArticle}/delete', BlogArticleDeleteAction::class);
     });
 
+    // TODO: remove when finish
     //Blog slides
     /*Route::prefix('blogSlide')->group(function () {
         Route::name('admin.blog-slide.edit.page')->get('edit', ShowBlogSlidesEditPageAction::class);

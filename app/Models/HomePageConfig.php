@@ -11,7 +11,7 @@ class HomePageConfig extends Model
 {
     use HasTranslations;
 
-    public $translatable = ['slider_title'];
+    public $translatable = ['slider_title', 'meta_title', 'meta_description', 'meta_keywords'];
 
     protected $guarded = [];
 

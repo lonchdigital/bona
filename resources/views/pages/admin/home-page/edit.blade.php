@@ -14,7 +14,10 @@
                     :available-products="{{ json_encode($products) }}"
                     :wallpapers-fields="{{ json_encode($fields) }}"
 
-                    @if ($config)
+                    @if($config)
+                        :page-meta-title="{{ json_encode($config->getTranslations('meta_title')) }}"
+                        :page-meta-description="{{ json_encode($config->getTranslations('meta_description')) }}"
+                        :page-meta-keywords="{{ json_encode($config->getTranslations('meta_keywords')) }}"
                         slider-logo="{{ $config->slider_logo_image_url }}"
                         :wallpapers-by-field-id="{{ $config->product_field_id }}"
                         :slider-title="{{ json_encode($config->getTranslations('slider_title')) }}"
