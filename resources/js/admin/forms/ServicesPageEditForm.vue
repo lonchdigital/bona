@@ -32,6 +32,18 @@ export default {
             type: String,
             default: 'uk',
         },
+        pageMetaTitle: {
+            type: Object,
+            default: {},
+        },
+        pageMetaDescription: {
+            type: Object,
+            default: {},
+        },
+        pageMetaKeywords: {
+            type: Object,
+            default: {},
+        },
 
         serviceSections: {
             type: Array,
@@ -100,6 +112,36 @@ export default {
     >
         <div class="row">
             <div class="col">
+
+                <multi-language-input-component
+                    :title="$t('admin.meta_title')"
+                    name="meta_title"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageMetaTitle"
+                    :errors="errors"
+                />
+
+                <multi-language-input-component
+                    :title="$t('admin.meta_description')"
+                    name="meta_description"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageMetaDescription"
+                    :errors="errors"
+                />
+
+                <multi-language-input-component
+                    :title="$t('admin.meta_keywords')"
+                    name="meta_keywords"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageMetaKeywords"
+                    :errors="errors"
+                />
 
 
                 <p>

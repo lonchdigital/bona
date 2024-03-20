@@ -15,6 +15,7 @@ class ShowServiceEditPageAction extends BaseAction
     )
     {
         return view('pages.admin.services.edit', [
+            'config' => $servicesPageService->getServicesConfig(),
             'availableLanguages' => $applicationService->getAvailableLanguages(),
             'sections' => $servicesPageService->getServicesPageSections(),
         ]);

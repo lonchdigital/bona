@@ -39,7 +39,12 @@ class HomePageService extends BaseService
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
             ];
-            $homePageConfig->update($dataToUpdate);
+
+            if ($homePageConfig) {
+                $homePageConfig->update($dataToUpdate);
+            } else {
+                HomePageConfig::create($dataToUpdate);
+            }
 
             $this->syncSlides($request->slides);
             $this->syncTestimonials($request->testimonials);

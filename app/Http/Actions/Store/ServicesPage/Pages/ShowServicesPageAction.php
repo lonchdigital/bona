@@ -11,8 +11,8 @@ class ShowServicesPageAction extends BaseAction
         ServicesPageService $servicesPageService,
     )
     {
-
         return view('pages.store.services', [
+            'config' => $servicesPageService->getServicesConfig(),
             'sections' => $servicesPageService->getServicesPageSections(),
         ]);
     }

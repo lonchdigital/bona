@@ -15,6 +15,18 @@ class ServicesPageEditRequest extends BaseRequest
             'sections.*.id' => [
                 'nullable'
             ],
+            'meta_title' => [
+                'nullable',
+                'array',
+            ],
+            'meta_description' => [
+                'nullable',
+                'array',
+            ],
+            'meta_keywords' => [
+                'nullable',
+                'array',
+            ],
         ];
 
         if ($this->input('sections')) {
@@ -32,6 +44,18 @@ class ServicesPageEditRequest extends BaseRequest
 
 
         foreach ($this->availableLanguages as $availableLanguage) {
+            $rules['meta_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_description.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_keywords.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
             $rules['sections.*.title.' . $availableLanguage] = [
                 'nullable',
                 'string'
@@ -53,6 +77,9 @@ class ServicesPageEditRequest extends BaseRequest
     public function attributes(): array
     {
         $attributes = [
+            'meta_title' => mb_strtolower(trans('admin.meta_title')),
+            'meta_description' => mb_strtolower(trans('admin.meta_description')),
+            'meta_keywords' => mb_strtolower(trans('admin.meta_keywords')),
             'sections.*.image' => mb_strtolower(trans('admin.slide_image')),
         ];
 
@@ -65,6 +92,9 @@ class ServicesPageEditRequest extends BaseRequest
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
+            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
             $attributes['sections.*.title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_title'), $availableLanguage);
             $attributes['sections.*.description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_description'), $availableLanguage);
             $attributes['sections.*.button_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_text_button'), $availableLanguage);
@@ -76,6 +106,9 @@ class ServicesPageEditRequest extends BaseRequest
     public function toDTO(): ServicesPageEditDTO
     {
         return new ServicesPageEditDTO(
+            $this->input('meta_title'),
+            $this->input('meta_description'),
+            $this->input('meta_keywords'),
             $this->validated('sections'),
         );
     }
