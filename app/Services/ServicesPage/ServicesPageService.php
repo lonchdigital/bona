@@ -3,6 +3,7 @@
 namespace App\Services\ServicesPage;
 
 
+use App\Models\ServicesConfig;
 use App\Models\ServicesPageSections;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
@@ -20,6 +21,19 @@ class ServicesPageService extends BaseService
     public function editServicesPage(ServicesPageEditDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($request) {
+
+            $ServicesConfig = $this->getServicesConfig();
+            $dataToUpdate = [
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
+            ];
+
+            if ($ServicesConfig) {
+                $ServicesConfig->update($dataToUpdate);
+            } else {
+                ServicesConfig::create($dataToUpdate);
+            }
 
 
             $this->syncSections($request->sections);
@@ -91,6 +105,10 @@ class ServicesPageService extends BaseService
     /*public function getHomePageConfig(): ?HomePageConfig {
         return HomePageConfig::first();
     }*/
+
+    public function getServicesConfig(): ?ServicesConfig {
+        return ServicesConfig::first();
+    }
 
     private function storeServicesPageImage(string $path, UploadedFile $image): void
     {
