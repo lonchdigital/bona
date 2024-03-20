@@ -5,9 +5,10 @@ import HomePageSlideComponent from "../components/HomePageSlideComponent.vue";
 import HomePageTestimonialComponent from "../components/HomePageTestimonialComponent.vue";
 import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
+import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
 
 export default {
-    components: {MultiLanguageRichTextEditorComponent, HomePageSlideComponent, HomePageTestimonialComponent, HomePageFaqComponent},
+    components: {MultiLanguageRichTextEditorComponent, HomePageSlideComponent, HomePageTestimonialComponent, HomePageFaqComponent, MultiLanguageInputComponent},
     props: {
         submitRoute: {
             type: String,
@@ -32,6 +33,18 @@ export default {
         baseLanguage: {
             type: String,
             default: 'uk',
+        },
+        pageMetaTitle: {
+            type: Object,
+            default: {},
+        },
+        pageMetaDescription: {
+            type: Object,
+            default: {},
+        },
+        pageMetaKeywords: {
+            type: Object,
+            default: {},
         },
         sliderLogo: {
             type: String,
@@ -217,29 +230,43 @@ export default {
     >
         <div class="row">
             <div class="col">
-                <!-- featured collections slider start -->
+
+                <multi-language-input-component
+                    :title="$t('admin.meta_title')"
+                    name="meta_title"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageMetaTitle"
+                    :errors="errors"
+                />
+
+                <multi-language-input-component
+                    :title="$t('admin.meta_description')"
+                    name="meta_description"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageMetaDescription"
+                    :errors="errors"
+                />
+
+                <multi-language-input-component
+                    :title="$t('admin.meta_keywords')"
+                    name="meta_keywords"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageMetaKeywords"
+                    :errors="errors"
+                />
+
+
                 <p>
                     <strong>
                         {{ $t('admin.slider') }}
                     </strong>
                 </p>
-
-
-<!--                <image-file-input-component
-                    :title="$t('admin.slider_logo')"
-                    name="slider_logo"
-                    image-deleted-name="slider_logo_deleted"
-                    :is-required="true"
-                    :errors="errors"
-                    :init-data="sliderLogo"
-                />-->
-
-                <p>
-                    <strong>
-                        {{ $t('admin.slides') }}
-                    </strong>
-                </p>
-
                 <home-page-slide-component
                     v-for="(slide, index) in slides"
                     :slide-id="slide.hasOwnProperty('id') ? slide.id : null"
@@ -251,7 +278,6 @@ export default {
                     :errors="errors"
                     @delete-slide="() => deleteSlide(index)"
                 />
-
                 <div class="row">
                     <div class="col">
                         <a href="#" id="add-option" class="btn mb-2 btn-secondary" @click.prevent="addSlide"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.slide_add')}}</a>

@@ -2,6 +2,24 @@
 
 @section('title')
     <title>{{ config('app.name') . ' - HOME' }}</title>
+
+    @if($config->meta_title)
+        <meta name="title" content="{{ $config->meta_title }}">
+    @elseif(isset($seogenData))
+        <meta name="title" content="{{ $seogenData->meta_title_tag }}">
+    @endif
+
+    @if($config->meta_description)
+        <meta name="title" content="{{ $config->meta_description }}">
+    @elseif(isset($seogenData))
+        <meta name="title" content="{{ $seogenData->meta_description_tag }}">
+    @endif
+
+    @if($config->meta_keywords)
+        <meta name="title" content="{{ $config->meta_keywords }}">
+    @elseif(isset($seogenData))
+        <meta name="title" content="{{ $seogenData->meta_keywords_tag }}">
+    @endif
 @endsection
 
 @section('content')
