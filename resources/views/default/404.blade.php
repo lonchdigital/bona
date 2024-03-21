@@ -12,7 +12,7 @@
                     <div class="col-md-5 left-side desc-side art-404">
                         <div class="left-side-content">
                             <h1 class="title">404</h1>
-                            <p>Сторінку не знайдено</p>
+                            <p>{{ trans('base.404_not_found') }}</p>
                             <a href="{{ route('store.home') }}" class="btn btn-empty color-dark">{{ trans('base.go_to_main') }}</a>
                         </div>
                     </div>
