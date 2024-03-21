@@ -107,10 +107,24 @@
                                                         <td>#</td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <span class="text-muted sr-only">{{ trans('admin.contacts') }}</span>
+                                                                <span class="text-muted sr-only">{{ trans('admin.action') }}</span>
                                                             </button>
                                                             <div class="dropdown-menu dropdown-menu-right">
                                                                 <a class="dropdown-item" href="{{ route('admin.contacts.edit.page') }}">{{ trans('admin.edit') }}</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>#</td>
+                                                        <td><a href="{{ route('admin.blog-page.edit.page') }}">{{ trans('admin.blog') }}</a></td>
+                                                        <td>#</td>
+                                                        <td class="text-right">
+                                                            <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <span class="text-muted sr-only">{{ trans('admin.action') }}</span>
+                                                            </button>
+                                                            <div class="dropdown-menu dropdown-menu-right">
+                                                                <a class="dropdown-item" href="{{ route('admin.blog-page.edit.page') }}">{{ trans('admin.edit') }}</a>
                                                             </div>
                                                         </td>
                                                     </tr>

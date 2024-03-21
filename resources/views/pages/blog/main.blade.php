@@ -2,6 +2,26 @@
 
 @section('title')
     <title>{{ config('app.name') . ' - ' . trans('base.blog') }}</title>
+
+    @if(isset($blogPageConfig))
+        @if($blogPageConfig->meta_title)
+            <meta name="title" content="{{ $blogPageConfig->meta_title }}">
+        @elseif(isset($seogenData))
+            <meta name="title" content="{{ $seogenData->meta_title_tag }}">
+        @endif
+
+        @if($blogPageConfig->meta_description)
+            <meta name="title" content="{{ $blogPageConfig->meta_description }}">
+        @elseif(isset($seogenData))
+            <meta name="title" content="{{ $seogenData->meta_description_tag }}">
+        @endif
+
+        @if($blogPageConfig->meta_keywords)
+            <meta name="title" content="{{ $blogPageConfig->meta_keywords }}">
+        @elseif(isset($seogenData))
+            <meta name="title" content="{{ $seogenData->meta_keywords_tag }}">
+        @endif
+    @endif
 @endsection
 
 @section('content')
@@ -16,7 +36,7 @@
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h1 class="title">{{trans('base.blog')}}</h1>
+                        <h1 class="title">{{ (isset($blogPageConfig)) ? $blogPageConfig->title : trans('base.blog') }}</h1>
                     </div>
                 </header>
             </div>
