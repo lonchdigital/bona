@@ -652,13 +652,12 @@
                                         </div>
                                     </div>
 
-
                                     @if(isset($productType))
-                                        <div class="box-margin height-card art-above-all">
+                                        <div class="box-margin height-card art-above-all mt-5">
                                             <div class="card">
                                                 <div class="card-body">
-                                                    <h6 class="card-title mb-1">Additional Products</h6>
-                                                    <p class="mb-20">Add Additional Product</p>
+                                                    <h6 class="card-title mb-1">{{ trans('admin.additional_products') }}</h6>
+                                                    <p class="mb-20">{{ trans('admin.add_additional_product') }}</p>
 
                                                     <div id="art-additional-product-tags" class="art-tags">
                                                         <input type="hidden" name="additional_products" id="additional-product-search-input" value="{{ (!is_null($additionalProductIds)) ? $additionalProductIds : '' }}">
@@ -677,7 +676,7 @@
                                                             <input type="text"
                                                                    class="form-control"
                                                                    id="additional-product-search-input-field"
-                                                                   placeholder="Find Additional Product"
+                                                                   placeholder="{{ trans('admin.find_additional_product') }}"
                                                                    value=""
                                                             >
                                                             <div id="additional-product-search-result" class="doc-search-result d-none"></div>

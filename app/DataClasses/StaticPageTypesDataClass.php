@@ -27,12 +27,12 @@ class StaticPageTypesDataClass implements BaseDataClass
                 'id' => self::PAGE_CONDITIONS,
                 'name' => trans('base.conditions'),
                 'slug' => 'umovy-vykorystannya-saitu',
-            ],
+            ],*/
             [
                 'id' => self::PAGE_POLICY,
                 'name' => trans('base.policy'),
                 'slug' => 'polityka-konfidencinosti',
-            ],*/
+            ],
             [
                 'id' => self::PAGE_AGREEMENT,
                 'name' => trans('base.agreement'),

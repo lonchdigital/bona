@@ -52,7 +52,7 @@
                                                 @foreach($blogArticlesPaginated as $blogArticle)
                                                     <tr>
                                                         <td>{{ $blogArticle->id }}</td>
-                                                        <td>{{ $blogArticle->name }}</td>
+                                                        <td><a href="{{ route('admin.blog-article.edit.page', ['blogArticle' => $blogArticle->id]) }}">{{ $blogArticle->name }}</a></td>
                                                         <td class="text-center">{{ $blogArticle->creator->first_name }} {{ $blogArticle->creator->last_name }}</td>
                                                         <td class="text-center">{{ $blogArticle->created_at->format('d-m-Y') }}</td>
                                                         <td class="text-right">

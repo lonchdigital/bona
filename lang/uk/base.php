@@ -336,4 +336,5 @@ return [
     'classic_doors' => 'Класичні двері',
     'vinyl_floor' => 'Вінілова підлога',
     'doors_according_to_your_design' => 'Двері за вашим дизайном',
+    '404_not_found' => 'Сторінку не знайдено',
 ];

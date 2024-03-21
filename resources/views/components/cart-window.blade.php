@@ -3,7 +3,7 @@
         <span class="after art-main-basket-count count-of-products-in-basket @if($countOfProductInCart <= 0) d-none @endif">{{ $countOfProductInCart }}</span>
         <i class="icon icon-cart"></i>
     </div>
-    <div class="sub-menu bg-white basket-sub-menu @if(request()->route()->getName() == 'store.checkout.page') d-none @endif">
+    <div class="sub-menu bg-white basket-sub-menu @if(!is_null(request()->route()) && request()->route()->getName() == 'store.checkout.page') d-none @endif">
         <div class="sub-menu-title py-3 text-center font-weight-bold text-uppercase">
             {{ trans('base.cart') }}
         </div>

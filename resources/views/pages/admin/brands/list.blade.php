@@ -52,7 +52,7 @@
                                                 @foreach($brandsPaginated as $brand)
                                                     <tr>
                                                         <td>{{ $brand->id }}</td>
-                                                        <td>{{ $brand->name }}</td>
+                                                        <td><a href="{{ route('admin.brand.edit.page', ['brand' => $brand->id]) }}">{{ $brand->name }}</a></td>
                                                         <td class="text-center">{{ $brand->creator->first_name }} {{ $brand->creator->last_name }}</td>
                                                         <td class="text-center">{{ $brand->created_at->format('d-m-Y') }}</td>
                                                         <td class="text-right">
