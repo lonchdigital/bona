@@ -6,6 +6,8 @@ use App\Http\Actions\Admin\BlogArticles\BlogArticleEditAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticleCreatePageAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticleEditPageAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticlesListPageAction;
+use App\Http\Actions\Admin\BlogPage\Pages\ShowBlogPageEditPageAction;
+use App\Http\Actions\Admin\BlogPage\BlogPageEditAction;
 use App\Http\Actions\Admin\Pages\Pages\ShowPagesListPageAction;
 /*use App\Http\Actions\Admin\BlogCategories\BlogCategoryCreateAction;
 use App\Http\Actions\Admin\BlogCategories\BlogCategoryDeleteAction;
@@ -360,6 +362,7 @@ Route::prefix('admin')->middleware([
         Route::name('admin.products-import.delete')->post('/{importedProduct}/delete', DeleteProductFromListAction::class);
     });
 
+    // TODO:: do we need this?
     //Static pages
     Route::prefix('staticPages')->group(function () {
         Route::name('admin.static-pages.list.page')->get('/', StaticPagesListPageAction::class);
@@ -385,6 +388,11 @@ Route::prefix('admin')->middleware([
         Route::name('admin.blog-category.delete')->post('{blogCategory}/delete', BlogCategoryDeleteAction::class);
     });*/
 
+    //Blog Page
+    Route::prefix('blogPage')->group(function () {
+        Route::name('admin.blog-page.edit.page')->get('edit', ShowBlogPageEditPageAction::class);
+        Route::name('admin.blog-page.edit')->post('edit', BlogPageEditAction::class);
+    });
     //Blog article
     Route::prefix('blogArticle')->group(function () {
         //List

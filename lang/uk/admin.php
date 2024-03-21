@@ -19,6 +19,7 @@ return [
     'product_type_create_success' => 'Новий тип товару успішно створено!',
     'product_subtype_create_success' => 'Операція пройшла успішно!',
     'product_type_edit_success' => 'Тип товару успішно оновлено!',
+    'blog_page_edit_success' => 'Блог успішно оновлено!',
     'product_subtype_edit_success' => 'Успішно оновлено!',
     'product_type_information' => 'Інформація про тип товару',
     'product_type_delete' => 'Видалити тип товару',

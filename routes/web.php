@@ -234,7 +234,6 @@ $optionalLanguageRoutes = function () {
 
     Route::prefix('blog')->group(function () {
         Route::name('blog.main.page')->get('/', ShowBlogMainPageAction::class);
-//        Route::name('blog.articles-by-category.page')->get('/{blogCategorySlug}', ShowBlogArticlesByCategoryActionPage::class);
         Route::name('blog.article.page')->get('/article/{blogArticleSlug}', ShowBlogArticlePageAction::class);
     });
 
