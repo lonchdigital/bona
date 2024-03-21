@@ -7,6 +7,9 @@ use App\Services\Base\DTO\BaseDTO;
 class StaticPageEditDTO implements BaseDTO
 {
     public function __construct(
+        public readonly ?array $meta_title,
+        public readonly ?array $meta_description,
+        public readonly ?array $meta_keywords,
         public readonly array $content,
     ) { }
 }

@@ -13,6 +13,10 @@
                     submit-route="{{ route('admin.delivery.edit') }}"
 
                     @if( !is_null($deliveryConfig) )
+                        :page-meta-title="{{ json_encode($deliveryConfig->getTranslations('meta_title')) }}"
+                        :page-meta-description="{{ json_encode($deliveryConfig->getTranslations('meta_description')) }}"
+                        :page-meta-keywords="{{ json_encode($deliveryConfig->getTranslations('meta_keywords')) }}"
+                        
                         :title="{{ json_encode($deliveryConfig->getTranslations('title')) }}"
                         :description="{{ json_encode($deliveryConfig->getTranslations('description')) }}"
                         :button-text="{{ json_encode($deliveryConfig->getTranslations('button_text')) }}"

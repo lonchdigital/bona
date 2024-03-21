@@ -12,6 +12,22 @@ class DeliveryPageEditRequest extends BaseRequest
     public function rules(): array
     {
 
+        $rules = [
+            'meta_title' => [
+                'nullable',
+                'array',
+            ],
+            'meta_description' => [
+                'nullable',
+                'array',
+            ],
+            'meta_keywords' => [
+                'nullable',
+                'array',
+            ],
+        ];
+
+
         $rules['image'] = [
             'nullable',
             'image',
@@ -31,6 +47,19 @@ class DeliveryPageEditRequest extends BaseRequest
 
 
         foreach ($this->availableLanguages as $availableLanguage) {
+            $rules['meta_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_description.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_keywords.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+
             $rules['title.' . $availableLanguage] = [
                 'nullable',
                 'string'
@@ -51,24 +80,17 @@ class DeliveryPageEditRequest extends BaseRequest
 
     public function attributes(): array
     {
-        $attributes = [];
-        /*$attributes = [
-            'sections.*.image' => mb_strtolower(trans('admin.slide_image')),
+        $attributes = [
+            'meta_title' => mb_strtolower(trans('admin.meta_title')),
+            'meta_description' => mb_strtolower(trans('admin.meta_description')),
+            'meta_keywords' => mb_strtolower(trans('admin.meta_keywords')),
         ];
 
-        if ($this->input('sections')) {
-            foreach ($this->input('sections') as $index => $slide) {
-                $attributes['sections.' . $index . '.image'] = mb_strtolower(trans('admin.slide_image'));
-
-                $attributes['sections.' . $index . '.button_url'] = mb_strtolower(trans('admin.slide_text_link'));
-            }
-        }
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['sections.*.title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_title'), $availableLanguage);
-            $attributes['sections.*.description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_description'), $availableLanguage);
-            $attributes['sections.*.button_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_text_button'), $availableLanguage);
-        }*/
+            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+        }
 
         return $attributes;
     }
@@ -76,6 +98,9 @@ class DeliveryPageEditRequest extends BaseRequest
     public function toDTO(): DeliveryPageEditDTO
     {
         return new DeliveryPageEditDTO(
+            $this->input('meta_title'),
+            $this->input('meta_description'),
+            $this->input('meta_keywords'),
             $this->input('title'),
             $this->input('description'),
             $this->input('button_text'),

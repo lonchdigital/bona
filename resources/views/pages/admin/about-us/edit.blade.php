@@ -12,6 +12,10 @@
                     submit-route="{{ route('admin.about-us.edit') }}"
 
                     @if( !is_null($aboutUsConfig) )
+                        :page-meta-title="{{ json_encode($aboutUsConfig->getTranslations('meta_title')) }}"
+                        :page-meta-description="{{ json_encode($aboutUsConfig->getTranslations('meta_description')) }}"
+                        :page-meta-keywords="{{ json_encode($aboutUsConfig->getTranslations('meta_keywords')) }}"
+
                         :title="{{ json_encode($aboutUsConfig->getTranslations('title')) }}"
                         :description="{{ json_encode($aboutUsConfig->getTranslations('description')) }}"
                         :button-text="{{ json_encode($aboutUsConfig->getTranslations('button_text')) }}"

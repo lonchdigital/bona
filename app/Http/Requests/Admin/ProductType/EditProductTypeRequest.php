@@ -33,19 +33,16 @@ class EditProductTypeRequest extends BaseRequest
                 'mimes:jpeg,png,jpg',
             ],
             'meta_title' => [
-                'required',
+                'nullable',
                 'array',
-                'min:1',
             ],
             'meta_description' => [
-                'required',
+                'nullable',
                 'array',
-                'min:1',
             ],
             'meta_keywords' => [
-                'required',
+                'nullable',
                 'array',
-                'min:1',
             ],
             'product_has_brand' => [
                 'nullable',
@@ -170,15 +167,15 @@ class EditProductTypeRequest extends BaseRequest
                 'string',
             ];
             $rules['meta_title.' . $availableLanguage] = [
-                'required',
+                'nullable',
                 'string',
             ];
             $rules['meta_description.' . $availableLanguage] = [
-                'required',
+                'nullable',
                 'string',
             ];
             $rules['meta_keywords.' . $availableLanguage] = [
-                'required',
+                'nullable',
                 'string',
             ];
             $rules['size_points.' . $availableLanguage] = [

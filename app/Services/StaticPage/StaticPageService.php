@@ -6,12 +6,16 @@ use App\Models\StaticPage;
 use App\Models\StaticPageContent;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
-use App\Services\StaticPage\DTO\SeoTextsEditDTO;
 use App\Services\StaticPage\DTO\StaticPageEditDTO;
 use Illuminate\Support\Collection;
+use App\Services\Application\ApplicationConfigService;
 
 class StaticPageService extends BaseService
 {
+    public function __construct(
+        private readonly ApplicationConfigService $applicationService,
+    ){ }
+
     public function getContent(int $staticPageTypeId): Collection
     {
         $staticPage = StaticPage::where('type_id', $staticPageTypeId)->first();
@@ -19,7 +23,6 @@ class StaticPageService extends BaseService
         if ($staticPage) {
             return $staticPage->content;
         }
-
         return collect();
     }
 
@@ -29,6 +32,24 @@ class StaticPageService extends BaseService
 
         if ($staticPage) {
             return $staticPage->content->where('language', $language)->first()?->content;
+        }
+
+        return null;
+    }
+
+    public function getAllDataByLanguage(int $staticPageTypeId, string $language): ?array
+    {
+        $staticPage = StaticPage::where('type_id', $staticPageTypeId)->first();
+
+        $allData = $staticPage->content;
+
+        if ($staticPage) {
+            return [
+                'meta_title' => $allData->where('language', $language)->first()?->meta_title,
+                'meta_description' => $allData->where('language', $language)->first()?->meta_description,
+                'meta_keywords' => $allData->where('language', $language)->first()?->meta_keywords,
+                'content' => $allData->where('language', $language)->first()?->content
+            ];
         }
 
         return null;
@@ -45,12 +66,20 @@ class StaticPageService extends BaseService
                 ]);
             }
 
-            foreach ($request->content as $language => $content) {
+            $data = [];
+            foreach ($request as $key => $value) {
+                $data[$key] = $value;
+            }
+
+            foreach ($this->applicationService->getAvailableLanguages() as $language) {
                 StaticPageContent::updateOrCreate([
                     'static_page_id' => $staticPage->id,
                     'language' => $language,
                 ], [
-                    'content' => $content
+                    'meta_title' => $data['meta_title'][$language],
+                    'meta_description' => $data['meta_description'][$language],
+                    'meta_keywords' => $data['meta_keywords'][$language],
+                    'content' => $data['content'][$language],
                 ]);
             }
 

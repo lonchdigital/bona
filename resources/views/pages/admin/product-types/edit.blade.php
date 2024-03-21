@@ -72,16 +72,16 @@
                                     </p>
 
                                     <!-- PRODUCT TYPE META TITLE -->
-                                    <x-admin.multilanguage-input :label="trans('admin.meta_title')" :is-required="true"
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_title')" :is-required="false"
                                                                  field-name="meta_title"
                                                                  :values="isset($productType) ? $productType->getTranslations('meta_title') : []"/>
                                     <!-- PRODUCT TYPE META DESCRIPTION -->
                                     <x-admin.multilanguage-input :label="trans('admin.meta_description')"
-                                                                 :is-required="true" field-name="meta_description"
+                                                                 :is-required="false" field-name="meta_description"
                                                                  :values="isset($productType) ? $productType->getTranslations('meta_description') : []"/>
                                     <!-- PRODUCT TYPE META KEY WORDS -->
                                     <x-admin.multilanguage-input :label="trans('admin.meta_keywords')"
-                                                                 :is-required="true" field-name="meta_keywords"
+                                                                 :is-required="false" field-name="meta_keywords"
                                                                  :values="isset($productType) ? $productType->getTranslations('meta_keywords') : []"/>
 
                                     <p class="mt-5">

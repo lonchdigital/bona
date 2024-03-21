@@ -7,7 +7,6 @@ use App\DataClasses\ProductSpecialOfferOptionsDataClass;
 use App\DataClasses\ProductStatusDataClass;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Country;
 use App\Models\ProductType;
 use App\Services\Application\ApplicationConfigService;

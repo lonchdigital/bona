@@ -20,6 +20,9 @@ class DeliveryPageService extends BaseService
             $existingConfig = DeliveryConfig::first();
 
             $dataToUpdate = [
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
                 'title' => $request->title,
                 'description' => $request->description,
                 'button_text' => $request->buttonText,

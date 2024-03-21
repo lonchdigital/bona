@@ -13,15 +13,45 @@
                     <div class="card-body">
                         <form id="static-page-edit-form" method="POST" action="{{ route('admin.static-pages.edit', ['staticPage' => $staticPageId]) }}">
                             @csrf
+
                             <div class="tab-content">
                                 @foreach($availableLanguages as $availableLanguage)
+
+                                    <!-- META DATA -->
+
+                                    <div language="{{ $availableLanguage }}" class="multilang-content mb-3 tab-pane fade @if($availableLanguage == app()->getLocale())active show @endif">
+                                        <label for="meta_title">
+                                            <span>Meta title</span>
+                                            <strong>{{ mb_strtoupper($availableLanguage) }}</strong>
+                                        </label>
+                                        <input type="text" id="meta_title" name="meta_title[{{$availableLanguage}}]" class="form-control"
+                                               @isset($staticPage) value="{{ $staticPage->where('language', $availableLanguage)->first()?->meta_title }}" @endisset>
+                                    </div>
+                                    <div language="{{ $availableLanguage }}" class="multilang-content mb-3 tab-pane fade @if($availableLanguage == app()->getLocale())active show @endif">
+                                        <label for="meta_description">
+                                            <span>Meta description</span>
+                                            <strong>{{ mb_strtoupper($availableLanguage) }}</strong>
+                                        </label>
+                                        <input type="text" id="meta_description" name="meta_description[{{$availableLanguage}}]" class="form-control"
+                                           @isset($staticPage) value="{{ $staticPage->where('language', $availableLanguage)->first()?->meta_description }}" @endisset>
+                                    </div>
+                                    <div language="{{ $availableLanguage }}" class="multilang-content mb-3 tab-pane fade @if($availableLanguage == app()->getLocale())active show @endif">
+                                        <label for="meta_keywords">
+                                            <span>Meta key words</span>
+                                            <strong>{{ mb_strtoupper($availableLanguage) }}</strong>
+                                        </label>
+                                        <input type="text" id="meta_keywords" name="meta_keywords[{{$availableLanguage}}]" class="form-control"
+                                           @isset($staticPage) value="{{ $staticPage->where('language', $availableLanguage)->first()?->meta_keywords }}" @endisset>
+                                    </div>
+
                                     <input type="hidden" name="content[{{$availableLanguage}}]" value="">
                                     <div language="{{ $availableLanguage }}" class="multilang-content tab-pane fade @if($availableLanguage == app()->getLocale())active show @endif">
                                         <strong>{{ mb_strtoupper($availableLanguage) }}</strong>
                                         <div class="editor" id="editor-{{ $availableLanguage }}" style="min-height:100px;">
-                                            {!! $content->where('language', $availableLanguage)->first()?->content !!}
+                                            {!! $staticPage->where('language', $availableLanguage)->first()?->content !!}
                                         </div>
                                     </div>
+
                                 @endforeach
                             </div>
                             <div class="row pt-2">

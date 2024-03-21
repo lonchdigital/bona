@@ -8,17 +8,17 @@ use App\Services\StaticPage\StaticPageService;
 
 class StaticPageEditPageAction extends BaseAction
 {
-    public function __invoke(int $staticPage, StaticPageService $staticPageService)
+    public function __invoke(int $staticPageID, StaticPageService $staticPageService)
     {
-        if (!StaticPageTypesDataClass::get($staticPage)) {
+        if (!StaticPageTypesDataClass::get($staticPageID)) {
             abort(404);
         }
 
-        $content = $staticPageService->getContent($staticPage);
+        $staticPage = $staticPageService->getContent($staticPageID);
 
         return view('pages.admin.static-pages.edit', [
-            'staticPageId' => $staticPage,
-            'content' => $content,
+            'staticPageId' => $staticPageID,
+            'staticPage' => $staticPage,
         ]);
     }
 }
