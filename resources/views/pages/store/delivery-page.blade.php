@@ -24,6 +24,7 @@
     @endif
 @endsection
 
+
 @section('content')
 
     @include('pages.store.partials.page_header', ['links' => ['#' => 'delivery']])
