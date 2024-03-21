@@ -16,9 +16,10 @@ class ShowStaticPagePageAction extends BaseAction
             abort(404);
         }
 
+        $allData = $staticPageService->getAllDataByLanguage($staticPage['id'], app()->getLocale());
         return view('pages.store.static-page', [
             'heading' => $staticPage['name'],
-            'content' => $staticPageService->getContentByLanguage($staticPage['id'], app()->getLocale()),
+            'allData' => $allData,
         ]);
     }
 }

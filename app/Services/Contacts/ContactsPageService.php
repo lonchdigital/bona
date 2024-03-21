@@ -18,6 +18,10 @@ class ContactsPageService extends BaseService
             $existingConfig = ContactConfig::first();
 
             $dataToUpdate = [
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
+
                 'city_one' => $request->cityOne,
                 'address_one' => $request->addressOne,
                 'phone_one' => $request->phoneOne,

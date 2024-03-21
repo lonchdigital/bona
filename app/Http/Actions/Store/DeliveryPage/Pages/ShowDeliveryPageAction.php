@@ -11,7 +11,6 @@ class ShowDeliveryPageAction extends BaseAction
         DeliveryPageService      $deliveryPageService,
     )
     {
-
         return view('pages.store.delivery-page', [
             'deliveryConfig' => $deliveryPageService->getDeliveryConfig(),
         ]);

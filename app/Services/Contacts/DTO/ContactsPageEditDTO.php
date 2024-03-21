@@ -8,6 +8,10 @@ use Illuminate\Http\UploadedFile;
 class ContactsPageEditDTO implements BaseDTO
 {
     public function __construct(
+        public readonly ?array $metaTitle,
+        public readonly ?array $metaDescription,
+        public readonly ?array $metaKeyWords,
+
         public readonly ?array $cityOne,
         public readonly ?array $addressOne,
         public readonly ?array $phoneOne,

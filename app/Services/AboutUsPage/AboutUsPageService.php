@@ -18,15 +18,16 @@ class AboutUsPageService extends BaseService
         return $this->coverWithDBTransaction(function () use($request) {
 
             $existingConfig = AboutUsConfig::first();
-
             $dataToUpdate = [
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
                 'title' => $request->title,
                 'description' => $request->description,
                 'button_text' => $request->buttonText,
                 'button_url' => $request->buttonUrl,
                 'iframe' => $request->iframe,
             ];
-
 
             $imagesToDelete = [];
             $deliveryImage = null;
@@ -60,7 +61,6 @@ class AboutUsPageService extends BaseService
             } else {
                 AboutUsConfig::create($dataToUpdate);
             }
-
 
              return ServiceActionResult::make(true, trans('admin.about_us_edit_success'));
         });

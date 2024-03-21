@@ -22,7 +22,10 @@ class ContactConfig extends Model
         'city_three',
         'address_three',
         'phone_three',
-        'email_three'
+        'email_three',
+        'meta_title',
+        'meta_description',
+        'meta_keywords'
     ];
 
     protected $guarded = [];

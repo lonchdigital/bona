@@ -11,7 +11,7 @@ class DeliveryConfig extends Model
 {
     use HasTranslations;
 
-    public $translatable = ['title', 'description', 'button_text'];
+    public $translatable = ['title', 'description', 'button_text', 'meta_title', 'meta_description', 'meta_keywords'];
 
     protected $guarded = [];
 

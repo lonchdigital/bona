@@ -57,7 +57,7 @@
 
                                                     <tr>
                                                         <td>{{ $productType->id }}</td>
-                                                        <td>{{ $productType->name }}</td>
+                                                        <td><a href="{{ route('admin.product-type.edit.page', ['productType' => $productType->id]) }}">{{ $productType->name }}</a></td>
                                                         <td>{{ $productType->has_brand ? trans('admin.yes') : trans('admin.no')  }}</td>
                                                         <td>{{ $productType->has_color ? trans('admin.yes') : trans('admin.no')  }}</td>
                                                         <td>{{ $productType->has_collection ? trans('admin.yes') : trans('admin.no')  }}</td>

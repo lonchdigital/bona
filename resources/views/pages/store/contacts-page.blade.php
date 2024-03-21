@@ -2,6 +2,26 @@
 
 @section('title')
     <title>{{ config('app.name') . ' - HOME' }}</title>
+
+    @if(isset($contactsConfig))
+        @if($contactsConfig->meta_title)
+            <meta name="title" content="{{ $contactsConfig->meta_title }}">
+        @elseif(isset($seogenData))
+            <meta name="title" content="{{ $seogenData->meta_title_tag }}">
+        @endif
+
+        @if($contactsConfig->meta_description)
+            <meta name="title" content="{{ $contactsConfig->meta_description }}">
+        @elseif(isset($seogenData))
+            <meta name="title" content="{{ $seogenData->meta_description_tag }}">
+        @endif
+
+        @if($contactsConfig->meta_keywords)
+            <meta name="title" content="{{ $contactsConfig->meta_keywords }}">
+        @elseif(isset($seogenData))
+            <meta name="title" content="{{ $seogenData->meta_keywords_tag }}">
+        @endif
+    @endif
 @endsection
 
 @section('content')
