@@ -182,7 +182,11 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="#">
+                <!-- === icon item === -->
+                <a href="{{ route('store.catalog-category.page', [
+                        'categorySlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->categories()->where('code_name', 'vinilova-pidloga')->first()->slug,
+                        'productTypeSlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->slug
+                        ]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 122 140" fill="none" xmlns="http://www.w3.org/2000/svg">
