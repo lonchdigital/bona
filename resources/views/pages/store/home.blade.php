@@ -182,7 +182,6 @@
                 </a>
 
                 <!-- === icon item === -->
-                <!-- === icon item === -->
                 <a href="{{ route('store.catalog-category.page', [
                         'categorySlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->categories()->where('code_name', 'vinilova-pidloga')->first()->slug,
                         'productTypeSlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->slug

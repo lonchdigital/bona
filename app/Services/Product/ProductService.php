@@ -179,13 +179,16 @@ class ProductService extends BaseService
     public function getProductsCountByFilters(ProductType $productType, FilterProductDTO $request): array
     {
         $query = Product::query();
-
-        //we don't need to sort this query
-        $filters = $request->filters;
-
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query, true);
 
-        return ['count' => $query->count()];
+        $productsCount = $query->where(function($query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function($query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->count();
+
+        return ['count' => $productsCount];
     }
 
     public function getProductText(int $id): array
