@@ -56,7 +56,6 @@ class AboutUsPageEditRequest extends BaseRequest
                 'string',
             ];
 
-
             $rules['title.' . $availableLanguage] = [
                 'nullable',
                 'string'

@@ -13,7 +13,7 @@ class Category extends Model implements Sitemapable
 {
     use HasTranslations;
 
-    public $translatable = ['name'];
+    public $translatable = ['name', 'meta_title', 'meta_description', 'meta_keywords'];
 
     protected $guarded = [];
 

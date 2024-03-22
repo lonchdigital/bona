@@ -25,6 +25,20 @@
                                         <input type="text" id="slug" name="slug" class="form-control" @isset($productCategory) value="{{ $productCategory['slug'] }}" @endisset>
                                         <div class="mt-1 text-danger ajaxError" id="error-field-slug"></div>
                                     </div>
+
+                                    <!-- META TITLE -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_title')" :is-required="false"
+                                                                 field-name="meta_title"
+                                                                 :values="isset($productCategory) ? $productCategory->getTranslations('meta_title') : []"/>
+                                    <!-- META DESCRIPTION -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_description')"
+                                                                 :is-required="false" field-name="meta_description"
+                                                                 :values="isset($productCategory) ? $productCategory->getTranslations('meta_description') : []"/>
+                                    <!-- META KEY WORDS -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_keywords')"
+                                                                 :is-required="false" field-name="meta_keywords"
+                                                                 :values="isset($productCategory) ? $productCategory->getTranslations('meta_keywords') : []"/>
+
                                     <div class="form-group">
                                         <label for="category_image">{{ trans('admin.product_category_image') }} ({{ trans('admin.product_category_image_requirements') }}, jpeg,png,jpg)</label>
                                         <div class="row">

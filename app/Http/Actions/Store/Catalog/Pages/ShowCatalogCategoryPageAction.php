@@ -69,7 +69,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }
 
-        return view('pages.store.catalog', [
+        return view('pages.store.catalog-category', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
             'selectedFiltersOptions' => $selectedFiltersOptions,

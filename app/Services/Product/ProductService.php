@@ -99,13 +99,21 @@ class ProductService extends BaseService
                 ->orWhereHas('productTypes', function($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
-        })
-            ->paginate($perPage, '*', null, $page);
+        })->paginate($perPage, '*', null, $page);
     }
 
     public function getProductsMaxPrice(ProductType $productType): int
     {
-        $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
+//        $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
+
+        $query = Product::query();
+        $maxPrice = $query->where(function($query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function($query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->max('price');
+
         return ( !is_null($maxPrice) ) ? $maxPrice : 0;
     }
 

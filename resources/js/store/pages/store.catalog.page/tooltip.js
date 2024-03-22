@@ -94,8 +94,6 @@ function addToolTip(blockClassName, previewClassName, labelClassName, checkboxCl
 {
     $(blockClassName).each(function () {
 
-        console.log('addToolTip !!!');
-
         const block = $(this);
 
         const tooltips = $(this).find(previewClassName);

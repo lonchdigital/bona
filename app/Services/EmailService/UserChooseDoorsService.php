@@ -16,9 +16,11 @@ class UserChooseDoorsService extends BaseService
     {
         return $this->coverWithDBTransaction(function () use($request) {
 
-//            dd('sendUserData', $request);
-
-            Mail::to('andreyss100@gmail.com')->send( new UserChooseDoors($request->name, $request->phone) );
+            if (config('domain.admin_notification_emails')) {
+                foreach (explode(',', config('domain.admin_notification_emails')) as $email) {
+                    Mail::to($email)->send( new UserChooseDoors($request->name, $request->phone) );
+                }
+            }
             return ServiceActionResult::make(true, trans('base.subscription_email_sent'));
         });
     }

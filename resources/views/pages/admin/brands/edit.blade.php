@@ -21,11 +21,26 @@
                                 <div class="col-md-12">
                                     <!-- NAME -->
                                     <x-admin.multilanguage-input :is-required="true" :label="trans('admin.brand_name') . ' (' . trans('admin.brand_name_explanation') .')'" field-name="name" :values="isset($brand) ? $brand->getTranslations('name') : []"/>
+
                                     <div class="form-group mb-3">
                                         <label for="slug">{{ trans('admin.slug') }} <strong class="text-danger">*</strong></label>
                                         <input type="text" id="slug" name="slug" class="form-control" @isset($brand) value="{{ $brand['slug'] }}" @endisset>
                                         <div class="mt-1 text-danger ajaxError" id="error-field-slug"></div>
                                     </div>
+
+                                    <!-- META TITLE -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_title')" :is-required="false"
+                                                                 field-name="meta_title"
+                                                                 :values="isset($brand) ? $brand->getTranslations('meta_title') : []"/>
+                                    <!-- META DESCRIPTION -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_description')"
+                                                                 :is-required="false" field-name="meta_description"
+                                                                 :values="isset($brand) ? $brand->getTranslations('meta_description') : []"/>
+                                    <!-- META KEY WORDS -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_keywords')"
+                                                                 :is-required="false" field-name="meta_keywords"
+                                                                 :values="isset($brand) ? $brand->getTranslations('meta_keywords') : []"/>
+
                                     <x-admin.multilanguage-text-area :is-required="false" :label="trans('admin.brand_description')" field-name="description" :values="isset($brand) ? $brand->getTranslations('description') : []"/>
                                     <div class="form-group mb-3">
                                         <div class="row">
