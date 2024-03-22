@@ -52,7 +52,7 @@
                                                 @foreach($productCategoriesPaginated as $productCategory)
                                                     <tr>
                                                         <td>{{ $productCategory->id }}</td>
-                                                        <td class="w-50 text-left">{{ $productCategory->name }}</td>
+                                                        <td class="w-50 text-left"><a href="{{ route('admin.product-category.edit.page', ['productCategory' => $productCategory->id, 'productType' => $productType]) }}">{{ $productCategory->name }}</a></td>
                                                         <td class="text-center">{{ $productCategory->creator->first_name }} {{ $productCategory->creator->last_name }}</td>
                                                         <td class="text-center">{{ $productCategory->created_at->format('d-m-Y') }}</td>
                                                         <td class="text-right">

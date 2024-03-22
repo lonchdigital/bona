@@ -13,7 +13,7 @@ class Brand extends Model implements Sitemapable
 {
     use HasTranslations;
 
-    public $translatable = ['name', 'description', 'slider_main_text', 'slider_description_text'];
+    public $translatable = ['name', 'description', 'slider_main_text', 'slider_description_text', 'meta_title', 'meta_description', 'meta_keywords'];
 
     protected $guarded = [];
 

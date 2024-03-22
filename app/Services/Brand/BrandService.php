@@ -89,6 +89,9 @@ class BrandService extends BaseService
         return $this->coverWithDBTransaction(function () use($request, $creator) {
 
             $dataToUpdate = [
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
                 'creator_id' => $creator->id,
                 'name' => $request->name,
                 'slug' => $request->slug,
@@ -111,6 +114,9 @@ class BrandService extends BaseService
     {
         return $this->coverWithDBTransaction(function () use($brand, $request) {
             $fieldsToUpdate = [
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
                 'name' => $request->name,
                 'slug' => $request->slug,
                 'description' => $request->description,

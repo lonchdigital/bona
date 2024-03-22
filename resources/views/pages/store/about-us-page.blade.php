@@ -11,15 +11,15 @@
         @endif
 
         @if($aboutUsConfig->meta_description)
-            <meta name="title" content="{{ $aboutUsConfig->meta_description }}">
+            <meta name="description" content="{{ $aboutUsConfig->meta_description }}">
         @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_description_tag }}">
+            <meta name="description" content="{{ $seogenData->meta_description_tag }}">
         @endif
 
         @if($aboutUsConfig->meta_keywords)
-            <meta name="title" content="{{ $aboutUsConfig->meta_keywords }}">
+            <meta name="keywords" content="{{ $aboutUsConfig->meta_keywords }}">
         @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_keywords_tag }}">
+            <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
         @endif
     @endif
 @endsection

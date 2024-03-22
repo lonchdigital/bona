@@ -33,6 +33,9 @@ class CategoryService extends BaseService
         return $this->coverWithDBTransaction(function () use($request, $creator, $productType) {
 
             $dataToAdd = [
+                'meta_title' => $request->metaTitle,
+                'meta_description' => $request->metaDescription,
+                'meta_keywords' => $request->metaKeyWords,
                 'creator_id' => $creator->id,
                 'product_type_id' => $productType->id,
                 'name' => $request->name,
@@ -71,6 +74,9 @@ class CategoryService extends BaseService
                 Storage::disk(config('app.images_disk_default'))->put($newImagePath, $image);
 
                 $productCategory->update([
+                    'meta_title' => $request->metaTitle,
+                    'meta_description' => $request->metaDescription,
+                    'meta_keywords' => $request->metaKeyWords,
                     'name' => $request->name,
                     'slug' => $request->slug,
                     'image_path' => $newImagePath,
@@ -83,6 +89,9 @@ class CategoryService extends BaseService
             } else {
 
                 $productCategory->update([
+                    'meta_title' => $request->metaTitle,
+                    'meta_description' => $request->metaDescription,
+                    'meta_keywords' => $request->metaKeyWords,
                     'name' => $request->name,
                     'slug' => $request->slug,
                 ]);
@@ -104,8 +113,10 @@ class CategoryService extends BaseService
 
             $productCategory->delete();
 
-            if (Storage::disk(config('app.images_disk_default'))->exists($productCategory->image_path)) {
-                Storage::disk(config('app.images_disk_default'))->delete($productCategory->image_path);
+            if(!is_null($productCategory->image_path)) {
+                if (Storage::disk(config('app.images_disk_default'))->exists($productCategory->image_path)) {
+                    Storage::disk(config('app.images_disk_default'))->delete($productCategory->image_path);
+                }
             }
 
             return ServiceActionResult::make(true, trans('admin.product_category_delete_success'));

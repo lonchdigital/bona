@@ -47,7 +47,7 @@
                                                 @foreach($productTypesWithCategories as $productType)
                                                     <tr>
                                                         <td>{{ $productType->id }}</td>
-                                                        <td>{{ $productType->name }}</td>
+                                                        <td><a href="{{ route('admin.product-category.list.page', ['productType' => $productType->id]) }}">{{ $productType->name }}</a></td>
                                                         <td class="text-center">{{ $productType->creator->first_name }} {{ $productType->creator->last_name }}</td>
                                                         <td class="text-center">{{ $productType->created_at->format('d-m-Y') }}</td>
                                                         <td class="text-right"><a class="btn btn-dark" href="{{ route('admin.product-category.list.page', ['productType' => $productType->id]) }}">{{ trans('admin.go_to_categories_list') }}</td>

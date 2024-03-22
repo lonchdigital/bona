@@ -1,6 +1,9 @@
 @extends('layouts.store-main')
 
 @section('content')
+
+    @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.sign_up_title')]])
+
     <main class="main pt-5">
         <div class="content">
             <section>

@@ -11,15 +11,15 @@
         @endif
 
         @if($config->meta_description)
-            <meta name="title" content="{{ $config->meta_description }}">
+            <meta name="description" content="{{ $config->meta_description }}">
         @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_description_tag }}">
+            <meta name="description" content="{{ $seogenData->meta_description_tag }}">
         @endif
 
         @if($config->meta_keywords)
-            <meta name="title" content="{{ $config->meta_keywords }}">
+            <meta name="keywords" content="{{ $config->meta_keywords }}">
         @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_keywords_tag }}">
+            <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
         @endif
     @endif
 @endsection
@@ -52,12 +52,51 @@
                             <div class="h5 title">{{ $section->title }}</div>
                             {!! $section->description !!}
                             @if( !empty($section->button_url) )
-                                <a href="{{ $section->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $section->button_text }}</a>
+                                <a href="{{ $section->button_url }}" target="_blank" class="btn btn-empty color-dark" data-fancybox data-src="#dialog-call-{{ $loop->index }}">{{ $section->button_text }}</a>
                             @endif
                         </div>
                     </div>
                 </div>
             </section>
+
+
+            <div id="dialog-call-{{ $loop->index }}" class="art-popup-call-measurer">
+                <div class="art-measurer-form-wrapper">
+                    <div class="container">
+
+                        <header class="art-light">
+                            <div class="text-center">
+                                <h2 class="title h2">{{ $section->button_text }}</h2>
+                                <div class="subtitle font-two">
+                                    <p class="art-form-description">{{ trans('base.call_measurer_description') }}</p>
+                                </div>
+                            </div>
+                        </header>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <form action="#" id="user-call-dialog-{{ $loop->index }}" method="post" class="art-contact-form">
+                                    @csrf
+                                    <div class="art-fields-row">
+                                        <div>
+                                            <input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}">
+                                        </div>
+                                        <div>
+                                            <input type="text" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}">
+                                        </div>
+                                    </div>
+                                    <div class="checkbox checkbox-white agreement-line agree-field">
+                                        <input type="checkbox" name="agree" value="1">
+                                        <label for="fieldName">{{ trans('base.agreement_line_start') . ' ' . trans('base.agreement_line_end') }}</label>
+                                    </div>
+                                    <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         @endforeach
     </div>
 
