@@ -49,7 +49,7 @@ class ProductFiltersService extends BaseService
         array $filterData,
         Currency $baseCurrency,
         Collection $colors,
-        Collection $countries,
+//        Collection $countries,
         Collection $brands,
     ): array
     {
@@ -152,7 +152,7 @@ class ProductFiltersService extends BaseService
                         $filterValue = [$filterValue];
                     }
 
-                    foreach ($filterValue as $value) {
+                    /*foreach ($filterValue as $value) {
                         $country = $countries->where('code', $value)->first();
 
                         if ($country) {
@@ -164,7 +164,7 @@ class ProductFiltersService extends BaseService
                         } else {
                             Log::error('CatalogService@getOptionsByFilterData: error: invalid country slug: ' . $value);
                         }
-                    }
+                    }*/
                 } elseif ($filterNameSlug === 'brand') {
 
                     if (!is_array($filterValue)) {
@@ -347,8 +347,15 @@ class ProductFiltersService extends BaseService
                     }
                 }
 
-                $query->where(function (Builder $query) use($colorsToFilter) {
-                    $query->whereIn('main_color_id', $colorsToFilter);
+                // TODO:: remove when finish
+                /*$query->where(function (Builder $query) use($colorsToFilter) {
+//                    dd('test?', $colorsToFilter);
+                    $query->whereIn('main_color_id', [7]);
+//                    $query->whereIn('main_color_id', $colorsToFilter);
+                });*/
+
+                $query->whereHas('colors', function ($query) use ($colorsToFilter) {
+                    $query->whereIn('color_id', $colorsToFilter);
                 });
             } else if ($filterNameSlug === 'country') {
                 if (!is_array($filterValue)) {

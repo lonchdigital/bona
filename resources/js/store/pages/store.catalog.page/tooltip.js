@@ -101,7 +101,7 @@ function addToolTip(blockClassName, previewClassName, labelClassName, checkboxCl
         tooltips.tooltip({
             boundary: 'window',
             trigger: "manual", //hover focus click manual
-            title: '<div class="filter-find p-4 bg-white"><div class="filter-find-info text-center mb-3 d-flex justify-content-center">' + translations.filter_found + ': <strong id="products-count" class="mx-1"><span class="loading-spinner mx-1"></span></strong> ' + translations.filter_options + '</div><a href="#" class="btn btn-outline-black-custom w-100 filter-submit-main">' + translations.filter_show + '</a></div>',
+            title: '<div class="filter-find p-4 bg-white"><div class="filter-find-info text-center mb-3 d-flex justify-content-center">' + translations.filter_found + ': <strong id="products-count" class="mx-1"><span class="loading-spinner mx-1"></span></strong> ' + translations.filter_options + '</div><a href="#" class="btn btn-empty color-dark w-100 filter-submit-main">' + translations.filter_show + '</a></div>',
             html: true,
             placement: 'right',
             container: 'body',

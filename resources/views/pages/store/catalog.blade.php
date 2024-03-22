@@ -24,7 +24,7 @@
     @include('pages.store.partials.page_header', ['links' => [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) => $productType->name]])
 
 
-{{--    @dd($selectedCategory)--}}
+    {{--    @dd($selectedCategory)--}}
     <!-- ======================== Products ======================== -->
     <section class="products art-products-catalog">
         <div class="container">
@@ -82,21 +82,20 @@
                             <!--Discount-->
                             @if(count($filters['main']))
                                 @foreach($filters['main'] as $filter)
-                                    <div class="filter-box active"> {{-- archive-catalog-filter-left--}}
+                                    <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
                                         <div class="title font-title">
                                             {{ $filter->pivot->filter_name }}
                                         </div>
 
-                                        <div class="filter-content filter-item"> {{-- filter-item--type-custom--}}
+                                        <div class="filter-content filter-item filter-item--type-custom position-relative checkbox-preview-wrap"> {{-- filter-item--type-custom--}}
                                             @if($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
                                                 @foreach($filter->options as $option)
-                                                    <div class="checkbox"
-                                                         data-toggle="tooltip"> {{-- checkbox-preview--}}
+                                                    <div class="checkbox checkbox-preview" data-toggle="tooltip"> {{-- checkbox-preview--}}
 
                                                         {{--custom-checkbox--}}
-                                                        <div
-                                                            class="custom-control position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
-                                                            <input type="radio"
+                                                        <div class="custom-control custom-checkbox position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
+                                                            <input type="checkbox"
+                                                                   class="custom-control-input sync-input"
                                                                    id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
                                                                    name="{{ $filter->slug }}"
                                                                    value="{{ $option->slug }}"
@@ -116,51 +115,55 @@
                             @endif
 
                             @if($productType->has_color)
-                                <div class="filter-box filter-item--colors active">
-                                    <div class="title font-title">
-                                        {{ trans('base.color') }}
-                                    </div>
-                                    <div class="filter-content">
-                                        <div class="art-filter-color-content">
-                                            @foreach($colors->whereNull('parent_color_id') as $color)
-                                                <div
-                                                    class="color-wrapper d-flex align-items-center justify-content-center @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif">
-                                                    <input class="sync-input" type="checkbox"
-                                                           name="color"
-                                                           id="color-checkbox-{{$color->id}}-main"
-                                                           value="{{ $color->slug }}"
-                                                           style="display: none;"
-                                                           @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif>
-                                                    @if($color->display_as_image)
-                                                        <label for="color-checkbox-{{$color->id}}-main"
-                                                               class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
-                                                               style="background-image: url({{$color->image_url}});"
-                                                               data-toggle="tooltip">
-                                                            <span class="before border-silver-custom"></span>
-                                                        </label>
-                                                    @else
-                                                        <label for="color-checkbox-{{$color->id}}-main"
-                                                               class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
-                                                               @if(!$color->hex)
-                                                               style="background: linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,235,0,1) 37%, rgba(5,255,0,1) 74%, rgba(59,63,250,1) 100%, rgba(0,9,255,1) 100%);"
-                                                               @else
-                                                               style="background-color: {{$color->hex}};"
-                                                               @endif
-                                                               data-toggle="tooltip">
-                                                            <span class="before border-silver-custom"></span>
-                                                        </label>
-                                                    @endif
+                                <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
+                                    <div class="filter-box filter-item1 filter-item--colors active">
+                                        <div class="title font-title">
+                                            {{ trans('base.color') }}
+                                        </div>
+                                        <div class="filter-content">
+                                            <div class="art-filter-color-content colors-wrapper">
+                                                @foreach($colors->whereNull('parent_color_id') as $color)
+                                                    <div
+                                                        class="color-wrapper d-flex align-items-center justify-content-center @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif">
+                                                        <input class="sync-input" type="checkbox"
+                                                               name="color"
+                                                               id="color-checkbox-{{$color->id}}-main"
+                                                               value="{{ $color->slug }}"
+                                                               style="display: none;"
+                                                               @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif>
+                                                        @if($color->display_as_image)
+                                                            <label for="color-checkbox-{{$color->id}}-main"
+                                                                   class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
+                                                                   style="background-image: url({{$color->image_url}});"
+                                                                   data-toggle="tooltip">
+                                                                <span class="before border-silver-custom"></span>
+                                                            </label>
+                                                        @else
+                                                            <label for="color-checkbox-{{$color->id}}-main"
+                                                                   class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
+                                                                   @if(!$color->hex)
+                                                                   style="background: linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,235,0,1) 37%, rgba(5,255,0,1) 74%, rgba(59,63,250,1) 100%, rgba(0,9,255,1) 100%);"
+                                                                   @else
+                                                                   style="background-color: {{$color->hex}};"
+                                                                   @endif
+                                                                   data-toggle="tooltip">
+                                                                <span class="before border-silver-custom"></span>
+                                                            </label>
+                                                        @endif
 
-                                                </div>
-                                            @endforeach
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> <!--/filter-box-->
                             @endif
 
+
                             @if( count($filters['main']) || $productType->has_color )
-                                <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark">{{trans('base.filter')}}</div>
+                                <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark mb-2">{{trans('base.filter')}}</div>
                             @endif
+                            <button type="button" class="btn btn-main art-header-coll-button btn-block filter-reset">{{ trans('base.filter_reset') }}</button>
                         </form>
 
                     </div> <!--/filters-->

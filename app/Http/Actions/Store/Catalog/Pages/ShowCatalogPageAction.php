@@ -49,7 +49,7 @@ class ShowCatalogPageAction extends BaseAction
             $filtersData->filters,
             $baseCurrency,
             $colors,
-            $countries,
+//            $countries,
             $brands,
         );*/
 
@@ -62,10 +62,12 @@ class ShowCatalogPageAction extends BaseAction
             $page,
         );
 
+//        dd('store.catalog.page');
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
+//            'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
             'colors' => $colors,
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
