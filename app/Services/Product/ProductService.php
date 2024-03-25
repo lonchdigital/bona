@@ -10,6 +10,8 @@ use App\Models\HomePageNewProducts;
 use App\Models\Product;
 use App\Models\Faqs;
 use App\Models\ProductFaqs;
+use App\Models\ProductField;
+use App\Models\ProductFieldOption;
 use App\Models\SeoText;
 use App\Models\ProductText;
 use App\Models\ProductSeoText;
@@ -102,8 +104,35 @@ class ProductService extends BaseService
         })->paginate($perPage, '*', null, $page);
     }
 
+    public function getAllProductsPaginated(FilterProductDTO $request,int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $query = Product::query();
+
+        $query = $this->filterService->handleAllProductFilters($request->filters, $query);
+
+        return $query->paginate($perPage, '*', null, $page);
+    }
+
+    public function getAllProductsCountByFilters(FilterProductDTO $request): array
+    {
+        $query = Product::query();
+
+        $productsCount = $this->filterService->handleAllProductFilters($request->filters, $query)->count();
+
+        return ['count' => $productsCount];
+    }
+
+    public function getAllProductsMaxPrice(FilterProductDTO $request): int
+    {
+        $query = Product::query();
+        $maxPrice = $this->filterService->handleAllProductFilters($request->filters, $query)->max('price');
+
+        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+    }
+
     public function getProductsMaxPrice(ProductType $productType): int
     {
+        // TODO:: this function was improved
 //        $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
 
         $query = Product::query();
@@ -123,7 +152,12 @@ class ProductService extends BaseService
             $query->where('colors.id', $color->id);
         })
             ->paginate($perPage, ['*'], null, $page);
+    }
 
+    public function getProductsByFieldPaginated(int $perPage, int $page, ProductField $productField, string $productOptionID)
+    {
+        return Product::whereJsonContains('custom_fields', [$productField->id => $productOptionID])
+            ->paginate($perPage, ['*'], null, $page);
     }
 
     public function getProductsByDiscountPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator

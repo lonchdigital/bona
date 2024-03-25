@@ -4,26 +4,21 @@ namespace App\Http\Actions\Store\Catalog\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
-use App\Models\Color;
+use App\Models\ProductField;
 use App\Models\ProductType;
-use App\Models\Brand;
-use App\Services\Brand\BrandService;
-use App\Services\ProductCategory\CategoryService;
-use App\Services\Color\ColorService;
-use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
-use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
-use App\Services\WishList\WishListService;
 
-class ShowProductByColorPageAction extends BaseAction
+class ShowProductByFieldPageAction extends BaseAction
 {
     public function __invoke(
         ProductType $productType,
         CatalogFilterRequest $request,
-        Color $color
+        ProductField $productField,
+        $productOptionID
     )
     {
+//        dd('111', $productField);
         $productType->load(['fields', 'fields.options']);
 
         //get services from service container
@@ -35,15 +30,16 @@ class ShowProductByColorPageAction extends BaseAction
 
         $page = $filtersData->filters['page'] ?? 1;
 
-        $productsPaginated = $productService->getProductsByColorPaginated(
+        $productsPaginated = $productService->getProductsByFieldPaginated(
             $filtersData->filters['per_page'] ?? 18,
             $page,
-            $color
+            $productField,
+            $productOptionID
         );
 
-        return view('pages.store.catalog-sort.catalog-sort-by-color', [
+        return view('pages.store.catalog-sort.catalog-sort-by-field', [
             'productType' => $productType,
-            'color' => $color,
+            'productField' => $productField,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
         ]);

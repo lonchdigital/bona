@@ -12,6 +12,7 @@ use App\Models\Color;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Product;
+use App\Models\ProductField;
 use App\Models\ProductType;
 use App\Services\Base\BaseService;
 use Illuminate\Database\Eloquent\Builder;
@@ -324,6 +325,177 @@ class ProductFiltersService extends BaseService
         return $options;
     }
 
+    public function handleAllProductFilters(array $filterData, Builder $query, bool $disableSorting = false): Builder
+    {
+        $sizeOptions = null;
+        $allFilters = $this->getAllFilters();
+
+        foreach ($filterData as $filterNameSlug => $filterValue) {
+            if ($filterNameSlug === 'color') {
+
+                if (!is_array($filterValue)) {
+                    $filterValue = [$filterValue];
+                }
+
+                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
+
+                $colorsToFilter = $colors->pluck('id');
+
+                foreach ($colors as $color) {
+                    if (count($color->children)) {
+                        foreach ($color->children as $childColor) {
+                            $colorsToFilter[] = $childColor->id;
+                        }
+                    }
+                }
+
+                $query->whereHas('colors', function ($query) use ($colorsToFilter) {
+                    $query->whereIn('color_id', $colorsToFilter);
+                });
+            } else if ($filterNameSlug === 'country') {
+                if (!is_array($filterValue)) {
+                    $filterValue = [$filterValue];
+                }
+
+                $countries = Country::whereIn('code', $filterValue)->get();
+                $query->where(function (Builder $query) use($countries) {
+                    $query->whereIn('country_id', $countries->pluck('id'));
+                });
+            } else if ($filterNameSlug === 'brand') {
+
+                if (!is_array($filterValue)) {
+                    $filterValue = [$filterValue];
+                }
+
+                $brands = Brand::whereIn('slug', $filterValue)->get();
+
+                $query->where(function (Builder $query) use($brands) {
+                    $query->whereIn('brand_id', $brands->pluck('id'));
+                });
+            } else if ($filterNameSlug === 'price_from') {
+                $query->where('price', '>=', floatval($filterValue));
+            } else if ($filterNameSlug === 'price_to') {
+                $query->where('price', '<=', floatval($filterValue));
+            } else if($filterNameSlug === 'search') {
+                $query->where(function (Builder $query) use ($filterValue) {
+                    $query->whereRaw('UPPER(`name`) LIKE \'%' . mb_strtoupper($filterValue) . '%\'')
+                        ->orWhereRaw('UPPER(`sku`) LIKE \'%' . mb_strtoupper($filterValue) . '%\'');
+                });
+                // dynamic inputs
+            } else if ($filterNameSlug === 'product_length_from') {
+                $query->where('length', '>=', $filterValue);
+            } else if ($filterNameSlug === 'product_length_to') {
+                $query->where('length', '<=', $filterValue);
+            } else if ($filterNameSlug === 'product_width_from') {
+                $query->where('width', '>=', $filterValue);
+            } else if ($filterNameSlug === 'product_width_to') {
+                $query->where('width', '<=', $filterValue);
+            } else if ($filterNameSlug === 'product_height_from') {
+                $query->where('height', '>=', $filterValue);
+            } else if ($filterNameSlug === 'product_height_to') {
+                $query->where('height', '<=', $filterValue);
+                //fixed inputs
+            } else {
+
+
+                $field = $allFilters['main']->filter(function ($item) use ($filterNameSlug) {
+                    return $item->slug == $filterNameSlug ||
+                        $item->slug == str_replace('_from', '', $filterNameSlug) ||
+                        $item->slug == str_replace('_to', '', $filterNameSlug);
+                })->first();
+
+//                $field = false;
+
+                if ($field) {
+
+                    if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
+                        if (!is_array($filterValue)) {
+                            $filterValue = [$filterValue];
+                        }
+
+                        $options = $field
+                            ->options()
+                            ->whereIn('slug', $filterValue)
+                            ->get();
+
+                        if (count($options)) {
+
+                            if ($field->is_multiselectable) {
+                                $query->where(function (Builder $query) use($options, $field) {
+                                    foreach ($options as $option) {
+                                        $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
+                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding((string)$option->id);
+                                    }
+                                });
+                            } else {
+
+                                $query->where(function (Builder $query) use($options, $field) {
+                                    foreach ($options as $option) {
+                                        $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
+                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding((integer)$option->id);
+                                    }
+                                });
+                            }
+                        }
+                    } elseif ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE ||
+                        $field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER
+                    ) {
+                        if ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_FROM_TO_INPUTS_TYPE) {
+
+                            if ($filterNameSlug == $field->slug . '_from') {
+                                $query->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) >= ?')
+                                    ->addBinding('$."' . $field->id . '"')
+                                    ->addBinding(doubleval($filterValue));
+
+                            }
+
+                            if ($filterNameSlug == $field->slug . '_to') {
+                                $query->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) <= ?')
+                                    ->addBinding('$."' . $field->id . '"')
+                                    ->addBinding(intval($filterValue));
+                            }
+
+                        } elseif ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
+
+                            if (!is_array($filterValue)) {
+                                $filterValue = [$filterValue];
+                            }
+
+                            $filterOptions = $field->fieldFilterOptions->filter(fn($filterOption) => in_array($filterOption->slug, $filterValue));
+
+                            $query->where(function (Builder $query) use($filterOptions, $field) {
+                                foreach ($filterOptions as $filterOption) {
+                                    $query->orWhere(function (Builder $query) use($field, $filterOption) {
+                                        $query
+                                            ->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) >= ?')
+                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding($filterOption->from)
+                                            ->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) <= ?')
+                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding($filterOption->to);
+                                    });
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    if (!in_array($filterNameSlug, $this->defaultOptions)) {
+                        Log::error('CatalogService@handleProductFilters: error: invalid filter slug: ' . $filterNameSlug);
+                    }
+                }
+            }
+        }
+
+
+        if (!$disableSorting) {
+            $query = $this->handleSortingFilter($query, $filterData);
+        }
+
+        return  $query;
+    }
+
     public function handleProductFilters(ProductType $productType, array $filterData, Builder $query, bool $disableSorting = false): Builder
     {
         $sizeOptions = null;
@@ -473,11 +645,16 @@ class ProductFiltersService extends BaseService
                     }
                 });
             } else {
+
+                dd($productType->fields);
+
                 $field = $productType->fields->filter(function ($item) use ($filterNameSlug) {
                     return $item->slug == $filterNameSlug ||
                         $item->slug == str_replace('_from', '', $filterNameSlug) ||
                         $item->slug == str_replace('_to', '', $filterNameSlug);
                 })->first();
+
+//                dd($field);
 
                 if ($field) {
 
@@ -624,6 +801,29 @@ class ProductFiltersService extends BaseService
         return [
             'main' => $mainFilters,
             'full' => $fullFilters,
+        ];
+    }
+
+    public function getAllFilters(): array
+    {
+        $mainFilters = collect();
+        $productTypes = ProductType::all();
+        $addedFieldIds = [];
+
+        foreach ($productTypes as $productType) {
+            foreach ($productType->fields as $filed) {
+
+                if ($filed->pivot->show_as_filter && $filed->pivot->show_on_main_filters_list) {
+                    if (!in_array($filed->id, $addedFieldIds)) {
+                        $mainFilters[] = $filed;
+                        $addedFieldIds[] = $filed->id;
+                    }
+                }
+            }
+        }
+
+        return [
+            'main' => $mainFilters,
         ];
     }
 }

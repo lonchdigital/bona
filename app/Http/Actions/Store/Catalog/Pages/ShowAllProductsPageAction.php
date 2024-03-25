@@ -4,9 +4,7 @@ namespace App\Http\Actions\Store\Catalog\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
-use App\Models\Color;
 use App\Models\ProductType;
-use App\Models\Brand;
 use App\Services\Brand\BrandService;
 use App\Services\ProductCategory\CategoryService;
 use App\Services\Color\ColorService;
@@ -16,36 +14,44 @@ use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
 use App\Services\WishList\WishListService;
 
-class ShowProductByColorPageAction extends BaseAction
+class ShowAllProductsPageAction extends BaseAction
 {
     public function __invoke(
-        ProductType $productType,
-        CatalogFilterRequest $request,
-        Color $color
+//        ProductType $productType,
+        CatalogFilterRequest $request
     )
     {
-        $productType->load(['fields', 'fields.options']);
 
-        //get services from service container
+        $catalogService = app()->make(ProductFiltersService::class);
+//        $colorService = app()->make(ColorService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
 
+
         $filtersData = $request->toDTO();
+
         $baseCurrency = $currencyService->getBaseCurrency();
+//        $colors = $colorService->getAvailableColorsByProductType($productType);
 
         $page = $filtersData->filters['page'] ?? 1;
 
-        $productsPaginated = $productService->getProductsByColorPaginated(
-            $filtersData->filters['per_page'] ?? 18,
+        $productsPaginated = $productService->getAllProductsPaginated(
+//            $productType,
+            $filtersData,
+            $filtersData->filters['per_page'] ?? 18, // 3
             $page,
-            $color
         );
 
-        return view('pages.store.catalog-sort.catalog-sort-by-color', [
-            'productType' => $productType,
-            'color' => $color,
+//        dd('store.catalog.page');
+
+        return view('pages.store.catalog-all-products', [
+            'filters' => $catalogService->getAllFilters(),
+            'filtersData' => $filtersData->filters,
+//            'productType' => $productType,
+//            'colors' => $colors,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
+            'productsMaxPrice' => $productService->getAllProductsMaxPrice($filtersData),
         ]);
     }
 }

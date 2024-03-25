@@ -90,6 +90,8 @@ class Product extends Model implements Sitemapable
                 return $this->custom_fields[$fieldId][0];
             }
         }
+
+//        dd($this->custom_fields);
         return $this->custom_fields[$fieldId];
     }
 
