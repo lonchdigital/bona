@@ -168,6 +168,7 @@ $optionalLanguageRoutes = function () {
     });
 
     // Product Types
+    // test
     Route::prefix('product-category/{productTypeSlug}')->group(function() {
         Route::name('store.catalog.page')->get('/', ShowCatalogPageAction::class);
         Route::name('store.catalog.filter-group.page')->get('/{filterGroupSlug}', ShowFilterGroupPageAction::class);
