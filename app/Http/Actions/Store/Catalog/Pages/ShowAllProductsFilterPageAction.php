@@ -22,7 +22,6 @@ class ShowAllProductsFilterPageAction extends BaseAction
     )
     {
 //        $productType->load(['fields', 'fields.options']);
-
         $catalogService = app()->make(ProductFiltersService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
@@ -40,7 +39,6 @@ class ShowAllProductsFilterPageAction extends BaseAction
             $filtersData->filters['per_page'] ?? 18, // 3
             $page,
         );
-
 
         return view('pages.store.catalog-all-products', [
             'filters' => $catalogService->getAllFilters(),
