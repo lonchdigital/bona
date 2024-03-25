@@ -79,7 +79,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.products-by-field.page', ['productField' => 14, 'productOptionID' => '78']) }}">
+                <a href="{{ route('store.products-by-field.page', ['productField' => 14, 'productOptionID' => '78']) }}" class="test">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">

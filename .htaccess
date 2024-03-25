@@ -8,6 +8,7 @@
     RewriteRule ^(.*)$ public/$1 [L]
 
 
+
     RewriteRule ^wishlist/$ https://bona-doors.com.ua/ [R=301,L]
     RewriteRule ^vrizka/$ https://bona-doors.com.ua/ [R=301,L]
     RewriteRule ^tag/korfad/$ https://bona-doors.com.ua/blog [R=301,L]
