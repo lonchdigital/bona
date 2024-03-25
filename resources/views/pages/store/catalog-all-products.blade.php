@@ -224,9 +224,6 @@
     </section>
 
 
-{{--    @dd($filtersData)--}}
-
-
 @stop
 @push('dynamic_scripts')
     <script>
