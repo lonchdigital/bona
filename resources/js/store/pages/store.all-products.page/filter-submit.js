@@ -45,6 +45,9 @@ export function init () {
 
     $('.filter-submit-main').click(function (event) {
         event.preventDefault();
+
+        console.log('1111');
+
         filterSubmit(mainFilterForm);
     });
 
@@ -157,6 +160,7 @@ function buildLinkWithParams(params)
 {
     let paramsJoined = [];
 
+
     Object.keys(params).forEach(key => {
         if (Array.isArray(params[key])) {
             params[key] = params[key].join();
@@ -166,8 +170,7 @@ function buildLinkWithParams(params)
             paramsJoined.push(`${key}=${params[key]}`);
         }
     });
-
-    const separator = catalog.category_slug ? catalog.category_slug : catalog.product_type_slug;
+    const separator = catalog.category_slug ? catalog.category_slug : catalog.all_products_catalog_slug;
 
     if(paramsJoined.length === 0) {
         return window.location.pathname.split(separator)[0] + separator;
@@ -179,14 +182,14 @@ function buildLinkWithParams(params)
 
 function buildLinksWithoutParams()
 {
-    const separator = catalog.category_slug ? catalog.category_slug : catalog.product_type_slug;
+    const separator = catalog.category_slug ? catalog.category_slug : catalog.all_products_catalog_slug;
 
     return window.location.pathname.split(separator)[0] + separator;
 }
 
 function filterGenerateArrayWithParams(form)
 {
-    if (!catalog.product_type_slug) {
+    if (!catalog.all_products_catalog_slug) {
         throw new Error('[FilterSubmit] error: product slug is undefined! Catalog filters are broken!');
     }
 
@@ -246,6 +249,8 @@ function filterSubmit(form)
 {
     const paramsNew = filterGenerateArrayWithParams(form);
 
+    console.log('2222');
+
     window.location.href = buildLinkWithParams(paramsNew);
 }
 
@@ -264,6 +269,8 @@ function filtersReset()
     if ('per_page' in paramsParsed) {
         paramsNew['per_page'] = paramsParsed['per_page'];
     }
+
+    console.log('33333');
 
     if (!paramsNew.length) {
         window.location.href = buildLinksWithoutParams();
@@ -305,6 +312,8 @@ function filterDelete(key, value)
             }
         }
     });
+
+    console.log('5555');
 
     window.location.href = buildLinkWithParams(paramsParsed);
 }

@@ -31,11 +31,15 @@ use App\Http\Actions\Store\Cart\GetProductsInCartWithSummaryAction;
 use App\Http\Actions\Store\Cart\GetProductsSummaryWithDelivery;
 use App\Http\Actions\Store\Cart\Pages\ShowCartPageAction;
 use App\Http\Actions\Store\Catalog\GetProductsCountByFilterAction;
+use App\Http\Actions\Store\Catalog\GetAllProductsCountByFilterAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogCategoryPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowAllProductsFilterPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowAllProductsPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowFilterGroupPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByBrandPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByColorPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductByFieldPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByDiscountPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByAvailabilityPageAction;
 use App\Http\Actions\Store\Checkout\CheckoutConfirmOrderAction;
@@ -149,13 +153,19 @@ $optionalLanguageRoutes = function () {
     Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);
     Route::name('store.catalog-by-brand.page')->get('/product-category/brand/{brand}/', ShowProductByBrandPageAction::class);
     Route::name('store.products-by-color.page')->get('/product-category/color/{color}/', ShowProductByColorPageAction::class);
+    Route::name('store.products-by-field.page')->get('/product-category/field/{productField}/{productOptionID}/', ShowProductByFieldPageAction::class);
     Route::name('store.products-by-discount.page')->get('/product-category/discount/', ShowProductByDiscountPageAction::class);
     Route::name('store.products-by-availability.page')->get('/product-category/available/', ShowProductByAvailabilityPageAction::class);
-
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
 //    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
 
+
+    Route::prefix('/shop')->group(function() {
+        Route::name('store.all-products.page')->get('/', ShowAllProductsPageAction::class);
+        Route::name('store.all-products.filter.page')->get('/filter/{catalogFiltersString?}', ShowAllProductsFilterPageAction::class);
+        Route::name('store.all-products.by.filters')->get('/allFilteredCount/{catalogFiltersString?}', GetAllProductsCountByFilterAction::class);
+    });
 
     // Product Types
     Route::prefix('product-category/{productTypeSlug}')->group(function() {

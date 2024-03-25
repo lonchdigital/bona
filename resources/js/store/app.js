@@ -24,8 +24,14 @@ async function loadJsByPage()
     }
 
     let pageToLoad = page;
+
+    console.log(page);
     if (page === 'store.catalog.filter.page') {
         pageToLoad = 'store.catalog.page';
+    }
+
+    if (page === 'store.all-products.filter.page') {
+        pageToLoad = 'store.all-products.page';
     }
 
     if (page === 'store.catalog.filter-group.page') {

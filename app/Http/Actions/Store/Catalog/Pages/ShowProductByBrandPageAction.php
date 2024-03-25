@@ -25,6 +25,7 @@ class ShowProductByBrandPageAction extends BaseAction
     {
         $productType->load(['fields', 'fields.options']);
 
+        // TODO:: remove all comments when finish
         //get services from service container
 //        $catalogService = app()->make(ProductFiltersService::class);
 //        $colorService = app()->make(ColorService::class);
@@ -54,7 +55,7 @@ class ShowProductByBrandPageAction extends BaseAction
 
 
 
-        return view('pages.store.catalog-by-brand', [
+        return view('pages.store.catalog-sort.catalog-by-brand', [
 //            'filters' => $catalogService->getFiltersByProductType($productType),
 //            'filtersData' => $filtersData->filters,
             'productType' => $productType,

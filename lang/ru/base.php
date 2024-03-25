@@ -335,4 +335,5 @@ return [
     'vinyl_floor' => 'Виниловый пол',
     'doors_according_to_your_design' => 'Двери по вашему дизайну',
     '404_not_found' => 'Страница не найдена',
+    'all_products' => 'Все товары',
 ];
