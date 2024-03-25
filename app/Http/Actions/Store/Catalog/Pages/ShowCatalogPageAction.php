@@ -55,7 +55,6 @@ class ShowCatalogPageAction extends BaseAction
 
         $page = $filtersData->filters['page'] ?? 1;
 
-//        dd($filtersData);
         $productsPaginated = $productService->getProductsByTypePaginated(
             $productType,
             $filtersData,
@@ -64,7 +63,6 @@ class ShowCatalogPageAction extends BaseAction
             $page,
         );
 
-//        dd('store.catalog.page');
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
