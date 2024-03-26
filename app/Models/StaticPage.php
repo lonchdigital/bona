@@ -18,6 +18,12 @@ class StaticPage extends Model implements Sitemapable
 
     public function toSitemapTag(): Url | string | array
     {
-        return route('store.static-page.page', ['staticPageSlug' => StaticPageTypesDataClass::get($this->type_id)['slug']]);
+        $type = StaticPageTypesDataClass::get($this->type_id);
+
+        if ($type !== null && isset($type['slug'])) {
+            return route('store.static-page.page', ['staticPageSlug' => $type['slug']]);
+        }
+
+        return '';
     }
 }
