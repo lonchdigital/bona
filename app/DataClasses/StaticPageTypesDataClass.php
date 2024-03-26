@@ -4,9 +4,9 @@ namespace App\DataClasses;
 
 class StaticPageTypesDataClass implements BaseDataClass
 {
-    const PAGE_DELIVERY_AND_PAYMENT = 1;
+    /*const PAGE_DELIVERY_AND_PAYMENT = 1;
     const PAGE_FAQ = 3;
-    const PAGE_CONDITIONS = 4;
+    const PAGE_CONDITIONS = 4;*/
     const PAGE_POLICY = 5;
     const PAGE_AGREEMENT = 6;
 
@@ -28,6 +28,8 @@ class StaticPageTypesDataClass implements BaseDataClass
                 'name' => trans('base.conditions'),
                 'slug' => 'umovy-vykorystannya-saitu',
             ],*/
+
+
             [
                 'id' => self::PAGE_POLICY,
                 'name' => trans('base.policy'),
@@ -40,7 +42,7 @@ class StaticPageTypesDataClass implements BaseDataClass
             ],
         ]);
 
-        if ($item) {
+        if ($item !== null) {
             return $collection->where('id', $item)->first();
         }
 

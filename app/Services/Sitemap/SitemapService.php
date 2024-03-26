@@ -6,7 +6,6 @@ use App\Models\BlogArticle;
 use App\Models\BlogCategory;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\StaticPage;
@@ -26,7 +25,6 @@ class SitemapService extends BaseService
             ->add(Brand::all())
             ->add(Category::all())
             ->add(StaticPage::all())
-            ->add(Collection::all())
             ->add(BlogArticle::all())
             ->add(BlogCategory::all())
             ->add(Url::create('/')

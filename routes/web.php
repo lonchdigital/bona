@@ -227,11 +227,11 @@ $optionalLanguageRoutes = function () {
     });
 
     // TODO:: Do we need brands pages?
-    /*Route::prefix('brands')->group(function () {
+    Route::prefix('brands')->group(function () {
         Route::name('store.brands.list.page')->get('/list/{letter?}', ShowBrandsListPageAction::class);
         Route::name('store.brand.search.page')->get('/search', ShowBrandSearchPageAction::class);
         Route::name('store.brand.page')->get('/{brandSlug}', ShowBrandPageAction::class);
-    });*/
+    });
 
 
     Route::prefix('calculator')->group(function () {
