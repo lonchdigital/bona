@@ -1,73 +1,73 @@
-name: Deployment to the server
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build project
-      run: npm run build
-
-    - name: Copy files to remote server
-      uses: appleboy/scp-action@v0.1.6
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        port: 22
-        source: "public/build/*"
-        target: "~/lonch.digital/bona/public/build/"
-        strip_components: 2
-        rm: true
-        timeout: 120s
-
-    - name: Execute commands on remote server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        port: 22
-        script: |
-          # Change to the deployment directory
-          cd ~/lonch.digital/bona
-
-          # Pull changes from the git repository
-          git pull
-
-          echo =============== VERSIONS START ===============
-
-          # Check versions
-          /usr/bin/php8.1 /usr/local/bin/composer -V
-          /usr/bin/php8.1 -v
-
-          echo ================ VERSIONS END ================
-
-          # Install dependencies
-          /usr/bin/php8.1 /usr/local/bin/composer install
-
-          # Run migrations
-          /usr/bin/php8.1 artisan migrate
-
-          # Clear cache
-          /usr/bin/php8.1 artisan cache:clear
-
-          # Done
-          echo "Done"
-
+#name: Deployment to the server
+#
+#on:
+#  push:
+#    branches:
+#      - main
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - name: Checkout repository
+#      uses: actions/checkout@v2
+#
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v4
+#      with:
+#        node-version: 20
+#
+#    - name: Install dependencies
+#      run: npm install
+#
+#    - name: Build project
+#      run: npm run build
+#
+#    - name: Copy files to remote server
+#      uses: appleboy/scp-action@v0.1.6
+#      with:
+#        host: ${{ secrets.SSH_HOST }}
+#        username: ${{ secrets.SSH_USER }}
+#        password: ${{ secrets.SSH_PASSWORD }}
+#        port: 22
+#        source: "public/build/*"
+#        target: "~/lonch.digital/bona/public/build/"
+#        strip_components: 2
+#        rm: true
+#        timeout: 120s
+#
+#    - name: Execute commands on remote server
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.SSH_HOST }}
+#        username: ${{ secrets.SSH_USER }}
+#        password: ${{ secrets.SSH_PASSWORD }}
+#        port: 22
+#        script: |
+#          # Change to the deployment directory
+#          cd ~/lonch.digital/bona
+#
+#          # Pull changes from the git repository
+#          git pull
+#
+#          echo =============== VERSIONS START ===============
+#
+#          # Check versions
+#          /usr/bin/php8.1 /usr/local/bin/composer -V
+#          /usr/bin/php8.1 -v
+#
+#          echo ================ VERSIONS END ================
+#
+#          # Install dependencies
+#          /usr/bin/php8.1 /usr/local/bin/composer install
+#
+#          # Run migrations
+#          /usr/bin/php8.1 artisan migrate
+#
+#          # Clear cache
+#          /usr/bin/php8.1 artisan cache:clear
+#
+#          # Done
+#          echo "Done"
+#
