@@ -1,11 +1,8 @@
 @extends('layouts.store-main')
 
 @section('title')
-    @if (isset($seogenData))
-        <title>{{ $seogenData->html_title_tag }}</title>
-    @else
-        <title>{{ config('app.name') . ' - ' . trans('base.catalog') }}</title>
-    @endif
+
+    <title>{{ $product->meta_title }}</title>
 
     @if($product->meta_title)
         <meta name="title" content="{{ $product->meta_title }}">

@@ -1,9 +1,10 @@
 @extends('layouts.store-main')
 
 @section('title')
-    <title>{{ config('app.name') . ' - ' . trans('base.blog') }}</title>
 
     @if(isset($blogPageConfig))
+        <title>{{ $blogPageConfig->meta_title }}</title>
+
         @if($blogPageConfig->meta_title)
             <meta name="title" content="{{ $blogPageConfig->meta_title }}">
         @elseif(isset($seogenData))
@@ -21,6 +22,9 @@
         @elseif(isset($seogenData))
             <meta name="title" content="{{ $seogenData->meta_keywords_tag }}">
         @endif
+
+    @else
+        <title>{{ config('app.name') . ' - ' . trans('base.blog') }}</title>
     @endif
 @endsection
 

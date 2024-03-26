@@ -19,7 +19,6 @@
     <meta property="og:site_name" content="{{ mb_strtoupper(config('app.url')) }}">
     <link rel="apple-touch-icon" sizes="76x76" href="{{ Vite::asset('resources/img/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
-{{--    <link rel="icon" type="image/png" sizes="16x16" href="{{ Vite::asset('resources/img/favicon-16x16.png') }}">--}}
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <meta name="robots" content="noindex">
@@ -59,13 +58,6 @@
 <body>
 
 {{--<div class="page-loader"></div>--}}
-
-<a href="" id="dialog-content-warning" data-fancybox data-src="#art-dialog-warning" style="display: none">Launch Dialog</a>
-<div id="art-dialog-warning" style="display: none">
-    <div class="">
-        <h2>Наразі сайт знаходиться у розробці</h2>
-    </div>
-</div>
 
 <a href="" id="user-choose-doors-success" data-fancybox data-src="#art-user-choose-doors" style="display: none">Launch Dialog</a>
 <div id="art-user-choose-doors" style="display: none">

@@ -2,7 +2,7 @@
 
 @section('title')
     @if (isset($selectedCategory))
-        <title>{{ $selectedCategory->name }}</title>
+        <title>{{ $selectedCategory->meta_title }}</title>
         <meta name="title" content="{{ $selectedCategory->meta_title }}">
         <meta name="description" content="{{ $selectedCategory->meta_description }}">
         <meta name="keywords" content="{{ $selectedCategory->meta_keywords }}">
@@ -237,7 +237,9 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                            <section class="art-common-page-section">
+                                <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                            </section>
                         @endif
                     </div>
 

@@ -7,12 +7,12 @@
         <meta name="description" content="{{ $seogenData->meta_description_tag }}">
         <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
     @elseif(isset($filterGroup))
-        <title>{{ $filterGroup->title_tag }}</title>
+        <title>{{ $filterGroup->meta_title }}</title>
         <meta name="title" content="{{ $filterGroup->meta_title }}">
         <meta name="description" content="{{ $filterGroup->meta_description }}">
         <meta name="keywords" content="{{ $filterGroup->meta_keywords }}">
     @else
-        <title>{{ config('app.name') . ' - ' . trans('base.catalog') }}</title>
+        <title>{{ $productType->meta_title }}</title>
         <meta name="title" content="{{ $productType->meta_title }}">
         <meta name="description" content="{{ $productType->meta_description }}">
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
@@ -256,7 +256,9 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                            <section class="art-common-page-section">
+                                <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                            </section>
                         @endif
                     </div>
 

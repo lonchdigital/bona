@@ -1566,6 +1566,21 @@ footer.art-site-footer {
     min-width:930px;
     background-color: #E2E2E2;
     padding: 15px 35px 33px 35px;
+
+    @media (max-width: 991px) {
+        max-width:700px;
+        min-width:700px;
+    }
+
+    @media (max-width: 767px) {
+        max-width:500px;
+        min-width:500px;
+    }
+
+    @media (max-width: 540px) {
+        max-width:320px;
+        min-width:320px;
+    }
 }
 .art-popup-single-product .art-category-title {
     line-height: 37.4px;
@@ -1581,6 +1596,18 @@ footer.art-site-footer {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-column-gap: 12px;
     grid-row-gap: 15px;
+
+    @media (max-width: 991px) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (max-width: 767px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 540px) {
+        grid-template-columns: 1fr;
+    }
 }
 .art-popup-single-product .art-popup-list-sub-products .art-product-item {
 
@@ -3519,9 +3546,9 @@ section.art-contacts-page-section {
                 display: flex;
                 justify-content: space-between;
 
-                @media (max-width: 480px) {
+                /*@media (max-width: 480px) {
                     flex-direction: column;
-                }
+                }*/
             }
 
             .btn-dropdown {
