@@ -2,7 +2,7 @@
 
 @section('title')
     @if (isset($brand))
-        <title>{{ $brand->name }}</title>
+        <title>{{ $brand->meta_title }}</title>
         <meta name="title" content="{{ $brand->meta_title }}">
         <meta name="description" content="{{ $brand->meta_description }}">
         <meta name="keywords" content="{{ $brand->meta_keywords }}">
@@ -30,15 +30,17 @@
             <div class="row">
                 <div class="col-md-12 col-xs-12">
 
-                    <div class="art-product-list art-product-filtered-by-brand art-four-column">
-                        @if( count($productsPaginated) > 0 )
+                    @if( count($productsPaginated) > 0 )
+                        <div class="art-product-list art-product-filtered-by-brand art-four-column">
                             @foreach($productsPaginated as $product)
                                 @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
                             @endforeach
-                        @else
+                        </div>
+                    @else
+                        <section class="art-common-page-section">
                             <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
-                        @endif
-                    </div>
+                        </section>
+                    @endif
 
                     <!--Pagination-->
                 {{ $productsPaginated->links('pagination.common') }}

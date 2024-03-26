@@ -13,13 +13,13 @@ export default {
 
 
         //  dialog-content-warning start
-        var hasCodeBeenExecuted = sessionStorage.getItem("codeExecuted");
+        /*var hasCodeBeenExecuted = sessionStorage.getItem("codeExecuted");
         if (!hasCodeBeenExecuted) {
             var button = document.getElementById("dialog-content-warning");
             button.click();
 
             sessionStorage.setItem("codeExecuted", "true");
-        }
+        }*/
         //  dialog-content-warning end
 
     }

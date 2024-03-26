@@ -2,17 +2,17 @@
 
 @section('title')
     @if (isset($seogenData))
-        <title>{{ $seogenData->html_title_tag }}</title>
+        <title>{{ $seogenData->meta_title_tag }}</title>
         <meta name="title" content="{{ $seogenData->meta_title_tag }}">
         <meta name="description" content="{{ $seogenData->meta_description_tag }}">
         <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
     @elseif(isset($filterGroup))
-        <title>{{ $filterGroup->title_tag }}</title>
+        <title>{{ $filterGroup->meta_title }}</title>
         <meta name="title" content="{{ $filterGroup->meta_title }}">
         <meta name="description" content="{{ $filterGroup->meta_description }}">
         <meta name="keywords" content="{{ $filterGroup->meta_keywords }}">
     @else
-        <title>{{ config('app.name') . ' - ' . trans('base.catalog') }}</title>
+        <title>{{ $productType->meta_title }}</title>
         <meta name="title" content="{{ $productType->meta_title }}">
         <meta name="description" content="{{ $productType->meta_description }}">
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
@@ -39,15 +39,17 @@
             <div class="row">
                 <div class="col-md-12 col-xs-12">
 
-                    <div class="art-product-list art-product-filtered-by-brand art-four-column">
-                        @if( count($productsPaginated) > 0 )
+                    @if( count($productsPaginated) > 0 )
+                        <div class="art-product-list art-product-filtered-by-brand art-four-column">
                             @foreach($productsPaginated as $product)
                                 @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
                             @endforeach
-                        @else
+                        </div>
+                    @else
+                        <section class="art-common-page-section">
                             <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
-                        @endif
-                    </div>
+                        </section>
+                    @endif
 
                     <!--Pagination-->
                 {{ $productsPaginated->links('pagination.common') }}

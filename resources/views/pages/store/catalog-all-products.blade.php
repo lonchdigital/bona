@@ -202,7 +202,6 @@
                         </div>
 
 
-
                         @if( count($productsPaginated) > 0 )
                             <div class="art-product-list art-three-column">
                                 @foreach($productsPaginated as $product)
@@ -210,7 +209,9 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                            <section class="art-common-page-section">
+                                <p class="nothing-found-text">{{ trans('base.nothing_found') }}</p>
+                            </section>
                         @endif
                     </div>
 

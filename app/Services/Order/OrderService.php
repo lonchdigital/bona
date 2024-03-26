@@ -43,7 +43,6 @@ class OrderService extends BaseService
     }
     public function createOrderByCart(Cart $cart, CheckoutConfirmOrderDTO $request, ?User $user): Order
     {
-//        dd('AWESOME !!! !!! 777');
 
         return $this->coverWithDBTransactionWithoutResponse(function () use($cart, $request, $user) {
             $newUserCreated = false;
@@ -152,7 +151,7 @@ class OrderService extends BaseService
             $cart->products()->sync([]);
             $cart->delete();
 
-            /*if ($newUserCreated) {
+            if ($newUserCreated) {
                 Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
                 Mail::to($request->email)->send(new SuccessOrder($order));
             } else {
@@ -163,7 +162,7 @@ class OrderService extends BaseService
                 foreach (explode(',', config('domain.admin_notification_emails')) as $email) {
                     Mail::to($email)->send(new AdminNotificationEmail(trans('admin.new_order_email_subject'), route('admin.order.edit', ['order' => $order->id])));
                 }
-            }*/
+            }
 
             return $order;
         });

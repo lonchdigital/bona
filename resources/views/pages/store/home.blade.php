@@ -1,9 +1,11 @@
 @extends('layouts.store-main')
 
 @section('title')
-    <title>{{ config('app.name') . ' - HOME' }}</title>
 
     @if(isset($config))
+
+        <title>{{ $config->meta_title }}</title>
+
         @if($config->meta_title)
             <meta name="title" content="{{ $config->meta_title }}">
         @elseif(isset($seogenData))
@@ -21,6 +23,9 @@
         @elseif(isset($seogenData))
             <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
         @endif
+
+    @else
+        <title>{{ config('app.name') . ' - HOME' }}</title>
     @endif
 @endsection
 
@@ -79,7 +84,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.products-by-field.page', ['productField' => 14, 'productOptionID' => '78']) }}" class="test">
+                <a href="{{ route('store.products-by-field.page', ['productField' => 14, 'productOptionID' => '78']) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -340,7 +345,7 @@
     @endif
 
     <!-- ========================  Instagram ======================== -->
-    <section class="instagram">
+<!--    <section class="instagram">
         <header>
             <div class="row">
                 <div class="col-12 text-center">
@@ -352,10 +357,7 @@
             </div>
         </header>
 
-        <!-- === instagram gallery === -->
-
-{{--        @dd($instagramFeed)--}}
-
+        &lt;!&ndash; === instagram gallery === &ndash;&gt;
         <div class="gallery clearfix">
             <a class="item" href="#">
                 <img src="assets/images/square-1.jpg" alt="Alternate Text" />
@@ -376,9 +378,8 @@
                 <img src="assets/images/square-6.jpg" alt="Alternate Text" />
             </a>
 
-        </div> <!--/gallery-->
-
-    </section>
+        </div>
+    </section>-->
 
     <!-- ========================  Blog ======================== -->
 
