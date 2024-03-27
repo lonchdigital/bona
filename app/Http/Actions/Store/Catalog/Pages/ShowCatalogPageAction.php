@@ -59,6 +59,7 @@ class ShowCatalogPageAction extends BaseAction
             $productType,
             $filtersData,
 //            $filtersData->filters['per_page'] ?? 18,
+
             $filtersData->filters['per_page'] ?? 3,
             $page,
         );
