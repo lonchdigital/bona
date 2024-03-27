@@ -97,21 +97,21 @@ $optionalLanguageRoutes = function () {
             NotAuthenticatedOnly::class,
         ])->group(function () {
             //sign in
-            Route::name('auth.sign-in.page')->get('signIn', ShowSignInPageAction::class);
-            Route::name('auth.sign-in')->post('signIn', SignInAction::class);
+            Route::name('auth.sign-in.page')->get('sign-in', ShowSignInPageAction::class);
+            Route::name('auth.sign-in')->post('sign-in', SignInAction::class);
 
             //sign up
-            Route::name('auth.sign-up.page')->get('signUp', ShowSignUpPageAction::class);
-            Route::name('auth.sign-up')->post('signUp', SignUpAction::class);
+            Route::name('auth.sign-up.page')->get('sign-up', ShowSignUpPageAction::class);
+            Route::name('auth.sign-up')->post('sign-up', SignUpAction::class);
 
             //forgot password
-            Route::name('auth.forgot-password.page')->get('forgotPassword', ShowForgotPasswordPageAction::class);
-            Route::name('auth.forgot-password')->post('forgotPassword', ForgotPasswordAction::class);
+            Route::name('auth.forgot-password.page')->get('forgot-password', ShowForgotPasswordPageAction::class);
+            Route::name('auth.forgot-password')->post('forgot-password', ForgotPasswordAction::class);
 
             //confirm email
-            Route::name('auth.confirm-email')->get('confirmEmail', ConfirmEmailAction::class);
-            Route::name('auth.confirm-email-resend.page')->get('resendConfirmEmail', ShowConfirmationEmailResendPageAction::class);
-            Route::name('auth.confirm-email-resend')->post('resendConfirmEmail', ConfirmEmailResendAction::class);
+            Route::name('auth.confirm-email')->get('confirm-email', ConfirmEmailAction::class);
+            Route::name('auth.confirm-email-resend.page')->get('resend-confirm-email', ShowConfirmationEmailResendPageAction::class);
+            Route::name('auth.confirm-email-resend')->post('resend-confirm-email', ConfirmEmailResendAction::class);
         });
 
 
@@ -120,7 +120,7 @@ $optionalLanguageRoutes = function () {
         ])->group(function () {
 
             //logout
-            Route::name('auth.logout')->post('logOut', LogoutAction::class);
+            Route::name('auth.logout')->post('log-out', LogoutAction::class);
         });
 
     });
@@ -164,7 +164,7 @@ $optionalLanguageRoutes = function () {
     Route::prefix('/shop')->group(function() {
         Route::name('store.all-products.page')->get('/', ShowAllProductsPageAction::class);
         Route::name('store.all-products.filter.page')->get('/filter/{catalogFiltersString?}', ShowAllProductsFilterPageAction::class);
-        Route::name('store.all-products.by.filters')->get('/allFilteredCount/{catalogFiltersString?}', GetAllProductsCountByFilterAction::class);
+        Route::name('store.all-products.by.filters')->get('/all-filtered-count/{catalogFiltersString?}', GetAllProductsCountByFilterAction::class);
     });
 
     // Product Types
@@ -177,7 +177,7 @@ $optionalLanguageRoutes = function () {
         Route::name('store.catalog-category.page')->get('/category/{categorySlug}', ShowCatalogCategoryPageAction::class);
         Route::name('store.catalog-category.filter.page')->get('/category/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogCategoryPageAction::class);
 
-        Route::name('store.catalog.products.by.filters')->get('/filteredCount/{catalogFiltersString?}', GetProductsCountByFilterAction::class);
+        Route::name('store.catalog.products.by.filters')->get('/filtered-count/{catalogFiltersString?}', GetProductsCountByFilterAction::class);
     });
 
     Route::prefix('product')->group(function () {
@@ -281,10 +281,10 @@ Route::prefix('/{lang}/')
 
 Route::middleware(['check.locale'])->group($optionalLanguageRoutes);
 
-Route::name('locale.change')->get('/changeLocale/{newLocale}', ChangeLocaleAction::class);
+Route::name('locale.change')->get('/change-locale/{newLocale}', ChangeLocaleAction::class);
 
 Route::prefix('cart')->group(function () {
-    Route::name('store.cart.summary-with-delivery')->get('summaryWithDelivery', GetProductsSummaryWithDelivery::class);
+    Route::name('store.cart.summary-with-delivery')->get('summary-with-delivery', GetProductsSummaryWithDelivery::class);
 });
 
 Route::prefix('payment')->group(function () {
