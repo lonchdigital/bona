@@ -21,7 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Http\Middleware\RedirectToLowercase::class,
+//        \App\Http\Middleware\RedirectToLowercase::class,
     ];
 
     /**
@@ -69,6 +69,6 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'set.locale' => \App\Http\Middleware\SetLocale::class,
         'check.locale' => \App\Http\Middleware\CheckLocale::class,
-        'redirect.lowercase' => \App\Http\Middleware\RedirectToLowercase::class,
+//        'redirect.lowercase' => \App\Http\Middleware\RedirectToLowercase::class,
     ];
 }

@@ -30,6 +30,9 @@ class StaticPageTypesDataClass implements BaseDataClass
             ],*/
 
 
+
+
+
             [
                 'id' => self::PAGE_POLICY,
                 'name' => trans('base.policy'),
