@@ -29,7 +29,6 @@ class StaticPageTypesDataClass implements BaseDataClass
                 'slug' => 'umovy-vykorystannya-saitu',
             ],*/
 
-
             [
                 'id' => self::PAGE_POLICY,
                 'name' => trans('base.policy'),
