@@ -21,7 +21,15 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
 
 
-    <link rel="canonical" href="{{ url()->current() }}">
+    @php
+        $currentUrl = url()->current();
+        if (strpos($currentUrl, '?') !== false) {
+            $currentUrl = strtok($currentUrl, '?');
+        }
+        $currentUrl = preg_replace('/\/filter\/.*/', '', $currentUrl);
+    @endphp
+
+    <link rel="canonical" href="{{ $currentUrl }}">
 
 
     <meta name="msapplication-TileColor" content="#da532c">
