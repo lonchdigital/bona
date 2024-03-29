@@ -20,7 +20,6 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ Vite::asset('resources/img/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
 
-
     @php
         $currentUrl = url()->current();
         if (strpos($currentUrl, '?') !== false) {
@@ -31,6 +30,17 @@
 
     <link rel="canonical" href="{{ $currentUrl }}">
 
+    {{--  hreflang  --}}
+    @if(Str::startsWith(request()->path(), 'ru/'))
+        @php $hreflangUrl = Str::after(request()->path(), 'ru/'); @endphp
+        <link hreflang="uk-UA" href="{{ url('/') .'/'. $hreflangUrl }}" rel="alternate">
+        <link hreflang="ru-UA" href="{{ url('/') .'/ru/'. $hreflangUrl }}" rel="alternate">
+        <link hreflang="x-default" href="{{ url('/') .'/'. $hreflangUrl }}" rel="alternate">
+    @else
+        <link hreflang="uk-UA" href="{{ url('/') .'/'. request()->path() }}" rel="alternate">
+        <link hreflang="ru-UA" href="{{ url('/') .'/ru/'. request()->path() }}" rel="alternate">
+        <link hreflang="x-default" href="{{ url('/') .'/'. request()->path() }}" rel="alternate">
+    @endif
 
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
