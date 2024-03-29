@@ -81,6 +81,10 @@ class ProductType extends Model implements Sitemapable
 
     public function toSitemapTag(): Url | string | array
     {
-        return route('store.catalog.page', ['productTypeSlug' => $this->slug]);
+        $urls = [];
+        $urls[] = route('store.catalog.page', ['productTypeSlug' => $this->slug]);
+        $urls[] = '/ru' . route('store.catalog.page', ['productTypeSlug' => $this->slug], false);
+
+        return $urls;
     }
 }

@@ -48,6 +48,10 @@ class Category extends Model implements Sitemapable
 
     public function toSitemapTag(): Url | string | array
     {
-        return route('store.catalog-category.page', ['categorySlug' => $this->slug, 'productTypeSlug' => $this->productType->slug]);
+        $urls = [];
+        $urls[] = route('store.catalog-category.page', ['categorySlug' => $this->slug, 'productTypeSlug' => $this->productType->slug]);
+        $urls[] = '/ru' . route('store.catalog-category.page', ['categorySlug' => $this->slug, 'productTypeSlug' => $this->productType->slug], false);
+
+        return $urls;
     }
 }
