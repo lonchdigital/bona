@@ -5,7 +5,7 @@
                 <img src="{{ $product->preview_image_url }}" alt="">
             </div>
             <div class="text">
-                <h2 class="product-title">{{ $product->name }}</h2>
+                <span class="product-title">{{ $product->name }}</span>
                 <span class="price-wrapper">
                     @if($product->old_price > $product->price)
                         <span class="card-link-price--hot">{{ $product->price }} {{ $baseCurrency->name_short }} </span>
