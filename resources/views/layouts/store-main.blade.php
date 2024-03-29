@@ -10,7 +10,6 @@
     <meta name="mobile-web-app-capable" content="yes">
 
     <!-- Meta tags -->
-    <meta name="description" content="">
     <meta name="author" content="">
 
     <meta property="og:type" content="website">
