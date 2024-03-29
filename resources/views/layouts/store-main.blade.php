@@ -404,7 +404,7 @@
                             <div class="footer-content-right">
 
                                 <div class="col-one">
-                                    <h5 class="art-footer-title">{{ trans('base.navigation') }}</h5>
+                                    <span class="art-footer-title h5 d-block">{{ trans('base.navigation') }}</span>
                                     <ul>
                                         <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{trans('base.about_us')}}</a></li>
                                         <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{trans('base.delivery')}}</a></li>
@@ -416,7 +416,7 @@
                                 </div>
 
                                 <div class="col-two">
-                                    <h5 class="art-footer-title">{{ trans('base.footer_cat') }}</h5>
+                                    <span class="art-footer-title h5 d-block">{{ trans('base.footer_cat') }}</span>
                                     <ul>
                                         @foreach($productTypes as $productType)
                                             <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
@@ -426,7 +426,7 @@
 
                                 @if( !is_null($contactsFooter) )
                                     <div class="col-three">
-                                        <h5 class="art-footer-title">{{ trans('base.footer_address') }}</h5>
+                                        <span class="art-footer-title h5 d-block">{{ trans('base.footer_address') }}</span>
                                         <div class="art-address-wrapper">
                                             <span class="city">{{ $contactsFooter['city_one'] }}</span>
                                             <span class="phone">{{ $contactsFooter['phone_one'] }}</span>
