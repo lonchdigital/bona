@@ -48,6 +48,10 @@ class BlogArticle extends Model implements Sitemapable
 
     public function toSitemapTag(): Url | string | array
     {
-        return route('blog.article.page', ['blogArticleSlug' => $this->slug]);
+        $urls = [];
+        $urls[] = route('blog.article.page', ['blogArticleSlug' => $this->slug]);
+        $urls[] = '/ru' . route('blog.article.page', ['blogArticleSlug' => $this->slug], false);
+
+        return $urls;
     }
 }

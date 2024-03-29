@@ -142,6 +142,10 @@ class Product extends Model implements Sitemapable
 
     public function toSitemapTag(): Url | string | array
     {
-        return route('store.product.page', ['productSlug' => $this->slug]);
+        $urls = [];
+        $urls[] = route('store.product.page', ['productSlug' => $this->slug]);
+        $urls[] = '/ru' . route('store.product.page', ['productSlug' => $this->slug], false);
+
+        return $urls;
     }
 }

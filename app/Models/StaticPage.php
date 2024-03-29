@@ -21,7 +21,11 @@ class StaticPage extends Model implements Sitemapable
         $type = StaticPageTypesDataClass::get($this->type_id);
 
         if ($type !== null && isset($type['slug'])) {
-            return route('store.static-page.page', ['staticPageSlug' => $type['slug']]);
+            $urls = [];
+            $urls[] = route('store.static-page.page', ['staticPageSlug' => $type['slug']]);
+            $urls[] = '/ru' . route('store.static-page.page', ['staticPageSlug' => $type['slug']], false);
+
+            return $urls;
         }
 
         return '';

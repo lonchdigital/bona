@@ -22,10 +22,6 @@ class Brand extends Model implements Sitemapable
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function collections()
-    {
-        return $this->hasMany(Collection::class);
-    }
 
     public function slides()
     {
@@ -49,9 +45,14 @@ class Brand extends Model implements Sitemapable
         return $array;
     }
 
+
     public function toSitemapTag(): Url | string | array
     {
-        return route('store.brand.page', ['brandSlug' => $this->slug]);
+        $urls = [];
+        $urls[] = route('store.brand.page', ['brandSlug' => $this->slug]);
+        $urls[] = '/ru' . route('store.brand.page', ['brandSlug' => $this->slug], false);
+
+        return $urls;
     }
 
 }
