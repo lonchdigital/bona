@@ -30,7 +30,19 @@
     <link rel="canonical" href="{{ $currentUrl }}">
 
     {{--  hreflang  --}}
-    @if(Str::startsWith(request()->path(), 'ru/'))
+
+    @if(Route::currentRouteName() === 'store.home')
+        @if(Str::startsWith(request()->path(), 'ru'))
+            @php $hreflangUrl = Str::after(request()->path(), 'ru'); @endphp
+            <link hreflang="uk-UA" href="{{ url('/') .'/'. $hreflangUrl }}" rel="alternate">
+            <link hreflang="ru-UA" href="{{ url('/') .'/ru/'. $hreflangUrl }}" rel="alternate">
+            <link hreflang="x-default" href="{{ url('/') .'/'. $hreflangUrl }}" rel="alternate">
+        @else
+            <link hreflang="uk-UA" href="{{ url('/') .''. request()->path() }}" rel="alternate">
+            <link hreflang="ru-UA" href="{{ url('/') .'/ru'. request()->path() }}" rel="alternate">
+            <link hreflang="x-default" href="{{ url('/') .''. request()->path() }}" rel="alternate">
+        @endif
+    @elseif(Str::startsWith(request()->path(), 'ru/'))
         @php $hreflangUrl = Str::after(request()->path(), 'ru/'); @endphp
         <link hreflang="uk-UA" href="{{ url('/') .'/'. $hreflangUrl }}" rel="alternate">
         <link hreflang="ru-UA" href="{{ url('/') .'/ru/'. $hreflangUrl }}" rel="alternate">
