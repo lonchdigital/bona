@@ -155,7 +155,7 @@ Route::prefix('admin')->middleware([
     Route::name('admin.dashboard.page')->get('/', ShowDashboardPageAction::class);
 
     //Product fields
-    Route::prefix('productField')->group(function () {
+    Route::prefix('product-field')->group(function () {
         //List
         Route::name('admin.product-field.list.page')->get('/',ShowProductFieldsListPageAction::class);
 
@@ -172,7 +172,7 @@ Route::prefix('admin')->middleware([
     });
 
     //Product attributes
-    Route::prefix('productAttribute')->group(function () {
+    Route::prefix('product-attribute')->group(function () {
         //List
         Route::name('admin.product-attribute.list.page')->get('/',ShowProductAttributesListPageAction::class);
 
@@ -189,7 +189,7 @@ Route::prefix('admin')->middleware([
     });
 
     //Product types
-    Route::prefix('productType')->group(function () {
+    Route::prefix('product-type')->group(function () {
         //List
         Route::name('admin.product-type.list.page')->get('/', ShowProductTypesListPageAction::class);
 
@@ -224,7 +224,7 @@ Route::prefix('admin')->middleware([
     });
 
     //Product Categories
-    Route::prefix('productCategory')->group(function () {
+    Route::prefix('product-category')->group(function () {
         //List
         Route::name('admin.product-category.list-by-product-type.page')->get('/', ShowCategoriesListByProductTypePageAction::class);
         Route::name('admin.product-category.list.page')->get('/{productType}', ShowCategoriesListPageAction::class);
@@ -348,7 +348,7 @@ Route::prefix('admin')->middleware([
     });
 
     //Products import
-    Route::prefix('productsImport')->group(function () {
+    Route::prefix('products-import')->group(function () {
         Route::name('admin.products-import.page')->get('/{productType}', ShowProductImportPageAction::class);
         Route::name('admin.products-import.list')->get('/{productType}/list', ShowImportedProductsListPageAction::class);
         Route::name('admin.products-import.download-example')->get('/{productType}/example', DownloadProductsImportExampleAction::class);
@@ -364,7 +364,7 @@ Route::prefix('admin')->middleware([
 
     // TODO:: do we need this?
     //Static pages
-    Route::prefix('staticPages')->group(function () {
+    Route::prefix('static-pages')->group(function () {
         Route::name('admin.static-pages.list.page')->get('/', StaticPagesListPageAction::class);
         Route::name('admin.static-pages.edit.page')->get('/{staticPage}', StaticPageEditPageAction::class);
         Route::name('admin.static-pages.edit')->post('/{staticPage}', StaticPageEditAction::class);
@@ -389,12 +389,12 @@ Route::prefix('admin')->middleware([
     });*/
 
     //Blog Page
-    Route::prefix('blogPage')->group(function () {
+    Route::prefix('blog-page')->group(function () {
         Route::name('admin.blog-page.edit.page')->get('edit', ShowBlogPageEditPageAction::class);
         Route::name('admin.blog-page.edit')->post('edit', BlogPageEditAction::class);
     });
     //Blog article
-    Route::prefix('blogArticle')->group(function () {
+    Route::prefix('blog-article')->group(function () {
         //List
         Route::name('admin.blog-article.list.page')->get('/', ShowBlogArticlesListPageAction::class);
 
@@ -423,7 +423,7 @@ Route::prefix('admin')->middleware([
         Route::name('admin.pages.list.page')->get('/', ShowPagesListPageAction::class);
     });
     //Home page
-    Route::prefix('homePage')->group(function () {
+    Route::prefix('home-page')->group(function () {
         Route::name('admin.home-page.edit.page')->get('edit', ShowHomePageEditPageAction::class);
         Route::name('admin.home-page.edit')->post('edit', HomePageEditAction::class);
     });
@@ -449,14 +449,14 @@ Route::prefix('admin')->middleware([
     });
 
     //Application Config
-    Route::prefix('applicationConfig')->group(function () {
+    Route::prefix('application-config')->group(function () {
         Route::name('admin.application-config.edit.page')->get('edit', ShowApplicationConfigEditPageAction::class);
         Route::name('admin.application-config.edit')->post('edit', ApplicationConfigEditAction::class);
     });
 
 
     //Visit requests
-    Route::prefix('visitRequest')->group(function () {
+    Route::prefix('visit-request')->group(function () {
         Route::name('admin.visit-request.list.page')->get('/', ShowVisitRequestsListPageAction::class);
         Route::name('admin.visit-request.details.page')->get('/{visitRequest}', ShowVisitRequestDetailsPageAction::class);
         Route::name('admin.visit-request.edit')->post('/{visitRequest}', VisitRequestEditAction::class);
@@ -469,12 +469,12 @@ Route::prefix('admin')->middleware([
             Route::name('admin.seo.robots-txt.edit')->post('/edit', RobotsTxtEditAction::class);
         });
 
-        Route::prefix('seoGen')->group(function () {
+        Route::prefix('seo-gen')->group(function () {
             Route::name('admin.seo-gen.edit.page')->get('/edit', ShowSeoGenPageAction::class);
             Route::name('admin.seo-gen.edit')->post('/edit', SeogenEditAction::class);
         });
 
-        Route::prefix('filterGroups')->group(function () {
+        Route::prefix('filter-groups')->group(function () {
             Route::name('admin.filter-groups.list.page')->get('/', ShowFilterGroupListPageAction::class);
 
             Route::name('admin.filter-groups.create.page')->get('/create', ShowFilterGroupCreatePageAction::class);
