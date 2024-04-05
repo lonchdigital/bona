@@ -25,7 +25,7 @@ async function loadJsByPage()
 
     let pageToLoad = page;
 
-    console.log(page);
+    // console.log(page);
     if (page === 'store.catalog.filter.page') {
         pageToLoad = 'store.catalog.page';
     }
