@@ -30,7 +30,7 @@
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h2 class="title">{{ $selectedOption->name }}</h2>
+                        <h2 class="title">{{ $selectedOptionName }}</h2>
                     </div>
                 </header>
             </div>
