@@ -90,6 +90,7 @@
 
 {{--                    @dd( $productType->fields[1]->options[1]->id, $product->getCustomFieldValue(46) )--}}
 
+
                     <product-page-edit-form
                         base-language="{{ $baseLanguage }}"
                         :available-languages="{{ json_encode($availableLanguages) }}"
@@ -135,6 +136,7 @@
                         @endif
 
                         :color-options="{{ json_encode( $colors ) }}"
+                        :color-display="{{ $productType->has_color }}"
                         @if(isset($product) && $productType->has_color)
                             :color-selected="{{ json_encode($product->colors) }}"
                         @endif
