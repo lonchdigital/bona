@@ -20,6 +20,8 @@ class ShowProductByFieldPageAction extends BaseAction
     {
         $productType->load(['fields', 'fields.options']);
 
+        $selectedOptionName = ($productOptionID == 78) ? trans('base.painted_doors') : $productField->options->where('id', $productOptionID)->first()->name;
+
         //get services from service container
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
@@ -39,7 +41,8 @@ class ShowProductByFieldPageAction extends BaseAction
         return view('pages.store.catalog-sort.catalog-sort-by-field', [
             'productType' => $productType,
             'productField' => $productField,
-            'selectedOption' => $productField->options->where('id', $productOptionID)->first(),
+//            'selectedOption' => $productField->options->where('id', $productOptionID)->first(),
+            'selectedOptionName' => $selectedOptionName,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
         ]);
