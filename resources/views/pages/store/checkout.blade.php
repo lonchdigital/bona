@@ -714,7 +714,7 @@
                                                         <input type="hidden" name="agreement" value="0">
                                                         <input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1">
                                                         <label for="checkout-order-info-form-check">{{ trans('base.checkout_by_confirm_i_agree') }}
-                                                            <a href="#">{{ mb_strtolower(trans('base.conditions')) }}</a>
+                                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ mb_strtolower(trans('base.conditions')) }}</a>
                                                         </label>
                                                     </div>
                                                     @error('agreement')
