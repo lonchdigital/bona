@@ -139,6 +139,10 @@ export default {
             type: Array,
             default: [],
         },
+        colorDisplay: {
+            type: Number,
+            default: false,
+        },
         productMainImage: {
             type: String,
             default: '',
@@ -203,7 +207,7 @@ export default {
             errors: [],
             displayCategoryField: [],
             displayBrandField: [],
-            displayColor: [],
+            displayColorField: [],
             attributeOptions: [],
             productSlugData: '',
             faqDeleted: false,
@@ -238,7 +242,7 @@ export default {
 
         this.displayCategoryField = this.categoryDisplay;
         this.displayBrandField = this.brandDisplay;
-        this.displayColor = Object.keys(this.colorOptions).length === 0;
+        this.displayColorField = this.colorDisplay;
 
 
         this.loadProducts('');
@@ -535,12 +539,12 @@ export default {
                 </div>
 
 
-                <p class="mt-4">
+                <p class="mt-4" v-if="displayColorField">
                     <strong>
                         {{ $t('admin.color') }}
                     </strong>
                 </p>
-                <div class="form-group mb-3 art-admin-repeater-four-width" v-if="!displayColor">
+                <div class="form-group mb-3 art-admin-repeater-four-width" v-if="displayColorField">
                     <!--                    <select-component
                                             :is-multi-select="true"
                                             :model-value="selectedColorsShow"
@@ -566,7 +570,7 @@ export default {
                         @delete-color="() => deleteColor(index)"
                     />
                 </div>
-                <div class="row mb-3">
+                <div class="row mb-3" v-if="displayColorField">
                     <div class="col">
                         <a href="#" id="add-color-option" class="btn mb-2 btn-secondary" @click.prevent="addColor"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.color_add')}}</a>
                     </div>
