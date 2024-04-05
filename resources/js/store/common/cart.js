@@ -175,13 +175,13 @@ export default {
 
 
         // all Attributes + Colors
+        const colorList = document.querySelector(".art-colors-list");
         var priceOptions = {}; // Object for ALL options
         var selectElements = document.getElementsByClassName("art-select-attribute");
 
         $(document).ready(function() {
-            var firstColorSpan = colorList.querySelector("span"); // get the first span
-            if (firstColorSpan) {
-                firstColorSpan.click();
+            if(colorList !== null) {
+                colorList.querySelector("span").click(); // click the first span
             }
         });
 
@@ -227,33 +227,34 @@ export default {
         }
 
         // Colors
-        const colorList = document.querySelector(".art-colors-list");
-        colorList.addEventListener("click", function(event) {
-            const clickedElement = event.target;
+        if(colorList !== null) {
+            colorList.addEventListener("click", function(event) {
+                const clickedElement = event.target;
 
-            // Check if there is an <img> inside the element or one of its parent elements
-            const imgElement = clickedElement.closest("span").querySelector("img");
+                // Check if there is an <img> inside the element or one of its parent elements
+                const imgElement = clickedElement.closest("span").querySelector("img");
 
-            if (imgElement || clickedElement.closest("span").tagName === "SPAN") {
-                // If there is an <img> where the click event occurred
-                const clickedImg = imgElement || clickedElement.closest("span");
+                if (imgElement || clickedElement.closest("span").tagName === "SPAN") {
+                    // If there is an <img> where the click event occurred
+                    const clickedImg = imgElement || clickedElement.closest("span");
 
-                // Check if the parent element is <span>
-                const clickedSpan = clickedImg.tagName === "SPAN" ? clickedImg : clickedImg.closest("span");
+                    // Check if the parent element is <span>
+                    const clickedSpan = clickedImg.tagName === "SPAN" ? clickedImg : clickedImg.closest("span");
 
-                if (clickedSpan) {
-                    // Remove the 'color-selected' class from all spans within the container
-                    const allSpans = colorList.querySelectorAll("span");
-                    allSpans.forEach(function(span) {
-                        span.classList.remove("color-selected");
-                    });
+                    if (clickedSpan) {
+                        // Remove the 'color-selected' class from all spans within the container
+                        const allSpans = colorList.querySelectorAll("span");
+                        allSpans.forEach(function(span) {
+                            span.classList.remove("color-selected");
+                        });
 
-                    // Add the 'color-selected' class to the parent span
-                    clickedSpan.classList.add("color-selected");
-                    updateTotalPriceWithAttributes(clickedSpan);
+                        // Add the 'color-selected' class to the parent span
+                        clickedSpan.classList.add("color-selected");
+                        updateTotalPriceWithAttributes(clickedSpan);
+                    }
                 }
-            }
-        });
+            });
+        }
 
 
         // Increase and Reduce Product Price
