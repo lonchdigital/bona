@@ -27,11 +27,10 @@
     <section class="products art-section-pd">
         <div class="container">
 
-
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h2 class="title">{{ $productField->field_name }}</h2>
+                        <h2 class="title">{{ $selectedOption->name }}</h2>
                     </div>
                 </header>
             </div>

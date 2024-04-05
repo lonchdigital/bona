@@ -18,7 +18,6 @@ class ShowProductByFieldPageAction extends BaseAction
         $productOptionID
     )
     {
-//        dd('111', $productField);
         $productType->load(['fields', 'fields.options']);
 
         //get services from service container
@@ -40,6 +39,7 @@ class ShowProductByFieldPageAction extends BaseAction
         return view('pages.store.catalog-sort.catalog-sort-by-field', [
             'productType' => $productType,
             'productField' => $productField,
+            'selectedOption' => $productField->options->where('id', $productOptionID)->first(),
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
         ]);
