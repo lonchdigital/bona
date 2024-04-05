@@ -274,6 +274,26 @@
 
     @if( count($faqs) )
         <!-- ======================== FAQs ======================== -->
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+          @foreach($faqs as $faq)
+           {
+            "@type": "Question",
+            "name": "{{ $faq->question }}",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "<p>{{ $faq->answer }}</p>"
+            }
+          },
+            @endforeach
+            ]
+          }
+        </script>
+
         <section class="faqs-section">
             <div class="container">
 
