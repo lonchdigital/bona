@@ -120,13 +120,13 @@
 
             <div class="navigation navigation-top">
                 <div class="navigation-left-side">
-                    <ul>
-                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{trans('base.about_us')}}</a></li>
-                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{trans('base.delivery')}}</a></li>
-                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{trans('base.blog')}}</a></li>
-                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{trans('base.services')}}</a></li>
-                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{trans('base.our_works')}}</a></li>
-                        <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{trans('base.contacts')}}</a></li>
+                    <ul itemscope itemtype="https://schema.org/SiteNavigationElement">
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{trans('base.about_us')}}</a></li>
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{trans('base.delivery')}}</a></li>
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{trans('base.blog')}}</a></li>
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{trans('base.services')}}</a></li>
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{trans('base.our_works')}}</a></li>
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{trans('base.contacts')}}</a></li>
                     </ul>
                 </div>
 
