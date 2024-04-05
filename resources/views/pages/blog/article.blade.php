@@ -97,29 +97,7 @@
                 <div class="art-blog-archive-wrapper">
                     @foreach($latestArticles as $latestArticle)
                         <div class="col-lg-4">
-                            <article class="art-post-archive-item">
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $latestArticle->slug]) }}">
-                                    <div class="image" style="background-image:url({{ $latestArticle->hero_image_url }})">
-                                        <img src="{{ $latestArticle->hero_image_url }}" alt="">
-                                    </div>
-                                    <div class="entry entry-post">
-                                        <div class="preview-post-left">
-                                            <div class="date-wrapper">
-                                                <div class="date">
-                                                    <strong>{{ $latestArticle->created_at->format('d') }}</strong>
-                                                    <span>{{ $latestArticle->created_at->format('M') }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="preview-post-right">
-                                            <div class="title">
-                                                <h2 class="h5">{{ $latestArticle->name }}</h2>
-                                            </div>
-                                            <div class="art-preview-text"><p>{{ $latestArticle->preview_text }}</p></div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </article>
+                            @include('pages.store.partials.article_item', ['article' => $latestArticle])
                         </div>
                     @endforeach
                 </div>
