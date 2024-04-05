@@ -86,6 +86,28 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			"Name": "Bona-Doors найкращі двері",
+			"url": "{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}",
+			@if(array_key_exists('logoLight', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['logoLight']))
+			"logo": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
+			"image": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
+			@endif
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": "Одеса",
+				"postalCode": "",
+				"addressCountry": "Україна"
+			},
+			"sameAs": [
+				""
+			]
+		}
+	</script>
+
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

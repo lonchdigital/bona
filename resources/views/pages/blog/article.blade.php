@@ -26,6 +26,27 @@
 
         <!-- ========================  Blog post ======================== -->
 
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Article",
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": "{{ url('/') .'/'. $blogArticle->slug }}"
+                },
+                "headline": "{{ $blogArticle->name }}",
+                "image": "{{ url('/') .'/storage/'. $blogArticle->hero_image_path }}",
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Bona-Doors"
+                },
+                "articleBody": "<p>{{ $blogArticle->preview_text }}</p> ",
+                "articleSection": "Блог",
+                "datePublished": "{{ $blogArticle->created_at }}",
+                "dateModified": "{{ $blogArticle->updated_at }}"
+            }
+        </script>
+
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 col-md-offset-1">
