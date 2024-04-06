@@ -94,7 +94,7 @@ export default {
         $('form[id^="user-call-"]').submit(function(event) {
             event.preventDefault();
 
-            var $form = $(this); // Получаем текущую форму, на которую было совершено событие
+            var $form = $(this); // get current Form
 
             var formData = new FormData(this);
             var data = {};
@@ -109,7 +109,7 @@ export default {
                     var button = document.getElementById("user-choose-doors-success");
                     button.click();
 
-                    $form.find('.field-error').remove(); // Удаляем ошибки только для текущей формы
+                    $form.find('.field-error').remove(); // Remove current Form errors
                 },
                 function(xhr) {
                     if (xhr.status === 422) {
