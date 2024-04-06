@@ -270,7 +270,7 @@ class ProductService extends BaseService
         return ProductType::with('fields')->where('id', $productTypeId)->first();
     }
 
-    public function searchProducts(SearchProductDTO $request): Collection
+    /*public function searchProducts(SearchProductDTO $request): Collection
     {
         $query = Product::query();
 
@@ -284,6 +284,21 @@ class ProductService extends BaseService
             return $query->limit(5)->get();
 
         } else {
+            return collect([]);
+        }
+    }*/
+
+    public function searchProducts(SearchProductDTO $request)
+    {
+        $query = Product::query();
+
+        if ($request->query) {
+            $searchTerm = '%' . $request->query . '%';
+            $query->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm])
+                ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk"))) LIKE ?', [$searchTerm, $searchTerm]);
+
+            return $query->limit(5)->get();
+        }else {
             return collect([]);
         }
     }

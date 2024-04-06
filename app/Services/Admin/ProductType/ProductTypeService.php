@@ -258,6 +258,7 @@ class ProductTypeService extends BaseService
         });
     }
 
+    // TODO:: I had to change the request. Remove if I do not need it
     /*public function searchAdditionalProducts($productType, array $request)
     {
         $query = Product::query();
@@ -290,7 +291,8 @@ class ProductTypeService extends BaseService
 
         if (!is_null($request['search'])) {
             $searchTerm = '%' . $request['search'] . '%';
-            $query->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm]);
+            $query->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm])
+                ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk"))) LIKE ?', [$searchTerm, $searchTerm]);
         }
 
         return [
