@@ -41,9 +41,15 @@ class ShowProductByColorPageAction extends BaseAction
             $color
         );
 
+        $pageTitle = trans('base.color') . ' ' . $color->name;
+        if($color->id == 7) {
+            $pageTitle = trans('base.white_doors');
+        }
+
         return view('pages.store.catalog-sort.catalog-sort-by-color', [
             'productType' => $productType,
             'color' => $color,
+            'pageTitle' => $pageTitle,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
         ]);

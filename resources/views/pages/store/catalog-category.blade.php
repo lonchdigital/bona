@@ -154,10 +154,11 @@
                     </div> <!--/filters-->
                 </div>
 
+
                 <!--product items-->
                 <div class="col-lg-9 col-xs-12">
                     <div class="products-catalog-wrapper">
-                        <h1 class="h2 title">{{ $productType->name }}</h1>
+                        <h1 class="h2 title">{{ $selectedCategory->name }}</h1>
 
                         <div class="art-catalog-top">
 
