@@ -34,6 +34,7 @@ class ShowProductByDiscountPageAction extends BaseAction
 
         return view('pages.store.catalog-sort.catalog-sort-by-discount', [
             'productType' => $productType,
+            'pageTitle' => trans('base.promotional_offers'),
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
         ]);

@@ -31,7 +31,7 @@
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h2 class="title">{{ trans('base.products_price_discount') }}</h2>
+                        <h2 class="title">{{ $pageTitle }}</h2>
                     </div>
                 </header>
             </div>

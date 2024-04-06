@@ -28,12 +28,10 @@
     <section class="products art-section-pd">
         <div class="container">
 
-
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h2 class="title">{{ trans('base.color') . ' ' . $color->name }}</h2>
-{{--                        <h2 class="title">title</h2>--}}
+                        <h2 class="title">{{ $pageTitle }}</h2>
                     </div>
                 </header>
             </div>
