@@ -258,7 +258,7 @@ class ProductTypeService extends BaseService
         });
     }
 
-    public function searchAdditionalProducts($productType, array $request)
+    /*public function searchAdditionalProducts($productType, array $request)
     {
         $query = Product::query();
 
@@ -272,6 +272,25 @@ class ProductTypeService extends BaseService
             $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
             $query->where('name', 'REGEXP', '.*' . $searchTerm . '.*')
                 ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request['search']) . '%']);
+        }
+
+        return [
+            'documents' => $query->select(['id', 'name'])->limit(6)->get()
+        ];
+    }*/
+
+    public function searchAdditionalProducts($productType, array $request)
+    {
+        $query = Product::query();
+
+        if (!is_null($request['excludePostIds'])) {
+            $excludePostIds = explode(",", $request['excludePostIds']);
+            $query->whereNotIn('id', $excludePostIds);
+        }
+
+        if (!is_null($request['search'])) {
+            $searchTerm = '%' . $request['search'] . '%';
+            $query->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm]);
         }
 
         return [
