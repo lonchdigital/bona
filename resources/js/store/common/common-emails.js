@@ -28,6 +28,9 @@ export default {
                     var button = document.getElementById("user-choose-doors-success");
                     button.click();
 
+                    $userChooseDoorsForm.find('input[name="name"]').val('');
+                    $userChooseDoorsForm.find('input[name="phone"]').val('');
+
                     $userChooseDoorsForm.find('.field-error').remove();
                 },
                 function (xhr) {
@@ -117,6 +120,11 @@ export default {
                     formTag.find('.field-error').remove(); // Remove current Form errors
                     var button = document.getElementById("user-choose-doors-success");
                     button.click();
+
+                    formTag.find('input[name="name"]').val('');
+                    formTag.find('input[name="phone"]').val('');
+
+                    $('button.is-close-btn').click();
                 },
                 function(xhr) {
                     if (xhr.status === 422) {
