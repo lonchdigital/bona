@@ -12,10 +12,14 @@ export default {
             event.preventDefault();
 
             let formData = new FormData(this);
+            $userChooseDoorsForm.find('.field-error').remove();
             let data = {};
 
             for (var pair of formData.entries()) {
                 data[pair[0]] = pair[1];
+            }
+            if(formData.get('agree') !== null){
+                data['agree'] = true;
             }
 
             userChooseDoors(
@@ -40,9 +44,8 @@ export default {
 
         function userChooseDoorsErrors(errors)
         {
-            $userChooseDoorsForm.find('.field-error').remove();
-
             for (let fieldName in errors) {
+                $userChooseDoorsForm.find('input[name="'+ fieldName +'"]').val('');
                 $userChooseDoorsForm.find('.' + fieldName + '-field').after(`<p class="field-error ${fieldName}">${errors[fieldName]}</p>`);
             }
         }
@@ -94,39 +97,42 @@ export default {
         $('form[id^="user-call-"]').submit(function(event) {
             event.preventDefault();
 
-            var $form = $(this); // get current Form
-
+            let formTag = $(this);
             var formData = new FormData(this);
+            formTag.find('.field-error').remove();
+
+
             var data = {};
 
             for (var pair of formData.entries()) {
                 data[pair[0]] = pair[1];
             }
+            if(formData.get('agree') !== null){
+                data['agree'] = true;
+            }
 
             userChooseDoors(
                 data,
                 function(data) {
+                    formTag.find('.field-error').remove(); // Remove current Form errors
                     var button = document.getElementById("user-choose-doors-success");
                     button.click();
-
-                    $form.find('.field-error').remove(); // Remove current Form errors
                 },
                 function(xhr) {
                     if (xhr.status === 422) {
-                        userCallMeasurErrors(xhr.responseJSON.errors, $form); // Передаем текущую форму в функцию обработки ошибок
+                        userCallMeasurErrors(xhr.responseJSON.errors, formData, formTag); // Передаем текущую форму в функцию обработки ошибок
                     } else {
                         console.error('[Email]: init: error during sending the email.');
                     }
                 },
-                $form
+                formData
             );
         });
 
-        function userCallMeasurErrors(errors, $form) {
-            $form.find('.field-error').remove(); // Удаляем ошибки только для текущей формы
-
+        function userCallMeasurErrors(errors, formData, formTag) {
             for (let fieldName in errors) {
-                $form.find('.' + fieldName + '-field').after(`<p class="field-error ${fieldName}">${errors[fieldName]}</p>`);
+                formTag.find('input[name="'+ fieldName +'"]').val('');
+                formTag.find('.' + fieldName + '-field').after(`<p class="field-error ${fieldName}">${errors[fieldName]}</p>`);
             }
         }
 
@@ -136,9 +142,6 @@ export default {
 
 function userChooseDoors(data, success, fail, form)
 {
-    form.find('input').val('');
-    form.find('input[type="checkbox"]').prop('checked', false);
-
     const routeWithSlug = routes.email.user_choose_doors_route;
 
     $.ajax({

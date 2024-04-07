@@ -39,6 +39,7 @@ class UserChooseDoorsRequest extends BaseRequest
         return new UserChooseDoorsDTO(
             $this->input('name'),
             $this->input('phone'),
+            $this->input('agree'),
         );
     }
 }
