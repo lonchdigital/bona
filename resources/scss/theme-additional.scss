@@ -2594,6 +2594,10 @@ section.art-common-page-section {
 }
 #page-cart .art-cart-products-wrapper .basket-list-product .list-product-table {
 
+    @media (max-width: 1199px) {
+        margin-top: 50px;
+    }
+
 }
 #page-cart .art-cart-products-wrapper .basket-list-product .list-product-table .table-head {
     border-bottom: 2px solid #E7E7E7;

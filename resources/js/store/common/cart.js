@@ -585,17 +585,10 @@ function drawProductsInCartPageHTML(data)
         productsToAppend += getProductInCartPageHTML(product, productAttributesHTML);
     });
 
-    if (data.data.products.length > 0) {
+    /*if (data.data.products.length > 0) {
         productsToAppend += '<hr class="d-lg-none">';
-    }
+    }*/
 
-    /*data.data.products.forEach(function (product) {
-        productsToAppend += getProductInCartPageHTML(product);
-    });*/
-
-    if (data.data.products.length > 0) {
-        productsToAppend += '<hr class="d-lg-none">';
-    }
 
     $('.cart-page-products-list').html(productsToAppend);
     $('.total-info-right .price-products').text(data.data.summary.products + ' ' + store.base_currency_name_short);
