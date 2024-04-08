@@ -683,15 +683,8 @@ class ProductFiltersService extends BaseService
                                 });
                             } else {
 
-                                $test = $query->where(function (Builder $query) use($options, $field) {
-                                    foreach ($options as $option) {
-                                        $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
-                                            ->addBinding('$."' . $field->id . '"')
-                                            ->addBinding((integer)$option->id);
-                                    }
-                                })->get();
+//                                $query->whereJsonContains('custom_fields', [6 => 45]);
 
-                                dd($test);
 
                                 /*$query->where(function (Builder $query) use($options, $field) {
                                     foreach ($options as $option) {
@@ -700,6 +693,20 @@ class ProductFiltersService extends BaseService
                                             ->addBinding((integer)$option->id);
                                     }
                                 });*/
+
+                                /*$query->where(function (Builder $query) use ($options, $field) {
+                                    foreach ($options as $option) {
+                                        $query->orWhereJsonContains('custom_fields->'.$field->id, (integer)$option->id);
+                                    }
+                                });*/
+
+                                $query->where(function (Builder $query) use ($options, $field) {
+                                    foreach ($options as $option) {
+                                        $query->orWhere(function (Builder $query) use ($field, $option) {
+                                            $query->whereJsonContains('custom_fields->'.$field->id, (string) $option->id);
+                                        });
+                                    }
+                                });
 
 
                             }
