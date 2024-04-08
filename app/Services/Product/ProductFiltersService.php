@@ -646,7 +646,6 @@ class ProductFiltersService extends BaseService
                 });
             } else {
 
-                dd($productType->fields);
 
                 $field = $productType->fields->filter(function ($item) use ($filterNameSlug) {
                     return $item->slug == $filterNameSlug ||
@@ -654,11 +653,14 @@ class ProductFiltersService extends BaseService
                         $item->slug == str_replace('_to', '', $filterNameSlug);
                 })->first();
 
+
+
                 if ($field) {
 
 
 
                     if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
+
                         if (!is_array($filterValue)) {
                             $filterValue = [$filterValue];
                         }
@@ -667,6 +669,8 @@ class ProductFiltersService extends BaseService
                             ->options()
                             ->whereIn('slug', $filterValue)
                             ->get();
+
+                        dd(1, $filterValue, $options);
 
                         if (count($options)) {
 
