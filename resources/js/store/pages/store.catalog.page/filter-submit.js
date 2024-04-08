@@ -106,6 +106,7 @@ export function init () {
             const tooltipId = $(event.target).attr('aria-describedby');
             const tooltipBody = $('#' + tooltipId);
 
+            console.log('here???7 ' + catalog.products_count_by_filter_endpoint + '/params_here' );
 
             if (tooltipBody.find('.filter-find').length) {
                 const filterParams = generateStringWithParams(mainFilterForm);

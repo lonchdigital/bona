@@ -157,8 +157,8 @@ $optionalLanguageRoutes = function () {
     Route::name('store.products-by-discount.page')->get('/product-category/discount/', ShowProductByDiscountPageAction::class);
     Route::name('store.products-by-availability.page')->get('/product-category/available/', ShowProductByAvailabilityPageAction::class);
 
-    Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
-//    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
+//    Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
+    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
 
 
     Route::prefix('/shop')->group(function() {
