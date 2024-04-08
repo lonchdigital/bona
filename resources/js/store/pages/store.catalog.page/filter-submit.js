@@ -106,13 +106,15 @@ export function init () {
             const tooltipId = $(event.target).attr('aria-describedby');
             const tooltipBody = $('#' + tooltipId);
 
-            console.log('here???7 ' + catalog.products_count_by_filter_endpoint + '/params_here' );
+            // console.log('here???7 ' + catalog.products_count_by_filter_endpoint + '/params_here' );
 
             if (tooltipBody.find('.filter-find').length) {
                 const filterParams = generateStringWithParams(mainFilterForm);
                 $.ajax({
                     url: catalog.products_count_by_filter_endpoint + '/' + filterParams,
                     success: function (data) {
+                        console.log('here???7 ' + data.data.count );
+
                         $('#products-count').html(data.data.count);
                     }
                 });
