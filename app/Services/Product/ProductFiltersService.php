@@ -670,7 +670,6 @@ class ProductFiltersService extends BaseService
                             ->whereIn('slug', $filterValue)
                             ->get();
 
-                        dd(1, $filterValue, $options);
 
                         if (count($options)) {
 
@@ -684,13 +683,25 @@ class ProductFiltersService extends BaseService
                                 });
                             } else {
 
-                                $query->where(function (Builder $query) use($options, $field) {
+                                $test = $query->where(function (Builder $query) use($options, $field) {
                                     foreach ($options as $option) {
                                         $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
                                             ->addBinding('$."' . $field->id . '"')
                                             ->addBinding((integer)$option->id);
                                     }
-                                });
+                                })->get();
+
+                                dd($test);
+
+                                /*$query->where(function (Builder $query) use($options, $field) {
+                                    foreach ($options as $option) {
+                                        $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
+                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding((integer)$option->id);
+                                    }
+                                });*/
+
+
                             }
                         }
                     } elseif ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE ||
