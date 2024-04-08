@@ -64,6 +64,7 @@ class ShowCatalogPageAction extends BaseAction
             $page,
         );
 
+        dd($productsPaginated);
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
