@@ -42,7 +42,7 @@ class ProductService extends BaseService
     public function __construct(
         private readonly ProductFiltersAdminService $filtersAdminService,
         private readonly ProductFiltersService      $filterService,
-        private readonly CurrencyService            $currencyService,
+//        private readonly CurrencyService            $currencyService,
     ) { }
 
     const PRODUCT_IMAGES_FOLDER = 'product-images';
