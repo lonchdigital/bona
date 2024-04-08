@@ -113,7 +113,7 @@ export function init () {
                 $.ajax({
                     url: catalog.products_count_by_filter_endpoint + '/' + filterParams,
                     success: function (data) {
-                        console.log('here???7 ' + data.data.count );
+                        console.log('here???7 88 ' + data.data.count );
 
                         $('#products-count').html(data.data.count);
                     }
