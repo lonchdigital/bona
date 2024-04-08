@@ -646,6 +646,8 @@ class ProductFiltersService extends BaseService
                 });
             } else {
 
+                dd($productType->fields);
+
                 $field = $productType->fields->filter(function ($item) use ($filterNameSlug) {
                     return $item->slug == $filterNameSlug ||
                         $item->slug == str_replace('_from', '', $filterNameSlug) ||
