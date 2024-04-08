@@ -96,6 +96,13 @@ class ProductService extends BaseService
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
+        dd($query->where(function($query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function($query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->get());
+
         return $query->where(function($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
                 ->orWhereHas('productTypes', function($query) use ($productType) {
