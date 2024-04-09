@@ -79,6 +79,7 @@ return [
     'sku' => 'Артикул',
     'availability' => 'Доступность',
     'product_availability' => 'Товары в наличии',
+    'product_doors_availability' => 'Двери в наличии',
     'see_more' => 'Смотрите также',
     'add_to_cart' => 'Добавить в корзину',
     'add_to_wish_list' => 'В список желаний',

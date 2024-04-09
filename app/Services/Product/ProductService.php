@@ -181,6 +181,17 @@ class ProductService extends BaseService
             ->paginate($perPage, ['*'], null, $page);
     }
 
+    public function getProductsDoorsByAvailabilityPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $targetTypeIds = [1, 2, 3, 4, 5, 19, 20, 21];
+
+        return Product::where('availability_status_id', 2)
+            ->whereHas('productType', function ($query) use ($targetTypeIds) {
+                $query->whereIn('id', $targetTypeIds);
+            })
+            ->paginate($perPage, ['*'], null, $page);
+    }
+
     public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = Product::query();
