@@ -49,6 +49,8 @@ use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
 use App\Http\Actions\Store\Delivery\GetMeestDepartmentsAction;
 use App\Http\Actions\Store\Delivery\GetNPCitiesAction;
 use App\Http\Actions\Store\Delivery\GetNpDepartmentsAction;
+use App\Http\Actions\Store\Delivery\GetSATCitiesAction;
+use App\Http\Actions\Store\Delivery\GetSATDepartmentsAction;
 use App\Http\Actions\Store\DeliveryPage\Pages\ShowDeliveryPageAction;
 use App\Http\Actions\Store\AboutUsPage\Pages\ShowAboutUsPageAction;
 use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
@@ -264,6 +266,11 @@ $optionalLanguageRoutes = function () {
         Route::prefix('np')->group(function () {
             Route::name('delivery.np.cities')->get('/cities', GetNPCitiesAction::class);
             Route::name('delivery.np.departments')->get('/departments', GetNpDepartmentsAction::class);
+        });
+
+        Route::prefix('sat')->group(function () {
+            Route::name('delivery.sat.cities')->get('/cities', GetSATCitiesAction::class);
+            Route::name('delivery.sat.departments')->get('/departments', GetSATDepartmentsAction::class);
         });
 
         Route::prefix('meest')->group(function () {

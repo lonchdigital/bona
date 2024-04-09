@@ -683,9 +683,7 @@ class ProductFiltersService extends BaseService
                                 });
                             } else {
 
-//                                $query->whereJsonContains('custom_fields', [6 => 45]);
-
-
+                                // TODO:: old request
                                 /*$query->where(function (Builder $query) use($options, $field) {
                                     foreach ($options as $option) {
                                         $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
@@ -694,11 +692,6 @@ class ProductFiltersService extends BaseService
                                     }
                                 });*/
 
-                                /*$query->where(function (Builder $query) use ($options, $field) {
-                                    foreach ($options as $option) {
-                                        $query->orWhereJsonContains('custom_fields->'.$field->id, (integer)$option->id);
-                                    }
-                                });*/
 
                                 $query->where(function (Builder $query) use ($options, $field) {
                                     foreach ($options as $option) {

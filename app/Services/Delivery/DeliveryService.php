@@ -6,6 +6,7 @@ use App\Intergations\MeestExpress\MeestExpress;
 use App\Services\Base\BaseService;
 use Illuminate\Support\Collection;
 use LisDev\Delivery\NovaPoshtaApi2;
+use GuzzleHttp\Client;
 
 class DeliveryService extends BaseService
 {
@@ -17,6 +18,8 @@ class DeliveryService extends BaseService
                 app()->getLocale(),
                 true,
             );
+
+//            dd($np->getCities(1, $query)['data']);
 
             return collect($np->getCities(1, $query)['data'])->map(function ($city) {
                 $city['value'] = $city['Ref'];
@@ -88,6 +91,87 @@ class DeliveryService extends BaseService
             return [];
         }
     }
+
+
+    public function getSatCityByRef(string $ref): Collection
+    {
+//        dd($ref);
+
+        try {
+            $client = new Client();
+
+
+
+
+            $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getTowns?language=". app()->getLocale() . "&ref=" . $ref;
+
+            $response = $client->request('GET', mb_convert_encoding($url, "UTF-8") );
+            $body = $response->getBody();
+            $city = json_decode($body, true);
+
+//            dd($city);
+
+            return collect($city['data'])->map(function ($city) {
+                $city['value'] = $city['rspRef'];
+                $city['text'] = $city['description'] . ' ' . $city['region'];
+
+                return $city;
+            });
+        } catch (\Exception $exception) {
+            return collect([]);
+        }
+    }
+
+    public function getSatCities(string $query = ''): Collection
+    {
+        try {
+            $client = new Client();
+
+            if($query == ''){
+                $query = 'Днеп';
+            };
+
+            $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getTowns?language=". app()->getLocale() ."&searchString=" . $query;
+
+            $response = $client->request('GET', mb_convert_encoding($url, "UTF-8") );
+            $body = $response->getBody();
+            $cities = json_decode($body, true);
+
+            return collect($cities['data'])->map(function ($city) {
+                $city['value'] = $city['rspRef'];
+                $city['text'] = $city['description'] . ' ' . $city['region'];
+
+//                dd($city);
+
+                return $city;
+            });
+        } catch (\Exception $exception) {
+            return collect([]);
+        }
+    }
+
+    public function getSatDepartments(string $cityRef): Collection
+    {
+        try {
+            $client = new Client();
+
+            $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getRsp?language=". app()->getLocale() ."&ref=" . $cityRef;
+
+            $response = $client->request('GET', mb_convert_encoding($url, "UTF-8") );
+            $body = $response->getBody();
+            $departments = json_decode($body, true);
+
+            return collect($departments['data'])->map(function ($department) {
+                $department['value'] = $department['cityRef'];
+                $department['text'] = $department['description'] . ' ' . $department['address'];
+
+                return $department;
+            });
+        } catch (\Exception $exception) {
+            return collect([]);
+        }
+    }
+
 
     public function getMeestCities(string $query): Collection
     {
