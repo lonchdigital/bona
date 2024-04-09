@@ -266,7 +266,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.catalog-category.page', [
+                <a href="{{ route('store.products-rucky-by-availability.page', [
                         'categorySlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->categories()->where('code_name', 'rucky')->first()->slug,
                         'productTypeSlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->slug
                         ]) }}">

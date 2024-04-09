@@ -216,12 +216,25 @@ class ProductService extends BaseService
 
     public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-//        $query = Product::with(['children']);
         $query = Product::query();
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
         $query->whereHas('categories', function (Builder $query) use($category) {
+            $query->where('category_id', $category->id);
+        });
+
+        return $query->where('product_type_id', $productType->id)
+            ->paginate($perPage, '*', null, $page);
+    }
+
+    public function getProductsCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $query = Product::query();
+
+        $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
+
+        $query->where('availability_status_id', 2)->whereHas('categories', function (Builder $query) use($category) {
             $query->where('category_id', $category->id);
         });
 
