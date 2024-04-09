@@ -79,6 +79,7 @@ return [
     'sku' => 'Артикул',
     'availability' => 'Доступність',
     'product_availability' => 'Товари в наявності',
+    'product_doors_availability' => 'Двері в наявності',
     'see_more' => 'Дивіться також',
     'add_to_cart' => 'Додати у кошик',
     'add_to_wish_list'=> 'у Wish List',

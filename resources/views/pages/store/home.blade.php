@@ -187,7 +187,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.products-by-availability.page') }}">
+                <a href="{{ route('store.products-doors-by-availability.page') }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 176 175" fill="none" xmlns="http://www.w3.org/2000/svg">

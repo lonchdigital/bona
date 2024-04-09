@@ -42,6 +42,7 @@ use App\Http\Actions\Store\Catalog\Pages\ShowProductByColorPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByFieldPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByDiscountPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByAvailabilityPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductDoorsByAvailabilityPageAction;
 use App\Http\Actions\Store\Checkout\CheckoutConfirmOrderAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutPage;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
@@ -158,6 +159,7 @@ $optionalLanguageRoutes = function () {
     Route::name('store.products-by-field.page')->get('/product-category/field/{productField}/{productOptionID}/', ShowProductByFieldPageAction::class);
     Route::name('store.products-by-discount.page')->get('/product-category/discount/', ShowProductByDiscountPageAction::class);
     Route::name('store.products-by-availability.page')->get('/product-category/available/', ShowProductByAvailabilityPageAction::class);
+    Route::name('store.products-doors-by-availability.page')->get('/product-category/available-doors/', ShowProductDoorsByAvailabilityPageAction::class);
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
 //    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
