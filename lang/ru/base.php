@@ -300,6 +300,7 @@ return [
     'brands_products' => 'Все товары бренда',
     'agreement' => 'Договор публичной оферты',
     'doors_by_type' => 'Двери по типу',
+    'products_by_type' => 'Товары по типу',
     'doors_category' => 'Категории дверей',
     'best_sales' => 'Лидеры продаж',
     'blog_latest' => 'Последние новости',

@@ -304,14 +304,12 @@
                                                      class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) art-show @else art-hide @endif"
                                                      data-parent="#checkout-delivery-accordion">
                                                     <div class="card-body pt-5 px-0 pb-5 mb-4">
-                                                        <div
-                                                            class="delivery-title mb-4">{{ trans('base.checkout_select_np_department') }}</div>
+                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_select_np_department') }}</div>
                                                         <div class="city-search-wrap">
-                                                            <div
-                                                                class="field @if($errors->has('np_city')) field-error @endif city-search mb-1">
+                                                            <div class="field @if($errors->has('np_city')) field-error @endif city-search mb-1">
                                                                 <input value="{{ old('np_city') }}"
-                                                                       @if(old('np_city')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpCityByRef(old('np_city'))) }}'
-                                                                       @endif type="text" class="np-city-select"
+                                                                       @if(old('np_city')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpCityByRef(old('np_city'))) }}' @endif
+                                                                       type="text" class="np-city-select"
                                                                        name="np_city"/>
                                                             </div>
                                                             <div class="row mb-3">
@@ -344,6 +342,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="card delivery-sat">
                                                 <div class="card-header">
                                                     <div class="card-header-row">
@@ -366,66 +365,47 @@
                                                      class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) art-show @else art-hide @endif"
                                                      data-parent="#checkout-delivery-accordion">
                                                     <div class="card-body pt-5 px-0 pb-5 mb-4">
-                                                        <div
-                                                            class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}
-                                                            :
-                                                        </div>
-                                                        <div
-                                                            class="delivery-title mb-4">{{ trans('base.checkout_address_to_delivery') }}</div>
+                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}:</div>
+
                                                         <div class="city-search-wrap">
-                                                            <div
-                                                                class="field @if($errors->has('sat_region_id')) field-error @endif city-search mb-1">
-                                                                <select class="region-select" name="sat_region_id">
-                                                                    <option disabled
-                                                                            @if(!old('sat_region_id')) selected @endif value="">{{ trans('base.checkout_select_region') }}</option>
-                                                                    @foreach($regions as $region)
-                                                                        <option
-                                                                            @if(old('sat_region_id') == $region->id) selected
-                                                                            @endif value="{{ $region->id }}">{{ $region->name }}</option>
-                                                                    @endforeach
-                                                                </select>
+                                                            <div class="field @if($errors->has('sat_city')) field-error @endif city-search mb-1">
+{{--                                                                @dd(old('sat_city'))--}}
+                                                                <input value="{{ old('sat_city') }}"
+                                                                       @if(old('sat_city')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getSatCityByRef(old('sat_city'))) }}' @endif
+                                                                       type="text"
+                                                                       class="sat-city-select"
+                                                                       name="sat_city">
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-12 text-danger">
-                                                                    @error('sat_region_id')
-                                                                    <div
-                                                                        class="field-error-help-descr">{{ $message }}</div>
+                                                                    @error('sat_city')
+                                                                    <div class="field-error-np_area">{{ $message }}</div>
                                                                     @enderror
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row mb-1">
-                                                            <div class="col-12">
-                                                                <div
-                                                                    class="field @if($errors->has('sat_district')) field-error @endif">
-                                                                    <input type="text"
-                                                                           name="sat_district"
-                                                                           class="art-form-light-control"
-                                                                           placeholder="{{ trans('base.district') }}"
-                                                                           value="{{ old('sat_district') }}">
+
+                                                        <div id="sat-department-search-wrap">
+                                                            <div
+                                                                class="field @if($errors->has('sat_department')) field-error @endif city-search mb-1">
+                                                                <input value="{{ old('sat_department') }}"
+                                                                       @if(old('sat_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpDepartmentByRef(old('sat_city'), old('sat_department'))) }}'
+                                                                       @endif  type="text"
+                                                                       class="sat-department-select"
+                                                                       name="sat_department">
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-12 text-danger">
+                                                                    @error('sat_department')
+                                                                    <div
+                                                                        class="field-error-sat_area">{{ $message }}</div>
+                                                                    @enderror
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-12 text-danger">
-                                                                @error('sat_district')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-1">
-                                                            <div class="col-12">
-                                                                <div
-                                                                    class="field @if($errors->has('sat_city')) field-error @endif">
-                                                                    <input type="text"
-                                                                           name="sat_city"
-                                                                           class="art-form-light-control"
-                                                                           placeholder="{{ trans('base.city') }}"
-                                                                           value="{{ old('sat_city') }}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
+
+
+
 
                                                     </div>
                                                 </div>

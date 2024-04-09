@@ -3,6 +3,7 @@ import "/node_modules_local/fastselect/dist/fastselect.standalone.js";
 
 export function init () {
     let NPCityRef = $('.np-city-select').val();
+    let SATCityRef = $('.sat-city-select').val();
     let MeestCityRef = $('.meest-city-select').val();
 
 
@@ -44,7 +45,42 @@ export function init () {
         }
     );
 
-    $('.meest-city-select').fastselect({
+
+    $('.sat-city-select').fastselect({
+            url: routes.delivery.sat.cities,
+            searchPlaceholder: translations.checkout_search_city,
+            placeholder: translations.checkout_search_city,
+            noResultsText: translations.checkout_search_city_not_found,
+            loadOnce: false,
+            apiParam: 'query',
+            onItemSelect: function (event, model) {
+                // console.log(model);
+                console.log(model);
+                if (model.hasOwnProperty('value')) {
+                    SATCityRef = model.value;
+                }
+            }
+        }
+    );
+
+    $('.sat-department-select').fastselect({
+            url: routes.delivery.sat.cities,
+            searchPlaceholder: translations.checkout_search_np_department,
+            placeholder: translations.checkout_search_np_department,
+            noResultsText: translations.checkout_search_city_not_found,
+            loadOnce: false,
+            apiParam: 'query',
+            onItemSelect: function (event, model) {
+
+            },
+            onLoad: function () {
+                return routes.delivery.sat.departments + '?cityRef=' + SATCityRef;
+            }
+        }
+    );
+
+
+    /*$('.meest-city-select').fastselect({
             url: routes.delivery.meest.cities,
             searchPlaceholder: translations.checkout_search_city,
             placeholder: translations.checkout_search_city,
@@ -73,5 +109,5 @@ export function init () {
         onLoad: function () {
             return routes.delivery.meest.departments + '?cityRef=' + MeestCityRef;
         }
-    });
+    });*/
 }

@@ -310,7 +310,7 @@
             <header>
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h2 class="title h2">{{trans('base.doors_by_type')}}</h2>
+                        <h2 class="title h2">{{trans('base.products_by_type')}}</h2>
                         <div class="subtitle font-two">
                             <p>{{trans('base.doors_category')}}</p>
                         </div>
