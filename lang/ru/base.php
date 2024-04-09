@@ -191,6 +191,7 @@ return [
     'checkout_apply_promo_code' => 'Применить промокод',
     'checkout_by_confirm_i_agree' => 'Подтверждая заказ, я соглашаюсь',
     'checkout_search_city' => 'Поиск города',
+    'checkout_search_area' => 'Поиск области',
     'checkout_search_city_not_found' => 'Не найдено',
     'thank_you_for_order' => 'Спасибо за ваш заказ!',
     'order_phone' => 'Заказ был успешно оформлен на номер телефона',

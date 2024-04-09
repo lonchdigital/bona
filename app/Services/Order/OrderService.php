@@ -69,7 +69,6 @@ class OrderService extends BaseService
 
             $npCity = null;
             $npDepartment = null;
-
             if ($request->deliveryTypeId === DeliveryTypesDataClass::NP_DELIVERY) {
                 $npCity = $this->deliveryService->getNpCityByRef($request->npCity);
                 $npCity = ['uk' => $npCity['Description'] . ' ' . $npCity['AreaDescription'] . ' ' . mb_strtolower(trans('base.region')), 'ru' => $npCity['DescriptionRu'] . ' ' . $npCity['AreaDescriptionRu'] . ' ' . mb_strtolower(trans('base.region'))];
@@ -82,16 +81,28 @@ class OrderService extends BaseService
                 }
             }
 
-            $meestCity = null;
-            $meestDepartment = null;
+            $satCity = null;
+            $satDepartment = null;
+            if ($request->deliveryTypeId === DeliveryTypesDataClass::SAT_DELIVERY) {
+                $satCity = $this->deliveryService->getSatCityByRef($request->satCity)[0]['text'];
+                $satDepartment = $this->deliveryService->getSATDepartmentByRef($request->satDepartment)[0]['text'];
 
+                $satCity = ['uk' => $satCity, 'ru' => $satCity];
+                $satDepartment = ['uk' => $satDepartment, 'ru' => $satDepartment];
+            }
+
+
+
+            // TODO:: remove as FINISH
+            /*$meestCity = null;
+            $meestDepartment = null;
             if ($request->deliveryTypeId === DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY) {
                 $meestCity = $this->deliveryService->getMeestCityByRef($request->meestCity);
                 $meestCity = ['uk' => $meestCity['text_uk'], 'ru' => $meestCity['text_ru']];
 
                 $meestDepartment = $this->deliveryService->getMeestDepartmentByRef($request->meestDepartment);
                 $meestDepartment = ['uk' => $meestDepartment['text_uk'], 'ru' => $meestDepartment['text_ru']];
-            }
+            }*/
 
             $order = Order::create([
                 'status_id' => OrderStatusesDataClass::STATUS_NEW,
@@ -120,8 +131,10 @@ class OrderService extends BaseService
                 'comment' => $request->comment,
                 'np_city' => $npCity,
                 'np_department' => $npDepartment,
-                'meest_city' => $meestCity,
-                'meest_department' => $meestDepartment,
+                'sat_city' => $satCity,
+                'sat_department' => $satDepartment,
+//                'meest_city' => $meestCity,
+//                'meest_department' => $meestDepartment,
                 'payment_status_id' => $paymentStatus,
             ]);
 

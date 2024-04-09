@@ -139,7 +139,7 @@
                                                         <div class="city-search-wrap">
                                                             <div class="field @if($errors->has('region_id')) field-error @endif city-search mb-1">
                                                                 <select class="region-select" name="region_id">
-                                                                    <option disabled @if(!old('region_id')) selected @endif value="">{{ trans('base.checkout_select_region') }}</option>
+                                                                    <option disabled @if(!old('region_id')) selected @endif value="">{{ trans('base.checkout_search_area') }}</option>
                                                                     @foreach($regions as $region)
                                                                         <option @if(old('region_id') == $region->id) selected @endif value="{{ $region->id }}">{{ $region->name }}</option>
                                                                     @endforeach
@@ -389,7 +389,7 @@
                                                             <div
                                                                 class="field @if($errors->has('sat_department')) field-error @endif city-search mb-1">
                                                                 <input value="{{ old('sat_department') }}"
-                                                                       @if(old('sat_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getSATDepartmentByRef( old('sat_department') ) }}'
+                                                                       @if(old('sat_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getSATDepartmentByRef( old('sat_department') )) }}'
                                                                        @endif  type="text"
                                                                        class="sat-department-select"
                                                                        name="sat_department">

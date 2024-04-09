@@ -123,16 +123,15 @@ class DeliveryService extends BaseService
             $client = new Client();
 
             $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getRsp?language=". app()->getLocale() . "&ref=" . $ref;
-
             $response = $client->request('GET', mb_convert_encoding($url, "UTF-8") );
             $body = $response->getBody();
-            $city = json_decode($body, true);
+            $department = json_decode($body, true);
 
-            return collect($city['data'])->map(function ($city) {
-                $city['value'] = $city['rspRef'];
-                $city['text'] = $city['description'] . ' ' . $city['region'];
+            return collect($department['data'])->map(function ($department) {
+                $department['value'] = $department['ref'];
+                $department['text'] = $department['description'] . ' ' . $department['address'];
 
-                return $city;
+                return $department;
             });
         } catch (\Exception $exception) {
             return collect([]);

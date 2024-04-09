@@ -13,6 +13,8 @@ class Order extends Model
     public $translatable = [
         'np_city',
         'np_department',
+        'sat_city',
+        'sat_department',
         'meest_city',
         'meest_department',
     ];
