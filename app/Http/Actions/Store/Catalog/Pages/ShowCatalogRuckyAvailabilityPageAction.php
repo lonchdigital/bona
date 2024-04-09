@@ -83,7 +83,7 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
             'productsPaginated' => $productsPaginated,
             'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'seogenData' => $seogenService->getTagsForCategories($productType, $category),
-            'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
+            'productsMaxPrice' => $productService->getProductsMaxPriceByAvailability($productType),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
             'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
         ]);

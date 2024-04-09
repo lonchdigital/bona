@@ -154,6 +154,22 @@ class ProductService extends BaseService
         return ( !is_null($maxPrice) ) ? $maxPrice : 0;
     }
 
+    public function getProductsMaxPriceByAvailability(ProductType $productType): int
+    {
+        // TODO:: this function was improved
+//        $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
+
+        $query = Product::query();
+        $maxPrice = $query->where('availability_status_id', 2)->where(function($query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function($query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->max('price');
+
+        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+    }
+
     public function getProductsByColorPaginated(int $perPage, int $page, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return Product::whereHas('colors', function($query) use ($color) {
