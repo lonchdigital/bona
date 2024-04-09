@@ -8,7 +8,7 @@ export function init () {
 
 
     $('.region-select').fastselect({
-            searchPlaceholder: translations.checkout_search_city,
+            searchPlaceholder: translations.checkout_search_area,
             placeholder: translations.checkout_search_city,
             noResultsText: translations.checkout_search_city_not_found,
         }

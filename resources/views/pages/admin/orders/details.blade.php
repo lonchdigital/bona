@@ -157,14 +157,14 @@
                                     <striong class="text-dark">{{ trans('base.np_department') }}</striong>
                                     <div class="mt-1">{{ $order->np_department }}</div>
                                 </div>
-                            @elseif($order->delivery_type_id == \App\DataClasses\DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY)
+                            @elseif($order->delivery_type_id == \App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)
                                 <div class="mb-3">
                                     <striong class="text-dark">{{ trans('base.np_city') }}</striong>
-                                    <div class="mt-1">{{ $order->meest_city }}</div>
+                                    <div class="mt-1">{{ $order->sat_city }}</div>
                                 </div>
                                 <div class="mb-3">
                                     <striong class="text-dark">{{ trans('base.np_department') }}</striong>
-                                    <div class="mt-1">{{ $order->meest_department }}</div>
+                                    <div class="mt-1">{{ $order->sat_department }}</div>
                                 </div>
                             @endif
                             <p>

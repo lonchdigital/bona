@@ -52,6 +52,7 @@ const translations = {
     delete: '@lang('base.delete')',
     remove_from_wish_list: '@lang('base.remove_from_wish_list')',
     action_unexpected_error: '@lang('common.action_unexpected_error')',
+    checkout_search_area: '@lang('base.checkout_search_area')',
     checkout_search_city: '@lang('base.checkout_search_city')',
     checkout_search_city_not_found: '@lang('base.checkout_search_city_not_found')',
     cart_delivery_price: '@lang('base.cart_delivery_price')',

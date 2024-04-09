@@ -99,12 +99,12 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             ];
 
             $rules['apartment_number'] = [
-                'required',
+                'nullable',
                 'string'
             ];
 
             $rules['floor_number'] = [
-                'required',
+                'nullable',
                 'string'
             ];
 
@@ -136,22 +136,15 @@ class CheckoutConfirmOrderRequest extends BaseRequest
                 'string',
             ];
         } elseif ($this->input('delivery_type_id') == DeliveryTypesDataClass::SAT_DELIVERY) {
-            $rules['sat_region_id'] = [
-                'required',
-                'integer',
-                'exists:regions,id'
-            ];
-
             $rules['sat_city'] = [
                 'required',
-                'string'
+                'string',
             ];
 
-            $rules['sat_district'] = [
+            $rules['sat_department'] = [
                 'required',
-                'string'
+                'string',
             ];
-
         }
 
         if ($this->input('recipient_type_id') == RecipientTypesDataClass::RECIPIENT_CUSTOM) {
@@ -188,7 +181,6 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             'phone' => mb_strtolower(trans('base.phone')),
             'email' => mb_strtolower(trans('base.email')),
             'region_id' => mb_strtolower(trans('base.region')),
-            'sat_region_id' => mb_strtolower(trans('base.region')),
             'district' => mb_strtolower(trans('base.district')),
             'sat_district' => mb_strtolower(trans('base.district')),
             'city' => mb_strtolower(trans('base.city')),
@@ -219,11 +211,10 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $this->input('delivery_type_id'),
             $this->input('payment_type_id'),
             $this->input('region_id'),
-            $this->input('sat_region_id'),
             $this->input('district'),
-            $this->input('sat_district'),
             $this->input('city'),
             $this->input('sat_city'),
+            $this->input('sat_department'),
             $this->input('street'),
             $this->input('building_number'),
             $this->input('apartment_number'),
