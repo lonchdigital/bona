@@ -389,7 +389,7 @@
                                                             <div
                                                                 class="field @if($errors->has('sat_department')) field-error @endif city-search mb-1">
                                                                 <input value="{{ old('sat_department') }}"
-                                                                       @if(old('sat_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpDepartmentByRef(old('sat_city'), old('sat_department'))) }}'
+                                                                       @if(old('sat_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getSATDepartmentByRef( old('sat_department') ) }}'
                                                                        @endif  type="text"
                                                                        class="sat-department-select"
                                                                        name="sat_department">

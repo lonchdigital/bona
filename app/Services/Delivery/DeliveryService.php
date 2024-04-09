@@ -95,13 +95,8 @@ class DeliveryService extends BaseService
 
     public function getSatCityByRef(string $ref): Collection
     {
-//        dd($ref);
-
         try {
             $client = new Client();
-
-
-
 
             $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getTowns?language=". app()->getLocale() . "&ref=" . $ref;
 
@@ -110,6 +105,28 @@ class DeliveryService extends BaseService
             $city = json_decode($body, true);
 
 //            dd($city);
+
+            return collect($city['data'])->map(function ($city) {
+                $city['value'] = $city['rspRef'];
+                $city['text'] = $city['description'] . ' ' . $city['region'];
+
+                return $city;
+            });
+        } catch (\Exception $exception) {
+            return collect([]);
+        }
+    }
+
+    public function getSATDepartmentByRef(string $ref): Collection
+    {
+        try {
+            $client = new Client();
+
+            $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getRsp?language=". app()->getLocale() . "&ref=" . $ref;
+
+            $response = $client->request('GET', mb_convert_encoding($url, "UTF-8") );
+            $body = $response->getBody();
+            $city = json_decode($body, true);
 
             return collect($city['data'])->map(function ($city) {
                 $city['value'] = $city['rspRef'];
@@ -138,7 +155,8 @@ class DeliveryService extends BaseService
             $cities = json_decode($body, true);
 
             return collect($cities['data'])->map(function ($city) {
-                $city['value'] = $city['rspRef'];
+//                $city['value'] = $city['rspRef'];
+                $city['value'] = $city['ref'];
                 $city['text'] = $city['description'] . ' ' . $city['region'];
 
 //                dd($city);
@@ -155,14 +173,22 @@ class DeliveryService extends BaseService
         try {
             $client = new Client();
 
-            $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getRsp?language=". app()->getLocale() ."&ref=" . $cityRef;
+            // get city
+            $cityRequest = "https://api.sat.ua/study/hs/api/v1.0/main/json/getTowns?language=". app()->getLocale() ."&ref=" . $cityRef;
+            $city = $client->request('GET', mb_convert_encoding($cityRequest, "UTF-8") );
+            $body = $city->getBody();
+            $city = json_decode($body, true);
+            $rspRef = $city['data'][0]['rspRef'];
 
+            // get departments
+            $url = "https://api.sat.ua/study/hs/api/v1.0/main/json/getRsp?language=". app()->getLocale() ."&ref=" . $rspRef;
             $response = $client->request('GET', mb_convert_encoding($url, "UTF-8") );
             $body = $response->getBody();
             $departments = json_decode($body, true);
 
             return collect($departments['data'])->map(function ($department) {
-                $department['value'] = $department['cityRef'];
+//                $department['value'] = $department['cityRef'];
+                $department['value'] = $department['ref'];
                 $department['text'] = $department['description'] . ' ' . $department['address'];
 
                 return $department;
