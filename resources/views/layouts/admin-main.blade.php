@@ -318,6 +318,7 @@
     <script src='/static-admin/js/jquery.mask.min.js'></script>
     <script src="/static-admin/js/popper.min.js"></script>
     <script src="/static-admin/js/bootstrap.min.js"></script>
+    <script src="/static-admin/js/scripts.js"></script>
 @endif
 {{--<script src="/static-admin/js/moment.min.js"></script>--}}
 {{--<script src="/static-admin/js/simplebar.min.js"></script>--}}

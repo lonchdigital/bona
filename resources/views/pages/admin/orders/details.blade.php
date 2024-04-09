@@ -6,7 +6,7 @@
             <div class="col-12">
                     <h2 class="page-title">{{ trans('admin.order_id') }}{{ $order->id }}</h2>
                 <div class="card shadow mb-4">
-                    <div class="card-header d-flex align-items-center justify-content-between">
+                    <div id="form-header" class="card-header d-flex align-items-center justify-content-between">
                         <strong class="card-title m-0">{{ trans('admin.order_details') }}</strong>
                     </div>
                     <div class="card-body">

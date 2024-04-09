@@ -6,7 +6,7 @@
             <div class="col-12">
                 <h2 class="page-title">{{ \App\DataClasses\StaticPageTypesDataClass::get($staticPageId)['name'] }}</h2>
                 <div class="card shadow mb-4">
-                    <div class="card-header d-flex align-items-center justify-content-between">
+                    <div id="form-header" class="card-header d-flex align-items-center justify-content-between">
                         <strong class="card-title m-0">{{ trans('admin.static_page_details') }}</strong>
                         <x-admin.multilanguage-switch/>
                     </div>
