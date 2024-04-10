@@ -50,7 +50,6 @@ class OrderService extends BaseService
 
             $isUserExists = User::where('email', $request->email)->exists();
             if (!$isUserExists) {
-                dd('NOT CREATE');
                 $newUserPassword = \Str::random(16);
                 $user = User::create([
                     'email' => $request->email,
