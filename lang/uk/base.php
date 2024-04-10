@@ -197,6 +197,7 @@ return [
     'checkout_search_city_not_found' => 'Не знайдено',
     'thank_you_for_order' => 'дякуємо за ваше замовлення!',
     'order_phone' => 'Замовлення було успішно оформлено на номер телефону',
+    'order_success' => 'Замовлення було успішно оформлено!',
     'order_id' => 'Номер вашого замовлення',
     'delivery_date' => 'Дата отримання',
     'delivery_to_person' => 'Оформлено на',

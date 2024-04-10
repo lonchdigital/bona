@@ -16,7 +16,7 @@
     <meta property="og:url" content="{{ request()->url() }}">
     <meta property="og:image" content="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
     <meta property="og:site_name" content="{{ mb_strtoupper(config('app.url')) }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ Vite::asset('resources/img/apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
 
     @php

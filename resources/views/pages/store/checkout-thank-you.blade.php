@@ -21,16 +21,24 @@
                                         <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-congratulations"></use>
                                     </svg>
                                 </div>
-                                <div class="h5 thanks-title text-center"><span>{{ $order->user->first_name }}</span>, {{ trans('base.thank_you_for_order') }}</div>
+                                @if(!is_null($order->user))
+                                    <div class="h5 thanks-title text-center"><span>{{ $order->user->first_name }}</span>, {{ trans('base.thank_you_for_order') }}</div>
+                                @else
+                                    <div class="h5 thanks-title text-center"><span>{{ trans('base.thank_you_for_order') }}</div>
+                                @endif
                             </div>
-                            <div class="thanks-subtitle d-flex flex-column flex-lg-row justify-content-center text-center text-lg-left mr-lg-2 mb-11">{{ trans('base.order_phone') }}:
-                                <a href="tel:+38 (098) 123 45 67" class="d-flex align-items-center link-phone justify-content-center justify-content-sm-start mt-4 mt-lg-0 mx-auto ml-lg-0 mr-lg-0">
-                                    <svg>
-                                        <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-phone"></use>
-                                    </svg>
-                                    {{ $order->user->phone }}
-                                </a>
-                            </div>
+                            @if(!is_null($order->user))
+                                <div class="thanks-subtitle d-flex flex-column flex-lg-row justify-content-center text-center text-lg-left mr-lg-2 mb-11">{{ trans('base.order_phone') }}:
+                                    <a href="tel:+38 (098) 123 45 67" class="d-flex align-items-center link-phone justify-content-center justify-content-sm-start mt-4 mt-lg-0 mx-auto ml-lg-0 mr-lg-0">
+                                        <svg>
+                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-phone"></use>
+                                        </svg>
+                                        {{ $order->user->phone }}
+                                    </a>
+                                </div>
+                            @else
+                                <div class="thanks-subtitle d-flex flex-column flex-lg-row justify-content-center text-center text-lg-left mr-lg-2 mb-11">{{ trans('base.order_success') }}</div>
+                            @endif
 
                             <div class="d-flex align-items-center justify-content-center mb-4 mt-14 mx-auto position-relative">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}" class="btn btn-empty color-dark">{{ trans('base.continue_shopping') }}</a>

@@ -47,7 +47,7 @@ class OrderService extends BaseService
         return $this->coverWithDBTransactionWithoutResponse(function () use($cart, $request, $user) {
             $newUserCreated = false;
             $newUserPassword = '';
-            /*if (!$user) {
+            if (!$user) {
                 $newUserPassword = \Str::random(16);
                 $user = User::create([
                     'email' => $request->email,
@@ -59,7 +59,7 @@ class OrderService extends BaseService
                     'password' => \Hash::make($newUserPassword),
                 ]);
                 $newUserCreated = true;
-            }*/
+            }
 
             if ($request->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT) {
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_UNPAID;
@@ -106,7 +106,7 @@ class OrderService extends BaseService
 
             $order = Order::create([
                 'status_id' => OrderStatusesDataClass::STATUS_NEW,
-                'user_id' => $user->id,
+                'user_id' => $user->id ?? null,
                 'delivery_type_id' => $request->deliveryTypeId,
                 'payment_type_id' => $request->paymentTypeId,
                 'promo_code_id' => $cart->promo_code_id,
@@ -168,7 +168,12 @@ class OrderService extends BaseService
                 Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
                 Mail::to($request->email)->send(new SuccessOrder($order));
             } else {
-                Mail::to($user->email)->send( new SuccessOrder($order) );
+
+                if(!is_null($user)) {
+                    Mail::to($user->email)->send( new SuccessOrder($order) );
+                } else {
+                    Mail::to($request->email)->send( new SuccessOrder($order) );
+                }
             }
 
             if (config('domain.admin_notification_emails')) {
