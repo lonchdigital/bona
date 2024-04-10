@@ -86,8 +86,6 @@ class OrderService extends BaseService
             }*/
 
 
-//            dd('STOP!');
-
             if ($request->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT) {
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_UNPAID;
             } else {
