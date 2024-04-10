@@ -35,8 +35,6 @@ class ShowHomePageAction extends BaseAction
 
 //        $instagramFeed = InstagramFeed::for('{instFeed}');
 
-        dd(User::find(14));
-
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),
             'slides' => $homePageService->getHomePageSlides(),
