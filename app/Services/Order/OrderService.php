@@ -47,7 +47,10 @@ class OrderService extends BaseService
         return $this->coverWithDBTransactionWithoutResponse(function () use($cart, $request, $user) {
             $newUserCreated = false;
             $newUserPassword = '';
-            if (!$user) {
+
+            $isUserExists = User::where('email', $request->email)->exists();
+            if (!$isUserExists) {
+                dd('NOT CREATE');
                 $newUserPassword = \Str::random(16);
                 $user = User::create([
                     'email' => $request->email,
@@ -59,7 +62,32 @@ class OrderService extends BaseService
                     'password' => \Hash::make($newUserPassword),
                 ]);
                 $newUserCreated = true;
+            } else {
+                $user = User::where('email', $request->email)->first();
+
+                $user->setAttribute('first_name', $request->firstName);
+                $user->setAttribute('last_name', $request->lastName);
+                $user->setAttribute('phone', $request->phone);
+                $user->save();
             }
+
+            // TODO:: old version
+            /*if (!$user) {
+                $newUserPassword = \Str::random(16);
+                $user = User::create([
+                    'email' => $request->email,
+                    'first_name' => $request->firstName,
+                    'last_name' => $request->lastName,
+                    'phone' => $request->phone,
+                    'role_id' => Role::USER_ROLE_ID,
+                    'language' => app()->getLocale(),
+                    'password' => \Hash::make($newUserPassword),
+                ]);
+                $newUserCreated = true;
+            }*/
+
+
+//            dd('STOP!');
 
             if ($request->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT) {
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_UNPAID;
@@ -106,7 +134,7 @@ class OrderService extends BaseService
 
             $order = Order::create([
                 'status_id' => OrderStatusesDataClass::STATUS_NEW,
-                'user_id' => $user->id ?? null,
+                'user_id' => $user->id,
                 'delivery_type_id' => $request->deliveryTypeId,
                 'payment_type_id' => $request->paymentTypeId,
                 'promo_code_id' => $cart->promo_code_id,
@@ -165,15 +193,10 @@ class OrderService extends BaseService
             $cart->delete();
 
             if ($newUserCreated) {
-                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
+//                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
                 Mail::to($request->email)->send(new SuccessOrder($order));
             } else {
-
-                if(!is_null($user)) {
-                    Mail::to($user->email)->send( new SuccessOrder($order) );
-                } else {
-                    Mail::to($request->email)->send( new SuccessOrder($order) );
-                }
+                Mail::to($user->email)->send( new SuccessOrder($order) );
             }
 
             if (config('domain.admin_notification_emails')) {

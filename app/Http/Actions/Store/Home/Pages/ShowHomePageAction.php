@@ -4,6 +4,7 @@ namespace App\Http\Actions\Store\Home\Pages;
 
 use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\User;
 use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Currency\CurrencyService;
 use App\Services\ProductCategory\CategoryService;
@@ -33,7 +34,6 @@ class ShowHomePageAction extends BaseAction
         }*/
 
 //        $instagramFeed = InstagramFeed::for('{instFeed}');
-
 
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),

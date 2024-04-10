@@ -67,7 +67,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $rules['email'] = [
                 'required',
                 'email',
-                'unique:users,email'
+//                'unique:users,email'
             ];
         }
 
