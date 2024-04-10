@@ -47,7 +47,7 @@ class OrderService extends BaseService
         return $this->coverWithDBTransactionWithoutResponse(function () use($cart, $request, $user) {
             $newUserCreated = false;
             $newUserPassword = '';
-            if (!$user) {
+            /*if (!$user) {
                 $newUserPassword = \Str::random(16);
                 $user = User::create([
                     'email' => $request->email,
@@ -59,7 +59,7 @@ class OrderService extends BaseService
                     'password' => \Hash::make($newUserPassword),
                 ]);
                 $newUserCreated = true;
-            }
+            }*/
 
             if ($request->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT) {
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_UNPAID;
