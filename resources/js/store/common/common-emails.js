@@ -30,6 +30,7 @@ export default {
 
                     $userChooseDoorsForm.find('input[name="name"]').val('');
                     $userChooseDoorsForm.find('input[name="phone"]').val('');
+                    $userChooseDoorsForm.find('input[type="checkbox"]').prop('checked', false);
 
                     $userChooseDoorsForm.find('.field-error').remove();
                 },
@@ -123,6 +124,7 @@ export default {
 
                     formTag.find('input[name="name"]').val('');
                     formTag.find('input[name="phone"]').val('');
+                    formTag.find('input[type="checkbox"]').prop('checked', false);
 
                     $('button.is-close-btn').click();
                 },
