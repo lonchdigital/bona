@@ -402,7 +402,7 @@
 
         <!-- === instagram gallery === -->
         @if(!is_null($instagramFeed) && count($instagramFeed))
-            <div class="gallery clearfix">
+            <div class="gallery clearfix mt-10">
                 @php $count = 0; @endphp
                 @foreach($instagramFeed as $instagramItem)
                     @if($count < 6)
