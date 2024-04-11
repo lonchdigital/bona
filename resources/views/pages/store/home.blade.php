@@ -391,7 +391,7 @@
 
 
     <!-- ========================  Instagram ======================== -->
-<!--    <section class="instagram">
+    <section class="instagram">
         <header>
             <div class="row">
                 <div class="col-12 text-center">
@@ -403,29 +403,17 @@
             </div>
         </header>
 
-        &lt;!&ndash; === instagram gallery === &ndash;&gt;
+        <!-- === instagram gallery === -->
+        @if(count($instagramFeed))
         <div class="gallery clearfix">
-            <a class="item" href="#">
-                <img src="assets/images/square-1.jpg" alt="Alternate Text" />
-            </a>
-            <a class="item" href="#">
-                <img src="assets/images/square-2.jpg" alt="Alternate Text" />
-            </a>
-            <a class="item" href="#">
-                <img src="assets/images/square-3.jpg" alt="Alternate Text" />
-            </a>
-            <a class="item" href="#">
-                <img src="assets/images/square-4.jpg" alt="Alternate Text" />
-            </a>
-            <a class="item" href="#">
-                <img src="assets/images/square-5.jpg" alt="Alternate Text" />
-            </a>
-            <a class="item" href="#">
-                <img src="assets/images/square-6.jpg" alt="Alternate Text" />
-            </a>
-
+            @foreach($instagramFeed as $instagramItem)
+                <a class="item" href="#">
+                    <img src="{{ $instagramItem['url'] }}" alt="Alternate Text" />
+                </a>
+            @endforeach
         </div>
-    </section>-->
+        @endif
+    </section>
 
     <!-- ========================  Blog ======================== -->
 
