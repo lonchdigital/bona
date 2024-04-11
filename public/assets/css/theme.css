@@ -4037,10 +4037,10 @@ nav .cart-wrapper.open {
     31. Instagram
     ----------------------------------
 */
-.instagram {
+/*.instagram {
     padding-top: 30px;
     padding-bottom: 0;
-}
+}*/
 
 .instagram .gallery .item {
     width: 16.66667%;
@@ -4069,7 +4069,7 @@ nav .cart-wrapper.open {
     transform: scale(1.08);
 }
 
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
     .instagram {
         padding-top: 20px;
     }
@@ -4085,7 +4085,7 @@ nav .cart-wrapper.open {
     .instagram {
         padding-top: 40px;
     }
-}
+}*/
 
 /*
     ----------------------------------
