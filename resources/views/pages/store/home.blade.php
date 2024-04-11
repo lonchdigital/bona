@@ -395,16 +395,13 @@
         <header>
             <div class="row">
                 <div class="col-12 text-center">
-                    <h2 class="title h2">Follow us <i class="fa fa-instagram fa-2x"></i> Instagram </h2>
-                    <div class="subtitle font-two">
-                        <p>@InstaFurnitureFactory</p>
-                    </div>
+                    <h2 class="title h2">{{ trans('base.our_works') }}</h2>
                 </div>
             </div>
         </header>
 
         <!-- === instagram gallery === -->
-        @if(count($instagramFeed))
+        @if(!is_null($instagramFeed) && count($instagramFeed))
             <div class="gallery clearfix">
                 @php $count = 0; @endphp
                 @foreach($instagramFeed as $instagramItem)
