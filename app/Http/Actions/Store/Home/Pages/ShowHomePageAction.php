@@ -10,8 +10,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\ProductCategory\CategoryService;
 use App\Services\HomePage\HomePageService;
 use App\Services\Brand\BrandService;
-/*use App\Services\WishList\WishListService;
-use Dymantic\InstagramFeed\InstagramFeed;*/
+/*use App\Services\WishList\WishListService;*/
 
 class ShowHomePageAction extends BaseAction
 {
@@ -33,7 +32,7 @@ class ShowHomePageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
 
-//        $instagramFeed = InstagramFeed::for('{instFeed}');
+        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors');
 
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),
@@ -48,7 +47,7 @@ class ShowHomePageAction extends BaseAction
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'articles' => $blogArticleService->getLatestArticles(3),
-            'instagramFeed' => [],
+            'instagramFeed' => $instagramFeed['items'],
 
 //            'newProducts' => $homePageService->getNewProducts(),
 //            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
