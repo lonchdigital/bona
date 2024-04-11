@@ -4042,6 +4042,10 @@ nav .cart-wrapper.open {
     padding-bottom: 0;
 }*/
 
+section.instagram {
+    padding-bottom: 0;
+}
+
 .instagram .gallery .item {
     width: 16.66667%;
     float: left;
