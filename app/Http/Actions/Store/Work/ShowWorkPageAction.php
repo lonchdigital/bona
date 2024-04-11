@@ -14,7 +14,6 @@ class ShowWorkPageAction extends BaseAction
     {
         return view('pages.works.main', [
             'works' => $workService->getWorksPaginated(),
-            'instagramFeed' => $instagramFeed,
         ]);
     }
 }
