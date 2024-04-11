@@ -32,7 +32,7 @@ class ShowHomePageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
 
-//        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors');
+        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors', 6);
 
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),
@@ -47,7 +47,7 @@ class ShowHomePageAction extends BaseAction
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'articles' => $blogArticleService->getLatestArticles(3),
-//            'instagramFeed' => $instagramFeed['items'],
+            'instagramFeed' => $instagramFeed,
 
 //            'newProducts' => $homePageService->getNewProducts(),
 //            'wishListProducts' => $wishListService->getWishListProductsId($wishList),

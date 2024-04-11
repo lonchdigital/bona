@@ -12,10 +12,6 @@ class ShowWorkPageAction extends BaseAction
         WorkService $workService,
     )
     {
-        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors');
-
-//        dd($instagramFeed);
-
         return view('pages.works.main', [
             'works' => $workService->getWorksPaginated(),
             'instagramFeed' => $instagramFeed,
