@@ -406,9 +406,9 @@
                 @php $count = 0; @endphp
                 @foreach($instagramFeed as $instagramItem)
                     @if($count < 6)
-                        <a class="item" href="{{ $instagramItem->thumbnail_url }}">
+                        <div class="item">
                             <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
-                        </a>
+                        </div>
                         @php $count++; @endphp
                     @else
                         @break
