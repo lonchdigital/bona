@@ -13,7 +13,7 @@ class ShowWorkPageAction extends BaseAction
     )
     {
 
-        $feed = \Dymantic\InstagramFeed\InstagramFeed::for('my profile');
+        $feed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors');
 
         dd('here?', $feed);
 
