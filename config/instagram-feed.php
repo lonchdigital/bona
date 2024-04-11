@@ -4,13 +4,13 @@ return [
     /*
      * The client_id from registering your app on Instagram
      */
-    'client_id'           => '673377008154488',
+    'client_id'           => env('INSTAGRAM_CLIENT_ID'),
 
     /*
      * The client secret from registering your app on Instagram,
      * This is not the same as an access token.
      */
-    'client_secret'       => 'b8d48acb25587be333298c5d6a3eee71',
+    'client_secret'       => env('INSTAGRAM_CLIENT_SECRET'),
 
     /*
      * The base url used to generate to auth callback route for instagram.
@@ -24,7 +24,7 @@ return [
      * a redirect_uri for your instagram app that is equal to combining the
      *  app url (from config) and this route
      */
-    'auth_callback_route' => 'https://bona.lonch.digital/auth/',
+    'auth_callback_route' => 'instagram/auth/callback',
 
     /*
      * On success of the OAuth process you will be redirected to this route.
