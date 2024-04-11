@@ -178,6 +178,14 @@ class ProductService extends BaseService
             ->paginate($perPage, ['*'], null, $page);
     }
 
+    public function getProductTypeByColorPaginated(int $perPage, int $page, ProductType $productType, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return Product::where('product_type_id', $productType->id)->whereHas('colors', function($query) use ($color) {
+            $query->where('colors.id', $color->id);
+        })
+            ->paginate($perPage, ['*'], null, $page);
+    }
+
     public function getProductsByFieldPaginated(int $perPage, int $page, ProductField $productField, string $productOptionID)
     {
         return Product::whereJsonContains('custom_fields', [$productField->id => $productOptionID])
