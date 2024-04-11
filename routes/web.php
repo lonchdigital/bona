@@ -39,6 +39,7 @@ use App\Http\Actions\Store\Catalog\Pages\ShowAllProductsPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowFilterGroupPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByBrandPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByColorPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductTypeByColorPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByFieldPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByDiscountPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByAvailabilityPageAction;
@@ -157,6 +158,7 @@ $optionalLanguageRoutes = function () {
     Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);
     Route::name('store.catalog-by-brand.page')->get('/product-category/brand/{brand}/', ShowProductByBrandPageAction::class);
     Route::name('store.products-by-color.page')->get('/product-category/color/{color}/', ShowProductByColorPageAction::class);
+    Route::name('store.product-type-by-color.page')->get('/product-category/{productTypeSlug}/color/{color}/', ShowProductTypeByColorPageAction::class);
     Route::name('store.products-by-field.page')->get('/product-category/field/{productField}/{productOptionID}/', ShowProductByFieldPageAction::class);
     Route::name('store.products-by-discount.page')->get('/product-category/discount/', ShowProductByDiscountPageAction::class);
     Route::name('store.products-by-availability.page')->get('/product-category/available/', ShowProductByAvailabilityPageAction::class);

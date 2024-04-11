@@ -108,7 +108,7 @@
             <div class="owl-icons">
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.products-by-color.page', ['color' => 7]) }}">
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product-type-by-color.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'interior-doors')->first()->slug, 'color' => 7]) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -129,7 +129,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.products-by-field.page', ['productField' => 14, 'productOptionID' => '78']) }}">
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-by-field.page', ['productField' => 14, 'productOptionID' => '78']) }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -187,7 +187,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.products-doors-by-availability.page') }}">
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-doors-by-availability.page') }}">
                     <figure>
                         <div class="icon-wrapper">
                             <svg width="54" height="54" viewBox="0 0 176 175" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -232,7 +232,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.catalog-category.page', [
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
                         'categorySlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->categories()->where('code_name', 'vinilova-pidloga')->first()->slug,
                         'productTypeSlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->slug
                         ]) }}">
@@ -266,7 +266,7 @@
                 </a>
 
                 <!-- === icon item === -->
-                <a href="{{ route('store.products-rucky-by-availability.page', [
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-rucky-by-availability.page', [
                         'categorySlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->categories()->where('code_name', 'rucky')->first()->slug,
                         'productTypeSlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->slug
                         ]) }}">
