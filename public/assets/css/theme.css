@@ -4073,23 +4073,34 @@ section.instagram {
     transform: scale(1.08);
 }
 
-/*@media (min-width: 768px) {
+@media (min-width: 768px) {
+
+    .instagram .gallery .item {
+        width: 33.333333333%;
+    }
+
     .instagram {
         padding-top: 20px;
     }
 }
 
 @media (min-width: 992px) {
+
+
     .instagram {
         padding-top: 30px;
     }
 }
 
+/*
 @media (min-width: 1200px) {
+
+
     .instagram {
         padding-top: 40px;
     }
-}*/
+}
+*/
 
 /*
     ----------------------------------
