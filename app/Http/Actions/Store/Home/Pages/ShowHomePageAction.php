@@ -32,7 +32,7 @@ class ShowHomePageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
 
-        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors', 6);
+        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors', 6)->refresh();
 
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),
