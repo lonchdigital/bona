@@ -390,30 +390,7 @@
     @endif
 
 
-    <!-- ========================  Instagram ======================== -->
-    <section class="instagram">
-        <header>
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2 class="title h2">Follow us <i class="fa fa-instagram fa-2x"></i> Instagram </h2>
-                    <div class="subtitle font-two">
-                        <p>@InstaFurnitureFactory</p>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- === instagram gallery === -->
-        @if(count($instagramFeed))
-        <div class="gallery clearfix">
-            @foreach($instagramFeed as $instagramItem)
-                <a class="item" href="#">
-                    <img src="{{ $instagramItem['url'] }}" alt="Alternate Text" />
-                </a>
-            @endforeach
-        </div>
-        @endif
-    </section>
+{{--  INSTAGRAMMM  --}}
 
     <!-- ========================  Blog ======================== -->
 
