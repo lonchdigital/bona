@@ -406,10 +406,16 @@
         <!-- === instagram gallery === -->
         @if(count($instagramFeed))
             <div class="gallery clearfix">
+                @php $count = 0; @endphp
                 @foreach($instagramFeed as $instagramItem)
-                    <a class="item" href="{{ $instagramItem->thumbnail_url }}">
-                        <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
-                    </a>
+                    @if($count < 6)
+                        <a class="item" href="{{ $instagramItem->thumbnail_url }}">
+                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
+                        </a>
+                        @php $count++; @endphp
+                    @else
+                        @break
+                    @endif
                 @endforeach
             </div>
         @endif
