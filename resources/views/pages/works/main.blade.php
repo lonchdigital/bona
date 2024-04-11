@@ -74,7 +74,7 @@
             <div class="gallery clearfix">
                 @foreach($instagramFeed as $instagramItem)
                     <a class="item" href="#">
-                        <img src="{{ $instagramItem['url'] }}" alt="Alternate Text" />
+                        <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
                     </a>
                 @endforeach
             </div>
