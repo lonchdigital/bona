@@ -390,47 +390,36 @@
     @endif
 
 
-    <!-- ========================  Instagram ======================== -->
-    <section class="instagram">
-        <header>
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2 class="title h2">{{ trans('base.our_works') }}</h2>
+    @if(!is_null($instagramFeed) && count($instagramFeed))
+        <!-- ========================  Instagram ======================== -->
+        <section class="instagram">
+            <header>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="title h2">{{ trans('base.our_works') }}</h2>
+                    </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
-        <!-- === instagram gallery === -->
-        @if(!is_null($instagramFeed) && count($instagramFeed))
             <div class="gallery clearfix mt-10">
-                @php $count = 0; @endphp
-
                 @if(array_key_exists('instagram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['instagram']))
-                    @foreach($instagramFeed as $instagramItem)
-                        @if($count < 6)
+                    <div class="art-instagram-owl-items">
+                        @foreach($instagramFeed as $instagramItem)
                             <a href="{{ $applicationGlobalOptions['instagram'] }}" class="item">
                                 <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
                             </a>
-                            @php $count++; @endphp
-                        @else
-                            @break
-                        @endif
-                    @endforeach
+                        @endforeach
+                    </div>
                 @else
                     @foreach($instagramFeed as $instagramItem)
-                        @if($count < 6)
-                            <div class="item">
-                                <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
-                            </div>
-                            @php $count++; @endphp
-                        @else
-                            @break
-                        @endif
+                        <div class="item">
+                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
+                        </div>
                     @endforeach
                 @endif
             </div>
-        @endif
-    </section>
+        </section>
+    @endif
 
     <!-- ========================  Blog ======================== -->
 
