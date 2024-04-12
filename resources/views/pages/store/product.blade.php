@@ -100,19 +100,25 @@
                                 @endif
 
                                 @foreach($product->productType->fields->where('as_image', '!=', true)->where('display_on_single', '==', true) as $customField)
-                                    <div class="info-box font-two">
-                                        <span class="art-option-name">{{ $customField->field_name }}</span>
 
                                         @if ($customField->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING)
-                                            <span class="art-option-value">{{ $product->getCustomFieldValue($customField->id) }}</span>
+                                            <div class="info-box font-two">
+                                                <span class="art-option-name">{{ $customField->field_name }}</span>
+                                                <span class="art-option-value">{{ $product->getCustomFieldValue($customField->id) }}</span>
+                                            </div>
                                         @elseif($customField->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
                                             @if ($customField->is_multiselectable)
                                                 <span class="art-option-value">{{ $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->pluck('name')->implode(', ') }}</span>
                                             @else
-                                                <span class="art-option-value">{{ optional( $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->first() )->name }}</span>
+                                                @if($customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->first())
+                                                    <div class="info-box font-two">
+                                                        <span class="art-option-name">{{ $customField->field_name }}</span>
+                                                        <span class="art-option-value">{{ optional( $customField->options->whereIn('id', $product->getCustomFieldValue($customField->id))->first() )->name }}</span>
+                                                    </div>
+                                                @endif
                                             @endif
                                         @endif
-                                    </div>
+
                                 @endforeach
 
                                 @if( $product->availability_status_id != 1 )
