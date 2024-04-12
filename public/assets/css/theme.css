@@ -1774,6 +1774,18 @@ nav .cart-wrapper.open {
 .filters .filter-box {
     margin-bottom: 30px;
 }
+
+.filters .filter-box .checkbox-preview-wrap .checkbox-preview {
+    width: 70%;
+}
+
+@media (max-width: 991px) {
+    .tooltip.tooltip-filter-item--type-custom {
+        display: none !important;
+    }
+}
+
+
 .filters .filter-box .custom-control {
     padding: 0;
 }
