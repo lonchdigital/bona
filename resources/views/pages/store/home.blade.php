@@ -405,10 +405,10 @@
             <div class="gallery clearfix mt-10">
                 @php $count = 0; @endphp
 
-                @if(array_key_exists('telegram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['telegram']))
+                @if(array_key_exists('instagram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['instagram']))
                     @foreach($instagramFeed as $instagramItem)
                         @if($count < 6)
-                            <a href="{{ $applicationGlobalOptions['telegram'] }}" class="item">
+                            <a href="{{ $applicationGlobalOptions['instagram'] }}" class="item">
                                 <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
                             </a>
                             @php $count++; @endphp
