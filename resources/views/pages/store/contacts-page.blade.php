@@ -57,8 +57,8 @@
 
                         <div class="contacts-additional">
                             <div class="empty-gap"></div>
-                            <div class="additional-phone">{{ $contactsConfig->phone_one }}</div>
-                            <div class="additional-email">{{ $contactsConfig->email_one }}</div>
+                            <div class="additional-phone"><a href="tel:{{ $contactsConfig->phone_one }}">{{ $contactsConfig->phone_one }}</a></div>
+                            <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_one }}">{{ $contactsConfig->email_one }}</a></div>
                         </div>
 
                     </div>
@@ -77,8 +77,8 @@
 
                         <div class="contacts-additional">
                             <div class="empty-gap"></div>
-                            <div class="additional-phone">{{ $contactsConfig->phone_two }}</div>
-                            <div class="additional-email">{{ $contactsConfig->email_two }}</div>
+                            <div class="additional-phone"><a href="tel:{{ $contactsConfig->phone_two }}">{{ $contactsConfig->phone_two }}</a></div>
+                            <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_two }}">{{ $contactsConfig->email_two }}</a></div>
                         </div>
 
                     </div>
@@ -97,8 +97,8 @@
 
                         <div class="contacts-additional">
                             <div class="empty-gap"></div>
-                            <div class="additional-phone">{{ $contactsConfig->phone_three }}</div>
-                            <div class="additional-email">{{ $contactsConfig->email_three }}</div>
+                            <div class="additional-phone"><a href="tel:{{ $contactsConfig->phone_three }}">{{ $contactsConfig->phone_three }}</a></div>
+                            <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_three }}">{{ $contactsConfig->email_three }}</a></div>
                         </div>
 
                     </div>
