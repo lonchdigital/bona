@@ -4068,25 +4068,26 @@ section.instagram {
     bottom: -60px !important;
 }
 
+
 .instagram .gallery .item img {
     width: 100%;
-    -moz-transform: scale(1.2);
+    /*-moz-transform: scale(1.2);
     -ms-transform: scale(1.2);
     -o-transform: scale(1.2);
-    -webkit-transform: scale(1.2);
-    transform: scale(1.2);
-    -moz-transition: all 0.2s;
-    -o-transition: all 0.2s;
-    -webkit-transition: all 0.2s;
+    -webkit-transform: scale(1.2);*/
+    transform: scale(1);
+    /*-moz-transition: all 0.2s;*/
+    /*-o-transition: all 0.2s;*/
+    /*-webkit-transition: all 0.2s;*/
     transition: all 0.2s;
 }
 
 .instagram .gallery .item:hover img {
-    -moz-transform: scale(1.08);
-    -ms-transform: scale(1.08);
-    -o-transform: scale(1.08);
-    -webkit-transform: scale(1.08);
-    transform: scale(1.08);
+    -moz-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    transform: scale(1.02);
 }
 
 @media (max-width: 768px) {
