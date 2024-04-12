@@ -35,7 +35,7 @@ class ShowHomePageAction extends BaseAction
 //        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors', 6);
 
         $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
-        $instagramFeed = $profile?->feed(6);
+        $instagramFeed = $profile?->feed();
 
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),

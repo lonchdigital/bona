@@ -314,6 +314,26 @@
     });
 
 
+    // Instagram slider
+    // ----------------------------------------------------------------
+
+    $.each($(".art-instagram-owl-items"), function (i, n) {
+        $(n).owlCarousel({
+            //transitionStyle: "fadeUp",
+            // autoHeight: true,
+            slideSpeed: 800,
+            margin: 0,
+            navigation: true,
+            navigationText: arrowIcons,
+            pagination: true,
+            items: 6,
+            itemsDesktopSmall: [991, 3],
+            itemsMobile: [410, 2]
+            // singleItem: true
+        });
+    });
+
+
     // Header Options
     // ----------------------------------------------------------------
 
