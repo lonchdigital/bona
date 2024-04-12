@@ -4055,13 +4055,17 @@ nav .cart-wrapper.open {
 }*/
 
 section.instagram {
-    padding-bottom: 0;
+    padding-bottom: 30px;
 }
 
 .instagram .gallery .item {
-    width: 16.66667%;
-    float: left;
-    overflow: hidden;
+    /*width: 16.66667%;*/
+    /*float: left;*/
+    /*overflow: hidden;*/
+}
+
+.art-instagram-owl-items .owl-pagination {
+    bottom: -15%;
 }
 
 .instagram .gallery .item img {
