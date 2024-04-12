@@ -6,6 +6,9 @@ import InputCounter from "./input-counter";
 export default {
     init: async function () {
 
+        // get GTM
+        window.dataLayer = window.dataLayer || [];
+
         // User Choose Doors
         const $userChooseDoorsForm =  $('#user-choose-doors');
         $userChooseDoorsForm.submit(function(event) {
@@ -33,6 +36,10 @@ export default {
                     $userChooseDoorsForm.find('input[type="checkbox"]').prop('checked', false);
 
                     $userChooseDoorsForm.find('.field-error').remove();
+
+                    window.dataLayer.push({
+                        'event': $userChooseDoorsForm.find('input[name="event"]').val()
+                    });
                 },
                 function (xhr) {
                     if (xhr.status === 422) {
@@ -105,6 +112,7 @@ export default {
             var formData = new FormData(this);
             formTag.find('.field-error').remove();
 
+            console.log('event ' + formTag.find('input[name="event"]').val());
 
             var data = {};
 
@@ -127,6 +135,10 @@ export default {
                     formTag.find('input[type="checkbox"]').prop('checked', false);
 
                     $('button.is-close-btn').click();
+
+                    window.dataLayer.push({
+                        'event': formTag.find('input[name="event"]').val()
+                    });
                 },
                 function(xhr) {
                     if (xhr.status === 422) {
