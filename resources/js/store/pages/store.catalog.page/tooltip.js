@@ -30,7 +30,7 @@ export function init () {
     //colors
     addToolTip(
         '.archive-catalog-filter-left .filter-item--colors',
-        '.colors-wrapper',
+        '.color-wrapper', // .colors-wrapper
         '.link-color',
         '.color-wrapper',
     );

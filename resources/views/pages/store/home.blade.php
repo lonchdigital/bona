@@ -404,16 +404,30 @@
         @if(!is_null($instagramFeed) && count($instagramFeed))
             <div class="gallery clearfix mt-10">
                 @php $count = 0; @endphp
-                @foreach($instagramFeed as $instagramItem)
-                    @if($count < 6)
-                        <div class="item">
-                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
-                        </div>
-                        @php $count++; @endphp
-                    @else
-                        @break
-                    @endif
-                @endforeach
+
+                @if(array_key_exists('telegram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['telegram']))
+                    @foreach($instagramFeed as $instagramItem)
+                        @if($count < 6)
+                            <a href="{{ $applicationGlobalOptions['telegram'] }}" class="item">
+                                <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
+                            </a>
+                            @php $count++; @endphp
+                        @else
+                            @break
+                        @endif
+                    @endforeach
+                @else
+                    @foreach($instagramFeed as $instagramItem)
+                        @if($count < 6)
+                            <div class="item">
+                                <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
+                            </div>
+                            @php $count++; @endphp
+                        @else
+                            @break
+                        @endif
+                    @endforeach
+                @endif
             </div>
         @endif
     </section>

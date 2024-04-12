@@ -80,9 +80,6 @@
                             </div>
 
 
-{{--                        @dd($filtersData)--}}
-{{--                            @dd($filters)--}}
-
                             <!--Discount-->
                             @if(count($filters['main']))
                                 @foreach($filters['main'] as $filter)
@@ -95,17 +92,15 @@
                                             @if($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
                                                 @foreach($filter->options as $option)
                                                     <div class="checkbox checkbox-preview" data-toggle="tooltip"> {{-- checkbox-preview--}}
-
-                                                        {{--custom-checkbox--}}
                                                         <div class="custom-control custom-checkbox position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
-                                                            <input type="checkbox"
-                                                                   class="custom-control-input sync-input"
-                                                                   id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
-                                                                   name="{{ $filter->slug }}"
-                                                                   value="{{ $option->slug }}"
-                                                                   @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif>
-                                                            <label class="custom-control-label"
-                                                                   for="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main">{{ $option->name }}</label> {{--custom-control-label--}}
+                                                                <input type="checkbox"
+                                                                       class="custom-control-input sync-input"
+                                                                       id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
+                                                                       name="{{ $filter->slug }}"
+                                                                       value="{{ $option->slug }}"
+                                                                       @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif>
+                                                                <label class="custom-control-label"
+                                                                       for="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main">{{ $option->name }}</label>
                                                         </div>
                                                     </div>
                                                 @endforeach
