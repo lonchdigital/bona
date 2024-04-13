@@ -315,7 +315,7 @@ Route::prefix('admin')->middleware([
     //Products
     Route::prefix('product/')->group(function () {
         Route::name('admin.product.list.all')->get('/search', GetAllProductsBySearchAction::class);
-        Route::name('admin.product.list.sub')->get('/searchSub', GetSubProductsBySearchAction::class);
+        Route::name('admin.product.list.sub')->get('/search-sub', GetSubProductsBySearchAction::class);
     });
     Route::prefix('product/{productType}')->group(function () {
         //List
@@ -353,11 +353,11 @@ Route::prefix('admin')->middleware([
         Route::name('admin.products-import.list')->get('/{productType}/list', ShowImportedProductsListPageAction::class);
         Route::name('admin.products-import.download-example')->get('/{productType}/example', DownloadProductsImportExampleAction::class);
         Route::name('admin.products-import.upload')->post('/{productType}/upload', UploadProductsImportFileAction::class);
-        Route::name('admin.products-import.delete-products')->post('{productType}/deleteProducts', DeleteImportedProductsAction::class);
+        Route::name('admin.products-import.delete-products')->post('{productType}/delete-products', DeleteImportedProductsAction::class);
         Route::name('admin.products-import.save-products')->post('{productType}/save', SaveImportedProductAction::class);
 
-        Route::name('admin.products-import.upload-image')->post('/{importedProduct}/uploadImage', UploadImportedProductImageAction::class);
-        Route::name('admin.products-import.remove-image')->post('/{importedProduct}/removeImage', RemoveImportedProductImageAction::class);
+        Route::name('admin.products-import.upload-image')->post('/{importedProduct}/upload-image', UploadImportedProductImageAction::class);
+        Route::name('admin.products-import.remove-image')->post('/{importedProduct}/remove-image', RemoveImportedProductImageAction::class);
         Route::name('admin.products-import.details')->get('/{importedProduct}/details', ShowImportedProductDetailsPageAction::class);
         Route::name('admin.products-import.delete')->post('/{importedProduct}/delete', DeleteProductFromListAction::class);
     });
