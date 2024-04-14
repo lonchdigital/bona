@@ -63,6 +63,7 @@ export default {
 
 
 
+        // TODO:: remove as finish
         // User Call Measurer
         /*const $userCallMeasurerForm =  $('#user-call-measurer, #user-call-dialog-0, #user-call-dialog-1, #user-call-dialog-2');
         $userCallMeasurerForm.submit(function(event) {

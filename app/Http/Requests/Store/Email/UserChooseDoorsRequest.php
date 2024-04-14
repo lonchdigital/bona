@@ -11,7 +11,7 @@ class UserChooseDoorsRequest extends BaseRequest
     {
         return [
             'name' => ['required', 'string'],
-            'phone' => ['required', 'string', 'regex:/^[0-9\+]+$/u', 'max:13'],
+            'phone' => ['required', 'string', 'regex:/^[0-9\+]+$/u', 'max:13', 'min:10'],
             'agree' => ['accepted']
         ];
     }
