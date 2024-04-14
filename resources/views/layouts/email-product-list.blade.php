@@ -257,6 +257,28 @@
         }
 
         /* -------------------------------------
+            Products
+        ------------------------------------- */
+
+        .art-product-list {
+
+        }
+        .art-product-list .art-product-row {
+
+        }
+        .art-product-list .art-product-row {
+
+        }
+        .art-product-list .art-product-row .art-column-img a img {
+            width: 150px;
+            display: block;
+        }
+        .art-product-list .art-product-row td {
+            vertical-align: middle;
+        }
+
+
+        /* -------------------------------------
             RESPONSIVE AND MOBILE FRIENDLY STYLES
         ------------------------------------- */
         @media only screen and (max-width: 620px) {
