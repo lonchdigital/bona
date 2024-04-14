@@ -1505,6 +1505,7 @@ nav .cart-wrapper.open {
 .header-content .owl-theme .owl-controls .owl-pagination {
     text-align: end;
     padding-right: 20px;
+    bottom: -15px;
 }
 
 .header-content .owl-theme .owl-controls .owl-buttons div span {
@@ -5403,7 +5404,7 @@ section.instagram {
 
 .owl-icons-wrapper .owl-icons figure {
     text-align: center;
-    padding: 10px 0 20px 0;
+    padding: 10px 0 0 0;
 }
 
 .owl-icons-wrapper .owl-icons figure:hover .f-icon {
