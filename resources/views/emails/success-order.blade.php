@@ -27,10 +27,10 @@
                                                 <th>{{ trans('emails.table_product_total_price') }}</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="art-product-list">
                                             @foreach($order->products as $product)
-                                                <tr>
-                                                    <td>
+                                                <tr class="art-product-row">
+                                                    <td class="art-column-img">
                                                         <a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">
                                                             <img class="order-product-image" src="{{ $product->preview_image_full_url }}" alt="Product image">
                                                         </a>

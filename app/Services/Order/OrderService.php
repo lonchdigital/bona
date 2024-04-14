@@ -48,26 +48,30 @@ class OrderService extends BaseService
             $newUserCreated = false;
             $newUserPassword = '';
 
-            $isUserExists = User::where('email', $request->email)->exists();
-            if (!$isUserExists) {
-                $newUserPassword = \Str::random(16);
-                $user = User::create([
-                    'email' => $request->email,
-                    'first_name' => $request->firstName,
-                    'last_name' => $request->lastName,
-                    'phone' => $request->phone,
-                    'role_id' => Role::USER_ROLE_ID,
-                    'language' => app()->getLocale(),
-                    'password' => \Hash::make($newUserPassword),
-                ]);
-                $newUserCreated = true;
-            } else {
-                $user = User::where('email', $request->email)->first();
+            if(is_null($user)) {
 
-                $user->setAttribute('first_name', $request->firstName);
-                $user->setAttribute('last_name', $request->lastName);
-                $user->setAttribute('phone', $request->phone);
-                $user->save();
+                $isUserExists = User::where('email', $request->email)->exists();
+                if (!$isUserExists) {
+                    $newUserPassword = \Str::random(16);
+                    $user = User::create([
+                        'email' => $request->email,
+                        'first_name' => $request->firstName,
+                        'last_name' => $request->lastName,
+                        'phone' => $request->phone,
+                        'role_id' => Role::USER_ROLE_ID,
+                        'language' => app()->getLocale(),
+                        'password' => \Hash::make($newUserPassword),
+                    ]);
+                    $newUserCreated = true;
+                } else {
+                    $user = User::where('email', $request->email)->first();
+
+                    $user->setAttribute('first_name', $request->firstName);
+                    $user->setAttribute('last_name', $request->lastName);
+                    $user->setAttribute('phone', $request->phone);
+                    $user->save();
+                }
+
             }
 
             // TODO:: old version
