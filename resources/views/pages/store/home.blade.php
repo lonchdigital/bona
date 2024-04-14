@@ -406,7 +406,7 @@
                 @if(array_key_exists('instagram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['instagram']))
                     <div class="art-instagram-owl-items">
                         @foreach($instagramFeed as $instagramItem)
-                            <a href="{{ $applicationGlobalOptions['instagram'] }}" class="item">
+                            <a href="{{ $applicationGlobalOptions['instagram'] }}" target="_blank" class="item">
                                 <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
                             </a>
                         @endforeach
