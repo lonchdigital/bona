@@ -202,7 +202,7 @@
                                                         <div class="art-product-data">
                                                             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $subProduct->slug]) }}" class="art-product-link">
                                                                 <div class="image">
-                                                                    <img src="{{ $subProduct->preview_image_url }}" alt="">
+                                                                    <img src="{{ $subProduct->preview_image_url }}" alt="SubProductImage">
                                                                 </div>
                                                                 <div class="text">
                                                                     <h2 class="product-title">{{ $subProduct->name }}</h2>

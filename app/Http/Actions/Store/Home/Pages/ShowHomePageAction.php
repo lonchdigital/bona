@@ -24,15 +24,12 @@ class ShowHomePageAction extends BaseAction
     )
     {
 //        $productType->load(['fields', 'fields.options']);
-
-        $categoryService = app()->make(CategoryService::class);
-
+//        $categoryService = app()->make(CategoryService::class);
         /*$wishList = null;
         if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
 
-//        $instagramFeed = \Dymantic\InstagramFeed\InstagramFeed::for('bonadoors', 6);
 
         $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
         $instagramFeed = $profile?->feed();

@@ -581,7 +581,7 @@ export default {
                     <image-file-input-component
                         :title="$t('admin.product_main_image') + ' ' + $t('admin.product_main_image_requirements')"
                         name="main_image"
-                        image-deleted-name="'main_image[image_deleted]'"
+                        image-deleted-name="main_image_deleted_input"
                         :is-required="false"
                         :errors="errors"
                         :init-data="productMainImage"
