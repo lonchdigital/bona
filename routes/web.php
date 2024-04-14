@@ -256,9 +256,10 @@ $optionalLanguageRoutes = function () {
         Route::name('blog.article.page')->get('/article/{blogArticleSlug}', ShowBlogArticlePageAction::class);
     });
 
-    Route::prefix('works')->group(function () {
+    // TODO: I was told to hide this route
+    /*Route::prefix('works')->group(function () {
         Route::name('store.works.page')->get('/', ShowWorkPageAction::class);
-    });
+    });*/
 
     Route::prefix('visitRequest')->group(function () {
         Route::name('store.visit-request.create')->post('/create', CreateVisitRequestAction::class);
