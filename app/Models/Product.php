@@ -97,13 +97,25 @@ class Product extends Model implements Sitemapable
 
     public function previewImageUrl(): Attribute
     {
-        return Attribute::make(function () {
-            if ($this->main_image_path) {
-                return Storage::url($this->preview_image_path);
-            } else {
-                return '/assets/images/no-image.png';
-            }
-        });
+        if( $this->product_type_id != config('constants.SUB_PRODUCTS_ID') ) {
+            return Attribute::make(function () {
+                if ($this->main_image_path) {
+                    return Storage::url($this->preview_image_path);
+                } else {
+                    return '/assets/images/no-image.png';
+                }
+            });
+        } else {
+            return Attribute::make(function () {
+                if ($this->main_image_path) {
+                    return Storage::url($this->preview_image_path);
+                } elseif ($this->categories[0]->image_path) {
+                    return Storage::url($this->categories[0]->image_path);
+                } else {
+                    return '/assets/images/no-image.png';
+                }
+            });
+        }
     }
 
     public function previewImageFullUrl(): Attribute

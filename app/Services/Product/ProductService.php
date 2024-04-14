@@ -523,7 +523,7 @@ class ProductService extends BaseService
                 $dataToUpdate['brand_id'] = $request->brandId;
             }
 
-            //main image and pattern image can't be deleted but replaced
+
             $imagesToDelete = [];
             $mainImage = null;
             $previewImage = null;
@@ -542,6 +542,14 @@ class ProductService extends BaseService
 
                 $previewImage['image'] = $request->mainImage;
                 $previewImage['path'] = $previewImagePath;
+            }
+
+            // Remove product image
+            if( !$request->mainImage && $request->mainImageDeleted ) {
+                $imagesToDelete[] = $product->main_image_path;
+                $imagesToDelete[] = $product->preview_image_path;
+                $product->main_image_path = null;
+                $product->preview_image_path = null;
             }
 
 
