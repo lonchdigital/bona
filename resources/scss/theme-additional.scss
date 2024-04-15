@@ -76,6 +76,26 @@ img {
     height: auto;
     max-width: 100%;
 }
+p {
+
+    &.ql-align-justify {
+        text-align: justify;
+    }
+    &.ql-align-left {
+        text-align: left;
+    }
+    &.ql-align-center {
+        text-align: center;
+    }
+    &.ql-align-right {
+        text-align: right;
+    }
+
+    a {
+        color: $accent;
+        font-weight: 500;
+    }
+}
 @media (min-width: 1320px) {
     .container {
         width: 1290px;
@@ -3037,6 +3057,7 @@ header.art-light .subtitle {
 
 header.art-header-left .title {
     text-align: left;
+    font-size: 32px;
 }
 header.art-header-left .title:after {
     margin-left: unset;

@@ -125,7 +125,6 @@ export default {
                                             ['link', 'image'],
                                             ['blockquote', 'code-block'],
                                             ['clean'],
-                                            ['table']
                                         ],
                                     }
                                 }
@@ -146,11 +145,6 @@ export default {
                                             ['blockquote', 'code-block'],
                                             ['clean'],
                                         ],
-                                        handlers: {
-                                            /*'image': function() {
-                                                console.log('111111111');
-                                            }*/
-                                        }
                                     }
                                 }
                             }"

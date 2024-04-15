@@ -90,7 +90,7 @@ b,
 strong,
 label,
 .label {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 @media print {
@@ -181,14 +181,14 @@ h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, 
 }
 
 h1, .h1 {
-    font-size: 23px;
+    font-size: 26px;
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
 @media (min-width: 992px) {
     h1, .h1 {
-        font-size: 32px;
+        font-size: 38px;
         margin-top: 26.66667px;
         margin-bottom: 26.66667px;
     }
