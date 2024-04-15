@@ -3,9 +3,9 @@
 @section('title')
 
     @if(isset($aboutUsConfig))
-        <title>{{ $aboutUsConfig->meta_title }}</title>
 
         @if($aboutUsConfig->meta_title)
+            <title>{{ $aboutUsConfig->meta_title }}</title>
             <meta name="title" content="{{ $aboutUsConfig->meta_title }}">
         @elseif(isset($seogenData))
             <meta name="title" content="{{ $seogenData->meta_title_tag }}">
