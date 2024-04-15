@@ -34,7 +34,7 @@
                             </div>
                         </div>
 
-                        <form action="" id="filter-left-form">
+                        <form action="#" id="filter-left-form">
                             <!--Price-->
                             <div class="filter-item filter-item--price filter-box">
                                 <div class="title font-title">{{ trans('base.price') }}</div>

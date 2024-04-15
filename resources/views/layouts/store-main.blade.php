@@ -232,7 +232,7 @@
 
                     <div class="header-search">
                         <a href="javascript:void(0);" class="website-search-link"><i class="icon icon-magnifier"></i></a>
-                        <form action="" class="main-header-search-form">
+                        <form action="#" class="main-header-search-form">
                             @csrf
                             <input id="main-header-search" type="text" placeholder="{{ trans('base.select2_search') }}">
                             <div id="main-header-search-result"></div>
