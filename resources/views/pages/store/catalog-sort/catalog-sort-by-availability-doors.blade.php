@@ -12,8 +12,10 @@
         <meta name="description" content="{{ $filterGroup->meta_description }}">
         <meta name="keywords" content="{{ $filterGroup->meta_keywords }}">
     @else
+        @if($productType->meta_title)
         <title>{{ $productType->meta_title }}</title>
         <meta name="title" content="{{ $productType->meta_title }}">
+        @endif
         <meta name="description" content="{{ $productType->meta_description }}">
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
     @endif
