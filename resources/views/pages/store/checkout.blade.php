@@ -275,12 +275,12 @@
                                                                 >
                                                                 <label class="custom-control-label"
                                                                        for="delivery-radio-np">
-                                                                    <div class="i-np mr-2">
+                                                                    <span class="i-np mr-2">
                                                                         <svg>
                                                                             <use
                                                                                 xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-np"></use>
                                                                         </svg>
-                                                                    </div>
+                                                                    </span>
                                                                     {{ trans('base.checkout_np_delivery') }}
                                                                 </label>
                                                             </div>
@@ -310,7 +310,7 @@
                                                                 <input value="{{ old('np_city') }}"
                                                                        @if(old('np_city')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpCityByRef(old('np_city'))) }}' @endif
                                                                        type="text" class="np-city-select"
-                                                                       name="np_city"/>
+                                                                       name="np_city">
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-12 text-danger">
@@ -328,7 +328,7 @@
                                                                        @if(old('np_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpDepartmentByRef(old('np_city'), old('np_department'))) }}'
                                                                        @endif  type="text"
                                                                        class="np-department-select"
-                                                                       name="np_department"/>
+                                                                       name="np_department">
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-12 text-danger">
@@ -476,7 +476,7 @@
                                                                @if(!old('recipient_type_id') || (old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER)) checked
                                                                @endif id="recipient-user"
                                                                name="recipient_type_id"
-                                                               value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER }}"/>
+                                                               value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER }}">
                                                         <label data-toggle="collapse"
                                                                data-target="#collapse-self-recipient"
                                                                for="recipient-user">{{ trans('base.checkout_recipient_me') }}</label>
@@ -490,7 +490,7 @@
                                                                @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) checked
                                                                @endif id="recipient-other"
                                                                name="recipient_type_id"
-                                                               value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM }}"/>
+                                                               value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM }}">
                                                         <label data-toggle="collapse"
                                                                data-target="#collapse-custom-recipient"
                                                                for="recipient-other">{{ trans('base.checkout_recipient_another_person') }}</label>
