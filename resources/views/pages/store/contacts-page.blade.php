@@ -56,7 +56,7 @@
 
                         <div class="contacts-additional">
                             <div class="empty-gap"></div>
-                            <div class="additional-phone"><a href="tel:{{ $contactsConfig->phone_one }}">{{ $contactsConfig->phone_one }}</a></div>
+                            <div class="additional-phone"><a href="tel:{{ str_replace(' ', '', $contactsConfig->phone_one }}">{{ $contactsConfig->phone_one }}</a></div>
                             <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_one }}">{{ $contactsConfig->email_one }}</a></div>
                         </div>
 
@@ -76,7 +76,7 @@
 
                         <div class="contacts-additional">
                             <div class="empty-gap"></div>
-                            <div class="additional-phone"><a href="tel:{{ $contactsConfig->phone_two }}">{{ $contactsConfig->phone_two }}</a></div>
+                            <div class="additional-phone"><a href="tel:{{ str_replace(' ', '', $contactsConfig->phone_two }}">{{ $contactsConfig->phone_two }}</a></div>
                             <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_two }}">{{ $contactsConfig->email_two }}</a></div>
                         </div>
 
@@ -96,7 +96,7 @@
 
                         <div class="contacts-additional">
                             <div class="empty-gap"></div>
-                            <div class="additional-phone"><a href="tel:{{ $contactsConfig->phone_three }}">{{ $contactsConfig->phone_three }}</a></div>
+                            <div class="additional-phone"><a href="tel:{{ str_replace(' ', '', $contactsConfig->phone_three }}">{{ $contactsConfig->phone_three }}</a></div>
                             <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_three }}">{{ $contactsConfig->email_three }}</a></div>
                         </div>
 
