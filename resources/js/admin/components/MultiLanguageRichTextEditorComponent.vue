@@ -110,8 +110,51 @@ export default {
                             <strong v-if="isRequired" class="text-danger">*</strong>
                         </label>
                         <input :ref="'quill_' + availableLanguage + '_input'" type="hidden" :name="name + '[' + availableLanguage + ']'">
-                        <QuillEditor v-if="options" theme="snow" @update:content="() => holdHTMLContent('quill_' + availableLanguage)" :options="options" @ready="ready"/>
-                        <QuillEditor v-else theme="snow" @update:content="() => holdHTMLContent('quill_' + availableLanguage)" @ready="ready"/>
+                        <QuillEditor
+                            v-if="options"
+                            theme="snow"
+                            @update:content="() => holdHTMLContent('quill_' + availableLanguage)"
+                            :options="{
+                                modules: {
+                                    toolbar: {
+                                        container: [
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ 'header': [1, 2, 3, 4, 5, 6] }],
+                                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                            [{ 'align': [] }],
+                                            ['link', 'image'],
+                                            ['blockquote', 'code-block'],
+                                            ['clean'],
+                                            ['table']
+                                        ],
+                                    }
+                                }
+                            }"
+                            @ready="ready"/>
+                        <QuillEditor
+                            v-else theme="snow"
+                            @update:content="() => holdHTMLContent('quill_' + availableLanguage)"
+                            :options="{
+                                modules: {
+                                    toolbar: {
+                                        container: [
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ 'header': [1, 2, 3, 4, 5, 6] }],
+                                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                            [{ 'align': [] }],
+                                            ['link', 'image'],
+                                            ['blockquote', 'code-block'],
+                                            ['clean'],
+                                        ],
+                                        handlers: {
+                                            /*'image': function() {
+                                                console.log('111111111');
+                                            }*/
+                                        }
+                                    }
+                                }
+                            }"
+                            @ready="ready"/>
                     </div>
                 </div>
             </div>
