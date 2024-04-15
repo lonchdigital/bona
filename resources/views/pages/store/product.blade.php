@@ -196,7 +196,7 @@
                                             @foreach($product->colors as $color_item)
                                                 @if($color_item->display_as_image)
                                                     <span class="color-btn" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}">
-                                                        <img src="{{$color_item->image_url}}">
+                                                        <img src="{{$color_item->image_url}}" alt="ColorImg">
                                                     </span>
                                                 @else
                                                     <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
