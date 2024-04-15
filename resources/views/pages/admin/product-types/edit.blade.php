@@ -51,7 +51,7 @@
 
 
                                     <div class="form-group">
-                                        <label for="product_type_image">{{ trans('admin.product_type_image') }} <strong class="text-danger">*</strong> (jpeg,png,jpg)</label>
+                                        <label for="product_type_image">{{ trans('admin.product_type_image') }} <strong class="text-danger">*</strong>(1000px x 667px) (jpeg,png,jpg)</label>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <img @if(isset($productType) && isset($productType->image_url)) src="{{ $productType->image_url }}" @else style="display: none;" @endif id="product_type_image" alt="{{ trans('admin.product_category_image') }}" class="category-img rounded mb-3">
