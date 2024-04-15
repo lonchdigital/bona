@@ -438,7 +438,7 @@ Route::prefix('admin')->middleware([
         Route::name('admin.delivery.edit')->post('edit', DeliveryEditAction::class);
     });
     //About Us
-    Route::prefix('aboutUs')->group(function () {
+    Route::prefix('about-us')->group(function () {
         Route::name('admin.about-us.edit.page')->get('edit', ShowAboutUsEditPageAction::class);
         Route::name('admin.about-us.edit')->post('edit', AboutUsEditAction::class);
     });
