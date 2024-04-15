@@ -5,9 +5,8 @@
 
     @if(isset($deliveryConfig))
 
-        <title>{{ $deliveryConfig->meta_title }}</title>
-
         @if($deliveryConfig->meta_title)
+            <title>{{ $deliveryConfig->meta_title }}</title>
             <meta name="title" content="{{ $deliveryConfig->meta_title }}">
         @elseif(isset($seogenData))
             <meta name="title" content="{{ $seogenData->meta_title_tag }}">
