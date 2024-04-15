@@ -2,9 +2,8 @@
 
 @section('title')
 
-    <title>{{ $product->meta_title }}</title>
-
     @if($product->meta_title)
+        <title>{{ $product->meta_title }}</title>
         <meta name="title" content="{{ $product->meta_title }}">
     @elseif(isset($seogenData))
         <meta name="title" content="{{ $seogenData->meta_title_tag }}">

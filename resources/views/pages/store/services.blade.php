@@ -4,9 +4,8 @@
 
     @if(isset($config))
 
-        <title>{{ $config->meta_title }}</title>
-
         @if($config->meta_title)
+            <title>{{ $config->meta_title }}</title>
             <meta name="title" content="{{ $config->meta_title }}">
         @elseif(isset($seogenData))
             <meta name="title" content="{{ $seogenData->meta_title_tag }}">

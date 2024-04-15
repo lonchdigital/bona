@@ -5,9 +5,8 @@
 
     @if(isset($contactsConfig))
 
-        <title>{{ $contactsConfig->meta_title }}</title>
-
         @if($contactsConfig->meta_title)
+            <title>{{ $contactsConfig->meta_title }}</title>
             <meta name="title" content="{{ $contactsConfig->meta_title }}">
         @elseif(isset($seogenData))
             <meta name="title" content="{{ $seogenData->meta_title_tag }}">
