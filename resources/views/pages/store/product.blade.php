@@ -31,6 +31,30 @@
     <!-- ========================  Product ======================== -->
     <section class="product">
 
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org/",
+                "@type": "Product",
+                "name": "{{ $product->name }}",
+                "image": "{{ url('/') . $product->main_image_url }}",
+                @if( !is_null($productText['content']))
+                "description": "{{ $productText['content'] }}",
+                @endif
+                @if( !is_null($product->brand) )
+                "brand": {
+                    "@type": "Brand",
+                    "name": "{{ $product->brand->name }}"
+                },
+                @endif
+                "offers": {
+                    "@type": "Offer",
+                    "priceCurrency": "{{ $baseCurrency->name_short }}",
+                    "price": "{{ $product->price }}",
+                    "availability": "{{ ($product->availability_status_id == 2) ? trans('shop.product_status_stock') : trans('shop.product_status_out_of_stock') }}"
+                }
+            }
+        </script>
+
         <div class="main">
             <div class="container">
                 <div class="row product-flex">
