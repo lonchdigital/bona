@@ -11,6 +11,7 @@ import ProductCharacteristicsComponent from "../components/ProductCharacteristic
 import ProductVideosComponent from "../components/ProductVideosComponent.vue";
 import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
 import ProductAttributesComponent from "../components/ProductAttributesComponent.vue";
+import TextAreaComponent from "../components/TextAreaComponent.vue";
 import * as transliteration from 'transliteration';
 
 
@@ -25,7 +26,8 @@ export default {
         ProductVideosComponent,
         ImageFileInputComponent,
         ProductAttributesComponent,
-        HomePageFaqComponent
+        HomePageFaqComponent,
+        TextAreaComponent
     },
     props: {
         submitRoute: {
@@ -72,6 +74,10 @@ export default {
         productMetaKeywords: {
             type: Object,
             default: {},
+        },
+        productMetaTags: {
+            type: String,
+            default: '',
         },
         selectedSubProducts: {
             type: Array,
@@ -433,6 +439,12 @@ export default {
                     :errors="errors"
                 />
 
+                <div class="form-group mb-3">
+                    <div class="art-info-field">
+                        <p>Available tags: %title%, %brand%</p>
+                    </div>
+                </div>
+
 
                 <div class="form-group mb-3 art-multiselect-height">
                     <select-component
@@ -751,7 +763,6 @@ export default {
                 </div>
 
 
-
                 <p class="mt-4">
                     <strong>
                         {{ $t('admin.seo') }}
@@ -775,6 +786,13 @@ export default {
                     :errors="errors"
                 />
 
+                <text-area-component
+                    :title="$t('admin.meta_tags')"
+                    name="meta_tags"
+                    :is-required="false"
+                    :init-data="productMetaTags"
+                    :errors="errors"
+                />
 
             </div>
         </div>

@@ -44,6 +44,10 @@ class ProductCreateRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'meta_tags' => [
+                'nullable',
+                'string',
+            ],
             'availability_status_id' => [
                 'required',
                 'in:' . ProductStatusDataClass::get()->pluck('id')->implode(','),
@@ -319,6 +323,7 @@ class ProductCreateRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            $this->input('meta_tags'),
             explode(',', $this->input('selected_sub_products_id')),
             $this->input('availability_status_id'),
             $this->input('special_offer_id') ? array_map('intval', $this->input('special_offer_id')) : null,

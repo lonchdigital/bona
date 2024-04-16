@@ -14,6 +14,7 @@ class EditProductDTO implements BaseDTO
         public readonly ?array        $metaTitle,
         public readonly ?array        $metaDescription,
         public readonly ?array        $metaKeyWords,
+        public readonly ?string        $metaTags,
         public readonly ?array        $selectedSubProductsId,
         public readonly ?int          $availabilityStatusId,
         public readonly ?array        $specialOfferIds,
