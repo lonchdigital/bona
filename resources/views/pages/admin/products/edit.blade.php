@@ -90,6 +90,7 @@
 
 {{--                    @dd( $productType->fields[1]->options[1]->id, $product->getCustomFieldValue(46) )--}}
 
+{{--                    @dd(json_encode($product['meta_tags']))--}}
 
                     <product-page-edit-form
                         base-language="{{ $baseLanguage }}"
@@ -104,6 +105,7 @@
                             :product-meta-title="{{ json_encode($product->getTranslations('meta_title')) }}"
                             :product-meta-description="{{ json_encode($product->getTranslations('meta_description')) }}"
                             :product-meta-keywords="{{ json_encode($product->getTranslations('meta_keywords')) }}"
+                            :product-meta-tags="{{ json_encode($product['meta_tags']) }}"
                         @endif
 
 

@@ -95,3 +95,12 @@
     height: 22px;
     margin-left: 15px;
 }
+
+
+.art-info-field {
+    padding: 15px 15px;
+    background-color: #fffaf2;
+}
+.art-info-field p:last-child {
+    margin-bottom: 0;
+}
