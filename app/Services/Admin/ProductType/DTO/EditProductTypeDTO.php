@@ -17,6 +17,9 @@ class EditProductTypeDTO implements BaseDTO
         public readonly array $metaDescription,
         public readonly array $metaKeyWords,
 
+        public readonly array $metaProductTitle,
+        public readonly array $metaProductDescription,
+
         public readonly bool $productTypeHasBrand,
         public readonly bool $productTypeHasColor,
         public readonly bool $productTypeHasCollection,

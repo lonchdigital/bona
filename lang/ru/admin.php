@@ -230,6 +230,8 @@ return [
     'meta_title' => 'Meta title',
     'meta_description' => 'Meta description',
     'meta_keywords' => 'Meta key words',
+    'meta_product_title' => 'Meta product title (для всех продуктов этого типа товара)',
+    'meta_product_description' => 'Meta product description (для всех продуктов этого типа товара)',
     'meta_tags' => 'Данные в <head></head>',
     'product_create_success' => 'Товар успешно добавлен!',
     'product_edit_success' => 'Товар успешно обновлен!',

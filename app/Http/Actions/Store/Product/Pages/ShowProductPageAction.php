@@ -19,7 +19,6 @@ class ShowProductPageAction extends BaseAction
         ProductService $productService,
         WishListService $wishListService,
         CartService $cartService,
-        SeogenService $seogenService,
     )
     {
 
@@ -48,6 +47,15 @@ class ShowProductPageAction extends BaseAction
 
         $sub_products = ( !is_null($product->sub_products) ) ? json_decode($product->sub_products): false;
 
+        $product->meta_title = ($product->meta_title) ?
+            $productService->replaceTagsWithData($product->meta_title, $product) :
+            $productService->replaceTagsWithData($product->productType->meta_product_title, $product);
+
+        $product->meta_description = ($product->meta_description) ?
+            $productService->replaceTagsWithData($product->meta_description, $product) :
+            $productService->replaceTagsWithData($product->productType->meta_product_description, $product);
+
+
         return view('pages.store.product', [
             'product' => $product,
 //            'categoryProducts' => $categoryProducts,
@@ -57,7 +65,6 @@ class ShowProductPageAction extends BaseAction
             'sameTypeProducts' => $productService->getSameTypeProducts($product),
             'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'isProductInCart' => $isProductInCart,
-            'seogenData' => $seogenService->getTagsForProducts($product->productType, $product),
             'productText' => $productService->getProductTextByLanguage($product->id, app()->getLocale()),
             'characteristics' => $productService->getProductCharacteristics($product->id),
             'productGallery' => $productService->getProductGallery($product->id),

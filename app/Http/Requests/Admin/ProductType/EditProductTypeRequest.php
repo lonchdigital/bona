@@ -44,6 +44,14 @@ class EditProductTypeRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'meta_product_title' => [
+                'nullable',
+                'array',
+            ],
+            'meta_product_description' => [
+                'nullable',
+                'array',
+            ],
             'product_has_brand' => [
                 'nullable',
             ],
@@ -178,6 +186,14 @@ class EditProductTypeRequest extends BaseRequest
                 'nullable',
                 'string',
             ];
+            $rules['meta_product_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['meta_product_description.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
             $rules['size_points.' . $availableLanguage] = [
                 $this->input('has_size') ? 'required' : 'nullable',
                 'string',
@@ -243,6 +259,8 @@ class EditProductTypeRequest extends BaseRequest
             $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
             $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
             $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['meta_product_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_product_title'), $availableLanguage);
+            $attributes['meta_product_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_product_description'), $availableLanguage);
             $attributes['size_points.' . $availableLanguage] = $this->prepareAttribute(trans('admin.size_points'), $availableLanguage);
         }
 
@@ -271,6 +289,9 @@ class EditProductTypeRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+
+            $this->input('meta_product_title'),
+            $this->input('meta_product_description'),
 
             $this->input('product_has_brand'),
             $this->input('product_has_color'),

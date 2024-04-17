@@ -634,7 +634,15 @@ class ProductService extends BaseService
 
     }
 
-
+    public function replaceTagsWithData(string $text, Product $product): string
+    {
+        $allTags = [
+            '%title%' => $product->name,
+            '%price%' => $product->price,
+            '%product_type%' => $product->productType->name,
+        ];
+        return str_replace(array_keys($allTags), array_values($allTags), $text);
+    }
 
     public function getSelectedSubItems(?array $sub_products): Collection|array
     {
