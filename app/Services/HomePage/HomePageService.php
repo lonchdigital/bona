@@ -38,6 +38,7 @@ class HomePageService extends BaseService
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
+                'meta_tags' => $request->metaTags,
             ];
 
             if ($homePageConfig) {

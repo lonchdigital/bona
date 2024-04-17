@@ -16,6 +16,7 @@
                         :page-meta-title="{{ json_encode($config->getTranslations('meta_title')) }}"
                         :page-meta-description="{{ json_encode($config->getTranslations('meta_description')) }}"
                         :page-meta-keywords="{{ json_encode($config->getTranslations('meta_keywords')) }}"
+                        :product-meta-tags="{{ json_encode($config->meta_tags) }}"
                     @endif
 
                     @if(count($sections))
