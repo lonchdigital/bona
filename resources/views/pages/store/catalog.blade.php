@@ -1,23 +1,20 @@
 @extends('layouts.store-main')
 
 @section('title')
-    @if (isset($seogenData))
-        <title>{{ $seogenData->html_title_tag }}</title>
-        <meta name="title" content="{{ $seogenData->meta_title_tag }}">
-        <meta name="description" content="{{ $seogenData->meta_description_tag }}">
-        <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
-    @elseif(isset($filterGroup))
-        <title>{{ $filterGroup->meta_title }}</title>
-        <meta name="title" content="{{ $filterGroup->meta_title }}">
-        <meta name="description" content="{{ $filterGroup->meta_description }}">
-        <meta name="keywords" content="{{ $filterGroup->meta_keywords }}">
-    @else
-        @if($productType->meta_title)
+    @if($productType->meta_title)
         <title>{{ $productType->meta_title }}</title>
         <meta name="title" content="{{ $productType->meta_title }}">
-        @endif
+    @endif
+
+    @if($productType->meta_description)
         <meta name="description" content="{{ $productType->meta_description }}">
+    @endif
+    @if($productType->meta_keywords)
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
+    @endif
+
+    @if($productType->meta_tags)
+        {!! $productType->meta_tags !!}
     @endif
 @endsection
 
