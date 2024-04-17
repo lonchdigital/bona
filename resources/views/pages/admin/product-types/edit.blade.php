@@ -737,9 +737,20 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-md-12 mb-5">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{ trans('admin.meta_tags') }}</label>
+                                                    <textarea type="text" name="meta_tags" class="form-control">@isset($productType){{ $productType['meta_tags'] }}@endisset</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                 </div>
+
+
                             </div>
 
                             <div class="row">

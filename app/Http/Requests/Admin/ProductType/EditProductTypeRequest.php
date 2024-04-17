@@ -44,6 +44,10 @@ class EditProductTypeRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'meta_tags' => [
+                'nullable',
+                'string',
+            ],
             'meta_product_title' => [
                 'nullable',
                 'array',
@@ -289,6 +293,7 @@ class EditProductTypeRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            $this->input('meta_tags'),
 
             $this->input('meta_product_title'),
             $this->input('meta_product_description'),

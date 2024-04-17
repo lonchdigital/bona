@@ -86,6 +86,7 @@ class ProductTypeService extends BaseService
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
+                'meta_tags' => $request->metaTags,
 
                 'meta_product_title' => $request->metaProductTitle,
                 'meta_product_description' => $request->metaProductDescription,
@@ -150,6 +151,7 @@ class ProductTypeService extends BaseService
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
+                'meta_tags' => $request->metaTags,
 
                 'meta_product_title' => $request->metaProductTitle,
                 'meta_product_description' => $request->metaProductDescription,
