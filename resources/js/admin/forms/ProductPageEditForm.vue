@@ -441,7 +441,7 @@ export default {
 
                 <div class="form-group mb-3">
                     <div class="art-info-field">
-                        <p>Available tags: %title%, %brand%</p>
+                        <p>Available tags: %title%, %price%, %product_type%</p>
                     </div>
                 </div>
 

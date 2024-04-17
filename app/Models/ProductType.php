@@ -19,6 +19,8 @@ class ProductType extends Model implements Sitemapable
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'meta_product_title',
+        'meta_product_description',
         'size_points',
         'product_size_length_filter_name',
         'product_size_width_filter_name',

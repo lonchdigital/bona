@@ -84,6 +84,22 @@
                                                                  :is-required="false" field-name="meta_keywords"
                                                                  :values="isset($productType) ? $productType->getTranslations('meta_keywords') : []"/>
 
+
+                                    <!-- PRODUCT TYPE META TITLE -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_product_title')" :is-required="false"
+                                                                 field-name="meta_product_title"
+                                                                 :values="isset($productType) ? $productType->getTranslations('meta_product_title') : []"/>
+                                    <!-- PRODUCT TYPE META DESCRIPTION -->
+                                    <x-admin.multilanguage-input :label="trans('admin.meta_product_description')"
+                                                                 :is-required="false" field-name="meta_product_description"
+                                                                 :values="isset($productType) ? $productType->getTranslations('meta_product_description') : []"/>
+
+                                    <div class="form-group mb-3">
+                                        <div class="art-info-field">
+                                            <p>Available tags (only products): %title%, %price%, %product_type%</p>
+                                        </div>
+                                    </div>
+
                                     <p class="mt-5">
                                         <strong>
                                             {{ trans('admin.product_type_base_params') }}

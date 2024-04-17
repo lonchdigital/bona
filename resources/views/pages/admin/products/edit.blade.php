@@ -80,17 +80,7 @@
                             }
                             $productType->fields[$key]->custom_options = $optionsArray;
                         }
-
-
                     @endphp
-
-{{--                    @dd($productType->fields[0]->options)--}}
-                    {{--@dd($productType->fields[0]->options)
-                    @dd($productType->fields[1]->options)--}}
-
-{{--                    @dd( $productType->fields[1]->options[1]->id, $product->getCustomFieldValue(46) )--}}
-
-{{--                    @dd(json_encode($product['meta_tags']))--}}
 
                     <product-page-edit-form
                         base-language="{{ $baseLanguage }}"
