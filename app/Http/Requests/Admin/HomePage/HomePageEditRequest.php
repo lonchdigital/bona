@@ -24,6 +24,10 @@ class HomePageEditRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'meta_tags' => [
+                'nullable',
+                'string',
+            ],
             /*
             'slider_logo' => [
                 HomePageConfig::first() ? 'nullable' : 'required',
@@ -180,6 +184,7 @@ class HomePageEditRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            $this->input('meta_tags'),
             $this->validated('slides'),
             explode(',', $this->input('selected_products_id')),
             explode(',', $this->input('selected_best_sales_products_id')),

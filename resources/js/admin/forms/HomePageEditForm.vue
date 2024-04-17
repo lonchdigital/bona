@@ -6,9 +6,16 @@ import HomePageTestimonialComponent from "../components/HomePageTestimonialCompo
 import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
+import TextAreaComponent from "../components/TextAreaComponent.vue";
 
 export default {
-    components: {MultiLanguageRichTextEditorComponent, HomePageSlideComponent, HomePageTestimonialComponent, HomePageFaqComponent, MultiLanguageInputComponent},
+    components: {MultiLanguageRichTextEditorComponent,
+        HomePageSlideComponent,
+        HomePageTestimonialComponent,
+        HomePageFaqComponent,
+        MultiLanguageInputComponent,
+        TextAreaComponent
+    },
     props: {
         submitRoute: {
             type: String,
@@ -45,6 +52,10 @@ export default {
         pageMetaKeywords: {
             type: Object,
             default: {},
+        },
+        productMetaTags: {
+            type: String,
+            default: '',
         },
         sliderLogo: {
             type: String,
@@ -399,6 +410,14 @@ export default {
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
                     :content="seoText"
+                    :errors="errors"
+                />
+
+                <text-area-component
+                    :title="$t('admin.meta_tags')"
+                    name="meta_tags"
+                    :is-required="false"
+                    :init-data="productMetaTags"
                     :errors="errors"
                 />
 
