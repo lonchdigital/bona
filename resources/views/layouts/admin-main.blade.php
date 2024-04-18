@@ -227,9 +227,6 @@
                         <a class="nav-link pl-3" href="{{ route('admin.seo.robots-txt.edit.page') }}"><span class="ml-1">{{ trans('admin.robots_txt') }}</span></a>
                     </ul>
                     <ul class="collapse list-unstyled pl-4 w-100" id="seo">
-                        <a class="nav-link pl-3" href="{{ route('admin.seo-gen.edit.page') }}"><span class="ml-1">{{ trans('admin.seogen') }}</span></a>
-                    </ul>
-                    <ul class="collapse list-unstyled pl-4 w-100" id="seo">
                         <a class="nav-link pl-3" href="{{ route('admin.filter-groups.list.page') }}"><span class="ml-1">{{ trans('admin.filter_groups') }}</span></a>
                     </ul>
                 </li>

@@ -8,6 +8,7 @@ use App\Services\Application\DTO\EditRobotsTxtDto;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -42,22 +43,40 @@ class ApplicationConfigService extends BaseService
         $config = ApplicationConfig::where('config_name', self::ROBOTS_TXT_CONFIG)->first();
 
         if ($config) {
-            return  $config['data'];
+            return  $config['config_data'];
         }
 
         return '';
     }
 
-    public function setRobotsTxtContent(EditRobotsTxtDto $request): ServiceActionResult
+    /*public function setRobotsTxtContent(EditRobotsTxtDto $request): ServiceActionResult
     {
         return $this->coverWithTryCatch(function () use ($request){
              ApplicationConfig::updateOrCreate([
                  'config_name' => self::ROBOTS_TXT_CONFIG
              ], [
-                 'data' => $request->content,
+                 'config_data' => $request->content,
              ]);
 
              return ServiceActionResult::make(true, trans('admin.robots_txt_edit_success'));
+        });
+    }*/
+
+    public function setRobotsTxtContent(EditRobotsTxtDto $request): ServiceActionResult
+    {
+        return $this->coverWithTryCatch(function () use ($request){
+            // put data to robots.txt
+//            Storage::disk('public')->put('robots.txt', $request->content);
+            Storage::disk('public')->put('/robots.txt', $request->content);
+
+            // update data in DB
+            ApplicationConfig::updateOrCreate([
+                'config_name' => self::ROBOTS_TXT_CONFIG
+            ], [
+                'config_data' => $request->content,
+            ]);
+
+            return ServiceActionResult::make(true, trans('admin.robots_txt_edit_success'));
         });
     }
 

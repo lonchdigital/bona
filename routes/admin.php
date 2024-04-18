@@ -464,15 +464,16 @@ Route::prefix('admin')->middleware([
 
     //Seo
     Route::prefix('seo')->group(function () {
+
         Route::prefix('robots')->group(function () {
             Route::name('admin.seo.robots-txt.edit.page')->get('/edit', ShowEditRobotsTxtEditPageAction::class);
             Route::name('admin.seo.robots-txt.edit')->post('/edit', RobotsTxtEditAction::class);
         });
 
-        Route::prefix('seo-gen')->group(function () {
+        /*Route::prefix('seo-gen')->group(function () {
             Route::name('admin.seo-gen.edit.page')->get('/edit', ShowSeoGenPageAction::class);
             Route::name('admin.seo-gen.edit')->post('/edit', SeogenEditAction::class);
-        });
+        });*/
 
         Route::prefix('filter-groups')->group(function () {
             Route::name('admin.filter-groups.list.page')->get('/', ShowFilterGroupListPageAction::class);
