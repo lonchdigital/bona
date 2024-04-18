@@ -52,11 +52,13 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $rules['first_name'] = [
                 'required',
                 'string',
+                'alpha'
             ];
 
             $rules['last_name'] = [
                 'required',
                 'string',
+                'alpha'
             ];
 
             $rules['phone'] = [
