@@ -9,6 +9,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductService;
 use App\Services\Seogen\SeogenService;
 use App\Services\WishList\WishListService;
+use Abordage\LastModified\Facades\LastModified;
 
 class ShowBrandPageAction extends BaseAction
 {
@@ -25,6 +26,9 @@ class ShowBrandPageAction extends BaseAction
         if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }
+
+
+        LastModified::set($brand->updated_at);
 
         return view('pages.store.brand', [
             'brand' => $brand,

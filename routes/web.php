@@ -242,10 +242,11 @@ $optionalLanguageRoutes = function () {
     });
 
 
-    Route::prefix('calculator')->group(function () {
+    // TODO:: remove when finish
+    /*Route::prefix('calculator')->group(function () {
         Route::name('store.calculator.page')->get('/{productSlug?}', ShowCalculatorPageAction::class);
         Route::name('store.calculator.calculate')->post('/calculate', CalculateCountOfProductsAction::class);
-    });
+    });*/
 
     Route::prefix('page')->group(function () {
         Route::name('store.static-page.page')->get('/{staticPageSlug}', ShowStaticPagePageAction::class);
@@ -280,10 +281,11 @@ $optionalLanguageRoutes = function () {
             Route::name('delivery.sat.departments')->get('/departments', GetSATDepartmentsAction::class);
         });
 
-        Route::prefix('meest')->group(function () {
+        // TODO:: remove when finish
+        /*Route::prefix('meest')->group(function () {
             Route::name('delivery.meest.cities')->get('/cities', GetMeestCitiesAction::class);
             Route::name('delivery.meest.departments')->get('/departments', GetMeestDepartmentsAction::class);
-        });
+        });*/
 
     });
 };

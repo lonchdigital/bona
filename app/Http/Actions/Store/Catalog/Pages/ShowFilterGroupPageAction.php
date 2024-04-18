@@ -15,7 +15,8 @@ use App\Services\Product\DTO\FilterProductDTO;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
 use App\Services\ProductCategory\CategoryService;
-use App\Services\WishList\WishListService;
+//use App\Services\WishList\WishListService;
+use Abordage\LastModified\Facades\LastModified;
 
 class ShowFilterGroupPageAction extends BaseAction
 {
@@ -35,7 +36,7 @@ class ShowFilterGroupPageAction extends BaseAction
         $brandService = app()->make(BrandService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
-        $wishListService = app()->make(WishListService::class);
+//        $wishListService = app()->make(WishListService::class);
         $filerGroupService = app()->make(FilterGroupService::class);
 
         $filtersData = new FilterProductDTO($filerGroupService->buildFilterArrayByFilterGroup($filterGroup));
@@ -64,10 +65,12 @@ class ShowFilterGroupPageAction extends BaseAction
             $page,
         );
 
-        $wishList = null;
-        if ($this->getAuthUser()) {
+//        $wishList = null;
+        /*if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
-        }
+        }*/
+
+        LastModified::set($productType->updated_at);
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
@@ -80,7 +83,7 @@ class ShowFilterGroupPageAction extends BaseAction
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
-            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
+//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'filterGroup' => $filterGroup,
         ]);
     }

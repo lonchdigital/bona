@@ -10,6 +10,7 @@ use App\Services\Product\ProductService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Seogen\SeogenService;
 use App\Services\WishList\WishListService;
+use Abordage\LastModified\Facades\LastModified;
 
 class ShowProductPageAction extends BaseAction
 {
@@ -55,6 +56,8 @@ class ShowProductPageAction extends BaseAction
             $productService->replaceTagsWithData($product->meta_description, $product) :
             $productService->replaceTagsWithData($product->productType->meta_product_description, $product);
 
+
+        LastModified::set($product->updated_at);
 
         return view('pages.store.product', [
             'product' => $product,

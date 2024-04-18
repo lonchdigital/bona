@@ -13,8 +13,9 @@ use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
-use App\Services\Seogen\SeogenService;
-use App\Services\WishList\WishListService;
+//use App\Services\Seogen\SeogenService;
+//use App\Services\WishList\WishListService;
+use Abordage\LastModified\Facades\LastModified;
 
 class ShowCatalogCategoryPageAction extends BaseAction
 {
@@ -34,8 +35,8 @@ class ShowCatalogCategoryPageAction extends BaseAction
         $brandService = app()->make(BrandService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
-        $wishListService = app()->make(WishListService::class);
-        $seogenService = app()->make(SeogenService::class);
+//        $wishListService = app()->make(WishListService::class);
+//        $seogenService = app()->make(SeogenService::class);
 
         $filtersData = $request->toDTO();
 
@@ -64,10 +65,13 @@ class ShowCatalogCategoryPageAction extends BaseAction
             $page,
         );
 
-        $wishList = null;
+        /*$wishList = null;
         if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
-        }
+        }*/
+
+
+        LastModified::set($category->updated_at);
 
         return view('pages.store.catalog-category', [
             'filters' => $catalogService->getFiltersByProductType($productType),
@@ -81,8 +85,8 @@ class ShowCatalogCategoryPageAction extends BaseAction
             'baseCurrency' => $baseCurrency,
             'selectedCategory' => $category,
             'productsPaginated' => $productsPaginated,
-            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
-            'seogenData' => $seogenService->getTagsForCategories($productType, $category),
+//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
+//            'seogenData' => $seogenService->getTagsForCategories($productType, $category),
             'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
             'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
