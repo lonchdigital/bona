@@ -4,8 +4,75 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c30d9e290c8b34b419db9a1c276854fa",
+    "content-hash": "a8a40921e6a1a87424ae4a81b9ec9756",
     "packages": [
+        {
+            "name": "abordage/laravel-last-modified",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abordage/laravel-last-modified.git",
+                "reference": "9677bbd9a15f6600de6b548b41c9595b4d1de765"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abordage/laravel-last-modified/zipball/9677bbd9a15f6600de6b548b41c9595b4d1de765",
+                "reference": "9677bbd9a15f6600de6b548b41c9595b4d1de765",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^8.0 || ^9.0 || ^10.0 || ^11.0",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "nunomaduro/collision": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "nunomaduro/larastan": "^1.0 || ^2.0",
+                "orchestra/testbench": "^6.0 || ^7.0 || ^8.0 || ^9.0",
+                "phpunit/phpunit": "^9.5 || ^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LastModified": "Abordage\\LastModified\\Facades\\LastModified"
+                    },
+                    "providers": [
+                        "Abordage\\LastModified\\LastModifiedServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Abordage\\LastModified\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pavel Bychko",
+                    "email": "box@abordage.dev",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Setting the Last-Modified header and 304 Not Modified response code if the page hasn't changed since the last visit",
+            "homepage": "https://github.com/abordage/laravel-last-modified",
+            "keywords": [
+                "304 Not Modified",
+                "Laravel 304",
+                "Laravel Last-Modified",
+                "Last-Modified",
+                "if-modified-since"
+            ],
+            "support": {
+                "issues": "https://github.com/abordage/laravel-last-modified/issues",
+                "source": "https://github.com/abordage/laravel-last-modified/tree/0.2.1"
+            },
+            "time": "2024-03-23T19:42:38+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.11.0",

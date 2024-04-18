@@ -2,6 +2,7 @@
 
 namespace App\Http\Actions\Store\Home\Pages;
 
+use App\Models\HomePageConfig;
 use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
 use App\Models\User;
@@ -10,6 +11,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\ProductCategory\CategoryService;
 use App\Services\HomePage\HomePageService;
 use App\Services\Brand\BrandService;
+use Abordage\LastModified\Facades\LastModified;
 /*use App\Services\WishList\WishListService;*/
 
 class ShowHomePageAction extends BaseAction
@@ -37,6 +39,8 @@ class ShowHomePageAction extends BaseAction
         $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
         $instagramFeed = $profile?->refreshFeed();
 
+
+        LastModified::set(HomePageConfig::first()->updated_at);
 
         return view('pages.store.home', [
             'config' => $homePageService->getHomePageConfig(),
