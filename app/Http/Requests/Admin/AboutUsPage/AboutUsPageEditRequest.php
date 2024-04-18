@@ -24,6 +24,10 @@ class AboutUsPageEditRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'meta_tags' => [
+                'nullable',
+                'string',
+            ],
         ];
 
         $rules['image'] = [
@@ -96,6 +100,7 @@ class AboutUsPageEditRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            $this->input('meta_tags'),
             $this->input('title'),
             $this->input('description'),
             $this->input('button_text'),

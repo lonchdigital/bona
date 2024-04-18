@@ -1,7 +1,25 @@
 @extends('layouts.store-main')
 
 @section('title')
-    <title>{{ config('app.name') . ' - ' . $blogArticle->name }}</title>
+
+    @if(isset($blogArticle))
+        @if($blogArticle->meta_title)
+            <title>{{ $blogArticle->meta_title }}</title>
+            <meta name="title" content="{{ $blogArticle->meta_title }}">
+        @endif
+
+        @if($blogArticle->meta_description)
+            <meta name="description" content="{{ $blogArticle->meta_description }}">
+        @endif
+        @if($blogArticle->meta_keywords)
+            <meta name="keywords" content="{{ $blogArticle->meta_keywords }}">
+        @endif
+
+        @if($blogArticle->meta_tags)
+            {!! $blogArticle->meta_tags !!}
+        @endif
+    @endif
+
 @endsection
 
 @section('content')
@@ -10,6 +28,7 @@
 
     <section class="main-header main-header-blog" style="background-image:url({{ $blogArticle->hero_image_url }})">
         <header>
+                {{-- TODO:: Remove when finish --}}
 <!--            <div class="container text-center">
                 <ol class="breadcrumb breadcrumb-inverted">
                     <li><a href="index.html"><span class="icon icon-home"></span></a></li>

@@ -11,6 +11,7 @@ class DeliveryPageEditDTO implements BaseDTO
         public readonly ?array $metaTitle,
         public readonly ?array $metaDescription,
         public readonly ?array $metaKeyWords,
+        public readonly ?string $metaTags,
         public readonly ?array $title,
         public readonly ?array $description,
         public readonly ?array $buttonText,

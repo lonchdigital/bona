@@ -23,6 +23,10 @@ class BlogPageEditRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'meta_tags' => [
+                'nullable',
+                'string',
+            ],
             'title' => [
                 'nullable',
                 'array',
@@ -76,6 +80,7 @@ class BlogPageEditRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            $this->input('meta_tags'),
             $this->input('title'),
         );
     }

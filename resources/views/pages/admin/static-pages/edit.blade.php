@@ -44,6 +44,7 @@
                                            @isset($staticPage) value="{{ $staticPage->where('language', $availableLanguage)->first()?->meta_keywords }}" @endisset>
                                     </div>
 
+
                                     <input type="hidden" name="content[{{$availableLanguage}}]" value="">
                                     <div language="{{ $availableLanguage }}" class="multilang-content tab-pane fade @if($availableLanguage == app()->getLocale())active show @endif">
                                         <strong>{{ mb_strtoupper($availableLanguage) }}</strong>
@@ -53,6 +54,16 @@
                                     </div>
 
                                 @endforeach
+
+                                    <div class="mt-3 mb-5">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>{{ trans('admin.meta_tags') }}</label>
+                                                <textarea type="text" name="meta_tags" class="form-control">@isset($staticPage){{ $staticPage->where('language', 'uk')->first()?->meta_tags }}@endisset</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
                             </div>
                             <div class="row pt-2">
                                 <div class="col-md-12 text-right">

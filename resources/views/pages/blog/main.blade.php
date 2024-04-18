@@ -3,29 +3,23 @@
 @section('title')
 
     @if(isset($blogPageConfig))
-        <title>{{ $blogPageConfig->meta_title }}</title>
-
         @if($blogPageConfig->meta_title)
+            <title>{{ $blogPageConfig->meta_title }}</title>
             <meta name="title" content="{{ $blogPageConfig->meta_title }}">
-        @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_title_tag }}">
         @endif
 
         @if($blogPageConfig->meta_description)
-            <meta name="title" content="{{ $blogPageConfig->meta_description }}">
-        @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_description_tag }}">
+            <meta name="description" content="{{ $blogPageConfig->meta_description }}">
         @endif
-
         @if($blogPageConfig->meta_keywords)
-            <meta name="title" content="{{ $blogPageConfig->meta_keywords }}">
-        @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_keywords_tag }}">
+            <meta name="keywords" content="{{ $blogPageConfig->meta_keywords }}">
         @endif
 
-    @else
-        <title>{{ config('app.name') . ' - ' . trans('base.blog') }}</title>
+        @if($blogPageConfig->meta_tags)
+            {!! $blogPageConfig->meta_tags !!}
+        @endif
     @endif
+
 @endsection
 
 @section('content')

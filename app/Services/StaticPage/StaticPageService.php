@@ -48,6 +48,7 @@ class StaticPageService extends BaseService
                 'meta_title' => $allData->where('language', $language)->first()?->meta_title,
                 'meta_description' => $allData->where('language', $language)->first()?->meta_description,
                 'meta_keywords' => $allData->where('language', $language)->first()?->meta_keywords,
+                'meta_tags' => $allData->where('language', $language)->first()?->meta_tags,
                 'content' => $allData->where('language', $language)->first()?->content
             ];
         }
@@ -67,6 +68,10 @@ class StaticPageService extends BaseService
             }
 
             $data = [];
+            $request->meta_tags = [
+                'uk' => $request->meta_tags,
+                'ru' => $request->meta_tags
+            ];
             foreach ($request as $key => $value) {
                 $data[$key] = $value;
             }
@@ -79,6 +84,7 @@ class StaticPageService extends BaseService
                     'meta_title' => $data['meta_title'][$language],
                     'meta_description' => $data['meta_description'][$language],
                     'meta_keywords' => $data['meta_keywords'][$language],
+                    'meta_tags' => $data['meta_tags'][$language],
                     'content' => $data['content'][$language],
                 ]);
             }

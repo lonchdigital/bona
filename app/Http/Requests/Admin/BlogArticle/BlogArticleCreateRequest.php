@@ -21,6 +21,10 @@ class BlogArticleCreateRequest extends BaseRequest
             'preview_text' => [
                 'array',
             ],
+            'meta_tags' => [
+                'nullable',
+                'string'
+            ],
             'hero_image_deleted' => [
                 'nullable',
             ],
@@ -290,6 +294,7 @@ class BlogArticleCreateRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            $this->input('meta_tags'),
             $this->file('hero_image'),
             $this->validated('block'),
         );

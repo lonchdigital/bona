@@ -23,6 +23,7 @@ class DeliveryPageService extends BaseService
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
+                'meta_tags' => $request->metaTags,
                 'title' => $request->title,
                 'description' => $request->description,
                 'button_text' => $request->buttonText,

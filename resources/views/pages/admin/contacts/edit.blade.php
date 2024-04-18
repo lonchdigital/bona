@@ -15,6 +15,7 @@
                         :page-meta-title="{{ json_encode($contactsConfig->getTranslations('meta_title')) }}"
                         :page-meta-description="{{ json_encode($contactsConfig->getTranslations('meta_description')) }}"
                         :page-meta-keywords="{{ json_encode($contactsConfig->getTranslations('meta_keywords')) }}"
+                        :page-meta-tags="{{ json_encode($contactsConfig->meta_tags) }}"
 
                         :city-one="{{ json_encode($contactsConfig->getTranslations('city_one')) }}"
                         :address-one="{{ json_encode($contactsConfig->getTranslations('address_one')) }}"

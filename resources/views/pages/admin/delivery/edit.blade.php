@@ -16,7 +16,8 @@
                         :page-meta-title="{{ json_encode($deliveryConfig->getTranslations('meta_title')) }}"
                         :page-meta-description="{{ json_encode($deliveryConfig->getTranslations('meta_description')) }}"
                         :page-meta-keywords="{{ json_encode($deliveryConfig->getTranslations('meta_keywords')) }}"
-                        
+                        :page-meta-tags="{{ json_encode($deliveryConfig->meta_tags) }}"
+
                         :title="{{ json_encode($deliveryConfig->getTranslations('title')) }}"
                         :description="{{ json_encode($deliveryConfig->getTranslations('description')) }}"
                         :button-text="{{ json_encode($deliveryConfig->getTranslations('button_text')) }}"

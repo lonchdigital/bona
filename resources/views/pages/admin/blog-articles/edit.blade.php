@@ -29,6 +29,7 @@
                     :meta-title="{{ json_encode(isset($blogArticle) ? $blogArticle->getTranslations('meta_title') : []) }}"
                     :meta-description="{{ json_encode(isset($blogArticle) ? $blogArticle->getTranslations('meta_description') : []) }}"
                     :meta-keywords="{{ json_encode(isset($blogArticle) ? $blogArticle->getTranslations('meta_keywords') : []) }}"
+                    :blog-meta-tags="{{ json_encode(isset($blogArticle) ? $blogArticle->meta_tags : '') }}"
                 />
             </div>
         </div>
