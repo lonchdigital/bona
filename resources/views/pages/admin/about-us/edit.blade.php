@@ -15,6 +15,7 @@
                         :page-meta-title="{{ json_encode($aboutUsConfig->getTranslations('meta_title')) }}"
                         :page-meta-description="{{ json_encode($aboutUsConfig->getTranslations('meta_description')) }}"
                         :page-meta-keywords="{{ json_encode($aboutUsConfig->getTranslations('meta_keywords')) }}"
+                        :page-meta-tags="{{ json_encode($aboutUsConfig->meta_tags) }}"
 
                         :title="{{ json_encode($aboutUsConfig->getTranslations('title')) }}"
                         :description="{{ json_encode($aboutUsConfig->getTranslations('description')) }}"

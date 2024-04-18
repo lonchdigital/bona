@@ -2,31 +2,24 @@
 
 @section('title')
 
-
     @if(isset($contactsConfig))
-
         @if($contactsConfig->meta_title)
             <title>{{ $contactsConfig->meta_title }}</title>
             <meta name="title" content="{{ $contactsConfig->meta_title }}">
-        @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_title_tag }}">
         @endif
 
         @if($contactsConfig->meta_description)
             <meta name="description" content="{{ $contactsConfig->meta_description }}">
-        @elseif(isset($seogenData))
-            <meta name="description" content="{{ $seogenData->meta_description_tag }}">
         @endif
-
         @if($contactsConfig->meta_keywords)
             <meta name="keywords" content="{{ $contactsConfig->meta_keywords }}">
-        @elseif(isset($seogenData))
-            <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
         @endif
 
-    @else
-        <title>{{ config('app.name') }}</title>
+        @if($contactsConfig->meta_tags)
+            {!! $contactsConfig->meta_tags !!}
+        @endif
     @endif
+
 @endsection
 
 @section('content')

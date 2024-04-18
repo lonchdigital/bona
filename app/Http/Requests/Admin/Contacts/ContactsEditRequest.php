@@ -22,6 +22,10 @@ class ContactsEditRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'meta_tags' => [
+                'nullable',
+                'string',
+            ],
         ];
 
         $rules['iframe_address_one'] = [
@@ -129,6 +133,7 @@ class ContactsEditRequest extends BaseRequest
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
+            $this->input('meta_tags'),
 
             $this->input('city_one'),
             $this->input('address_one'),

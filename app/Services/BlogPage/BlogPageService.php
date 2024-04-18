@@ -19,6 +19,7 @@ class BlogPageService extends BaseService
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeywords,
+                'meta_tags' => $request->metaTags,
                 'title' => $request->title,
             ];
 

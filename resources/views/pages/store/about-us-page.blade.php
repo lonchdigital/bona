@@ -3,29 +3,23 @@
 @section('title')
 
     @if(isset($aboutUsConfig))
-
         @if($aboutUsConfig->meta_title)
             <title>{{ $aboutUsConfig->meta_title }}</title>
             <meta name="title" content="{{ $aboutUsConfig->meta_title }}">
-        @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_title_tag }}">
         @endif
 
         @if($aboutUsConfig->meta_description)
             <meta name="description" content="{{ $aboutUsConfig->meta_description }}">
-        @elseif(isset($seogenData))
-            <meta name="description" content="{{ $seogenData->meta_description_tag }}">
         @endif
-
         @if($aboutUsConfig->meta_keywords)
             <meta name="keywords" content="{{ $aboutUsConfig->meta_keywords }}">
-        @elseif(isset($seogenData))
-            <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
         @endif
 
-    @else
-        <title>{{ config('app.name') }}</title>
+        @if($aboutUsConfig->meta_tags)
+            {!! $aboutUsConfig->meta_tags !!}
+        @endif
     @endif
+
 @endsection
 
 @section('content')

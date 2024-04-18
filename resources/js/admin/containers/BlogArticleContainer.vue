@@ -2,7 +2,13 @@
 import axios from "axios";
 import slug from "slug";
 
+import TextAreaComponent from "../components/TextAreaComponent.vue";
+
+
 export default {
+    components: {
+        TextAreaComponent
+    },
     props: {
         availableLanguages: Array,
         availableBlocks: Array,
@@ -43,6 +49,10 @@ export default {
         metaKeywords: {
             type: Object,
             default: {}
+        },
+        blogMetaTags: {
+            type: String,
+            default: '',
         },
 
 
@@ -169,6 +179,14 @@ export default {
                     :available-languages="availableLanguages"
                     :init-data="metaKeywords"
                     :key="'article-meta-keywords'"
+                    :errors="errors"
+                />
+
+                <text-area-component
+                    :title="$t('admin.meta_tags')"
+                    name="meta_tags"
+                    :is-required="false"
+                    :init-data="blogMetaTags"
                     :errors="errors"
                 />
 

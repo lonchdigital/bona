@@ -14,6 +14,7 @@ class EditBlogArticleDTO implements BaseDTO
         public readonly ?array $metaTitle,
         public readonly ?array $metaDescription,
         public readonly ?array $metaKeywords,
+        public readonly ?string $metaTags,
         public readonly ?UploadedFile $heroImage,
         public readonly ?array $blocks,
     ){ }

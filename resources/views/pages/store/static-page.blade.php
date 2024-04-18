@@ -1,19 +1,25 @@
 @extends('layouts.store-main')
 
 @section('title')
-    <title>{{ config('app.name') . ' - ' . $heading }}</title>
 
     @if(isset($allData))
         @if($allData['meta_title'])
+            <title>{{ $allData['meta_title'] }}</title>
             <meta name="title" content="{{ $allData['meta_title'] }}">
         @endif
+
         @if($allData['meta_description'])
             <meta name="description" content="{{ $allData['meta_description'] }}">
         @endif
         @if($allData['meta_keywords'])
             <meta name="keywords" content="{{ $allData['meta_keywords'] }}">
         @endif
+
+        @if($allData['meta_tags'])
+            {!! $allData['meta_tags'] !!}
+        @endif
     @endif
+
 @endsection
 
 @section('content')

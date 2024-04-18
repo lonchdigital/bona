@@ -5,6 +5,7 @@ import MultiLanguageInputComponent from "../components/MultiLanguageInputCompone
 import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
 import ServicesSectionsComponent from "../components/ServicesSectionsComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
+import TextAreaComponent from "../components/TextAreaComponent.vue";
 import * as transliteration from 'transliteration';
 
 
@@ -14,6 +15,7 @@ export default {
         ImageFileInputComponent,
         ServicesSectionsComponent,
         MultiLanguageRichTextEditorComponent,
+        TextAreaComponent
     },
     props: {
         submitRoute: {
@@ -44,6 +46,10 @@ export default {
         pageMetaKeywords: {
             type: Object,
             default: {},
+        },
+        pageMetaTags: {
+            type: String,
+            default: '',
         },
 
         title: {
@@ -210,6 +216,14 @@ export default {
                         :is-required="false"
                     />
                 </div>
+
+                <text-area-component
+                    :title="$t('admin.meta_tags')"
+                    name="meta_tags"
+                    :is-required="false"
+                    :init-data="pageMetaTags"
+                    :errors="errors"
+                />
 
             </div>
         </div>

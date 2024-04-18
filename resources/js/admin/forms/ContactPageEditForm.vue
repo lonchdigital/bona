@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
+import TextAreaComponent from "../components/TextAreaComponent.vue";
 import * as transliteration from 'transliteration';
 
 
@@ -38,6 +39,10 @@ export default {
         pageMetaKeywords: {
             type: Object,
             default: {},
+        },
+        pageMetaTags: {
+            type: String,
+            default: '',
         },
 
         cityOne: {
@@ -358,6 +363,13 @@ export default {
                     />
                 </div>
 
+                <text-area-component
+                    :title="$t('admin.meta_tags')"
+                    name="meta_tags"
+                    :is-required="false"
+                    :init-data="pageMetaTags"
+                    :errors="errors"
+                />
 
             </div>
         </div>

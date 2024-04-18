@@ -33,6 +33,16 @@
                                     <x-admin.multilanguage-input :label="trans('admin.meta_keywords')"
                                                                  :is-required="false" field-name="meta_keywords"
                                                                  :values="isset($blogPageConfig) ? $blogPageConfig->getTranslations('meta_keywords') : []"/>
+
+                                    <div class="col-md-12 mb-5">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>{{ trans('admin.meta_tags') }}</label>
+                                                <textarea type="text" name="meta_tags" class="form-control">@isset($blogPageConfig){{ $blogPageConfig['meta_tags'] }}@endisset</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
 

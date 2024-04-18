@@ -2,31 +2,24 @@
 
 @section('title')
 
-
     @if(isset($deliveryConfig))
-
         @if($deliveryConfig->meta_title)
             <title>{{ $deliveryConfig->meta_title }}</title>
             <meta name="title" content="{{ $deliveryConfig->meta_title }}">
-        @elseif(isset($seogenData))
-            <meta name="title" content="{{ $seogenData->meta_title_tag }}">
         @endif
 
         @if($deliveryConfig->meta_description)
             <meta name="description" content="{{ $deliveryConfig->meta_description }}">
-        @elseif(isset($seogenData))
-            <meta name="description" content="{{ $seogenData->meta_description_tag }}">
         @endif
-
         @if($deliveryConfig->meta_keywords)
             <meta name="keywords" content="{{ $deliveryConfig->meta_keywords }}">
-        @elseif(isset($seogenData))
-            <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
         @endif
 
-    @else
-        <title>{{ config('app.name') }}</title>
+        @if($deliveryConfig->meta_tags)
+            {!! $deliveryConfig->meta_tags !!}
+        @endif
     @endif
+
 @endsection
 
 
