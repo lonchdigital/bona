@@ -2,6 +2,7 @@
 
 return [
     'site_title' => 'Інтернет-магазин дверей!',
+    'form_sent_success' => 'Ваш запит успішно відправленно!',
     'showroom_line_1' => 'Шоурум на ',
     'showroom_address' => 'вул. Михайла Максимовича, 24',
     'showroom_line_2' => ' відкрито щодня з',

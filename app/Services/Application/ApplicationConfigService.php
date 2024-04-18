@@ -49,19 +49,6 @@ class ApplicationConfigService extends BaseService
         return '';
     }
 
-    /*public function setRobotsTxtContent(EditRobotsTxtDto $request): ServiceActionResult
-    {
-        return $this->coverWithTryCatch(function () use ($request){
-             ApplicationConfig::updateOrCreate([
-                 'config_name' => self::ROBOTS_TXT_CONFIG
-             ], [
-                 'config_data' => $request->content,
-             ]);
-
-             return ServiceActionResult::make(true, trans('admin.robots_txt_edit_success'));
-        });
-    }*/
-
     public function setRobotsTxtContent(EditRobotsTxtDto $request): ServiceActionResult
     {
         return $this->coverWithTryCatch(function () use ($request){
