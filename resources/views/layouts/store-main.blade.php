@@ -138,7 +138,7 @@
 <a href="" id="user-choose-doors-success" data-fancybox data-src="#art-user-choose-doors" style="display: none">Launch Dialog</a>
 <div id="art-user-choose-doors" style="display: none">
     <div class="">
-        <h2>Ваш запит успішно відправленно!</h2>
+        <h2>{{ trans('base.form_sent_success') }}</h2>
     </div>
 </div>
 
