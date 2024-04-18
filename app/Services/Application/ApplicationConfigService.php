@@ -66,8 +66,8 @@ class ApplicationConfigService extends BaseService
     {
         return $this->coverWithTryCatch(function () use ($request){
             // put data to robots.txt
-//            Storage::disk('public')->put('robots.txt', $request->content);
-            Storage::disk('public')->put('/robots.txt', $request->content);
+            $filePath = public_path('robots.txt');
+            file_put_contents($filePath, $request->content);
 
             // update data in DB
             ApplicationConfig::updateOrCreate([
