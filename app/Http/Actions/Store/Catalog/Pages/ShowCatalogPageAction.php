@@ -12,7 +12,7 @@ use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
-use App\Services\WishList\WishListService;
+use Abordage\LastModified\Facades\LastModified;
 
 class ShowCatalogPageAction extends BaseAction
 {
@@ -64,7 +64,8 @@ class ShowCatalogPageAction extends BaseAction
             $page,
         );
 
-//        dd($productsPaginated);
+
+        LastModified::set($productType->updated_at);
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
