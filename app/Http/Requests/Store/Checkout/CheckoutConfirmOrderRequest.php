@@ -85,27 +85,32 @@ class CheckoutConfirmOrderRequest extends BaseRequest
 
              $rules['district'] = [
                  'required',
-                 'string'
+                 'string',
+                 'alpha'
              ];
 
              $rules['street'] = [
                  'required',
-                 'string'
+                 'string',
+                 'alpha'
              ];
 
             $rules['building_number'] = [
                 'required',
-                'string'
+                'string',
+                'numeric'
             ];
 
             $rules['apartment_number'] = [
                 'nullable',
-                'string'
+                'string',
+                'numeric'
             ];
 
             $rules['floor_number'] = [
                 'nullable',
-                'string'
+                'string',
+                'numeric'
             ];
 
             $rules['has_elevator'] = [

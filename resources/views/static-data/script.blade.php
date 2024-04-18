@@ -33,10 +33,6 @@ const routes = {
         sat: {
             cities: '{{ route('delivery.sat.cities') }}',
             departments: '{{ route('delivery.sat.departments') }}',
-        },
-        meest: {
-            cities: '{{ route('delivery.meest.cities') }}',
-            departments: '{{ route('delivery.meest.departments') }}',
         }
     }
 };
