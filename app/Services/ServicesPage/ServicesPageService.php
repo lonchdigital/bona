@@ -64,10 +64,14 @@ class ServicesPageService extends BaseService
                 ];
 
                 if (isset($section['image'])) {
-                    $sectionImagePath = self::SERVICES_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                    $this->storeServicesPageImage($sectionImagePath, $section['image']);
-                    $dataToUpdate['section_image_path'] = $sectionImagePath;
+                    $sectionImagePath = self::SERVICES_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10);
+
+                    $this->storeImage($sectionImagePath, $section['image'], 'webp');
+                    $this->storeImage($sectionImagePath, $section['image'], 'jpg');
+
+                    $dataToUpdate['section_image_path'] = $sectionImagePath . '.webp';
                 }
+
 
                 if (isset($section['id']) && $section['id']) {
                     $existingSlide = $existingSections->where('id', $section['id'])->first();
@@ -98,30 +102,14 @@ class ServicesPageService extends BaseService
         }
 
         foreach ($imagesToDelete as $imageToDelete) {
-            $this->deleteServicesPageImage($imageToDelete);
+            if(!is_null($imageToDelete)) {
+                $this->deleteImage($imageToDelete);
+            }
         }
 
     }
-
-    /*public function getHomePageConfig(): ?HomePageConfig {
-        return HomePageConfig::first();
-    }*/
 
     public function getServicesConfig(): ?ServicesConfig {
         return ServicesConfig::first();
-    }
-
-    private function storeServicesPageImage(string $path, UploadedFile $image): void
-    {
-        $image = Image::make($image)->encode('jpg', 100);
-
-        Storage::disk(config('app.images_disk_default'))->put($path, $image);
-    }
-
-    private function deleteServicesPageImage(string $path): void
-    {
-        if (Storage::disk(config('app.images_disk_default'))->exists($path)) {
-            Storage::disk(config('app.images_disk_default'))->delete($path);
-        }
     }
 }

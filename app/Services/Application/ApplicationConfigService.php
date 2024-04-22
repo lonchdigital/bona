@@ -70,9 +70,6 @@ class ApplicationConfigService extends BaseService
     public function editApplicationConfig(ApplicationConfigEditDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($request) {
-
-//            dd($request);
-
             $dataToUpdate = [];
             foreach ($request as $key => $value) {
                 $dataToUpdate[$key] = $value;
@@ -87,9 +84,12 @@ class ApplicationConfigService extends BaseService
 
             // logo Light
             if( !is_null($request->logoLight) ) {
-                $logoLightImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $this->storeImage($logoLightImagePath, $request->logoLight, 'png');
-                $dataToUpdate['logoLight'] = $logoLightImagePath;
+                $logoLightImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+
+                $this->storeImage($logoLightImagePath, $request->logoLight, 'webp', 100);
+                $this->storeImage($logoLightImagePath, $request->logoLight, 'png', 100);
+
+                $dataToUpdate['logoLight'] = $logoLightImagePath . '.webp';
 
                 if(!is_null($existinglogoLight) && !is_null($existinglogoLight->config_data)) {
                     $this->deleteImage($existinglogoLight->config_data);
@@ -102,9 +102,12 @@ class ApplicationConfigService extends BaseService
 
             // logo Dark
             if( !is_null($request->logoDark) ) {
-                $logoDarkImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $this->storeImage($logoDarkImagePath, $request->logoDark, 'png');
-                $dataToUpdate['logoDark'] = $logoDarkImagePath;
+                $logoDarkImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+
+                $this->storeImage($logoDarkImagePath, $request->logoDark, 'webp', 100);
+                $this->storeImage($logoDarkImagePath, $request->logoDark, 'png', 100);
+
+                $dataToUpdate['logoDark'] = $logoDarkImagePath . '.webp';
 
                 if(!is_null($existinglogoDark) && !is_null($existinglogoDark->config_data)) {
                     $this->deleteImage($existinglogoDark->config_data);
@@ -117,9 +120,12 @@ class ApplicationConfigService extends BaseService
 
             // form Image
             if( !is_null($request->formImage) ) {
-                $formImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $this->storeImage($formImagePath, $request->formImage);
-                $dataToUpdate['formImage'] = $formImagePath;
+                $formImagePath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+
+                $this->storeImage($formImagePath, $request->formImage, 'webp');
+                $this->storeImage($formImagePath, $request->formImage, 'jpg');
+
+                $dataToUpdate['formImage'] = $formImagePath . '.webp';
 
                 if(!is_null($existingFormImage) && !is_null($existingFormImage->config_data)) {
                     $this->deleteImage($existingFormImage->config_data);

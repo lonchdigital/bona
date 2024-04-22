@@ -69,11 +69,11 @@ class ProductTypeService extends BaseService
 
         return $this->coverWithDBTransaction(function () use($request, $creator) {
 
-            $path = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+            $path = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
 
             if( !is_null($request->image) ) {
-                $image = Image::make($request->image)->encode('jpg', 100);
-                Storage::disk(config('app.images_disk_default'))->put($path, $image);
+                $this->storeImage($path, $request->image, 'webp');
+                $this->storeImage($path, $request->image, 'jpg');
             }
 
             $productType = ProductType::create([
@@ -81,7 +81,7 @@ class ProductTypeService extends BaseService
                 'name' => $request->productTypeName,
                 'slug' => $request->slug,
                 'product_point_name' => $request->pointName,
-                'image_path' => $path,
+                'image_path' => $path . '.webp',
 
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
@@ -192,8 +192,8 @@ class ProductTypeService extends BaseService
             if( !is_null($request->image) ) {
                 $imagesToDelete[] = $productType->image_path;
 
-                $newImagePath = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $dataToUpdate['image_path'] = $newImagePath;
+                $newImagePath = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+                $dataToUpdate['image_path'] = $newImagePath . '.webp';
 
                 $postTypeImage['image'] = $request->image;
                 $postTypeImage['path'] = $newImagePath;
@@ -226,11 +226,12 @@ class ProductTypeService extends BaseService
             }
 
             if( !is_null( $postTypeImage ) ) {
-                $this->storePostTypeImage($postTypeImage['path'], $postTypeImage['image']);
+                $this->storeImage($postTypeImage['path'], $postTypeImage['image'], 'webp');
+                $this->storeImage($postTypeImage['path'], $postTypeImage['image'], 'jpg');
             }
 
             foreach ($imagesToDelete as $imageToDelete) {
-                $this->deletePostTypeImage($imageToDelete);
+                $this->deleteImage($imageToDelete);
             }
 
             $this->syncFaqs($productType->slug, $request->faqs);
@@ -255,11 +256,9 @@ class ProductTypeService extends BaseService
 
                 SeoText::where('page_type', $productType->slug)->delete();
 
-                 $productType->delete();
+                $this->deleteImage($productType->image_path);
 
-                if (Storage::disk(config('app.images_disk_default'))->exists($productType->image_path)) {
-                    Storage::disk(config('app.images_disk_default'))->delete($productType->image_path);
-                }
+                $productType->delete();
 
                 return ServiceActionResult::make(true, trans('admin.product_type_delete_success'));
             }
@@ -375,16 +374,4 @@ class ProductTypeService extends BaseService
         }
     }
 
-    public function storePostTypeImage(string $path, UploadedFile $image): void
-    {
-        $image = Image::make($image)->encode('jpg', 100);
-        Storage::disk(config('app.images_disk_default'))->put($path, $image);
-    }
-
-    public function deletePostTypeImage(string $imagePath): void
-    {
-        if (Storage::disk(config('app.images_disk_default'))->exists($imagePath)) {
-            Storage::disk(config('app.images_disk_default'))->delete($imagePath);
-        }
-    }
 }
