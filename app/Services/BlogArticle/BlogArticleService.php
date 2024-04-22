@@ -43,16 +43,17 @@ class BlogArticleService extends BaseService
     public function createBlogArticle(EditBlogArticleDTO $request, User $creator): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($request, $creator) {
-            $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
 
-            $this->storeArticleImage($heroImagePath, $request->heroImage);
+            $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+            $this->storeImage($heroImagePath, $request->heroImage, 'webp');
+            $this->storeImage($heroImagePath, $request->heroImage, 'jpg');
 
             $article = BlogArticle::create([
                 'creator_id' => $creator->id,
                 'name' => $request->name,
                 'slug' => $request->slug,
                 'preview_text' => $request->previewText,
-                'hero_image_path' => $heroImagePath,
+                'hero_image_path' => $heroImagePath . '.webp',
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeywords,
@@ -99,9 +100,12 @@ class BlogArticleService extends BaseService
             ];
 
             if ($request->heroImage) {
-                $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $this->storeArticleImage($heroImagePath, $request->heroImage);
-                $fieldsToUpdate['hero_image_path'] = $heroImagePath;
+                $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+
+                $this->storeImage($heroImagePath, $request->heroImage, 'webp');
+                $this->storeImage($heroImagePath, $request->heroImage, 'jpg');
+
+                $fieldsToUpdate['hero_image_path'] = $heroImagePath . '.webp';
                 $imagesToDelete[] = $article->hero_image_path;
             }
 
@@ -203,7 +207,7 @@ class BlogArticleService extends BaseService
             }
 
             foreach ($imagesToDelete as $imagePath) {
-                $this->deleteArticleImage($imagePath);
+                $this->deleteImage($imagePath);
             }
 
             return ServiceActionResult::make(true, trans('admin.blog_article_edit_success'));
@@ -238,7 +242,7 @@ class BlogArticleService extends BaseService
             $blogArticle->delete();
 
             foreach ($imagesToDelete as $imageToDelete) {
-                $this->deleteArticleImage($imageToDelete);
+                $this->deleteImage($imageToDelete);
             }
 
             return ServiceActionResult::make(true, trans('admin.blog_article_delete_success'));

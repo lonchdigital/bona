@@ -61,14 +61,13 @@ class ColorService extends BaseService
 
             $colorImage = null;
             if( !is_null($request->mainImage) ) {
-                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $dataToUpdate['main_image'] = $newImagePath;
-
+                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
                 $colorImage['image'] = $request->mainImage;
-                $colorImage['path'] = $newImagePath;
-            }
-            if( !is_null( $colorImage ) ) {
-                $this->storeImage($colorImage['path'], $colorImage['image']);
+
+                $this->storeImage($newImagePath, $dataToUpdate['image'], 'webp');
+                $this->storeImage($newImagePath, $dataToUpdate['image'], 'jpg');
+
+                $dataToUpdate['main_image'] = $newImagePath . '.webp';
             }
 
             Color::create($dataToUpdate);
@@ -89,26 +88,22 @@ class ColorService extends BaseService
                 'parent_color_id' => $request->parentColorId,
             ];
 
-
             $imageToDelete = null;
-            $colorImage = null;
             if( !is_null($request->mainImage) ) {
                 $imageToDelete = $color->main_image;
 
-                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $dataToUpdate['main_image'] = $newImagePath;
-
+                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
                 $colorImage['image'] = $request->mainImage;
-                $colorImage['path'] = $newImagePath;
+
+                $this->storeImage($newImagePath, $colorImage['image'], 'webp');
+                $this->storeImage($newImagePath, $colorImage['image'], 'jpg');
+
+                $dataToUpdate['main_image'] = $newImagePath . '.webp';
             }
 
-            if( !is_null( $colorImage ) ) {
-                $this->storeImage($colorImage['path'], $colorImage['image']);
-            }
             if(!is_null($imageToDelete)) {
                 $this->deleteImage($imageToDelete);
             }
-
 
             $color->update($dataToUpdate);
 

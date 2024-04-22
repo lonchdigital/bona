@@ -432,11 +432,12 @@ class ProductService extends BaseService
 
             //handle images
             if( !is_null($request->mainImage) ) {
-                $previewImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_preview.jpg';
-                $mainImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_main.jpg';
+                $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
+                $previewImagePath = sha1(time()) . '_' . Str::random(10) . '_preview';
+                $mainImagePath = sha1(time()) . '_' . Str::random(10) . '_main';
 
-                $productData['preview_image_path'] = $previewImagePath;
-                $productData['main_image_path'] = $mainImagePath;
+                $productData['preview_image_path'] = $storagePath .'/'. $previewImagePath . '.webp';
+                $productData['main_image_path'] = $storagePath .'/'. $mainImagePath . '.webp';
             }
 
             if ($request->customFields && count($productType->fields)) {
@@ -474,8 +475,11 @@ class ProductService extends BaseService
             }
 
             if( !is_null($request->mainImage) ) {
-                $this->storePreviewImage($previewImagePath, $request->mainImage);
-                $this->storeProductImage($mainImagePath, $request->mainImage);
+                $this->storePreviewImage($previewImagePath, $request->mainImage, 'webp');
+                $this->storePreviewImage($previewImagePath, $request->mainImage, 'jpg');
+
+                $this->storeProductImage($mainImagePath, $request->mainImage, 'webp');
+                $this->storeProductImage($mainImagePath, $request->mainImage, 'jpg');
             }
 
             return ServiceActionResult::make(true, trans('admin.product_create_success'));
@@ -532,12 +536,13 @@ class ProductService extends BaseService
             if ($request->mainImage) {
                 $imagesToDelete[] = $product->main_image_path;
                 $imagesToDelete[] = $product->preview_image_path;
+                $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
 
-                $mainImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_main.jpg';
-                $previewImagePath = self::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_preview.jpg';
+                $previewImagePath = sha1(time()) . '_' . Str::random(10) . '_preview';
+                $mainImagePath = sha1(time()) . '_' . Str::random(10) . '_main';
 
-                $dataToUpdate['main_image_path'] = $mainImagePath;
-                $dataToUpdate['preview_image_path'] = $previewImagePath;
+                $dataToUpdate['preview_image_path'] = $storagePath .'/'. $previewImagePath . '.webp';
+                $dataToUpdate['main_image_path'] = $storagePath .'/'. $mainImagePath . '.webp';
 
                 $mainImage['image'] = $request->mainImage;
                 $mainImage['path'] = $mainImagePath;
@@ -576,16 +581,18 @@ class ProductService extends BaseService
 
             //store images
             if ($mainImage) {
-                $this->storeProductImage($mainImage['path'], $mainImage['image']);
+                $this->storeProductImage($mainImage['path'], $mainImage['image'], 'webp');
+                $this->storeProductImage($mainImage['path'], $mainImage['image'], 'jpg');
             }
             if ($previewImage) {
-                $this->storePreviewImage($previewImage['path'], $previewImage['image']);
+                $this->storePreviewImage($previewImage['path'], $previewImage['image'], 'webp');
+                $this->storePreviewImage($previewImage['path'], $previewImage['image'], 'jpg');
             }
 
             //delete images
             foreach ($imagesToDelete as $imageToDelete) {
                 if( !is_null($imageToDelete) ) {
-                    $this->deleteProductImage($imageToDelete);
+                    $this->deleteImage($imageToDelete);
                 }
             }
 
@@ -895,9 +902,13 @@ class ProductService extends BaseService
                 ];
 
                 if (isset($gallery_image['image'])) {
-                    $galleryImagePath = self::PRODUCT_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                    $this->storeProductImage($galleryImagePath, $gallery_image['image']);
-                    $dataToUpdate['image_path'] = $galleryImagePath;
+                    $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
+                    $galleryImagePath = sha1(time()) . '_' . Str::random(10);
+
+                    $this->storeProductImage($galleryImagePath, $gallery_image['image'], 'webp');
+                    $this->storeProductImage($galleryImagePath, $gallery_image['image'], 'jpg');
+
+                    $dataToUpdate['image_path'] = $storagePath .'/'. $galleryImagePath . '.webp';
                 }
 
                 if (isset($gallery_image['id']) && $gallery_image['id']) {
@@ -927,11 +938,8 @@ class ProductService extends BaseService
             $imagesToDelete[] = $galleryImageToDelete->image_path;
             $galleryImageToDelete->delete();
         }
-
-//        dd($imagesToDelete);
-
         foreach ($imagesToDelete as $imageToDelete) {
-            $this->deleteProductImage($imageToDelete);
+            $this->deleteImage($imageToDelete);
         }
 
     }
@@ -999,7 +1007,7 @@ class ProductService extends BaseService
 
             foreach ($imagesToDelete as $imageToDelete) {
                 if( !is_null($imageToDelete) ) {
-                    $this->deleteProductImage($imageToDelete);
+                    $this->deleteImage($imageToDelete);
                 }
             }
 
@@ -1047,36 +1055,36 @@ class ProductService extends BaseService
             });
     }
 
-    public function storePreviewImage(string $path, UploadedFile $image): void
+    public function storePreviewImage(string $path, UploadedFile $image, string $format, $quality = 70): void
     {
+        $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
+        if (!Storage::disk(config('app.images_disk_default'))->exists($storagePath)) {
+            Storage::disk(config('app.images_disk_default'))->makeDirectory($storagePath);
+        }
+
         $image = Image::make($image);
-//        $squareSize = $image->width();
 
         $imageWidth = intval(round($image->width() / 2, 0));
         $imageHeight = intval(round($image->height() / 2, 0));
 
         if($imageWidth > 400) {
-            $image = $image->fit($imageWidth, $imageHeight)->encode('jpg', 100);
+            $image = $image->fit($imageWidth, $imageHeight)->encode($format, $quality);
         } else {
-            $image = $image->encode('jpg', 100);
+            $image = $image->encode($format, $quality);
         }
 
-        Storage::disk(config('app.images_disk_default'))
-            ->put($path, $image);
+        Storage::disk(config('app.images_disk_default'))->put($storagePath . '/' . $path . '.'.$format, $image);
     }
 
-    public function storeProductImage(string $path, UploadedFile $image): void
+    protected function storeProductImage(string $path, UploadedFile $image, string $format, $quality = 70): void
     {
-        $image = Image::make($image)->encode('jpg', 100);
-
-        Storage::disk(config('app.images_disk_default'))->put($path, $image);
-    }
-
-    public function deleteProductImage(string $imagePath): void
-    {
-        if (Storage::disk(config('app.images_disk_default'))->exists($imagePath)) {
-            Storage::disk(config('app.images_disk_default'))->delete($imagePath);
+        $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
+        if (!Storage::disk(config('app.images_disk_default'))->exists($storagePath)) {
+            Storage::disk(config('app.images_disk_default'))->makeDirectory($storagePath);
         }
+
+        $image = Image::make($image)->encode($format, $quality);
+        Storage::disk(config('app.images_disk_default'))->put($storagePath . '/' . $path . '.' . $format, $image);
     }
 
     private function prepareCustomFieldsToSync(array $rawCustomFieldsArray): array

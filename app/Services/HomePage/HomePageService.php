@@ -31,8 +31,6 @@ class HomePageService extends BaseService
     public function editHomePage(HomePageEditDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($request) {
-            $imagesToDelete = [];
-
             $homePageConfig = $this->getHomePageConfig();
             $dataToUpdate = [
                 'meta_title' => $request->metaTitle,
@@ -54,10 +52,6 @@ class HomePageService extends BaseService
 
             $this->syncNewProducts($request->selectedProductsId);
             $this->syncBestSalesProducts($request->selectedBestSalesProductsId);
-
-            foreach ($imagesToDelete as $imageToDelete) {
-                $this->deleteHomePageImage($imageToDelete);
-            }
 
              return ServiceActionResult::make(true, trans('admin.home_page_edit_success'));
         });
@@ -118,9 +112,12 @@ class HomePageService extends BaseService
                 ];
 
                 if (isset($slide['image'])) {
-                    $slideImagePath = self::HOME_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                    $this->storeHomePageImage($slideImagePath, $slide['image']);
-                    $dataToUpdate['slide_image_path'] = $slideImagePath;
+                    $slideImagePath = self::HOME_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10);
+
+                    $this->storeImage($slideImagePath, $slide['image'], 'webp');
+                    $this->storeImage($slideImagePath, $slide['image'], 'jpg');
+
+                    $dataToUpdate['slide_image_path'] = $slideImagePath . '.webp';
                 }
 
                 if (isset($slide['id']) && $slide['id']) {
@@ -152,7 +149,7 @@ class HomePageService extends BaseService
         }
 
         foreach ($imagesToDelete as $imageToDelete) {
-            $this->deleteHomePageImage($imageToDelete);
+            $this->deleteImage($imageToDelete);
         }
 
     }
@@ -173,9 +170,12 @@ class HomePageService extends BaseService
 
                 if (isset($testimonial['image'])) {
 //                    dd($testimonial['image']);
-                    $testimonialImagePath = self::HOME_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                    $this->storeHomePageImage($testimonialImagePath, $testimonial['image']);
-                    $dataToUpdate['testimonial_image_path'] = $testimonialImagePath;
+                    $testimonialImagePath = self::HOME_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10);
+
+                    $this->storeImage($testimonialImagePath, $testimonial['image'], 'webp');
+                    $this->storeImage($testimonialImagePath, $testimonial['image'], 'jpg');
+
+                    $dataToUpdate['testimonial_image_path'] = $testimonialImagePath . '.webp';
                 }
 
                 if (isset($testimonial['id']) && $testimonial['id']) {
@@ -208,7 +208,7 @@ class HomePageService extends BaseService
         }
 
         foreach ($imagesToDelete as $imageToDelete) {
-            $this->deleteHomePageImage($imageToDelete);
+            $this->deleteImage($imageToDelete);
         }
 
     }
@@ -343,19 +343,5 @@ class HomePageService extends BaseService
 
             return $data;
         //});
-    }
-
-    private function storeHomePageImage(string $path, UploadedFile $image): void
-    {
-        $image = Image::make($image)->encode('jpg', 100);
-
-        Storage::disk(config('app.images_disk_default'))->put($path, $image);
-    }
-
-    private function deleteHomePageImage(string $path): void
-    {
-        if (Storage::disk(config('app.images_disk_default'))->exists($path)) {
-            Storage::disk(config('app.images_disk_default'))->delete($path);
-        }
     }
 }

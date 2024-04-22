@@ -35,15 +35,16 @@ class AboutUsPageService extends BaseService
             if( !is_null($request->image) ) {
                 $imagesToDelete[] = $existingConfig->image;
 
-                $newImagePath = self::DELIVERY_PAGE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $dataToUpdate['image'] = $newImagePath;
+                $newImagePath = self::DELIVERY_PAGE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+                $dataToUpdate['image'] = $newImagePath . '.webp';
 
                 $deliveryImage['image'] = $request->image;
                 $deliveryImage['path'] = $newImagePath;
             }
 
             if( !is_null( $deliveryImage ) ) {
-                $this->storeImage($deliveryImage['path'], $deliveryImage['image']);
+                $this->storeImage($deliveryImage['path'], $deliveryImage['image'], 'webp');
+                $this->storeImage($deliveryImage['path'], $deliveryImage['image'], 'jpg');
             }
 
             foreach ($imagesToDelete as $imageToDelete) {

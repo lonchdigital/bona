@@ -43,15 +43,12 @@ class CategoryService extends BaseService
             ];
 
             if(!is_null($request->image)) {
-                $path = self::CATEGORY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $path = self::CATEGORY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
 
-                $image = Image::make($request->image)
-                    ->resize(60, 60)
-                    ->encode('jpg', 85);
+                $this->storeImage($path, $request->image, 'webp');
+                $this->storeImage($path, $request->image, 'jpg');
 
-                Storage::disk(config('app.images_disk_default'))->put($path, $image);
-
-                $dataToAdd['image_path'] = $path;
+                $dataToAdd['image_path'] = $path . '.webp';
             }
 
 
@@ -66,12 +63,11 @@ class CategoryService extends BaseService
         return $this->coverWithDBTransaction(function () use($request, $productCategory) {
 
             if(!is_null($request->image)) {
-                $newImagePath = self::CATEGORY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $newImagePath = self::CATEGORY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
                 $oldImagePath = $productCategory->image_path;
 
-                $image = Image::make($request->image)->encode('jpg', 100);
-
-                Storage::disk(config('app.images_disk_default'))->put($newImagePath, $image);
+                $this->storeImage($newImagePath, $request->image, 'webp');
+                $this->storeImage($newImagePath, $request->image, 'jpg');
 
                 $productCategory->update([
                     'meta_title' => $request->metaTitle,
@@ -79,12 +75,12 @@ class CategoryService extends BaseService
                     'meta_keywords' => $request->metaKeyWords,
                     'name' => $request->name,
                     'slug' => $request->slug,
-                    'image_path' => $newImagePath,
+                    'image_path' => $newImagePath . '.webp',
                 ]);
 
                 //delete image as a last step
                 if (!is_null($oldImagePath)) {
-                    Storage::disk(config('app.images_disk_default'))->delete($oldImagePath);
+                    $this->deleteImage($oldImagePath);
                 }
             } else {
 

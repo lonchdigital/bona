@@ -99,9 +99,12 @@ class BrandService extends BaseService
             ];
 
             if( !is_null($request->logo) ) {
-                $logoPath = self::BRAND_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10) . '.png';
+                $logoPath = self::BRAND_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10);
+
+                $this->storeImage($logoPath, $request->logo, 'webp');
                 $this->storeImage($logoPath, $request->logo, 'png');
-                $dataToUpdate['logo_image_path'] = $logoPath;
+
+                $dataToUpdate['logo_image_path'] = $logoPath . '.webp';
             }
 
             Brand::create($dataToUpdate);
@@ -125,9 +128,12 @@ class BrandService extends BaseService
 
             if ($request->logo) {
                 $imagesToDelete[] = $brand->logo_image_path;
-                $logoNewPath = self::BRAND_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.png';
+                $logoNewPath = self::BRAND_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+
+                $this->storeImage($logoNewPath, $request->logo, 'webp');
                 $this->storeImage($logoNewPath, $request->logo, 'png');
-                $fieldsToUpdate['logo_image_path'] = $logoNewPath;
+
+                $fieldsToUpdate['logo_image_path'] = $logoNewPath . '.webp';
             }
 
             $brand->update($fieldsToUpdate);
@@ -146,35 +152,14 @@ class BrandService extends BaseService
             if (Product::where('brand_id', $brand->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.brand_in_use'));
             } else {
-
-                $imagesToDelete = [];
-
-                $brand->delete();
-
                 if( !is_null($brand->logo_image_path) ) {
-
-                    if (Storage::disk(config('app.images_disk_default'))->exists($brand->logo_image_path)) {
-                        $imagesToDelete[] = $brand->logo_image_path;
-                    }
-                    foreach ($imagesToDelete as $imageToDelete) {
-                        if (Storage::disk(config('app.images_disk_default'))->exists($imageToDelete)) {
-                            Storage::disk(config('app.images_disk_default'))->delete($imageToDelete);
-                        }
-                    }
-
+                    $this->deleteImage($brand->logo_image_path);
                 }
 
+                $brand->delete();
                 return ServiceActionResult::make(true, trans('admin.brand_delete_success'));
             }
         });
     }
 
-    private function storeBrandSliderImage(string $path, $image): void
-    {
-        $image = Image::make($image)
-            ->resize(2000, 2000)
-            ->encode('jpg', 100);
-
-        Storage::disk(config('app.images_disk_default'))->put($path, $image);
-    }
 }
