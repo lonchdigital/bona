@@ -2,6 +2,7 @@
 
 @section('title')
     <title>{{ config('app.name') . ' - ' . trans('base.all_brands_of_wallpapers') }}</title>
+    <meta name="robots" content="index, follow">
 @endsection
 
 @section('content')

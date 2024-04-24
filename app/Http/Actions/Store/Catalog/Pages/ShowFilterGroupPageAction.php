@@ -70,6 +70,7 @@ class ShowFilterGroupPageAction extends BaseAction
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
 
+        $productType->meta_tags = $this->handleFollowTag($productType->meta_tags);
         LastModified::set($productType->updated_at);
 
         return view('pages.store.catalog', [

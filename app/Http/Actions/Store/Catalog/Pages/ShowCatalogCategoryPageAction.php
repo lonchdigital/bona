@@ -71,6 +71,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
         }*/
 
 
+
         LastModified::set($category->updated_at);
 
         return view('pages.store.catalog-category', [

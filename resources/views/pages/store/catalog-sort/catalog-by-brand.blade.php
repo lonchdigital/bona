@@ -6,6 +6,7 @@
         <meta name="title" content="{{ $brand->meta_title }}">
         <meta name="description" content="{{ $brand->meta_description }}">
         <meta name="keywords" content="{{ $brand->meta_keywords }}">
+        <meta name="robots" content="index, follow">
     @endif
 @endsection
 

@@ -230,7 +230,7 @@ return [
     'meta_keywords' => 'Meta key words',
     'meta_product_title' => 'Meta product title (для всіх продуктів цього типу товару)',
     'meta_product_description' => 'Meta product description (для всіх продуктів цього типу товару)',
-    'meta_tags' => 'Данні в <head></head>',
+    'meta_tags' => 'Данні в <head></head> (щоб приховати від індексації вкажіть: %nofollow% )',
     'product_create_success' => 'Товар успішно додано!',
     'product_edit_success' => 'Товар успішно оновлено!',
     'product_delete' => 'Видалити товар',

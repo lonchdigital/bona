@@ -13,10 +13,13 @@ class ShowServicesPageAction extends BaseAction
         ServicesPageService $servicesPageService,
     )
     {
-        LastModified::set(ServicesConfig::first()->updated_at);
+        $config = $servicesPageService->getServicesConfig();
+        $config->meta_tags = $this->handleFollowTag($config->meta_tags);
+
+        LastModified::set($config->updated_at);
 
         return view('pages.store.services', [
-            'config' => $servicesPageService->getServicesConfig(),
+            'config' => $config,
             'sections' => $servicesPageService->getServicesPageSections(),
         ]);
     }

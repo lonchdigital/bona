@@ -2,6 +2,7 @@
 
 @section('title')
     <title>{{ config('app.name') . ' - ' . trans('base.order_creation') }}</title>
+    <meta name="robots" content="index, follow">
 @endsection
 
 @section('content')

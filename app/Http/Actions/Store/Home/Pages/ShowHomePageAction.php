@@ -2,24 +2,19 @@
 
 namespace App\Http\Actions\Store\Home\Pages;
 
-use App\Models\HomePageConfig;
 use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
-use App\Models\User;
 use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Currency\CurrencyService;
-use App\Services\ProductCategory\CategoryService;
 use App\Services\HomePage\HomePageService;
 use App\Services\Brand\BrandService;
 use Abordage\LastModified\Facades\LastModified;
-/*use App\Services\WishList\WishListService;*/
 
 class ShowHomePageAction extends BaseAction
 {
     public function __invoke(
         ProductType $productType,
         HomePageService $homePageService,
-//        WishListService $wishListService,
         CurrencyService $currencyService,
         BrandService $brandService,
         BlogArticleService $blogArticleService,
@@ -27,23 +22,18 @@ class ShowHomePageAction extends BaseAction
     {
 //        $productType->load(['fields', 'fields.options']);
 //        $categoryService = app()->make(CategoryService::class);
-        /*$wishList = null;
-        if ($this->getAuthUser()) {
-            $wishList = $wishListService->getWishListByUser($this->getAuthUser());
-        }*/
 
-
-        /*$profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
-        $instagramFeed = $profile?->feed();*/
 
         $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
         $instagramFeed = $profile?->refreshFeed();
 
+        $config = $homePageService->getHomePageConfig();
+        $config->meta_tags = $this->handleFollowTag($config->meta_tags);
 
-        LastModified::set(HomePageConfig::first()->updated_at);
+        LastModified::set($config->updated_at);
 
         return view('pages.store.home', [
-            'config' => $homePageService->getHomePageConfig(),
+            'config' => $config,
             'slides' => $homePageService->getHomePageSlides(),
             'brands' => $brandService->getBrands(),
             'productTypes' => $homePageService->getHomePageProductTypes(),
@@ -56,11 +46,6 @@ class ShowHomePageAction extends BaseAction
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'articles' => $blogArticleService->getLatestArticles(3),
             'instagramFeed' => $instagramFeed,
-
-//            'newProducts' => $homePageService->getNewProducts(),
-//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
-//            'fieldFilterString' => $homePageService->getProductsCustomFieldOptionsName(),
-//            'productsByField' => $homePageService->getProductsByCustomFieldOptions(),
         ]);
     }
 }

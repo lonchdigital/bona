@@ -45,4 +45,19 @@ class BaseAction
     {
         return Auth::user();
     }
+
+
+    public function handleFollowTag(string|null $meta_tags): string
+    {
+        if( !is_null($meta_tags) ) {
+            if (str_contains($meta_tags, '%nofollow%')) {
+                $meta_tags = str_replace('%nofollow%', '<meta name="robots" content="noindex, nofollow">', $meta_tags);
+            } else {
+                $meta_tags .= '<meta name="robots" content="index, follow">';
+            }
+            return $meta_tags;
+        } else {
+            return '<meta name="robots" content="index, follow">';
+        }
+    }
 }
