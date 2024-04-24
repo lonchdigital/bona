@@ -15,8 +15,11 @@ class ShowBlogMainPageAction extends BaseAction
         BlogPageService $blogPageService
     )
     {
+        $config = $blogPageService->getConfigData();
+        $config->meta_tags = $this->handleFollowTag($config->meta_tags);
+
         return view('pages.blog.main', [
-            'blogPageConfig' => $blogPageService->getConfigData(),
+            'blogPageConfig' => $config,
             'articles' => $blogArticleService->getBlogArticlesListPaginated(),
         ]);
     }

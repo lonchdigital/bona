@@ -232,7 +232,7 @@ return [
     'meta_keywords' => 'Meta key words',
     'meta_product_title' => 'Meta product title (для всех продуктов этого типа товара)',
     'meta_product_description' => 'Meta product description (для всех продуктов этого типа товара)',
-    'meta_tags' => 'Данные в <head></head>',
+    'meta_tags' => 'Данные в <head></head> ( чтобы скрыть от индексации укажите: %nofollow% )',
     'product_create_success' => 'Товар успешно добавлен!',
     'product_edit_success' => 'Товар успешно обновлен!',
     'product_delete' => 'Удалить товар',

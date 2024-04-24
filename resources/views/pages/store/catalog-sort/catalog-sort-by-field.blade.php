@@ -19,6 +19,7 @@
         <meta name="description" content="{{ $productType->meta_description }}">
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
     @endif
+    <meta name="robots" content="index, follow">
 @endsection
 
 @section('content')

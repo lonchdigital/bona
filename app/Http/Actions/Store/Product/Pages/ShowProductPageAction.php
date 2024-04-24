@@ -57,6 +57,7 @@ class ShowProductPageAction extends BaseAction
             $productService->replaceTagsWithData($product->productType->meta_product_description, $product);
 
 
+        $product->meta_tags = $this->handleFollowTag($product->meta_tags);
         LastModified::set($product->updated_at);
 
         return view('pages.store.product', [

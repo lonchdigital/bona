@@ -2,6 +2,7 @@
 
 @section('title')
     <title>{{ config('app.name') . ' - ' . trans('base.search_by_brand') }}</title>
+    <meta name="robots" content="index, follow">
 @endsection
 
 @section('content')

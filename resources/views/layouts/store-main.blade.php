@@ -53,7 +53,7 @@
 
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <meta name="robots" content="index">
+
     @hasSection('title')
         @yield('title')
     @else

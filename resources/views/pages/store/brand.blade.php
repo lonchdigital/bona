@@ -1,14 +1,19 @@
 @extends('layouts.store-main')
 
 @section('title')
-    @if (isset($seogenData))
-        <title>{{ $seogenData->html_title_tag }}</title>
-        <meta name="title" content="{{ $seogenData->meta_title_tag }}">
-        <meta name="description" content="{{ $seogenData->meta_description_tag }}">
-        <meta name="keywords" content="{{ $seogenData->meta_keywords_tag }}">
-    @else
-        <title>{{ config('app.name') . ' - ' . trans('base.catalog') }}</title>
+    @if($brand->meta_title)
+        <title>{{ $brand->meta_title }}</title>
+        <meta name="title" content="{{ $brand->meta_title }}">
     @endif
+
+    @if($brand->meta_description)
+        <meta name="description" content="{{ $brand->meta_description }}">
+    @endif
+    @if($brand->meta_keywords)
+        <meta name="keywords" content="{{ $brand->meta_keywords }}">
+    @endif
+
+    <meta name="robots" content="index, follow">
 @endsection
 
 @section('content')

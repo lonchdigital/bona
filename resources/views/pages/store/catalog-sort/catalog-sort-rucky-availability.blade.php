@@ -7,6 +7,7 @@
         <meta name="description" content="{{ $selectedCategory->meta_description }}">
         <meta name="keywords" content="{{ $selectedCategory->meta_keywords }}">
     @endif
+    <meta name="robots" content="index, follow">
 @endsection
 
 @section('content')

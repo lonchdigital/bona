@@ -17,6 +17,8 @@ class ShowStaticPagePageAction extends BaseAction
         }
 
         $allData = $staticPageService->getAllDataByLanguage($staticPage['id'], app()->getLocale());
+        $allData['meta_tags'] = $this->handleFollowTag($allData['meta_tags']);
+
         return view('pages.store.static-page', [
             'heading' => $staticPage['name'],
             'allData' => $allData,

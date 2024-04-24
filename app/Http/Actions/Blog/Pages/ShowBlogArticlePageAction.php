@@ -16,6 +16,7 @@ class ShowBlogArticlePageAction extends BaseAction
         BlogArticleService $blogArticleService,
     )
     {
+        $blogArticle->meta_tags = $this->handleFollowTag($blogArticle->meta_tags);
         LastModified::set($blogArticle->updated_at);
 
         return view('pages.blog.article', [
