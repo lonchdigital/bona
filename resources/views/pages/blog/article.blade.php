@@ -6,11 +6,17 @@
         @if($blogArticle->meta_title)
             <title>{{ $blogArticle->meta_title }}</title>
             <meta name="title" content="{{ $blogArticle->meta_title }}">
+        @else
+            <title>{{ $blogArticle->name }}</title>
+            <meta name="title" content="{{ $blogArticle->name }}">
         @endif
 
         @if($blogArticle->meta_description)
             <meta name="description" content="{{ $blogArticle->meta_description }}">
+        @else
+            <meta name="description" content="{{ $blogArticle->preview_text }}">
         @endif
+
         @if($blogArticle->meta_keywords)
             <meta name="keywords" content="{{ $blogArticle->meta_keywords }}">
         @endif
