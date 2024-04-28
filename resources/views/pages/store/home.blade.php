@@ -319,7 +319,7 @@
                             <div class="figure-grid">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
                                     <div class="image">
-                                        <img src="{{ $productType->image_url }}" alt="Product Type Image">
+                                        <img src="{{ $productType->image_url }}" alt="Product Type Image" loading="lazy">
                                     </div>
                                     <div class="text">
                                         <span class="title h4">{{ $productType->name }}</span>
@@ -400,14 +400,14 @@
                     <div class="art-instagram-owl-items">
                         @foreach($instagramFeed as $instagramItem)
                             <a href="{{ $applicationGlobalOptions['instagram'] }}" target="_blank" class="item">
-                                <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
+                                <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
                             </a>
                         @endforeach
                     </div>
                 @else
                     @foreach($instagramFeed as $instagramItem)
                         <div class="item">
-                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" />
+                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
                         </div>
                     @endforeach
                 @endif
@@ -463,7 +463,7 @@
                     @foreach($homeTestimonials as $testimonial)
                         <div class="quote">
                             <div class="image">
-                                <img src="{{ $testimonial->testimonial_image_url }}" alt="Testimonial image">
+                                <img src="{{ $testimonial->testimonial_image_url }}" alt="Testimonial image" loading="lazy">
                             </div>
                             <div class="name">
                                 <h4>{{ $testimonial->name }}</h4>
