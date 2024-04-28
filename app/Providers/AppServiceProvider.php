@@ -91,11 +91,14 @@ class AppServiceProvider extends ServiceProvider
             $view->with('wishlistEmpty', $isWishListEmpty);
         });*/
 
+        $applicationGlobalOptions = $applicationService->getAllApplicationConfigOptions();
+        $availableLanguages = $applicationService->getAvailableLanguages();
+
         view()->composer(
             '*',
-            function ($view) use ($applicationService) {
-                $view->with('availableLanguages', $applicationService->getAvailableLanguages())
-                    ->with('applicationGlobalOptions', $applicationService->getAllApplicationConfigOptions())
+            function ($view) use ($applicationService, $applicationGlobalOptions, $availableLanguages) {
+                $view->with('availableLanguages', $availableLanguages)
+                    ->with('applicationGlobalOptions', $applicationGlobalOptions)
                     ->with('baseLanguage', config('app.locale'));
             }
         );
