@@ -23,7 +23,8 @@ class ApplicationConfigService extends BaseService
 
     public function getAvailableLanguages(): array
     {
-        return Cache::get('application_available_languages', function () {
+        // TODO:: we do not have AVAILABLE_LANGUAGES in DB
+        /*return Cache::get('application_available_languages', function () {
             try {
                 $config = ApplicationConfig::where('config_name', self::AVAILABLE_LANGUAGES_CONFIG)->first();
 
@@ -35,7 +36,8 @@ class ApplicationConfigService extends BaseService
             }
 
             return ['uk', 'ru'];
-        });
+        });*/
+        return ['uk', 'ru'];
     }
 
     public function getRobotsTxtContent(): string
