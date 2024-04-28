@@ -14,7 +14,8 @@ export default defineConfig(({ mode }) => {
             host: 'bona.local'
         },
         build: {
-            minify: true
+            minify: true,
+            scriptLoad: 'async'
         },
         resolve: {
             alias: {
