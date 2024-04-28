@@ -536,7 +536,7 @@
 <script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.owl.carousel.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}"></script>
-<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}"></script>
+{{--<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}"></script>--}}
 <script src="{{ asset('assets/js/main.js') }}"></script>
 {{-- static scripts end --}}
 
