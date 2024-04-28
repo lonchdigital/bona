@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             minify: true,
-            scriptLoad: 'async'
+            scriptLoad: 'defer'
         },
         resolve: {
             alias: {

@@ -530,18 +530,18 @@
 </div>
 
 {{-- static scripts start --}}
-<script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" async></script>
-<script src="{{ asset('assets/js/jquery.min.js') }}" async></script>
-<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" async></script>
-<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" async></script>
-<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" async></script>
-<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" async></script>
+<script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
+<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>
 {{--<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}"></script>--}}
-<script src="{{ asset('assets/js/main.js') }}" async></script>
+<script src="{{ asset('assets/js/main.js') }}" defer></script>
 {{-- static scripts end --}}
 
 {{-- dinamic scripts start --}}
-<script async>
+<script defer>
     const page = '{{ request()->route() ? request()->route()->getName() : '' }}';
     const is_auth = {{ auth()->user() ? 'true' : 'false' }};
     const locale = '{{ app()->getLocale() }}';
