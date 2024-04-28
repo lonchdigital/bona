@@ -47,7 +47,7 @@
                         <div class="col-md-5 video-side">{!! $deliveryConfig->iframe !!}</div>
                     @else
                         <div class="col-md-5 image-side">
-                            <img src="{{ $deliveryConfig->imageUrl }}" alt="block image">
+                            <img src="{{ $deliveryConfig->imageUrl }}" alt="block image" loading="lazy">
                         </div>
                     @endif
                     <div class="col-md-7 desc-side">
