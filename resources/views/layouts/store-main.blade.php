@@ -529,7 +529,35 @@
 
 </div>
 
+{{-- static scripts start --}}
+<script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
+<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>
+{{--<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}"></script>--}}
+<script src="{{ asset('assets/js/main.js') }}" defer></script>
+{{-- static scripts end --}}
 
+{{-- dinamic scripts start --}}
+<script defer>
+    const page = '{{ request()->route() ? request()->route()->getName() : '' }}';
+    const is_auth = {{ auth()->user() ? 'true' : 'false' }};
+    const locale = '{{ app()->getLocale() }}';
+    const csrf = '{{ csrf_token() }}';
+    const count_of_products_in_cart = {{ $countOfProductInCart }};
+    const show_visit_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_VISIT ? 'true' : 'false' }};
+    const show_taxi_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_TAXI ? 'true' : 'false' }};
+    const show_designer_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::DESIGNER_APPOINTMENT ? 'true' : 'false' }};
+    const show_modal_success = {{ Session::has('modal_success') ? 'true' : 'false' }};
+</script>
+@stack('dynamic_scripts')
+{{-- dinamic scripts end --}}
+
+{{-- static scripts start --}}
+@vite('resources/js/store/app.js')
+{{-- static scripts end --}}
 
 </body>
 
