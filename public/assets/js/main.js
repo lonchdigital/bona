@@ -29,73 +29,16 @@
         closeCart();
     });
 
-    // Open/close search bar
 
-    $search.on('click', function () {
-        toggleOpen($(this));
-        objSearch.toggleClass('open');
-        objSearch.find('input').focus();
-        closeLogin();
-        closeCart();
-    });
-
-    // Open/close cart
-
-    $cart.on('click', function () {
-        toggleOpen($(this));
-        objCart.toggleClass('open');
-        closeLogin();
-        closeSearch();
-    });
-
-    // Mobile menu open/close
-
-    $menu.on('click', function () {
-        objMenu.addClass('expanded');
-        closeSearch();
-        closeLogin();
-        closeCart();
-    });
 
     // Settings language & currency dropdown
-
     $settingsItem.on('click', function () {
         var $value = $(this).closest('.nav-settings').find('.nav-settings-value');
         $value.text($(this).text());
     });
 
-    // Floating menu hyperlink
-    if ($('nav').hasClass('navbar-single-page')) {
-        objMenuLink.on('click', function () {
-            objMenu.removeClass('expanded');
-        });
-    }
 
-    // Open dropdown/megamenu
 
-    $openDropdown.on('click', function (e) {
-
-        e.preventDefault();
-
-        var liParent = $(this).parent().parent(),
-            liDropdown = liParent.find('.navbar-dropdown');
-
-        liParent.toggleClass('expanded');
-
-        if (liParent.hasClass('expanded')) {
-            liDropdown.slideDown();
-        }
-        else {
-            liDropdown.slideUp();
-        }
-    });
-
-    // Close menu (mobile)
-
-    $close.on('click', function () {
-        $('nav').find('.expanded').removeClass('expanded');
-        $('nav').find('.navbar-dropdown').slideUp();
-    });
 
     // Global functions
 
@@ -116,29 +59,10 @@
         $cart.removeClass('open');
     }
 
-    // Sticky header
-    // ----------------------------------------------------------------
-
-    /*var navbarFixed = $('nav.navbar-fixed');
-
-    // When reload page - check if page has offset
-    if ($(document).scrollTop() > 94) {
-        navbarFixed.addClass('navbar-sticked');
-    }
-    // Add sticky menu on scroll
-    $(document).on('bind ready scroll', function () {
-        var docScroll = $(document).scrollTop();
-        if (docScroll >= 10) {
-            navbarFixed.addClass('navbar-sticked');
-        } else {
-            navbarFixed.removeClass('navbar-sticked');
-        }
-    });*/
-
     // Tooltip
     // ----------------------------------------------------------------
 
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 
     // Main popup
     // ----------------------------------------------------------------
@@ -217,7 +141,7 @@
         function animatetCaptions(event) {
             "use strict";
             var activeItem = $(n).find('.owl-item.active'),
-            timeDelay = 100;
+                timeDelay = 100;
             $.each(activeItem.find('.animated'), function (j, m) {
                 var item = $(m);
                 item.css('animation-delay', timeDelay + 'ms');
@@ -663,10 +587,7 @@
         signUp.slideDown();
     });
 
-    // Isotope filter
-    // ----------------------------------------------------------------
 
-    $(function () {
     // Team members hover effect
     // ----------------------------------------------------------------
 
@@ -703,34 +624,6 @@
     // Single page navigation (scroll to)
     // ----------------------------------------------------------------
 
-
-    if ($('nav').hasClass('navbar-single-page')) {
-
-        var $singleHyperlink = $('.navigation-main a');
-
-        $singleHyperlink.on('click', function () {
-
-            $singleHyperlink.removeClass('current');
-
-            $(this).addClass('current');
-
-            $('html, body').animate({
-                scrollTop: $($(this).attr('href')).offset().top - $('.navigation-main').height()
-            }, 500);
-            return false;
-        });
-
-        // Magnific popup scroll to content
-        // ----------------------------------------------------------------
-
-        $('.mfp-open-scrollto').on('click', function () {
-            $('html,body').animate({
-                scrollTop: $('.mfp-content').offset().top - 200
-            }, 300);
-            return false;
-        });
-    }
-
 });
 
 // loader
@@ -740,6 +633,3 @@
         $('.page-loader').addClass('loaded');
     }, 1000);
 });*/
-
-
-
