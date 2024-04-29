@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             minify: true,
+            cssCodeSplit: true,
             scriptLoad: 'defer'
         },
         resolve: {
