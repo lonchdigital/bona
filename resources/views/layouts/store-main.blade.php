@@ -73,6 +73,28 @@
     <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
     <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">
 
+    @php
+        $cacheKey = 'cached_styles_' . app()->getLocale();
+        $cachedStyles = cache()->remember($cacheKey, now()->addHours(6), function () {
+            return [
+                asset('assets/css/bootstrap.min.css'),
+                asset('assets/css/animate.min.css'),
+                asset('assets/css/font-awesome.min.css'),
+                asset('assets/css/furniture-icons.min.css'),
+                asset('assets/css/linear-icons.min.css'),
+                asset('assets/css/magnific-popup.min.css'),
+                asset('assets/css/owl.carousel.min.css'),
+                asset('assets/css/ion-range-slider.min.css'),
+                asset('assets/css/theme.css'),
+                Vite::asset('resources/scss/theme-additional.scss')
+            ];
+        });
+    @endphp
+
+    @foreach ($cachedStyles as $style)
+        <link rel="stylesheet" href="{{ $style }}">
+    @endforeach
+
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
