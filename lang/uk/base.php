@@ -344,4 +344,5 @@ return [
     'doors_according_to_your_design' => 'Двері за вашим дизайном',
     '404_not_found' => 'Сторінку не знайдено',
     'all_products' => 'Всі товари',
+    'order_product' => 'Замовлення товару',
 ];
