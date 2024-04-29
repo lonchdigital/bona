@@ -25,7 +25,7 @@ class SuccessOrder extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'User Choose Doors',
+            subject: trans('base.order_product'),
         );
     }
 

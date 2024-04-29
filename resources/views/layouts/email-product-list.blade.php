@@ -272,6 +272,7 @@
         .art-product-list .art-product-row .art-column-img a img {
             width: 150px;
             display: block;
+            margin: 0 auto;
         }
         .art-product-list .art-product-row td {
             vertical-align: middle;
