@@ -13,24 +13,9 @@ export default defineConfig(({ mode }) => {
         server: {
             host: 'bona.local'
         },
-        /*build: {
-            minify: true,
-            scriptLoad: 'defer'
-        },*/
         build: {
             minify: true,
-            cssCodeSplit: true, // Разделение кода стилей для кэширования
-            rollupOptions: {
-                output: {
-                    manualChunks(id) {
-                        if (id.includes('resources/scss/')) {
-                            return 'styles'; // Имя чанка для стилей
-                        } else if (id.includes('resources/js/')) {
-                            return 'scripts'; // Имя чанка для скриптов
-                        }
-                    },
-                },
-            },
+            scriptLoad: 'defer'
         },
         resolve: {
             alias: {
