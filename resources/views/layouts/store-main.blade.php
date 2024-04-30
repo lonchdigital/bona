@@ -540,25 +540,16 @@
 
 </div>
 
-@php
-    $cacheKey = 'cached_scripts_' . app()->getLocale();
-    $cachedScripts = cache()->remember($cacheKey, now()->addHours(6), function () {
-        return [
-            App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') . '?lang=' . app()->getLocale(),
-            asset('assets/js/jquery.min.js'),
-            asset('assets/js/jquery.bootstrap.js'),
-            asset('assets/js/jquery.magnific-popup.js'),
-            asset('assets/js/jquery.owl.carousel.js'),
-            asset('assets/js/jquery.ion.rangeSlider.js'),
-            asset('assets/js/main.js'),
-        ];
-    });
-@endphp
-
-@foreach ($cachedScripts as $script)
-    <script src="{{ $script }}" defer></script>
-@endforeach
-
+{{-- static scripts start --}}
+<script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
+<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>
+<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}" defer></script>
+<script src="{{ asset('assets/js/main.js') }}" defer></script>
+{{-- static scripts end --}}
 
 {{-- dinamic scripts start --}}
 <script defer>
@@ -575,9 +566,7 @@
 @stack('dynamic_scripts')
 {{-- dinamic scripts end --}}
 
-{{-- static scripts start --}}
 @vite('resources/js/store/app.js')
-{{-- static scripts end --}}
 
 </body>
 
