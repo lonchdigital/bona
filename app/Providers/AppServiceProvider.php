@@ -8,6 +8,7 @@ use App\Services\Cart\CartService;
 use App\Services\Locale\LocaleService;
 //use App\Services\WishList\WishListService;
 //use App\Services\Brand\BrandService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Contacts\ContactsPageService;
@@ -91,7 +92,10 @@ class AppServiceProvider extends ServiceProvider
             $view->with('wishlistEmpty', $isWishListEmpty);
         });*/
 
-        $applicationGlobalOptions = $applicationService->getAllApplicationConfigOptions();
+        $applicationGlobalOptions = Cache::remember('applicationGlobalOptions', 3600, function () use ($applicationService) {
+            return $applicationService->getAllApplicationConfigOptions();
+        });
+
         $availableLanguages = $applicationService->getAvailableLanguages();
 
         view()->composer(
