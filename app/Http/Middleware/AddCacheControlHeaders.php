@@ -18,8 +18,8 @@ class AddCacheControlHeaders
         $response = $next($request);
 
         // Set Cache-Control for JS scripts
-        //$response->header('Cache-Control', 'public, max-age=86400'); // Здесь 86400 секунд (24 часа)
-        $response->header('Cache-Control', 'public, max-age=3600');
+        //$response->header('Cache-Control', 'public, max-age=86400');
+        $response->header('Cache-Control', 'public, max-age=1');
 
         return $response;
     }
