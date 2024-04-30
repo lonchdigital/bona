@@ -146,7 +146,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin1')->middleware([
+Route::prefix('admin')->middleware([
     AuthenticatedOnly::class,
     AdminsOnly::class,
     SetLocaleAdmin::class,
