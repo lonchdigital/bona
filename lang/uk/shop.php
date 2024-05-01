@@ -8,5 +8,6 @@ return [
     'product_status_stock' => 'В наявності',
     'product_status_order' => 'Під замовлення',
     'product_status_out_of_stock' => 'Закінчився',
+    'product_status_ask_manager' => 'Уточнюйте у менеджера',
     'product_status_inactive' => 'Неактивний',
 ];

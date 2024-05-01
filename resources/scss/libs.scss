@@ -25,7 +25,7 @@
     .row > [class*="col-"] {
         @each $breakpoint, $gutter in $grid-gutter-widths {
             @include media-breakpoint-up($breakpoint) {
-                @include make-col-ready($gutter);
+                @include make-col-ready();
             }
         }
     }
