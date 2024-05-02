@@ -1,4 +1,3 @@
-import $ from 'jquery';
 
 export default async function () {
     const [
