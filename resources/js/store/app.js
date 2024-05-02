@@ -3,17 +3,17 @@ import $ from 'jquery';
 import.meta.glob(['../../img/**']);
 import { Fancybox } from "@fancyapps/ui/dist/fancybox/fancybox.esm.js";
 
-import Burger from './common/burger';
 import ShowMenu from "./common/show-menu";
 import ScrollTop from "./common/scroll-top";
 import InputCounter from './common/input-counter';
-import AnimateScroll from './common/animate-scroll';
-import WishList from './common/wish-list';
 import Cart from './common/cart';
 import CommonEmails from './common/common-emails';
 import PopUps from './common/pop-ups';
 import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
+
+// default template
+
 
 const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' });
 
@@ -58,11 +58,8 @@ async function init()
 {
      await Promise.all([
         InputCounter.init(),
-        AnimateScroll.init(),
-        Burger.init(),
         ScrollTop.init(),
         ShowMenu.init(),
-        // WishList.init(),
         Cart.init(),
         CommonEmails.init(),
         PopUps.init(),

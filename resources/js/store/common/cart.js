@@ -1,7 +1,7 @@
 import $ from "jquery";
 import iconUrl from '$img/icon.svg';
 import InputCounter from "./input-counter";
-import wishList from "./wish-list";
+// import wishList from "./wish-list";
 
 const $basket_with_products = $('.header-main-others .basket-basket-list .basket-with-products');
 const $basket_without_products = $('.header-main-others .basket-basket-list .basket-without-products');
@@ -361,9 +361,9 @@ export default {
             handleCalculatorAddToCartButton();
         }
 
-        if (page === 'store.wishlist.private.page') {
+        /*if (page === 'store.wishlist.private.page') {
             handleWishListAddToCartButton();
-        }
+        }*/
     }
 };
 
@@ -598,7 +598,7 @@ function drawProductsInCartPageHTML(data)
     InputCounter.addCounterHandler($('.cart-page-products-list .counter'));
     addChangeProductCountHandlers($('.cart-page-products-list .product-count-input'));
     addDeleteProductFromCartHandlers($('.cart-page-products-list .delete-product-from-cart-button'));
-    if (is_auth) {
+    /*if (is_auth) {
         $('.cart-page-products-list .wrapper-wish-list').click(function (event) {
             wishList.addWishListButtonHandlerSingleProduct(
                 $(this).find('.product-wish-list-button'),
@@ -608,7 +608,7 @@ function drawProductsInCartPageHTML(data)
                 event,
             )
         });
-    }
+    }*/
 
     const freeDeliveryButton = $('.total-info-right .btn-free-shiping');
 
@@ -800,7 +800,7 @@ function handleCalculatorAddToCartButton()
     });
 }
 
-function handleWishListAddToCartButton()
+/*function handleWishListAddToCartButton()
 {
     $('.wish-list-add-to-cart-button').click(function (event) {
         event.preventDefault();
@@ -817,7 +817,7 @@ function handleWishListAddToCartButton()
             });
         }
     });
-}
+}*/
 
 function handleBasket(data)
 {

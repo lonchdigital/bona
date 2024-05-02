@@ -11,6 +11,24 @@ const tooltipTemplate = ['<div class="tooltip tooltip-filter-item--type-custom" 
 
 export function init () {
 
+
+    // Filters toggle functions
+    // ----------------------------------------------------------------
+
+    // Check if some filter boxes has class active
+    // then show hidden filters
+    $('.filters .filter-box').each(function () {
+        if ($(this).hasClass('active')) {
+            $(this).find('.filter-content').show();
+        }
+    });
+
+    var $filtersTitle = $('.filters .title');
+
+    // Add emtpy span on title
+    $filtersTitle.append('<span>' + '</span>');
+
+
     //custom filters
     addToolTip(
         '.archive-catalog-filter-left .filter-item--type-custom',

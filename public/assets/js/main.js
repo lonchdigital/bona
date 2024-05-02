@@ -62,12 +62,12 @@
     // Tooltip
     // ----------------------------------------------------------------
 
-    $('[data-toggle="tooltip"]').tooltip();
+    // $('[data-toggle="tooltip"]').tooltip();
 
     // Main popup
     // ----------------------------------------------------------------
 
-    $('.mfp-open').magnificPopup({
+    /*$('.mfp-open').magnificPopup({
         type: 'inline',
         fixedContentPos: false,
         fixedBgPos: true,
@@ -87,12 +87,12 @@
                 }, 500);
             }
         }
-    });
+    });*/
 
     // Main popup gallery
     // ----------------------------------------------------------------
 
-    $('.open-popup-gallery').magnificPopup({
+    /*$('.open-popup-gallery').magnificPopup({
         delegate: 'a',
         type: 'image',
         tLoading: 'Loading image #%curr%...',
@@ -109,7 +109,7 @@
         midClick: true,
         removalDelay: 300,
         mainClass: 'my-mfp-zoom-in'
-    });
+    });*/
 
 
     // Frontpage slider
@@ -217,45 +217,7 @@
     });
 
 
-    // Products slider
-    // ----------------------------------------------------------------
 
-    //Products slider
-    $.each($(".art-products-owl-items"), function (i, n) {
-        $(n).owlCarousel({
-            //transitionStyle: "fadeUp",
-            // autoHeight: true,
-            slideSpeed: 800,
-            margin: 30,
-            navigation: true,
-            navigationText: arrowIcons,
-            pagination: true,
-            items: 4,
-            itemsDesktopSmall: [991, 3],
-            itemsMobile: [410, 1]
-            // singleItem: true
-        });
-    });
-
-
-    // Instagram slider
-    // ----------------------------------------------------------------
-
-    $.each($(".art-instagram-owl-items"), function (i, n) {
-        $(n).owlCarousel({
-            //transitionStyle: "fadeUp",
-            // autoHeight: true,
-            slideSpeed: 800,
-            margin: 0,
-            navigation: true,
-            navigationText: arrowIcons,
-            pagination: true,
-            items: 6,
-            itemsDesktopSmall: [991, 3],
-            itemsMobile: [410, 2]
-            // singleItem: true
-        });
-    });
 
 
     // Header Options
@@ -464,18 +426,6 @@
     // Filters toggle functions
     // ----------------------------------------------------------------
 
-    // Check if some filter boxes has class active
-    // then show hidden filters
-    $('.filters .filter-box').each(function () {
-        if ($(this).hasClass('active')) {
-            $(this).find('.filter-content').show();
-        }
-    });
-
-    var $filtersTitle = $('.filters .title');
-
-    // Add emtpy span on title
-    $filtersTitle.append('<span>' + '</span>');
 
     // Toggle filter function
     /*$filtersTitle.on('click', function (e) {

@@ -1,8 +1,12 @@
-// import Swiper, { Navigation, Pagination } from 'swiper';
-import Swiper from 'swiper/bundle';
 import $ from "jquery";
 
+import 'swiper/css';
+import Swiper from 'swiper/bundle';
+
+
 export function init () {
+
+    // Single Product Gallery
     const swiperSingleWallpaperThumbsWrap = document.querySelector('.swiper-single-wallpaper-thumbs-wrap');
 
     let SwiperSingleWallpaperThumbs = '';
@@ -64,7 +68,6 @@ export function init () {
 
     }
 
-
     // swiper-single-wallpaper
     const SwiperSingleWallpaper = new Swiper('.swiper-single-wallpaper', {
         loop: true,
@@ -84,6 +87,41 @@ export function init () {
         }
     });
 
+
+
+
+
+    // Similar Products Gallery
+    let SimilarProductsGallery = new Swiper(".art-products-owl-items", {
+        slidesPerView: 4,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            100: {
+                slidesPerView: 1
+            },
+            500: {
+                slidesPerView: 2
+            },
+            768: {
+                slidesPerView: 3
+            },
+            1200: {
+                slidesPerView: 4
+            }
+        },
+        on: {
+            init: function () {
+                this.update();
+            },
+            resize: function () {
+                this.update();
+            }
+        }
+    });
 
 
 }

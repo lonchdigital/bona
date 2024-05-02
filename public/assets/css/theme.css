@@ -1448,7 +1448,7 @@ nav .cart-wrapper.open {
     overflow: hidden;
 }
 
-.header-content .item {
+.header-content .swiper-slide {
     height: 100vh;
     position: relative;
     overflow: hidden;
@@ -1456,7 +1456,7 @@ nav .cart-wrapper.open {
     background-size: cover;
 }
 
-.header-content .item .box {
+.header-content .swiper-slide .box {
     position: absolute;
     width: 100%;
     color: #fff;
@@ -1469,35 +1469,35 @@ nav .cart-wrapper.open {
     z-index: 99;
 }
 
-.header-content .item .title {
+.header-content .swiper-slide .title {
     color: white;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
     text-transform: none;
 }
 
-.header-content .item .slider-description {
+.header-content .swiper-slide .slider-description {
     font-size: 16px;
     Line-height: 22.4px;
 }
 
-.header-content .item .btn {
+.header-content .swiper-slide .btn {
     margin-top: 40px;
 }
 
 @media (min-width: 768px) {
-    .header-content .item {
+    .header-content .swiper-slide {
         height: 100vh;
     }
-    .header-content .item .title {
+    .header-content .swiper-slide .title {
         font-size: 300%;
     }
 }
 
 @media (min-width: 1200px) {
-    .header-content .item {
+    .header-content .swiper-slide {
         height: 700px;
     }
-    .header-content .item .title {
+    .header-content .swiper-slide .title {
         font-size: 64px;
     }
 }

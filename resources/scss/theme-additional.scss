@@ -20,6 +20,7 @@ $accent: #D59958;
         1.3 Common Global
         1.4 PopUp Call Measurer
         1.5 PopUp Common
+        1.6 Swiper
     2. Product Section list
     3. Product list slider
     4. Product item
@@ -285,9 +286,15 @@ select:focus {
 .art-blog-archive-wrapper {
     width: 100%;
 }
+
+.art-big-wrapper.art-carousel {
+    padding-top: 10px; // 40
+}
+
 .art-product-filtered-by-brand,
 .art-blog-archive-wrapper,
-.art-products-owl-items.art-big-wrapper.owl-carousel .owl-wrapper-outer {
+//.art-products-owl-items.art-big-wrapper.owl-carousel .owl-wrapper-outer
+{
     padding-top: 40px;
 }
 .pt-none {
@@ -455,6 +462,32 @@ select:focus {
     }
 }
 
+
+/*
+    ----------------------------------
+    1.6 Swiper
+    ----------------------------------
+*/
+
+.swiper.art-swiper-common {
+    padding: 30px 15px;
+
+    .swiper-slide {
+        height: auto !important;
+
+
+        .art-product-item {
+            height: 100%;
+        }
+
+    }
+
+
+    .swiper-pagination {
+        bottom: -8px;
+    }
+
+}
 
 
 
