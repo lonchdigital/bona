@@ -61,47 +61,23 @@
     @endif
     @stack('head')
 
-    <link rel="preload" href="{{ Vite::asset('resources/scss/libs.scss') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ Vite::asset('resources/scss/libs.scss') }}"></noscript>
-
-{{--    @vite(['resources/scss/libs.scss'])--}}
+    @vite(['resources/scss/libs.scss'])
 
 
-    <link rel="preload" href="{{ asset('assets/css/bootstrap.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"></noscript>
-
-    <link rel="preload" href="{{ asset('assets/css/animate.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}"></noscript>
-
-    <link rel="preload" href="{{ asset('assets/css/font-awesome.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}"></noscript>
-
-    <link rel="preload" href="{{ asset('assets/css/furniture-icons.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}"></noscript>
-
-    <link rel="preload" href="{{ asset('assets/css/linear-icons.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ asset('assets/css/linear-icons.min.css') }}"></noscript>
-
-
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/linear-icons.min.css') }}">--}}
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/linear-icons.min.css') }}">
 
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">--}}
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">--}}
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/ion-range-slider.min.css') }}">--}}
 
 
-    <link rel="preload" href="{{ asset('assets/css/theme.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}"></noscript>
 
-    <link rel="preload" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}"></noscript>
-
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">--}}
+    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
+    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">
 
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
