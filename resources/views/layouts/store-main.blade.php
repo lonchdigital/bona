@@ -61,6 +61,9 @@
     @endif
     @stack('head')
 
+    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
+    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">
+
     @vite(['resources/scss/libs.scss'])
 
 
@@ -76,8 +79,7 @@
 
 
 
-    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
-    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">
+
 
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
