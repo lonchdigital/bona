@@ -37,24 +37,37 @@ class AppServiceProvider extends ServiceProvider
         //BrandService             $brandService,
     ): void
     {
+
+        $mainProductTypes = Cache::remember('mainProductTypes', 43200, function () use ($productTypeService) {
+            return $productTypeService->getProductTypes();
+        });
+
         view()->composer(
             [
                 'layouts.admin-main',
                 'components.cart-window',
             ],
-            function ($view) use ($productTypeService) {
-                $view->with('productTypes', $productTypeService->getProductTypes());
+            function ($view) use ($mainProductTypes) {
+                $view->with('productTypes', $mainProductTypes);
             }
         );
+
+        $sortedProductTypes = Cache::remember('sortedProductTypes', 43200, function () use ($productTypeService) {
+            return $productTypeService->getSortedProductTypes();
+        });
+        $contactsFooter = Cache::remember('contactsFooter', 43200, function () use ($contactsService) {
+            return $contactsService->getContactsFooter();
+        });
+
 
         view()->composer(
             [
                 'layouts.store-main',
             ],
-            function ($view) use ($productTypeService, $contactsService) {
-                $view->with('productTypes', $productTypeService->getSortedProductTypes());
+            function ($view) use ($sortedProductTypes, $contactsFooter) {
+                $view->with('productTypes', $sortedProductTypes);
                 $view->with('locationService', app()->make(LocaleService::class));
-                $view->with('contactsFooter', $contactsService->getContactsFooter());
+                $view->with('contactsFooter', $contactsFooter);
             }
         );
 
@@ -92,7 +105,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('wishlistEmpty', $isWishListEmpty);
         });*/
 
-        $applicationGlobalOptions = Cache::remember('applicationGlobalOptions', 3600, function () use ($applicationService) {
+        $applicationGlobalOptions = Cache::remember('applicationGlobalOptions', 43200, function () use ($applicationService) {
             return $applicationService->getAllApplicationConfigOptions();
         });
 
