@@ -12,163 +12,12 @@
     <!-- Meta tags -->
     <meta name="author" content="">
 
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request()->url() }}">
-    <meta property="og:image" content="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
-    <meta property="og:site_name" content="{{ mb_strtoupper(config('app.url')) }}">
-    <link rel="apple-touch-icon" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
 
-    @php
-        $currentUrl = url()->current();
-        if (strpos($currentUrl, '?') !== false) {
-            $currentUrl = strtok($currentUrl, '?');
-        }
-        $currentUrl = preg_replace('/\/filter\/.*/', '', $currentUrl);
-    @endphp
-
-    <link rel="canonical" href="{{ $currentUrl }}">
-
-    @if(Route::currentRouteName() === 'store.home')
-        @if(Str::startsWith(request()->path(), 'ru'))
-            @php $hreflangUrl = Str::after(request()->path(), 'ru'); @endphp
-            <link hreflang="uk-UA" href="{{ url('') . $hreflangUrl }}" rel="alternate">
-            <link hreflang="ru-UA" href="{{ url('/') .'/ru'. $hreflangUrl }}" rel="alternate">
-            <link hreflang="x-default" href="{{ url('') . $hreflangUrl }}" rel="alternate">
-        @else
-            <link hreflang="uk-UA" href="{{ url('') }}" rel="alternate">
-            <link hreflang="ru-UA" href="{{ url('') .'/ru' }}" rel="alternate">
-            <link hreflang="x-default" href="{{ url('') }}" rel="alternate">
-        @endif
-    @elseif(Str::startsWith(request()->path(), 'ru/'))
-        @php $hreflangUrl = Str::after(request()->path(), 'ru/'); @endphp
-        <link hreflang="uk-UA" href="{{ url('/') .'/'. $hreflangUrl }}" rel="alternate">
-        <link hreflang="ru-UA" href="{{ url('/') .'/ru/'. $hreflangUrl }}" rel="alternate">
-        <link hreflang="x-default" href="{{ url('/') .'/'. $hreflangUrl }}" rel="alternate">
-    @else
-        <link hreflang="uk-UA" href="{{ url('/') .'/'. request()->path() }}" rel="alternate">
-        <link hreflang="ru-UA" href="{{ url('/') .'/ru/'. request()->path() }}" rel="alternate">
-        <link hreflang="x-default" href="{{ url('/') .'/'. request()->path() }}" rel="alternate">
-    @endif
-
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-
-    @hasSection('title')
-        @yield('title')
-    @else
-        <title>{{ config('app.name') . ' - ' . trans('base.site_title') }}</title>
-    @endif
-    @stack('head')
-
-    @vite(['resources/scss/libs.scss'])
-
-
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/linear-icons.min.css') }}">--}}
-
-
-    {{--    <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">--}}
-    {{--    <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">--}}
-    {{--    <link rel="stylesheet" href="{{ asset('assets/css/ion-range-slider.min.css') }}">--}}
-
-    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
-    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">
-
-
-
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    {{--    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;1,700&family=Tenor+Sans&display=swap" rel="stylesheet">--}}
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;1,400;1,700&family=Tenor+Sans&display=swap" rel="stylesheet">
-
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js" defer></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js" defer></script>
-    <![endif]-->
-
-    @if(Route::currentRouteName() === 'store.home')
-        <script type="application/ld+json" defer>
-            {
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                "Name": "Bona-Doors найкращі двері",
-                "url": "{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}",
-                @if(array_key_exists('logoLight', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['logoLight']))
-                "logo": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
-                "image": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
-                @endif
-            "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Одеса",
-                "postalCode": "",
-                "addressCountry": "Україна"
-            },
-@if( !is_null($contactsFooter) )
-                "email": "{{ $contactsFooter['email_one'] }}",
-                @endif
-            @if(array_key_exists('phoneOne', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['phoneOne']))
-                "telephone": "{{ $applicationGlobalOptions['phoneOne'] }}",
-                @endif
-            "sameAs": [
-                ""
-            ]
-        }
-</script>
-@endif
-
-<!-- Google Tag Manager -->
-    <script defer>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-P9KHGB8T');</script>
-    <!-- End Google Tag Manager -->
 
 </head>
 
-{{-- static scripts start --}}
-<script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
-
-{{--<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/main.js') }}" defer></script>--}}
-
-{{-- static scripts end --}}
-
-{{-- dinamic scripts start --}}
-<script defer>
-    const page = '{{ request()->route() ? request()->route()->getName() : '' }}';
-    const is_auth = {{ auth()->user() ? 'true' : 'false' }};
-    const locale = '{{ app()->getLocale() }}';
-    const csrf = '{{ csrf_token() }}';
-    const count_of_products_in_cart = {{ $countOfProductInCart }};
-    const show_visit_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_VISIT ? 'true' : 'false' }};
-    const show_taxi_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_TAXI ? 'true' : 'false' }};
-    const show_designer_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::DESIGNER_APPOINTMENT ? 'true' : 'false' }};
-    const show_modal_success = {{ Session::has('modal_success') ? 'true' : 'false' }};
-</script>
-@stack('dynamic_scripts')
-{{-- dinamic scripts end --}}
-
-@vite('resources/js/store/app.js')
-
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9KHGB8T" height="0" width="0" style="display:none;visibility:hidden" defer></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+
 
 
 {{--<div class="page-loader"></div>--}}
@@ -567,7 +416,35 @@
 
 </div>
 
-{{-- scripts --}}
+{{-- static scripts start --}}
+<script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
+
+{{--<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/main.js') }}" defer></script>--}}
+
+{{-- static scripts end --}}
+
+{{-- dinamic scripts start --}}
+<script defer>
+    const page = '{{ request()->route() ? request()->route()->getName() : '' }}';
+    const is_auth = {{ auth()->user() ? 'true' : 'false' }};
+    const locale = '{{ app()->getLocale() }}';
+    const csrf = '{{ csrf_token() }}';
+    const count_of_products_in_cart = {{ $countOfProductInCart }};
+    const show_visit_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_VISIT ? 'true' : 'false' }};
+    const show_taxi_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_TAXI ? 'true' : 'false' }};
+    const show_designer_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::DESIGNER_APPOINTMENT ? 'true' : 'false' }};
+    const show_modal_success = {{ Session::has('modal_success') ? 'true' : 'false' }};
+</script>
+@stack('dynamic_scripts')
+{{-- dinamic scripts end --}}
+
+@vite('resources/js/store/app.js')
 
 </body>
 
