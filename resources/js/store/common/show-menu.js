@@ -57,6 +57,43 @@ export default {
             );
         }
 
+
+
+        // Hamburger Settings
+        var $hamburgerHeaderIcon = $('.hamburger--collapse-r'),
+            $hamburgerHeaderItems = $('#art-hamburger-menu .art-hamburger-header span'),
+            $hamburgerData = $('#art-hamburger-menu .art-hamburger-data .art-list-items'),
+            $hamburgerMenu = $('#art-hamburger-menu'),
+            $headerSearchIcon = $('nav .navigation-bottom .navigation-bottom-right .art-search-mobile-icon'),
+            $headerSearchField = $('nav .navigation-bottom .navigation-bottom-left .header-search');
+
+        // hamburger settings
+        $hamburgerHeaderIcon.on('click', function () {
+            var h_this = $(this);
+
+            $headerSearchIcon.removeClass('is-active');
+            $headerSearchField.hide();
+
+            if(h_this.hasClass('is-active')) {
+                h_this.removeClass('is-active');
+                $hamburgerMenu.fadeOut();
+            } else {
+                h_this.addClass('is-active');
+                $hamburgerMenu.fadeIn();
+            }
+        });
+
+        $hamburgerHeaderItems.on('click', function(){
+            var selected_item = $(this).data('id');
+
+            $hamburgerHeaderItems.removeClass('active');
+            $(this).addClass('active');
+
+            $hamburgerData.addClass('d-none').removeClass('d-block');
+            $hamburgerData.filter('[data-id="' + selected_item + '"]').removeClass('d-none').addClass('d-block');
+        });
+
+
     }
 }
 
