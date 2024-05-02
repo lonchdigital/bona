@@ -426,7 +426,7 @@
                         <div class="swiper-wrapper">
                             @foreach($instagramFeed as $instagramItem)
                                 <a href="{{ $applicationGlobalOptions['instagram'] }}" target="_blank" class="swiper-slide">
-                                    <img src="{{ $instagramItem->url }}" alt="Alternate Text">
+                                    <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
                                 </a>
                             @endforeach
                         </div>
@@ -435,7 +435,7 @@
                 @else
                     @foreach($instagramFeed as $instagramItem)
                         <div class="item">
-                            <img src="{{ $instagramItem->url }}" alt="Alternate Text">
+                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
                         </div>
                     @endforeach
                 @endif
@@ -492,7 +492,7 @@
                             <div class="swiper-slide">
                                 <div class="quote">
                                     <div class="image">
-                                        <img src="{{ $testimonial->testimonial_image_url }}" alt="Testimonial image">
+                                        <img src="{{ $testimonial->testimonial_image_url }}" alt="Testimonial image" loading="lazy">
                                     </div>
                                     <div class="name">
                                         <h4>{{ $testimonial->name }}</h4>
@@ -628,6 +628,4 @@
 
         </div>
     </section>
-
-
 @stop
