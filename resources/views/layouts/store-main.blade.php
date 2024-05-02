@@ -67,8 +67,8 @@
 {{--    @vite(['resources/scss/libs.scss'])--}}
 
 
-{{--    <link rel="preload" href="{{ asset('assets/css/bootstrap.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">--}}
-{{--    <noscript><link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"></noscript>--}}
+    <link rel="preload" href="{{ asset('assets/css/bootstrap.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"></noscript>
 
     <link rel="preload" href="{{ asset('assets/css/animate.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}"></noscript>
