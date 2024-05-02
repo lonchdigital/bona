@@ -62,12 +62,11 @@
     @stack('head')
     @vite(['resources/scss/libs.scss'])
 
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/linear-icons.min.css') }}">--}}
-
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/linear-icons.min.css') }}">
 
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">--}}
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">--}}
