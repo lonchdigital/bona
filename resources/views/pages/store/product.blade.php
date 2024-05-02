@@ -445,13 +445,16 @@
                     </header>
                 </div>
 
-                <div class="art-products-slider-wrapper">
-                    <div class="art-products-owl-items art-big-wrapper">
+                <div class="art-products-slider-wrapper art-big-wrapper art-carousel">
+                    <div class="swiper art-products-owl-items art-big-wrapper art-swiper-common">
+                        <div class="swiper-wrapper">
                         @foreach($sameTypeProducts as $product)
-                            <div class="item">
+                            <div class="swiper-slide">
                                 @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
                             </div>
                         @endforeach
+                        </div>
+                        <div class="swiper-pagination"></div>
                     </div>
                 </div>
 

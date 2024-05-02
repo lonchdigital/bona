@@ -1,5 +1,5 @@
-import Swiper from 'swiper/bundle';
 import $ from "jquery";
+import Swiper from 'swiper/bundle';
 
 export function init () {
     const SwiperCatalogCategory = new Swiper('.swiper-catalog-category', {

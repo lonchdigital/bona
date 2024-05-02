@@ -532,13 +532,15 @@
 
 {{-- static scripts start --}}
 <script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
-<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>
-<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>
-<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>
-<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>
-<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>
-<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}" defer></script>
-<script src="{{ asset('assets/js/main.js') }}" defer></script>
+
+{{--<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}" defer></script>--}}
+{{--<script src="{{ asset('assets/js/main.js') }}" defer></script>--}}
+
 {{-- static scripts end --}}
 
 {{-- dinamic scripts start --}}
