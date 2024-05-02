@@ -332,7 +332,7 @@
                             <div class="figure-grid">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
                                     <div class="image">
-                                        <img src="{{ $productType->image_url }}" alt="Product Type Image" loading="lazy">
+                                        <img src="{{ $productType->image_url }}" alt="Product Type Image">
                                     </div>
                                     <div class="text">
                                         <span class="title h4">{{ $productType->name }}</span>
@@ -422,7 +422,7 @@
                         <div class="swiper-wrapper">
                             @foreach($instagramFeed as $instagramItem)
                                 <a href="{{ $applicationGlobalOptions['instagram'] }}" target="_blank" class="swiper-slide">
-                                    <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
+                                    <img src="{{ $instagramItem->url }}" alt="Alternate Text">
                                 </a>
                             @endforeach
                         </div>
@@ -431,7 +431,7 @@
                 @else
                     @foreach($instagramFeed as $instagramItem)
                         <div class="item">
-                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
+                            <img src="{{ $instagramItem->url }}" alt="Alternate Text">
                         </div>
                     @endforeach
                 @endif
@@ -488,7 +488,7 @@
                             <div class="swiper-slide">
                                 <div class="quote">
                                     <div class="image">
-                                        <img src="{{ $testimonial->testimonial_image_url }}" alt="Testimonial image" loading="lazy">
+                                        <img src="{{ $testimonial->testimonial_image_url }}" alt="Testimonial image">
                                     </div>
                                     <div class="name">
                                         <h4>{{ $testimonial->name }}</h4>
