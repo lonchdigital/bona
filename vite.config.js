@@ -25,20 +25,21 @@ export default defineConfig(({ mode }) => {
             }
         },
         plugins: [
+
             laravel({
                 input: [
-                    // admin
+                    'resources/js/admin/app.js',
+                    'resources/js/admin/scripts.js',
+
                     'resources/scss/libs.scss',
                     'resources/scss/main.scss',
                     'resources/scss/theme-additional.scss',
-                    // 'resources/js/admin/app.js',
-                    // 'resources/js/admin/scripts.js',
 
-                    // store
                     'resources/js/store/app.js'
-                    // 'resources/css/styles.js'
-                ]
+                ],
             }),
+
+
             vue(),
             i18n()
         ]
