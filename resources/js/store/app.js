@@ -12,8 +12,6 @@ import PopUps from './common/pop-ups';
 import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
 
-// default template
-
 
 const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' });
 

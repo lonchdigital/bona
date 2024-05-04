@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         build: {
             minify: true,
             cssCodeSplit: true,
-            // scriptLoad: 'defer'
+            scriptLoad: 'defer'
         },
         resolve: {
             alias: {
