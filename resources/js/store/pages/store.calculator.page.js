@@ -2,6 +2,9 @@ import $ from 'jquery';
 import iconUrl from '$img/icon.svg';
 
 export default async function () {
+
+    console.log('calculator!!!!');
+
     const [
         Select2,
         Tooltip

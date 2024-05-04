@@ -28,8 +28,8 @@ export default defineConfig(({ mode }) => {
 
             laravel({
                 input: [
-                    'resources/js/admin/app.js',
-                    'resources/js/admin/scripts.js',
+                    // 'resources/js/admin/app.js',
+                    // 'resources/js/admin/scripts.js',
 
                     'resources/scss/libs.scss',
                     'resources/scss/main.scss',
