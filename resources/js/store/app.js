@@ -1,4 +1,4 @@
-// import 'bootstrap';
+import 'bootstrap';
 import $ from 'jquery';
 import.meta.glob(['../../img/**']);
 // import { Fancybox } from "@fancyapps/ui/dist/fancybox/fancybox.esm.js";
@@ -45,9 +45,9 @@ async function loadJsByPage()
 
     if (pages['./pages/' + pageToLoad + '.js']) {
 
-        /*console.log('===');
+        console.log('===');
         console.log('./pages/' + pageToLoad + '.js');
-        console.log('===');*/
+        console.log('===');
 
         pages['./pages/' + pageToLoad + '.js']();
     }
