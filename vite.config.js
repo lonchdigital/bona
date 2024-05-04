@@ -15,8 +15,8 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             minify: true,
-            cssCodeSplit: true,
-            scriptLoad: 'defer'
+            // cssCodeSplit: true,
+            // scriptLoad: 'defer'
         },
         resolve: {
             alias: {
@@ -35,8 +35,12 @@ export default defineConfig(({ mode }) => {
                     'resources/scss/main.scss',
                     'resources/scss/theme-additional.scss',
 
-                    'resources/js/store/app.js'
+                    // 'resources/js/store/app.js'
+
+                    'resources/js/store/all.common.files.js',
+                    'resources/js/store/pages/store.home.js'
                 ],
+                refresh: true,
             }),
 
 

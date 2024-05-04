@@ -565,7 +565,7 @@
 @stack('dynamic_scripts')
 {{-- dinamic scripts end --}}
 
-@vite('resources/js/store/app.js')
+{{--@vite('resources/js/store/app.js')--}}
 
 </body>
 
