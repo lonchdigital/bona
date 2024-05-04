@@ -64,7 +64,7 @@
     @endif
     @stack('head')
 
-{{--    @vite(['resources/scss/libs.scss'])--}}
+    @vite(['resources/scss/libs.scss'])
 
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
 {{--    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">--}}
