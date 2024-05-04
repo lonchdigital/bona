@@ -336,7 +336,7 @@
                             <div class="figure-grid">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
                                     <div class="image">
-                                        <img src="{{ $productType->image_url }}" alt="Product Type Image">
+                                        <img src="{{ $productType->image_url }}" alt="Product Type Image" loading="lazy">
                                     </div>
                                     <div class="text">
                                         <span class="title h4">{{ $productType->name }}</span>
