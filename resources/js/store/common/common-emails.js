@@ -1,6 +1,6 @@
 import $ from "jquery";
-import iconUrl from '$img/icon.svg';
-import InputCounter from "./input-counter";
+// import iconUrl from '$img/icon.svg';
+// import InputCounter from "./input-counter";
 
 
 export default {
