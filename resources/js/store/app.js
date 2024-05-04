@@ -15,7 +15,7 @@ import ShowRoomVisitModal from "./common/show-room-visit-modal";
 // default template
 
 
-const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: false, import: 'default' });
+const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' });
 
 /*console.log('1111');
 console.log(window.location);*/
