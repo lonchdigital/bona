@@ -633,5 +633,5 @@
 @push('dynamic_scripts')
 {{--    @vite('resources/js/store/all.common.files.js')--}}
 {{--    @vite('resources/js/store/pages/store.home.js')--}}
-    @vite('resources/js/store/homepage.js')
+{{--    @vite('resources/js/store/homepage.js')--}}
 @endpush
