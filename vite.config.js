@@ -35,12 +35,13 @@ export default defineConfig(({ mode }) => {
                     'resources/scss/main.scss',
                     'resources/scss/theme-additional.scss',
 
-                    'resources/js/store/app.js'
+                    // 'resources/js/store/app.js'
+                    'resources/js/store/homepage.js'
 
                     // 'resources/js/store/all.common.files.js',
                     // 'resources/js/store/pages/store.home.js'
                 ],
-                refresh: true,
+                refresh: true
             }),
 
 
