@@ -1,7 +1,7 @@
-import 'bootstrap';
+// import 'bootstrap';
 import $ from 'jquery';
 import.meta.glob(['../../img/**']);
-import { Fancybox } from "@fancyapps/ui/dist/fancybox/fancybox.esm.js";
+// import { Fancybox } from "@fancyapps/ui/dist/fancybox/fancybox.esm.js";
 
 import ShowMenu from "./common/show-menu";
 import ScrollTop from "./common/scroll-top";
@@ -15,7 +15,10 @@ import ShowRoomVisitModal from "./common/show-room-visit-modal";
 // default template
 
 
-const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: false, import: 'default' });
+const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' });
+
+/*console.log('1111');
+console.log(window.location);*/
 
 async function loadJsByPage()
 {
@@ -44,9 +47,9 @@ async function loadJsByPage()
 
     if (pages['./pages/' + pageToLoad + '.js']) {
 
-        console.log('===');
+        /*console.log('===');
         console.log('./pages/' + pageToLoad + '.js');
-        console.log('===');
+        console.log('===');*/
 
         pages['./pages/' + pageToLoad + '.js']();
     }
