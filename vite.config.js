@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { svgSprite } from 'rollup-plugin-svgsprite-generator';
+// import { svgSprite } from 'rollup-plugin-svgsprite-generator';
 import vue from '@vitejs/plugin-vue';
 import i18n from 'laravel-vue-i18n/vite';
 
@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         build: {
             minify: true,
             cssCodeSplit: true,
-            scriptLoad: 'defer'
+            // scriptLoad: 'defer'
         },
         resolve: {
             alias: {
