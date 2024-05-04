@@ -66,7 +66,7 @@
 
     @vite(['resources/scss/libs.scss'])
 
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+{{--    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">--}}
 {{--    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">--}}
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}">
