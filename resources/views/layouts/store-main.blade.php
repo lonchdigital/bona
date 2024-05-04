@@ -68,9 +68,9 @@
 
 {{--    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">--}}
 {{--    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">--}}
-    <link rel="preload" href="{{ asset('assets/css/font-awesome.min.css') }}" as="style" onload="this.rel='stylesheet'">
-    <link rel="preload" href="{{ asset('assets/css/furniture-icons.min.css') }}" as="style" onload="this.rel='stylesheet'">
-    <link rel="preload" href="{{ asset('assets/css/linear-icons.min.css') }}" as="style" onload="this.rel='stylesheet'">
+    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/furniture-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/linear-icons.min.css') }}">
 
 
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">--}}
