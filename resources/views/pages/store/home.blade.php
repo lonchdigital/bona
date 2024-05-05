@@ -30,7 +30,7 @@
 
     <!-- ========================  Header content ======================== -->
 
-    <section class="header-content">
+    <section class="art-home-slider header-content">
 
         <div class="swiper owl-slider">
             <div class="swiper-wrapper">
@@ -336,7 +336,7 @@
                             <div class="figure-grid">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
                                     <div class="image">
-                                        <img src="{{ $productType->image_url }}" alt="Product Type Image" loading="lazy">
+                                        <img src="{{ $productType->image_url }}" alt="Product Type Image">
                                     </div>
                                     <div class="text">
                                         <span class="title h4">{{ $productType->name }}</span>
