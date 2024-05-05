@@ -9248,6 +9248,17 @@ section.art-contacts-page-section {
 
 }
 
+@media (max-width: 767px) {
+
+    .art-home-slider {
+        display: none;
+    }
+
+    .owl-icons-wrapper.owl-icons-frontpage {
+        display: none;
+    }
+}
+
 
 
 /*
