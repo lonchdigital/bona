@@ -24,6 +24,7 @@
 {{--        <link rel="preload" href="{{ $slide->slide_image_url }}" as="image">--}}
 {{--    @endforeach--}}
 
+    <link rel="preload" href="{{ asset('storage/bg-images/home-slider-mob-bg.jpg') }}" as="image">
 @endsection
 
 @section('content')
