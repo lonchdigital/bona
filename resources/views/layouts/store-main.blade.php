@@ -84,11 +84,10 @@
     <noscript><link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}"></noscript>
 
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+{{--    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">--}}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    {{--    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;1,700&family=Tenor+Sans&display=swap" rel="stylesheet">--}}
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;1,400;1,700&family=Tenor+Sans&display=swap" rel="stylesheet">
 
 
