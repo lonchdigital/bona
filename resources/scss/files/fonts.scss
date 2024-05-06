@@ -1,4 +1,52 @@
 @font-face {
+    font-family: Montserrat;
+    font-display: swap;
+    src: url("$fonts/Montserrat-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: Montserrat;
+    font-display: swap;
+    src: url("$fonts/Montserrat-LightItalic.ttf") format("truetype");
+    font-weight: 300;
+    font-style: italic;
+}
+@font-face {
+    font-family: Montserrat;
+    font-display: swap;
+    src: url("$fonts/Montserrat-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: Montserrat;
+    font-display: swap;
+    src: url("$fonts/Montserrat-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: Montserrat;
+    font-display: swap;
+    src: url("$fonts/Montserrat-SemiBoldItalic.ttf") format("truetype");
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Tenor Sans;
+    font-display: swap;
+    src: url("$fonts/TenorSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+
+
+/*
+@font-face {
 	font-family: GaugePro;
 	font-display: swap;
 	src: url("$fonts/GaugePro-Black-Italic.woff2") format("woff2"),
@@ -200,4 +248,4 @@
     src: url("$fonts/StoreMalina.woff2") format("woff2"), url("$fonts/StoreMalina.woff") format("woff");
     font-weight: 400;
     font-style: normal;
-}
+}*/
