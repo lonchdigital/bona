@@ -55,7 +55,8 @@
         </div> <!--/owl-slider-->
 
         <div class="owl-slider art-slider-mobile">
-            <div class="single-slide" style="background-image:url({{ asset('storage/bg-images/home-slider-mob-bg.jpg') }})">
+{{--            <div class="single-slide" style="background-image:url({{ asset('storage/bg-images/home-slider-mob-bg.jpg') }})">--}}
+            <div class="single-slide" style="background-color:#000">
                 <div class="box">
                     <div class="container">
                         <h2 class="title animated h1" data-animation="fadeInDown">{{ $slides[0]->title }}</h2>
