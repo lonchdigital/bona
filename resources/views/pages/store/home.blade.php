@@ -20,9 +20,9 @@
         @endif
     @endif
 
-    @foreach($slides as $slide)
-        <link rel="preload" href="{{ $slide->slide_image_url }}" as="image">
-    @endforeach
+{{--    @foreach($slides as $slide)--}}
+{{--        <link rel="preload" href="{{ $slide->slide_image_url }}" as="image">--}}
+{{--    @endforeach--}}
 
 @endsection
 
