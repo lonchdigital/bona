@@ -9235,6 +9235,21 @@ section.art-contacts-page-section {
     ----------------------------------
 */
 
+.art-home-slider {
+
+    .art-slider-mobile {
+        display: none;
+
+        .single-slide {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            color: #fff;
+        }
+    }
+}
+
+
 @media (max-width: 991px) {
 
     .header-content .item {
@@ -9255,16 +9270,24 @@ section.art-contacts-page-section {
 @media (max-width: 767px) {
 
     .art-home-slider {
-        display: none;
+
+        .art-slider-pc {
+            display: none;
+        }
+
+        .art-slider-mobile {
+            display: block;
+        }
+
     }
 
     .owl-icons-wrapper.owl-icons-frontpage {
         display: none;
     }
 
-    .art-home-page.art-products-category {
+    /*.art-home-page.art-products-category {
         margin-top: 760px;
-    }
+    }*/
 }
 
 
@@ -9278,15 +9301,12 @@ section.art-contacts-page-section {
 .art-brands-owl-items {
 
 }
-.art-brands-owl-items .owl-item {
+.art-brands-owl-items .item {
     height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 25px;
-}
-.art-brands-owl-items .owl-controls .owl-pagination {
-    top: 90%;
 }
 
 
