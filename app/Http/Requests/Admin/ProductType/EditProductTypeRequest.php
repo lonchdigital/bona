@@ -102,6 +102,9 @@ class EditProductTypeRequest extends BaseRequest
                 'nullable',
                 'string',
             ],
+            'seo_text' => [
+                'array',
+            ]
         ];
 
         foreach ($this->sizeTypes as $sizeType) {
