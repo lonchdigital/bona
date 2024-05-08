@@ -12,7 +12,7 @@
 
 @section('content')
 
-    @include('pages.store.partials.page_header', ['links' => ['own' => $brand->name]])
+    @include('pages.store.partials.page_header', ['links' => ['own' => trans('base.brands_products') . ' ' . $brand->name]])
 
 
     <!-- ======================== Products ======================== -->

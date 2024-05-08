@@ -24,7 +24,7 @@
 
 @section('content')
 
-    @include('pages.store.partials.page_header', ['links' => ['own' => $productField->field_name]])
+    @include('pages.store.partials.page_header', ['links' => ['own' => $selectedOptionName]])
 
     <!-- ======================== Products ======================== -->
     <section class="products art-section-pd">

@@ -24,7 +24,7 @@
 
 @section('content')
 
-    @include('pages.store.partials.page_header', ['links' => ['own' => trans('base.color') . ' ' . $color->name]])
+    @include('pages.store.partials.page_header', ['links' => ['own' => $pageTitle]])
 
 
     <!-- ======================== Products ======================== -->
