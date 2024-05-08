@@ -32,6 +32,10 @@ class ProductCreateRequest extends BaseRequest
                 'unique:products,slug',
                 'string',
             ],
+            /*'selected_sub_products_id' => [
+                'nullable',
+                'array',
+            ],*/
             'meta_title' => [
                 'nullable',
                 'array',
