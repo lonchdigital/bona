@@ -59,6 +59,7 @@ export default {
 
 
 
+        console.log('here??');
         // Hamburger Settings
         var $hamburgerHeaderIcon = $('.hamburger--collapse-r'),
             $hamburgerHeaderItems = $('#art-hamburger-menu .art-hamburger-header span'),
@@ -70,6 +71,8 @@ export default {
         // hamburger settings
         $hamburgerHeaderIcon.on('click', function () {
             var h_this = $(this);
+
+            console.log('click??');
 
             $headerSearchIcon.removeClass('is-active');
             $headerSearchField.hide();
@@ -91,6 +94,23 @@ export default {
 
             $hamburgerData.addClass('d-none').removeClass('d-block');
             $hamburgerData.filter('[data-id="' + selected_item + '"]').removeClass('d-none').addClass('d-block');
+        });
+
+
+        // search settings
+        $headerSearchIcon.on('click', function () {
+            var h_this = $(this);
+
+            $hamburgerHeaderIcon.removeClass('is-active');
+            $hamburgerMenu.hide();
+
+            if(h_this.hasClass('is-active')) {
+                h_this.removeClass('is-active');
+                $headerSearchField.fadeOut();
+            } else {
+                h_this.addClass('is-active');
+                $headerSearchField.fadeIn();
+            }
         });
 
 
