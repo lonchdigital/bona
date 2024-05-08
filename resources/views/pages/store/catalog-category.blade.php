@@ -12,7 +12,8 @@
 
 @section('content')
 
-    @include('pages.store.partials.page_header', ['links' => [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) => $productType->name]])
+    @include('pages.store.partials.page_header', ['links' => ['own' => $selectedCategory->name]])
+
 
     <!-- ======================== Products ======================== -->
     <section class="products art-products-catalog">
