@@ -2319,6 +2319,13 @@ nav .cart-wrapper.open {
     line-height: 37px;
 }
 
+@media (max-width: 767px) {
+    .product .title {
+        font-size: 17px;
+        line-height: 25px;
+    }
+}
+
 .product .title small {
     display: block;
     text-transform: none;
