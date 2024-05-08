@@ -397,12 +397,12 @@ class ProductService extends BaseService
     public function createProduct(User $creator, ProductType $productType, EditProductDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($productType, $request, $creator) {
-
             $productData = [
                 'is_active' => 0,
                 'creator_id' => $creator->id,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
+                'sub_products' => ( !is_null($request->selectedSubProductsId) ) ? json_encode($request->selectedSubProductsId) : null,
                 'name' => $request->name,
                 'slug' => $request->slug,
                 'old_price' => $request->oldPrice,
@@ -445,6 +445,7 @@ class ProductService extends BaseService
             }
 
             $product = Product::create($productData);
+
 
             if( !is_null($request->gallery) ) {
                 $this->syncGallery($product->id, $request->gallery);
@@ -519,6 +520,8 @@ class ProductService extends BaseService
                 'height' => $request->height,
                 'special_offers' => $request->specialOfferIds,
             ];
+
+//            dd($dataToUpdate);
 
             // TODO: do we need main color when we have array of colors?
             /*if ($productType->has_color) {
