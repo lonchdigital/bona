@@ -725,16 +725,28 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <x-admin.multilanguage-text-area
-                                                        :is-required="true"
-                                                        :label="trans('admin.seo_text')"
-                                                        field-name="seo_text"
-                                                        :values="isset($seoData['content']) ? $seoData['content'] : []"/>
+                                        <div class="tab-content col-md-12 mb-4">
+
+                                            @foreach($availableLanguages as $availableLanguage)
+
+                                                <input type="hidden" name="seo_text[{{$availableLanguage}}]" value="">
+                                                <div language="{{ $availableLanguage }}" class="multilang-content tab-pane fade @if($availableLanguage == app()->getLocale())active show @endif">
+                                                    <span>{{ trans('admin.seo_text') }}</span> <strong>{{ mb_strtoupper($availableLanguage) }}</strong>
+                                                    <div class="editor" id="editor-{{ $availableLanguage }}" style="min-height:100px;">
+                                                        {!! isset($seoData['content'][$availableLanguage]) ? $seoData['content'][$availableLanguage] : '' !!}
+                                                    </div>
                                                 </div>
-                                            </div>
+
+                                            @endforeach
+
+
+                                            {{-- TODO:: old text area --}}
+{{--                                                    <x-admin.multilanguage-text-area--}}
+{{--                                                :is-required="true"--}}
+{{--                                                :label="trans('admin.seo_text')"--}}
+{{--                                                field-name="seo_text"--}}
+{{--                                                :values="isset($seoData['content']) ? $seoData['content'] : []"/>--}}
+
                                         </div>
 
                                         <div class="col-md-12 mb-5">
@@ -1081,6 +1093,64 @@ onclick="artRemoveAttribute(event, ${id})">
                 .replace(/-+$/, ''); //trim ending dash
         }
 
+    </script>
+
+
+    <script src='/static-admin/js/quill.min.js'></script>
+    <script type="text/javascript">
+        const toolbarOptions = [
+            [
+                {
+                    'header': [1, 2, 3, 4, 5, 6, false]
+                }],
+            ['bold', 'italic', 'underline', 'strike', 'link', 'image'],
+            ['blockquote'],
+            [
+                {
+                    'list': 'ordered'
+                },
+                {
+                    'list': 'bullet'
+                }],
+            [
+                {
+                    'script': 'sub'
+                },
+                {
+                    'script': 'super'
+                }],
+            [
+                {
+                    'color': []
+                },
+            ],
+            [
+                {
+                    'align': []
+                }],
+            ['clean']
+        ];
+
+        let editorsOnPage = [];
+
+        $('.editor').each(function () {
+            const quill = new Quill($(this)[0],
+                {
+                    modules:
+                        {
+                            toolbar: toolbarOptions
+                        },
+                    theme: 'snow'
+                });
+            editorsOnPage.push({editor: $(this), input: $(`input[name="seo_text[${$(this).parent().attr('language')}]"]`)});
+        });
+
+        const from = $('#main-form').submit(function () {
+            editorsOnPage.forEach(function (editor) {
+                console.log(editor.editor);
+                editor.input.val(editor.editor.find('.ql-editor').html());
+            });
+        });
     </script>
 @endpush
 

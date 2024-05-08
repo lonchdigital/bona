@@ -67,6 +67,8 @@ class StaticPageService extends BaseService
                 ]);
             }
 
+            dd($request);
+
             $data = [];
             $request->meta_tags = [
                 'uk' => $request->meta_tags,
