@@ -7589,9 +7589,23 @@ a:focus,
 }
 .art-popup-single-product .art-popup-list-sub-products .art-product-item .art-product-data {
     padding: 11px;
-}
-.art-popup-single-product .art-popup-list-sub-products .art-product-item .art-product-data a.art-product-link {
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+
+    a.art-product-link {
+        padding: 0;
+        flex-grow: 2;
+
+        .image {
+            height: 250px;
+            align-items: center;
+        }
+
+        .text {
+
+        }
+    }
+
 }
 .art-popup-single-product .art-popup-list-sub-products .art-product-item .art-product-data button.btn {
     background-color: #DCB14A;
