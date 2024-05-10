@@ -30,6 +30,9 @@ class CategoryCreateRequest extends BaseRequest
             'slug' => [
                 'required',
                 'string',
+            ],
+            'seo_text' => [
+                'array',
             ]
         ];
 
@@ -49,6 +52,14 @@ class CategoryCreateRequest extends BaseRequest
             $rules['name.' . $availableLanguage] = [
                 'required',
                 'string'
+            ];
+            $rules['seo_title.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['seo_text.' . $availableLanguage] = [
+                'nullable',
+                'string',
             ];
         }
 
@@ -97,6 +108,9 @@ class CategoryCreateRequest extends BaseRequest
             $this->input('name'),
             $this->input('slug'),
             $this->file('category_image'),
+
+            $this->input('seo_title'),
+            $this->input('seo_text'),
         );
     }
 }

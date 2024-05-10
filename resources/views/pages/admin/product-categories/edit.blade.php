@@ -52,6 +52,35 @@
                                             <div class="mt-1 text-danger ajaxError" id="error-field-category_image"></div>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <x-admin.multilanguage-input
+                                                        :is-required="false"
+                                                        :label="trans('admin.seo_title')"
+                                                        field-name="seo_title"
+                                                        :values="[]"
+                                                        :values="isset($seoData['title']) ? $seoData['title'] : []"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-content col-md-12 mb-4">
+                                            @foreach($availableLanguages as $availableLanguage)
+                                                <input type="hidden" name="seo_text[{{$availableLanguage}}]" value="">
+                                                <div language="{{ $availableLanguage }}" class="multilang-content tab-pane fade @if($availableLanguage == app()->getLocale())active show @endif">
+                                                    <span>{{ trans('admin.seo_text') }}</span> <strong>{{ mb_strtoupper($availableLanguage) }}</strong>
+                                                    <div class="editor" id="editor-{{ $availableLanguage }}" style="min-height:100px;">
+                                                        {!! isset($seoData['content'][$availableLanguage]) ? $seoData['content'][$availableLanguage] : '' !!}
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="row">
@@ -84,6 +113,63 @@
                 const value = $(this).val();
                 const latValue = CyrLat.getC2L(value);
                 $('#slug').val(slugify(latValue))
+            });
+        });
+    </script>
+
+    <script src='/static-admin/js/quill.min.js'></script>
+    <script type="text/javascript">
+        const toolbarOptions = [
+            [
+                {
+                    'header': [1, 2, 3, 4, 5, 6, false]
+                }],
+            ['bold', 'italic', 'underline', 'strike', 'link', 'image'],
+            ['blockquote'],
+            [
+                {
+                    'list': 'ordered'
+                },
+                {
+                    'list': 'bullet'
+                }],
+            [
+                {
+                    'script': 'sub'
+                },
+                {
+                    'script': 'super'
+                }],
+            [
+                {
+                    'color': []
+                },
+            ],
+            [
+                {
+                    'align': []
+                }],
+            ['clean']
+        ];
+
+        let editorsOnPage = [];
+
+        $('.editor').each(function () {
+            const quill = new Quill($(this)[0],
+                {
+                    modules:
+                        {
+                            toolbar: toolbarOptions
+                        },
+                    theme: 'snow'
+                });
+            editorsOnPage.push({editor: $(this), input: $(`input[name="seo_text[${$(this).parent().attr('language')}]"]`)});
+        });
+
+        const from = $('#main-form').submit(function () {
+            editorsOnPage.forEach(function (editor) {
+                console.log(editor.editor);
+                editor.input.val(editor.editor.find('.ql-editor').html());
             });
         });
     </script>

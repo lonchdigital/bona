@@ -14,6 +14,9 @@ class CreateCategoryDTO implements BaseDTO
         public readonly array $name,
         public readonly string $slug,
         public readonly ?UploadedFile $image,
+
+        public readonly ?array $seoTitle,
+        public readonly ?array $seoText,
     )
     { }
 }
