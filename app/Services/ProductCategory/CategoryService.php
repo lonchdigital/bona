@@ -5,6 +5,7 @@ namespace App\Services\ProductCategory;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Models\SeoText;
 use App\Models\User;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
@@ -52,7 +53,9 @@ class CategoryService extends BaseService
             }
 
 
-            Category::create($dataToAdd);
+            $productCategory = Category::create($dataToAdd);
+
+            SeoText::updateSeoText($productCategory->slug, $request->seoTitle, $request->seoText); // put $productCategory->slug instead of $productType->slug
 
             return ServiceActionResult::make(true, trans('admin.product_category_create_success'));
         });
@@ -93,6 +96,9 @@ class CategoryService extends BaseService
                 ]);
 
             }
+
+
+            SeoText::updateSeoText($productCategory->slug, $request->seoTitle, $request->seoText); // put $productCategory->slug instead of $productType->slug
 
             return ServiceActionResult::make(true, trans('admin.product_category_edit_success'));
         });

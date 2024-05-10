@@ -716,7 +716,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <x-admin.multilanguage-input
-                                                        :is-required="true"
+                                                        :is-required="false"
                                                         :label="trans('admin.seo_title')"
                                                         field-name="seo_title"
                                                         :values="[]"

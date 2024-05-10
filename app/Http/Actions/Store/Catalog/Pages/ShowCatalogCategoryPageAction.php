@@ -90,7 +90,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
 //            'seogenData' => $seogenService->getTagsForCategories($productType, $category),
             'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
-            'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
+            'seoText' => $productService->getProductTypeSeoTextByLanguage($category->slug, app()->getLocale())
         ]);
     }
 }
