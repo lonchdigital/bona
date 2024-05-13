@@ -10,6 +10,10 @@ export function init () {
     const SwiperSingleWallpaper = new Swiper('.swiper.owl-slider', {
         loop: true,
         slidesPerView: 1,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        }
         // simulateTouch: 0,
         /*navigation: {
             nextEl: ".swiper-button-next",
@@ -21,6 +25,10 @@ export function init () {
     let HomeSliderIcons= new Swiper(".swiper.owl-icons", {
         slidesPerView: 6,
         spaceBetween: 30,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev"
+        },
         breakpoints: {
             100: {
                 slidesPerView: 2

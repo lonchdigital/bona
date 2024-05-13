@@ -53,11 +53,12 @@
                     </div>
                 @endforeach
             </div>
+            <div class="swiper-pagination"></div>
         </div> <!--/owl-slider-->
 
         <div class="owl-slider art-slider-mobile">
             <div class="single-slide" style="background-image:url({{ asset('storage/bg-images/home-slider-mob-bg.jpg') }})">
-                <div class="box">
+                <div class="box mb-6">
                     <div class="container">
                         <h2 class="title animated h1" data-animation="fadeInDown">{{ $slides[0]->title }}</h2>
                         <div class="slider-description animated font-two" data-animation="fadeInUp">{{ $slides[0]->description }}</div>
@@ -327,6 +328,8 @@
                     </div>
 
                 </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div> <!--/owl-icons-->
 
         </div> <!--/container-->
