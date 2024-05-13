@@ -64,8 +64,8 @@ class ColorService extends BaseService
                 $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
                 $colorImage['image'] = $request->mainImage;
 
-                $this->storeImage($newImagePath, $dataToUpdate['image'], 'webp');
-                $this->storeImage($newImagePath, $dataToUpdate['image'], 'jpg');
+                $this->storeImage($newImagePath, $colorImage['image'], 'webp');
+                $this->storeImage($newImagePath, $colorImage['image'], 'jpg');
 
                 $dataToUpdate['main_image'] = $newImagePath . '.webp';
             }

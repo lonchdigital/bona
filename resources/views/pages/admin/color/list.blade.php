@@ -53,7 +53,7 @@
                                                 @foreach($colorsPaginated as $color)
                                                     <tr>
                                                         <td>{{ $color->id }}</td>
-                                                        <td>{{ $color->name }}</td>
+                                                        <td><a href="{{ route('admin.color.edit.page', ['color' => $color->id]) }}">{{ $color->name }}</a></td>
                                                         <td>
                                                             <div class="border rounded p-1 text-center" style="background-color: {{$color->hex}}; ">
                                                                 <span class="color-invert">{{ $color->hex }}</span>
