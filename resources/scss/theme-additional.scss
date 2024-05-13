@@ -9258,14 +9258,44 @@ section.art-contacts-page-section {
 
 .art-home-slider {
 
+    .swiper.owl-slider.art-slider-pc {
+
+        .swiper-pagination {
+            text-align: right;
+            width: 99%;
+
+            .swiper-pagination-bullet {
+                background: #fff;
+            }
+        }
+    }
+
     .art-slider-mobile {
         display: none;
 
         .single-slide {
-            height: 80vh;
+            height: 700px; // 80vh
             display: flex;
             align-items: center;
             color: #fff;
+        }
+    }
+}
+
+.owl-icons-wrapper {
+
+    .swiper.owl-icons {
+
+        .swiper-button-prev,
+        .swiper-button-next {
+            color: #c5c5c5;
+            width: calc(30px / 44* 27);
+            height: 30px;
+            margin-top: calc(0px - 30px / 2);
+
+            &:after {
+                font-size: 30px;
+            }
         }
     }
 }
@@ -9284,6 +9314,7 @@ section.art-contacts-page-section {
     }
     .owl-icons-wrapper.owl-icons-frontpage {
         margin-top: -166px;
+        background-color: transparent !important;
     }
 
 }
@@ -9302,9 +9333,9 @@ section.art-contacts-page-section {
 
     }
 
-    .owl-icons-wrapper.owl-icons-frontpage {
+    /*.owl-icons-wrapper.owl-icons-frontpage {
         display: none;
-    }
+    }*/
 
     /*.art-home-page.art-products-category {
         margin-top: 760px;
