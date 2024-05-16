@@ -149,11 +149,14 @@ class ProductCreateRequest extends BaseRequest
             ];
         }
 
-        /*if ($this->productType->has_color) {
+        if ($this->productType->has_color) {
             $rules['color_id'] = [
-                'required',
+                'nullable',
                 'exists:colors,id',
             ];
+        }
+
+        /*if ($this->productType->has_color) {
             $rules['all_color_ids'] = [
                 'nullable',
                 'array',
@@ -350,7 +353,7 @@ class ProductCreateRequest extends BaseRequest
             $this->input('brand_id'),
             $this->input('collection_id'),
             $this->input('category_ids'),
-//            $this->input('color_id'),
+            $this->input('color_id'),
             $this->input('all_color_ids'),
     //            explode(',', $this->input('all_color_ids')),
             $this->input('custom_field'),

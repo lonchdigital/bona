@@ -145,6 +145,10 @@ export default {
             type: Array,
             default: [],
         },
+        mainColorSelected: {
+            type: Array,
+            default: [],
+        },
         colorDisplay: {
             type: Number,
             default: false,
@@ -207,6 +211,7 @@ export default {
             // availabilityStatusArray: {},
             selectedSubProductsShow: [],
             selectedColorsShow: [],
+            selectedMainColorsShow: [],
             colors: [],
             products: [],
             selectedOptions: [],
@@ -246,6 +251,7 @@ export default {
             this.gallery = this.productGallery;
         }
 
+        this.selectedMainColorsShow = this.mainColorSelected;
         this.displayCategoryField = this.categoryDisplay;
         this.displayBrandField = this.brandDisplay;
         this.displayColorField = this.colorDisplay;
@@ -553,7 +559,7 @@ export default {
 
                 <p class="mt-4" v-if="displayColorField">
                     <strong>
-                        {{ $t('admin.color') }}
+                        {{ $t('admin.colors') }}
                     </strong>
                 </p>
                 <div class="form-group mb-3 art-admin-repeater-four-width" v-if="displayColorField">
@@ -597,6 +603,26 @@ export default {
                         :is-required="false"
                         :errors="errors"
                         :init-data="productMainImage"
+                    />
+                </div>
+
+                <p class="mt-4" v-if="displayColorField">
+                    <strong>
+                        {{ $t('admin.product_colors') }}
+                    </strong>
+                </p>
+
+                <div class="form-group mb-3" v-if="displayColorField">
+                    <select-component
+                        :is-multi-select="false"
+                        :model-value="selectedMainColorsShow"
+                        :title="$t('admin.product_colors')"
+                        :options="colors"
+                        label="text"
+                        value-prop="id"
+                        name="color_id"
+                        :is-required="false"
+                        :errors="errors"
                     />
                 </div>
 

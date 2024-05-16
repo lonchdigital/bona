@@ -131,6 +131,7 @@
                         :color-display="{{ $productType->has_color }}"
                         @if(isset($product) && $productType->has_color)
                             :color-selected="{{ json_encode($product->colors) }}"
+                            :main-color-selected="{{ json_encode($product->main_color_id) }}"
                         @endif
 
                         @if(isset($productText['content']))
