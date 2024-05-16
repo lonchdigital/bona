@@ -531,13 +531,20 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
         artProductPrice = productData.price
     }
 
+    let productCurrentImageUrl;
+    if( productData.current_image_path !== null) {
+        productCurrentImageUrl = "/storage/" + productData.current_image_path;
+    } else {
+        productCurrentImageUrl = productData.main_image_url;
+    }
+
     return `
         <li class="sub-menu-list-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
             <div class="item-link-wrapper d-flex align-items-center justify-content-between">
                 <a href="${productData.link}" class="d-flex align-items-center mr-4">
                     <span class="item-image mr-1 d-flex align-items-center justify-content-center">
-                        <img src="${productData.main_image_url}" alt="item">
+                        <img src="${productCurrentImageUrl}" alt="item">
                     </span>
                     <div class="item-text">
                         ${productData.name}
@@ -630,13 +637,21 @@ function getProductInCartPageHTML(productData, productAttributesHTML)
         artProductPrice = productData.price
     }
 
+    let productCurrentImageUrl;
+    if( productData.current_image_path !== null) {
+        productCurrentImageUrl = "/storage/" + productData.current_image_path;
+    } else {
+        productCurrentImageUrl = productData.main_image_url;
+    }
+
+
     return `
         <div class="list-product-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
             <div class="col-12 col-xl-6">
                 <a href="${productData.link}" class="table-product d-flex align-items-center">
                     <div class="table-product-image mr-3 d-block">
-                        <img src="${productData.main_image_url}" alt="img">
+                        <img src="${productCurrentImageUrl}" alt="img">
                     </div>
                     <div class="table-product-info d-block">
                         <div class="table-price mb-3 text-right d-lg-none">

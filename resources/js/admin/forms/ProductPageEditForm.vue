@@ -612,6 +612,10 @@ export default {
                         :gallery-id="item.hasOwnProperty('id') ? item.id : null"
                         :single-item="item"
                         :index="index"
+
+                        :selected-color="item.color_id"
+                        :all-colors="colors"
+
                         :errors="errors"
                         @delete-gallery-item="() => deleteGalleryItem(index)"
                     />

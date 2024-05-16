@@ -448,7 +448,7 @@ class ProductService extends BaseService
 
 
             if( !is_null($request->gallery) ) {
-                $this->syncGallery($product->id, $request->gallery);
+                $this->syncGallery($product->id, $request->gallery, $request->galleryColorIds);
             }
             if( !is_null($request->characteristics) ) {
                 $this->syncCharacteristics($product->id, $request->characteristics);
@@ -490,7 +490,7 @@ class ProductService extends BaseService
     public function productEdit(ProductType $productType, Product $product, EditProductDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($productType, $product, $request) {
-            $this->syncGallery($product->id, $request->gallery);
+            $this->syncGallery($product->id, $request->gallery, $request->galleryColorIds);
             $this->syncCharacteristics($product->id, $request->characteristics);
             $this->syncVideos($product->id, $request->videos);
             $this->syncAttributes($product->id, $request->attributes);
@@ -892,16 +892,17 @@ class ProductService extends BaseService
     {
         return ProductGalleries::where('product_id', $id)->get();
     }
-    private function syncGallery(int $product_id, ?array $gallery_images): void
+    private function syncGallery(int $product_id, ?array $gallery_images, ?array $gallery_color_ids): void
     {
         $imagesToDelete = [];
 
         $existingGalleryImages = ProductGalleries::where('product_id', $product_id)->get();
 
         if ($gallery_images) {
-            foreach ($gallery_images as $gallery_image) {
+            foreach ($gallery_images as $key => $gallery_image) {
                 $dataToUpdate = [
                     'product_id' => $product_id,
+                    'color_id' => $gallery_color_ids[$key]['color_id']
                 ];
 
                 if (isset($gallery_image['image'])) {
@@ -998,7 +999,7 @@ class ProductService extends BaseService
             $product->colors()->sync([]);
             $product->categories()->sync([]);
 
-            $this->syncGallery($product->id, []);
+            $this->syncGallery($product->id, [], []);
             $this->syncCharacteristics($product->id, []);
             $this->syncVideos($product->id, []);
             $this->syncAttributes($product->id, []);

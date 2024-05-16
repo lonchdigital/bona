@@ -16,6 +16,13 @@ export default {
             type: Number,
             default: 0,
         },
+
+        selectedColor: Number,
+        allColors: {
+            type: Array,
+            default: [],
+        },
+
         errors: {
             type: Object,
             default: [],
@@ -47,6 +54,20 @@ export default {
                         :errors="errors"
                         :init-data="singleItem.hasOwnProperty('gallery_image_url') ? singleItem.gallery_image_url : null"
                     />
+
+                    <div class="mb-3">
+                        <select-component
+                            :is-multi-select="false"
+                            :model-value="selectedColor"
+                            :title="$t('admin.product_colors')"
+                            :options="allColors"
+                            label="text"
+                            value-prop="id"
+                            :name="'gallery_color_ids[' + index + '][color_id]'"
+                            :is-required="false"
+                            :errors="errors"
+                        />
+                    </div>
 
                 </div>
             </div>

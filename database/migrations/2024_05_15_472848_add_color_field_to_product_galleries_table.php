@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('colors', function (Blueprint $table) {
-            $table->unsignedBigInteger('parent_color_id')
-                ->nullable()
-                ->default(null)
-                ->after('creator_id');
-            $table->foreign('parent_color_id')
+        Schema::table('product_galleries', function (Blueprint $table) {
+            $table->unsignedBigInteger('color_id')->nullable()->after('product_id');
+            $table->foreign('color_id')
                 ->references('id')
                 ->on('colors');
         });
@@ -27,10 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('colors', function (Blueprint $table) {
-
-
-            $table->dropColumn('parent_color_id');
+        Schema::table('product_galleries', function (Blueprint $table) {
+            $table->dropForeign(['color_id']);
+            $table->dropColumn('color_id');
         });
     }
 };
