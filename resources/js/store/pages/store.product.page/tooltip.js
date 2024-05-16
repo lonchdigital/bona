@@ -22,4 +22,21 @@ export function init () {
         template: tooltipColorTemplate,
         fallbackPlacement: [], // строго в заданому напрямку, не дає можливості при скролі позиціонувати в інші сторони
     });
+
+
+
+    // main product tabs
+    let $productsTabsNav = $('.art-product-tabs .nav-tabs.product-tabs-nav li');
+    $productsTabsNav.on('click', function (e) {
+        $productsTabsNav.removeClass('active');
+        $(this).addClass('active');
+    });
+
+    // product video tabs
+    let $productVideoTabs = $('.art-product-tabs .nav-tabs.art-product-video-tabs li');
+    $productVideoTabs.on('click', function (e) {
+        $productVideoTabs.removeClass('active');
+        $(this).addClass('active');
+    });
+
 }
