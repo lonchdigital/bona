@@ -90,10 +90,10 @@ export function init () {
 
 
     // Change colors by click
-    $('.art-colors-list .color-btn').on('click', function() {
-        var targetColorId = $(this).data('color-id');
-        let sliderSingle = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper');
-        let sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
+    const sliderSingle = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper');
+    const sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
+
+    function buildMainProductSlider(targetColorId) {
 
         let $hiddenSlidesSingleWallpaper = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
         let $hiddenSlidesWallpaperThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
@@ -119,11 +119,21 @@ export function init () {
 
         SwiperSingleWallpaper.update();
         SwiperSingleWallpaperThumbs.update();
+    }
+    $('.art-colors-list .color-btn').on('click', function() {
+        var targetColorId = $(this).data('color-id');
+
+        buildMainProductSlider(targetColorId);
     });
     $(document).ready(function() {
-        $('.art-colors-list .color-btn:first').trigger('click');
-    });
 
+        if( $('.art-colors-list .color-btn').length !== 0 ) {
+            $('.art-colors-list .color-btn:first').trigger('click');
+        } else {
+            buildMainProductSlider(0);
+        }
+
+    });
 
 
 

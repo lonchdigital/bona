@@ -34,7 +34,7 @@ class EditProductDTO implements BaseDTO
         public readonly ?int          $brandId,
         public readonly ?int          $collectionId,
         public readonly ?array        $categoryIds,
-//        public readonly ?int          $colorId,
+        public readonly ?int          $colorId,
         public readonly ?array        $allColorIds,
         public readonly ?array        $customFields,
         public readonly ?float        $length,

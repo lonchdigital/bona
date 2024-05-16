@@ -421,10 +421,9 @@ class ProductService extends BaseService
                 'special_offers' => $request->specialOfferIds,
             ];
 
-            // TODO: do we need main color when we have array of colors?
-            /*if ($productType->has_color) {
+            if ($productType->has_color) {
                 $productData['main_color_id'] = $request->colorId;
-            }*/
+            }
 
             if ($productType->has_brand) {
                 $productData['brand_id'] = $request->brandId;
@@ -521,12 +520,9 @@ class ProductService extends BaseService
                 'special_offers' => $request->specialOfferIds,
             ];
 
-//            dd($dataToUpdate);
-
-            // TODO: do we need main color when we have array of colors?
-            /*if ($productType->has_color) {
+            if ($productType->has_color) {
                 $dataToUpdate['main_color_id'] = $request->colorId;
-            }*/
+            }
 
             if ($productType->has_brand) {
                 $dataToUpdate['brand_id'] = $request->brandId;

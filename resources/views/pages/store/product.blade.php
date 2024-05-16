@@ -57,7 +57,7 @@
                     <div class="art-gallery-all-slides-container d-none">
 
                         <div class="art-swiper-single-wallpaper">
-                            <div class="swiper-slide" data-color-id="0">
+                            <div class="swiper-slide" data-color-id="{{ $product->main_color_id ?? 0 }}">
                                 <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
                                     <img src="{{ $product->main_image_url }}" alt="img">
                                 </a>
@@ -72,8 +72,8 @@
                         </div>
 
                         <div class="art-swiper-single-wallpaper-thumbs">
-                            <div class="swiper-slide">
-                                <div class="art-swiper-slide" data-color-id="0">
+                            <div class="swiper-slide" data-color-id="{{ $product->main_color_id ?? 0 }}">
+                                <div class="art-swiper-slide">
                                     <img src="{{ $product->main_image_url }}" alt="img">
                                 </div>
                             </div>
@@ -89,8 +89,6 @@
                     </div>
 
 
-
-
                     <div class="col col-md-7 art-single-product-gallery">
                         @if( !is_null($product->main_image_url) )
                             <div class="">
@@ -98,13 +96,6 @@
                                     <div class="swiper-single-wallpaper mb-md-5">
                                         <div class="swiper-wrapper">
                                             {{-- Got from js --}}
-                                            @if(count($productGallery) == 0)
-                                                <div class="swiper-slide" data-color-id="0">
-                                                    <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
-                                                        <img src="{{ $product->main_image_url }}" alt="img">
-                                                    </a>
-                                                </div>
-                                            @endif
                                         </div>
                                         <div class="swiper-button-next"></div>
                                         <div class="swiper-button-prev"></div>
@@ -118,13 +109,6 @@
                                         <div class="swiper-single-wallpaper-thumbs swiper swiper-initialized swiper-horizontal swiper-free-mode swiper-watch-progress swiper-backface-hidden swiper-thumbs">
                                             <div class="swiper-wrapper">
                                                 {{-- Got from js --}}
-                                                @if(count($productGallery) == 0)
-                                                    <div class="swiper-slide" data-color-id="0">
-                                                        <div class="art-swiper-slide">
-                                                            <img src="{{ $product->main_image_url }}" alt="img">
-                                                        </div>
-                                                    </div>
-                                                @endif
                                             </div>
                                         </div>
                                     </div>
