@@ -99,7 +99,7 @@
                                         <div class="swiper-wrapper">
                                             {{-- Got from js --}}
                                             @if(count($productGallery) == 0)
-                                                <div class="swiper-slide">
+                                                <div class="swiper-slide" data-color-id="0">
                                                     <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
                                                         <img src="{{ $product->main_image_url }}" alt="img">
                                                     </a>
@@ -119,7 +119,7 @@
                                             <div class="swiper-wrapper">
                                                 {{-- Got from js --}}
                                                 @if(count($productGallery) == 0)
-                                                    <div class="swiper-slide">
+                                                    <div class="swiper-slide" data-color-id="0">
                                                         <div class="art-swiper-slide">
                                                             <img src="{{ $product->main_image_url }}" alt="img">
                                                         </div>
