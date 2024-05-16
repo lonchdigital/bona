@@ -10,6 +10,7 @@ import CommonEmails from './common/common-emails';
 import PopUps from './common/pop-ups';
 import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
+import CommonCode from './common/common-code';
 
 async function init()
 {
@@ -21,7 +22,8 @@ async function init()
         CommonEmails.init(),
         PopUps.init(),
         AjaxSearchProducts.init(),
-        ShowRoomVisitModal.init()
+        ShowRoomVisitModal.init(),
+        CommonCode.init()
     ]);
 }
 

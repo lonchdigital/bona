@@ -59,7 +59,7 @@ export default {
 
 
 
-        console.log('here??');
+
         // Hamburger Settings
         var $hamburgerHeaderIcon = $('.hamburger--collapse-r'),
             $hamburgerHeaderItems = $('#art-hamburger-menu .art-hamburger-header span'),
