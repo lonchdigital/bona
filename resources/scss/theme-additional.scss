@@ -6418,6 +6418,18 @@ select:focus {
     grid-column-gap: 30px;
     grid-row-gap: 30px;
 }
+
+.art-product-list.art-four-column {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    @media (max-width: 991px) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (max-width: 767px) {
+        grid-template-columns: 1fr 1fr;
+    }
+}
 .art-product-list.art-three-column {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
