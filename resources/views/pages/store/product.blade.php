@@ -57,7 +57,7 @@
                     <div class="art-gallery-all-slides-container d-none">
 
                         <div class="art-swiper-single-wallpaper">
-                            <div class="swiper-slide">
+                            <div class="swiper-slide" data-color-id="0">
                                 <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
                                     <img src="{{ $product->main_image_url }}" alt="img">
                                 </a>
@@ -73,7 +73,7 @@
 
                         <div class="art-swiper-single-wallpaper-thumbs">
                             <div class="swiper-slide">
-                                <div class="art-swiper-slide">
+                                <div class="art-swiper-slide" data-color-id="0">
                                     <img src="{{ $product->main_image_url }}" alt="img">
                                 </div>
                             </div>
