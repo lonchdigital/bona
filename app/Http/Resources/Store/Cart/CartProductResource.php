@@ -17,6 +17,7 @@ class CartProductResource extends BaseProductResource
         $existingMapping['price_per_product_with_attributes'] = $this->resource->price + $this->resource->pivot->attributes_price;
         $existingMapping['attributes'] = $this->resource->pivot->attributes;
         $existingMapping['attributes_price'] = $this->resource->pivot->attributes_price;
+        $existingMapping['current_image_path'] = $this->resource->pivot->current_image_path;
 
         return $existingMapping;
     }

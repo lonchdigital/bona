@@ -89,6 +89,42 @@ export function init () {
 
 
 
+    // Change colors by click
+    $('.art-colors-list .color-btn').on('click', function() {
+        var targetColorId = $(this).data('color-id');
+        let sliderSingle = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper');
+        let sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
+
+        let $hiddenSlidesSingleWallpaper = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
+        let $hiddenSlidesWallpaperThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
+
+        if ($hiddenSlidesSingleWallpaper.length === 0) {
+            $hiddenSlidesSingleWallpaper = sliderSingle.find('.swiper-slide[data-color-id="0"]');
+        }
+        if ($hiddenSlidesWallpaperThumbs.length === 0) {
+            $hiddenSlidesWallpaperThumbs = sliderThumbs.find('.swiper-slide[data-color-id="0"]');
+        }
+
+
+        SwiperSingleWallpaper.removeAllSlides();
+        SwiperSingleWallpaperThumbs.removeAllSlides();
+
+        $hiddenSlidesSingleWallpaper.each(function() {
+            SwiperSingleWallpaper.appendSlide($(this).clone());
+        });
+
+        $hiddenSlidesWallpaperThumbs.each(function() {
+            SwiperSingleWallpaperThumbs.appendSlide($(this).clone());
+        });
+
+        SwiperSingleWallpaper.update();
+        SwiperSingleWallpaperThumbs.update();
+    });
+    $(document).ready(function() {
+        $('.art-colors-list .color-btn:first').trigger('click');
+    });
+
+
 
 
     // Similar Products Gallery

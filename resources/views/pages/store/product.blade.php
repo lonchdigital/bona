@@ -52,7 +52,41 @@
 
         <div class="main">
             <div class="container">
-                <div class="row product-flex">
+                <div class="row product-flex 22">
+
+                    <div class="art-gallery-all-slides-container d-none">
+
+                        <div class="art-swiper-single-wallpaper">
+                            <div class="swiper-slide">
+                                <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
+                                    <img src="{{ $product->main_image_url }}" alt="img">
+                                </a>
+                            </div>
+                            @foreach($productGallery as $image)
+                                <div class="swiper-slide" data-color-id="{{ $image->color_id ?? 0 }}">
+                                    <a data-fancybox="single-wallpaper-gallery" href="{{ $image->gallery_image_url }}">
+                                        <img src="{{ $image->gallery_image_url }}" alt="img">
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="art-swiper-single-wallpaper-thumbs">
+                            <div class="swiper-slide">
+                                <div class="art-swiper-slide">
+                                    <img src="{{ $product->main_image_url }}" alt="img">
+                                </div>
+                            </div>
+                            @foreach($productGallery as $image)
+                                <div class="swiper-slide" data-color-id="{{ $image->color_id ?? 0 }}">
+                                    <div class="art-swiper-slide">
+                                        <img src="{{ $image->gallery_image_url }}" alt="img">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                    </div>
 
                     <div class="col col-md-7 art-single-product-gallery">
                         @if( !is_null($product->main_image_url) )
@@ -60,18 +94,7 @@
                                 <div class="swiper-single-wallpaper-wrap d-flex">
                                     <div class="swiper-single-wallpaper mb-md-5">
                                         <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
-                                                    <img src="{{ $product->main_image_url }}" alt="img">
-                                                </a>
-                                            </div>
-                                            @foreach($productGallery as $image)
-                                                <div class="swiper-slide">
-                                                    <a data-fancybox="single-wallpaper-gallery" href="{{ $image->gallery_image_url }}">
-                                                        <img src="{{ $image->gallery_image_url }}" alt="img">
-                                                    </a>
-                                                </div>
-                                            @endforeach
+                                            {{-- Got from js --}}
                                         </div>
                                         <div class="swiper-button-next"></div>
                                         <div class="swiper-button-prev"></div>
@@ -85,18 +108,7 @@
                                     <div class="art-single-wallpaper-thumbs-wrapper">
                                         <div class="swiper-single-wallpaper-thumbs swiper swiper-initialized swiper-horizontal swiper-free-mode swiper-watch-progress swiper-backface-hidden swiper-thumbs">
                                             <div class="swiper-wrapper">
-                                                <div class="swiper-slide">
-                                                    <div class="art-swiper-slide">
-                                                        <img src="{{ $product->main_image_url }}" alt="img">
-                                                    </div>
-                                                </div>
-                                                @foreach($productGallery as $image)
-                                                    <div class="swiper-slide">
-                                                        <div class="art-swiper-slide">
-                                                            <img src="{{ $image->gallery_image_url }}" alt="img">
-                                                        </div>
-                                                    </div>
-                                                @endforeach
+                                                {{-- Got from js --}}
                                             </div>
                                         </div>
                                     </div>
@@ -190,11 +202,11 @@
                                         <div class="art-colors-list">
                                             @foreach($product->colors as $color_item)
                                                 @if($color_item->display_as_image)
-                                                    <span class="color-btn" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}">
+                                                    <span class="color-btn" data-color-id="{{ $color_item->id }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}">
                                                         <img src="{{$color_item->image_url}}" alt="ColorImg">
                                                     </span>
                                                 @else
-                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
+                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-color-id="{{ $color_item->id }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
                                                 @endif
                                             @endforeach
                                         </div>

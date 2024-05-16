@@ -5,9 +5,11 @@ namespace App\Services\Cart;
 use App\DataClasses\DeliveryTypesDataClass;
 use App\Models\Cart;
 use App\Models\CartProducts;
+use App\Models\ProductGalleries;
 use App\Models\PromoCode;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Color;
 use App\Models\WishList;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
@@ -132,11 +134,19 @@ class CartService extends BaseService
 
             $productAttributesSum = array_sum($productAttributesSum);
 
+
+            $color = Color::where(function ($query) use ($productAttributeColor) {
+                $query->whereJsonContains('name', ['uk' => $productAttributeColor['color']])
+                    ->orWhereJsonContains('name', ['ru' => $productAttributeColor['color']]);
+            })->first();
+
+
             $cart->products()->attach([$product->id => [
                 'count' => $request->productCount,
                 'price' => $product->price,
                 'attributes' => json_encode($request->productAttributes),
-                'attributes_price' => $productAttributesSum
+                'attributes_price' => $productAttributesSum,
+                'current_image_path' => ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first()->image_path ?? null
             ]]);
         }
 

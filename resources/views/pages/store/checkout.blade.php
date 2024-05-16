@@ -618,7 +618,11 @@
                                                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}"
                                                                    class="table-product d-flex align-items-center">
                                                                     <div class="table-product-image mr-3 d-block">
-                                                                        <img src="{{ $product->main_image_url }}" alt="img">
+                                                                        @if( $product->pivot->current_image_path !== null )
+                                                                            <img src="{{ '/storage/' . $product->pivot->current_image_path }}" alt="img">
+                                                                        @else
+                                                                            <img src="{{ $product->main_image_url }}" alt="img">
+                                                                        @endif
                                                                     </div>
                                                                     <div class="table-product-info d-block">
                                                                         <div class="table-product-name mb-0 d-block">

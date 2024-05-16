@@ -26,6 +26,7 @@ class EditProductDTO implements BaseDTO
         public readonly ?UploadedFile $mainImage,
         public readonly ?bool         $mainImageDeleted,
         public readonly ?array        $gallery,
+        public readonly ?array        $galleryColorIds,
         public readonly ?array        $characteristics,
         public readonly ?array        $videos,
         public readonly ?array        $attributes,

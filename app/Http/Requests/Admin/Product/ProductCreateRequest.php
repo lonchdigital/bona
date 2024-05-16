@@ -91,6 +91,9 @@ class ProductCreateRequest extends BaseRequest
             'gallery.*.id' => [
                 'nullable'
             ],
+            'gallery_color_ids.*.color_id' => [
+                'nullable'
+            ],
             'videos.*.iframe' => [
                 'nullable'
             ],
@@ -339,6 +342,7 @@ class ProductCreateRequest extends BaseRequest
             $this->file('main_image'),
             (bool) $this->input('main_image_deleted_input'),
             $this->validated('gallery'),
+            $this->validated('gallery_color_ids'),
             $this->validated('characteristics'),
             $this->validated('videos'),
             $this->validated('attributes'),
