@@ -263,19 +263,21 @@
                         <div class="art-measurer-form-wrapper">
                             <div class="container">
 
-                                <header class="art-light">
-                                    <div class="text-center">
-                                        <h2 class="title h2">{{ trans('base.call_measurer') }}</h2>
-                                        <div class="subtitle font-two">
-                                            <p class="art-form-description">{{ trans('base.call_measurer_description') }}</p>
-                                        </div>
-                                    </div>
-                                </header>
 
                                 <div class="row">
                                     <div class="col-12 text-center">
                                         <form action="#" id="user-call-measurer" method="post" class="art-contact-form">
                                             @csrf
+
+                                            <header class="art-light">
+                                                <div class="text-center">
+                                                    <h2 class="title h2">{{ trans('base.call_measurer') }}</h2>
+                                                    <div class="subtitle font-two">
+                                                        <p class="art-form-description">{{ trans('base.call_measurer_description') }}</p>
+                                                    </div>
+                                                </div>
+                                            </header>
+
                                             <div class="art-fields-row">
                                                 <div>
                                                     <input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}">
