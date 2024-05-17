@@ -19,6 +19,7 @@ class AdminNotificationEmail extends Mailable
     public function __construct(
         public $subject,
         public readonly string $viewRoute,
+        private $order
     )
     { }
 
@@ -39,6 +40,7 @@ class AdminNotificationEmail extends Mailable
     {
         return new Content(
             view: 'emails.admin-notification-email',
+            with: ['order' => $this->order],
         );
     }
 

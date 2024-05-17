@@ -202,7 +202,7 @@ class OrderService extends BaseService
 
             if (config('domain.admin_notification_emails')) {
                 foreach (explode(',', config('domain.admin_notification_emails')) as $email) {
-                    Mail::to($email)->send(new AdminNotificationEmail(trans('admin.new_order_email_subject'), route('admin.order.edit', ['order' => $order->id])));
+                    Mail::to($email)->send(new AdminNotificationEmail(trans('admin.new_order_email_subject'), route('admin.order.edit', ['order' => $order->id]), $order));
                 }
             }
 
