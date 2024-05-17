@@ -62,11 +62,18 @@
 
     <section class="art-brands-list">
         <div class="container">
-            <div class="art-brands-owl-items">
-                @foreach( $brands as $brand )
-                    @include('pages.store.partials.brand_item', ['brand' => $brand])
-                @endforeach
+
+            <div class="swiper art-brands-owl-items mt-6">
+                <div class="swiper-wrapper">
+                    @foreach( $brands as $brand )
+                        <div class="swiper-slide">
+                            @include('pages.store.partials.brand_item', ['brand' => $brand])
+                        </div>
+                    @endforeach
+                </div>
+                <div class="swiper-pagination"></div>
             </div>
+
         </div>
     </section>
 
