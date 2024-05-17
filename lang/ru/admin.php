@@ -563,6 +563,7 @@ return [
     'seo_text' => 'SEO текст',
     'product_brand' => 'Бренд товара',
     'product_colors' => 'Цвет товара',
+    'product_main_color' => 'Цвет основного изображения',
     'attribute_name' => 'Название атрибута',
     'attribute_add' => 'Добавить атрибут',
     'testimonial_add' => 'Добавить отзыв',

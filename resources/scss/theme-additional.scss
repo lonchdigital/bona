@@ -7223,7 +7223,7 @@ footer.art-site-footer {
     bottom: var(--swiper-pagination-bottom, 20px);
 
     @media (max-width: 767px) {
-        bottom: var(--swiper-pagination-bottom, -45px);
+        bottom: var(--swiper-pagination-bottom, -30px); // -45
     }
 }
 .art-single-wallpaper-thumbs-wrapper {
@@ -7312,6 +7312,10 @@ footer.art-site-footer {
     min-width: 0;
     justify-content: center;
     margin-bottom: 40px;
+
+    @media (max-width: 767px) {
+        margin-bottom: 20px;
+    }
 
     .swiper-single-wallpaper {
         overflow: hidden;
@@ -7465,14 +7469,12 @@ footer.art-site-footer {
 
         @media (max-width: 991px) {
             display: flex;
-            //flex-wrap: wrap;
         }
 
         .art-single-product-gallery {
-            //order: 1;
 
             @media (max-width: 767px) {
-                margin-bottom: 90px;
+                margin-bottom: 60px; // 90
             }
         }
 
