@@ -10,7 +10,7 @@
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                         <td>
-                            <h2 class="align-center">{{ trans('emails.your_order') }}</h2>
+                            <h2 class="align-center">{{ trans('emails.your_order') . ' № ' . $order->id }}</h2>
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="">
                                 <tbody>
                                 <tr>

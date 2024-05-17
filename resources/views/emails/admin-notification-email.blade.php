@@ -15,7 +15,7 @@
                                 <img class="align-center" src="{{ Vite::asset('resources/img/logo.svg') }}" alt="logo">
                             </p>
                              --}}
-                            <h2 class="align-center">{{ $subject }}</h2>
+                            <h2 class="align-center">{{ $subject . ' № ' . $order->id }}</h2>
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                                 <tbody>
                                 <tr>
