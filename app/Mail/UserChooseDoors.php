@@ -16,7 +16,7 @@ class UserChooseDoors extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private readonly string $name, private readonly string $phone)
+    public function __construct(private readonly string $title, private readonly string $name, private readonly string $phone)
     {}
 
     /**
@@ -36,7 +36,11 @@ class UserChooseDoors extends Mailable
     {
         return new Content(
             view: 'emails.user-choose-doors',
-            with: ['name' => $this->name, 'phone' => $this->phone],
+            with: [
+                'title' => $this->title,
+                'name' => $this->name,
+                'phone' => $this->phone
+            ],
         );
     }
 

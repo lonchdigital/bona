@@ -18,7 +18,7 @@ class UserChooseDoorsService extends BaseService
 
             if (config('domain.admin_notification_emails')) {
                 foreach (explode(',', config('domain.admin_notification_emails')) as $email) {
-                    Mail::to($email)->send( new UserChooseDoors($request->name, $request->phone) );
+                    Mail::to($email)->send( new UserChooseDoors($request->title, $request->name, $request->phone) );
                 }
             }
             return ServiceActionResult::make(true, trans('base.subscription_email_sent'));

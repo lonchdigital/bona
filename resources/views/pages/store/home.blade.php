@@ -78,23 +78,24 @@
             <div class="art-measurer-form-wrapper">
                 <div class="container">
 
-                    <header class="art-light">
-                        <div class="text-center">
-                            @if(array_key_exists('formTitle', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formTitle']))
-                                <h2 class="title h2">{{ $applicationGlobalOptions['formTitle'][app()->getLocale()] }}</h2>
-                            @endif
-                            <div class="subtitle font-two">
-                                @if(array_key_exists('formText', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formText']))
-                                    <p class="art-form-description">{{ $applicationGlobalOptions['formText'][app()->getLocale()] }}</p>
-                                @endif
-                            </div>
-                        </div>
-                    </header>
-
                     <div class="row">
                         <div class="col-12 text-center">
                             <form action="#" id="user-call-master" method="post" class="art-contact-form">
                                 @csrf
+
+                                <header class="art-light">
+                                    <div class="text-center">
+                                        @if(array_key_exists('formTitle', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formTitle']))
+                                            <h2 class="title h2">{{ $applicationGlobalOptions['formTitle'][app()->getLocale()] }}</h2>
+                                        @endif
+                                        <div class="subtitle font-two">
+                                            @if(array_key_exists('formText', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formText']))
+                                                <p class="art-form-description">{{ $applicationGlobalOptions['formText'][app()->getLocale()] }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </header>
+
                                 <div class="art-fields-row">
                                     <div>
                                         <input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}">

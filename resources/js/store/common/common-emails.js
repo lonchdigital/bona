@@ -25,6 +25,8 @@ export default {
                 data['agree'] = true;
             }
 
+            data['title'] = $userChooseDoorsForm.find('.title.h2').text();
+
             userChooseDoors(
                 data,
                 function (data) {
@@ -124,6 +126,8 @@ export default {
                 data['agree'] = true;
             }
 
+            data['title'] = formTag.find('.title.h2').text();
+
             userChooseDoors(
                 data,
                 function(data) {
@@ -212,6 +216,7 @@ function userChooseDoors(data, success, fail, form)
         type: 'post',
         data: {
             _token: csrf,
+            title: data['title'],
             name: data['name'],
             phone: data['phone'],
             agree: data['agree']
