@@ -606,17 +606,12 @@ export default {
                     />
                 </div>
 
-                <p class="mt-4" v-if="displayColorField">
-                    <strong>
-                        {{ $t('admin.product_colors') }}
-                    </strong>
-                </p>
 
                 <div class="form-group mb-3" v-if="displayColorField">
                     <select-component
                         :is-multi-select="false"
                         :model-value="selectedMainColorsShow"
-                        :title="$t('admin.product_colors')"
+                        :title="$t('admin.product_main_color')"
                         :options="colors"
                         label="text"
                         value-prop="id"
