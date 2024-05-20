@@ -64,11 +64,15 @@ class ShowCatalogPageAction extends BaseAction
             $page,
         );
 
+        $template = 'pages.store.catalog';
+        if( $productType->id == config('constants.ROZSUVNI_DVERI_ID') ) {
+            $template = 'pages.store.catalog-variety.rozsuvni-dveri-catalog';
+        }
 
         $productType->meta_tags = $this->handleFollowTag($productType->meta_tags);
         LastModified::set($productType->updated_at);
 
-        return view('pages.store.catalog', [
+        return view($template, [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
 //            'selectedFiltersOptions' => $selectedFiltersOptions,
