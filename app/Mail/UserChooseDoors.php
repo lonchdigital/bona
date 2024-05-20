@@ -25,7 +25,7 @@ class UserChooseDoors extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: trans('base.order_product'),
+            subject: $this->title,
         );
     }
 

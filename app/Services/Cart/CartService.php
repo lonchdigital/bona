@@ -139,14 +139,17 @@ class CartService extends BaseService
                 $query->whereJsonContains('name', ['uk' => $productAttributeColor['color']])
                     ->orWhereJsonContains('name', ['ru' => $productAttributeColor['color']]);
             })->first();
-
+            $currentImagePath = null;
+            if( $color !== null ) {
+                $currentImagePath = ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first()->image_path;
+            }
 
             $cart->products()->attach([$product->id => [
                 'count' => $request->productCount,
                 'price' => $product->price,
                 'attributes' => json_encode($request->productAttributes),
                 'attributes_price' => $productAttributesSum,
-                'current_image_path' => ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first()->image_path ?? null
+                'current_image_path' =>  $currentImagePath
             ]]);
         }
 

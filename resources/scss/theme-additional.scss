@@ -6419,6 +6419,18 @@ select:focus {
     grid-row-gap: 30px;
 }
 
+.art-product-list.art-two-column {
+    grid-template-columns: 1fr 1fr;
+
+    @media (max-width: 991px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 767px) {
+        grid-template-columns: 1fr;
+    }
+}
+
 .art-product-list.art-four-column {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 
@@ -6552,6 +6564,29 @@ select:focus {
 
             }
 
+        }
+
+    }
+
+
+    &.art-product-minimal {
+
+        a {
+            .text {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                text-align: unset;
+                margin-top: 16px;
+
+                span.product-type-name {
+                    min-width: 135px;
+                }
+                span.product-title {
+                    margin: 0;
+                }
+            }
         }
 
     }

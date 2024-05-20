@@ -212,7 +212,7 @@ $optionalLanguageRoutes = function () {
         Route::name('store.cart.page')->get('/', ShowCartPageAction::class);
 
         Route::name('store.cart.add-product')->post('product/{productSlug}/add', AddProductToCartAction::class);
-        Route::name('store.cart.add-sub-product')->post('subProduct/{productSlug}/add', AddSubProductToCartAction::class);
+        Route::name('store.cart.add-sub-product')->post('sub-product/{productSlug}/add', AddSubProductToCartAction::class);
         Route::name('store.cart.change-product-count')->post('product{productSlug}/update', ChangeProductCountInCartAction::class);
         Route::name('store.cart.delete-product')->post('product/{productSlug}/delete', DeleteProductFromCartAction::class);
         Route::name('store.cart.products-with-summary')->get('product',GetProductsInCartWithSummaryAction::class);
