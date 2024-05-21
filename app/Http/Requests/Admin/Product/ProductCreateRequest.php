@@ -226,6 +226,11 @@ class ProductCreateRequest extends BaseRequest
                 'string',
             ];
 
+            $rules['product_short_text.' . $availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+
             $rules['product_text.' . $availableLanguage] = [
                 'nullable',
                 'string',
@@ -313,6 +318,7 @@ class ProductCreateRequest extends BaseRequest
             $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
             $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
             $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['product_short_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.product_short_text'), $availableLanguage);
             $attributes['product_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.product_text'), $availableLanguage);
         }
 
@@ -341,6 +347,7 @@ class ProductCreateRequest extends BaseRequest
             $this->input('old_price'),
             $this->input('price'),
             $this->input('currency_id'),
+            $this->input('product_short_text'),
             $this->input('product_text'),
             $this->file('main_image'),
             (bool) $this->input('main_image_deleted_input'),

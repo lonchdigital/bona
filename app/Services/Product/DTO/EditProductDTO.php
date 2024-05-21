@@ -22,6 +22,7 @@ class EditProductDTO implements BaseDTO
         public readonly ?float        $oldPrice,
         public readonly float         $price,
         public readonly ?int          $currencyId,
+        public readonly ?array        $productShortText,
         public readonly ?array        $productText,
         public readonly ?UploadedFile $mainImage,
         public readonly ?bool         $mainImageDeleted,

@@ -281,11 +281,22 @@ class ProductService extends BaseService
         return ['count' => $productsCount];
     }
 
+
+    public function getProductShortText(int $id): array
+    {
+        $result = ProductText::where('product_id', $id)->get();
+        $data = [];
+
+        foreach ($result as $value) {
+            $data['content'][$value['language']] = $value['short_content'];
+        }
+
+        return $data;
+    }
+
     public function getProductText(int $id): array
     {
         $result = ProductText::where('product_id', $id)->get();
-
-
         $data = [];
 
         foreach ($result as $value) {
@@ -301,6 +312,7 @@ class ProductService extends BaseService
         $data = [];
 
         if ($productTextData) {
+            $data['short_content'] = $productTextData->where('language', $language)->first()->short_content;
             $data['content'] = $productTextData->where('language', $language)->first()->content;
             return $data;
         }
@@ -458,7 +470,10 @@ class ProductService extends BaseService
             if( !is_null($request->attributes) ) {
                 $this->syncAttributes($product->id, $request->attributes);
             }
+
+            ProductText::updateProductShortText($product->id, $request->productShortText);
             ProductText::updateProductText($product->id, $request->productText);
+
             if( !is_null($request->faqs) ) {
                 $this->syncProductFaqs($product->id, $request->faqs);
             }
@@ -493,6 +508,7 @@ class ProductService extends BaseService
             $this->syncCharacteristics($product->id, $request->characteristics);
             $this->syncVideos($product->id, $request->videos);
             $this->syncAttributes($product->id, $request->attributes);
+            ProductText::updateProductShortText($product->id, $request->productShortText);
             ProductText::updateProductText($product->id, $request->productText);
             $this->syncProductFaqs($product->id, $request->faqs);
             ProductSeoText::updateProductSeoText($product->id, $request->seoTitle, $request->seoText);

@@ -18,6 +18,7 @@ const routes = {
     },
     email: {
         user_choose_doors_route: '{{ route('store.choose.doors') }}',
+        order_count_doors_route: '{{ route('store.order.count.doors') }}',
     },
     emailSubscription: {
         email_subscription_subscribe: '{{ route('email-subscription.subscribe') }}',

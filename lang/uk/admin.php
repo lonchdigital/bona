@@ -8,6 +8,7 @@ return [
     'products' => 'Товари',
     'customization' => 'Кастомізація',
     'product_types' => 'Типи товарів',
+    'product_short_text' => 'Короткий опис товара',
     'product_text' => 'Опис товара',
     'product_types_description' => 'Тут ви можете створювати та редагувати типи товарів які будуть доступні в магазині. Наприклад: шпалери, фарба, клей тощо.',
     'product_menu_subtypes' => 'Всі субтовари',
