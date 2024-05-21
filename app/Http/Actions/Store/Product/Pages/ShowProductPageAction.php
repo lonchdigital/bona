@@ -56,11 +56,15 @@ class ShowProductPageAction extends BaseAction
             $productService->replaceTagsWithData($product->meta_description, $product) :
             $productService->replaceTagsWithData($product->productType->meta_product_description, $product);
 
+        $template = 'pages.store.product';
+        if( $product->productType->id == config('constants.ROZSUVNI_DVERI_ID') ) {
+            $template = 'pages.store.product-variety.rozsuvni-dveri-product';
+        }
 
         $product->meta_tags = $this->handleFollowTag($product->meta_tags);
         LastModified::set($product->updated_at);
 
-        return view('pages.store.product', [
+        return view($template, [
             'product' => $product,
 //            'categoryProducts' => $categoryProducts,
             'categoryProducts' => $productService->getSelectedSubItemsWithCategories($sub_products),

@@ -134,6 +134,10 @@
                             :main-color-selected="{{ json_encode($product->main_color_id) }}"
                         @endif
 
+                        @if(isset($productShortText['content']))
+                            :product-short-text="{{ json_encode($productShortText['content']) }}"
+                        @endif
+
                         @if(isset($productText['content']))
                             :product-text="{{ json_encode($productText['content']) }}"
                         @endif

@@ -80,6 +80,7 @@ use App\Http\Middleware\NotAuthenticatedOnly;
 use App\Services\Application\ApplicationConfigService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Actions\Store\Mail\UserChooseDoorsAction;
+use App\Http\Actions\Store\Mail\OrderCountDoorsAction;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,6 +167,7 @@ $optionalLanguageRoutes = function () {
     Route::name('store.products-rucky-by-availability.page')->get('/product-category/available-rucky/{productTypeSlug}/{categorySlug}', ShowCatalogRuckyAvailabilityPageAction::class);
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
+    Route::name('store.order.count.doors')->post('/order-count-doors', OrderCountDoorsAction::class);
 //    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
 
 

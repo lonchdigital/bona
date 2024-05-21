@@ -44,6 +44,7 @@ class ShowProductEditPageAction
             'colors' => $colorService->getColors(),
             'countries' => $countryService->getCountries(),
             'subProducts' => $productsService->getSelectedSubItems(json_decode($product->sub_products)),
+            'productShortText' => $productsService->getProductShortText($product->id),
             'productText' => $productsService->getProductText($product->id),
             'characteristics' => $productsService->getProductCharacteristics($product->id),
             'productGallery' => $productsService->getProductGallery($product->id),

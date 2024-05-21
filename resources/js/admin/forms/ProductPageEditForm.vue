@@ -161,6 +161,10 @@ export default {
             type: Array,
             default: [],
         },
+        productShortText: {
+            type: Object,
+            default: [],
+        },
         productText: {
             type: Object,
             default: [],
@@ -648,6 +652,15 @@ export default {
                 </div>
 
 
+                <multi-language-rich-text-editor-component
+                    :title="$t('admin.product_short_text')"
+                    name="product_short_text"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :content="productShortText"
+                    :is-required="false"
+                    :errors="errors"
+                />
                 <multi-language-rich-text-editor-component
                     :title="$t('admin.product_text')"
                     name="product_text"
