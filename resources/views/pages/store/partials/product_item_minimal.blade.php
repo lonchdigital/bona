@@ -6,7 +6,7 @@
             </div>
             <div class="text">
                 <span class="product-type-name">{{ $productTypeName }}</span>
-                <span class="product-title">{{ $product->name }}</span>
+                <span class="product-title font-title">{{ $product->name }}</span>
             </div>
         </a>
     </div>
