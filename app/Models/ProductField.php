@@ -29,7 +29,7 @@ class ProductField extends Model
         return $this->hasMany(ProductFieldFilterOption::class);
     }
 
-    public function optionsWithProducts($productType)
+    /*public function optionsWithProducts($productType)
     {
         return $this->options->filter(function ($option) use ($productType) {
             $query = Product::query();
@@ -41,18 +41,25 @@ class ProductField extends Model
             });
 
 
-            /*foreach ($options as $option) {
-                $query->orWhere(function (Builder $query) use ($field, $option) {
-                    $query->whereJsonContains('custom_fields->'.$field->id, (string) $option->id);
-                });
-            }*/
-
-            // Считаем товары, которые связаны с текущей опцией
             $productsCount = $query->where(function ($query) use ($option) {
                 $query->whereJsonContains('custom_fields->' . $this->id, (string)$option->id);
             })->count();
 
-            return $productsCount > 0; // Оставляем только те опции, у которых есть связанные товары
+            return $productsCount > 0;
+        });
+    }*/
+
+    public function optionsWithProducts($productType)
+    {
+        return $this->options->filter(function ($option) use ($productType) {
+            $query = Product::query();
+            $query->where('product_type_id', $productType->id);
+
+            $productsCount = $query->where(function (Builder $query) use ($option) {
+                $query->whereJsonContains('custom_fields->' . $this->id, (string)$option->id);
+            })->count();
+
+            return $productsCount > 0;
         });
     }
 

@@ -76,12 +76,11 @@ class ShowCatalogPageAction extends BaseAction
 
 
         $allFields = $productType->fields;
-        $fieldsWithFilteredOptions = $allFields->map(function ($field) use ($productType) {
+        $allFields->map(function ($field) use ($productType) {
             $field->options = $field->optionsWithProducts($productType);
             return $field;
         });
 
-//        dd($fieldsWithFilteredOptions);
 
         return view($template, [
             'filters' => $catalogService->getFiltersByProductType($productType),
