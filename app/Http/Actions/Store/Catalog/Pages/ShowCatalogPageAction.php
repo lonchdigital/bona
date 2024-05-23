@@ -72,6 +72,17 @@ class ShowCatalogPageAction extends BaseAction
         $productType->meta_tags = $this->handleFollowTag($productType->meta_tags);
         LastModified::set($productType->updated_at);
 
+
+
+
+        $allFields = $productType->fields;
+        $fieldsWithFilteredOptions = $allFields->map(function ($field) use ($productType) {
+            $field->options = $field->optionsWithProducts($productType);
+            return $field;
+        });
+
+//        dd($fieldsWithFilteredOptions);
+
         return view($template, [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,

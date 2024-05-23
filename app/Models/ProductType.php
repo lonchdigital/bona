@@ -42,6 +42,16 @@ class ProductType extends Model implements Sitemapable
             ->using(ProductFieldProductType::class);
     }
 
+    /*public function fields()
+    {
+        return $this->belongsToMany(ProductField::class, 'product_field_product_type')
+            ->withPivot(['show_as_filter', 'filter_name', 'show_on_main_filters_list', 'filter_full_position_id'])
+            ->using(ProductFieldProductType::class)
+            ->whereHas('products', function ($query) {
+                $query->whereNotNull('products.id');
+            });
+    }*/
+
     public function attributes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(ProductAttribute::class);
