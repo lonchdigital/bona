@@ -658,13 +658,13 @@ class ProductFiltersService extends BaseService
                 if ($field) {
 
 
-
                     if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
 
                         if (!is_array($filterValue)) {
                             $filterValue = [$filterValue];
                         }
 
+//                        dd($filterValue);
                         $options = $field
                             ->options()
                             ->whereIn('slug', $filterValue)
@@ -672,6 +672,7 @@ class ProductFiltersService extends BaseService
 
 
                         if (count($options)) {
+
 
                             if ($field->is_multiselectable) {
                                 $query->where(function (Builder $query) use($options, $field) {
@@ -694,6 +695,7 @@ class ProductFiltersService extends BaseService
 
 
                                 $query->where(function (Builder $query) use ($options, $field) {
+//                                    dd($options, $field);
                                     foreach ($options as $option) {
                                         $query->orWhere(function (Builder $query) use ($field, $option) {
                                             $query->whereJsonContains('custom_fields->'.$field->id, (string) $option->id);
@@ -801,10 +803,12 @@ class ProductFiltersService extends BaseService
                 if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_LEFT) {
                     $fullFilters['left'][] = $filed;
                 }
-                if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_MIDDLE) {
+                /*if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_MIDDLE) {);
                     $fullFilters['middle'][] = $filed;
-                }
+                }*/
             }
+
+
 
             if ($filed->pivot->show_as_filter && $filed->pivot->show_on_main_filters_list) {
                 $mainFilters[] = $filed;
