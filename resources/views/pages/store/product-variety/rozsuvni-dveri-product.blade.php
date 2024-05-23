@@ -339,11 +339,11 @@
                 </div>
 
                 <div class="art-products-slider-wrapper art-big-wrapper art-carousel">
-                    <div class="swiper art-products-owl-items art-big-wrapper art-swiper-common">
+                    <div class="swiper art-products-owl-items art-three-in-row art-big-wrapper art-swiper-common">
                         <div class="swiper-wrapper">
                             @foreach($sameTypeProducts as $product)
                                 <div class="swiper-slide">
-                                    @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
+                                    @include('pages.store.partials.product_item_minimal', ['product' => $product, 'productTypeName' => $product->productType->name])
                                 </div>
                             @endforeach
                         </div>
