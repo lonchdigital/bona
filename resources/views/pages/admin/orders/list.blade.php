@@ -92,6 +92,7 @@
                                                             </button>
                                                             <div class="dropdown-menu dropdown-menu-right">
                                                                 <a class="dropdown-item" href="{{ route('admin.order.details.page', ['order' => $order->id]) }}">{{ trans('admin.view') }}</a>
+                                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteOrderModal-{{ $order->id }}">{{ trans('admin.delete') }}</a>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -110,6 +111,31 @@
             </div>
         </div>
     </div>
+
+    @foreach($ordersPaginated as $order)
+        <div class="modal fade" id="deleteOrderModal-{{ $order->id }}" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="defaultModalLabel">{{ trans('admin.order_delete') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">{{ trans('admin.order_delete_confirm_text', ['ORDER_ID' => $order->id]) }}</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('admin.close') }}</button>
+                        <form action="{{ route('admin.order.delete', ['order' => $order->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">{{ trans('admin.delete') }}</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
 @endsection
 @push('scripts')
     <script>

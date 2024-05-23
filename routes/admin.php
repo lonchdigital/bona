@@ -63,6 +63,7 @@ use App\Http\Actions\Admin\ApplicationConfig\ApplicationConfigEditAction;
 use App\Http\Actions\Admin\Orders\Pages\ShowOrderDetailsPageAction;
 use App\Http\Actions\Admin\Orders\Pages\ShowOrdersListPageAction;
 use App\Http\Actions\Admin\Orders\UpdateOrderAction;
+use App\Http\Actions\Admin\Orders\DeleteOrderAction;
 use App\Http\Actions\Admin\ProductCategories\CategoryCreateAction;
 use App\Http\Actions\Admin\ProductCategories\CategoryDeleteAction;
 use App\Http\Actions\Admin\ProductCategories\CategoryEditAction;
@@ -345,6 +346,9 @@ Route::prefix('admin')->middleware([
         //Single
         Route::name('admin.order.details.page')->get('/{order}', ShowOrderDetailsPageAction::class);
         Route::name('admin.order.edit')->post('/{order}', UpdateOrderAction::class);
+
+        //Delete
+        Route::name('admin.order.delete')->post('{order}/delete', DeleteOrderAction::class);
     });
 
     //Products import

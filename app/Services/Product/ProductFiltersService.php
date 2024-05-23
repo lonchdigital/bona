@@ -695,7 +695,6 @@ class ProductFiltersService extends BaseService
 
 
                                 $query->where(function (Builder $query) use ($options, $field) {
-//                                    dd($options, $field);
                                     foreach ($options as $option) {
                                         $query->orWhere(function (Builder $query) use ($field, $option) {
                                             $query->whereJsonContains('custom_fields->'.$field->id, (string) $option->id);

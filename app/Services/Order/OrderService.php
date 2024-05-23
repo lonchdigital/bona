@@ -263,4 +263,12 @@ class OrderService extends BaseService
             return ServiceActionResult::make(true, trans('admin.order_update_success'));
         });
     }
+
+    public function deleteOrder(Order $order): ServiceActionResult
+    {
+        $order->products()->sync([]);
+        $order->delete();
+
+        return ServiceActionResult::make(true, trans('admin.order_delete_success'));
+    }
 }

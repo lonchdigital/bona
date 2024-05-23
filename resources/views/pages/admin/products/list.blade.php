@@ -193,7 +193,6 @@
                 </div>
             </div>
         </div>
-
     @endforeach
 @endsection
 @push('scripts')
