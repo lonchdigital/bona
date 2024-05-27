@@ -25,6 +25,9 @@ class CheckoutConfirmOrderAction extends BaseAction
 
         $order = $orderService->createOrderByCart($cart, $request->toDTO(), $this->getAuthUser());
 
+
+//        dd($order->payment_type_id, PaymentTypesDataClass::CARD_PAYMENT);
+
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return response()->redirectToRoute('store.payment.page', ['order' => $order->id]);
         } else {

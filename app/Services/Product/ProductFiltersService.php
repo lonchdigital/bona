@@ -32,13 +32,14 @@ class ProductFiltersService extends BaseService
 
     public static function mainColorFilterOptionChecked(array $filterData, string $filterNameSlug, Color $color): bool
     {
-        if (count($color->children)) {
+        // TODO:: I have commented it because of a lot of requests to DB
+        /*if (count($color->children)) {
             foreach ($color->children as $childColor) {
                 return isset($filterData[$filterNameSlug]) &&
                     (is_array($filterData[$filterNameSlug]) && in_array($childColor->slug, $filterData[$filterNameSlug]) ||
                         $filterData[$filterNameSlug] === $childColor->slug);
             }
-        }
+        }*/
 
         return isset($filterData[$filterNameSlug]) &&
             (is_array($filterData[$filterNameSlug]) && in_array($color->slug, $filterData[$filterNameSlug]) ||
