@@ -170,152 +170,155 @@
                 </li>
             </ul>
 
+            {{--
+                        <p class="text-muted nav-heading mt-4 mb-1">
+                            <span>{{ trans('admin.our_works') }}</span>
+                        </p>
+                        <ul class="navbar-nav flex-fill w-100 mb-2">
+                            <li class="nav-item w-100">
+                                <a class="nav-link pl-3" href="{{ route('admin.work.list.page') }}">
+                                    <i class="fe fe-list fe-16"></i>
+                                    <span class="ml-1 item-text">{{ trans('admin.our_works') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        --}}
 
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.our_works') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.work.list.page') }}">
-                        <i class="fe fe-list fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.our_works') }}</span>
-                    </a>
-                </li>
-            </ul>
-
-
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.products_import') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item dropdown">
-                    <a href="#products-import" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
-                        <i class="fe fe-book fe-16"></i>
-                        <span class="ml-3 item-text">{{ trans('admin.products_import') }}</span>
-                    </a>
-                    <ul class="collapse list-unstyled pl-4 w-100" id="products-import">
-                        @foreach($productTypes as $productType)
-                            <a class="nav-link pl-3" href="{{ route('admin.products-import.page', ['productType' => $productType->id]) }}"><span class="ml-1">{{ $productType->name }}</span></a>
-                        @endforeach
-                    </ul>
-                </li>
-            </ul>
-
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.blog') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.blog-article.list.page') }}">
-                        <i class="fe fe-align-justify fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.blog_articles') }}</span>
-                    </a>
-                </li>
-            </ul>
+                {{--
+                <p class="text-muted nav-heading mt-4 mb-1">
+                    <span>{{ trans('admin.products_import') }}</span>
+                </p>
+                <ul class="navbar-nav flex-fill w-100 mb-2">
+                    <li class="nav-item dropdown">
+                        <a href="#products-import" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+                            <i class="fe fe-book fe-16"></i>
+                            <span class="ml-3 item-text">{{ trans('admin.products_import') }}</span>
+                        </a>
+                        <ul class="collapse list-unstyled pl-4 w-100" id="products-import">
+                            @foreach($productTypes as $productType)
+                                <a class="nav-link pl-3" href="{{ route('admin.products-import.page', ['productType' => $productType->id]) }}"><span class="ml-1">{{ $productType->name }}</span></a>
+                            @endforeach
+                        </ul>
+                    </li>
+                </ul>
+                --}}
 
 
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.seo') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item dropdown">
-                    <a href="#seo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
-                        <i class="fe fe-book fe-16"></i>
-                        <span class="ml-3 item-text">{{ trans('admin.seo') }}</span>
-                    </a>
-                    <ul class="collapse list-unstyled pl-4 w-100" id="seo">
-                        <a class="nav-link pl-3" href="{{ route('admin.seo.robots-txt.edit.page') }}"><span class="ml-1">{{ trans('admin.robots_txt') }}</span></a>
-                    </ul>
-                    <ul class="collapse list-unstyled pl-4 w-100" id="seo">
-                        <a class="nav-link pl-3" href="{{ route('admin.filter-groups.list.page') }}"><span class="ml-1">{{ trans('admin.filter_groups') }}</span></a>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </aside>
-    <main role="main" class="main-content">
-        @yield('content')
-        <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="defaultModalLabel">Notifications</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="list-group list-group-flush my-n3">
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-box fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Package has uploaded successfull</strong></small>
-                                        <div class="my-0 text-muted small">Package is zipped and uploaded</div>
-                                        <small class="badge badge-pill badge-light text-muted">1m ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-download fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Widgets are updated successfull</strong></small>
-                                        <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
-                                        <small class="badge badge-pill badge-light text-muted">2m ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-inbox fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Notifications have been sent</strong></small>
-                                        <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
-                                        <small class="badge badge-pill badge-light text-muted">30m ago</small>
-                                    </div>
-                                </div> <!-- / .row -->
-                            </div>
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-link fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Link was attached to menu</strong></small>
-                                        <div class="my-0 text-muted small">New layout has been attached to the menu</div>
-                                        <small class="badge badge-pill badge-light text-muted">1h ago</small>
-                                    </div>
-                                </div>
-                            </div> <!-- / .row -->
-                        </div> <!-- / .list-group -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Clear All</button>
+<p class="text-muted nav-heading mt-4 mb-1">
+    <span>{{ trans('admin.blog') }}</span>
+</p>
+<ul class="navbar-nav flex-fill w-100 mb-2">
+    <li class="nav-item w-100">
+        <a class="nav-link pl-3" href="{{ route('admin.blog-article.list.page') }}">
+            <i class="fe fe-align-justify fe-16"></i>
+            <span class="ml-1 item-text">{{ trans('admin.blog_articles') }}</span>
+        </a>
+    </li>
+</ul>
+
+
+<p class="text-muted nav-heading mt-4 mb-1">
+    <span>{{ trans('admin.seo') }}</span>
+</p>
+<ul class="navbar-nav flex-fill w-100 mb-2">
+    <li class="nav-item dropdown">
+        <a href="#seo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+            <i class="fe fe-book fe-16"></i>
+            <span class="ml-3 item-text">{{ trans('admin.seo') }}</span>
+        </a>
+        <ul class="collapse list-unstyled pl-4 w-100" id="seo">
+            <a class="nav-link pl-3" href="{{ route('admin.seo.robots-txt.edit.page') }}"><span class="ml-1">{{ trans('admin.robots_txt') }}</span></a>
+        </ul>
+        <ul class="collapse list-unstyled pl-4 w-100" id="seo">
+            <a class="nav-link pl-3" href="{{ route('admin.filter-groups.list.page') }}"><span class="ml-1">{{ trans('admin.filter_groups') }}</span></a>
+        </ul>
+    </li>
+</ul>
+</nav>
+</aside>
+<main role="main" class="main-content">
+@yield('content')
+<div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="defaultModalLabel">Notifications</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="list-group list-group-flush my-n3">
+                <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="fe fe-box fe-24"></span>
+                        </div>
+                        <div class="col">
+                            <small><strong>Package has uploaded successfull</strong></small>
+                            <div class="my-0 text-muted small">Package is zipped and uploaded</div>
+                            <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="fe fe-download fe-24"></span>
+                        </div>
+                        <div class="col">
+                            <small><strong>Widgets are updated successfull</strong></small>
+                            <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
+                            <small class="badge badge-pill badge-light text-muted">2m ago</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="fe fe-inbox fe-24"></span>
+                        </div>
+                        <div class="col">
+                            <small><strong>Notifications have been sent</strong></small>
+                            <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
+                            <small class="badge badge-pill badge-light text-muted">30m ago</small>
+                        </div>
+                    </div> <!-- / .row -->
+                </div>
+                <div class="list-group-item bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="fe fe-link fe-24"></span>
+                        </div>
+                        <div class="col">
+                            <small><strong>Link was attached to menu</strong></small>
+                            <div class="my-0 text-muted small">New layout has been attached to the menu</div>
+                            <small class="badge badge-pill badge-light text-muted">1h ago</small>
+                        </div>
+                    </div>
+                </div> <!-- / .row -->
+            </div> <!-- / .list-group -->
         </div>
-    </main> <!-- main -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Clear All</button>
+        </div>
+    </div>
+</div>
+</div>
+</main> <!-- main -->
 </div> <!-- .wrapper -->
 @hasSection('vue')
-    @vite('resources/js/admin/app.js')
-    @vite('resources/js/admin/scripts.js')
+@vite('resources/js/admin/app.js')
+@vite('resources/js/admin/scripts.js')
 @else
-    <script src="/static-admin/js/tinycolor-min.js"></script>
-    <script src="/static-admin/js/config.js"></script>
-    <script src="/static-admin/js/jquery.min.js"></script>
-    <script src='/static-admin/js/select2.full.min.js'></script>
-    <script src='/static-admin/js/jquery.mask.min.js'></script>
-    <script src="/static-admin/js/popper.min.js"></script>
-    <script src="/static-admin/js/bootstrap.min.js"></script>
-    <script src="/static-admin/js/scripts.js"></script>
+<script src="/static-admin/js/tinycolor-min.js"></script>
+<script src="/static-admin/js/config.js"></script>
+<script src="/static-admin/js/jquery.min.js"></script>
+<script src='/static-admin/js/select2.full.min.js'></script>
+<script src='/static-admin/js/jquery.mask.min.js'></script>
+<script src="/static-admin/js/popper.min.js"></script>
+<script src="/static-admin/js/bootstrap.min.js"></script>
+<script src="/static-admin/js/scripts.js"></script>
 @endif
 {{--<script src="/static-admin/js/moment.min.js"></script>--}}
 {{--<script src="/static-admin/js/simplebar.min.js"></script>--}}
