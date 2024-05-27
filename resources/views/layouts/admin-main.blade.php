@@ -170,6 +170,7 @@
                 </li>
             </ul>
 
+            {{-- TODO: we can remove it when finish --}}
             {{--
                         <p class="text-muted nav-heading mt-4 mb-1">
                             <span>{{ trans('admin.our_works') }}</span>
@@ -184,7 +185,7 @@
                         </ul>
                         --}}
 
-                {{--
+            {{--
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>{{ trans('admin.products_import') }}</span>
                 </p>
