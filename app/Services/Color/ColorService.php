@@ -41,6 +41,8 @@ class ColorService extends BaseService
     public function getAvailableColorsByProductType(ProductType $productType): Collection
     {
         //TODO: implement with cache
+//        return Color::all();
+//        return Color::whereNull('parent_color_id')->get();
         return Color::get();
     }
 
