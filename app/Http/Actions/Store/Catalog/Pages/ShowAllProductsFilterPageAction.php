@@ -47,8 +47,6 @@ class ShowAllProductsFilterPageAction extends BaseAction
             $allFilters
         );
 
-        dd($productsPaginated);
-
         return view('pages.store.catalog-all-products', [
             'filters' => $allFilters,
             'filtersData' => $filtersData->filters,
