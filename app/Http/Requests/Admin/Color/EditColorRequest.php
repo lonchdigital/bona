@@ -29,11 +29,6 @@ class EditColorRequest extends BaseRequest
                 'nullable',
                 'image',
                 'mimes:jpeg,png,jpg',
-            ],
-            'parent_color_id' => [
-                'nullable',
-                'integer',
-                'exists:colors,id',
             ]
         ];
 
@@ -69,7 +64,6 @@ class EditColorRequest extends BaseRequest
             $this->input('display_as_image'),
             $this->input('hex'),
             $this->file('main_image'),
-            $this->input('parent_color_id'),
         );
     }
 }

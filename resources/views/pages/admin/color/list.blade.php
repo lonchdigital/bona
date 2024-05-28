@@ -7,8 +7,36 @@
                 <h2 class="mb-2 page-title">{{ trans('admin.colors') }}</h2>
                 <p class="card-text">{{ trans('admin.colors_description') }}</p>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 d-flex justify-content-between">
                         <a href="{{ route('admin.color.create.page') }}" class="btn mb-2 btn-dark">{{ trans('admin.color_add') }}</a>
+
+                        {{--search--}}
+                        <x-admin.custom-dropdown>
+                            <x-slot name="button">
+                                {{ trans('admin.search') }}
+                            </x-slot>
+                            <x-slot name="dropdown">
+                                <form class="row p-3" action="" method="GET">
+                                    <div class="col-md-12">
+                                        <div class="form-group mb-3">
+                                            <label for="search">{{ trans('admin.search') }}</label>
+                                            <input type="text" id="search" name="search" class="form-control" placeholder="{{ trans('admin.filter_by_name') }}" value="{{ $searchData->search }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <button type="submit" class="btn btn-dark w-100">{{ trans('admin.search') }}</button>
+                                    </div>
+                                    @if($searchData->search)
+                                        <div class="col-md-12">
+                                            <a href="{{ route('admin.color.list.page') }}" class="btn btn-dark w-100">{{ trans('admin.clear') }}</a>
+                                        </div>
+                                    @endif
+                                </form>
+                            </x-slot>
+                        </x-admin.custom-dropdown>
+                        {{--End search--}}
+
                     </div>
                 </div>
                 <div class="row my-4">
