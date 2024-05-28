@@ -408,7 +408,6 @@ class ProductFiltersService extends BaseService
                         $item->slug == str_replace('_to', '', $filterNameSlug);
                 })->first();
 
-                dd($field);
 
                 if ($field) {
 
@@ -434,12 +433,11 @@ class ProductFiltersService extends BaseService
                                 });
                             } else {
 
-
-                                $query->where(function (Builder $query) use($options, $field) {
+                                $query->where(function (Builder $query) use ($options, $field) {
                                     foreach ($options as $option) {
-                                        $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
-                                            ->addBinding('$."' . $field->id . '"')
-                                            ->addBinding((integer)$option->id);
+                                        $query->orWhere(function (Builder $query) use ($field, $option) {
+                                            $query->whereJsonContains('custom_fields->'.$field->id, (string) $option->id);
+                                        });
                                     }
                                 });
                             }
