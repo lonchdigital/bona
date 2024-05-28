@@ -107,7 +107,6 @@
                                             <table class="table datatables" id="dataTable-1">
                                                 <thead>
                                                 <tr>
-                                                    <th></th>
                                                     <th>#</th>
                                                     <th>{{ trans('admin.sku') }}</th>
                                                     <th>{{ trans('admin.name') }}</th>
@@ -125,11 +124,6 @@
                                                 <tbody>
                                                 @foreach($productsPaginated as $product)
                                                     <tr>
-                                                        <td>
-                                                            <a href="#{{$product->id}}" class="text-decoration-none pt-2 expand-button">
-                                                                <i class="expand-icon fe fe-chevron-right fe-24"></i>
-                                                            </a>
-                                                        </td>
                                                         <td>{{ $product->id }}</td>
                                                         <td><strong>{{ $product->sku }}</strong></td>
                                                         <td><a href="{{ route('admin.product.edit.page', ['productType' => $productType->id, 'product' => $product->id]) }}"><strong>{{ $product->name }}</strong></a></td>

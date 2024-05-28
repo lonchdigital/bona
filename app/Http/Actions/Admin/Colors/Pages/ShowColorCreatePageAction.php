@@ -9,8 +9,6 @@ class ShowColorCreatePageAction
 {
     public function __invoke(ColorService $colorService)
     {
-        return view('pages.admin.color.edit', [
-            'parentColors' => $colorService->getParentColors(),
-        ]);
+        return view('pages.admin.color.edit');
     }
 }

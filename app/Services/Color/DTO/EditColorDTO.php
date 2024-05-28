@@ -13,7 +13,6 @@ class EditColorDTO implements BaseDTO
         public readonly bool          $displayAsImage,
         public readonly ?string       $hex,
         public readonly ?UploadedFile $mainImage,
-        public readonly ?int          $parentColorId,
     )
     { }
 }

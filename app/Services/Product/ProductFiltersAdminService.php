@@ -15,47 +15,31 @@ class ProductFiltersAdminService extends BaseService
         if ($request->search) {
             $query->where(function (Builder $query) use($request) {
                 return $query->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('sku', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('children', function (Builder $query) use($request) {
-                        return $query->where('name', 'like', '%' . $request->search . '%')
-                            ->orWhere('sku', 'like', '%' . $request->search . '%');
-                    });
+                    ->orWhere('sku', 'like', '%' . $request->search . '%');
             });
         }
 
         if ($request->brandId) {
             $query->where(function (Builder $query) use($request) {
-                return $query->where('brand_id', $request->brandId)
-                    ->orWhereHas('children', function (Builder $query) use($request) {
-                        return $query->where('brand_id', $request->brandId);
-                    });
+                return $query->where('brand_id', $request->brandId);
             });
         }
 
         if ($request->colorId) {
             $query->where(function (Builder $query) use($request) {
-                return $query->where('main_color_id', $request->colorId)
-                    ->orWhereHas('children', function (Builder $query) use($request) {
-                        return $query->where('main_color_id', $request->colorId);
-                    });
+                return $query->where('main_color_id', $request->colorId);
             });
         }
 
         if ($request->collectionId) {
             $query->where(function (Builder $query) use($request) {
-                return $query->where('collection_id', $request->collectionId)
-                    ->orWhereHas('children', function (Builder $query) use($request) {
-                        return $query->where('collection_id', $request->collectionId);
-                    });
+                return $query->where('collection_id', $request->collectionId);
             });
         }
 
         if ($request->countryId) {
             $query->where(function (Builder $query) use($request) {
-                return $query->where('country_id', $request->countryId)
-                    ->orWhereHas('children', function (Builder $query) use($request) {
-                        return $query->where('country_id', $request->countryId);
-                    });
+                return $query->where('country_id', $request->countryId);
             });
         }
 

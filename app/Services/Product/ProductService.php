@@ -180,9 +180,19 @@ class ProductService extends BaseService
 
     public function getProductTypeByColorPaginated(int $perPage, int $page, ProductType $productType, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return Product::where('product_type_id', $productType->id)->whereHas('colors', function($query) use ($color) {
+        // TODO:: old request without main_color_id
+        /*return Product::where('product_type_id', $productType->id)->whereHas('colors', function($query) use ($color) {
             $query->where('colors.id', $color->id);
         })
+            ->paginate($perPage, ['*'], null, $page);*/
+
+        return Product::where('product_type_id', $productType->id)
+            ->where(function($query) use ($color) {
+                $query->where('main_color_id', $color->id)
+                    ->orWhereHas('colors', function($query) use ($color) {
+                        $query->where('colors.id', $color->id);
+                    });
+            })
             ->paginate($perPage, ['*'], null, $page);
     }
 

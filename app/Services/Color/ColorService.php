@@ -8,6 +8,7 @@ use App\Models\ProductType;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Color\DTO\EditColorDTO;
+use App\Services\Color\DTO\FilterColorAdminDTO;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,25 +18,24 @@ class ColorService extends BaseService
 {
     const COLOR_IMAGES_FOLDER = 'color-images';
 
+    public function __construct(
+        private readonly ColorFiltersAdminService $filtersAdminService,
+    ) { }
+
     public function getColors(): Collection
     {
         return Color::get();
     }
 
-    public function getParentColors(?int $excludeColorById = null): Collection
+    public function getColorsPaginated(FilterColorAdminDTO $request): LengthAwarePaginator
     {
-        $query = Color::whereNull('parent_color_id');
+        $query = Color::query();
+        $query->with([
+            'creator',
+        ]);
+        $query = $this->filtersAdminService->handleColorFilters($request, $query);
 
-        if ($excludeColorById) {
-            $query->where('id', '!=', $excludeColorById);
-        }
-
-        return $query->get();
-    }
-
-    public function getColorsPaginated(): LengthAwarePaginator
-    {
-        return Color::with(['creator'])->paginate(config('domain.items_per_page'));
+        return $query->paginate(config('domain.items_per_page'));
     }
 
     public function getAvailableColorsByProductType(): Collection
@@ -58,7 +58,6 @@ class ColorService extends BaseService
                 'slug' => $request->slug,
                 'display_as_image' => $request->displayAsImage,
                 'hex' => $request->hex,
-                'parent_color_id' => $request->parentColorId,
             ];
 
             $colorImage = null;
@@ -87,7 +86,6 @@ class ColorService extends BaseService
                 'slug' => $request->slug,
                 'display_as_image' => $request->displayAsImage,
                 'hex' => $request->hex,
-                'parent_color_id' => $request->parentColorId,
             ];
 
             $imageToDelete = null;

@@ -23,22 +23,6 @@
                                 <input type="text" id="slug" name="slug" class="form-control"  @isset($color) value="{{ $color->slug }}" @endisset>
                                 <div class="mt-1 text-danger ajaxError" id="error-field-slug"></div>
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="parent-color-select">{{ trans('admin.parent_color') }}</label>
-                                <select class="form-control select2 custom-select2"
-                                        name="parent_color_id"
-                                        id="parent-color-select">
-                                    <option value="" @if(!isset($color)) selected
-                                            @endif>{{ trans('admin.select') }} {{ trans('admin.parent_color') }}</option>
-                                    @foreach($parentColors as $parentColor)
-                                        <option
-                                            @if(isset($color) && $color->parent_color == $parentColor->id) selected
-                                            @endif value="{{ $parentColor->id }}">{{ $parentColor->name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="mt-1 text-danger ajaxError" id="error-field-parent_color_id"></div>
-                            </div>
-
 
                             <br>
                             <div
