@@ -37,6 +37,8 @@ class ShowAllProductsFilterPageAction extends BaseAction
 
         $allFilters = $catalogService->getAllFilters();
 
+        dd($allFilters);
+
         $productsPaginated = $productService->getAllProductsPaginated(
 //            $productType,
             $filtersData,
