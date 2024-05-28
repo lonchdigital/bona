@@ -110,14 +110,52 @@
                             @endif
 
 
+{{--                            @dd($colors)--}}
+
+                            <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
+                                    <div class="filter-box filter-item1 filter-item--colors active">
+                                        <div class="title font-title">
+                                            {{ trans('base.color') }}
+                                        </div>
+                                        <div class="filter-content">
+                                            <div class="art-filter-color-content colors-wrapper">
+                                                @foreach($colors as $color)
+                                                    <div
+                                                        class="color-wrapper d-flex align-items-center justify-content-center @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif">
+                                                        <input class="sync-input" type="checkbox"
+                                                               name="color"
+                                                               id="color-checkbox-{{$color->id}}-main"
+                                                               value="{{ $color->slug }}"
+                                                               style="display: none;"
+                                                               @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif>
+                                                        @if($color->display_as_image)
+                                                            <label for="color-checkbox-{{$color->id}}-main"
+                                                                   class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
+                                                                   style="background-image: url({{$color->image_url}});"
+                                                                   data-toggle="tooltip">
+                                                                <span class="before border-silver-custom"></span>
+                                                            </label>
+                                                        @else
+                                                            <label for="color-checkbox-{{$color->id}}-main"
+                                                                   class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
+                                                                   @if(!$color->hex)
+                                                                   style="background: linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,235,0,1) 37%, rgba(5,255,0,1) 74%, rgba(59,63,250,1) 100%, rgba(0,9,255,1) 100%);"
+                                                                   @else
+                                                                   style="background-color: {{$color->hex}};"
+                                                                   @endif
+                                                                   data-toggle="tooltip">
+                                                                <span class="before border-silver-custom"></span>
+                                                            </label>
+                                                        @endif
+
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!--/filter-box-->
 
 
-                        {{-- COLOR block --}}
-
-
-
-
-{{--                            @if( count($filters['main']) || $productType->has_color )--}}
                             @if( count($filters['main']) )
                                 <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark mb-2">{{trans('base.filter')}}</div>
                             @endif

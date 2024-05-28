@@ -38,7 +38,7 @@ class ColorService extends BaseService
         return Color::with(['creator'])->paginate(config('domain.items_per_page'));
     }
 
-    public function getAvailableColorsByProductType(ProductType $productType): Collection
+    public function getAvailableColorsByProductType(): Collection
     {
         //TODO: implement with cache
 //        return Color::all();

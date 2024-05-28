@@ -7,12 +7,15 @@ use App\Http\Actions\Admin\BaseAction;
 use App\Services\Product\ProductService;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Http\Resources\Store\Catalog\ProductsCountResource;
+use App\Services\Product\ProductFiltersService;
 
 class GetAllProductsCountByFilterAction extends BaseAction
 {
-    public function __invoke(ProductType $productType, CatalogFilterRequest $request, ProductService $productService)
+    public function __invoke(ProductType $productType, CatalogFilterRequest $request, ProductService $productService, ProductFiltersService $catalogService)
     {
-        $result = $productService->getAllProductsCountByFilters($request->toDTO());
+        $allFilters = $catalogService->getAllFilters();
+
+        $result = $productService->getAllProductsCountByFilters($request->toDTO(), $allFilters);
 
         return ProductsCountResource::make($result);
     }

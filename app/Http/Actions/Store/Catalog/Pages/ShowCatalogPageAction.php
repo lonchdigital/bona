@@ -73,8 +73,6 @@ class ShowCatalogPageAction extends BaseAction
         LastModified::set($productType->updated_at);
 
 
-
-
         $allFields = $productType->fields;
         $allFields->map(function ($field) use ($productType) {
             $field->options = $field->optionsWithProducts($productType);

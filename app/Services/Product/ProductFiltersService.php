@@ -326,10 +326,9 @@ class ProductFiltersService extends BaseService
         return $options;
     }
 
-    public function handleAllProductFilters(array $filterData, Builder $query, bool $disableSorting = false): Builder
+    public function handleAllProductFilters(array $filterData, Builder $query, bool $disableSorting = false, ?array $allFilters): Builder
     {
         $sizeOptions = null;
-        $allFilters = $this->getAllFilters();
 
         foreach ($filterData as $filterNameSlug => $filterValue) {
             if ($filterNameSlug === 'color') {
@@ -396,8 +395,12 @@ class ProductFiltersService extends BaseService
             } else if ($filterNameSlug === 'product_height_to') {
                 $query->where('height', '<=', $filterValue);
                 //fixed inputs
+
             } else {
 
+                if (!isset($allFilters['main'])) {
+                    $allFilters['main'] = collect(); // Или new \Illuminate\Database\Eloquent\Collection();
+                }
 
                 $field = $allFilters['main']->filter(function ($item) use ($filterNameSlug) {
                     return $item->slug == $filterNameSlug ||
@@ -405,7 +408,6 @@ class ProductFiltersService extends BaseService
                         $item->slug == str_replace('_to', '', $filterNameSlug);
                 })->first();
 
-//                $field = false;
 
                 if ($field) {
 
@@ -430,6 +432,7 @@ class ProductFiltersService extends BaseService
                                     }
                                 });
                             } else {
+
 
                                 $query->where(function (Builder $query) use($options, $field) {
                                     foreach ($options as $option) {
@@ -647,7 +650,6 @@ class ProductFiltersService extends BaseService
                 });
             } else {
 
-
                 $field = $productType->fields->filter(function ($item) use ($filterNameSlug) {
                     return $item->slug == $filterNameSlug ||
                         $item->slug == str_replace('_from', '', $filterNameSlug) ||
@@ -823,7 +825,7 @@ class ProductFiltersService extends BaseService
 
     public function getAllFilters(): array
     {
-        $mainFilters = collect();
+        /*$mainFilters = collect();
         $productTypes = ProductType::all();
         $addedFieldIds = [];
 
@@ -835,6 +837,24 @@ class ProductFiltersService extends BaseService
                         $mainFilters[] = $filed;
                         $addedFieldIds[] = $filed->id;
                     }
+                }
+            }
+        }*/
+
+        $mainFilters = collect();
+        $addedFieldIds = [];
+
+        // Жадная загрузка связей 'fields' и 'pivot' сразу для всех типов продуктов
+        $productTypes = ProductType::with(['fields' => function($query) {
+            $query->wherePivot('show_as_filter', true)
+                ->wherePivot('show_on_main_filters_list', true);
+        }])->get();
+
+        foreach ($productTypes as $productType) {
+            foreach ($productType->fields as $field) {
+                if (!in_array($field->id, $addedFieldIds)) {
+                    $mainFilters->push($field);
+                    $addedFieldIds[] = $field->id;
                 }
             }
         }

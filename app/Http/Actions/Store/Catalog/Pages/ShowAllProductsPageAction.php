@@ -12,7 +12,6 @@ use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
-use App\Services\WishList\WishListService;
 
 class ShowAllProductsPageAction extends BaseAction
 {
@@ -21,8 +20,8 @@ class ShowAllProductsPageAction extends BaseAction
         CatalogFilterRequest $request
     )
     {
-
         $catalogService = app()->make(ProductFiltersService::class);
+        $colorService = app()->make(ColorService::class);
 //        $colorService = app()->make(ColorService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
@@ -31,24 +30,28 @@ class ShowAllProductsPageAction extends BaseAction
         $filtersData = $request->toDTO();
 
         $baseCurrency = $currencyService->getBaseCurrency();
+        $colors = $colorService->getAvailableColorsByProductType();
 //        $colors = $colorService->getAvailableColorsByProductType($productType);
 
         $page = $filtersData->filters['page'] ?? 1;
+
+        $allFilters = $catalogService->getAllFilters();
 
         $productsPaginated = $productService->getAllProductsPaginated(
 //            $productType,
             $filtersData,
             $filtersData->filters['per_page'] ?? 18, // 3
             $page,
+            $allFilters
         );
 
-//        dd('store.catalog.page');
+//        dd($colors);
 
         return view('pages.store.catalog-all-products', [
-            'filters' => $catalogService->getAllFilters(),
+            'filters' => $allFilters,
             'filtersData' => $filtersData->filters,
 //            'productType' => $productType,
-//            'colors' => $colors,
+            'colors' => $colors,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getAllProductsMaxPrice($filtersData),

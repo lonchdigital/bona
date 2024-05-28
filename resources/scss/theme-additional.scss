@@ -6516,10 +6516,14 @@ select:focus {
             //padding: 3.3rem 3.3rem 1.6rem 3.3rem;
 
             .image {
+                height: 230px;
+
                 display: flex;
                 justify-content: center;
+                align-items: center;
 
                 img {
+                    height: 100%;
                     /*max-height: 374px;*/
                 }
             }
