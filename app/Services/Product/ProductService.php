@@ -112,20 +112,20 @@ class ProductService extends BaseService
         })->paginate($perPage, '*', null, $page);
     }
 
-    public function getAllProductsPaginated(FilterProductDTO $request,int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getAllProductsPaginated(FilterProductDTO $request,int $perPage, int $page, array $allFilters): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = Product::query();
 
-        $query = $this->filterService->handleAllProductFilters($request->filters, $query);
+        $query = $this->filterService->handleAllProductFilters($request->filters, $query, false, $allFilters);
 
         return $query->paginate($perPage, '*', null, $page);
     }
 
-    public function getAllProductsCountByFilters(FilterProductDTO $request): array
+    public function getAllProductsCountByFilters(FilterProductDTO $request, array $allFilters): array
     {
         $query = Product::query();
 
-        $productsCount = $this->filterService->handleAllProductFilters($request->filters, $query)->count();
+        $productsCount = $this->filterService->handleAllProductFilters($request->filters, $query, false, $allFilters)->count();
 
         return ['count' => $productsCount];
     }
@@ -133,7 +133,7 @@ class ProductService extends BaseService
     public function getAllProductsMaxPrice(FilterProductDTO $request): int
     {
         $query = Product::query();
-        $maxPrice = $this->filterService->handleAllProductFilters($request->filters, $query)->max('price');
+        $maxPrice = $this->filterService->handleAllProductFilters($request->filters, $query, false, [])->max('price');
 
         return ( !is_null($maxPrice) ) ? $maxPrice : 0;
     }
