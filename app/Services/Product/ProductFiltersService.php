@@ -326,7 +326,7 @@ class ProductFiltersService extends BaseService
         return $options;
     }
 
-    public function handleAllProductFilters(array $filterData, Builder $query, bool $disableSorting = false, ?array $allFilters): Builder
+    public function handleAllProductFilters(array $filterData, Builder $query, bool $disableSorting = false, array $allFilters): Builder
     {
         $sizeOptions = null;
 
@@ -399,7 +399,7 @@ class ProductFiltersService extends BaseService
             } else {
 
                 if (!isset($allFilters['main'])) {
-                    $allFilters['main'] = collect(); // Или new \Illuminate\Database\Eloquent\Collection();
+                    $allFilters['main'] = collect();
                 }
 
                 $field = $allFilters['main']->filter(function ($item) use ($filterNameSlug) {
@@ -408,6 +408,7 @@ class ProductFiltersService extends BaseService
                         $item->slug == str_replace('_to', '', $filterNameSlug);
                 })->first();
 
+                dd($field);
 
                 if ($field) {
 
