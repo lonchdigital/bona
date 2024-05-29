@@ -66,7 +66,6 @@ use App\Http\Actions\Store\Product\SearchProductAction;
 use App\Http\Actions\Store\Seo\ShowRobotsTxtFileContent;
 use App\Http\Actions\Store\ServicesPage\Pages\ShowServicesPageAction;
 use App\Http\Actions\Store\StaticPage\Pages\ShowStaticPagePageAction;
-use App\Http\Actions\Store\VisitRequests\CreateVisitRequestAction;
 use App\Http\Actions\Store\WishList\Pages\ShowWishListByTokenPageAction;
 use App\Http\Actions\Store\WishList\Pages\ShowWishListPageAction;
 use App\Http\Actions\Store\WishList\ProductAddToWishListAction;
@@ -264,9 +263,6 @@ $optionalLanguageRoutes = function () {
         Route::name('store.works.page')->get('/', ShowWorkPageAction::class);
     });*/
 
-    Route::prefix('visitRequest')->group(function () {
-        Route::name('store.visit-request.create')->post('/create', CreateVisitRequestAction::class);
-    });
 
     Route::prefix('payment')->group(function () {
        Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class);

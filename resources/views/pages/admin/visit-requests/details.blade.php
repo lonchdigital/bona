@@ -30,102 +30,22 @@
                             </div>
                             <p>
                                 <strong>
-                                    {{ trans('admin.visit_request_type') }}
+                                    {{ trans('admin.visit_request_information') }}:
                                 </strong>
+                                @if( !is_null($visitRequest->form_title) )
+                                    <span>{{ $visitRequest->form_title }}</span>
+                                @endif
                             </p>
+
                             <div class="mb-3">
-                                <striong class="text-dark">{{ trans('admin.visit_request_type') }}</striong>
-                                <div class="mt-1">{{ \App\DataClasses\VisitRequestTypeDataClass::get($visitRequest->visit_type_id)['name'] }}</div>
+                                <striong class="text-dark">{{ trans('admin.visit_request_name') }}</striong>
+                                <div class="mt-1">{{ $visitRequest->name }}</div>
                             </div>
-                            <p>
-                                <strong>
-                                    {{ trans('admin.visit_request_information') }}
-                                </strong>
-                            </p>
-                            @if($visitRequest->visit_type_id == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_VISIT)
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_name') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->name }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_phone') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->phone }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_email') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->email }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_date') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->visit_date }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_time') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->visit_time }}</div>
-                                </div>
-                            @elseif($visitRequest->visit_type_id == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_TAXI)
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_name') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->name }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_phone') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->phone }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_time') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->visit_time }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_city') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->city }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_address') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->address }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_entrance_number') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->entrance_number }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_comment') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->comment }}</div>
-                                </div>
-                            @elseif($visitRequest->visit_type_id == \App\DataClasses\VisitRequestTypeDataClass::DESIGNER_APPOINTMENT)
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_name') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->name }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_phone') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->phone }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_email') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->email }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_date') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->visit_date }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_time') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->visit_time }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_address') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->address }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_entrance_number') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->entrance_number }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <striong class="text-dark">{{ trans('admin.visit_request_comment') }}</striong>
-                                    <div class="mt-1">{{ $visitRequest->comment }}</div>
-                                </div>
-                            @endif
+                            <div class="mb-3">
+                                <striong class="text-dark">{{ trans('admin.visit_request_phone') }}</striong>
+                                <div class="mt-1">{{ $visitRequest->phone }}</div>
+                            </div>
+
                         </x-admin.reactive-form>
                     </div>
                 </div>

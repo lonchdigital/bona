@@ -7,35 +7,7 @@
                 <h2 class="mb-2 page-title">{{ trans('admin.orders') }}</h2>
                 <div class="row">
                     <div class="col d-flex justify-content-end">
-                        <x-admin.custom-dropdown>
-                            <x-slot name="button">
-                                {{ trans('admin.search') }}
-                            </x-slot>
-                            <x-slot name="dropdown">
-                                <form class="row p-3" action="{{ route('admin.visit-request.list.page') }}" method="GET">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="status_id">{{ trans('admin.status') }}</label>
-                                            <select class="form-control" name="status_id" id="status_id">
-                                                <option value="" @if(!$searchData->statusId) selected @endif>{{ trans('admin.select') }} {{ trans('admin.status')  }}</option>
-                                                @foreach(\App\DataClasses\VisitRequestStatusesDataClass::get() as $status)
-                                                    <option @if($searchData->statusId == $status['id']) selected @endif value="{{ $status['id'] }}">{{ $status['name'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
 
-                                    <div class="col-md-12 mb-3">
-                                        <button type="submit" class="btn btn-dark w-100">{{ trans('admin.search') }}</button>
-                                    </div>
-                                    @if($searchData->statusId)
-                                        <div class="col-md-12">
-                                            <a href="{{ route('admin.visit-request.list.page') }}" class="btn btn-dark w-100">{{ trans('admin.clear') }}</a>
-                                        </div>
-                                    @endif
-                                </form>
-                            </x-slot>
-                        </x-admin.custom-dropdown>
                     </div>
                 </div>
                 <div class="row my-4">
@@ -69,9 +41,8 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>{{ trans('admin.visit_request_type') }}</th>
-                                                    <th>{{ trans('admin.name') }}</th>
-                                                    <th>{{ trans('admin.phone') }}</th>
+                                                    <th>{{ trans('admin.customer_person_full_name') }}</th>
+                                                    <th>{{ trans('admin.customer_person_phone') }}</th>
                                                     <th class="text-center">{{ trans('admin.order_status') }}</th>
                                                     <th class="text-right">{{ trans('admin.action') }}</th>
                                                 </tr>
@@ -80,7 +51,6 @@
                                                 @foreach($visitRequestsPaginated as $visitRequest)
                                                     <tr>
                                                         <td>{{ $visitRequest->id }}</td>
-                                                        <td>{{ \App\DataClasses\VisitRequestTypeDataClass::get($visitRequest->visit_type_id)['name'] }}</td>
                                                         <td>{{ $visitRequest->name }}</td>
                                                         <td>{{ $visitRequest->phone }}</td>
                                                         <td class="text-center"><span class="badge " style="background-color: {{ \App\DataClasses\VisitRequestStatusesDataClass::get($visitRequest->status_id)['color'] }};"><strong class="text-dark">{{ \App\DataClasses\VisitRequestStatusesDataClass::get($visitRequest->status_id)['name'] }}</strong></span></td>
@@ -90,6 +60,7 @@
                                                             </button>
                                                             <div class="dropdown-menu dropdown-menu-right">
                                                                 <a class="dropdown-item" href="{{ route('admin.visit-request.details.page', ['visitRequest' => $visitRequest->id]) }}">{{ trans('admin.view') }}</a>
+                                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteVisitRequestModal-{{ $visitRequest->id }}">{{ trans('admin.delete') }}</a>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -108,6 +79,31 @@
             </div>
         </div>
     </div>
+
+    @foreach($visitRequestsPaginated as $visitRequest)
+        <div class="modal fade" id="deleteVisitRequestModal-{{ $visitRequest->id }}" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="defaultModalLabel">{{ trans('admin.delete') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">{{ trans('admin.visit_request_delete_confirm_text', ['VISIT_REQUEST_ID' => $visitRequest->id]) }}</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('admin.close') }}</button>
+                        <form action="{{ route('admin.visit-request.delete', ['visitRequest' => $visitRequest->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">{{ trans('admin.delete') }}</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
 @endsection
 @push('scripts')
     <script>
