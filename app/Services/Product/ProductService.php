@@ -1004,6 +1004,17 @@ class ProductService extends BaseService
                 return ServiceActionResult::make(false, trans('admin.product_in_use_on_homepage'));
             }
 
+            if( count($product->productTypes) > 0 ) {
+                $productTypesInUse = '';
+
+                foreach ( $product->productTypes as $productType ) {
+                    $productTypesInUse .= ' ' . $productType->name . ',';
+                }
+
+                $productTypesInUse = substr($productTypesInUse, 0, -1);
+                return ServiceActionResult::make(false, trans('admin.product_in_use_as_additional_product_in') . $productTypesInUse);
+            }
+
             $cartProducts = CartProducts::where('product_id', $product->id)->get();
             if( count($cartProducts) >= 1 ) {
                 foreach ($cartProducts as $cartProduct) {
