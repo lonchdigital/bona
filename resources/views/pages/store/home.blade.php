@@ -80,9 +80,8 @@
 
                     <div class="row">
                         <div class="col-12 text-center">
-                            <form action="#" id="user-call-master" method="post" class="art-contact-form">
+                            <form action="" id="user-call-master" method="post" class="art-contact-form">
                                 @csrf
-
                                 <header class="art-light">
                                     <div class="text-center">
                                         @if(array_key_exists('formTitle', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formTitle']))

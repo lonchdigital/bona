@@ -113,6 +113,7 @@ use App\Http\Actions\Admin\ProductTypes\ProductTypeDeleteAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeEditAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeSearchProductsAction;
 
+use App\Http\Actions\Admin\VisitRequests\VisitRequestDeleteAction;
 use App\Http\Actions\Admin\Works\Pages\ShowWorksListPageAction;
 use App\Http\Actions\Admin\Works\Pages\ShowWorkCreatePageAction;
 use App\Http\Actions\Admin\Works\Pages\ShowWorkEditPageAction;
@@ -464,6 +465,9 @@ Route::prefix('admin')->middleware([
         Route::name('admin.visit-request.list.page')->get('/', ShowVisitRequestsListPageAction::class);
         Route::name('admin.visit-request.details.page')->get('/{visitRequest}', ShowVisitRequestDetailsPageAction::class);
         Route::name('admin.visit-request.edit')->post('/{visitRequest}', VisitRequestEditAction::class);
+
+        //Delete
+        Route::name('admin.visit-request.delete')->post('{visitRequest}/delete', VisitRequestDeleteAction::class);
     });
 
     //Seo
