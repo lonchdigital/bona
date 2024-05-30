@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h2 class="mb-2 page-title">{{ trans('admin.orders') }}</h2>
+                <h2 class="mb-2 page-title">{{ trans('admin.visit_requests_list') }}</h2>
                 <div class="row">
                     <div class="col d-flex justify-content-end">
 
@@ -41,9 +41,9 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>{{ trans('admin.customer_person_full_name') }}</th>
-                                                    <th>{{ trans('admin.customer_person_phone') }}</th>
-                                                    <th class="text-center">{{ trans('admin.order_status') }}</th>
+                                                    <th>{{ trans('admin.visit_request_name') }}</th>
+                                                    <th>{{ trans('admin.visit_request_phone') }}</th>
+                                                    <th class="text-center">{{ trans('admin.status') }}</th>
                                                     <th class="text-right">{{ trans('admin.action') }}</th>
                                                 </tr>
                                                 </thead>

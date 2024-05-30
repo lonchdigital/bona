@@ -29,7 +29,7 @@ class CheckoutConfirmOrderAction extends BaseAction
 //        dd($order->payment_type_id, PaymentTypesDataClass::CARD_PAYMENT);
 
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
-            return response()->redirectToRoute('store.payment.page', ['order' => $order->id]);
+            return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
         } else {
             return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
         }

@@ -235,7 +235,8 @@ class OrderService extends BaseService
             $deliveryPrice = 0;
         }
 
-        $total = round($totalPrice + $deliveryPrice, 2);
+//        $total = round($totalPrice + $deliveryPrice, 2);
+        $total = round($totalPrice, 2);
         $discount = 0;
 
         if ($order->promoCode) {

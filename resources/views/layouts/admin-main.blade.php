@@ -60,6 +60,7 @@
                     <img class="main-logo-admin" src="{{ asset('storage/logo/logo-dark.jpg') }}" alt="logo">
                 </a>
             </div>
+{{--
             <ul class="navbar-nav flex-fill w-100 mb-2">
                 <li class="nav-item w-100">
                     <a class="nav-link" href="{{ route('admin.dashboard.page') }}">
@@ -68,6 +69,25 @@
                     </a>
                 </li>
             </ul>
+            --}}
+
+            <ul class="navbar-nav flex-fill w-100 mb-2">
+                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.order.list.page') }}">
+                        <i class="fe fe-list fe-16"></i>
+                        <span class="ml-1 item-text">{{ trans('admin.orders_list') }}</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav flex-fill w-100 mb-2">
+                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.visit-request.list.page') }}">
+                        <i class="fe fe-list fe-16"></i>
+                        <span class="ml-1 item-text">{{ trans('admin.visit_requests_list') }}</span>
+                    </a>
+                </li>
+            </ul>
+
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.products') }}</span>
             </p>
@@ -82,28 +102,7 @@
                 @endforeach
             </ul>
 
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.orders') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.order.list.page') }}">
-                        <i class="fe fe-list fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.orders_list') }}</span>
-                    </a>
-                </li>
-            </ul>
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>{{ trans('admin.visit_requests') }}</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link pl-3" href="{{ route('admin.visit-request.list.page') }}">
-                        <i class="fe fe-list fe-16"></i>
-                        <span class="ml-1 item-text">{{ trans('admin.visit_requests_list') }}</span>
-                    </a>
-                </li>
-            </ul>
+
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>{{ trans('admin.customization') }}</span>
             </p>

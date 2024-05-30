@@ -5,24 +5,27 @@
 @endsection
 
 @section('content')
-    <main class="main">
-        <div class="content">
-            <section class="product-collection-slider">
-                <div class="container">
-                    <div class="row">
-                        <div class="col text-center">
-                            <div class="head mb-4 mt-6">
-                                {{ trans('base.payment') }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-10">
-                        <div class="col-12 d-flex justify-content-center">
-                            {!! $form !!}
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
+
+    @include('pages.store.partials.page_header_empty')
+
+
+    <div id="liqpay_checkout"></div>
+    <script>
+        window.LiqPayCheckoutCallback = function() {
+            LiqPayCheckout.init({
+                data: "{{ $data }}",
+                signature: "{{ $signature }}",
+                embedTo: "#liqpay_checkout",
+                mode: "embed" // embed || popup
+            }).on("liqpay.callback", function(data){
+                console.log(data.status);
+                console.log(data);
+            }).on("liqpay.ready", function(data){
+// ready
+            }).on("liqpay.close", function(data){
+// close
+            });
+        };
+    </script>
+    <script src="//static.liqpay.ua/libjs/checkout.js" async></script>
 @stop
