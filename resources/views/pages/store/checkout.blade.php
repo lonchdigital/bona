@@ -445,8 +445,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                                {{-- TODO:: add payment cart --}}
-<!--                                            <div class="">
+
+                                            <div class="">
                                                 <div class="">
                                                     <div class="checkbox art-mb-10">
                                                         <div class="position-relative">
@@ -459,7 +459,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>-->
+                                            </div>
+
                                         </div>
                                     </div>
 

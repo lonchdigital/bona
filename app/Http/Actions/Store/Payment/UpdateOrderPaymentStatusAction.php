@@ -17,6 +17,8 @@ class UpdateOrderPaymentStatusAction extends BaseAction
         OrderService $orderService,
     )
     {
+        dd('77 77 7 999999');
+
         $result = $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
 
         return BaseActionResource::make([

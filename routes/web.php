@@ -59,6 +59,7 @@ use App\Http\Actions\Store\AboutUsPage\Pages\ShowAboutUsPageAction;
 use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
 use App\Http\Actions\Store\Home\Pages\ShowHomePageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowGoToPaymentPageAction;
+use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentOrdinaryPageAction;
 use App\Http\Actions\Store\Payment\UpdateOrderPaymentStatusAction;
 use App\Http\Actions\Store\Product\GetSimilarProductsPaginatedAction;
 use App\Http\Actions\Store\Product\Pages\ShowProductPageAction;
@@ -265,7 +266,8 @@ $optionalLanguageRoutes = function () {
 
 
     Route::prefix('payment')->group(function () {
-       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class);
+//       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class); // button
+       Route::name('store.payment.liq-pay.ordinary')->get('/{order}', ShowLiqPayPaymentOrdinaryPageAction::class);
     });
 
     Route::prefix('delivery')->group(function () {
