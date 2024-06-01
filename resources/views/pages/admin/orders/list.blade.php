@@ -73,6 +73,7 @@
                                                     <th>{{ trans('admin.order_person_full_name') }}</th>
                                                     <th>{{ trans('admin.order_person_phone') }}</th>
                                                     <th>{{ trans('admin.order_summary') }}</th>
+                                                    <th class="text-center">{{ trans('admin.order_payment_status') }}</th>
                                                     <th class="text-center">{{ trans('admin.order_status') }}</th>
                                                     <th class="text-right">{{ trans('admin.action') }}</th>
                                                 </tr>
@@ -85,6 +86,7 @@
                                                         <td>{{ $order->user->first_name }} {{ $order->user->last_name }}</td>
                                                         <td>{{ $order->user->phone }}</td>
                                                         <td>{{ $order->summary }} {{ $baseCurrency->name_short }}</td>
+                                                        <td class="text-center"><span class="badge " style="background-color: {{ \App\DataClasses\OrderPaymentStatusesDataClass::get($order->payment_status_id)['color'] }};"><strong class="text-dark">{{ \App\DataClasses\OrderPaymentStatusesDataClass::get($order->payment_status_id)['name'] }}</strong></span></td>
                                                         <td class="text-center"><span class="badge " style="background-color: {{ \App\DataClasses\OrderStatusesDataClass::get($order->status_id)['color'] }};"><strong class="text-dark">{{ \App\DataClasses\OrderStatusesDataClass::get($order->status_id)['name'] }}</strong></span></td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

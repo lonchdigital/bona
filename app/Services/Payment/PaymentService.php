@@ -39,8 +39,6 @@ class PaymentService extends BaseService
             'order_id' => $orderId,
             'version' => 3,
             'language' => app()->getLocale(),
-            'result_url' => route('store.checkout.thank-you', ['order' => $orderId]),
-            'server_url' => route('payment.update-payment-status', ['order' => $orderId]),
         ];
         Log::info('Build liqpay from on Our WebSie: ' . json_encode($formData));
 
