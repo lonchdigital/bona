@@ -173,11 +173,7 @@ class ProductService extends BaseService
     public function getProductsByColorPaginated(int $perPage, int $page, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return Product::whereHas('colors', function($query) use ($color) {
-            if($color->id == 7) {
-                $query->whereIn('colors.id', [$color->id, 166, 40, 52, 177, 189]);
-            } else {
-                $query->where('colors.id', $color->id);
-            }
+            $query->where('colors.id', $color->id);
         })
             ->paginate($perPage, ['*'], null, $page);
     }
@@ -194,7 +190,14 @@ class ProductService extends BaseService
             ->where(function($query) use ($color) {
                 $query->where('main_color_id', $color->id)
                     ->orWhereHas('colors', function($query) use ($color) {
-                        $query->where('colors.id', $color->id);
+
+                        // $query->where('colors.id', $color->id);
+                        // We need to show more white colors...
+                        if($color->id == 7) {
+                            $query->whereIn('colors.id', [$color->id, 166, 40, 52, 177, 189]);
+                        } else {
+                            $query->where('colors.id', $color->id);
+                        }
                     });
             })
             ->paginate($perPage, ['*'], null, $page);
