@@ -20,7 +20,8 @@ class ShowLiqPayPaymentOrdinaryPageAction extends BaseAction
             return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
         }
 
-        $data = $paymentService->payByCardForm($orderService->getOrderSummary($order)['total'], $order->id);
+//        $data = $paymentService->payByCardForm($orderService->getOrderSummary($order)['total'], $order->id);
+        $data = $paymentService->payByCardForm($order->summary, $order->id);
 
         return view('pages.store.payment', [
             'data' => $data['data'],

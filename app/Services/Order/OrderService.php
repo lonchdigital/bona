@@ -8,6 +8,7 @@ use App\DataClasses\OrderStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\Mail\AdminNotificationEmail;
 use App\Mail\EmailSubscriptionEmail;
+use App\Mail\OrderStatusEmail;
 use App\Mail\UserCredentialsEmail;
 use App\Models\Cart;
 use App\Models\Order;
@@ -91,9 +92,11 @@ class OrderService extends BaseService
 
 
             if ($request->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT) {
-                $paymentStatus = OrderPaymentStatusesDataClass::STATUS_UNPAID;
+                $paymentStatus = OrderPaymentStatusesDataClass::STATUS_IN_PROGRESS;
+            } elseif ($request->paymentTypeId === PaymentTypesDataClass::CASH_PAYMENT) {
+                $paymentStatus = OrderPaymentStatusesDataClass::STATUS_PAID_AS_RECEIVED;
             } else {
-                $paymentStatus = OrderPaymentStatusesDataClass::STATUS_PAID;
+                $paymentStatus = OrderPaymentStatusesDataClass::STATUS_UNPAID;
             }
 
             $npCity = null;
@@ -217,6 +220,17 @@ class OrderService extends BaseService
                'payment_status_id' => $newStatusId,
             ]);
 
+            if (config('domain.admin_notification_emails')) {
+                foreach (explode(',', config('domain.admin_notification_emails')) as $email) {
+                    Mail::to($email)->send(new OrderStatusEmail(
+                        trans('admin.order_status_email'),
+                        route('admin.order.edit', ['order' => $order->id]),
+                        $order,
+                        OrderPaymentStatusesDataClass::get($newStatusId)['name']
+                    ));
+                }
+            }
+
             return ServiceActionResult::make(true, 'Success');
         });
     }
@@ -258,6 +272,7 @@ class OrderService extends BaseService
         return $this->coverWithTryCatch(function () use($order, $request) {
             $order->update([
                 'status_id' => $request->statusId,
+                'payment_status_id' => $request->orderPaymentStatusId,
             ]);
 
 
