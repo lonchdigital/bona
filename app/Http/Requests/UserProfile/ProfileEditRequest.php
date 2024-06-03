@@ -22,10 +22,10 @@ class ProfileEditRequest extends BaseRequest
                 'required',
                 'max:100',
             ],
-            'email' => [
+            /*'email' => [
                 'required',
                 'email' => 'unique:users,email,' . $user->id . ',id',
-            ],
+            ],*/
             'phone' => [
                 'required',
                 new PhoneNumberLengthRule(12),
@@ -36,7 +36,7 @@ class ProfileEditRequest extends BaseRequest
     public function attributes(): array
     {
         return [
-            'email' => trans('auth.email'),
+//            'email' => trans('auth.email'),
             'first_name' => trans('auth.first_name'),
             'last_name' => trans('auth.last_name'),
             'phone' => trans('auth.phone'),
@@ -48,7 +48,7 @@ class ProfileEditRequest extends BaseRequest
         return new UserProfileUpdateDTO(
             $this->input('first_name'),
             $this->input('last_name'),
-            $this->input('email'),
+//            $this->input('email'),
             $this->input('phone'),
         );
     }

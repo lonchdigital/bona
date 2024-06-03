@@ -14,7 +14,11 @@ class SignInAction
         $signInResult = $service->signIn($dto);
 
         if ($signInResult) {
-            return redirect()->route('store.home');
+            if( auth()->user()->isAdmin() ) {
+                return redirect()->route('admin.order.list.page');
+            } else {
+                return redirect()->route('user.profile.page');
+            }
         } else {
             return back()->withErrors([
                 'password' => trans('auth.credentials_are_incorrect'),
