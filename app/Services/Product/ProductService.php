@@ -133,7 +133,9 @@ class ProductService extends BaseService
     public function getAllProductsMaxPrice(FilterProductDTO $request): int
     {
         $query = Product::query();
-        $maxPrice = $this->filterService->handleAllProductFilters($request->filters, $query, false, [])->max('price');
+//        $maxPrice = $this->filterService->handleAllProductFilters($request->filters, $query, false, [])->max('price');
+
+        $maxPrice = $query->max('price');
 
         return ( !is_null($maxPrice) ) ? $maxPrice : 0;
     }
