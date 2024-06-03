@@ -3,7 +3,7 @@
 @section('content')
 
     @include('pages.store.partials.page_header', ['links' => [
-    App\Helpers\MultiLangRoute::getMultiLangRoute('user.profile.page') => trans('user-profile.profile'),
+    'own-2' => trans('user-profile.profile'),
     'own' => trans('user-profile.update_user_data')
     ]])
 
@@ -11,9 +11,30 @@
         <div class="content">
             <section class="user-profile">
                 <div class="container">
+
+                    <div class="row">
+                        <div class="mb-12 w-100">
+                            <div class="main-user-navigation">
+                                <ul>
+                                    <li @if(Route::currentRouteName() === 'user.profile.orders.page') class="active" @endif><a href="{{ route('user.profile.orders.page') }}">{{ trans('user-profile.user_orders') }}</a></li>
+                                    <li @if(Route::currentRouteName() === 'profile.edit.page') class="active" @endif><a href="{{ route('profile.edit.page') }}">{{ trans('user-profile.update_user_data') }}</a></li>
+                                    <li class="sub-menu-list-item">
+                                        <form action="<?php echo e(route('auth.logout')); ?>" method="POST">
+                                            <?php echo csrf_field(); ?>
+                                            <button class="btn btn-go-to-cart btn-block">
+                                                <span><?php echo e(trans('auth.logout')); ?></span>
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row justify-content-md-center">
+
                         <div class="col-lg-6 mb-5">
-                            <h2 class="mt-5 text-center">{{ trans('user-profile.update_user_data') }}</h2>
+
                             <form action="{{ route('profile.edit') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
 
                                 @if(Session::has('message'))
