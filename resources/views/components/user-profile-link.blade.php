@@ -1,4 +1,4 @@
-<a href="@if($user->isAdmin()) {{ route('admin.order.list.page') }} @else {{ route('user.profile.page') }} @endif" rel="noffolow" class="user-profile-link" aria-label="{{ trans('base.user') }}">
+<a href="@if($user->isAdmin()) {{ route('admin.order.list.page') }} @else {{ route('user.profile.orders.page') }} @endif" rel="noffolow" class="user-profile-link" aria-label="{{ trans('base.user') }}">
     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
              viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
         <g>

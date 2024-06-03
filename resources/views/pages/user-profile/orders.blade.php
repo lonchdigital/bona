@@ -3,7 +3,7 @@
 @section('content')
 
     @include('pages.store.partials.page_header', ['links' => [
-    App\Helpers\MultiLangRoute::getMultiLangRoute('user.profile.page') => trans('user-profile.profile'),
+    'own-2' => trans('user-profile.profile'),
     'own' => trans('user-profile.user_orders')
     ]])
 

@@ -142,7 +142,7 @@ $optionalLanguageRoutes = function () {
         ])->group(function () {
 
             //profile page
-            Route::name('user.profile.page')->get('/', ShowUserProfilePageAction::class);
+//            Route::name('user.profile.page')->get('/', ShowUserProfilePageAction::class);
 
             //edit profile
             Route::name('profile.edit.page')->get('edit', ShowProfileEditPageAction::class);
