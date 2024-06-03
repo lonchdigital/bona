@@ -523,7 +523,7 @@ input, textarea, select {
 }
 
 .breadcrumb.breadcrumb-inverted > li {
-    color: white;
+    color: #3a3d45;
 }
 
 .breadcrumb.breadcrumb-inverted > li > a {
@@ -9763,19 +9763,43 @@ section.art-contacts-page-section {
     }
 
     .main-user-navigation {
+        margin-bottom: 30px;
 
         ul {
             padding: 0;
             margin: 0;
 
+            display: flex;
+            justify-content: space-between;
+
             li {
                 list-style-type: none;
+                text-align: center;
+                width: 100%;
+
+                &.active {
+                    font-weight: bold;
+
+                    a {
+                        position: relative;
+
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            left: 0;
+                            top: 120%;
+                            height: 2px;
+                            width: 100%;
+                            background-color: #d59958;
+                        }
+                    }
+                }
 
                 form {
 
                     button {
                         padding: 2px 0;
-                        text-align: left;
+                        //text-align: left;
                         color: #3a3d45 !important;
 
                         span {

@@ -10,6 +10,8 @@
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span class="{{ $loop->last ? 'active' : '' }}" itemprop="name">{{trans('base.' . $value)}}</span></li>
                 @elseif($url == 'own')
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span class="{{ $loop->last ? 'active' : '' }}" itemprop="name">{{$value}}</span></li>
+                @elseif($url == 'own-2')
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span class="{{ $loop->last ? 'active' : '' }}" itemprop="name">{{$value}}</span></li>
                 @else
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a class="{{ $loop->last ? 'active' : '' }}" href="{{ $url }}" itemprop="name">{{ $value }}</a></li>
                 @endif

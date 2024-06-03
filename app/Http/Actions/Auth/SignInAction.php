@@ -17,7 +17,7 @@ class SignInAction
             if( auth()->user()->isAdmin() ) {
                 return redirect()->route('admin.order.list.page');
             } else {
-                return redirect()->route('user.profile.page');
+                return redirect()->route('user.profile.orders.page');
             }
         } else {
             return back()->withErrors([
