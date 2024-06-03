@@ -5969,6 +5969,7 @@ $accent: #D59958;
     31. Main Header
     32. Product Archive
     33. Thank you Page
+    34. User Profile
 
     ----------------------------------
  */
@@ -7831,6 +7832,23 @@ a:focus,
     -o-transition: .3s ease-out 0s;
     transition: .3s ease-out 0s;
     z-index: 11;
+}
+
+.header-main-others {
+
+    .user-profile-list {
+
+        a {
+
+            svg {
+                fill: #fff;
+                width: 20px;
+                height: 20px;
+
+                margin-right: 14px;
+            }
+        }
+    }
 }
 
 @media (max-width: 1580px) {
@@ -9715,5 +9733,80 @@ section.art-contacts-page-section {
         }
     }
 
+
+}
+
+
+
+/*
+    ----------------------------------
+    34. User Profile
+    ----------------------------------
+*/
+.user-profile {
+
+    .user-orders-wrapper {
+        width: 100%;
+    }
+
+    .user-orders {
+
+        .card-body {
+            background-color: #f3f3f3;
+            margin-bottom: 30px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+    }
+
+    .main-user-navigation {
+
+        ul {
+            padding: 0;
+            margin: 0;
+
+            li {
+                list-style-type: none;
+
+                form {
+
+                    button {
+                        padding: 2px 0;
+                        text-align: left;
+                        color: #3a3d45 !important;
+
+                        span {
+                            color: #3a3d45 !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .user-email-field {
+        margin: 0;
+        position: relative;
+        top: 10px;
+    }
+
+
+    .order-items {
+
+        .product-image {
+            width: 65px;
+        }
+
+        tr {
+
+            td {
+                vertical-align: middle;
+            }
+        }
+
+    }
 
 }

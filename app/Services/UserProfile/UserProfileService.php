@@ -21,7 +21,7 @@ class UserProfileService extends BaseService
         $user = Auth::user();
 
         $user->update([
-           'email' => $request->email,
+//           'email' => $request->email,
            'phone' => $request->phone,
            'first_name' => $request->firstName,
            'last_name' => $request->lastName,

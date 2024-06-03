@@ -16,4 +16,6 @@ return [
     'user_password_updated_successfully' => 'Пароль успішно оновлено',
     'current_password_is_incorrect' => 'Поточний пароль неправильний',
     'admin_panel' => 'Адмін панель',
+    'profile' => 'Профіль',
+    'user_orders' => 'Мої замовлення',
 ];

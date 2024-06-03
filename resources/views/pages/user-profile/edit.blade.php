@@ -1,9 +1,15 @@
 @extends('layouts.store-main')
 
 @section('content')
+
+    @include('pages.store.partials.page_header', ['links' => [
+    App\Helpers\MultiLangRoute::getMultiLangRoute('user.profile.page') => trans('user-profile.profile'),
+    'own' => trans('user-profile.update_user_data')
+    ]])
+
     <main class="main pt-5">
         <div class="content">
-            <section>
+            <section class="user-profile">
                 <div class="container">
                     <div class="row justify-content-md-center">
                         <div class="col-lg-6 mb-5">
@@ -39,10 +45,7 @@
                                 <div class="w-full d-flex justify-content-lg-around flex-column flex-lg-row">
                                     <div class="form-group lg-w-45">
                                         <label class="custom-control-label2" for="email">{{ trans('auth.email') }}</label>
-                                        <input class="form-control" placeholder="{{ trans('auth.email_placeholder') }}" type="text" name="email" value="{{ old('email') ? old('email') : $user->email }}" id="email"/>
-                                        @error('email')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
+                                        <p class="user-email-field">{{ $user->email }}</p>
                                     </div>
 
                                     <div class="form-group lg-w-45">
@@ -54,8 +57,7 @@
                                     </div>
                                 </div>
 
-                                <button class="mt-5 btn btn-outline-black" type="submit">{{ trans('user-profile.update') }}</button>
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('profile.edit-password.page') }}" class="mt-1 btn btn-dark">{{ trans('user-profile.update_password') }}</a>
+                                <button class="mt-5 btn btn-main" type="submit">{{ trans('user-profile.update') }}</button>
                             </form>
                         </div>
                     </div>

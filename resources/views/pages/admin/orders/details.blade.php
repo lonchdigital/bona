@@ -84,17 +84,17 @@
                                     {{ trans('admin.order_payment_details') }}
                                 </strong>
                             </p>
-                            @if($order->payment_type_id == \App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT)
-                                <div class="form-group mb-3">
-                                    <label for="status_id">{{ trans('admin.order_payment_status') }}</label>
-                                    <select class="form-control select2" name="order_payment_status_id" id="order_payment_status_id">
-                                        @foreach(\App\DataClasses\OrderPaymentStatusesDataClass::get() as $payment_status)
-                                            <option @if($payment_status['id'] === $order->payment_status_id) selected @endif value="{{ $payment_status['id'] }}">{{ $payment_status['name'] }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="mt-1 text-danger ajaxError" id="error-field-brand_id"></div>
-                                </div>
-                            @endif
+
+                            <div class="form-group mb-3">
+                                <label for="status_id">{{ trans('admin.order_payment_status') }}</label>
+                                <select class="form-control select2" name="order_payment_status_id" id="order_payment_status_id">
+                                    @foreach(\App\DataClasses\OrderPaymentStatusesDataClass::get() as $payment_status)
+                                        <option @if($payment_status['id'] === $order->payment_status_id) selected @endif value="{{ $payment_status['id'] }}">{{ $payment_status['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="mt-1 text-danger ajaxError" id="error-field-brand_id"></div>
+                            </div>
+
                             <div class="mb-3">
                                 <striong class="text-dark">{{ trans('admin.order_payment_type') }}</striong>
                                 <div class="mt-1">{{ \App\DataClasses\PaymentTypesDataClass::get($order->payment_type_id)['name'] }}</div>

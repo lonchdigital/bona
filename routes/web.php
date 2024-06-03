@@ -73,6 +73,8 @@ use App\Http\Actions\Store\WishList\ProductAddToWishListAction;
 use App\Http\Actions\Store\WishList\ProductRemoveFromWishListAction;
 use App\Http\Actions\UserProfile\Pages\ShowPasswordEditPageAction;
 use App\Http\Actions\UserProfile\Pages\ShowProfileEditPageAction;
+use App\Http\Actions\UserProfile\Pages\ShowUserProfilePageAction;
+use App\Http\Actions\UserProfile\Pages\UserOrdersPageAction;
 use App\Http\Actions\UserProfile\PasswordEditAction;
 use App\Http\Actions\UserProfile\ProfileEditAction;
 use App\Http\Middleware\AuthenticatedOnly;
@@ -138,6 +140,10 @@ $optionalLanguageRoutes = function () {
         ->middleware([
             AuthenticatedOnly::class,
         ])->group(function () {
+
+            //profile page
+            Route::name('user.profile.page')->get('/', ShowUserProfilePageAction::class);
+
             //edit profile
             Route::name('profile.edit.page')->get('edit', ShowProfileEditPageAction::class);
             Route::name('profile.edit')->post('edit', ProfileEditAction::class);
@@ -145,6 +151,9 @@ $optionalLanguageRoutes = function () {
             //change password
             Route::name('profile.edit-password.page')->get('password', ShowPasswordEditPageAction::class);
             Route::name('profile.edit-password')->post('password', PasswordEditAction::class);
+
+            //user orders
+            Route::name('user.profile.orders.page')->get('/orders', UserOrdersPageAction::class);
         });
 
     /**
