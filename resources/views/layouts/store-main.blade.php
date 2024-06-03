@@ -15,7 +15,9 @@
     <!-- Meta tags -->
     <meta name="author" content="">
 
+    <meta property="og:locale" content="{{ app()->getLocale() }}">
     <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ config('app.name') . ' - ' . trans('base.site_title') }}">
     <meta property="og:url" content="{{ request()->url() }}">
     <meta property="og:image" content="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
     <meta property="og:site_name" content="{{ mb_strtoupper(config('app.url')) }}">
@@ -86,8 +88,6 @@
 {{--    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;1,400;1,700&family=Tenor+Sans&display=swap" rel="stylesheet">--}}
 
 
-
-
     @if(Route::currentRouteName() === 'store.home')
         <script type="application/ld+json" defer>
             {
@@ -99,24 +99,38 @@
                 "logo": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
                 "image": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
                 @endif
-            "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Одеса",
-                "postalCode": "",
-                "addressCountry": "Україна"
-            },
-@if( !is_null($contactsFooter) )
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "Одеса",
+                    "postalCode": "",
+                    "addressCountry": "Україна"
+                },
+                @if( !is_null($contactsFooter) )
                 "email": "{{ $contactsFooter['email_one'] }}",
                 @endif
-            @if(array_key_exists('phoneOne', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['phoneOne']))
+                @if(array_key_exists('phoneOne', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['phoneOne']))
                 "telephone": "{{ $applicationGlobalOptions['phoneOne'] }}",
                 @endif
-            "sameAs": [
-                ""
-            ]
-        }
-</script>
-@endif
+                "sameAs": [
+                    ""
+                ]
+            }
+        </script>
+
+        <script type="application/ld+json" defer>
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "url": "{{ url( App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') ) }}",
+                "name": "Bona-Doors найкращі двері",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "{{ url( App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') ) }}/search?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            }
+        </script>
+    @endif
 
 <!-- Google Tag Manager -->
     <script defer>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
