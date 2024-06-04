@@ -337,17 +337,18 @@ class ProductFiltersService extends BaseService
                     $filterValue = [$filterValue];
                 }
 
-                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
+//                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
+                $colors = Color::whereIn('slug', $filterValue)->get();
 
                 $colorsToFilter = $colors->pluck('id');
 
-                foreach ($colors as $color) {
+                /*foreach ($colors as $color) {
                     if (count($color->children)) {
                         foreach ($color->children as $childColor) {
                             $colorsToFilter[] = $childColor->id;
                         }
                     }
-                }
+                }*/
 
                 $query->whereHas('colors', function ($query) use ($colorsToFilter) {
                     $query->whereIn('color_id', $colorsToFilter);
@@ -510,17 +511,18 @@ class ProductFiltersService extends BaseService
                     $filterValue = [$filterValue];
                 }
 
-                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
+//                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
+                $colors = Color::whereIn('slug', $filterValue)->get();
 
                 $colorsToFilter = $colors->pluck('id');
 
-                foreach ($colors as $color) {
+                /*foreach ($colors as $color) {
                     if (count($color->children)) {
                         foreach ($color->children as $childColor) {
                             $colorsToFilter[] = $childColor->id;
                         }
                     }
-                }
+                }*/
 
                 // TODO:: remove when finish
                 /*$query->where(function (Builder $query) use($colorsToFilter) {
