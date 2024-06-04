@@ -20,7 +20,7 @@ class Color extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function parent()
+    /*public function parent()
     {
         return $this->belongsTo(Color::class, 'parent_color_id');
     }
@@ -28,7 +28,7 @@ class Color extends Model
     public function children()
     {
         return $this->hasMany(Color::class, 'parent_color_id');
-    }
+    }*/
 
     public function imageUrl(): Attribute
     {

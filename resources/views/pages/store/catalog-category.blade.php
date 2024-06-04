@@ -112,7 +112,7 @@
                                     </div>
                                     <div class="filter-content">
                                         <div class="art-filter-color-content">
-                                            @foreach($colors->whereNull('parent_color_id') as $color)
+                                            @foreach($colors as $color)
                                                 <div
                                                     class="color-wrapper d-flex align-items-center justify-content-center @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif">
                                                     <input class="sync-input" type="checkbox"
