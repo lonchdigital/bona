@@ -20,6 +20,7 @@
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
     @endif
     <meta name="robots" content="index, follow">
+    <meta property="og:title" content="{{ $pageTitle . ' - ' . trans('base.site_title') }}">
 @endsection
 
 @section('content')

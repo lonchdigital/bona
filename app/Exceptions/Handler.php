@@ -81,12 +81,10 @@ class Handler extends ExceptionHandler
         //custom 404 page
         // convert ModelNotFoundException into NotFoundHttpException
         if ($e instanceof ModelNotFoundException) {
-//            dd('1122 2');
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
         if ($e instanceof NotFoundHttpException) {
-//            dd('1122 3');
             return response()->view('default.404', [], 404);
         }
 

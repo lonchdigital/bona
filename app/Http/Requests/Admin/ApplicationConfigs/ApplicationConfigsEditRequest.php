@@ -51,6 +51,11 @@ class ApplicationConfigsEditRequest extends BaseRequest
             'image',
         ];
 
+        $rules['author_avatar'] = [
+            'nullable',
+            'image',
+        ];
+
         foreach ($this->availableLanguages as $availableLanguage) {
             $rules['footer_text.' . $availableLanguage] = [
                 'nullable',
@@ -62,6 +67,15 @@ class ApplicationConfigsEditRequest extends BaseRequest
                 'string'
             ];
             $rules['form_text.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+
+            $rules['author_name.' . $availableLanguage] = [
+                'nullable',
+                'string'
+            ];
+            $rules['author_description.' . $availableLanguage] = [
                 'nullable',
                 'string'
             ];
@@ -96,6 +110,11 @@ class ApplicationConfigsEditRequest extends BaseRequest
             $this->input('form_text'),
             $this->file('form_image'),
             (bool) $this->input('form_image_deleted'),
+
+            $this->input('author_name'),
+            $this->input('author_description'),
+            $this->file('author_avatar'),
+            (bool) $this->input('author_avatar_deleted'),
         );
     }
 }

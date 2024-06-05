@@ -20,6 +20,8 @@
         @endif
     @endif
 
+    <meta property="og:title" content="{{ $heading . ' - ' . trans('base.site_title') }}">
+
 @endsection
 
 @section('content')

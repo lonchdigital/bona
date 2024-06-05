@@ -8487,6 +8487,22 @@ section.blog.art-single-blog .blog-post {
     border-top: 1px solid #dddddd;
     padding-top: 25px;
     margin-top: 50px;
+
+    display: flex;
+    align-items: center;
+
+    .author-avatar {
+        margin-right: 15px;
+
+        img {
+            width: 100px;
+            border-radius: 100%;
+        }
+    }
+
+    .author-data {
+
+    }
 }
 .blog-post .art-post-author span {
     display: block;

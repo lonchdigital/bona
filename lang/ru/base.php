@@ -344,4 +344,5 @@ return [
     '404_not_found' => 'Страница не найдена',
     'all_products' => 'Все товары',
     'order_product' => 'Заказ товара',
+    'organization' => 'Bona-Doors лучшие двери',
 ];

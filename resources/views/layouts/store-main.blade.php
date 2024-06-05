@@ -17,7 +17,6 @@
 
     <meta property="og:locale" content="{{ app()->getLocale() }}">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ config('app.name') . ' - ' . trans('base.site_title') }}">
     <meta property="og:url" content="{{ request()->url() }}">
     <meta property="og:image" content="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
     <meta property="og:site_name" content="{{ mb_strtoupper(config('app.url')) }}">
@@ -89,11 +88,14 @@
 
 
     @if(Route::currentRouteName() === 'store.home')
+
+        <meta property="og:title" content="{{ config('app.name') . ' - ' . trans('base.site_title') }}">
+
         <script type="application/ld+json" defer>
             {
                 "@context": "https://schema.org",
                 "@type": "Organization",
-                "Name": "Bona-Doors найкращі двері",
+                "Name": "{{ trans('base.organization') }}",
                 "url": "{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}",
                 @if(array_key_exists('logoLight', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['logoLight']))
                 "logo": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
@@ -122,7 +124,7 @@
                 "@context": "https://schema.org",
                 "@type": "WebSite",
                 "url": "{{ url( App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') ) }}",
-                "name": "Bona-Doors найкращі двері",
+                "name": "{{ trans('base.organization') }}",
                 "potentialAction": {
                     "@type": "SearchAction",
                     "target": "{{ url( App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') ) }}/search?q={search_term_string}",

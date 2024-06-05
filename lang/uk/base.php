@@ -346,4 +346,5 @@ return [
     '404_not_found' => 'Сторінку не знайдено',
     'all_products' => 'Всі товари',
     'order_product' => 'Замовлення товару',
+    'organization' => 'Bona-Doors найкращі двері',
 ];
