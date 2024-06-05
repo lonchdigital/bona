@@ -422,7 +422,7 @@
                     @foreach($productTypes as $productType)
                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                             <a itemprop="item"
-                               @if(request()->routeIs('store.catalog.page') && request()->route('productTypeSlug')['slug'] == $productType->slug) class="current-menu" @endif
+                            @if(request()->routeIs('store.catalog.page') && optional(request()->route('productTypeSlug'))['slug'] == $productType->slug) class="current-menu" @endif
                                href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}"
                             >
                                 {{ $productType->name }}

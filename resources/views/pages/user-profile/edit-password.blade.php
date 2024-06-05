@@ -1,13 +1,25 @@
 @extends('layouts.store-main')
 
 @section('content')
+
+    @include('pages.store.partials.page_header', ['links' => [
+    'own-2' => trans('user-profile.profile'),
+    'own' => trans('user-profile.update_password')
+    ]])
+
     <main class="main pt-5">
         <div class="content">
-            <section>
+            <section class="user-profile">
                 <div class="container">
+
+                    <div class="row">
+                        <div class="mb-12 w-100">
+                            @include('pages.store.partials.profile_user_navigation')
+                        </div>
+                    </div>
+
                     <div class="row justify-content-md-center">
                         <div class="col-lg-4 mb-5">
-                            <h2 class="mt-5 text-center">{{ trans('user-profile.update_password') }}</h2>
                             <form action="{{ route('profile.edit-password') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
                                 @if(Session::has('message'))
                                     <div class="p-2 mb-1 font-weight-bold text-uppercase text-white bg-success-custom">
@@ -22,11 +34,6 @@
                                     <label class="custom-control-label2" for="current_password">{{ trans('user-profile.current_password') }}</label>
                                     <div class="d-flex flex-row align-items-center justify-content-end password-input">
                                         <input id="current_password" class="form-control block w-full" placeholder="{{ trans('user-profile.current_password') }}" type="password" name="current_password"/>
-                                        <a href="#" class="position-absolute mr-2 bg-white password-eye-toggle">
-                                            <svg class="password-eye-icon">
-                                                <use class="password-eye-icon-use" href="{{ asset('/static/img/icon.svg#i-eye-off') }}"></use>
-                                            </svg>
-                                        </a>
                                     </div>
                                     @error('current_password')
                                     <div class="text-danger">{{ $message }}</div>
@@ -39,11 +46,6 @@
                                     <label class="custom-control-label2" for="new_password">{{ trans('user-profile.new_password') }}</label>
                                     <div class="d-flex flex-row align-items-center justify-content-end password-input">
                                         <input id="new_password" class="form-control block w-full" placeholder="{{ trans('user-profile.new_password') }}" type="password" name="new_password"/>
-                                        <a href="#" class="position-absolute mr-2 bg-white password-eye-toggle">
-                                            <svg class="password-eye-icon">
-                                                <use class="password-eye-icon-use" href="{{ asset('/static/img/icon.svg#i-eye-off') }}"></use>
-                                            </svg>
-                                        </a>
                                     </div>
                                     @error('new_password')
                                     <div class="text-danger">{{ $message }}</div>
@@ -56,11 +58,6 @@
                                     <label class="custom-control-label2" for="password_confirmation">{{ trans('auth.password_confirmation') }}</label>
                                     <div class="d-flex flex-row align-items-center justify-content-end password-input">
                                         <input id="password_confirmation" class="form-control block w-full" placeholder="{{ trans('auth.password_confirmation') }}" type="password" name="password_confirmation"/>
-                                        <a href="#" class="position-absolute mr-2 bg-white password-eye-toggle">
-                                            <svg class="password-eye-icon">
-                                                <use class="password-eye-icon-use" href="{{ asset('/static/img/icon.svg#i-eye-off') }}"></use>
-                                            </svg>
-                                        </a>
                                     </div>
                                     @error('password_confirmation')
                                     <div class="text-danger">{{ $message }}</div>
@@ -68,7 +65,7 @@
                                 </div>
                                 <!-- password confirmation end -->
 
-                                <button class="btn btn-outline-black" type="submit">{{ trans('user-profile.update_password') }}</button>
+                                <button class="mt-5 btn btn-main" type="submit">{{ trans('user-profile.update_password') }}</button>
                             </form>
                         </div>
                     </div>
