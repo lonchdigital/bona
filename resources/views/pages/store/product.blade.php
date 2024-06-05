@@ -16,6 +16,9 @@
     @if($product->meta_tags)
         {!! $product->meta_tags !!}
     @endif
+
+    <meta property="og:title" content="{{ $product->name . ' - ' . trans('base.site_title') }}">
+
 @endsection
 
 @section('content')

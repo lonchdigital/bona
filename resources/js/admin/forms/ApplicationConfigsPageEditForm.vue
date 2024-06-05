@@ -83,6 +83,19 @@ export default {
             default: '',
         },
 
+        authorName: {
+            type: Object,
+            default: [],
+        },
+        authorDescription: {
+            type: Object,
+            default: [],
+        },
+        authorAvatarUrl: {
+            type: String,
+            default: '',
+        },
+
     },
     data() {
         return {
@@ -252,6 +265,43 @@ export default {
                     :is-required="false"
                     :errors="errors"
                     :init-data="(formImageUrl) ? formImageUrl : null"
+                />
+
+
+
+                <p class="mt-5">
+                    <strong>
+                        {{ $t('admin.author') }}
+                    </strong>
+                </p>
+
+                <multi-language-input-component
+                    title="Author name"
+                    name="author_name"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="authorName"
+                    :errors="errors"
+                />
+
+                <multi-language-input-component
+                    title="Author description"
+                    name="author_description"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="authorDescription"
+                    :errors="errors"
+                />
+
+                <image-file-input-component
+                    title="Author avatar"
+                    name="author_avatar"
+                    image-deleted-name="author_avatar_deleted"
+                    :is-required="false"
+                    :errors="errors"
+                    :init-data="(authorAvatarUrl) ? authorAvatarUrl : null"
                 />
 
 

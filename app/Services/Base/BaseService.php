@@ -120,6 +120,12 @@ class BaseService
         }
     }
 
+    protected function storeAuthorAvatar(string $path, UploadedFile $image, string $format, $quality = 100): void
+    {
+        $image = Image::make($image)->fit(300, 300)->encode($format, $quality);
+        Storage::disk(config('app.images_disk_default'))->put($path . '.'.$format, $image);
+    }
+
     protected function syncFaqs(string $pageType, ?array $faqs): void
     {
         $existingFaqs = Faqs::where('page_type', $pageType)->get();

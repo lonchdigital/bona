@@ -75,6 +75,16 @@
                             :form-image-url="{{ json_encode( '/storage/' . $applicationConfig['formImage']) }}"
                         @endif
 
+                        @if(array_key_exists('authorName', $applicationConfig))
+                            :author-name="{{ json_encode($applicationConfig['authorName']) }}"
+                        @endif
+                        @if(array_key_exists('authorDescription', $applicationConfig))
+                            :author-description="{{ json_encode($applicationConfig['authorDescription']) }}"
+                        @endif
+                        @if(array_key_exists('authorAvatar', $applicationConfig) && !is_null($applicationConfig['authorAvatar']))
+                            :author-avatar-url="{{ json_encode( '/storage/' . $applicationConfig['authorAvatar']) }}"
+                        @endif
+
                     @endif
                 />
 

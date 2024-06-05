@@ -8,6 +8,7 @@
         <meta name="keywords" content="{{ $selectedCategory->meta_keywords }}">
     @endif
     <meta name="robots" content="index, follow">
+    <meta property="og:title" content="{{ $selectedCategory->name . ' - ' . trans('base.site_title') }}">
 @endsection
 
 @section('content')

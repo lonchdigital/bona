@@ -18,6 +18,8 @@
         @if($aboutUsConfig->meta_tags)
             {!! $aboutUsConfig->meta_tags !!}
         @endif
+
+        <meta property="og:title" content="{{ trans('base.about_us') . ' - ' . trans('base.site_title') }}">
     @endif
 
 @endsection

@@ -80,9 +80,11 @@ class ApplicationConfigService extends BaseService
             $existinglogoLight = ApplicationConfig::where('config_name', 'logoLight')->first();
             $existinglogoDark = ApplicationConfig::where('config_name', 'logoDark')->first();
             $existingFormImage = ApplicationConfig::where('config_name', 'formImage')->first();
+            $existingAuthorAvatar = ApplicationConfig::where('config_name', 'authorAvatar')->first();
             $dataToUpdate['logoLight'] = (!is_null($existinglogoLight)) ? $existinglogoLight->config_data : null;
             $dataToUpdate['logoDark'] = (!is_null($existinglogoDark)) ? $existinglogoDark->config_data : null;
             $dataToUpdate['formImage'] = (!is_null($existingFormImage)) ? $existingFormImage->config_data : null;
+            $dataToUpdate['authorAvatar'] = (!is_null($existingAuthorAvatar)) ? $existingAuthorAvatar->config_data : null;
 
             // logo Light
             if( !is_null($request->logoLight) ) {
@@ -138,9 +140,29 @@ class ApplicationConfigService extends BaseService
                 $dataToUpdate['formImage'] = null;
             }
 
+
+            // author avatar
+            if( !is_null($request->authorAvatar) ) {
+                $authorAvatarPath = self::APPLICATION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+
+                $this->storeAuthorAvatar($authorAvatarPath, $request->authorAvatar, 'webp');
+                $this->storeAuthorAvatar($authorAvatarPath, $request->authorAvatar, 'jpg');
+
+                $dataToUpdate['authorAvatar'] = $authorAvatarPath . '.webp';
+
+                if(!is_null($existingAuthorAvatar) && !is_null($existingAuthorAvatar->config_data)) {
+                    $this->deleteImage($existingAuthorAvatar->config_data);
+                }
+            }
+            if( $dataToUpdate['authorAvatarDeleted'] ) {
+                $this->deleteImage($existingAuthorAvatar->config_data);
+                $dataToUpdate['authorAvatar'] = null;
+            }
+
             unset($dataToUpdate['logoLightDeleted']);
             unset($dataToUpdate['logoDarkDeleted']);
             unset($dataToUpdate['formImageDeleted']);
+            unset($dataToUpdate['authorAvatarDeleted']);
 
             foreach ($dataToUpdate as $key => $value) {
                 ApplicationConfig::updateOrCreate(['config_name' => $key], ['config_data' => $value]);

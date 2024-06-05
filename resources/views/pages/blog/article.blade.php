@@ -24,6 +24,9 @@
         @if($blogArticle->meta_tags)
             {!! $blogArticle->meta_tags !!}
         @endif
+
+        <meta property="og:title" content="{{ $blogArticle->name . ' - ' . trans('base.site_title') }}">
+
     @endif
 
 @endsection
@@ -72,6 +75,23 @@
             }
         </script>
 
+        @if(array_key_exists('authorName', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorName']))
+            <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Person",
+                    "name": "{{ $applicationGlobalOptions['authorName'][app()->getLocale()] }}",
+                    "alternateName": "{{ $applicationGlobalOptions['authorName'][app()->getLocale()] }}",
+                    "image": "{{ '/storage/' . $applicationGlobalOptions['authorAvatar'] }}",
+                    "jobTitle": "{{ $applicationGlobalOptions['authorDescription'][app()->getLocale()] }}",
+                    "worksFor": {
+                        "@type": "Organization",
+                        "name": "{{ trans('base.organization') }}",
+                    }
+                }
+            </script>
+        @endif
+
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 col-md-offset-1">
@@ -109,11 +129,26 @@
                                     @endif
                                 @endforeach
 
-<!--                                <div class="art-post-author">
-                                    <span class="post-author-label">{{ trans('base.author') }}</span>
-                                    <span class="post-author-itself">{{ $blogArticle->creator->first_name . ' ' . $blogArticle->creator->last_name }}</span>
-                                    <span class="post-author-status">{{ trans('base.door_expert') }}</span>
-                                </div>-->
+
+                                <div class="art-post-author">
+
+                                    <div class="author-avatar">
+                                        @if(array_key_exists('authorAvatar', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorAvatar']))
+                                            <img src="{{ '/storage/' . $applicationGlobalOptions['authorAvatar'] }}" alt="Author avatar">
+                                        @endif
+                                    </div>
+
+                                    <div class="author-data">
+                                        <span class="post-author-label">{{ trans('base.author') }}</span>
+                                        @if(array_key_exists('authorName', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorName']))
+                                            <span class="post-author-itself">{{ $applicationGlobalOptions['authorName'][app()->getLocale()] }}</span>
+                                        @endif
+                                        @if(array_key_exists('authorDescription', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorDescription']))
+                                            <span class="post-author-status">{{ $applicationGlobalOptions['authorDescription'][app()->getLocale()] }}</span>
+                                        @endif
+                                    </div>
+
+                                </div>
 
                             </div>
 

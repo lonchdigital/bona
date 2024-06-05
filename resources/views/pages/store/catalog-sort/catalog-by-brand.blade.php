@@ -7,6 +7,7 @@
         <meta name="description" content="{{ $brand->meta_description }}">
         <meta name="keywords" content="{{ $brand->meta_keywords }}">
         <meta name="robots" content="index, follow">
+        <meta property="og:title" content="{{ $brand->name . ' - ' . trans('base.site_title') }}">
     @endif
 @endsection
 

@@ -12,6 +12,8 @@
         <meta name="description" content="{{ $filterGroup->meta_description }}">
         <meta name="keywords" content="{{ $filterGroup->meta_keywords }}">
     @endif
+
+    <meta property="og:title" content="{{ config('app.name') . ' - ' . trans('base.site_title') }}">
 @endsection
 
 @section('content')
