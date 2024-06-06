@@ -226,7 +226,6 @@
                     </a>
                     </div>
 
-                    {{--
                     <div class="swiper-slide">
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'plyntus')->first()->slug]) }}">
                             <figure>
@@ -239,7 +238,6 @@
                             </figure>
                         </a>
                     </div>
-                    --}}
 
                     <div class="swiper-slide">
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'klassyceskye-dvery')->first()->slug]) }}">
@@ -260,6 +258,7 @@
                     </a>
                     </div>
 
+                    {{--
                     <div class="swiper-slide">
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
                                 'categorySlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->categories()->where('code_name', 'vinilova-pidloga')->first()->slug,
@@ -294,6 +293,7 @@
                             </figure>
                         </a>
                     </div>
+                    --}}
 
                     <div class="swiper-slide">
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-rucky-by-availability.page', [
