@@ -47,6 +47,14 @@ class HomePageEditRequest extends BaseRequest
             'testimonials.*.id' => [
                 'nullable'
             ],
+            'testimonials.*.rating' => [
+                'integer',
+                'required'
+            ],
+            'testimonials.*.date' => [
+                'date',
+                'nullable'
+            ],
             'selected_products_id' => [
                 'nullable',
                 'exists:products,id',

@@ -5157,6 +5157,17 @@ section.instagram {
     background-position: center;
 }
 
+.art-quote-review {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+    .quote-top {
+        flex-grow: 2;
+    }
+}
+
 @media (min-width: 992px) {
     .quotes {
         padding: 80px 0;
@@ -5237,9 +5248,14 @@ section.instagram {
     transform: scale(1.2);
 }
 
+
+.quotes .quote .more {
+    margin-top: 20px;
+}
+
 .quotes .quote .more .rating {
     text-align: center;
-    padding-top: 15px;
+    padding-top: 5px;
     padding-bottom: 15px;
     font-size: 20px;
 }
@@ -6718,6 +6734,14 @@ select:focus {
 }
 .quote-carousel.art-quote-carousel-home {
     margin-bottom: 0 !important;
+    padding-bottom: 50px !important;
+
+    .swiper-pagination {
+
+        .swiper-pagination-bullet {
+            background-color: #fff;
+        }
+    }
 }
 .quote-carousel .owl-wrapper {
     display: flex !important;

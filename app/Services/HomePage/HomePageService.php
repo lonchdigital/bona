@@ -165,6 +165,8 @@ class HomePageService extends BaseService
                 $dataToUpdate = [
                     'name' => $testimonial['name'],
                     'review' => $testimonial['review'],
+                    'rating' => $testimonial['rating'],
+                    'date' => $testimonial['date'],
                 ];
 
 

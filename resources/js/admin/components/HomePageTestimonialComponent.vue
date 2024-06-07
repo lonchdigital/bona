@@ -1,9 +1,10 @@
 <script>
 import axios from "axios";
 import MultiLanguageInputComponent from "./MultiLanguageInputComponent.vue";
+import DateInputComponent from "../components/DateInputComponent.vue";
 
 export default {
-    components: {MultiLanguageInputComponent},
+    components: {MultiLanguageInputComponent, DateInputComponent},
     props: {
         testimonialId: {
             type: Number,
@@ -29,6 +30,10 @@ export default {
             type: Array,
             default: ['uk', 'ru'],
         },
+        ratingOptions: {
+            type: Object,
+            default: {},
+        },
         errors: {
             type: Object,
             default: [],
@@ -48,7 +53,7 @@ export default {
 <template>
     <div class="row1 art-repeater-row" :key="testimonialId">
         <div class="col">
-            <div class="row">
+            <div class="row mb-4">
                 <div class="col">
                     <input type="hidden" v-if="testimonialId !== null" :name="'testimonials[' + index + '][id]'" :value="testimonialId">
 
@@ -79,6 +84,30 @@ export default {
                         :available-languages="availableLanguages"
                         :is-required="true"
                         :init-data="testimonial.hasOwnProperty('review') ? testimonial.review : []"
+                        :errors="errors"
+                    />
+
+
+                    <date-input-component
+                        :is-multi-select="false"
+                        :model-value="testimonial.hasOwnProperty('date') ? testimonial.date : ''"
+                        :title="$t('admin.date')"
+                        label="date"
+                        value-prop="id"
+                        :name="'testimonials[' + index + '][date]'"
+                        :is-required="false"
+                        :errors="errors"
+                    />
+
+                    <select-component
+                        :is-multi-select="false"
+                        :model-value="testimonial.hasOwnProperty('rating') ? testimonial.rating : 5"
+                        :title="$t('admin.rating')"
+                        :options="ratingOptions"
+                        label="text"
+                        value-prop="id"
+                        :name="'testimonials[' + index + '][rating]'"
+                        :is-required="false"
                         :errors="errors"
                     />
 
