@@ -11,7 +11,7 @@
                 <tr>
                     <td>
                         <p class="align-center">
-                            <img class="align-center" src="{{ Vite::asset('resources/img/logo.svg') }}" alt="logo">
+                            <img class="align-center" src="{{ asset('storage/logo/logo-dark.jpg') }}" alt="logo">
                         </p>
                         <h2 class="align-center">{{ trans('emails.user-email-confirmation-email.subject') }}</h2>
                         <p class="align-center">{{ trans('emails.user-email-confirmation-email.main_text') }}</p>
