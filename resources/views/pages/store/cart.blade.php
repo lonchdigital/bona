@@ -121,7 +121,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="btn btn-black-custom w-100 mb-5 mb-lg-9">{{ trans('base.make_order') }}</a>
+                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="btn btn-main w-100 mb-5 mb-lg-9">{{ trans('base.make_order') }}</a>
                                     <div class="info-top-pay text-center">
                                         <div class="pay-title">{{ trans('base.payments_methods') }}:</div>
                                         <div class="pay-list d-flex align-items-center justify-content-center">
