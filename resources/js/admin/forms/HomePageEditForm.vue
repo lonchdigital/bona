@@ -93,6 +93,10 @@ export default {
             type: Array,
             default: [],
         },
+        testimonialsRatingOptions: {
+            type: Object,
+            default: {},
+        },
         selectedProductFieldOptions: {
             type: Array,
             default: [],
@@ -346,6 +350,7 @@ export default {
                         :base-language="baseLanguage"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
+                        :rating-options="testimonialsRatingOptions"
                         :errors="errors"
                         @delete-testimonial="() => deleteTestimonial(index)"
                     />

@@ -14,6 +14,8 @@
                     :available-products="{{ json_encode($products) }}"
                     :wallpapers-fields="{{ json_encode($fields) }}"
 
+                    :testimonials-rating-options="{{ json_encode( \App\DataClasses\TestimonialsRatingDataClass::getArray() ) }}"
+
                     @if($config)
                         :page-meta-title="{{ json_encode($config->getTranslations('meta_title')) }}"
                         :page-meta-description="{{ json_encode($config->getTranslations('meta_description')) }}"

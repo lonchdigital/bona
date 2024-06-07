@@ -294,6 +294,8 @@ return [
     'orders' => 'Заказы',
     'orders_list' => 'Список заказов',
     'order_date' => 'Дата заказа',
+    'date' => 'Дата',
+    'rating' => 'Рейтинг',
     'order_person_full_name' => 'Получатель',
     'order_person_phone' => 'Телефон получателя',
     'order_person_email' => 'Электронная почта получателя',

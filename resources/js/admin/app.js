@@ -7,6 +7,7 @@ import LanguageSwitcherComponent from "./components/LanguageSwitcherComponent.vu
 import BlogArticleContainer from "./containers/BlogArticleContainer.vue";
 import BlogArticleBlocksContainer from "./containers/BlogArticleBlocksContainer.vue";
 import MultiLanguageInputComponent from "./components/MultiLanguageInputComponent.vue";
+import DateInputComponent from "./components/DateInputComponent.vue";
 import MultiLanguageTextAreaComponent from "./components/MultiLanguageTextAreaComponent.vue";
 import TextAreaComponent from "./components/TextAreaComponent.vue";
 import MultiLanguageRichTextEditorComponent from "./components/MultiLanguageRichTextEditorComponent.vue";
@@ -55,6 +56,7 @@ app.component('language-switcher-component', LanguageSwitcherComponent);
 app.component('blog-article-container', BlogArticleContainer);
 app.component('blog-article-blocks-container', BlogArticleBlocksContainer);
 app.component('multi-language-input-component', MultiLanguageInputComponent);
+app.component('date-input-component', DateInputComponent);
 app.component('multi-language-text-area-component', MultiLanguageTextAreaComponent);
 app.component('text-area-component', TextAreaComponent);
 app.component('multi-language-rich-text-editor-component', MultiLanguageRichTextEditorComponent);

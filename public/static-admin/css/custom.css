@@ -104,3 +104,7 @@
 .art-info-field p:last-child {
     margin-bottom: 0;
 }
+
+.multiselect {
+    padding-bottom: 1px;
+}
