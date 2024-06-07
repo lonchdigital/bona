@@ -9794,6 +9794,7 @@ section.art-contacts-page-section {
         .card-body {
             background-color: #f3f3f3;
             margin-bottom: 30px;
+            overflow-x: auto;
 
             &:last-child {
                 margin-bottom: 0;
@@ -9812,10 +9813,24 @@ section.art-contacts-page-section {
             display: flex;
             justify-content: space-between;
 
+            @media (max-width: 630px) {
+                flex-direction: column;
+            }
+
             li {
                 list-style-type: none;
                 text-align: center;
                 width: 100%;
+
+
+                @media (max-width: 630px) {
+                    margin-bottom: 10px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+
 
                 &.active {
                     font-weight: bold;
@@ -9827,7 +9842,8 @@ section.art-contacts-page-section {
                             content: '';
                             position: absolute;
                             left: 0;
-                            top: 120%;
+                            //top: 120%;
+                            bottom: -4px;
                             height: 2px;
                             width: 100%;
                             background-color: #d59958;

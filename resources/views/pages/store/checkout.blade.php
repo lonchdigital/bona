@@ -713,7 +713,7 @@
                                                 </div>
 
                                                 <div class="buttons-wrapper">
-                                                    <button type="submit" class="btn btn-black-custom w-100 mb-4">{{ trans('base.checkout_confirm_order') }}</button>
+                                                    <button type="submit" class="btn btn-main w-100 mb-4">{{ trans('base.checkout_confirm_order') }}</button>
                                                     <div class="info-top-pay text-center d-flex flex-column flex-lg-row justify-content-center mb-lg-6">
                                                         <div class="pay-title mr-lg-2 mb-2 mb-lg-0">{{ trans('base.payments_methods') }}:</div>
                                                         <div class="pay-list d-flex align-items-center justify-content-center">

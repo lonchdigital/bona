@@ -13,7 +13,7 @@
                 <div class="container">
 
                     <div class="row">
-                        <div class="mb-12 w-100">
+                        <div class="mb-sm-12 mb-6 w-100">
                             @include('pages.store.partials.profile_user_navigation')
                         </div>
                     </div>
@@ -32,10 +32,10 @@
 
                                 @csrf
 
-                                <div class="w-full d-flex justify-content-lg-around flex-column flex-lg-row">
+                                <div class="w-full d-flex justify-content-lg-between flex-column flex-lg-row">
                                     <div class="form-group lg-w-45">
                                         <label class="custom-control-label2" for="first_name">{{ trans('auth.first_name') }}</label>
-                                        <input class="form-control" placeholder="{{ trans('auth.first_name_placeholder') }}" type="text" name="first_name" value="{{ old('first_name') ? old('first_name') : $user->first_name }}" id="first_name"/>
+                                        <input class="art-form-light-control" placeholder="{{ trans('auth.first_name_placeholder') }}" type="text" name="first_name" value="{{ old('first_name') ? old('first_name') : $user->first_name }}" id="first_name"/>
                                         @error('first_name')
                                         <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -43,14 +43,14 @@
 
                                     <div class="form-group lg-w-45">
                                         <label class="custom-control-label2" for="last_name">{{ trans('auth.last_name') }}</label>
-                                        <input class="form-control" placeholder="{{ trans('auth.last_name_placeholder') }}" type="text" name="last_name" value="{{ old('last_name') ?  old('last_name') : $user->last_name }}" id="last_name"/>
+                                        <input class="art-form-light-control" placeholder="{{ trans('auth.last_name_placeholder') }}" type="text" name="last_name" value="{{ old('last_name') ?  old('last_name') : $user->last_name }}" id="last_name"/>
                                         @error('last_name')
                                         <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
 
-                                <div class="w-full d-flex justify-content-lg-around flex-column flex-lg-row">
+                                <div class="w-full d-flex justify-content-lg-between flex-column flex-lg-row">
                                     <div class="form-group lg-w-45">
                                         <label class="custom-control-label2" for="email">{{ trans('auth.email') }}</label>
                                         <p class="user-email-field">{{ $user->email }}</p>
@@ -58,14 +58,18 @@
 
                                     <div class="form-group lg-w-45">
                                         <label class="custom-control-label2" for="phone">{{ trans('auth.phone') }}</label>
-                                        <input id="phone" class="form-control" placeholder="{{ trans('auth.phone_placeholder') }}" type="text" name="phone" value="{{ old('phone') ?  old('phone') : $user->phone }}"/>
+                                        <input id="phone" class="art-form-light-control" placeholder="{{ trans('auth.phone_placeholder') }}" type="text" name="phone" value="{{ old('phone') ?  old('phone') : $user->phone }}"/>
                                         @error('phone')
                                         <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
 
-                                <button class="mt-5 btn btn-main" type="submit">{{ trans('user-profile.update') }}</button>
+
+                                <div>
+                                    <button class="mt-4 btn btn-main w-100" type="submit">{{ trans('user-profile.update') }}</button>
+                                </div>
+
                             </form>
                         </div>
                     </div>

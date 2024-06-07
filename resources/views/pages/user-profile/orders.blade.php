@@ -12,7 +12,7 @@
             <section class="user-profile">
                 <div class="container">
                     <div class="row justify-content-md-center">
-                        <div class="mb-12 user-orders-wrapper">
+                        <div class="col-12 mb-12 user-orders-wrapper">
 
                             @include('pages.store.partials.profile_user_navigation')
 

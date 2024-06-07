@@ -16,7 +16,7 @@
             <div class="items-total text-uppercase py-4">
                 {{ trans('base.summary') }}: <span class="font-weight-bold pl-1 items-total-price">0 грн.</span>
             </div>
-            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="btn btn-dark btn-block mb-1">{{ trans('base.make_order') }}</a>
+            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="btn btn-main btn-block mb-1">{{ trans('base.make_order') }}</a>
             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-go-to-cart mb-1 btn-block">
                 <i class="icon icon-cart"></i>
                 <span>

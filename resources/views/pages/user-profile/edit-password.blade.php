@@ -13,7 +13,7 @@
                 <div class="container">
 
                     <div class="row">
-                        <div class="mb-12 w-100">
+                        <div class="mb-sm-12 mb-6 w-100">
                             @include('pages.store.partials.profile_user_navigation')
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                                 <div class="form-group">
                                     <label class="custom-control-label2" for="current_password">{{ trans('user-profile.current_password') }}</label>
                                     <div class="d-flex flex-row align-items-center justify-content-end password-input">
-                                        <input id="current_password" class="form-control block w-full" placeholder="{{ trans('user-profile.current_password') }}" type="password" name="current_password"/>
+                                        <input id="current_password" class="art-form-light-control block w-full" placeholder="{{ trans('user-profile.current_password') }}" type="password" name="current_password"/>
                                     </div>
                                     @error('current_password')
                                     <div class="text-danger">{{ $message }}</div>
@@ -45,7 +45,7 @@
                                 <div class="form-group">
                                     <label class="custom-control-label2" for="new_password">{{ trans('user-profile.new_password') }}</label>
                                     <div class="d-flex flex-row align-items-center justify-content-end password-input">
-                                        <input id="new_password" class="form-control block w-full" placeholder="{{ trans('user-profile.new_password') }}" type="password" name="new_password"/>
+                                        <input id="new_password" class="art-form-light-control block w-full" placeholder="{{ trans('user-profile.new_password') }}" type="password" name="new_password"/>
                                     </div>
                                     @error('new_password')
                                     <div class="text-danger">{{ $message }}</div>
@@ -57,7 +57,7 @@
                                 <div class="form-group">
                                     <label class="custom-control-label2" for="password_confirmation">{{ trans('auth.password_confirmation') }}</label>
                                     <div class="d-flex flex-row align-items-center justify-content-end password-input">
-                                        <input id="password_confirmation" class="form-control block w-full" placeholder="{{ trans('auth.password_confirmation') }}" type="password" name="password_confirmation"/>
+                                        <input id="password_confirmation" class="art-form-light-control block w-full" placeholder="{{ trans('auth.password_confirmation') }}" type="password" name="password_confirmation"/>
                                     </div>
                                     @error('password_confirmation')
                                     <div class="text-danger">{{ $message }}</div>
@@ -65,7 +65,7 @@
                                 </div>
                                 <!-- password confirmation end -->
 
-                                <button class="mt-5 btn btn-main" type="submit">{{ trans('user-profile.update_password') }}</button>
+                                <button class="mt-4 btn btn-main" type="submit">{{ trans('user-profile.update_password') }}</button>
                             </form>
                         </div>
                     </div>
