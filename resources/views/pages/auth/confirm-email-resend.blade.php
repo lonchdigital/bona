@@ -1,6 +1,9 @@
 @extends('layouts.store-main')
 
 @section('content')
+
+    @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.reset_password_title')]])
+
     <main class="main pt-5">
         <div class="content">
             <section>
@@ -14,13 +17,13 @@
                                 <div class="w-full d-flex flex-column">
                                     <div class="form-group">
                                         <label class="custom-control-label2" for="email">{{ trans('auth.email') }}</label>
-                                        <input class="form-control" placeholder="{{ trans('auth.email_placeholder') }}" type="text" name="email" value="{{ old('email') }}" id="email"/>
+                                        <input class="art-form-light-control" placeholder="{{ trans('auth.email_placeholder') }}" type="text" name="email" value="{{ old('email') }}" id="email"/>
                                         @error('email')
                                         <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-                                <button class="mt-5 btn btn-outline-black" type="submit">{{ trans('auth.email_confirmation_code_resend') }}</button>
+                                <button class="mt-5 btn btn-main" type="submit">{{ trans('auth.email_confirmation_code_resend') }}</button>
                             </form>
                         </div>
                     </div>
