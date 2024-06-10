@@ -111,6 +111,15 @@ export default {
                         :errors="errors"
                     />
 
+                    <div class="form-group mt-3">
+                        <input-component
+                            :title="$t('admin.link')"
+                            :name="'testimonials[' + index + '][url]'"
+                            :model-value="testimonial.hasOwnProperty('url') ? testimonial.url : []"
+                            :errors="errors"
+                            :is-required="false"
+                        />
+                    </div>
 
                 </div>
             </div>

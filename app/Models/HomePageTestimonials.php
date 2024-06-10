@@ -17,7 +17,7 @@ class HomePageTestimonials extends Model
     public $translatable = ['name', 'review'];
 
     protected $casts = [
-        'date' => 'datetime'
+//        'date' => 'datetime'
     ];
 
     public function testimonialImageUrl(): Attribute

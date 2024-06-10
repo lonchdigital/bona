@@ -52,7 +52,11 @@ class HomePageEditRequest extends BaseRequest
                 'required'
             ],
             'testimonials.*.date' => [
-                'date',
+                'string',
+                'nullable'
+            ],
+            'testimonials.*.url' => [
+                'string',
                 'nullable'
             ],
             'selected_products_id' => [
