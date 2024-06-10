@@ -305,6 +305,7 @@ return [
     'brands_products' => 'Все товары бренда',
     'agreement' => 'Договор публичной оферты',
     'exchange_and_return' => 'Обмен и возврат',
+    'all_rights_reserved' => 'Все права защищены',
     'doors_by_type' => 'Двери по типу',
     'products_by_type' => 'Товары по типу',
     'doors_category' => 'Категории дверей',

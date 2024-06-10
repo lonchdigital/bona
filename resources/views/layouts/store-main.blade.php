@@ -561,7 +561,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-12 art-footer-bottom-wrapper">
-                            <p class="art-copyright">BONA © 2024 Всі права захищені</p>
+                            <p class="art-copyright">BONA © {{ date('Y') .' '. trans('base.all_rights_reserved') }}</p>
                             <p>
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'exchange-and-return']) }}" class="mr-4">{{ trans('base.exchange_and_return') }}</a>
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'polityka-konfidencinosti']) }}" class="mr-4">{{ trans('base.policy') }}</a>
@@ -580,15 +580,6 @@
 
 {{-- static scripts start --}}
 <script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
-
-{{--<script src="{{ asset('assets/js/jquery.min.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.bootstrap.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.owl.carousel.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.ion.rangeSlider.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/jquery.isotope.pkgd.js') }}" defer></script>--}}
-{{--<script src="{{ asset('assets/js/main.js') }}" defer></script>--}}
-
 {{-- static scripts end --}}
 
 {{-- dinamic scripts start --}}
@@ -609,5 +600,4 @@
 @vite('resources/js/store/app.js')
 
 </body>
-
 </html>
