@@ -523,7 +523,11 @@
                                             <img src="{{ $testimonial->testimonial_image_url }}" alt="Testimonial image" loading="lazy">
                                         </div>
                                         <div class="name">
-                                            <h4>{{ $testimonial->name }}</h4>
+                                            @if( !is_null( $testimonial->url ) )
+                                                <h4><a href="{{ $testimonial->url }}">{{ $testimonial->name }}</a></h4>
+                                            @else
+                                                <h4>{{ $testimonial->name }}</h4>
+                                            @endif
                                         </div>
                                         <div class="text">
                                             <p>{{ $testimonial->review }}</p>
