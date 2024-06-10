@@ -24,9 +24,9 @@ class ShowHomePageAction extends BaseAction
 //        $categoryService = app()->make(CategoryService::class);
 
 
-//        $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
-//        $instagramFeed = $profile?->refreshFeed();
-        $instagramFeed = [];
+        $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
+        $instagramFeed = $profile?->refreshFeed();
+//        $instagramFeed = [];
 
         $config = $homePageService->getHomePageConfig();
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);
