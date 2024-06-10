@@ -524,7 +524,7 @@
                                         </div>
                                         <div class="name">
                                             @if( !is_null( $testimonial->url ) )
-                                                <h4><a href="{{ $testimonial->url }}">{{ $testimonial->name }}</a></h4>
+                                                <h4><a href="{{ $testimonial->url }}" target="_blank">{{ $testimonial->name }}</a></h4>
                                             @else
                                                 <h4>{{ $testimonial->name }}</h4>
                                             @endif

@@ -233,6 +233,12 @@
             <a class="nav-link pl-3" href="{{ route('admin.filter-groups.list.page') }}"><span class="ml-1">{{ trans('admin.filter_groups') }}</span></a>
         </ul>
     </li>
+    <li class="nav-item w-100 mt-5 mb-3">
+        <a class="nav-link pl-3" href="{{ route('admin.log-out') }}">
+            <i class="fe fe-corner-up-left fe-16"></i>
+            <span class="ml-1 item-text">{{ trans('auth.logout') }}</span>
+        </a>
+    </li>
 </ul>
 </nav>
 </aside>

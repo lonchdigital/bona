@@ -8,6 +8,7 @@ use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticleEditPageAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticlesListPageAction;
 use App\Http\Actions\Admin\BlogPage\Pages\ShowBlogPageEditPageAction;
 use App\Http\Actions\Admin\BlogPage\BlogPageEditAction;
+use App\Http\Actions\Admin\LogoutAction;
 use App\Http\Actions\Admin\Pages\Pages\ShowPagesListPageAction;
 /*use App\Http\Actions\Admin\BlogCategories\BlogCategoryCreateAction;
 use App\Http\Actions\Admin\BlogCategories\BlogCategoryDeleteAction;
@@ -155,6 +156,7 @@ Route::prefix('admin')->middleware([
 ])->group(function () {
 //    Route::name('admin.dashboard.page')->get('dashboard', ShowDashboardPageAction::class);
     Route::name('admin.dashboard.page')->get('/', ShowDashboardPageAction::class);
+    Route::name('admin.log-out')->get('/log-out', LogoutAction::class);
 
     //Product fields
     Route::prefix('product-field')->group(function () {
