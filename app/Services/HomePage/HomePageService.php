@@ -30,6 +30,8 @@ class HomePageService extends BaseService
 
     public function editHomePage(HomePageEditDTO $request): ServiceActionResult
     {
+//        dd( $request->testimonials );
+
         return $this->coverWithDBTransaction(function () use($request) {
             $homePageConfig = $this->getHomePageConfig();
             $dataToUpdate = [
@@ -167,6 +169,7 @@ class HomePageService extends BaseService
                     'review' => $testimonial['review'],
                     'rating' => $testimonial['rating'],
                     'date' => $testimonial['date'],
+                    'url' => $testimonial['url'],
                 ];
 
 

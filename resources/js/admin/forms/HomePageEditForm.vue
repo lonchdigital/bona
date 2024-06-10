@@ -139,6 +139,7 @@ export default {
             this.testimonials = this.testimonialList;
         }
 
+        console.log( this.testimonials );
 
         if (this.faqList) {
             this.faqs = this.faqList;

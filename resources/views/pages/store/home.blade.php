@@ -532,7 +532,9 @@
 
                                     <div class="more">
                                         @if( !is_null( $testimonial->date ) )
-                                            <span class="date">{{ $testimonial->date->format('d.m.Y') }}</span>
+                                            <span class="date">
+                                                {{ Carbon\Carbon::createFromFormat('Y-m-d', $testimonial->date)->format('d.m.Y') }}
+                                            </span>
                                         @endif
                                         <div class="rating">
                                             @for ($i = 1; $i <= 5; $i++)
