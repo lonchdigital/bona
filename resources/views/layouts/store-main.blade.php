@@ -563,6 +563,7 @@
                         <div class="col-12 art-footer-bottom-wrapper">
                             <p class="art-copyright">BONA © 2024 Всі права захищені</p>
                             <p>
+                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'exchange-and-return']) }}" class="mr-4">{{ trans('base.exchange_and_return') }}</a>
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'polityka-konfidencinosti']) }}" class="mr-4">{{ trans('base.policy') }}</a>
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ trans('base.agreement') }}</a>
                             </p>
