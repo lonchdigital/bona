@@ -152,7 +152,8 @@ class CartService extends BaseService
                 'price' => $product->price,
                 'attributes' => json_encode($request->productAttributes),
                 'attributes_price' => $productAttributesSum,
-                'current_image_path' =>  $currentImagePath
+//                'current_image_path' =>  $currentImagePath
+                'current_image_path' =>  null
             ]]);
         }
 
