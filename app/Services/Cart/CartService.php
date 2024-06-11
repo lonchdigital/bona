@@ -96,6 +96,9 @@ class CartService extends BaseService
 
     public function addProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
+
+        dd($cart, $product, $request);
+
         $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
         $requestProductAttributes = $request->productAttributes;
         $isProductInCart = false;
