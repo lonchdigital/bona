@@ -96,9 +96,6 @@ class CartService extends BaseService
 
     public function addProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
-
-//        dd($cart, $product, $request);
-
         $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
         $requestProductAttributes = $request->productAttributes;
         $isProductInCart = false;
@@ -138,22 +135,22 @@ class CartService extends BaseService
             $productAttributesSum = array_sum($productAttributesSum);
 
 
-            /*$color = Color::where(function ($query) use ($productAttributeColor) {
+            $color = Color::where(function ($query) use ($productAttributeColor) {
                 $query->whereJsonContains('name', ['uk' => $productAttributeColor['color']])
                     ->orWhereJsonContains('name', ['ru' => $productAttributeColor['color']]);
             })->first();
             $currentImagePath = null;
             if( $color !== null ) {
-                $currentImagePath = ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first()->image_path;
-            }*/
+                $productGall = ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first();
+                $currentImagePath = ( !is_null($productGall) ) ? $productGall->image_path: null;
+            }
 
             $cart->products()->attach([$product->id => [
                 'count' => $request->productCount,
                 'price' => $product->price,
                 'attributes' => json_encode($request->productAttributes),
                 'attributes_price' => $productAttributesSum,
-//                'current_image_path' =>  $currentImagePath
-                'current_image_path' =>  null
+                'current_image_path' =>  $currentImagePath
             ]]);
         }
 
