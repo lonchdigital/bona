@@ -20,10 +20,10 @@ class AddProductToCartAction extends BaseAction
         WishListService $wishListService,
     )
     {
-        dd('here??');
 
         $cart = $this->getCart($cartService);
-        $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
+//        $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
+        $wishList = null;
 
         $cartService->addProductToCart($cart, $product, $request->toDTO());
 
