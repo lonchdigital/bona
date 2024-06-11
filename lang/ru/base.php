@@ -183,6 +183,7 @@ return [
     'checkout_payment_upon_receipt' => 'Оплата при получении',
     'checkout_payment_cash' => 'Наличными',
     'checkout_payment_card' => 'Оплата картой Visa / MasterCard',
+    'checkout_payment_paypart' => 'Оплата частями',
     'checkout_recipient' => 'Получатель',
     'checkout_recipient_me' => 'Я',
     'checkout_recipient_another_person' => 'Другой человек',

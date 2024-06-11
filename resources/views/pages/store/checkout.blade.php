@@ -461,6 +461,21 @@
                                                 </div>
                                             </div>
 
+                                            <div class="">
+                                                <div class="">
+                                                    <div class="checkbox art-mb-10">
+                                                        <div class="position-relative">
+                                                            <input type="radio"
+                                                                   @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) checked
+                                                                   @endif id="payment-card_paypart" name="payment_type_id"
+                                                                   value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}">
+                                                            <label class="custom-control-label"
+                                                                   for="payment-card_paypart">{{ trans('base.checkout_payment_paypart') }}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
 
