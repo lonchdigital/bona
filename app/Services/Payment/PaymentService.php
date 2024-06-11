@@ -49,4 +49,27 @@ class PaymentService extends BaseService
 
         return ['data' => $data, 'signature' => $signature];
     }
+
+    public function paypartByCardForm(float $amount, int $orderId): array
+    {
+        $formData = [
+            'public_key' => config('liqpay.public_key'),
+            'action' => 'pay',
+            'paytypes' => 'paypart',
+            'amount' => $amount,
+            'currency' => 'UAH',
+            'description' => trans('base.payment_for_order') . $orderId,
+            'order_id' => $orderId,
+            'version' => 3,
+            'language' => app()->getLocale(),
+        ];
+        Log::info('Build liqpay from on Our WebSie: ' . json_encode($formData));
+
+        $jsonString = json_encode($formData);
+        $data = base64_encode($jsonString);
+
+        $signature = base64_encode(sha1(config('liqpay.private_key') . $data . config('liqpay.private_key'), true));
+
+        return ['data' => $data, 'signature' => $signature];
+    }
 }

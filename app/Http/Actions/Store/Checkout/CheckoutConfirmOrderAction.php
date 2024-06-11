@@ -22,18 +22,16 @@ class CheckoutConfirmOrderAction extends BaseAction
     )
     {
         $cart = $this->getCart($cartService);
-
         $order = $orderService->createOrderByCart($cart, $request->toDTO(), $this->getAuthUser());
 
 
-//        dd($order->payment_type_id, PaymentTypesDataClass::CARD_PAYMENT);
-
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
+        } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
+            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
         } else {
             return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
         }
-
 
     }
 }
