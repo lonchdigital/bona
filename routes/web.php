@@ -58,6 +58,7 @@ use App\Http\Actions\Store\DeliveryPage\Pages\ShowDeliveryPageAction;
 use App\Http\Actions\Store\AboutUsPage\Pages\ShowAboutUsPageAction;
 use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
 use App\Http\Actions\Store\Home\Pages\ShowHomePageAction;
+use App\Http\Actions\Store\Payment\ConfirmPartialPaymentAction;
 use App\Http\Actions\Store\Payment\Pages\ShowGoToPaymentPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentOrdinaryPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentPaypartPageAction;
@@ -278,7 +279,8 @@ $optionalLanguageRoutes = function () {
     Route::prefix('payment')->group(function () {
 //       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class); // button
        Route::name('store.payment.liq-pay.ordinary')->get('/{order}', ShowLiqPayPaymentOrdinaryPageAction::class);
-       Route::name('store.payment.liq-pay.paypart')->get('/{order}', ShowLiqPayPaymentPaypartPageAction::class);
+//       Route::name('store.payment.liq-pay.paypart')->get('/{order}', ShowLiqPayPaymentPaypartPageAction::class);
+        Route::name('store.checkout.partial-payment')->post('/partial-payment', ConfirmPartialPaymentAction::class);
     });
 
     Route::prefix('delivery')->group(function () {
