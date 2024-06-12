@@ -9,6 +9,7 @@ use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
 use App\Http\Requests\Store\Checkout\CheckoutConfirmOrderRequest;
 use App\Services\Payment\PaymentService;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutConfirmOrderAction extends BaseAction
 {
@@ -28,7 +29,24 @@ class CheckoutConfirmOrderAction extends BaseAction
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
         } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
-            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
+
+//            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
+
+            $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
+            $response = $paymentService->createPrivateBankPartialPaymentOrder($order, $request->payment_period, $merchant_type);
+            if ($response !== null) {
+                if ($response['state'] === 'SUCCESS') {
+                    $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response['token'];
+                } else {
+                    $message = $response['message'] ?? ($response['errorMessage'] ?? 'Unknown error');
+                    Log::error('Error during creating partial payment order: '.$message);
+                    $route = route('store.checkout.thank-you', ['order' => $order->id]);
+                }
+            } else {
+                $route = route('store.checkout.thank-you', ['order' => $order->id]);
+            }
+
+
         } else {
             return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
         }
