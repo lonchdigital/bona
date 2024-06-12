@@ -26,8 +26,13 @@ class ShowHomePageAction extends BaseAction
 
         $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
 //        $instagramFeed = $profile?->refreshFeed();
-        $instagramFeed = $profile?->feed();
-//        $instagramFeed = [];
+        if( $profile !== null ) {
+            $profile->refreshFeed();
+            $instagramFeed = $profile?->feed();
+        } else {
+            $instagramFeed = [];
+        }
+
 
         $config = $homePageService->getHomePageConfig();
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);

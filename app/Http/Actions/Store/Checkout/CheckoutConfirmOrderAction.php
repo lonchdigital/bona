@@ -3,6 +3,7 @@
 namespace App\Http\Actions\Store\Checkout;
 
 use App\DataClasses\PaymentTypesDataClass;
+use App\Services\Base\ServiceActionResult;
 use App\Services\Cart\CartService;
 use App\Services\Order\OrderService;
 use App\Http\Actions\Admin\BaseAction;
@@ -33,7 +34,8 @@ class CheckoutConfirmOrderAction extends BaseAction
 //            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
-            $response = $paymentService->createPrivateBankPartialPaymentOrder($order, $request->payment_period, $merchant_type);
+//            $response = $paymentService->createPrivateBankPartialPaymentOrder($order, $request->payment_period, $merchant_type);
+            $response = $paymentService->createPrivateBankPartialPaymentOrder($order, 4, $merchant_type);
             if ($response !== null) {
                 if ($response['state'] === 'SUCCESS') {
                     $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response['token'];
@@ -46,10 +48,11 @@ class CheckoutConfirmOrderAction extends BaseAction
                 $route = route('store.checkout.thank-you', ['order' => $order->id]);
             }
 
-
         } else {
             return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
         }
 
+
+        return $this->handleActionResult($route, $request, ServiceActionResult::make(true, 'success'));
     }
 }

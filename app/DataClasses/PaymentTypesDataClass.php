@@ -14,14 +14,17 @@ class PaymentTypesDataClass implements BaseDataClass
             [
                 'id' => self::CASH_PAYMENT,
                 'name' => trans('base.checkout_payment_cash'),
+                'internal_name' => 'cash',
             ],
             [
                 'id' => self::CARD_PAYMENT,
                 'name' => trans('base.checkout_payment_card'),
+                'internal_name' => 'card',
             ],
             [
                 'id' => self::CARD_PAYMENT_PAYPART,
                 'name' => trans('base.checkout_payment_paypart'),
+                'internal_name' => 'PP',
             ],
         ]);
 
