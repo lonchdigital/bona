@@ -47,9 +47,16 @@ export default async function () {
         }
     });
 
+    let collapsePartialPayment = $('#collapsePartialPayment');
     $('input[name="payment_type_id"]').change(function () {
         if($(this).is(':checked')) {
             const id = $(this).attr('id');
+
+            if( id === 'payment-card_paypart' ) {
+                collapsePartialPayment.slideDown(300);
+            } else {
+                collapsePartialPayment.slideUp(300);
+            }
 
             $('.selected-payment-type').text($('label[for="' + id + '"]').text());
         }

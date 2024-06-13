@@ -36,5 +36,6 @@ class CheckoutConfirmOrderDTO implements BaseDTO
         public readonly ?string $npDepartment,
         public readonly ?string $meestCity,
         public readonly ?string $meestDepartment,
+        public readonly ?int $paymentPeriod
     ) { }
 }

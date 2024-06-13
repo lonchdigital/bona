@@ -350,4 +350,6 @@ return [
     'all_products' => 'Всі товари',
     'order_product' => 'Замовлення товару',
     'organization' => 'Bona-Doors найкращі двері',
+    'payment_period' => 'Період оплати',
+    'short_month' => 'міс.',
 ];
