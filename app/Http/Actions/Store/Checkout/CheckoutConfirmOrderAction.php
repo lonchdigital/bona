@@ -2,6 +2,7 @@
 
 namespace App\Http\Actions\Store\Checkout;
 
+use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Cart\CartService;
@@ -38,6 +39,9 @@ class CheckoutConfirmOrderAction extends BaseAction
             if ($response !== null) {
                 if ($response['state'] === 'SUCCESS') {
                     $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response['token'];
+
+                    $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
+
                 } else {
                     $message = $response['message'] ?? ($response['errorMessage'] ?? 'Unknown error');
                     Log::error('Error during creating partial payment order: '.$message);
