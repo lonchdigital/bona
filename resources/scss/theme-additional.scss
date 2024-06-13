@@ -6124,6 +6124,7 @@ label.custom-control-label {
     background-color: #FFF;
 }
 .fstElement,
+select.art-plain-select,
 input {
     outline: none;
     border: 1px solid #ABABAB;
@@ -6134,6 +6135,11 @@ input {
     border-radius: 30px;
     font-size: 13px;
 }
+
+select.art-plain-select {
+    background-color: #fff;
+}
+
 textarea {
     padding: 9px 18px;
     outline: none;
@@ -6183,7 +6189,7 @@ select {
 }
 select:focus {
     outline: none;
-    border: 1px solid #E7E7E7;
+    border: 1px solid #ABABAB;
 }
 
 

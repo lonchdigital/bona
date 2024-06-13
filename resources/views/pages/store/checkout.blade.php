@@ -478,6 +478,27 @@
                                                 </div>
                                             </div>
 
+                                            <div class="" id="collapsePartialPayment" style="display: none">
+                                                <div class="row">
+                                                    <div class="col mt-1">
+                                                        <div class="delivery-title mb-1">
+                                                            {{ trans('base.payment_period') }}
+                                                        </div>
+                                                        <div>
+                                                            <select class="art-form-light-control art-plain-select" name="payment_period" id="payment_period" style="width: 150px">
+                                                                <option value="2">2 {{ trans('base.short_month') }}</option>
+                                                                <option value="3">3 {{ trans('base.short_month') }}</option>
+                                                                <option value="4">4 {{ trans('base.short_month') }}</option>
+                                                                <option value="5">5 {{ trans('base.short_month') }}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="collapse" id="emptyCollapse" aria-expanded="true" data-parent="#checkout-delivery-payment">
+                                            </div>
+
+
                                         </div>
                                     </div>
 

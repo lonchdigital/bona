@@ -176,6 +176,18 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             ];
         }
 
+        if (
+            in_array(
+                $this->input('payment_type_id'),
+                [PaymentTypesDataClass::CARD_PAYMENT_PAYPART]
+            ))
+        {
+            $rules['payment_period'] = [
+                'integer',
+                'required'
+            ];
+        }
+
         return $rules;
     }
 
@@ -205,6 +217,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             'np_department' => mb_strtolower(trans('base.np_department')),
             'meest_city' => mb_strtolower(trans('base.np_city')),
             'meest_department' => mb_strtolower(trans('base.np_department')),
+            'payment_period' => mb_strtolower(trans('base.payment_period')),
         ];
     }
 
@@ -240,6 +253,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $this->input('np_department'),
             $this->input('meest_city'),
             $this->input('meest_department'),
+            $this->input('payment_period')
         );
     }
 }
