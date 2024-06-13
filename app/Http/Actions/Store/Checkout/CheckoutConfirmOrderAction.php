@@ -32,6 +32,8 @@ class CheckoutConfirmOrderAction extends BaseAction
             return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
         } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
 
+            Log::error('ha ha: I am here');
+
 //            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
@@ -39,9 +41,6 @@ class CheckoutConfirmOrderAction extends BaseAction
             if ($response !== null) {
                 if ($response['state'] === 'SUCCESS') {
                     $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response['token'];
-
-                    $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
-
                 } else {
                     $message = $response['message'] ?? ($response['errorMessage'] ?? 'Unknown error');
                     Log::error('Error during creating partial payment order: '.$message);
