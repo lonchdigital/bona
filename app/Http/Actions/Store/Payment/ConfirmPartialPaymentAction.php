@@ -4,6 +4,7 @@ namespace App\Http\Actions\Store\Payment;
 
 use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\PartialPaymentStatusDataClass;
+use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Checkout\ConfirmPartialOrderRequest;
 use App\Http\Resources\BaseActionResource;
 //use App\Jobs\ProcessPaymentSuccessful;
@@ -12,16 +13,21 @@ use App\Models\Order;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Order\OrderService;
 use App\Services\Payment\PaymentService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class ConfirmPartialPaymentAction
+class ConfirmPartialPaymentAction extends BaseAction
 {
     public function __invoke(
-        ConfirmPartialOrderRequest $request,
-        OrderService $orderService
+//        ConfirmPartialOrderRequest $request,
+        Request $request,
+//        OrderService $orderService
     )
     {
-        $order = Order::query()->find($request->orderId);
+        Log::info('Request received:', $request->all());
+        Log::error('WOW !!!!!!!!!!!!');
+
+        /*$order = Order::query()->find($request->orderId);
 //        $order = Order::query()->find($request->orderId)->first();
 
 
@@ -51,6 +57,6 @@ class ConfirmPartialPaymentAction
             'success' => $result->isSuccess(),
             'message' => $result->getMessage(),
             'redirect_to' => '',
-        ]);
+        ]);*/
     }
 }

@@ -64,6 +64,7 @@ class PaymentService extends BaseService
         $signature = $this->makePartialPaymentSignature(
             $order, $payment_period, $merchant_type, $response_url, $redirect_url, $store_password, $store_id
         );
+
         $data = [
             "storeId" => $store_id,
             "orderId" => $order->id,

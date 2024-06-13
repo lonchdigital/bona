@@ -32,12 +32,15 @@ class CheckoutConfirmOrderAction extends BaseAction
             return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
         } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
 
-            Log::error('ha ha: I am here');
+            Log::error('ha ha: I am here 4');
 
 //            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
             $response = $paymentService->createPrivateBankPartialPaymentOrder($order, $request->payment_period, $merchant_type);
+
+//            dd('her ', $response);
+
             if ($response !== null) {
                 if ($response['state'] === 'SUCCESS') {
                     $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response['token'];
