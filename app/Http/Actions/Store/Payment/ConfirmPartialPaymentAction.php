@@ -17,23 +17,33 @@ use Illuminate\Support\Facades\Log;
 class ConfirmPartialPaymentAction
 {
     public function __invoke(
-        Order $order,
         ConfirmPartialOrderRequest $request,
         OrderService $orderService
     )
     {
-//        $order = Order::query()->find($request->orderId);
+        $order = Order::query()->find($request->orderId);
 //        $order = Order::query()->find($request->orderId)->first();
 
-        if (in_array($request->paymentState, [PartialPaymentStatusDataClass::SUCCESS, PartialPaymentStatusDataClass::LOCKED])) {
 
-//            $result = $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
+        Log::error('************************************');
+        Log::error('orderId: '.$request->orderId);
+        Log::error('PaymentState: '.$request->paymentState);
+        Log::error('************************************');
+
+
+        if (in_array($request->paymentState, [PartialPaymentStatusDataClass::SUCCESS, PartialPaymentStatusDataClass::LOCKED])) {
+            $result = $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
 //                ProcessPaymentSuccessful::dispatchAfterResponse($order);
+
+//            dd('111 11 1', $result);
 
         } elseif (in_array($request->paymentState, [PartialPaymentStatusDataClass::CANCELED, PartialPaymentStatusDataClass::FAIL])) {
 
             $result = ServiceActionResult::make(true, 'Failed to make payment');
 //                PaymentFailure::updateOrCreate(['order_id' => $order->id]);
+
+
+//            dd('222', $result);
 
         }
 

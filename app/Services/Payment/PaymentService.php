@@ -58,7 +58,7 @@ class PaymentService extends BaseService
     {
         $client = new Client();
         $redirect_url = route('store.checkout.thank-you', ['order' => $order->id]);
-        $response_url = route('store.checkout.partial-payment', ['order' => $order->id]);
+        $response_url = route('store.checkout.partial-payment');
         $store_password = env('PRIVATBANK_PASSWORD');
         $store_id = env('PRIVATBANK_STORE_ID');
         $signature = $this->makePartialPaymentSignature(
@@ -76,17 +76,13 @@ class PaymentService extends BaseService
             "signature" => $signature
         ];
         foreach ($order->products as $product) {
-            if ($product->is_linear_meter) {
-                $count = $product->pivot->wallpaper_length;
-            } else {
-                $count = $product->pivot->count;
-            }
-            $product_price = round($count * $product->pivot->price, 2, PHP_ROUND_HALF_DOWN);
+            $count = $product->pivot->count;
+            $product_price = round( $count * ($product->pivot->price + $product->pivot->attributes_price), 2, PHP_ROUND_HALF_DOWN);
             $data['amount'] += $product_price;
             $data['products'][] = [
                 "name" => $product->name,
                 "count" => $count,
-                'price' => number_format(round($product->pivot->price, 2, PHP_ROUND_HALF_DOWN), 2, '.', '')
+                'price' => number_format(round($product->pivot->price + $product->pivot->attributes_price, 2, PHP_ROUND_HALF_DOWN), 2, '.', '')
             ];
         }
         $data['amount'] = number_format($data['amount'], 2, '.', '');
@@ -119,13 +115,9 @@ class PaymentService extends BaseService
         $product_str = '';
         $amount = 0;
         foreach ($order->products as $product) {
-            if ($product->is_linear_meter) {
-                $count = $product->pivot->wallpaper_length;
-            } else {
-                $count = $product->pivot->count;
-            }
-            $amount = $count * $product->pivot->price;
-            $product_str .= ($product->name.$count.$this->withoutFloating($product->pivot->price));
+            $count = $product->pivot->count;
+            $amount = $count * ($product->pivot->price + $product->pivot->attributes_price);
+            $product_str .= ($product->name.$count.$this->withoutFloating($product->pivot->price + $product->pivot->attributes_price));
         }
         $str =  base64_encode(sha1(
             $store_password

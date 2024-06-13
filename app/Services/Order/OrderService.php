@@ -95,6 +95,8 @@ class OrderService extends BaseService
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_IN_PROGRESS;
             } elseif ($request->paymentTypeId === PaymentTypesDataClass::CASH_PAYMENT) {
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_PAID_AS_RECEIVED;
+            } elseif ($request->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT_PAYPART) {
+                $paymentStatus = OrderPaymentStatusesDataClass::STATUS_PAYPART;
             } else {
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_UNPAID;
             }
