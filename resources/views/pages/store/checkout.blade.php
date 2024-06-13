@@ -463,6 +463,7 @@
                                             </div>
 --}}
 
+{{--
                                             <div class="">
                                                 <div class="">
                                                     <div class="checkbox art-mb-10">
@@ -477,6 +478,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            --}}
 
                                             <div class="" id="collapsePartialPayment" @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) style="display: block" @else style="display: none" @endif>
                                                 <div class="row">
@@ -490,12 +492,11 @@
                                                                 <option @if(old('payment_period') == 3) selected @endif value="3">3 {{ trans('base.short_month') }}</option>
                                                                 <option @if(old('payment_period') == 4) selected @endif value="4">4 {{ trans('base.short_month') }}</option>
                                                                 <option @if(old('payment_period') == 5) selected @endif value="5">5 {{ trans('base.short_month') }}</option>
+                                                                <option @if(old('payment_period') == 6) selected @endif value="6">6 {{ trans('base.short_month') }}</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="collapse" id="emptyCollapse" aria-expanded="true" data-parent="#checkout-delivery-payment">
                                             </div>
 
 
