@@ -478,7 +478,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="" id="collapsePartialPayment" style="display: none">
+                                            <div class="" id="collapsePartialPayment" @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) style="display: block" @else style="display: none" @endif>
                                                 <div class="row">
                                                     <div class="col mt-1">
                                                         <div class="delivery-title mb-1">
@@ -486,10 +486,10 @@
                                                         </div>
                                                         <div>
                                                             <select class="art-form-light-control art-plain-select" name="payment_period" id="payment_period" style="width: 150px">
-                                                                <option value="2">2 {{ trans('base.short_month') }}</option>
-                                                                <option value="3">3 {{ trans('base.short_month') }}</option>
-                                                                <option value="4">4 {{ trans('base.short_month') }}</option>
-                                                                <option value="5">5 {{ trans('base.short_month') }}</option>
+                                                                <option @if(old('payment_period') == 2) selected @endif value="2">2 {{ trans('base.short_month') }}</option>
+                                                                <option @if(old('payment_period') == 3) selected @endif value="3">3 {{ trans('base.short_month') }}</option>
+                                                                <option @if(old('payment_period') == 4) selected @endif value="4">4 {{ trans('base.short_month') }}</option>
+                                                                <option @if(old('payment_period') == 5) selected @endif value="5">5 {{ trans('base.short_month') }}</option>
                                                             </select>
                                                         </div>
                                                     </div>
