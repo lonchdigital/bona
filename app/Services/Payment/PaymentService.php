@@ -58,7 +58,7 @@ class PaymentService extends BaseService
     {
         $client = new Client();
         $redirect_url = route('store.checkout.thank-you', ['order' => $order->id]);
-        $response_url = route('store.checkout.partial-payment');
+        $response_url = route('store.checkout.partial-payment', ['order' => $order->id]);
         $store_password = env('PRIVATBANK_PASSWORD');
         $store_id = env('PRIVATBANK_STORE_ID');
         $signature = $this->makePartialPaymentSignature(

@@ -82,7 +82,7 @@
                                                 @foreach($ordersPaginated as $order)
                                                     <tr>
                                                         <td>{{ $order->id }}</td>
-                                                        <td>{{ $order->created_at->format('d-m-Y') }}</td>
+                                                        <td>{{ $order->created_at->format('d-m-Y H:i') }}</td>
                                                         <td>{{ $order->user->first_name }} {{ $order->user->last_name }}</td>
                                                         <td>{{ $order->user->phone }}</td>
                                                         <td>{{ $order->summary }} {{ $baseCurrency->name_short }}</td>
