@@ -280,7 +280,7 @@ $optionalLanguageRoutes = function () {
 //       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class); // button
        Route::name('store.payment.liq-pay.ordinary')->get('/{order}', ShowLiqPayPaymentOrdinaryPageAction::class);
 //       Route::name('store.payment.liq-pay.paypart')->get('/{order}', ShowLiqPayPaymentPaypartPageAction::class);
-        Route::name('store.checkout.partial-payment')->post('/partial-payment', ConfirmPartialPaymentAction::class);
+        Route::name('store.checkout.partial-payment')->post('{order}/partial-payment', ConfirmPartialPaymentAction::class);
     });
 
     Route::prefix('delivery')->group(function () {
