@@ -8,8 +8,8 @@
                 <span class="product-title">{{ $product->name }}</span>
                 <span class="price-wrapper">
                     @if($product->old_price > $product->price)
-                        <span class="card-link-price--hot">{{ $product->price }} {{ $baseCurrency->name_short }} </span>
-                        <span class="card-link-price--old">{{ $product->old_price }} {{ $baseCurrency->name_short }}</span>
+                        <span class="card-link-price--hot">{{ $product->price.' '.$baseCurrency->name_short }}</span>
+                        <span class="card-link-price--old">{{ $product->old_price }}</span>
                     @else
                         <span class="price">{{ $product->price }}</span>
                         <span class="currency">{{ $baseCurrency->name_short }}</span>
