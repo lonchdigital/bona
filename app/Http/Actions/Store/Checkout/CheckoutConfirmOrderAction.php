@@ -32,7 +32,7 @@ class CheckoutConfirmOrderAction extends BaseAction
             return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
         } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
 
-            Log::error('ha ha: I am here 9');
+            Log::error('ha ha: I am here 10');
 
 //            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
 
