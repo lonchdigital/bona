@@ -21,11 +21,11 @@ class ShowCheckoutThankYouPageAction extends BaseAction
         CurrencyService $currencyService,
     )
     {
-        /*$baseCurrency = $currencyService->getBaseCurrency();
+//        $baseCurrency = $currencyService->getBaseCurrency();
         if ($order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_UNPAID) {
             return view('pages.store.payment-failure');
         }
-        try {
+        /*try {
             $cart = $this->getCart($cartService);
             $cart->products()->sync([]);
             $cart->delete();

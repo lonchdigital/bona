@@ -237,6 +237,17 @@ class OrderService extends BaseService
         });
     }
 
+    public function updateOrderPaymentStatusIdWithoutEmail(Order $order, int $newStatusId): ServiceActionResult
+    {
+        return $this->coverWithDBTransactionWithoutResponse(function () use($order, $newStatusId) {
+            $order->update([
+                'payment_status_id' => $newStatusId,
+            ]);
+
+            return ServiceActionResult::make(false, 'Fail');
+        });
+    }
+
     public function getOrderSummary(Order $order): array
     {
         $totalPrice = 0;

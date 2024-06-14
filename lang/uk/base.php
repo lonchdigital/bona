@@ -352,4 +352,5 @@ return [
     'organization' => 'Bona-Doors найкращі двері',
     'payment_period' => 'Період оплати',
     'short_month' => 'міс.',
+    'payment_failure' => 'Помилка оплати, спробуйте ще раз',
 ];
