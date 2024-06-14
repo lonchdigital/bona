@@ -12,7 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
-        '/checkout/partial_payment',
+        'checkout/partial_payment',
     ];
 }
