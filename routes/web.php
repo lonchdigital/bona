@@ -245,7 +245,7 @@ $optionalLanguageRoutes = function () {
         Route::name('store.checkout.page')->get('/', ShowCheckoutPage::class);
         Route::name('store.checkout.confirm')->post('/confirm', CheckoutConfirmOrderAction::class);
         Route::name('store.checkout.thank-you')->get('{order}/thank', ShowCheckoutThankYouPageAction::class);
-        Route::name('store.checkout.partial-payment')->post('/partial-payment', ConfirmPartialPaymentAction::class);
+        Route::name('store.checkout.partial.payment')->post('/partial', ConfirmPartialPaymentAction::class);
     });
 
     // TODO:: Do we need brands pages?
