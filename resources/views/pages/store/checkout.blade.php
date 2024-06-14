@@ -447,7 +447,6 @@
                                             </div>
 
 
-{{--
                                             <div class="">
                                                 <div class="">
                                                     <div class="checkbox art-mb-10">
@@ -497,7 +496,7 @@
                                                     </div>
                                                 </div>
                                             </div>
---}}
+
 
                                         </div>
                                     </div>
