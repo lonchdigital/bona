@@ -463,7 +463,7 @@
                                             </div>
 --}}
 
-{{--
+
                                             <div class="">
                                                 <div class="">
                                                     <div class="checkbox art-mb-10">
@@ -478,7 +478,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            --}}
 
                                             <div class="" id="collapsePartialPayment" @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) style="display: block" @else style="display: none" @endif>
                                                 <div class="row">
