@@ -61,6 +61,6 @@ class ContactsPageService extends BaseService
 
     public function getContactsFooter()
     {
-        return ContactConfig::select('city_one', 'phone_one', 'email_one', 'city_two', 'phone_two', 'email_two', 'city_three', 'phone_three', 'email_three')->first();
+        return ContactConfig::select('city_one', 'address_one', 'phone_one', 'email_one', 'city_two', 'address_two', 'phone_two', 'email_two', 'city_three', 'address_three', 'phone_three', 'email_three')->first();
     }
 }

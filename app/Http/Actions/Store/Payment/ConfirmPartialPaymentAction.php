@@ -19,44 +19,30 @@ use Illuminate\Support\Facades\Log;
 class ConfirmPartialPaymentAction extends BaseAction
 {
     public function __invoke(
-//        ConfirmPartialOrderRequest $request,
-        Request $request,
-//        OrderService $orderService
+        ConfirmPartialOrderRequest $request,
+//        Request $request,
+        OrderService $orderService
     )
     {
-        Log::info('Request received:', $request->all());
-        Log::error('WOW !!!!!!!!!!!!');
+//        Log::info('Request received:', $request->all());
+//        Log::error('WOW !!!!!!!!!!!!');
 
-        /*$order = Order::query()->find($request->orderId);
-//        $order = Order::query()->find($request->orderId)->first();
-
-
-        Log::error('************************************');
-        Log::error('orderId: '.$request->orderId);
-        Log::error('PaymentState: '.$request->paymentState);
-        Log::error('************************************');
-
+//        $order = Order::query()->find($request->orderId);
+        $order = Order::find($request->orderId);
 
         if (in_array($request->paymentState, [PartialPaymentStatusDataClass::SUCCESS, PartialPaymentStatusDataClass::LOCKED])) {
             $result = $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
 //                ProcessPaymentSuccessful::dispatchAfterResponse($order);
 
-//            dd('111 11 1', $result);
-
         } elseif (in_array($request->paymentState, [PartialPaymentStatusDataClass::CANCELED, PartialPaymentStatusDataClass::FAIL])) {
-
             $result = ServiceActionResult::make(true, 'Failed to make payment');
 //                PaymentFailure::updateOrCreate(['order_id' => $order->id]);
-
-
-//            dd('222', $result);
-
         }
 
         return BaseActionResource::make([
             'success' => $result->isSuccess(),
             'message' => $result->getMessage(),
             'redirect_to' => '',
-        ]);*/
+        ]);
     }
 }
