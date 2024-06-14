@@ -65,8 +65,6 @@ class PaymentService extends BaseService
             $order, $payment_period, $merchant_type, $response_url, $redirect_url, $store_password, $store_id
         );
 
-        Log::error('response_url ' . $response_url);
-
         $data = [
             "storeId" => $store_id,
             "orderId" => $order->id,

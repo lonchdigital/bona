@@ -35,8 +35,9 @@ class ConfirmPartialPaymentAction extends BaseAction
 //                ProcessPaymentSuccessful::dispatchAfterResponse($order);
 
         } elseif (in_array($request->paymentState, [PartialPaymentStatusDataClass::CANCELED, PartialPaymentStatusDataClass::FAIL])) {
-            $result = ServiceActionResult::make(true, 'Failed to make payment');
+//            $result = ServiceActionResult::make(true, 'Failed to make payment');
 //                PaymentFailure::updateOrCreate(['order_id' => $order->id]);
+            $result = $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::STATUS_UNPAID);
         }
 
         return BaseActionResource::make([

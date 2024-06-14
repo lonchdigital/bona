@@ -32,8 +32,6 @@ class CheckoutConfirmOrderAction extends BaseAction
             return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
         } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
 
-            Log::error('ha ha: I am here 11');
-
 //            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
