@@ -534,17 +534,17 @@
                                 <div class="col-three">
                                     <span class="art-footer-title h5 d-block">{{ trans('base.footer_address') }}</span>
                                     <div class="art-address-wrapper">
-                                        <span class="city">{{ $contactsFooter['city_one'] }}</span>
+                                        <span class="city">{{ $contactsFooter['city_one'] .', '.$contactsFooter['address_one'] }}</span>
                                         <span class="phone">{{ $contactsFooter['phone_one'] }}</span>
                                         <span class="email">{{ $contactsFooter['email_one'] }}</span>
                                     </div>
                                     <div class="art-address-wrapper">
-                                        <span class="city">{{ $contactsFooter['city_two'] }}</span>
+                                        <span class="city">{{ $contactsFooter['city_two'] .', '.$contactsFooter['address_two'] }}</span>
                                         <span class="phone">{{ $contactsFooter['phone_two'] }}</span>
                                         <span class="email">{{ $contactsFooter['email_two'] }}</span>
                                     </div>
                                     <div class="art-address-wrapper">
-                                        <span class="city">{{ $contactsFooter['city_three'] }}</span>
+                                        <span class="city">{{ $contactsFooter['city_three'] .', '.$contactsFooter['address_three'] }}</span>
                                         <span class="phone">{{ $contactsFooter['phone_three'] }}</span>
                                         <span class="email">{{ $contactsFooter['email_three'] }}</span>
                                     </div>
