@@ -446,7 +446,6 @@
                                                 </div>
                                             </div>
 
-
                                             <div class="">
                                                 <div class="">
                                                     <div class="checkbox art-mb-10">
