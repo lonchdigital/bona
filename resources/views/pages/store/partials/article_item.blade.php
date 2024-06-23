@@ -8,7 +8,7 @@
                 <div class="date-wrapper">
                     <div class="date">
                         <strong>{{ $article->created_at->format('d') }}</strong>
-                        <span>{{ $article->created_at->format('M') }}</span>
+                        <span>{{ $article->created_at->translatedFormat('M') }}</span>
                     </div>
                 </div>
             </div>
