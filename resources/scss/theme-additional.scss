@@ -9478,16 +9478,24 @@ section.art-contacts-page-section {
     ----------------------------------
 */
 
+.art-brands-list {
+
+    .swiper-slide {
+        padding: 0 0 40px 0;
+    }
+}
+
 .art-brands-owl-items {
 
+    .item {
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 25px;
+    }
 }
-.art-brands-owl-items .item {
-    height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 25px;
-}
+
 
 
 
