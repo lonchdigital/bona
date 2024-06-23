@@ -6551,7 +6551,8 @@ select:focus {
 
                 display: flex;
                 justify-content: center;
-                align-items: center;
+                align-items: flex-start;
+                //align-items: center;
 
                 img {
                     //height: 100%;
