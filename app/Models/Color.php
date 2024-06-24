@@ -30,6 +30,11 @@ class Color extends Model
         return $this->hasMany(Color::class, 'parent_color_id');
     }*/
 
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_colors');
+    }
+
     public function imageUrl(): Attribute
     {
         return Attribute::make(function () {
