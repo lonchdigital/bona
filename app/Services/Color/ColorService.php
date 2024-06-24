@@ -38,12 +38,15 @@ class ColorService extends BaseService
         return $query->paginate(config('domain.items_per_page'));
     }
 
-    public function getAvailableColorsByProductType(): Collection
+    public function getAvailableColorsByProductType($productType): Collection
     {
-        //TODO: implement with cache
-//        return Color::all();
-//        return Color::whereNull('parent_color_id')->get();
-        return Color::get();
+        $typeId = $productType->id;
+
+        return Color::whereHas('products', function ($query) use ($typeId) {
+            $query->whereHas('productType', function ($query) use ($typeId) {
+                $query->where('id', $typeId);
+            });
+        })->get();
     }
 
     public function createColor(EditColorDTO $request): ServiceActionResult
