@@ -75,6 +75,8 @@ return [
     'you_viewing' => 'Ви дивитесь',
     'filter_show_more' => 'Більше',
     'filter_show_less' => 'Менше',
+    'filter_show_more_colors' => 'Показати всі кольори',
+    'filter_show_less_colors' => 'Згорнути',
     'filter_reset' => 'Скинути',
     'search_by_article_or_name' => 'Введіть артикул або назву',
     'sku' => 'Артикул',

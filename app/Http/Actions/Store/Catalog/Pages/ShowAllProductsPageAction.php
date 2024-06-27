@@ -30,7 +30,7 @@ class ShowAllProductsPageAction extends BaseAction
         $filtersData = $request->toDTO();
 
         $baseCurrency = $currencyService->getBaseCurrency();
-        $colors = $colorService->getAvailableColorsByProductType();
+        $colors = $colorService->getAllColors();
 //        $colors = $colorService->getAvailableColorsByProductType($productType);
 
         $page = $filtersData->filters['page'] ?? 1;
