@@ -49,6 +49,11 @@ class ColorService extends BaseService
         })->get();
     }
 
+    public function getAllColors(): Collection
+    {
+        return Color::all();
+    }
+
     public function createColor(EditColorDTO $request): ServiceActionResult
     {
         $creator = $this->getAuthUser();

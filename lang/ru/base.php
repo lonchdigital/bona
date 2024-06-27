@@ -75,6 +75,8 @@ return [
     'you_viewing' => 'Вы просматриваете',
     'filter_show_more' => 'Больше',
     'filter_show_less' => 'Меньше',
+    'filter_show_more_colors' => 'Показать все цвета',
+    'filter_show_less_colors' => 'Свернуть',
     'filter_reset' => 'Сбросить',
     'search_by_article_or_name' => 'Введите артикул или название',
     'sku' => 'Артикул',

@@ -121,40 +121,20 @@
                                             {{ trans('base.color') }}
                                         </div>
                                         <div class="filter-content">
-                                            <div class="art-filter-color-content colors-wrapper">
+                                            <div id="art-filter-color-content" class="art-filter-color-content colors-wrapper {{ count($colors) > 5 ? 'content-hidden' : 'content-expanded' }}">
                                                 @foreach($colors as $color)
-                                                    <div
-                                                        class="color-wrapper d-flex align-items-center justify-content-center @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif">
-                                                        <input class="sync-input" type="checkbox"
-                                                               name="color"
-                                                               id="color-checkbox-{{$color->id}}-main"
-                                                               value="{{ $color->slug }}"
-                                                               style="display: none;"
-                                                               @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) checked @endif>
-                                                        @if($color->display_as_image)
-                                                            <label for="color-checkbox-{{$color->id}}-main"
-                                                                   class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
-                                                                   style="background-image: url({{$color->image_url}});"
-                                                                   data-toggle="tooltip">
-                                                                <span class="before border-silver-custom"></span>
-                                                            </label>
-                                                        @else
-                                                            <label for="color-checkbox-{{$color->id}}-main"
-                                                                   class="link-color @if(\App\Services\Product\ProductFiltersService::mainColorFilterOptionChecked($filtersData, 'color', $color)) active @endif"
-                                                                   @if(!$color->hex)
-                                                                   style="background: linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,235,0,1) 37%, rgba(5,255,0,1) 74%, rgba(59,63,250,1) 100%, rgba(0,9,255,1) 100%);"
-                                                                   @else
-                                                                   style="background-color: {{$color->hex}};"
-                                                                   @endif
-                                                                   data-toggle="tooltip">
-                                                                <span class="before border-silver-custom"></span>
-                                                            </label>
-                                                        @endif
-
-                                                    </div>
+                                                    @include('pages.store.partials.color_item', ['color' => $color, 'filtersData' => $filtersData])
                                                 @endforeach
                                             </div>
                                         </div>
+
+                                        @if( count($colors) > 5 )
+                                            <div id="art-filter-color-control" class="art-filter-color-control">
+                                                <span class="art-show-colors">{{ trans('base.filter_show_more_colors') }}</span>
+                                                <span class="art-hide-colors d-none">{{ trans('base.filter_show_less_colors') }}</span>
+                                            </div>
+                                        @endif
+
                                     </div>
                                 </div> <!--/filter-box-->
                             @endif
