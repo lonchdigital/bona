@@ -47,7 +47,16 @@ export default {
 
             artFilterColorContent.removeClass('content-expanded');
         });
-    }
 
+        // click on name = click on label
+        $(document).ready(function() {
+            $('.color-name').on('click', function() {
+                $(this).prev('label').click();
+            });
+        });
+
+
+
+    }
 
 };
