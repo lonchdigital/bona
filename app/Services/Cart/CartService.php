@@ -346,6 +346,11 @@ class CartService extends BaseService
     {
         $summary = $this->getCartSummary($cart);
 //        $summary = $this->getSummary($cart, $wishList);
+
+        $cart->products->each(function ($product) {
+            $product->name = $product->getRawOriginal('name');
+        });
+
         $summary['products'] = $cart->products;
 
         return $summary;

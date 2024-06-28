@@ -578,6 +578,7 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
         productCurrentImageUrl = productData.main_image_url;
     }
 
+    let productNameLocale = JSON.parse(productData.name);
     return `
         <li class="sub-menu-list-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
@@ -587,7 +588,7 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
                         <img src="${productCurrentImageUrl}" alt="item">
                     </span>
                     <div class="item-text">
-                        ${productData.name}
+                        ${productNameLocale[locale]}
                         ${productAttributesHTML}
                     </div>
                 </a>
@@ -710,7 +711,7 @@ function getProductInCartPageHTML(productData, productAttributesHTML)
         productCurrentImageUrl = productData.main_image_url;
     }
 
-
+    let productNameLocale = JSON.parse(productData.name);
     return `
         <div class="list-product-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
@@ -725,7 +726,7 @@ function getProductInCartPageHTML(productData, productAttributesHTML)
                         </div>
                         ${productData.sku !== null ? `<div class="table-product-code mb-2">${translations.sku} <span>${productData.sku}</span></div>` : ''}
                         <div class="table-product-name h4 mb-0 d-block">
-                            ${productData.name}
+                            ${productNameLocale[locale]}
                         </div>
                         ${productAttributesHTML}
                     </div>
@@ -826,10 +827,6 @@ function addDeleteProductFromCartHandlers(elements)
         // Get All Product Attributes
         var productAttributes = {};
         productAttributes = getAllProductAttributes($(this));
-
-
-        console.log('ohhh I am here!');
-        console.log(productAttributes);
 
         deleteProductFromCart(
             slug,
