@@ -77,6 +77,14 @@ export default {
             type: Array,
             default: [],
         },
+        allProductTypes: {
+            type: Array,
+            default: [],
+        },
+        selectedProductTypes: {
+            type: Array,
+            default: [],
+        },
         selectedNewProducts: {
             type: Array,
             default: [],
@@ -119,6 +127,7 @@ export default {
             test: [],
             selectedLanguage: '',
             collections: [],
+            productTypes: [],
             products: [],
             selectedNewProductsShow: [],
             selectedBestSalesProductsShow: [],
@@ -149,6 +158,15 @@ export default {
 
         if (this.wallpapersByFieldId) {
             this.selectedFieldId = this.wallpapersByFieldId;
+        }
+
+
+        if( Array.isArray(this.allProductTypes) ) {
+            this.allProductTypes.forEach((item, i) => {
+                if (item && item.hasOwnProperty('id') && item.hasOwnProperty('name')) {
+                    this.productTypes.push({id: item.id, text: item.name[this.selectedLanguage]});
+                }
+            });
         }
 
         if( Array.isArray(this.selectedNewProducts) ) {
@@ -300,6 +318,21 @@ export default {
                     </div>
                 </div>
 
+
+                <p class="mt-4"></p>
+
+                <select-component
+                    :is-multi-select="true"
+                    :model-value="selectedProductTypes"
+                    :title="$t('admin.product_types')"
+                    :options="productTypes"
+                    label="text"
+                    value-prop="id"
+                    name="selected_product_types"
+                    :max-items="20"
+                    :is-required="false"
+                    :errors="errors"
+                />
 
                 <p class="mt-4"></p>
 

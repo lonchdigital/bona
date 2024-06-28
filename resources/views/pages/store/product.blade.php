@@ -185,7 +185,11 @@
                                                     <option value="">- Обрати -</option>
 
                                                     @foreach($option as $item)
-                                                        <option value="{{ $item['name'] }}" data-price="{{$item['price']}}">
+{{--                                                        <option value="{{ $item['name'] }}" data-option-id="{{$item['id']}}" data-price="{{$item['price']}}">--}}
+{{--                                                        <option value="{{ 'id:' . $item['id'] . '|' .'name:' . $item['name'] }}" data-price="{{$item['price']}}">--}}
+{{--                                                        <option value="{{ '{"id":'.$item['id'].',"name":"'.$item['name'].'"}' }}" data-price="{{$item['price']}}">--}}
+{{--                                                        <option value="{{ '{"id":'.$item['id'].',"name":"'.$item->getRawOriginal('name').'"}' }}" data-price="{{$item['price']}}">--}}
+                                                        <option value="{{ json_encode(['id' => $item['id'], 'name' => $item->getRawOriginal('name')]) }}" data-price="{{$item['price']}}">
                                                             {{ $item['name'] }}
                                                             @if($item['price'])
                                                                 {{ ' ' . $item['price'] .' '. $baseCurrency->name_short }}
@@ -205,11 +209,13 @@
                                         <div class="art-colors-list">
                                             @foreach($product->colors as $color_item)
                                                 @if($color_item->display_as_image)
-                                                    <span class="color-btn" data-color-id="{{ $color_item->id }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}">
+{{--                                                    <span class="color-btn" data-color-id="{{ $color_item->id }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}">--}}
+                                                    <span class="color-btn" data-color-id="{{ $color_item->id }}" data-name="{{ json_encode(['id' => $color_item->id,'name' => $color_item->getRawOriginal('name')]) }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}">
                                                         <img src="{{$color_item->image_url}}" alt="ColorImg">
                                                     </span>
                                                 @else
-                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-color-id="{{ $color_item->id }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
+{{--                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-color-id="{{ $color_item->id }}" data-name="{{ $color_item->name }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>--}}
+                                                    <span class="color-btn{{ $color_item->hex == '#fff' ? ' art-white' : '' }}" data-color-id="{{ $color_item->id }}" data-name="{{ json_encode(['id' => $color_item->id,'name' => $color_item->getRawOriginal('name')]) }}" data-price="{{ ( !is_null($color_item->pivot->price) ) ? $color_item->pivot->price : 0 }}" style="background-color: {{ $color_item->hex }};"></span>
                                                 @endif
                                             @endforeach
                                         </div>
@@ -432,7 +438,7 @@
                                     <a href="#" data-fancybox-close class="btn btn-empty is-close-btn" title="Close">{{ trans('base.continue_shopping') }}</a>
                                 </div>
                                 <div>
-                                    <a href="{{ route('store.cart.page') }}" class="btn btn-main">{{ trans('base.go_to_cart') }}</a>
+                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-main">{{ trans('base.go_to_cart') }}</a>
                                 </div>
                             </div>
                         </div>

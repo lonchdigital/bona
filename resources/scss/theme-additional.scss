@@ -8011,6 +8011,9 @@ a:focus,
 .header-main-others li.list-inline-item.basket-list .sub-menu-list-item .item-text .product-attributes {
     line-height: 10px;
 }
+.header-main-others li.list-inline-item.basket-list .sub-menu-list-item .item-text .product-attributes .attribute-id {
+    font-size: 0;
+}
 .header-main-others li.list-inline-item.basket-list .sub-menu-list-item .item-text .product-attributes .attribute-key {
     font-size: 0;
 }
@@ -8800,8 +8803,9 @@ section.art-common-page-section {
             .product-attribute-line {
                 line-height: 18px;
 
+                .attribute-id,
                 .attribute-key {
-                    font-size:0;
+                    font-size:0 !important;
                 }
 
                 .attribute-value {
