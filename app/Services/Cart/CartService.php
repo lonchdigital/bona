@@ -115,40 +115,35 @@ class CartService extends BaseService
         if( !$isProductInCart ) {
             $attributeOptions = $this->getAttributesWithOptions($product->id, $product->productType);
 
-//            dd($requestProductAttributes['color_id']);
 
-            $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
-            unset($requestProductAttributes['color_id']);
-            unset($requestProductAttributes['color_name']);
+            $productAttributesSum[] = 0;
+            $productAttributeColor['color_id'] = null;
 
-//            dd($requestProductAttributes);
+            if( !is_null($requestProductAttributes) ) {
 
-            $productAttributesSum = [];
-            foreach ($requestProductAttributes as $attributeKey => $productAttr ) {
+                $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
+                unset($requestProductAttributes['color_id']);
+                unset($requestProductAttributes['color_name']);
 
-//                dd($productAttr);
 
-                if( !is_null($productAttr) ) {
-                    $productAtrID = preg_replace('/[^0-9]/', '', $attributeKey);
-                    $attributeItself = json_decode($productAttr, true);
+                foreach ($requestProductAttributes as $attributeKey => $productAttr ) {
+                    if( !is_null($productAttr) ) {
+                        $productAtrID = preg_replace('/[^0-9]/', '', $attributeKey);
+                        $attributeItself = json_decode($productAttr, true);
 
-//                    dd($attributeItself);
-
-//                    dd($attributeOptions);
-//                    dd($attributeOptions, 'attrs');
-
-                    $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('id', $attributeItself['id'])->price;
-//                    $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('id', $productAttributeID)->price;
+                        $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('id', $attributeItself['id'])->price;
+                    }
                 }
+
+                if( !is_null($productAttributeColor['color_id']) ) {
+                    $color_price = $product->colors->firstWhere('id', $productAttributeColor['color_id'])->pivot->price;
+                    if( is_numeric($color_price) || is_float($color_price) )
+                        $productAttributesSum[] = $color_price;
+                }
+
             }
 
-            if( !is_null($productAttributeColor['color_id']) ) {
-                $color_price = $product->colors->firstWhere('id', $productAttributeColor['color_id'])->pivot->price;
-                if( is_numeric($color_price) || is_float($color_price) )
-                    $productAttributesSum[] = $color_price;
-            }
 
-//            dd($color_price);
 
             $productAttributesSum = array_sum($productAttributesSum);
 
