@@ -115,30 +115,50 @@ class CartService extends BaseService
         if( !$isProductInCart ) {
             $attributeOptions = $this->getAttributesWithOptions($product->id, $product->productType);
 
-            $productAttributeColor['color'] = $requestProductAttributes['color'];
-            unset($requestProductAttributes['color']);
+//            dd($requestProductAttributes['color_id']);
+
+            $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
+            unset($requestProductAttributes['color_id']);
+            unset($requestProductAttributes['color_name']);
+
+//            dd($requestProductAttributes);
 
             $productAttributesSum = [];
-            foreach ($requestProductAttributes as $attributeKey => $productAttributeName ) {
-                if( !is_null($productAttributeName) ) {
+            foreach ($requestProductAttributes as $attributeKey => $productAttr ) {
+
+//                dd($productAttr);
+
+                if( !is_null($productAttr) ) {
                     $productAtrID = preg_replace('/[^0-9]/', '', $attributeKey);
-                    $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('name', $productAttributeName)->price;
+                    $attributeItself = json_decode($productAttr, true);
+
+//                    dd($attributeItself);
+
+//                    dd($attributeOptions);
+//                    dd($attributeOptions, 'attrs');
+
+                    $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('id', $attributeItself['id'])->price;
+//                    $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('id', $productAttributeID)->price;
                 }
             }
 
-            if( !is_null($productAttributeColor['color']) ) {
-                $color_price = $product->colors->firstWhere('name', $productAttributeColor['color'])->pivot->price;
+            if( !is_null($productAttributeColor['color_id']) ) {
+                $color_price = $product->colors->firstWhere('id', $productAttributeColor['color_id'])->pivot->price;
                 if( is_numeric($color_price) || is_float($color_price) )
                     $productAttributesSum[] = $color_price;
             }
 
+//            dd($color_price);
+
             $productAttributesSum = array_sum($productAttributesSum);
 
-
-            $color = Color::where(function ($query) use ($productAttributeColor) {
+            /*$color = Color::where(function ($query) use ($productAttributeColor) {
                 $query->whereJsonContains('name', ['uk' => $productAttributeColor['color']])
                     ->orWhereJsonContains('name', ['ru' => $productAttributeColor['color']]);
-            })->first();
+            })->first();*/
+
+            $color = Color::where('id', $productAttributeColor['color_id'])->first();
+
             $currentImagePath = null;
             if( $color !== null ) {
                 $productGall = ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first();
@@ -173,13 +193,32 @@ class CartService extends BaseService
             $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
             $requestProductAttributes = $request->productAttributes;
 
+
             foreach ($allProductVariations as $allProductVariation) {
-                $difference = array_diff_assoc(json_decode($allProductVariation['attributes'], true), $requestProductAttributes);
+
+                $arr = json_decode($allProductVariation['attributes'], true);
+                $preparedArray['color_name'] = $arr['color_id'];
+                unset($arr['color_id']);
+                unset($arr['color_name']);
+
+//                dd($arr);
+                foreach ($arr as $key => $value) {
+                    if(is_null($value)) {
+                        continue;
+                    }
+                    $preparedArray[$key] = json_decode($value, true)['id'];
+                }
+
+//                dd($preparedArray, $requestProductAttributes);
+                $difference = array_diff_assoc($preparedArray, $requestProductAttributes);
 
                 if(empty($difference)) {
                     $allProductVariation->update(['count' => $request->productCount]);
                     break;
                 }
+
+                $preparedArray = [];
+                $arr = [];
             }
 
         } else {
@@ -200,12 +239,30 @@ class CartService extends BaseService
             $requestProductAttributes = $request->productAttributes;
 
             foreach ($allProductVariations as $allProductVariation) {
-                $difference = array_diff_assoc(json_decode($allProductVariation['attributes'], true), $requestProductAttributes);
+
+                $arr = json_decode($allProductVariation['attributes'], true);
+                $preparedArray['color_name'] = $arr['color_id'];
+                unset($arr['color_id']);
+                unset($arr['color_name']);
+
+
+                foreach ($arr as $key => $value) {
+                    if(is_null($value)) {
+                        continue;
+                    }
+                    $preparedArray[$key] = json_decode($value, true)['id'];
+                }
+
+
+                $difference = array_diff_assoc($preparedArray, $requestProductAttributes);
 
                 if(empty($difference)) {
                     $allProductVariation->delete();
                     break;
                 }
+
+                $preparedArray = [];
+                $arr = [];
             }
 
         } else {

@@ -28,19 +28,6 @@ class HomePageEditRequest extends BaseRequest
                 'nullable',
                 'string',
             ],
-            /*
-            'slider_logo' => [
-                HomePageConfig::first() ? 'nullable' : 'required',
-                'image',
-                'dimensions:ratio=1/1'
-            ],
-            'slider_logo_deleted' => [
-                'nullable',
-                new RequiredImageDeletedRule(mb_strtolower(trans('admin.slider_logo'))),
-            ],
-            'slides' => [
-                'array',
-            ],*/
             'slides.*.id' => [
                 'nullable'
             ],
@@ -58,6 +45,10 @@ class HomePageEditRequest extends BaseRequest
             'testimonials.*.url' => [
                 'string',
                 'nullable'
+            ],
+            'selected_product_types' => [
+                'nullable',
+                'exists:product_types,id',
             ],
             'selected_products_id' => [
                 'nullable',
@@ -198,6 +189,7 @@ class HomePageEditRequest extends BaseRequest
             $this->input('meta_keywords'),
             $this->input('meta_tags'),
             $this->validated('slides'),
+            explode(',', $this->input('selected_product_types')),
             explode(',', $this->input('selected_products_id')),
             explode(',', $this->input('selected_best_sales_products_id')),
             $this->validated('testimonials'),

@@ -35,14 +35,25 @@ export default {
 
             var selectAttributes = {};
             $('select.art-select-attribute').each(function() {
+
+                console.log('++++++++++++++++++++++');
+                console.log($(this).attr('id'));
+                console.log($(this).val());
+                console.log($(this).val());
+                console.log('++++++++++++++++++++++');
+
                 selectAttributes[$(this).attr('id')] = $(this).val();
             });
 
-            const selected_color = $('.color-btn.color-selected').first().attr('data-name');
+            const selected_color = $('.color-btn.color-selected').first();
             if (selected_color !== undefined) {
-                selectAttributes['color'] = selected_color;
+                let selected_color_name = selected_color.attr('data-name');
+                let selected_color_id = selected_color.attr('data-color-id');
+
+                selectAttributes['color_name'] = selected_color_name;
+                selectAttributes['color_id'] = selected_color_id;
             } else {
-                selectAttributes['color'] = null;
+                selectAttributes['color_id'] = null;
             }
 
 
@@ -486,13 +497,44 @@ function drawProductsInCartWindowHTML(data)
     let productAttributeClass = '';
     data.data.products.forEach(function (product) {
 
-        let productAttributesHTML = '<div class="product-attributes">';
-        productAttributes = JSON.parse(product.attributes);
+        console.log(product.attributes);
 
-        for (var key in productAttributes) {
-            productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
-            productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'"><span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributes[key] +'</span></div>';
+        let productAttributesHTML = '<div class="product-attributes">';
+
+        if( product.attributes !== null ) {
+
+            productAttributes = JSON.parse(product.attributes);
+            delete productAttributes.color_id;
+
+            /*console.log('==productAttributes==');
+            console.log(productAttributes);
+            console.log('==productAttributes==');*/
+
+            for (var key in productAttributes) {
+                productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
+
+                let productAttribute = productAttributes[key];
+
+                if (typeof productAttribute === 'string') {
+                    try {
+                        let productAttributeLocalName = '';
+                        productAttribute = JSON.parse(productAttribute);
+                        productAttributeLocalName = JSON.parse(productAttribute.name);
+
+                        let productAttributeOptionID = '';
+                        if (productAttribute.id) {
+                            productAttributeOptionID = '<span class="attribute-id">' + productAttribute.id + '</span>';
+                        }
+
+                        productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'">'+ productAttributeOptionID +'<span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributeLocalName[locale] +'</span></div>';
+                    } catch (e) {
+                        console.error('Cannot parse attribute.');
+                    }
+                }
+            }
+
         }
+
         productAttributesHTML += '</div>';
 
         productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
@@ -580,12 +622,38 @@ function drawProductsInCartPageHTML(data)
     data.data.products.forEach(function (product) {
 
         let productAttributesHTML = '<div class="product-attributes">';
-        productAttributes = JSON.parse(product.attributes);
 
-        for (var key in productAttributes) {
-            productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
-            productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'"><span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributes[key] +'</span></div>';
+        if( product.attributes !== null ) {
+
+            productAttributes = JSON.parse(product.attributes);
+
+            delete productAttributes.color_id;
+
+            for (var key in productAttributes) {
+                productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
+
+                let productAttribute = productAttributes[key];
+
+                if (typeof productAttribute === 'string') {
+                    try {
+                        let productAttributeLocalName = '';
+                        productAttribute = JSON.parse(productAttribute);
+                        productAttributeLocalName = JSON.parse(productAttribute.name);
+
+                        let productAttributeOptionID = '';
+                        if (productAttribute.id) {
+                            productAttributeOptionID = '<span class="attribute-id">' + productAttribute.id + '</span>';
+                        }
+
+                        productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'">'+ productAttributeOptionID +'<span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributeLocalName[locale] +'</span></div>';
+                    } catch (e) {
+                        console.error('Cannot parse attribute.');
+                    }
+                }
+            }
+
         }
+
         productAttributesHTML += '</div>';
 
         // productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
@@ -761,6 +829,10 @@ function addDeleteProductFromCartHandlers(elements)
         var productAttributes = {};
         productAttributes = getAllProductAttributes($(this));
 
+
+        console.log('ohhh I am here!');
+        console.log(productAttributes);
+
         deleteProductFromCart(
             slug,
             productAttributes,
@@ -786,7 +858,7 @@ function getAllProductAttributes(art_this)
     var productAttributes = {};
     productAttributesLines.each(function(index, element) {
         var attributeKey = $(element).find('.attribute-key').text();
-        var attributeValue = $(element).find('.attribute-value').text();
+        var attributeValue = $(element).find('.attribute-id').text();
 
         if(attributeValue === 'null') {
             productAttributes[attributeKey] = null;

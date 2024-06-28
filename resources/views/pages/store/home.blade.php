@@ -180,7 +180,7 @@
                     </div>
 
                     <div class="swiper-slide">
-                        <a href="{{ route('store.products-by-discount.page') }}">
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-by-discount.page') }}">
                         <figure>
                             <div class="icon-wrapper">
                                 <svg width="54" height="54" viewBox="0 0 146 146" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -340,41 +340,42 @@
 
 
 
-    <!-- ========================  Products Category widget ======================== -->
-    <section class="art-home-page art-products-category">
-        <div class="container">
+    @if( count($productTypes) > 0 )
+        <section class="art-home-page art-products-category">
+            <div class="container">
 
-            <header>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <h2 class="title h2">{{trans('base.products_by_type')}}</h2>
-                        <div class="subtitle font-two">
-                            <p>{{trans('base.doors_category')}}</p>
+                <header>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h2 class="title h2">{{trans('base.products_by_type')}}</h2>
+                            <div class="subtitle font-two">
+                                <p>{{trans('base.doors_category')}}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </header>
+                </header>
 
-            <div class="art-category-list">
-                @foreach($productTypes as $productType)
-                    <div class="art-category-item">
-                        <article>
-                            <div class="figure-grid">
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
-                                    <div class="image">
-                                        <img src="{{ $productType->image_url }}" alt="Product Type Image" loading="lazy">
-                                    </div>
-                                    <div class="text">
-                                        <span class="title h4">{{ $productType->name }}</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-                @endforeach
+                <div class="art-category-list">
+                    @foreach($productTypes as $productType)
+                        <div class="art-category-item">
+                            <article>
+                                <div class="figure-grid">
+                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
+                                        <div class="image">
+                                            <img src="{{ $productType->image_url }}" alt="Product Type Image" loading="lazy">
+                                        </div>
+                                        <div class="text">
+                                            <span class="title h4">{{ $productType->name }}</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </article>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
 
     @if(count($homeNewProducts))

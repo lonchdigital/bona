@@ -6,6 +6,8 @@
             <div class="col-12">
                 <h2 class="page-title">{{ trans('admin.home_page_edit_heading') }}</h2>
 
+{{--                @dd($allProductTypes)--}}
+
                 <home-page-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
@@ -24,6 +26,13 @@
                         slider-logo="{{ $config->slider_logo_image_url }}"
                         :wallpapers-by-field-id="{{ $config->product_field_id }}"
                         :slider-title="{{ json_encode($config->getTranslations('slider_title')) }}"
+                    @endif
+
+                    @if(count($allProductTypes))
+                        :all-product-types="{{ json_encode($allProductTypes) }}"
+                    @endif
+                    @if( !is_null($config->product_types) )
+                        :selected-product-types="{{ $config->product_types }}"
                     @endif
 
                     @if(count($selectedNewProducts))

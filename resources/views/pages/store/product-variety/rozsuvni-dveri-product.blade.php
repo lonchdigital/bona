@@ -313,7 +313,7 @@
                                     <a href="#" data-fancybox-close class="btn btn-empty is-close-btn" title="Close">{{ trans('base.continue_shopping') }}</a>
                                 </div>
                                 <div>
-                                    <a href="{{ route('store.cart.page') }}" class="btn btn-main">{{ trans('base.go_to_cart') }}</a>
+                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-main">{{ trans('base.go_to_cart') }}</a>
                                 </div>
                             </div>
                         </div>

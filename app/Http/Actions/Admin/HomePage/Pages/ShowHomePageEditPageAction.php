@@ -11,6 +11,8 @@ use App\Models\ProductType;
 use App\Services\Admin\ProductField\ProductFieldService;
 use App\Services\HomePage\HomePageService;
 use App\Services\Product\ProductService;
+use App\Services\Admin\ProductType\ProductTypeService;
+
 
 class ShowHomePageEditPageAction extends BaseAction
 {
@@ -18,6 +20,7 @@ class ShowHomePageEditPageAction extends BaseAction
         ProductFieldService $productFieldService,
         HomePageService $homePageService,
         ProductService $productService,
+        ProductTypeService $productTypeService,
     )
     {
 
@@ -59,6 +62,7 @@ class ShowHomePageEditPageAction extends BaseAction
         return view('pages.admin.home-page.edit', [
             'products' => $products,
             'fields' => $customFields,
+            'allProductTypes' => $productTypeService->getProductTypes(),
             'config' => $homePageService->getHomePageConfig(),
             'selectedNewProducts' => $homePageService->getHomePageNewProducts(),
             'selectedBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),

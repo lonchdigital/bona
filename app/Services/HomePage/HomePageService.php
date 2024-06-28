@@ -30,8 +30,6 @@ class HomePageService extends BaseService
 
     public function editHomePage(HomePageEditDTO $request): ServiceActionResult
     {
-//        dd( $request->testimonials );
-
         return $this->coverWithDBTransaction(function () use($request) {
             $homePageConfig = $this->getHomePageConfig();
             $dataToUpdate = [
@@ -39,6 +37,7 @@ class HomePageService extends BaseService
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
                 'meta_tags' => $request->metaTags,
+                'product_types' => $request->selectedProductTypes,
             ];
 
             if ($homePageConfig) {
@@ -195,7 +194,6 @@ class HomePageService extends BaseService
 
                     $existingTestimonial->update($dataToUpdate);
                 } else {
-//                    dd('I am here?');
                     HomePageTestimonials::create($dataToUpdate);
                 }
             }
@@ -232,9 +230,13 @@ class HomePageService extends BaseService
         return ProductType::get();
     }
 
-    public function getHomePageProductTypes(): Collection
+    public function getHomePageProductTypes(array|null $productTypesIds): Collection
     {
-        return ProductType::whereIn('id', [1, 2, 3, 4, 17, 18])->get(); // 23, 5
+        if( !is_null( $productTypesIds ) ) {
+            return ProductType::whereIn('id', $productTypesIds)->get();
+        } else {
+            return collect([]);
+        }
     }
 
     public function getSpecificProductTypes(): Collection
