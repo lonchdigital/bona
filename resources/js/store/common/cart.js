@@ -9,20 +9,30 @@ const $main_basket_count = $('.art-main-basket-count.count-of-products-in-basket
 
 export default {
     init: async function () {
-        if (count_of_products_in_cart > 0) {
-            getProductsInCart(
-                function (data) {
-                    drawProductsInCartWindowHTML(data);
 
-                    if (page === 'store.cart.page') {
-                        drawProductsInCartPageHTML(data);
-                    }
-                },
-                function () {
-                    console.error('[Cart]: showProductsInCart: error during getting products from cart.');
+        console.log('=1=');
+        console.log(count_of_products_in_cart);
+
+
+
+        console.log('=2=');
+        getProductsInCart(
+            function (data) {
+
+                console.log('=3=');
+
+                drawProductsInCartWindowHTML(data);
+
+                if (page === 'store.cart.page') {
+                    drawProductsInCartPageHTML(data);
                 }
-            );
-        }
+            },
+            function () {
+                console.error('[Cart]: showProductsInCart: error during getting products from cart.');
+            }
+        );
+
+
 
 
         $('.single-product-add-to-cart').click(function () {
@@ -35,13 +45,6 @@ export default {
 
             var selectAttributes = {};
             $('select.art-select-attribute').each(function() {
-
-                console.log('++++++++++++++++++++++');
-                console.log($(this).attr('id'));
-                console.log($(this).val());
-                console.log($(this).val());
-                console.log('++++++++++++++++++++++');
-
                 selectAttributes[$(this).attr('id')] = $(this).val();
             });
 
@@ -425,6 +428,11 @@ function getProductsInCart(success, fail)
         url: routes.cart.products_list_route,
         type: 'get',
         dataType: 'json',
+        headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
     }).done(function(data) {
         success(data);
     }).fail(function () {
@@ -537,6 +545,8 @@ function drawProductsInCartWindowHTML(data)
 
         productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
     });
+
+    console.log('=4=');
 
     $('.basket-sub-menu .sub-menu-list').html(productsToAppend);
     $('.basket-sub-menu .items-total-price').text(data.data.summary.total + ' ' + store.base_currency_name_short);
@@ -914,6 +924,10 @@ function handleBasket(data)
         $basket_without_products.addClass('d-none');
         $('.sub-menu.basket-sub-menu').removeClass('d-none');
     }
+
+    console.log('are we in handleBasket?');
+    console.log(data.data.products.length);
+
     countOfProductsInBasket.text(data.data.products.length);
     basketSubMenuSuccess.removeClass('d-none');
 
