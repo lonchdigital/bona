@@ -583,7 +583,7 @@
 {{-- static scripts end --}}
 
 {{-- dinamic scripts start --}}
-<script defer>
+<script>
     const page = '{{ request()->route() ? request()->route()->getName() : '' }}';
     const is_auth = {{ auth()->user() ? 'true' : 'false' }};
     const locale = '{{ app()->getLocale() }}';

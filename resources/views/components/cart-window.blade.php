@@ -1,6 +1,8 @@
 <li class="list-inline-item basket-list basket-basket-list">
     <div class="basket full nolink basket-link basket-with-products">
-        <span class="after art-main-basket-count count-of-products-in-basket @if($countOfProductInCart <= 0) d-none @endif">{{ $countOfProductInCart }}</span>
+{{--        <span class="after art-main-basket-count count-of-products-in-basket @if($countOfProductInCart <= 0) d-none @endif">{{ $countOfProductInCart }}</span>--}}
+        {{-- TODO:: remove $countOfProductInCart --}}
+        <span class="after art-main-basket-count count-of-products-in-basket d-none">{{ $countOfProductInCart }}</span>
         <i class="icon icon-cart"></i>
     </div>
     <div class="sub-menu bg-white basket-sub-menu @if(!is_null(request()->route()) && request()->route()->getName() == 'store.checkout.page') d-none @endif">

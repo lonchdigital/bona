@@ -11,15 +11,19 @@ export default {
     init: async function () {
 
         console.log('=1=');
-        console.log(count_of_products_in_cart);
-
-
 
         console.log('=2=');
         getProductsInCart(
             function (data) {
 
                 console.log('=3=');
+
+                if( data.data.products.length > 0 ) {
+                    $main_basket_count.removeClass('d-none');
+                    $main_basket_count.text(data.data.products.length);
+                } else {
+                    $main_basket_count.addClass('d-none');
+                }
 
                 drawProductsInCartWindowHTML(data);
 
@@ -913,11 +917,15 @@ function handleCalculatorAddToCartButton()
 
 function handleBasket(data)
 {
+    console.log('we are here!');
+
     const basketWithProducts = $('.basket-with-products');
     const countOfProductsInBasket = basketWithProducts.find('.count-of-products-in-basket');
 
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');
+
+    console.log(data.data.products.length);
 
     if(parseInt(data.data.products.length) === 1){
         $basket_with_products.removeClass('d-none');
@@ -926,7 +934,6 @@ function handleBasket(data)
     }
 
     console.log('are we in handleBasket?');
-    console.log(data.data.products.length);
 
     countOfProductsInBasket.text(data.data.products.length);
     basketSubMenuSuccess.removeClass('d-none');
