@@ -101,9 +101,9 @@ class CartService extends BaseService
         $isProductInCart = false;
 
         foreach ($allProductVariations as $allProductVariation) {
-            $difference = array_diff_assoc(json_decode($allProductVariation['attributes'], true), $requestProductAttributes);
+            $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
-            if(empty($difference)) {
+            if($isRequestedProduct) {
                 $count = $allProductVariation->count + 1;
                 $allProductVariation->update(['count' => $count]);
 
@@ -189,28 +189,12 @@ class CartService extends BaseService
             $requestProductAttributes = $request->productAttributes;
 
             foreach ($allProductVariations as $allProductVariation) {
+                $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
-                $arr = json_decode($allProductVariation['attributes'], true);
-                $preparedArray['color_name'] = $arr['color_id'];
-                unset($arr['color_id']);
-                unset($arr['color_name']);
-
-                foreach ($arr as $key => $value) {
-                    if(is_null($value)) {
-                        continue;
-                    }
-                    $preparedArray[$key] = (string)json_decode($value, true)['id'];
-                }
-
-                $areArrEqual = $this->arraysAreEqual($preparedArray, $requestProductAttributes);
-
-                if($areArrEqual) {
+                if($isRequestedProduct) {
                     $allProductVariation->update(['count' => $request->productCount]);
                     break;
                 }
-
-                $preparedArray = [];
-                $arr = [];
             }
 
         } else {
@@ -231,34 +215,37 @@ class CartService extends BaseService
             $requestProductAttributes = $request->productAttributes;
 
             foreach ($allProductVariations as $allProductVariation) {
+                $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
-                $arr = json_decode($allProductVariation['attributes'], true);
-                $preparedArray['color_name'] = $arr['color_id'];
-                unset($arr['color_id']);
-                unset($arr['color_name']);
-
-                foreach ($arr as $key => $value) {
-                    if(is_null($value)) {
-                        continue;
-                    }
-                    $preparedArray[$key] = (string)json_decode($value, true)['id'];
-                }
-
-                $areArrEqual = $this->arraysAreEqual($preparedArray, $requestProductAttributes);
-
-                if($areArrEqual) {
+                if($isRequestedProduct) {
                     $allProductVariation->delete();
                     break;
                 }
-
-                $preparedArray = [];
-                $arr = [];
             }
 
         } else {
             $cart->products()->detach($product->id);
         }
 
+    }
+
+    private function isRequestedProduct($attributes, $requestProductAttributes): bool
+    {
+        $arr = [];
+        $preparedArray = [];
+        $arr = json_decode($attributes, true);
+        $preparedArray['color_name'] = $arr['color_id'];
+        unset($arr['color_id']);
+        unset($arr['color_name']);
+
+        foreach ($arr as $key => $value) {
+            if(is_null($value)) {
+                continue;
+            }
+            $preparedArray[$key] = (string)json_decode($value, true)['id'];
+        }
+
+        return $this->arraysAreEqual($preparedArray, $requestProductAttributes);
     }
 
     public function getSummary(Cart $cart, ?WishList $wishList): array
