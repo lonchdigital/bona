@@ -188,7 +188,6 @@ class CartService extends BaseService
             $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
             $requestProductAttributes = $request->productAttributes;
 
-
             foreach ($allProductVariations as $allProductVariation) {
 
                 $arr = json_decode($allProductVariation['attributes'], true);
@@ -196,18 +195,16 @@ class CartService extends BaseService
                 unset($arr['color_id']);
                 unset($arr['color_name']);
 
-//                dd($arr);
                 foreach ($arr as $key => $value) {
                     if(is_null($value)) {
                         continue;
                     }
-                    $preparedArray[$key] = json_decode($value, true)['id'];
+                    $preparedArray[$key] = (string)json_decode($value, true)['id'];
                 }
 
-//                dd($preparedArray, $requestProductAttributes);
-                $difference = array_diff_assoc($preparedArray, $requestProductAttributes);
+                $areArrEqual = $this->arraysAreEqual($preparedArray, $requestProductAttributes);
 
-                if(empty($difference)) {
+                if($areArrEqual) {
                     $allProductVariation->update(['count' => $request->productCount]);
                     break;
                 }
@@ -240,18 +237,16 @@ class CartService extends BaseService
                 unset($arr['color_id']);
                 unset($arr['color_name']);
 
-
                 foreach ($arr as $key => $value) {
                     if(is_null($value)) {
                         continue;
                     }
-                    $preparedArray[$key] = json_decode($value, true)['id'];
+                    $preparedArray[$key] = (string)json_decode($value, true)['id'];
                 }
 
+                $areArrEqual = $this->arraysAreEqual($preparedArray, $requestProductAttributes);
 
-                $difference = array_diff_assoc($preparedArray, $requestProductAttributes);
-
-                if(empty($difference)) {
+                if($areArrEqual) {
                     $allProductVariation->delete();
                     break;
                 }
@@ -352,6 +347,13 @@ class CartService extends BaseService
         });
 
         $summary['products'] = $cart->products;
+
+
+        $response = new \Illuminate\Http\Response(json_encode($summary));
+        $response->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+        $response->header('Pragma', 'no-cache');
+        $response->header('Expires', '0');
+
 
         return $summary;
     }

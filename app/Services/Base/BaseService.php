@@ -161,4 +161,17 @@ class BaseService
         }
 
     }
+
+    protected function arraysAreEqual($arrayOne, $arrayTwo) {
+        if (count($arrayOne) !== count($arrayTwo)) {
+            return false;
+        }
+
+        // sort arrays by keys
+        ksort($arrayOne);
+        ksort($arrayTwo);
+
+        // compare arrays
+        return $arrayOne === $arrayTwo;
+    }
 }
