@@ -17,9 +17,9 @@ class AddCacheControlHeaders
     {
         $response = $next($request);
 
-        // Set Cache-Control for JS scripts
-        //$response->header('Cache-Control', 'public, max-age=86400');
-        $response->header('Cache-Control', 'public, max-age=1');
+        $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+        $response->header('Pragma', 'no-cache');
+        $response->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
 
         return $response;
     }
