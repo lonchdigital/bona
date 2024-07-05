@@ -14,9 +14,14 @@ export default defineConfig(({ mode }) => {
             host: 'bona.local'
         },
         build: {
-            minify: true,
-            // cssCodeSplit: true,
-            // scriptLoad: 'defer'
+            manifest: true,
+            rollupOptions: {
+                output: {
+                    chunkFileNames: 'js/[name]-[hash].js',
+                    entryFileNames: 'js/[name]-[hash].js',
+                    assetFileNames: 'assets/[name]-[hash][extname]',
+                },
+            },
         },
         resolve: {
             alias: {
@@ -47,7 +52,8 @@ export default defineConfig(({ mode }) => {
 
             vue(),
             i18n()
-        ]
+        ],
+
     }
 
 });

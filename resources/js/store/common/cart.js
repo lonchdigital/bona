@@ -10,13 +10,8 @@ const $main_basket_count = $('.art-main-basket-count.count-of-products-in-basket
 export default {
     init: async function () {
 
-        console.log('=1=');
-
-        console.log('=2=');
         getProductsInCart(
             function (data) {
-
-                console.log('=3=');
 
                 if( data.data.products.length > 0 ) {
                     $main_basket_count.removeClass('d-none');
@@ -549,8 +544,6 @@ function drawProductsInCartWindowHTML(data)
 
         productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
     });
-
-    console.log('=4=');
 
     $('.basket-sub-menu .sub-menu-list').html(productsToAppend);
     $('.basket-sub-menu .items-total-price').text(data.data.summary.total + ' ' + store.base_currency_name_short);
