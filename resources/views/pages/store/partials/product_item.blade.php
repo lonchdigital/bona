@@ -5,7 +5,8 @@
                 <img src="{{ $product->preview_image_url }}" alt="Product Image" loading="lazy">
             </div>
             <div class="text">
-                <span class="product-title">{{ $product->name }}</span>
+{{--                <span class="product-title">{{ $product->name }}</span>--}}
+                <span class="product-title">{{ Illuminate\Support\Str::limit($product->name, 50) }}</span>
                 <span class="price-wrapper">
                     @if($product->old_price > $product->price)
                         <span class="card-link-price--hot">{{ $product->price.' '.$baseCurrency->name_short }}</span>
