@@ -92,17 +92,8 @@ class ProductService extends BaseService
 
     public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query();
-
+        $query = Product::query()->orderByAvailabilityStatus();
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
-
-
-        /*dd($query->where(function($query) use ($productType) {
-            $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
-                    $query->where('product_types.id', $productType->id);
-                });
-        })->get());*/
 
         return $query->where(function($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
@@ -114,7 +105,7 @@ class ProductService extends BaseService
 
     public function getAllProductsPaginated(FilterProductDTO $request,int $perPage, int $page, array $allFilters): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query();
+        $query = Product::query()->orderByAvailabilityStatus();
 
         $query = $this->filterService->handleAllProductFilters($request->filters, $query, false, $allFilters);
 
@@ -123,7 +114,7 @@ class ProductService extends BaseService
 
     public function getAllProductsCountByFilters(FilterProductDTO $request, array $allFilters): array
     {
-        $query = Product::query();
+        $query = Product::query()->orderByAvailabilityStatus();
 
         $productsCount = $this->filterService->handleAllProductFilters($request->filters, $query, false, $allFilters)->count();
 
@@ -174,7 +165,7 @@ class ProductService extends BaseService
 
     public function getProductsByColorPaginated(int $perPage, int $page, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return Product::whereHas('colors', function($query) use ($color) {
+        return Product::orderByAvailabilityStatus()->whereHas('colors', function($query) use ($color) {
             $query->where('colors.id', $color->id);
         })
             ->paginate($perPage, ['*'], null, $page);
@@ -188,7 +179,7 @@ class ProductService extends BaseService
         })
             ->paginate($perPage, ['*'], null, $page);*/
 
-        return Product::where('product_type_id', $productType->id)
+        return Product::orderByAvailabilityStatus()->where('product_type_id', $productType->id)
             ->where(function($query) use ($color) {
                 $query->where('main_color_id', $color->id)
                     ->orWhereHas('colors', function($query) use ($color) {
@@ -207,13 +198,13 @@ class ProductService extends BaseService
 
     public function getProductsByFieldPaginated(int $perPage, int $page, ProductField $productField, string $productOptionID)
     {
-        return Product::whereJsonContains('custom_fields', [$productField->id => $productOptionID])
+        return Product::orderByAvailabilityStatus()->whereJsonContains('custom_fields', [$productField->id => $productOptionID])
             ->paginate($perPage, ['*'], null, $page);
     }
 
     public function getProductsByDiscountPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return Product::where('old_price', '>', 0)
+        return Product::orderByAvailabilityStatus()->where('old_price', '>', 0)
             ->whereNotNull('old_price')
             ->paginate($perPage, ['*'], null, $page);
     }
@@ -237,7 +228,7 @@ class ProductService extends BaseService
 
     public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query();
+        $query = Product::query()->orderByAvailabilityStatus();
 
         /*return $query->where('brand_id', $brandId)
             ->paginate($perPage, '*', null, $page);*/
@@ -259,7 +250,7 @@ class ProductService extends BaseService
 
     public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query();
+        $query = Product::query()->orderByAvailabilityStatus();
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
@@ -341,7 +332,7 @@ class ProductService extends BaseService
 
     public function searchParentProducts(FilterProductAdminDTO $request): Collection
     {
-        $query = Product::query();
+        $query = Product::query()->orderByAvailabilityStatus();
 
         if ($request->search) {
             $query->orWhere(function (Builder $query) use($request) {
@@ -352,32 +343,14 @@ class ProductService extends BaseService
         return $query->limit(10)->get();
     }
 
-    public function getProductTypeWithFields(int $productTypeId): ?ProductType
+    public function getProductTypeWithFields(int $productTypeId)
     {
         return ProductType::with('fields')->where('id', $productTypeId)->first();
     }
 
-    /*public function searchProducts(SearchProductDTO $request): Collection
-    {
-        $query = Product::query();
-
-        if ($request->query) {
-            $query->where(function (Builder $query) use($request) {
-                return $query->where('name', 'like', '%' . $request->query . '%')
-                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request->query) . '%'])
-                    ->orWhere('sku', 'like', '%' . $request->query . '%');
-            });
-
-            return $query->limit(5)->get();
-
-        } else {
-            return collect([]);
-        }
-    }*/
-
     public function searchProducts(SearchProductDTO $request)
     {
-        $query = Product::query();
+        $query = Product::query()->orderByAvailabilityStatus();
 
         if ($request->query) {
             $searchTerm = '%' . $request->query . '%';
@@ -1060,22 +1033,6 @@ class ProductService extends BaseService
             return ServiceActionResult::make(true, trans('admin.product_delete_success'));
         });
 
-    }
-
-    public function getProductsBySameCollection(Product $product): Collection
-    {
-        $collectionId = $product->collection_id;
-        $productsToExclude = [];
-
-        $query = Product::where('collection_id', $collectionId)
-            ->where('product_type_id', $product->product_type_id)
-            ->whereNot('id', $product->id)
-            ->whereNotIn('id', $productsToExclude)
-            ->limit(6);
-
-            $query = $this->filterService->handleSortByPopularity($query);
-
-        return $query->get();
     }
 
     public function getSameTypeProducts(Product $product): Collection

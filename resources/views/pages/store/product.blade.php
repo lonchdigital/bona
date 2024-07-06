@@ -263,16 +263,18 @@
 
                                 @endforeach
 
-                                <div class="info-box font-two">
-                                    <span class="art-option-name">{{ trans('base.quantity') }}</span>
-                                    <div class="" id="count-of-products-body">
-                                        <div class="custom-control-number mr-2">
-                                            <span class="counter minus"></span>
-                                            <input type="number" class="" id="count-of-products" min="1" value="1">
-                                            <span class="counter plus"></span>
+                                @if($product->availability_status_id != 4)
+                                    <div class="info-box font-two">
+                                        <span class="art-option-name">{{ trans('base.quantity') }}</span>
+                                        <div class="" id="count-of-products-body">
+                                            <div class="custom-control-number mr-2">
+                                                <span class="counter minus"></span>
+                                                <input type="number" class="" id="count-of-products" min="1" value="1">
+                                                <span class="counter plus"></span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
 
                                 <div class="price">
                                     <div class="price-hot-wrapper">
@@ -291,15 +293,15 @@
                                     <span class="product-cost-description font-two">{{trans('base.product_cost_description')}}</span>
                                 </div>
 
-                                <div class="info-content-add d-flex align-items-center justify-content-between flex-wrap">
-                                    <div class="d-flex flex-wrap align-items-center no-gutters w-100">
-
-                                        <div class="col col-sm-auto col-lg col-xl-auto order-last order-sm-0 order-lg-last order-xl-2 mt-4 mt-sm-0 mt-lg-4 mt-xl-0">
-                                            <button type="button" class="btn btn-main single-product-add-to-cart" id="{{ $product->slug }}">{{ trans('base.add_to_cart') }}</button>
+                                @if($product->availability_status_id != 4)
+                                    <div class="info-content-add d-flex align-items-center justify-content-between flex-wrap">
+                                        <div class="d-flex flex-wrap align-items-center no-gutters w-100">
+                                            <div class="col col-sm-auto col-lg col-xl-auto order-last order-sm-0 order-lg-last order-xl-2 mt-4 mt-sm-0 mt-lg-4 mt-xl-0">
+                                                <button type="button" class="btn btn-main single-product-add-to-cart" id="{{ $product->slug }}">{{ trans('base.add_to_cart') }}</button>
+                                            </div>
                                         </div>
-
                                     </div>
-                                </div>
+                                @endif
 
 
 
