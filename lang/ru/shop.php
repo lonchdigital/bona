@@ -7,7 +7,7 @@ return [
     'product_field_type_option' => 'Опция',
     'product_status_stock' => 'В наличии',
     'product_status_order' => 'Под заказ',
-    'product_status_out_of_stock' => 'Закончился',
+    'product_status_out_of_stock' => 'Нет в наличии',
     'product_status_ask_manager' => 'Уточняйте у менеджера',
     'product_status_inactive' => 'Неактивный',
 

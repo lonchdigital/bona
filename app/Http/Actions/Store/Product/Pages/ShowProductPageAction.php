@@ -69,7 +69,6 @@ class ShowProductPageAction extends BaseAction
 //            'categoryProducts' => $categoryProducts,
             'categoryProducts' => $productService->getSelectedSubItemsWithCategories($sub_products),
             'baseCurrency' => $currencyService->getBaseCurrency(),
-//            'productsInSameCollection' => $productService->getProductsBySameCollection($product),
             'sameTypeProducts' => $productService->getSameTypeProducts($product),
             'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'isProductInCart' => $isProductInCart,

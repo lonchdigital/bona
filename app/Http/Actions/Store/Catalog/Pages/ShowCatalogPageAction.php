@@ -43,15 +43,6 @@ class ShowCatalogPageAction extends BaseAction
         $brands = $brandService->getAvailableBrandsByProductType($productType);
         $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
 
-        /* TODO:: remove when finish */
-        /*$selectedFiltersOptions = $catalogService->getOptionsByFilterData(
-            $productType,
-            $filtersData->filters,
-            $baseCurrency,
-            $colors,
-//            $countries,
-            $brands,
-        );*/
 
         $page = $filtersData->filters['page'] ?? 1;
 
@@ -59,8 +50,6 @@ class ShowCatalogPageAction extends BaseAction
             $productType,
             $filtersData,
             $filtersData->filters['per_page'] ?? 18,
-
-//            $filtersData->filters['per_page'] ?? 3,
             $page,
         );
 

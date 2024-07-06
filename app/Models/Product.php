@@ -29,6 +29,11 @@ class Product extends Model implements Sitemapable
         'special_offers' => 'array',
     ];
 
+    public function scopeOrderByAvailabilityStatus($query)
+    {
+        return $query->orderByRaw("CASE WHEN availability_status_id = 4 THEN 1 ELSE 0 END");
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'creator_id');
