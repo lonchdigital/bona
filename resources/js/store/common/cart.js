@@ -809,10 +809,6 @@ function addChangeProductCountHandlers(elements)
         subProduct.data('count', $(this).val());
         subProduct.attr('data-count', $(this).val());
 
-        console.log('================');
-        console.log(productAttributes);
-        console.log('================');
-
         updateProductInCart(
             slug,
             $(this).val(),
