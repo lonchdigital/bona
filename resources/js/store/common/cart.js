@@ -6,6 +6,7 @@ import InputCounter from "./input-counter";
 const $basket_with_products = $('.header-main-others .basket-basket-list .basket-with-products');
 const $basket_without_products = $('.header-main-others .basket-basket-list .basket-without-products');
 const $main_basket_count = $('.art-main-basket-count.count-of-products-in-basket');
+const $art_cart_checkout_button = $('.art-cart-checkout-button');
 
 export default {
     init: async function () {
@@ -16,8 +17,10 @@ export default {
                 if( data.data.products.length > 0 ) {
                     $main_basket_count.removeClass('d-none');
                     $main_basket_count.text(data.data.products.length);
+                    $art_cart_checkout_button.removeClass('d-none');
                 } else {
                     $main_basket_count.addClass('d-none');
+                    $art_cart_checkout_button.addClass('d-none');
                 }
 
                 drawProductsInCartWindowHTML(data);
@@ -841,6 +844,12 @@ function addDeleteProductFromCartHandlers(elements)
             function (data) {
                 $('.basket-with-products .count-of-products-in-basket').text(data.data.products.length);
 
+                if( data.data.products.length > 0 ) {
+                    $art_cart_checkout_button.removeClass('d-none');
+                } else {
+                    $art_cart_checkout_button.addClass('d-none');
+                }
+
                 drawProductsInCartWindowHTML(data);
 
                 if (page === 'store.cart.page') {
@@ -918,15 +927,17 @@ function handleBasket(data)
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');
 
-    console.log(data.data.products.length);
+    if( data.data.products.length > 0 ) {
+        $art_cart_checkout_button.removeClass('d-none');
+    } else {
+        $art_cart_checkout_button.addClass('d-none');
+    }
 
     if(parseInt(data.data.products.length) === 1){
         $basket_with_products.removeClass('d-none');
         $basket_without_products.addClass('d-none');
         $('.sub-menu.basket-sub-menu').removeClass('d-none');
     }
-
-    console.log('are we in handleBasket?');
 
     countOfProductsInBasket.text(data.data.products.length);
     basketSubMenuSuccess.removeClass('d-none');
