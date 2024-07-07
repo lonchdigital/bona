@@ -509,7 +509,9 @@ function drawProductsInCartWindowHTML(data)
 
         let productAttributesHTML = '<div class="product-attributes">';
 
-        if( product.attributes !== 'null' ) {
+
+        // if( product.attributes !== 'null' ) {
+        if( product.attributes !== null ) {
 
             productAttributes = JSON.parse(product.attributes);
             delete productAttributes.color_id;
@@ -632,7 +634,8 @@ function drawProductsInCartPageHTML(data)
 
         let productAttributesHTML = '<div class="product-attributes">';
 
-        if( product.attributes !== 'null' ) {
+        // if( product.attributes !== 'null' ) {
+        if( product.attributes !== null ) {
 
             productAttributes = JSON.parse(product.attributes);
 
