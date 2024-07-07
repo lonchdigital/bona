@@ -94,14 +94,33 @@ class CartService extends BaseService
         return $attributeOptions;
     }
 
+    private function prepareRequestProductAttributes(array $requestProductAttributes): array
+    {
+        $dataToReturn['color_name'] = $requestProductAttributes['color_id'];
+        unset($requestProductAttributes['color_id']);
+        unset($requestProductAttributes['color_name']);
+
+        foreach ( $requestProductAttributes as $key => $attributeValue ) {
+            if( is_null($attributeValue) ) {
+                continue;
+            }
+            $dataToReturn[$key] = (string)json_decode($attributeValue, true)['id'];
+        }
+
+        return $dataToReturn;
+    }
+
     public function addProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
         $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
         $requestProductAttributes = $request->productAttributes;
         $isProductInCart = false;
 
+        $requestProductAttributesAlt = $this->prepareRequestProductAttributes($requestProductAttributes);
+
         foreach ($allProductVariations as $allProductVariation) {
-            $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
+            $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributesAlt);
+//            $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
             if($isRequestedProduct) {
                 $count = $allProductVariation->count + 1;
@@ -119,8 +138,8 @@ class CartService extends BaseService
             $productAttributesSum[] = 0;
             $productAttributeColor['color_id'] = null;
 
-            if( !is_null($requestProductAttributes) ) {
 
+            if( !is_null($requestProductAttributes) ) {
                 $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
                 unset($requestProductAttributes['color_id']);
                 unset($requestProductAttributes['color_name']);
@@ -191,6 +210,8 @@ class CartService extends BaseService
             foreach ($allProductVariations as $allProductVariation) {
                 $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
+//                dd('555', $allProductVariation['attributes'], $requestProductAttributes);
+
                 if($isRequestedProduct) {
                     $allProductVariation->update(['count' => $request->productCount]);
                     break;
@@ -231,6 +252,7 @@ class CartService extends BaseService
 
     private function isRequestedProduct($attributes, $requestProductAttributes): bool
     {
+//        dd($attributes, $requestProductAttributes);
         $arr = [];
         $preparedArray = [];
         $arr = json_decode($attributes, true);
@@ -245,6 +267,7 @@ class CartService extends BaseService
             $preparedArray[$key] = (string)json_decode($value, true)['id'];
         }
 
+//        dd($preparedArray, $requestProductAttributes);
         return $this->arraysAreEqual($preparedArray, $requestProductAttributes);
     }
 
