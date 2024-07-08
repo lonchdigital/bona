@@ -6560,7 +6560,7 @@ select:focus {
             }
 
             .text {
-                text-align: center;
+                //text-align: center;
 
                 .product-title {
                     text-align: left;
@@ -6574,9 +6574,12 @@ select:focus {
                 }
 
                 .price-wrapper {
+                    position: relative;
                     font-size: 16px;
                     line-height: 29px;
-                    display: inline-block;
+                    text-align: left;
+                    padding-top: 30px;
+                    //display: inline-block;
 
                     .price {
                         font-weight: 600;
@@ -6595,6 +6598,10 @@ select:focus {
                         font-size: 14px;
                         font-weight: 400;
                         text-decoration: line-through;
+
+                        position: absolute;
+                        bottom: 20px;
+                        left: 0;
                     }
                 }
 
