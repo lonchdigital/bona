@@ -440,7 +440,7 @@
 
                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                             <a itemprop="item"
-                               @if(request()->routeIs('store.catalog-category.page') && optional(request()->route('productTypeSlug'))['slug'] == 'aksesuary') class="current-menu" @endif
+                               @if(request()->routeIs('store.catalog-category.page') && optional(request()->route('productTypeSlug'))['slug'] == 'aksessuar') class="current-menu" @endif
                                href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
                                 'categorySlug' => 'rucky',
                                 'productTypeSlug' => 'aksessuar'
