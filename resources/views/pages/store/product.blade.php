@@ -172,6 +172,10 @@
                                                 <i class="fa fa-truck"></i>
                                                 {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
                                             </span>
+                                        @elseif($product->availability_status_id == 5)
+                                            <span class="art-option-value">
+                                                {{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}
+                                            </span>
                                         @endif
                                     </div>
                                 @endif
