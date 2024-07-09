@@ -71,6 +71,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
         }*/
 
 
+//        dd('1112');
 
         LastModified::set($category->updated_at);
 

@@ -65,6 +65,8 @@ class ShowFilterGroupPageAction extends BaseAction
             $page,
         );
 
+
+        // TODO:: remove when finish
 //        $wishList = null;
         /*if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
