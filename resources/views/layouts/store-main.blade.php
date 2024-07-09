@@ -374,7 +374,7 @@
                                     @endforeach
                                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
                                         'categorySlug' => 'rucky',
-                                        'productTypeSlug' => 'aksesuary'
+                                        'productTypeSlug' => 'aksessuar'
                                         ]) }}">{{ trans('shop.door_handles') }}</a>
                                         </li>
                                 </ul>
@@ -443,7 +443,7 @@
                                @if(request()->routeIs('store.catalog-category.page') && optional(request()->route('productTypeSlug'))['slug'] == 'aksesuary') class="current-menu" @endif
                                href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
                                 'categorySlug' => 'rucky',
-                                'productTypeSlug' => 'aksesuary'
+                                'productTypeSlug' => 'aksessuar'
                                 ]) }}">{{ trans('shop.door_handles') }}</a></li>
 
                 </ul>
@@ -545,7 +545,7 @@
 
                                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
                                         'categorySlug' => 'rucky',
-                                        'productTypeSlug' => 'aksesuary'
+                                        'productTypeSlug' => 'aksessuar'
                                         ]) }}">{{ trans('shop.door_handles') }}</a>
                                         </li>
                                 </ul>
