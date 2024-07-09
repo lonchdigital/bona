@@ -10,4 +10,5 @@ return [
     'product_status_out_of_stock' => 'Немає в наявності',
     'product_status_ask_manager' => 'Уточнюйте у менеджера',
     'product_status_inactive' => 'Неактивний',
+    'door_handles' => 'Дверні ручки',
 ];

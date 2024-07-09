@@ -8740,6 +8740,14 @@ section.art-common-page-section {
 
     }
 
+
+    .nothing-found-text {
+        padding: 0 50px;
+
+        @media (max-width: 991px) {
+            padding: 0;
+        }
+    }
 }
 
 
