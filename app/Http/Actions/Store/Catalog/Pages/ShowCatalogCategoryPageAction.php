@@ -28,15 +28,13 @@ class ShowCatalogCategoryPageAction extends BaseAction
         $productType->load(['fields', 'fields.options']);
 
         //get services from service container
-        $categoryService = app()->make(CategoryService::class);
+//        $categoryService = app()->make(CategoryService::class);
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
         $countryService = app()->make(CountryService::class);
         $brandService = app()->make(BrandService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
-//        $wishListService = app()->make(WishListService::class);
-//        $seogenService = app()->make(SeogenService::class);
 
         $filtersData = $request->toDTO();
 
@@ -65,30 +63,27 @@ class ShowCatalogCategoryPageAction extends BaseAction
             $page,
         );
 
-        /*$wishList = null;
-        if ($this->getAuthUser()) {
-            $wishList = $wishListService->getWishListByUser($this->getAuthUser());
-        }*/
-
-
-//        dd('1112');
 
         LastModified::set($category->updated_at);
+
+        $allFields = $productType->fields;
+        $allFields->map(function ($field) use ($productType) {
+            $field->options = $field->optionsWithProducts($productType);
+            return $field;
+        });
 
         return view('pages.store.catalog-category', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
             'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
-            'categories' => $categoryService->getProductCategories($productType),
+//            'categories' => $categoryService->getProductCategories($productType),
             'colors' => $colors,
             'countries' => $countries,
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'selectedCategory' => $category,
             'productsPaginated' => $productsPaginated,
-//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
-//            'seogenData' => $seogenService->getTagsForCategories($productType, $category),
             'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
             'seoText' => $productService->getProductTypeSeoTextByLanguage($category->slug, app()->getLocale())
