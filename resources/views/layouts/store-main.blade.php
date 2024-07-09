@@ -372,6 +372,11 @@
                                     @foreach($productTypes as $productType)
                                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
                                     @endforeach
+                                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
+                                        'categorySlug' => 'rucky',
+                                        'productTypeSlug' => 'aksesuary'
+                                        ]) }}">{{ trans('shop.door_handles') }}</a>
+                                        </li>
                                 </ul>
                             </div>
                             <div class="art-list-items d-none" data-id="art-nav">
@@ -421,16 +426,26 @@
             <!-- ==========  Main navigation ========== -->
             <div class="navigation navigation-main">
                 <ul itemscope itemtype="https://schema.org/SiteNavigationElement" class="main-menu-container">
+
                     @foreach($productTypes as $productType)
                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                             <a itemprop="item"
-                            @if(request()->routeIs('store.catalog.page') && optional(request()->route('productTypeSlug'))['slug'] == $productType->slug) class="current-menu" @endif
+                               @if(request()->routeIs('store.catalog.page') && optional(request()->route('productTypeSlug'))['slug'] == $productType->slug) class="current-menu" @endif
                                href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}"
                             >
                                 {{ $productType->name }}
                             </a>
                         </li>
                     @endforeach
+
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                            <a itemprop="item"
+                               @if(request()->routeIs('store.catalog-category.page') && optional(request()->route('productTypeSlug'))['slug'] == 'aksesuary') class="current-menu" @endif
+                               href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
+                                'categorySlug' => 'rucky',
+                                'productTypeSlug' => 'aksesuary'
+                                ]) }}">{{ trans('shop.door_handles') }}</a></li>
+
                 </ul>
             </div> <!--/navigation-main-->
 
@@ -527,6 +542,12 @@
                                     @foreach($productTypes as $productType)
                                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
                                     @endforeach
+
+                                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
+                                        'categorySlug' => 'rucky',
+                                        'productTypeSlug' => 'aksesuary'
+                                        ]) }}">{{ trans('shop.door_handles') }}</a>
+                                        </li>
                                 </ul>
                             </div>
 
