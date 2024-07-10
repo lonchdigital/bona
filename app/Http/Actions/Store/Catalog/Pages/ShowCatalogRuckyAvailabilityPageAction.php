@@ -2,19 +2,17 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
+use Abordage\LastModified\Facades\LastModified;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Category;
 use App\Models\ProductType;
 use App\Services\Brand\BrandService;
-use App\Services\ProductCategory\CategoryService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
-use App\Services\Seogen\SeogenService;
-use App\Services\WishList\WishListService;
 
 class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
 {
@@ -27,15 +25,12 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
         $productType->load(['fields', 'fields.options']);
 
         //get services from service container
-        $categoryService = app()->make(CategoryService::class);
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
         $countryService = app()->make(CountryService::class);
         $brandService = app()->make(BrandService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
-        $wishListService = app()->make(WishListService::class);
-        $seogenService = app()->make(SeogenService::class);
 
         $filtersData = $request->toDTO();
 
@@ -64,25 +59,26 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
             $page,
         );
 
-        $wishList = null;
-        if ($this->getAuthUser()) {
-            $wishList = $wishListService->getWishListByUser($this->getAuthUser());
-        }
+
+        LastModified::set($category->updated_at);
+
+        $allFields = $productType->fields;
+        $allFields->map(function ($field) use ($productType, $category) {
+            $field->options = $field->optionsWithProductsInCategory($productType, $category);
+            return $field;
+        });
 
         return view('pages.store.catalog-sort.catalog-sort-rucky-availability', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
             'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
-            'categories' => $categoryService->getProductCategories($productType),
             'colors' => $colors,
             'countries' => $countries,
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'selectedCategory' => $category,
             'productsPaginated' => $productsPaginated,
-            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
-            'seogenData' => $seogenService->getTagsForCategories($productType, $category),
             'productsMaxPrice' => $productService->getProductsMaxPriceByAvailability($productType),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
             'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())

@@ -13,12 +13,12 @@ import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
 import CommonCode from './common/common-code';
 
-// default template
+// console.log('1111');
 
 
 const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' });
 
-/*console.log('1111');
+/*
 console.log(window.location);*/
 
 async function loadJsByPage()
@@ -43,6 +43,10 @@ async function loadJsByPage()
     }
 
     if (page === 'store.catalog-category.filter.page') {
+        pageToLoad = 'store.catalog.page';
+    }
+
+    if (page === 'store.products-rucky-by-availability.page' || page === 'store.products-rucky-by-availability.filter.page') {
         pageToLoad = 'store.catalog.page';
     }
 
