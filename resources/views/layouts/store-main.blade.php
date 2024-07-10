@@ -373,7 +373,7 @@
                                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">{{ $productType->name }}</a></li>
                                     @endforeach
                                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
-                                        'categorySlug' => 'rucky',
+                                        'categorySlug' => 'dverni-rucky',
                                         'productTypeSlug' => 'aksessuar'
                                         ]) }}">{{ trans('shop.door_handles') }}</a>
                                         </li>
@@ -442,7 +442,7 @@
                             <a itemprop="item"
                                @if(request()->routeIs('store.catalog-category.page') && optional(request()->route('productTypeSlug'))['slug'] == 'aksessuar') class="current-menu" @endif
                                href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
-                                'categorySlug' => 'rucky',
+                                'categorySlug' => 'dverni-rucky',
                                 'productTypeSlug' => 'aksessuar'
                                 ]) }}">{{ trans('shop.door_handles') }}</a></li>
 
@@ -544,7 +544,7 @@
                                     @endforeach
 
                                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
-                                        'categorySlug' => 'rucky',
+                                        'categorySlug' => 'dverni-rucky',
                                         'productTypeSlug' => 'aksessuar'
                                         ]) }}">{{ trans('shop.door_handles') }}</a>
                                         </li>
