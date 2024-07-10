@@ -175,7 +175,9 @@ $optionalLanguageRoutes = function () {
     Route::name('store.products-by-discount.page')->get('/product-category/discount/', ShowProductByDiscountPageAction::class);
     Route::name('store.products-by-availability.page')->get('/product-category/available/', ShowProductByAvailabilityPageAction::class);
     Route::name('store.products-doors-by-availability.page')->get('/product-category/available-doors/', ShowProductDoorsByAvailabilityPageAction::class);
+
     Route::name('store.products-rucky-by-availability.page')->get('/product-category/available-rucky/{productTypeSlug}/{categorySlug}', ShowCatalogRuckyAvailabilityPageAction::class);
+    Route::name('store.products-rucky-by-availability.filter.page')->get('/product-category/available-rucky/{productTypeSlug}/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogRuckyAvailabilityPageAction::class);
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
     Route::name('store.order.count.doors')->post('/order-count-doors', OrderCountDoorsAction::class);

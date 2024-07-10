@@ -8,12 +8,13 @@
         <meta name="keywords" content="{{ $selectedCategory->meta_keywords }}">
     @endif
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="{{ trans('base.product_rucky_availability') . ' - ' . trans('base.site_title') }}">
+    <meta property="og:title" content="{{ $selectedCategory->name . ' - ' . trans('base.site_title') }}">
 @endsection
 
 @section('content')
 
-    @include('pages.store.partials.page_header', ['links' => ['own' => trans('base.product_rucky_availability')]])
+    @include('pages.store.partials.page_header', ['links' => ['own' => $selectedCategory->name]])
+
 
     <!-- ======================== Products ======================== -->
     <section class="products art-products-catalog">
@@ -69,68 +70,72 @@
                                 </div>
                             </div>
 
+
                             <!--Discount-->
                             @if(count($filters['main']))
                                 @foreach($filters['main'] as $filter)
-                                    <div class="filter-box active"> {{-- archive-catalog-filter-left--}}
-                                        <div class="title font-title">
-                                            {{ $filter->pivot->filter_name }}
-                                        </div>
+                                    @if( count($filter->options) > 0 )
+                                        <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
+                                            <div class="title font-title">
+                                                {{ $filter->pivot->filter_name }}
+                                            </div>
 
-                                        <div class="filter-content filter-item"> {{-- filter-item--type-custom--}}
-                                            @if($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
-                                                @foreach($filter->options as $option)
-                                                    <div class="checkbox"
-                                                         data-toggle="tooltip"> {{-- checkbox-preview--}}
-
-                                                        {{--custom-checkbox--}}
-                                                        <div
-                                                            class="custom-control position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
-                                                            <input type="radio"
-                                                                   id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
-                                                                   name="{{ $filter->slug }}"
-                                                                   value="{{ $option->slug }}"
-                                                                   @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif>
-                                                            <label class="custom-control-label"
-                                                                   for="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main">{{ $option->name }}</label> {{--custom-control-label--}}
+                                            <div class="filter-content filter-item filter-item--type-custom position-relative checkbox-preview-wrap"> {{-- filter-item--type-custom--}}
+                                                @if($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
+                                                    @foreach($filter->options as $option)
+                                                        <div class="checkbox checkbox-preview" data-toggle="tooltip"> {{-- checkbox-preview--}}
+                                                            <div class="custom-control custom-checkbox position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
+                                                                <input type="checkbox"
+                                                                       class="custom-control-input sync-input"
+                                                                       id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
+                                                                       name="{{ $filter->slug }}"
+                                                                       value="{{ $option->slug }}"
+                                                                       @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif>
+                                                                <label class="custom-control-label"
+                                                                       for="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main">{{ $option->name }}</label>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                @endforeach
+                                                    @endforeach
 
-                                            @elseif($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER || $filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE)
-                                                {{--                                                @dd('oh!')--}}
-                                            @endif
-                                        </div>
-                                    </div> <!--/filter-box-->
+                                                @elseif($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER || $filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE)
+                                                    {{--                                                @dd('oh!')--}}
+                                                @endif
+                                            </div>
+                                        </div> <!--/filter-box-->
+                                    @endif
                                 @endforeach
                             @endif
 
                             @if($productType->has_color)
-                                <div class="filter-box filter-item--colors active">
-                                    <div class="title font-title">
-                                        {{ trans('base.color') }}
-                                    </div>
-                                    <div class="filter-content">
-                                        <div id="art-filter-color-content" class="art-filter-color-content colors-wrapper {{ count($colors) > 5 ? 'content-hidden' : 'content-expanded' }}">
-                                            @foreach($colors as $color)
-                                                @include('pages.store.partials.color_item', ['color' => $color, 'filtersData' => $filtersData])
-                                            @endforeach
+                                <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
+                                    <div class="filter-box filter-item1 filter-item--colors active">
+                                        <div class="title font-title">
+                                            {{ trans('base.color') }}
+                                        </div>
+                                        <div class="filter-content">
+                                            <div id="art-filter-color-content" class="art-filter-color-content colors-wrapper {{ count($colors) > 5 ? 'content-hidden' : 'content-expanded' }}">
+                                                @foreach($colors as $color)
+                                                    @include('pages.store.partials.color_item', ['color' => $color, 'filtersData' => $filtersData])
+                                                @endforeach
+                                            </div>
+
+                                            @if( count($colors) > 5 )
+                                                <div id="art-filter-color-control" class="art-filter-color-control">
+                                                    <span class="art-show-colors">{{ trans('base.filter_show_more_colors') }}</span>
+                                                    <span class="art-hide-colors d-none">{{ trans('base.filter_show_less_colors') }}</span>
+                                                </div>
+                                            @endif
+
                                         </div>
                                     </div>
-
-                                    @if( count($colors) > 5 )
-                                        <div id="art-filter-color-control" class="art-filter-color-control">
-                                            <span class="art-show-colors">{{ trans('base.filter_show_more_colors') }}</span>
-                                            <span class="art-hide-colors d-none">{{ trans('base.filter_show_less_colors') }}</span>
-                                        </div>
-                                    @endif
-
-                                </div>
+                                </div> <!--/filter-box-->
                             @endif
+
 
                             @if( count($filters['main']) || $productType->has_color )
-                                <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark">{{trans('base.filter')}}</div>
+                                <div class="toggle-filters-close filter-submit-main btn btn-empty color-dark mb-2">{{trans('base.filter')}}</div>
                             @endif
+                            <button type="button" class="btn btn-main art-header-coll-button btn-block filter-reset">{{ trans('base.filter_reset') }}</button>
                         </form>
 
                     </div> <!--/filters-->
@@ -140,7 +145,7 @@
                 <!--product items-->
                 <div class="col-lg-9 col-xs-12">
                     <div class="products-catalog-wrapper">
-                        <h1 class="h2 title">{{ trans('base.product_rucky_availability') }}</h1>
+                        <h1 class="h2 title">{{ $selectedCategory->name }}</h1>
 
                         <div class="art-catalog-top">
 

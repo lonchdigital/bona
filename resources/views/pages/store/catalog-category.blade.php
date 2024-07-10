@@ -74,33 +74,35 @@
                             <!--Discount-->
                             @if(count($filters['main']))
                                 @foreach($filters['main'] as $filter)
-                                    <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
-                                        <div class="title font-title">
-                                            {{ $filter->pivot->filter_name }}
-                                        </div>
+                                    @if( count($filter->options) > 0 )
+                                        <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
+                                            <div class="title font-title">
+                                                {{ $filter->pivot->filter_name }}
+                                            </div>
 
-                                        <div class="filter-content filter-item filter-item--type-custom position-relative checkbox-preview-wrap"> {{-- filter-item--type-custom--}}
-                                            @if($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
-                                                @foreach($filter->options as $option)
-                                                    <div class="checkbox checkbox-preview" data-toggle="tooltip"> {{-- checkbox-preview--}}
-                                                        <div class="custom-control custom-checkbox position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
-                                                            <input type="checkbox"
-                                                                   class="custom-control-input sync-input"
-                                                                   id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
-                                                                   name="{{ $filter->slug }}"
-                                                                   value="{{ $option->slug }}"
-                                                                   @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif>
-                                                            <label class="custom-control-label"
-                                                                   for="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main">{{ $option->name }}</label>
+                                            <div class="filter-content filter-item filter-item--type-custom position-relative checkbox-preview-wrap"> {{-- filter-item--type-custom--}}
+                                                @if($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
+                                                    @foreach($filter->options as $option)
+                                                        <div class="checkbox checkbox-preview" data-toggle="tooltip"> {{-- checkbox-preview--}}
+                                                            <div class="custom-control custom-checkbox position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
+                                                                <input type="checkbox"
+                                                                       class="custom-control-input sync-input"
+                                                                       id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
+                                                                       name="{{ $filter->slug }}"
+                                                                       value="{{ $option->slug }}"
+                                                                       @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif>
+                                                                <label class="custom-control-label"
+                                                                       for="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main">{{ $option->name }}</label>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                @endforeach
+                                                    @endforeach
 
-                                            @elseif($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER || $filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE)
-                                                {{--                                                @dd('oh!')--}}
-                                            @endif
-                                        </div>
-                                    </div> <!--/filter-box-->
+                                                @elseif($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER || $filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE)
+                                                    {{--                                                @dd('oh!')--}}
+                                                @endif
+                                            </div>
+                                        </div> <!--/filter-box-->
+                                    @endif
                                 @endforeach
                             @endif
 
