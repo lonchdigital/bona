@@ -297,7 +297,7 @@
 
                     <div class="swiper-slide">
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-rucky-by-availability.page', [
-                                'categorySlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->categories()->where('code_name', 'rucky')->first()->slug,
+                                'categorySlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->categories()->where('code_name', 'dverni-rucky')->first()->slug,
                                 'productTypeSlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->slug
                                 ]) }}">
                             <figure>
