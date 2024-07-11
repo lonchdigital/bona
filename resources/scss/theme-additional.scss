@@ -1793,9 +1793,12 @@ nav .cart-wrapper.open {
 
 .filters .filter-box .custom-control {
     padding: 0;
+    min-height: 30px !important;
 }
 .filters .filter-box label {
-    line-height: 30px;
+    line-height: 23px;
+    position: relative;
+    top: 4px;
 }
 
 .filters .filter-box .title {
@@ -1810,22 +1813,6 @@ nav .cart-wrapper.open {
     color: #D59958;
 }
 
-/*.filters .filter-box .title:after {
-    -moz-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    -webkit-transition: all 0.3s;
-    transition: all 0.3s;
-    content: "\e874";
-    font-family: 'LinearIcons';
-    position: absolute;
-    display: inline-block;
-    line-height: 42px;
-    height: 42px;
-    width: 42px;
-    right: 0;
-    top: 0;
-    text-align: center;
-}*/
 
 .filters .filter-box.active .title:after {
     -moz-transform: rotate(180deg);
