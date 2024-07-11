@@ -72,6 +72,8 @@ class ShowCatalogCategoryPageAction extends BaseAction
             return $field;
         });
 
+//        dd($category);
+
         return view('pages.store.catalog-category', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,

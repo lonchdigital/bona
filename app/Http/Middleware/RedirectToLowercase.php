@@ -21,6 +21,11 @@ class RedirectToLowercase
             return redirect($url, 301);
         }
 
+        // Specific redirect rule
+        if ($request->is('product-category/dverni-rucky')) {
+            return redirect('/product-category/aksessuar/category/dverni-rucky', 301);
+        }
+
         return $next($request);
     }
 }
