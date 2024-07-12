@@ -88,7 +88,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
             'baseCurrency' => $baseCurrency,
             'selectedCategory' => $category,
             'productsPaginated' => $productsPaginated,
-            'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
+            'productsMaxPrice' => $productService->getProductsMaxPriceByCategory($productType, $category),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
             'seoText' => $productService->getProductTypeSeoTextByLanguage($category->slug, app()->getLocale())
         ]);
