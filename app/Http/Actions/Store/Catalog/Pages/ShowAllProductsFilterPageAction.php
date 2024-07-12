@@ -2,6 +2,7 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
+use App\DataClasses\ProductStatusDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\ProductType;
@@ -31,13 +32,13 @@ class ShowAllProductsFilterPageAction extends BaseAction
         $filtersData = $request->toDTO();
 
         $baseCurrency = $currencyService->getBaseCurrency();
-        $colors = $colorService->getAvailableColorsByProductType();
+        $colors = $colorService->getAllColors();
 
         $page = $filtersData->filters['page'] ?? 1;
 
         $allFilters = $catalogService->getAllFilters();
 
-//        dd($allFilters);
+//        dd($allFilters, 'hello?');
 
         $productsPaginated = $productService->getAllProductsPaginated(
 //            $productType,
@@ -50,6 +51,7 @@ class ShowAllProductsFilterPageAction extends BaseAction
         return view('pages.store.catalog-all-products', [
             'filters' => $allFilters,
             'filtersData' => $filtersData->filters,
+            'productStatuses' => ProductStatusDataClass::getForWeb(),
             'colors' => $colors,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
