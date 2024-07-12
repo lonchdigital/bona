@@ -34,12 +34,6 @@ class Product extends Model implements Sitemapable
         return $query->orderByRaw("CASE WHEN availability_status_id = 4 THEN 1 ELSE 0 END");
     }
 
-    /*public function hyphenateName($length = 68)
-    {
-        return wordwrap($this->name, $length, "-\n", true);
-    }*/
-
-
     public function creator()
     {
         return $this->belongsTo(User::class, 'creator_id');

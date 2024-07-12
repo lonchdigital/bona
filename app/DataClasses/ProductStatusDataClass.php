@@ -45,4 +45,30 @@ class ProductStatusDataClass implements BaseDataClass
 
         return $collection;
     }
+
+    public static function getForWeb(): mixed
+    {
+        return collect([
+            [
+                'id' => self::PRODUCT_STATUS_STOCK,
+                'name' => trans('shop.product_status_stock'),
+                'trans_key' => 'shop.product_status_stock',
+            ],
+            [
+                'id' => self::PRODUCT_STATUS_ORDER,
+                'name' => trans('shop.product_status_order'),
+                'trans_key' => 'shop.product_status_order',
+            ],
+            [
+                'id' => self::PRODUCT_STATUS_OUT_OF_STOCK,
+                'name' => trans('shop.product_status_out_of_stock'),
+                'trans_key' => 'shop.product_status_out_of_stock',
+            ],
+            [
+                'id' => self::PRODUCT_STATUS_OUT_ASK_MANAGER,
+                'name' => trans('shop.product_status_ask_manager'),
+                'trans_key' => 'shop.product_status_ask_manager',
+            ]
+        ]);
+    }
 }

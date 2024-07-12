@@ -13,7 +13,7 @@
 
 @section('content')
 
-    @include('pages.store.partials.page_header', ['links' => ['own' => $selectedCategory->name]])
+    @include('pages.store.partials.page_header', ['links' => ['own' => trans('base.product_rucky_availability')]])
 
 
     <!-- ======================== Products ======================== -->
@@ -38,73 +38,8 @@
                         </div>
 
                         <form action="#" id="filter-left-form">
-                            <!--Price-->
-                            <div class="filter-item filter-item--price filter-box">
-                                <div class="title font-title">{{ trans('base.price') }}</div>
-                                <div class="position-relative">
-                                    <div id="price-slider" class="price-slider slider-range mb-3">
-                                        <div class="currency-wrap">
-                                            <div class="input-currency">
-                                                {{--                                                <span class="currency">{{ $baseCurrency->name_short }}</span>--}}
-                                                <input id="currency-first-main"
-                                                       class="currency-first-main sync-input art-form-light-control"
-                                                       type="number"
-                                                       @isset($filtersData['price_from']) value="{{ $filtersData['price_from'] }}"
-                                                       @endisset min="0" max="{{ $productsMaxPrice }}" step="1"
-                                                       name="price_from" placeholder="0">
-                                            </div>
-                                            <div class="input-currency">
-                                                {{--                                                <span class="currency">{{ $baseCurrency->name_short }}</span>--}}
-                                                <input id="currency-last-main"
-                                                       class="currency-last-main sync-input art-form-light-control"
-                                                       type="number"
-                                                       @isset($filtersData['price_to']) value="{{ $filtersData['price_to'] }}"
-                                                       @endisset min="0" max="{{ $productsMaxPrice }}" step="1"
-                                                       name="price_to" placeholder="{{ $productsMaxPrice }}">
-                                            </div>
-                                        </div>
-                                        <div class="rangeBar-full"></div>
-                                    </div>
-                                    <button type="button"
-                                            class="btn btn-empty color-dark filter-submit-main">{{ trans('base.apply') }}</button>
-                                </div>
-                            </div>
 
-
-                            <!--Discount-->
-                            @if(count($filters['main']))
-                                @foreach($filters['main'] as $filter)
-                                    @if( count($filter->options) > 0 )
-                                        <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
-                                            <div class="title font-title">
-                                                {{ $filter->pivot->filter_name }}
-                                            </div>
-
-                                            <div class="filter-content filter-item filter-item--type-custom position-relative checkbox-preview-wrap"> {{-- filter-item--type-custom--}}
-                                                @if($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION)
-                                                    @foreach($filter->options as $option)
-                                                        <div class="checkbox checkbox-preview" data-toggle="tooltip"> {{-- checkbox-preview--}}
-                                                            <div class="custom-control custom-checkbox position-relative @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif">
-                                                                <input type="checkbox"
-                                                                       class="custom-control-input sync-input"
-                                                                       id="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main"
-                                                                       name="{{ $filter->slug }}"
-                                                                       value="{{ $option->slug }}"
-                                                                       @if(\App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, $filter->slug, $option->slug)) checked @endif>
-                                                                <label class="custom-control-label"
-                                                                       for="custom-field-checkbox-{{$filter->id}}-{{$option->id}}-main">{{ $option->name }}</label>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-
-                                                @elseif($filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER || $filter->field_type_id === \App\DataClasses\ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE)
-                                                    {{--                                                @dd('oh!')--}}
-                                                @endif
-                                            </div>
-                                        </div> <!--/filter-box-->
-                                    @endif
-                                @endforeach
-                            @endif
+                            @include('pages.store.partials.sidebar_filters', ['filters' => $filters, 'filtersData' => $filtersData, 'productsMaxPrice' => $productsMaxPrice])
 
                             @if($productType->has_color)
                                 <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
@@ -145,7 +80,7 @@
                 <!--product items-->
                 <div class="col-lg-9 col-xs-12">
                     <div class="products-catalog-wrapper">
-                        <h1 class="h2 title">{{ $selectedCategory->name }}</h1>
+                        <h1 class="h2 title">{{ trans('base.product_rucky_availability') }}</h1>
 
                         <div class="art-catalog-top">
 

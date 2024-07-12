@@ -13,6 +13,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
 use Abordage\LastModified\Facades\LastModified;
+use App\DataClasses\ProductStatusDataClass;
 
 class ShowCatalogPageAction extends BaseAction
 {
@@ -72,6 +73,7 @@ class ShowCatalogPageAction extends BaseAction
         return view($template, [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
+            'productStatuses' => ProductStatusDataClass::getForWeb(),
 //            'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
             'colors' => $colors,

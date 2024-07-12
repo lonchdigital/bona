@@ -362,6 +362,12 @@ class ProductFiltersService extends BaseService
                 $query->where(function (Builder $query) use($countries) {
                     $query->whereIn('country_id', $countries->pluck('id'));
                 });
+            } else if ($filterNameSlug === 'availability_status') {
+                if( is_array($filterValue) ) {
+                    $query->whereIn('availability_status_id', $filterValue);
+                } else {
+                    $query->where('availability_status_id', (int)$filterValue);
+                }
             } else if ($filterNameSlug === 'brand') {
 
                 if (!is_array($filterValue)) {
@@ -505,35 +511,25 @@ class ProductFiltersService extends BaseService
         $sizeOptions = null;
 
         foreach ($filterData as $filterNameSlug => $filterValue) {
+
             if ($filterNameSlug === 'color') {
 
                 if (!is_array($filterValue)) {
                     $filterValue = [$filterValue];
                 }
 
-//                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
                 $colors = Color::whereIn('slug', $filterValue)->get();
-
                 $colorsToFilter = $colors->pluck('id');
-
-                /*foreach ($colors as $color) {
-                    if (count($color->children)) {
-                        foreach ($color->children as $childColor) {
-                            $colorsToFilter[] = $childColor->id;
-                        }
-                    }
-                }*/
-
-                // TODO:: remove when finish
-                /*$query->where(function (Builder $query) use($colorsToFilter) {
-//                    dd('test?', $colorsToFilter);
-                    $query->whereIn('main_color_id', [7]);
-//                    $query->whereIn('main_color_id', $colorsToFilter);
-                });*/
 
                 $query->whereHas('colors', function ($query) use ($colorsToFilter) {
                     $query->whereIn('color_id', $colorsToFilter);
                 });
+            } else if ($filterNameSlug === 'availability_status') {
+                if( is_array($filterValue) ) {
+                    $query->whereIn('availability_status_id', $filterValue);
+                } else {
+                    $query->where('availability_status_id', (int)$filterValue);
+                }
             } else if ($filterNameSlug === 'country') {
                 if (!is_array($filterValue)) {
                     $filterValue = [$filterValue];

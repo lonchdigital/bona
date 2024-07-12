@@ -83,7 +83,7 @@ return [
     'availability' => 'Доступність',
     'product_availability' => 'Товари в наявності',
     'product_doors_availability' => 'Двері в наявності',
-    'product_rucky_availability' => 'Ручки в наявності',
+    'product_rucky_availability' => 'Дверні ручки в наявності',
     'see_more' => 'Дивіться також',
     'add_to_cart' => 'Додати у кошик',
     'add_to_wish_list'=> 'у Wish List',
