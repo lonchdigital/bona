@@ -30,8 +30,10 @@ use App\Http\Actions\Store\Cart\DeleteProductFromCartAction;
 use App\Http\Actions\Store\Cart\GetProductsInCartWithSummaryAction;
 use App\Http\Actions\Store\Cart\GetProductsSummaryWithDelivery;
 use App\Http\Actions\Store\Cart\Pages\ShowCartPageAction;
+use App\Http\Actions\Store\Catalog\GetAvailabilityProductsCountByFilterWithCategoryAction;
 use App\Http\Actions\Store\Catalog\GetProductsCountByFilterAction;
 use App\Http\Actions\Store\Catalog\GetAllProductsCountByFilterAction;
+use App\Http\Actions\Store\Catalog\GetProductsCountByFilterWithCategoryAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogCategoryPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowAllProductsFilterPageAction;
@@ -178,6 +180,7 @@ $optionalLanguageRoutes = function () {
 
     Route::name('store.products-rucky-by-availability.page')->get('/product-category/available-rucky/{productTypeSlug}/{categorySlug}', ShowCatalogRuckyAvailabilityPageAction::class);
     Route::name('store.products-rucky-by-availability.filter.page')->get('/product-category/available-rucky/{productTypeSlug}/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogRuckyAvailabilityPageAction::class);
+    Route::name('store.products-rucky-by-availability.filter.count')->get('/product-category/available-rucky/count/{productTypeSlug}/{categorySlug}/filter/{catalogFiltersString?}', GetAvailabilityProductsCountByFilterWithCategoryAction::class);
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
     Route::name('store.order.count.doors')->post('/order-count-doors', OrderCountDoorsAction::class);
@@ -201,6 +204,7 @@ $optionalLanguageRoutes = function () {
         Route::name('store.catalog-category.filter.page')->get('/category/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogCategoryPageAction::class);
 
         Route::name('store.catalog.products.by.filters')->get('/filtered-count/{catalogFiltersString?}', GetProductsCountByFilterAction::class);
+        Route::name('store.catalog.category.products.by.filters')->get('/category/{categorySlug}/filtered-count/{catalogFiltersString?}', GetProductsCountByFilterWithCategoryAction::class);
     });
 
     Route::prefix('product')->group(function () {

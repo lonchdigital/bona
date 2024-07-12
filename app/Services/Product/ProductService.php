@@ -309,10 +309,44 @@ class ProductService extends BaseService
             ->paginate($perPage, '*', null, $page);
     }
 
+    public function getProductsCountWithCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request): array
+    {
+        $query = Product::query();
+
+        $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
+
+        $query->where('availability_status_id', 2)->whereHas('categories', function (Builder $query) use($category) {
+            $query->where('category_id', $category->id);
+        });
+
+        $productsCount = $query->where('product_type_id', $productType->id)->count();
+
+        return ['count' => $productsCount];
+    }
+
     public function getProductsCountByFilters(ProductType $productType, FilterProductDTO $request): array
     {
         $query = Product::query();
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query, true);
+
+        $productsCount = $query->where(function($query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function($query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->count();
+
+        return ['count' => $productsCount];
+    }
+
+    public function getProductsWithCategoryCountByFilters(ProductType $productType, Category $category, FilterProductDTO $request): array
+    {
+        $query = Product::query();
+        $query = $this->filterService->handleProductFilters($productType, $request->filters, $query, true);
+
+        $query->whereHas('categories', function (Builder $query) use($category) {
+            $query->where('category_id', $category->id);
+        });
 
         $productsCount = $query->where(function($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
