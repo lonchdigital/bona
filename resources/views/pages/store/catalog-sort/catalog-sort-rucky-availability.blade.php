@@ -259,7 +259,7 @@
             category_slug: '{{ isset($selectedCategory) ? $selectedCategory->slug : ''}}',
             last_page: {{ $productsPaginated->lastPage() }},
             current_page: {{ $productsPaginated->currentPage() }},
-            products_count_by_filter_endpoint: '{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.products.by.filters', ['productTypeSlug' => $productType->slug]) }}',
+            products_count_by_filter_endpoint: '{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-rucky-by-availability.filter.count', ['categorySlug' => $selectedCategory->slug, 'productTypeSlug' => $productType->slug]) }}',
             filter_group_filters: @isset($filerGroupFilters) '{{ $filerGroupFilters }}' @else '' @endisset
         };
     </script>
