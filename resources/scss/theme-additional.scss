@@ -6557,7 +6557,12 @@ select:focus {
                     font-weight: 400;
                     margin-bottom: 0;
                     margin-top: 13px;
-                    display: block;
+                    //display: block;
+
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    -webkit-line-clamp: 2;
                 }
 
                 .price-wrapper {
