@@ -79,7 +79,7 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
             'baseCurrency' => $baseCurrency,
             'selectedCategory' => $category,
             'productsPaginated' => $productsPaginated,
-            'productsMaxPrice' => $productService->getProductsMaxPriceByAvailability($productType),
+            'productsMaxPrice' => $productService->getProductsMaxPriceByAvailabilityWithCategory($productType, $category),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
             'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
         ]);
