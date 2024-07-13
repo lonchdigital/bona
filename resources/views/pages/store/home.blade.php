@@ -40,7 +40,7 @@
                         <div class="box">
                             <div class="container">
                                 <h2 class="title animated h1" data-animation="fadeInDown">{{ $slide->title }}</h2>
-                                <div class="slider-description animated font-two" data-animation="fadeInUp">{{ $slide->description }}</div>
+                                <div class="slider-description animated font-two" data-animation="fadeInUp">{!! $slide->description !!}</div>
                                 <div class="animated" data-animation="fadeInUp">
                                     @if($slide->button_url == '#')
                                         <a href="#" class="btn btn-empty" data-fancybox data-src="#dialog-call-consultation">{{ $slide->button_text }}</a>

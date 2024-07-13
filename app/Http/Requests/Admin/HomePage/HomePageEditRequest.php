@@ -106,7 +106,7 @@ class HomePageEditRequest extends BaseRequest
                 'string',
             ];
             $rules['slides.*.title.' . $availableLanguage] = [
-                'required',
+                'nullable',
                 'string'
             ];
             $rules['slides.*.description.' . $availableLanguage] = [
