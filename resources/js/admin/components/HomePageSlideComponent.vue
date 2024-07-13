@@ -58,18 +58,18 @@ export default {
                         :name="'slides[' + index + '][title]'"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
-                        :is-required="true"
+                        :is-required="false"
                         :init-data="slide.hasOwnProperty('title') ? slide.title : []"
                         :errors="errors"
                     />
 
-                    <multi-language-input-component
+                    <multi-language-rich-text-editor-component
                         :title="$t('admin.slide_description')"
                         :name="'slides[' + index + '][description]'"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
                         :is-required="false"
-                        :init-data="(slide.hasOwnProperty('description') && slide.description !== null) ? slide.description : []"
+                        :content="(slide.hasOwnProperty('description') && slide.description !== null) ? slide.description : []"
                         :errors="errors"
                     />
 

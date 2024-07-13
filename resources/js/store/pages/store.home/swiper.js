@@ -9,6 +9,11 @@ export function init () {
     // home slider
     const SwiperSingleWallpaper = new Swiper('.swiper.owl-slider', {
         loop: true,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
         slidesPerView: 1,
         pagination: {
             el: ".swiper-pagination",
