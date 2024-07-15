@@ -12,7 +12,7 @@ export function init () {
         autoplay: {
             delay: 3000,
             disableOnInteraction: false,
-            pauseOnMouseEnter: true,
+            pauseOnMouseEnter: false
         },
         slidesPerView: 1,
         pagination: {
