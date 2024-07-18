@@ -116,7 +116,7 @@ class CartService extends BaseService
         $requestProductAttributes = $request->productAttributes;
         $isProductInCart = false;
 
-        $requestProductAttributesAlt = $this->prepareRequestProductAttributes($requestProductAttributes);
+        $requestProductAttributesAlt = (!is_null($requestProductAttributes)) ? $this->prepareRequestProductAttributes($requestProductAttributes) : null;
 
         foreach ($allProductVariations as $allProductVariation) {
             $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributesAlt);

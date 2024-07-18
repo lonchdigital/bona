@@ -510,8 +510,8 @@ function drawProductsInCartWindowHTML(data)
         let productAttributesHTML = '<div class="product-attributes">';
 
 
-        // if( product.attributes !== 'null' ) {
-        if( product.attributes !== null ) {
+        if( product.attributes !== 'null' ) {
+        // if( product.attributes !== null ) {
 
             productAttributes = JSON.parse(product.attributes);
             delete productAttributes.color_id;
@@ -634,8 +634,8 @@ function drawProductsInCartPageHTML(data)
 
         let productAttributesHTML = '<div class="product-attributes">';
 
-        // if( product.attributes !== 'null' ) {
-        if( product.attributes !== null ) {
+        if( product.attributes !== 'null' ) {
+        // if( product.attributes !== null ) {
 
             productAttributes = JSON.parse(product.attributes);
 
@@ -922,8 +922,6 @@ function handleCalculatorAddToCartButton()
 
 function handleBasket(data)
 {
-    console.log('we are here!');
-
     const basketWithProducts = $('.basket-with-products');
     const countOfProductsInBasket = basketWithProducts.find('.count-of-products-in-basket');
 
