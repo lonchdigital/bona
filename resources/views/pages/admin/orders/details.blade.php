@@ -206,9 +206,11 @@
                                             <div class="product-attributes">
                                                 @if(is_array($attributes))
                                                     @foreach($attributes as $key => $value)
-                                                        <div class="product-attribute-line">
-                                                            <div class="attribute-value">{{ $value['name'][app()->getLocale()] }}</div>
-                                                        </div>
+                                                        @if(is_array($value))
+                                                            <div class="product-attribute-line">
+                                                                <div class="attribute-value">{{ $value['name'][app()->getLocale()] }}</div>
+                                                            </div>
+                                                        @endif
                                                     @endforeach
                                                 @endif
                                             </div>
