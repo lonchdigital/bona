@@ -176,12 +176,20 @@
                                                 <td class="product-image"><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}"><img class="order-product-image" src="{{ $product->main_image_url }}"></a></td>
                                                 <td>
                                                     @if($product->pivot->attributes)
+                                                        @php
+                                                            $attributes = \App\Helpers\DecodeJson::decodeJsonRecursive(json_decode($product->pivot->attributes, true));
+                                                            if(isset($attributes['color_id'])) {
+                                                                unset($attributes['color_id']);
+                                                            }
+                                                        @endphp
                                                         <div class="product-attributes">
-                                                            @foreach(json_decode($product->pivot->attributes) as $key => $value)
-                                                                <div class="product-attribute-line">
-                                                                    <div class="attribute-value">{{ $value }}</div>
-                                                                </div>
-                                                            @endforeach
+                                                            @if(is_array($attributes))
+                                                                @foreach($attributes as $key => $value)
+                                                                    <div class="product-attribute-line">
+                                                                        <div class="attribute-value">{{ $value['name'][app()->getLocale()] }}</div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
                                                         </div>
                                                     @endif
                                                 </td>
