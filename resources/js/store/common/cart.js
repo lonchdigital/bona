@@ -510,7 +510,7 @@ function drawProductsInCartWindowHTML(data)
         let productAttributesHTML = '<div class="product-attributes">';
 
 
-        if( product.attributes !== 'null' ) {
+        if( product.attributes !== 'null' && product.attributes !== null ) {
         // if( product.attributes !== null ) {
 
             productAttributes = JSON.parse(product.attributes);
@@ -634,7 +634,7 @@ function drawProductsInCartPageHTML(data)
 
         let productAttributesHTML = '<div class="product-attributes">';
 
-        if( product.attributes !== 'null' ) {
+        if( product.attributes !== 'null' && product.attributes !== null ) {
         // if( product.attributes !== null ) {
 
             productAttributes = JSON.parse(product.attributes);

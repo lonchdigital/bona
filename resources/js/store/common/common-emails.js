@@ -115,8 +115,6 @@ export default {
             var formData = new FormData(this);
             formTag.find('.field-error').remove();
 
-            console.log('event ' + formTag.find('input[name="event"]').val());
-
             var data = {};
 
             for (var pair of formData.entries()) {
