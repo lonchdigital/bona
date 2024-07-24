@@ -6571,30 +6571,57 @@ select:focus {
                     line-height: 29px;
                     text-align: left;
                     padding-top: 30px;
+                    //padding-right: 30px;
                     //display: inline-block;
 
-                    .price {
-                        font-weight: 600;
+                    display: flex;
+                    justify-content: space-between;
+
+                    .data-left {
+
+
+                        .price {
+                            font-weight: 600;
+                        }
+
+                        .currency {
+
+                        }
+
+                        // if discount active
+                        .card-link-price--hot {
+                            color: #ff6662;
+                            font-weight: 600;
+                        }
+                        .card-link-price--old {
+                            font-size: 14px;
+                            font-weight: 400;
+                            text-decoration: line-through;
+
+                            position: absolute;
+                            bottom: 27px; // 20px
+                            left: 0;
+                        }
                     }
 
-                    .currency {
+                    .data-right {
+
+                        .cart-icon-block {
+                            display: block;
+                            background-color: #d59958;
+                            padding: 10px;
+                            line-height: 15px;
+                            border-radius: 15%;
+
+                            i.icon.icon-cart {
+                                &:before {
+                                    color: #fff;
+                                }
+                            }
+                        }
 
                     }
 
-                    // if discount active
-                    .card-link-price--hot {
-                        color: #ff6662;
-                        font-weight: 600;
-                    }
-                    .card-link-price--old {
-                        font-size: 14px;
-                        font-weight: 400;
-                        text-decoration: line-through;
-
-                        position: absolute;
-                        bottom: 20px;
-                        left: 0;
-                    }
                 }
 
             }
