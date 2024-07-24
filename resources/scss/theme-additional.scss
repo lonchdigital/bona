@@ -6574,54 +6574,67 @@ select:focus {
                     //padding-right: 30px;
                     //display: inline-block;
 
-                    display: flex;
-                    justify-content: space-between;
-
-                    .data-left {
-
-
-                        .price {
-                            font-weight: 600;
-                        }
-
-                        .currency {
-
-                        }
-
-                        // if discount active
-                        .card-link-price--hot {
-                            color: #ff6662;
-                            font-weight: 600;
-                        }
-                        .card-link-price--old {
-                            font-size: 14px;
-                            font-weight: 400;
-                            text-decoration: line-through;
-
-                            position: absolute;
-                            bottom: 27px; // 20px
-                            left: 0;
-                        }
+                    .price {
+                        font-weight: 600;
                     }
 
-                    .data-right {
+                    .currency {
 
-                        .cart-icon-block {
-                            display: block;
-                            background-color: #d59958;
-                            padding: 10px;
-                            line-height: 15px;
-                            border-radius: 15%;
+                    }
 
-                            i.icon.icon-cart {
-                                &:before {
-                                    color: #fff;
-                                }
+                    // if discount active
+                    .card-link-price--hot {
+                        color: #ff6662;
+                        font-weight: 600;
+                    }
+                    .card-link-price--old {
+                        font-size: 14px;
+                        font-weight: 400;
+                        text-decoration: line-through;
+
+                        position: absolute;
+                        bottom: 20px;
+                        left: 0;
+                    }
+
+
+
+                    .cart-icon-block {
+                        position: absolute;
+                        bottom: 4px;
+                        right: 1px;
+
+                        display: block;
+                        background-color: #d59958;
+                        padding: 10px;
+                        line-height: 15px;
+                        border-radius: 15%;
+
+                        transition: padding 100ms ease-in-out;
+
+                        @media (max-width: 400px) {
+                            display: none;
+                        }
+
+                        &:hover {
+                            padding: 11px;
+                        }
+
+                        i.icon.icon-cart {
+                            &:before {
+                                color: #fff;
                             }
                         }
-
                     }
 
+
+                }
+
+                .availability-status {
+                    font-size: 12px;
+                    line-height: 16px;
+                    display: block;
+                    margin-top: 10px;
                 }
 
             }
