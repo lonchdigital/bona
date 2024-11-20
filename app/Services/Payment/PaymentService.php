@@ -167,7 +167,7 @@ class PaymentService extends BaseService
 
         $request_array = [
             "store_order_id" => (string) $order->id,
-            "client_phone" => "+380500000001",
+            "client_phone" => "+380951000001",
             "total_sum" => (integer) $data['amount'],
             "invoice" => [
                 "date" => "2024-11-17",
@@ -177,7 +177,7 @@ class PaymentService extends BaseService
             ],
             "available_programs" => [
                 [
-                    "available_parts_count" => [3,4,6],
+                    "available_parts_count" => [10],
                     "type" => "payment_installments",
                 ]
             ],
