@@ -49,6 +49,18 @@ class CheckoutConfirmOrderAction extends BaseAction
                 $route = route('store.checkout.thank-you', ['order' => $order->id]);
             }
 
+        } elseif( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ) {
+
+            $response = $paymentService->createMonoBankPartialPaymentOrder($order, 2, 'test');
+
+            if (!is_null($response)) {
+//                \Log::info('info 1', ['1' => '1111']);
+//                $route = route('store.checkout.thank-you', ['order' => $order->id]);
+                return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order]);
+            }
+
+//            dd('stop! response 7!!!', $response);
+
         } else {
             return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
         }

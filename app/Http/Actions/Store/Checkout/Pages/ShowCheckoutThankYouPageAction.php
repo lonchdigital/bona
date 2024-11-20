@@ -2,6 +2,7 @@
 
 namespace App\Http\Actions\Store\Checkout\Pages;
 
+use App\DataClasses\PaymentTypesDataClass;
 use App\Models\Order;
 use App\Http\Actions\Admin\BaseAction;
 use App\Services\Currency\CurrencyService;
@@ -21,17 +22,10 @@ class ShowCheckoutThankYouPageAction extends BaseAction
         CurrencyService $currencyService,
     )
     {
-//        $baseCurrency = $currencyService->getBaseCurrency();
-        if ($order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_UNPAID) {
+
+        if ($order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_UNPAID && $order->payment_type_id !== PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) {
             return view('pages.store.payment-failure');
         }
-        /*try {
-            $cart = $this->getCart($cartService);
-            $cart->products()->sync([]);
-            $cart->delete();
-        } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
-        }*/
 
         return view('pages.store.checkout-thank-you', [
             'order' => $order,
