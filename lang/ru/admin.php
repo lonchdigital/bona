@@ -607,5 +607,13 @@ return [
     'additional_products' => 'Дополнительные товары (здесь в текущий тип товара можно добавить товары из других типов)',
     'add_additional_product' => 'Добавить дополнительный товар',
     'find_additional_product' => 'Найти дополнительный товар',
-
+    'order_rejected' => 'Заказ отклонен магазином',
+    'something_went_wrong' => 'Что-то пошло не так',
+    'order_reject' => 'Отклонить заказ',
+    'order_confirm' => 'Подтвердить получение',
+    'order_confirmed_by_store' => 'Заказ получен клиентом',
+    'order_return' => 'Возврат заказа',
+    'order_returned' => 'Заказ был возвращен',
+    'additional' => 'Дополнительно',
+    'are_you_sure' => 'Вы уверены?',
 ];

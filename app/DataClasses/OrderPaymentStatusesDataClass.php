@@ -10,6 +10,8 @@ class OrderPaymentStatusesDataClass implements BaseDataClass
     const STATUS_IN_PROGRESS = 4;
     const STATUS_DECLINED = 5;
     const STATUS_PAYPART = 6;
+    const REJECTED_BY_CLIENT = 7;
+    const CLIENT_PUSH_TIMEOUT = 8;
 
     public static function get(?int $item = null): mixed
     {
@@ -43,6 +45,16 @@ class OrderPaymentStatusesDataClass implements BaseDataClass
                 'id' => self::STATUS_PAYPART,
                 'name' => trans('base.checkout_payment_paypart'),
                 'color' => '#f9e162',
+            ],
+            [
+                'id' => self::REJECTED_BY_CLIENT,
+                'name' => trans('base.rejected_by_client'),
+                'color' => '#76ceff',
+            ],
+            [
+                'id' => self::CLIENT_PUSH_TIMEOUT,
+                'name' => trans('base.client_push_timeout'),
+                'color' => '#76ceff',
             ]
         ]);
 

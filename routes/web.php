@@ -49,6 +49,7 @@ use App\Http\Actions\Store\Catalog\Pages\ShowProductDoorsByAvailabilityPageActio
 use App\Http\Actions\Store\Catalog\Pages\ShowCatalogRuckyAvailabilityPageAction;
 use App\Http\Actions\Store\Checkout\CheckoutConfirmOrderAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutPage;
+use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouMonoBankPageAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
 //use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
 //use App\Http\Actions\Store\Delivery\GetMeestDepartmentsAction;
@@ -60,6 +61,7 @@ use App\Http\Actions\Store\DeliveryPage\Pages\ShowDeliveryPageAction;
 use App\Http\Actions\Store\AboutUsPage\Pages\ShowAboutUsPageAction;
 use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
 use App\Http\Actions\Store\Home\Pages\ShowHomePageAction;
+use App\Http\Actions\Store\Payment\ConfirmMonoBankPartialPaymentAction;
 use App\Http\Actions\Store\Payment\ConfirmPartialPaymentAction;
 use App\Http\Actions\Store\Payment\Pages\ShowGoToPaymentPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentOrdinaryPageAction;
@@ -251,7 +253,10 @@ $optionalLanguageRoutes = function () {
         Route::name('store.checkout.page')->get('/', ShowCheckoutPage::class);
         Route::name('store.checkout.confirm')->post('/confirm', CheckoutConfirmOrderAction::class);
         Route::name('store.checkout.thank-you')->get('{order}/thank', ShowCheckoutThankYouPageAction::class);
+        Route::name('store.checkout.thank-you.mono-bank')->get('{order}/thank-you', ShowCheckoutThankYouMonoBankPageAction::class);
+
         Route::name('store.checkout.partial.payment')->post('/partial', ConfirmPartialPaymentAction::class);
+        Route::name('store.checkout.partial.mono.bank.payment')->post('/partial-mono-bank', ConfirmMonoBankPartialPaymentAction::class);
     });
 
     // TODO:: Do we need brands pages?
