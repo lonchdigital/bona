@@ -10,6 +10,7 @@ use App\Services\Order\OrderService;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
 use App\Http\Requests\Store\Checkout\CheckoutConfirmOrderRequest;
+use App\Services\Payment\PaymentMonoBankService;
 use App\Services\Payment\PaymentService;
 use Illuminate\Support\Facades\Log;
 
@@ -22,17 +23,17 @@ class CheckoutConfirmOrderAction extends BaseAction
         OrderService $orderService,
         CartService $cartService,
         PaymentService $paymentService,
+        PaymentMonoBankService $paymentMonoBankService,
     )
     {
-        $cart = $this->getCart($cartService);
-        $order = $orderService->createOrderByCart($cart, $request->toDTO(), $this->getAuthUser());
+        $authUser = $this->getAuthUser();
 
+        $cart = $this->getCart($cartService);
+        $order = $orderService->createOrderByCart($cart, $request->toDTO(), $authUser);
 
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
         } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
-
-//            return response()->redirectToRoute('store.payment.liq-pay.paypart', ['order' => $order->id]);
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
             $response = $paymentService->createPrivateBankPartialPaymentOrder($order, $request->payment_period, $merchant_type);
@@ -51,20 +52,34 @@ class CheckoutConfirmOrderAction extends BaseAction
 
         } elseif( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ) {
 
-            $response = $paymentService->createMonoBankPartialPaymentOrder($order, 2, 'test');
+            if(is_null($authUser)) {
+                $phone = $request->toDTO()->phone;
+            } else {
+                $phone = $authUser->getAttribute('phone');
+            }
+            $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
 
-            if (!is_null($response)) {
-//                \Log::info('info 1', ['1' => '1111']);
-//                $route = route('store.checkout.thank-you', ['order' => $order->id]);
-                return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order]);
+            $isValid = $paymentMonoBankService->validateClientMonoBankPhone($phone);
+            if (!$isValid) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['phone' => 'Номер телефона недействителен для Покупки Частями.'])
+                    ->withInput();
             }
 
-//            dd('stop! response 7!!!', $response);
+            $response = $paymentMonoBankService->createMonoBankPartialPaymentOrder($order, $phone);
+            if (!is_null($response)) {
+                return response()->redirectToRoute('store.checkout.thank-you.mono-bank', ['order' => $order]);
+            } else {
+                return redirect()
+                    ->back()
+                    ->withErrors(['unknown_error' => 'Неизвестная ошибка.'])
+                    ->withInput();
+            }
 
         } else {
             return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
         }
-
 
         return $this->handleActionResult($route, $request, ServiceActionResult::make(true, 'success'));
     }

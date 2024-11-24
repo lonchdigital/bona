@@ -497,23 +497,25 @@
                                             </div>
 
 
+                                            <div class="">
+                                                <div class="">
+                                                    <div class="checkbox art-mb-10">
+                                                        <div class="position-relative">
+                                                            <input type="radio"
+                                                                   @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) checked
+                                                                   @endif id="payment-card_paypart-mono-bank" name="payment_type_id"
+                                                                   value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
+                                                            <label class="custom-control-label"
+                                                                   for="payment-card_paypart-mono-bank">{{ trans('base.checkout_payment_paypart_mono_bank') }}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             @auth
                                                 @if(auth()->user()->role_id === 1)
 
-                                                    <div class="">
-                                                        <div class="">
-                                                            <div class="checkbox art-mb-10">
-                                                                <div class="position-relative">
-                                                                    <input type="radio"
-                                                                           @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) checked
-                                                                           @endif id="payment-card_paypart-mono-bank" name="payment_type_id"
-                                                                           value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
-                                                                    <label class="custom-control-label"
-                                                                           for="payment-card_paypart-mono-bank">{{ trans('base.checkout_payment_paypart_mono_bank') }}</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+
 
                                                 @endif
                                             @endauth
@@ -771,7 +773,11 @@
                                                 </div>
 
                                                 <div class="buttons-wrapper">
-                                                    <button type="submit" class="btn btn-main w-100 mb-4">{{ trans('base.checkout_confirm_order') }}</button>
+                                                    <button type="submit" class="btn btn-main w-100 mb-4" id="submit-button">{{ trans('base.checkout_confirm_order') }}</button>
+                                                    <div id="loader" class="text-center" style="display: none;">
+                                                        <span class="loader"></span>
+                                                    </div>
+
                                                     <div class="info-top-pay text-center d-flex flex-column flex-lg-row justify-content-center mb-lg-6">
                                                         <div class="pay-title mr-lg-2 mb-2 mb-lg-0">{{ trans('base.payments_methods') }}:</div>
                                                         <div class="pay-list d-flex align-items-center justify-content-center">
@@ -790,6 +796,23 @@
                                                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}">{{ trans('base.checkout_apply_promo_code') }}</a>
                                                     </div>
                                                 </div>
+
+                                                @if(old('delivery_type_id') != App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)
+                                                    @error('phone')
+                                                    <div class="row">
+                                                        <div class="col-12 text-danger">
+                                                            {{ $message }}
+                                                        </div>
+                                                    </div>
+                                                    @enderror
+                                                    @error('unknown_error')
+                                                    <div class="row">
+                                                        <div class="col-12 text-danger">
+                                                            {{ $message }}
+                                                        </div>
+                                                    </div>
+                                                    @enderror
+                                                @endif
 
                                             </div>
 

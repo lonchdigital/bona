@@ -9,6 +9,9 @@ use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticlesListPageAction;
 use App\Http\Actions\Admin\BlogPage\Pages\ShowBlogPageEditPageAction;
 use App\Http\Actions\Admin\BlogPage\BlogPageEditAction;
 use App\Http\Actions\Admin\LogoutAction;
+use App\Http\Actions\Admin\Orders\MonoBankConfirmOrderAction;
+use App\Http\Actions\Admin\Orders\MonoBankRejectOrderAction;
+use App\Http\Actions\Admin\Orders\MonoBankReturnOrderAction;
 use App\Http\Actions\Admin\Pages\Pages\ShowPagesListPageAction;
 /*use App\Http\Actions\Admin\BlogCategories\BlogCategoryCreateAction;
 use App\Http\Actions\Admin\BlogCategories\BlogCategoryDeleteAction;
@@ -352,6 +355,11 @@ Route::prefix('admin')->middleware([
 
         //Delete
         Route::name('admin.order.delete')->post('{order}/delete', DeleteOrderAction::class);
+
+        // API monobank
+        Route::name('admin.order.monobank.reject')->post('{order}/reject', MonoBankRejectOrderAction::class);
+        Route::name('admin.order.monobank.confirm')->post('{order}/confirm', MonoBankConfirmOrderAction::class);
+        Route::name('admin.order.monobank.return')->post('{order}/return', MonoBankReturnOrderAction::class);
     });
 
     //Products import

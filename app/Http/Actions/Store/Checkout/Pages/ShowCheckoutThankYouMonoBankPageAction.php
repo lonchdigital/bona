@@ -12,7 +12,7 @@ use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\Http\Actions\Store\Cart\NeedCart;
 use Illuminate\Support\Facades\Log;
 
-class ShowCheckoutThankYouPageAction extends BaseAction
+class ShowCheckoutThankYouMonoBankPageAction extends BaseAction
 {
     use NeedCart;
 
@@ -22,14 +22,8 @@ class ShowCheckoutThankYouPageAction extends BaseAction
         CurrencyService $currencyService,
     )
     {
-
-        if ($order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_UNPAID) {
-            return view('pages.store.payment-failure');
-        }
-
-        return view('pages.store.checkout-thank-you', [
+        return view('pages.store.checkout-thank-you-mono-bank', [
             'order' => $order,
-            'baseCurrency' => $currencyService->getBaseCurrency(),
             'productType' => ProductType::first(),
         ]);
     }

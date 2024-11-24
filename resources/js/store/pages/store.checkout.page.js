@@ -84,6 +84,17 @@ export default async function () {
         }
     });
 
+
+    // Show loader if payment type monobank partials
+    $('#submit-button').on('click', function(e) {
+        let selectedPaymentType = $('input[name="payment_type_id"]:checked').val();
+
+        if (selectedPaymentType == 4) {
+            $('#submit-button').hide();
+            $('#loader').show();
+        }
+    });
+
 }
 
 function showSummaryWithDelivery(data)
