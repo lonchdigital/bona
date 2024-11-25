@@ -245,14 +245,15 @@ class PaymentMonoBankService extends BaseService
         $client = new Client();
 
         $data = $this->getTotalSumOrder($order);
-        $data['amount'] = (integer) number_format($data['amount'], 2, '.', '');
-        $totalSum = $this->convertToCents($data['amount']);
+//        $data['amount'] = (integer) number_format($data['amount'], 2, '.', '');
+        $data['amount'] = number_format($data['amount'], 2, '.', '');
+//        $totalSum = $this->convertToCents($data['amount']);
 
         $request_array = [
             "order_id" => $order->mono_order_id,
             "return_money_to_card" => true,
             "store_return_id" => $order->id,
-            "sum" => $totalSum
+            "sum" => (integer) $data['amount']
         ];
 
         $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
