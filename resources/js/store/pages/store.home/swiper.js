@@ -22,7 +22,7 @@ export function init () {
     });
 
 
-    $(document).ready(function () {
+    /*$(document).ready(function () {
 
         function updateBackgroundImages() {
             $('.home-page-slide-itself').each(function () {
@@ -42,7 +42,7 @@ export function init () {
         $(window).resize(function () {
             updateBackgroundImages();
         });
-    });
+    });*/
 
 
     // home slider icons
