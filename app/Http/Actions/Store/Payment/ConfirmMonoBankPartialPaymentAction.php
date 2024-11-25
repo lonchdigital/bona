@@ -19,7 +19,8 @@ class ConfirmMonoBankPartialPaymentAction extends BaseAction
 
         $order = Order::where('mono_order_id', $request->order_id)->first();
 
-        if ( $request->state === 'CLIENT_APPROVED_PUSH' ) {
+        // CLIENT_APPROVED_PUSH
+        if ( $request->state === 'WAITING_FOR_STORE_CONFIRM' ) {
             $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
         } elseif ( $request->state === 'REJECTED_BY_CLIENT' ) {
             $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::REJECTED_BY_CLIENT);
