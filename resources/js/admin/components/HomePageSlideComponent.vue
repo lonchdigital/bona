@@ -82,6 +82,15 @@ export default {
                         :init-data="slide.hasOwnProperty('slide_image_url') ? slide.slide_image_url : null"
                     />
 
+                    <image-file-input-component
+                        :title="$t('admin.slide_image_mobile')"
+                        :name="'slides[' + index + '][image_mobile]'"
+                        :image-deleted-name="'slides[' + index + '][image_mobile_deleted]'"
+                        :is-required="true"
+                        :errors="errors"
+                        :init-data="slide.hasOwnProperty('slide_image_mobile_url') ? slide.slide_image_mobile_url : null"
+                    />
+
                     <multi-language-input-component
                         :title="$t('admin.slide_text_button')"
                         :name="'slides[' + index + '][button_text]'"

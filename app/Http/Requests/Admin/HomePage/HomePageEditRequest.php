@@ -74,6 +74,10 @@ class HomePageEditRequest extends BaseRequest
                     (isset($slide['id']) && $slide['id']) ? 'nullable' : 'required',
                     'image',
                 ];
+                $rules['slides.' . $index . '.image_mobile'] = [
+                    (isset($slide['id']) && $slide['id']) ? 'nullable' : 'required',
+                    'image',
+                ];
                 $rules['slides.' . $index . '.button_url'] = [
                     'required',
                     'string'
@@ -156,6 +160,7 @@ class HomePageEditRequest extends BaseRequest
             'meta_keywords' => mb_strtolower(trans('admin.meta_keywords')),
             'slider_logo' => mb_strtolower(trans('admin.slider_logo')),
             'slides.*.image' => mb_strtolower(trans('admin.slide_image')),
+            'slides.*.image_mobile' => mb_strtolower(trans('admin.slide_image')),
             'selected_field_id' => mb_strtolower(trans('admin.field')),
 //            'selected_field_options_id' => mb_strtolower(trans('admin.field_options')),
         ];
@@ -163,7 +168,7 @@ class HomePageEditRequest extends BaseRequest
         if ($this->input('slides')) {
             foreach ($this->input('slides') as $index => $slide) {
                 $attributes['slides.' . $index . '.image'] = mb_strtolower(trans('admin.slide_image'));
-                $attributes['slides.' . $index . '.image'] = mb_strtolower(trans('admin.slide_image'));
+                $attributes['slides.' . $index . '.image_mobile'] = mb_strtolower(trans('admin.slide_image_mobile'));
 
                 $attributes['slides.' . $index . '.button_url'] = mb_strtolower(trans('admin.slide_text_link'));
             }

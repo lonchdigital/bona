@@ -22,11 +22,18 @@ class HomePageSlides extends Model
             return Storage::url($this->slide_image_path);
         });
     }
+    public function slideImageMobileUrl(): Attribute
+    {
+        return Attribute::make(function () {
+            return Storage::url($this->slide_image_path_mobile);
+        });
+    }
 
     public function toArray(): array
     {
         $array = parent::toArray();
         $array['slide_image_url'] = $this->slide_image_url;
+        $array['slide_image_mobile_url'] = $this->slide_image_mobile_url;
         return $array;
     }
 

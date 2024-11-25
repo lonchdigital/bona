@@ -19,12 +19,31 @@ export function init () {
             el: ".swiper-pagination",
             clickable: true,
         }
-        // simulateTouch: 0,
-        /*navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev"
-        },*/
     });
+
+
+    $(document).ready(function () {
+
+        function updateBackgroundImages() {
+            $('.home-page-slide-itself').each(function () {
+                let windowWidth = $(window).width();
+
+                let pcImage = $(this).data('pc');
+                let mobImage = $(this).data('mob');
+
+                let selectedImage = windowWidth > 767 ? pcImage : mobImage;
+
+                $(this).css('background-image', `url(${selectedImage})`);
+            });
+        }
+
+        updateBackgroundImages();
+
+        $(window).resize(function () {
+            updateBackgroundImages();
+        });
+    });
+
 
     // home slider icons
     let HomeSliderIcons= new Swiper(".swiper.owl-icons", {

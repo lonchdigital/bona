@@ -31,6 +31,9 @@ class HomePageService extends BaseService
     public function editHomePage(HomePageEditDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($request) {
+
+//            dd('edit HOME PAGE', $request);
+
             $homePageConfig = $this->getHomePageConfig();
             $dataToUpdate = [
                 'meta_title' => $request->metaTitle,
@@ -120,6 +123,14 @@ class HomePageService extends BaseService
 
                     $dataToUpdate['slide_image_path'] = $slideImagePath . '.webp';
                 }
+                if (isset($slide['image_mobile'])) {
+                    $slideImageMobilePath = self::HOME_PAGE_IMAGES_FOLDER . '/' . sha1(time()) . '_' . Str::random(10);
+
+                    $this->storeImage($slideImageMobilePath, $slide['image_mobile'], 'webp');
+                    $this->storeImage($slideImageMobilePath, $slide['image_mobile'], 'jpg');
+
+                    $dataToUpdate['slide_image_path_mobile'] = $slideImageMobilePath . '.webp';
+                }
 
                 if (isset($slide['id']) && $slide['id']) {
                     $existingSlide = $existingSlides->where('id', $slide['id'])->first();
@@ -129,6 +140,9 @@ class HomePageService extends BaseService
 
                     if (isset($slide['image'])) {
                         $imagesToDelete[] = $existingSlide->slide_image_path;
+                    }
+                    if (isset($slide['image_mobile'])) {
+                        $imagesToDelete[] = $existingSlide->slide_image_path_mobile;
                     }
 
                     $existingSlide->update($dataToUpdate);
@@ -146,6 +160,7 @@ class HomePageService extends BaseService
 
         foreach ($slidesToDelete as $slideToDelete) {
             $imagesToDelete[] = $slideToDelete->slide_image_path;
+            $imagesToDelete[] = $slideToDelete->slide_image_path_mobile;
             $slideToDelete->delete();
         }
 
