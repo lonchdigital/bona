@@ -100,8 +100,12 @@ class BaseService
         Storage::disk(config('app.images_disk_default'))->put($path . '.'.$format, $image);
     }
 
-    protected function deleteImage(string $path): void
+    protected function deleteImage(string|null $path): void
     {
+        if(is_null($path)) {
+            return;
+        }
+
         // remove webp
         if (Storage::disk(config('app.images_disk_default'))->exists($path)) {
             Storage::disk(config('app.images_disk_default'))->delete($path);

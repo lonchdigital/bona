@@ -36,7 +36,7 @@
         <div class="swiper owl-slider art-slider-pc">
             <div class="swiper-wrapper">
                 @foreach($slides as $slide)
-                    <div class="swiper-slide" style="background-image:url({{ $slide->slide_image_url }})">
+                    <div class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }})" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
                         <div class="box">
                             <div class="container">
                                 <h2 class="title animated h1" data-animation="fadeInDown">{{ $slide->title }}</h2>
@@ -54,25 +54,8 @@
                 @endforeach
             </div>
             <div class="swiper-pagination"></div>
-        </div> <!--/owl-slider-->
+        </div>
 
-        <div class="owl-slider art-slider-mobile">
-            <div class="single-slide" style="background-image:url({{ asset('storage/bg-images/home-slider-mob-bg.jpg') }})">
-                <div class="box mb-6">
-                    <div class="container">
-                        <h2 class="title animated h1" data-animation="fadeInDown">{{ $slides[0]->title }}</h2>
-                        <div class="slider-description animated font-two" data-animation="fadeInUp">{!! $slides[0]->description !!}</div>
-                        <div class="mt-4" data-animation="fadeInUp">
-                            @if($slides[0]->button_url == '#')
-                                <a href="#" class="btn btn-empty" data-fancybox data-src="#dialog-call-consultation">{{ $slides[0]->button_text }}</a>
-                            @else
-                                <a href="{{ $slides[0]->button_url }}" class="btn btn-empty">{{ $slides[0]->button_text }}</a>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> <!--/owl-slider-->
 
         <div id="dialog-call-consultation" class="art-popup-call-measurer">
             <div class="art-measurer-form-wrapper">

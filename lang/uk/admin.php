@@ -446,6 +446,7 @@ return [
     'sponsor_link' => 'Посилання спонсорського блоку',
     'video_link' => 'Посилання на відео',
     'slide_image' => 'Зображення слайду',
+    'slide_image_mobile' => 'Зображення слайду (моб.)',
     'gallery_image' => 'Зображення галереї',
     'product_gallery' => 'Галерея товару',
     'product_characteristics' => 'Характеристики товару',
