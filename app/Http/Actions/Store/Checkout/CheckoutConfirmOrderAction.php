@@ -28,6 +28,23 @@ class CheckoutConfirmOrderAction extends BaseAction
     {
         $authUser = $this->getAuthUser();
 
+        if( $request->all()['payment_type_id'] == PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ) {
+            if(is_null($authUser)) {
+                $phone = $request->toDTO()->phone;
+            } else {
+                $phone = $authUser->getAttribute('phone');
+            }
+            $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
+
+            $isValid = $paymentMonoBankService->validateClientMonoBankPhone($phone);
+            if (!$isValid) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['phone' => trans('base.checkout_payment_paypart_mono_bank_unavailable')])
+                    ->withInput();
+            }
+        }
+
         $cart = $this->getCart($cartService);
         $order = $orderService->createOrderByCart($cart, $request->toDTO(), $authUser);
 
@@ -52,28 +69,13 @@ class CheckoutConfirmOrderAction extends BaseAction
 
         } elseif( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ) {
 
-            if(is_null($authUser)) {
-                $phone = $request->toDTO()->phone;
-            } else {
-                $phone = $authUser->getAttribute('phone');
-            }
-            $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
-
-            $isValid = $paymentMonoBankService->validateClientMonoBankPhone($phone);
-            if (!$isValid) {
-                return redirect()
-                    ->back()
-                    ->withErrors(['phone' => 'Номер телефона недействителен для Покупки Частями.'])
-                    ->withInput();
-            }
-
             $response = $paymentMonoBankService->createMonoBankPartialPaymentOrder($order, $phone);
             if (!is_null($response)) {
                 return response()->redirectToRoute('store.checkout.thank-you.mono-bank', ['order' => $order]);
             } else {
                 return redirect()
                     ->back()
-                    ->withErrors(['unknown_error' => 'Неизвестная ошибка.'])
+                    ->withErrors(['unknown_error' => trans('base.something_went_wrong')])
                     ->withInput();
             }
 
