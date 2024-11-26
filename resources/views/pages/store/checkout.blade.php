@@ -498,24 +498,25 @@
 
 
 
+                                            <div class="">
+                                                <div class="">
+                                                    <div class="checkbox art-mb-10">
+                                                        <div class="position-relative">
+                                                            <input type="radio"
+                                                                   @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) checked
+                                                                   @endif id="payment-card_paypart-mono-bank" name="payment_type_id"
+                                                                   value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
+                                                            <label class="custom-control-label"
+                                                                   for="payment-card_paypart-mono-bank">{{ trans('base.checkout_payment_paypart_mono_bank') }}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             @auth
                                                 @if(auth()->user()->role_id === 1)
 
-                                                    <div class="">
-                                                        <div class="">
-                                                            <div class="checkbox art-mb-10">
-                                                                <div class="position-relative">
-                                                                    <input type="radio"
-                                                                           @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) checked
-                                                                           @endif id="payment-card_paypart-mono-bank" name="payment_type_id"
-                                                                           value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
-                                                                    <label class="custom-control-label"
-                                                                           for="payment-card_paypart-mono-bank">{{ trans('base.checkout_payment_paypart_mono_bank') }}</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+
 
                                                 @endif
                                             @endauth
