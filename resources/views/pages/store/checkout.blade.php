@@ -471,7 +471,10 @@
                                                                    @endif id="payment-card_paypart" name="payment_type_id"
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}">
                                                             <label class="custom-control-label"
-                                                                   for="payment-card_paypart">{{ trans('base.checkout_payment_paypart') }}</label>
+                                                                   for="payment-card_paypart">
+                                                                <span class="i-np mr-2"><img src="{{ asset('storage/static-images/liq.png') }}" style="width: 24px" alt="monobank"></span>
+                                                                {{ trans('base.checkout_payment_paypart') }}
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -507,7 +510,10 @@
                                                                    @endif id="payment-card_paypart-mono-bank" name="payment_type_id"
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
                                                             <label class="custom-control-label"
-                                                                   for="payment-card_paypart-mono-bank">{{ trans('base.checkout_payment_paypart_mono_bank') }}</label>
+                                                                   for="payment-card_paypart-mono-bank">
+                                                                <span class="i-np mr-2"><img src="{{ asset('storage/static-images/monobank.png') }}" style="width: 24px" alt="monobank"></span>
+                                                                {{ trans('base.checkout_payment_paypart_mono_bank') }}
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
