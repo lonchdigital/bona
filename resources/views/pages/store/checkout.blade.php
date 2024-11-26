@@ -472,7 +472,7 @@
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}">
                                                             <label class="custom-control-label"
                                                                    for="payment-card_paypart">
-                                                                <span class="i-np mr-2"><img src="{{ asset('storage/static-images/liq.png') }}" style="width: 24px" alt="monobank"></span>
+                                                                <span class="i-np mr-2"><img src="{{ asset('public/static-images/liq.png') }}" style="width: 24px" alt="monobank"></span>
                                                                 {{ trans('base.checkout_payment_paypart') }}
                                                             </label>
                                                         </div>
@@ -511,7 +511,7 @@
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
                                                             <label class="custom-control-label"
                                                                    for="payment-card_paypart-mono-bank">
-                                                                <span class="i-np mr-2"><img src="{{ asset('storage/static-images/monobank.png') }}" style="width: 24px" alt="monobank"></span>
+                                                                <span class="i-np mr-2"><img src="{{ asset('public/static-images/monobank.png') }}" style="width: 24px" alt="monobank"></span>
                                                                 {{ trans('base.checkout_payment_paypart_mono_bank') }}
                                                             </label>
                                                         </div>
