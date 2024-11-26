@@ -182,7 +182,7 @@ return [
     'checkout_ukr_p_delivery' => 'Доставка у відділення, Meest Express',
     'checkout_pickup_from_store' => 'Самовивіз із нашого магазину',
     'checkout_payment' => 'Оплата',
-    'checkout_payment_upon_receipt' => 'Оплата при отриманні',
+    'checkout_payment_upon_receipt' => 'оплата при отриманні',
     'checkout_payment_cash' => 'Готівкою',
     'checkout_payment_card' => 'Оплата карткою Visa / MasterCard',
     'checkout_payment_paypart' => 'Покупка частинами',
