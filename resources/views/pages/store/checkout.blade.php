@@ -423,9 +423,6 @@
                                             <div class="mt-1">
                                                 <div class="">
                                                     <h4>{{ trans('base.checkout_payment') }}</h4>
-                                                    <div class="delivery-title mb-4">{{ trans('base.checkout_payment_upon_receipt') }}
-                                                        :
-                                                    </div>
                                                     <div class="checkbox art-mb-10">
                                                         <div class="position-relative">
                                                             <input type="radio"
@@ -433,7 +430,7 @@
                                                                    @endif id="payment-cash" name="payment_type_id"
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}">
                                                             <label class="custom-control-label"
-                                                                   for="payment-cash">{{ trans('base.checkout_payment_cash') }}</label>
+                                                                   for="payment-cash">{{ trans('base.checkout_payment_cash') . ' (' . trans('base.checkout_payment_upon_receipt') . ')' }}</label>
                                                         </div>
                                                     </div>
                                                 </div>
