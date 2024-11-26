@@ -206,6 +206,7 @@ return [
     'order_success' => 'Замовлення було успішно оформлено!',
     'order_success_mono_bank' => 'Заявку на купівлю частинами успішно створено. Підтвердіть її у мобільному додатку Monobank, щоб завершити оплату.',
     'checkout_payment_paypart_mono_bank' => 'Оплата частинами (Monobank)',
+    'checkout_payment_paypart_mono_bank_unavailable' => 'Номер телефону недійсний для покупки частинами',
     'order_id' => 'Номер вашого замовлення',
     'delivery_date' => 'Дата отримання',
     'delivery_to_person' => 'Оформлено на',
@@ -359,4 +360,5 @@ return [
     'payment_period' => 'Період оплати',
     'short_month' => 'міс.',
     'payment_failure' => 'Помилка оплати, спробуйте ще раз',
+    'something_went_wrong' => 'Щось пішло не так',
 ];
