@@ -9486,16 +9486,37 @@ section.art-contacts-page-section {
 
 .art-home-slider {
 
+    /*@media (max-width: 767px) {
+        max-height: 700px;
+        position: relative;
+    }*/
+
     .swiper.owl-slider.art-slider-pc {
 
         .swiper-pagination {
             text-align: right;
             width: 99%;
 
+            @media (max-width: 767px) {
+                text-align: center;
+            }
+
             .swiper-pagination-bullet {
                 background: #fff;
             }
         }
+
+        @media (max-width: 767px) {
+
+            .swiper-slide {
+                height: 700px;
+                display: flex;
+                align-items: center;
+                color: #fff;
+            }
+
+        }
+
     }
 
     .art-slider-mobile {
