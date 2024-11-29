@@ -34,7 +34,6 @@ class PaymentMonoBankService extends BaseService
         $data['amount'] = number_format($data['amount'], 2, '.', '');
         $currentDate = Carbon::now()->format('Y-m-d');
 
-        // "client_phone" => "+380951000001",
         $request_array = [
             "store_order_id" => (string) $order->id,
             "client_phone" => $phone,
