@@ -46,7 +46,7 @@ class PaymentMonoBankService extends BaseService
             ],
             "available_programs" => [
                 [
-                    "available_parts_count" => [2,3,4,5,6],
+                    "available_parts_count" => [3,4,5,6],
                     "type" => "payment_installments",
                 ]
             ],
