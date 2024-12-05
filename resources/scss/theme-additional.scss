@@ -6248,6 +6248,31 @@ select:focus {
     color: white;
 }
 
+.art-popup-language {
+    display: none;
+    //display: block;
+    background-color: #191715;
+    padding-top: 118px;
+    padding-bottom: 118px;
+    color: white;
+
+    header .subtitle {
+        margin-top: 43px;
+        margin-bottom: 26px;
+        display: flex;
+        justify-content: center;
+    }
+
+    a.btn {
+        min-width: 161px;
+        margin: 0 7px;
+
+        &:first-child {
+            margin-right: 15px;
+        }
+    }
+}
+
 @media (max-width: 991px) {
 
     .art-popup-call-measurer {

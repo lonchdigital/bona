@@ -10,6 +10,7 @@ use App\Services\Base\ServiceActionResult;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ApplicationConfigService extends BaseService
@@ -38,6 +39,18 @@ class ApplicationConfigService extends BaseService
             return ['uk', 'ru'];
         });*/
         return ['uk', 'ru'];
+    }
+
+    public function setLanguage($lang, Request $request)
+    {
+        if (in_array($lang, ['uk', 'ru'])) {
+            session()->put('locale', $lang);
+            app()->setLocale($lang);
+        }
+
+        session()->put('language_popup_shown', true);
+
+        return redirect()->back();
     }
 
     public function getRobotsTxtContent(): string
