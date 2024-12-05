@@ -320,6 +320,8 @@ Route::prefix('/{lang}/')
     ->middleware(['set.locale', 'check.locale'])
     ->group($optionalLanguageRoutes);
 
+Route::get('/set-language/{lang}', [ApplicationConfigService::class, 'setLanguage'])->name('set.language');
+
 Route::middleware(['check.locale'])->group($optionalLanguageRoutes);
 
 Route::name('locale.change')->get('/change-locale/{newLocale}', ChangeLocaleAction::class);

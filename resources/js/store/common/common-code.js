@@ -48,11 +48,25 @@ export default {
             artFilterColorContent.removeClass('content-expanded');
         });
 
-        // click on name = click on label
+
         $(document).ready(function() {
+
+            // click on name = click on label
             $('.color-name').on('click', function() {
                 $(this).prev('label').click();
             });
+
+
+            //  dialog-language start
+            var hasCodeBeenExecuted = sessionStorage.getItem("codeExecuted");
+            if (!hasCodeBeenExecuted) {
+                var button = document.getElementById("art-language-popup-button");
+                button.click();
+
+                sessionStorage.setItem("codeExecuted", "true");
+            }
+            //  dialog-language end
+
         });
 
 

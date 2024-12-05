@@ -151,6 +151,51 @@
 
 
 {{--<div class="page-loader"></div>--}}
+{{--@if (!session()->has('language_popup_shown'))--}}
+
+{{--@dd(app()->getLocale())--}}
+
+<a href="" id="art-language-popup-button" data-fancybox data-src="#art-language-popup" style="display: none;"></a>
+<div id="art-language-popup" class="art-popup-language" style="display: none;">
+
+    <div class="art-measurer-form-wrapper">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-12 text-center">
+
+                    <header class="art-light">
+                        <div class="text-center">
+                            <h2 class="title h2">{{ trans('base.choose_language') }}</h2>
+                            <div class="subtitle font-two">
+                                <p class="art-form-description">{{ trans('base.choose_language_to_display_website') }}</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="art-fields-row">
+                        @if(app()->getLocale() == 'uk')
+                            <a class="btn btn-empty" data-fancybox-close href="">Українська</a>
+                        @else
+                            <a class="btn btn-empty" href="{{ $locationService->generateLinkByLocale(url()->current(), app()->getLocale(), 'uk') }}">Українська</a>
+                        @endif
+
+                        @if(app()->getLocale() == 'ru')
+                            <a class="btn btn-empty" data-fancybox-close href="">Русский</a>
+                        @else
+                            <a class="btn btn-empty" href="{{ $locationService->generateLinkByLocale(url()->current(), app()->getLocale(), 'ru') }}">Русский</a>
+                        @endif
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
 
 <a href="" id="user-choose-doors-success" data-fancybox data-src="#art-user-choose-doors" style="display: none">Launch Dialog</a>
 <div id="art-user-choose-doors" style="display: none">
@@ -223,6 +268,7 @@
                         <li class="nav-settings">
                             <a href="javascript:void(0);" class="nav-settings-value"> {{ mb_strtoupper(app()->getLocale()) }}</a>
                             <ul class="nav-settings-list">
+{{--                                @dd(app()->make(\App\Services\Application\ApplicationConfigService::class)->getAvailableLanguages())--}}
                                 @foreach(app()->make(\App\Services\Application\ApplicationConfigService::class)->getAvailableLanguages() as $availableLanguage)
                                     @if (mb_strtoupper($availableLanguage) !== mb_strtoupper(app()->getLocale()))
                                         <li>

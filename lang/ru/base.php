@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'choose_language_to_display_website' => 'На каком языке хотите просматривать сайт',
+    'choose_language' => 'Выберите язык',
     'site_title' => 'Інтернет-магазин дверей!',
     'form_sent_success' => 'Ваш запрос успешно отправлен!',
     'showroom_line_1' => 'Шоурум на ',
