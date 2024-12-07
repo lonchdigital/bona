@@ -7,6 +7,7 @@ use App\Models\Color;
 use App\Models\Currency;
 use App\Models\HomePageBestSalesProducts;
 use App\Models\HomePageNewProducts;
+use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\Faqs;
 use App\Models\ProductFaqs;
@@ -1051,6 +1052,10 @@ class ProductService extends BaseService
 
             if (HomePageNewProducts::where('product_id', $product->id)->exists() || HomePageBestSalesProducts::where('product_id', $product->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.product_in_use_on_homepage'));
+            }
+
+            if(OrderProduct::where('product_id', $product->id)->exists()) {
+                return ServiceActionResult::make(false, trans('admin.product_in_use_in_orders'));
             }
 
             if( count($product->productTypes) > 0 ) {
