@@ -57,13 +57,32 @@ export default {
             });
 
 
+
+            // TODO:: remove old dialog if do not need
+
             //  dialog-language start
-            var hasCodeBeenExecuted = sessionStorage.getItem("codeExecuted");
+            /*var hasCodeBeenExecuted = sessionStorage.getItem("codeExecuted");
             if (!hasCodeBeenExecuted) {
                 var button = document.getElementById("art-language-popup-button");
                 button.click();
 
                 sessionStorage.setItem("codeExecuted", "true");
+            }*/
+            //  dialog-language end
+
+            //  dialog-language start
+            var storedData = localStorage.getItem("codeExecuted");
+            var currentTime = new Date().getTime();
+
+            if (!storedData || currentTime - JSON.parse(storedData).timestamp > 24 * 60 * 60 * 1000) {
+                var button = document.getElementById("art-language-popup-button");
+                button.click();
+
+
+                localStorage.setItem(
+                    "codeExecuted",
+                    JSON.stringify({ timestamp: currentTime })
+                );
             }
             //  dialog-language end
 

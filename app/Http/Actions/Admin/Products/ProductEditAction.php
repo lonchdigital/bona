@@ -14,6 +14,6 @@ class ProductEditAction extends BaseAction
     {
         $result = $productsService->productEdit($productType, $product, $request->toDTO());
 
-        return $this->handleActionResult(route('admin.product.list.page', ['productType' => $productType->id]), $request, $result);
+        return $this->handleActionResult(route('admin.product.edit.page', ['productType' => $productType,'product' => $product]), $request, $result);
     }
 }

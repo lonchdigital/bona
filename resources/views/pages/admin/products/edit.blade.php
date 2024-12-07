@@ -4,6 +4,26 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
+
+                @if(Session::has('success'))
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-success" role="alert">
+                                {{ Session::get('success') }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                @if(Session::has('error'))
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger" role="alert">
+                                {{ Session::get('error') }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 @if(isset($product))
                     <h2 class="page-title">{{ trans('admin.product_edit') }}</h2>
                 @else
