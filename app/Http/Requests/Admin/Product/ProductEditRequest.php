@@ -16,11 +16,16 @@ class ProductEditRequest extends ProductCreateRequest
         ];*/
 
 
-
         $rules['sku'] = [
             'nullable',
             'string',
             'unique:products,sku,' . $this->route('product')->id,
+        ];
+
+        $rules['created_at'] = [
+            'required',
+            'date_format:Y-m-d H:i:s',
+            'string',
         ];
 
         $rules['slug'] = [

@@ -32,6 +32,11 @@ class ProductCreateRequest extends BaseRequest
                 'unique:products,slug',
                 'string',
             ],
+            'created_at' => [
+                'nullable',
+                'date_format:Y-m-d H:i:s',
+                'string',
+            ],
             /*'selected_sub_products_id' => [
                 'nullable',
                 'array',
@@ -336,6 +341,7 @@ class ProductCreateRequest extends BaseRequest
 //            (bool) $this->input('is_active'),
             $this->input('name'),
             $this->input('slug'),
+            $this->input('created_at'),
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),

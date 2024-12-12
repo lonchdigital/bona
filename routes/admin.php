@@ -49,6 +49,7 @@ use App\Http\Actions\Admin\Dashboard\Pages\ShowDashboardPageAction;
 use App\Http\Actions\Admin\HomePage\HomePageEditAction;
 use App\Http\Actions\Admin\HomePage\Pages\ShowHomePageEditPageAction;
 
+use App\Http\Actions\Admin\Products\ProductEditCreatedAtAction;
 use App\Http\Actions\Admin\Services\Pages\ShowServiceEditPageAction;
 use App\Http\Actions\Admin\Services\ServiceEditAction;
 
@@ -342,6 +343,9 @@ Route::prefix('admin')->middleware([
 
         //Delete
         Route::name('admin.product.delete')->post('{product}/delete', ProductDeleteAction::class);
+
+        //Edit created at
+        Route::name('admin.product.edit.created')->post('{product}/edit/created_at', ProductEditCreatedAtAction::class);
     });
 
     //Orders

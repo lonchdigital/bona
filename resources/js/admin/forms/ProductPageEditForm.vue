@@ -12,6 +12,7 @@ import ProductVideosComponent from "../components/ProductVideosComponent.vue";
 import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
 import ProductAttributesComponent from "../components/ProductAttributesComponent.vue";
 import TextAreaComponent from "../components/TextAreaComponent.vue";
+import DatePickerComponent from "../components/DatePickerComponent.vue";
 import * as transliteration from 'transliteration';
 
 
@@ -27,7 +28,8 @@ export default {
         ImageFileInputComponent,
         ProductAttributesComponent,
         HomePageFaqComponent,
-        TextAreaComponent
+        TextAreaComponent,
+        DatePickerComponent
     },
     props: {
         submitRoute: {
@@ -202,7 +204,11 @@ export default {
         seoText: {
             type: Object,
             default: [],
-        }
+        },
+        productCreatedAt: {
+            type: String,
+            default: '',
+        },
 
     },
     data() {
@@ -227,6 +233,7 @@ export default {
             productSlugData: '',
             faqDeleted: false,
             faqs: [],
+            createdAt: '',
         }
     },
     created() {
@@ -235,6 +242,10 @@ export default {
     mounted() {
         this.selectedLanguage = this.baseLanguage;
         this.productSlugData = this.productSlug;
+
+        if (this.productCreatedAt) {
+            this.createdAt = this.productCreatedAt;
+        }
 
         if (this.productCharacteristics) {
             this.characteristics = this.productCharacteristics;
@@ -831,6 +842,16 @@ export default {
                     :init-data="productMetaTags"
                     :errors="errors"
                 />
+
+                <div class="form-group mb-3" v-if="productCreatedAt">
+                    <date-picker-component
+                        :title="$t('admin.created_at')"
+                        name="created_at"
+                        :is-required="false"
+                        v-model="createdAt"
+                        :errors="errors"
+                    />
+                </div>
 
             </div>
         </div>

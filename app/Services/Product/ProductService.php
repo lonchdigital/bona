@@ -58,19 +58,14 @@ class ProductService extends BaseService
         $query = Product::query();
 
         $query->with([
-//            'collection',
             'brand',
-//            'color',
             'creator',
-//            'children.brand',
-//            'children.color',
-//            'children.collection',
-//            'children.creator',
         ]);
 
         $query = $this->filtersAdminService->handleProductFilters($request, $query);
 
         return $query->where('product_type_id', $productTypeId)
+            ->orderBy('created_at', 'desc')
             ->paginate(config('domain.items_per_page'));
     }
 
@@ -93,7 +88,10 @@ class ProductService extends BaseService
 
     public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query()->orderByAvailabilityStatus();
+        $query = Product::query()
+            ->orderByAvailabilityStatus()
+            ->orderBy('created_at', 'desc');
+
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
         return $query->where(function($query) use ($productType) {
@@ -106,7 +104,9 @@ class ProductService extends BaseService
 
     public function getAllProductsPaginated(FilterProductDTO $request,int $perPage, int $page, array $allFilters): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query()->orderByAvailabilityStatus();
+        $query = Product::query()
+            ->orderByAvailabilityStatus()
+            ->orderBy('created_at', 'desc');
 
         $query = $this->filterService->handleAllProductFilters($request->filters, $query, false, $allFilters);
 
@@ -199,7 +199,9 @@ class ProductService extends BaseService
 
     public function getProductsByColorPaginated(int $perPage, int $page, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return Product::orderByAvailabilityStatus()->whereHas('colors', function($query) use ($color) {
+        return Product::orderByAvailabilityStatus()
+            ->orderBy('created_at', 'desc')
+            ->whereHas('colors', function($query) use ($color) {
             $query->where('colors.id', $color->id);
         })
             ->paginate($perPage, ['*'], null, $page);
@@ -213,7 +215,9 @@ class ProductService extends BaseService
         })
             ->paginate($perPage, ['*'], null, $page);*/
 
-        return Product::orderByAvailabilityStatus()->where('product_type_id', $productType->id)
+        return Product::orderByAvailabilityStatus()
+            ->orderBy('created_at', 'desc')
+            ->where('product_type_id', $productType->id)
             ->where(function($query) use ($color) {
                 $query->where('main_color_id', $color->id)
                     ->orWhereHas('colors', function($query) use ($color) {
@@ -232,7 +236,9 @@ class ProductService extends BaseService
 
     public function getProductsByFieldPaginated(int $perPage, int $page, ProductField $productField, string $productOptionID)
     {
-        return Product::orderByAvailabilityStatus()->whereJsonContains('custom_fields', [$productField->id => $productOptionID])
+        return Product::orderByAvailabilityStatus()
+            ->orderBy('created_at', 'desc')
+            ->whereJsonContains('custom_fields', [$productField->id => $productOptionID])
             ->paginate($perPage, ['*'], null, $page);
     }
 
@@ -262,7 +268,9 @@ class ProductService extends BaseService
 
     public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query()->orderByAvailabilityStatus();
+        $query = Product::query()
+            ->orderByAvailabilityStatus()
+            ->orderBy('created_at', 'desc');
 
         /*return $query->where('brand_id', $brandId)
             ->paginate($perPage, '*', null, $page);*/
@@ -284,7 +292,9 @@ class ProductService extends BaseService
 
     public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = Product::query()->orderByAvailabilityStatus();
+        $query = Product::query()
+            ->orderByAvailabilityStatus()
+            ->orderBy('created_at', 'desc');
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
@@ -581,6 +591,7 @@ class ProductService extends BaseService
                 'sub_products' => $request->selectedSubProductsId,
                 'name' => $request->name,
                 'slug' => $request->slug,
+                'created_at' => $request->createdAt,
                 'old_price' => $request->oldPrice,
                 'price' => $request->price,
 //                'price_in_currency' => $request->priceInCurrency,

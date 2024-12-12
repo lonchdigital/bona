@@ -138,7 +138,23 @@
 {{--                                                        <td>{{ $product->brand->name }}</td>--}}
 {{--                                                        <td>{{ $product->collection->name }}</td>--}}
                                                         <td>{{ $product->creator->first_name }} {{ $product->creator->last_name }}</td>
-                                                        <td class="text-center">{{ $product->created_at->format('d-m-Y') }}</td>
+                                                        <td class="text-center">
+
+                                                            <span class="mr-2">{{ $product->created_at->format('Y-m-d H:i:s') }}</span>
+
+                                                            <a href="#" data-toggle="modal" data-target="#editCreatedAtProductModal-{{ $product->id }}" class="link-edit-pen">
+                                                                <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+                                                                <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+                                                                <svg fill="#000000" height="800px" width="800px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512">
+                                                                    <g>
+                                                                        <g>
+                                                                            <path d="m455.1,137.9l-32.4,32.4-81-81.1 32.4-32.4c6.6-6.6 18.1-6.6 24.7,0l56.3,56.4c6.8,6.8 6.8,17.9 0,24.7zm-270.7,271l-81-81.1 209.4-209.7 81,81.1-209.4,209.7zm-99.7-42l60.6,60.7-84.4,23.8 23.8-84.5zm399.3-282.6l-56.3-56.4c-11-11-50.7-31.8-82.4,0l-285.3,285.5c-2.5,2.5-4.3,5.5-5.2,8.9l-43,153.1c-2,7.1 0.1,14.7 5.2,20 5.2,5.3 15.6,6.2 20,5.2l153-43.1c3.4-0.9 6.4-2.7 8.9-5.2l285.1-285.5c22.7-22.7 22.7-59.7 0-82.5z"/>
+                                                                        </g>
+                                                                    </g>
+                                                                </svg>
+                                                            </a>
+
+                                                        </td>
                                                         <td class="text-right">
                                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                 <span class="text-muted sr-only">{{ trans('admin.action') }}</span>
@@ -187,9 +203,39 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="editCreatedAtProductModal-{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="defaultModalLabel">{{ trans('admin.edit_created_at') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('admin.product.edit.created', ['productType' => $product->product_type_id, 'product' => $product->id]) }}" method="POST">
+                        @csrf
+
+                        <div class="modal-body">
+                            <span>{{ trans('admin.edit_created_at_for_product', ['PRODUCT_NAME' => $product->name]) }}</span>
+                            <div class="mt-2">
+                                <input type="text" class="datepicker form-control" name="created_at" value="{{ $product->created_at->format('Y-m-d H:i:s') }}">
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('admin.close') }}</button>
+                            <button type="submit" class="btn btn-outline-info">{{ trans('admin.edit') }}</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
     @endforeach
 @endsection
 @push('scripts')
+    @vite('resources/js/admin/date-picker.js')
+
     <script src="/static-admin/js/jquery-helpers.js"></script>
     <script>
         $('#country_id').select2({
