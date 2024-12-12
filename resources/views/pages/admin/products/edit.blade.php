@@ -116,6 +116,7 @@
                             :product-meta-description="{{ json_encode($product->getTranslations('meta_description')) }}"
                             :product-meta-keywords="{{ json_encode($product->getTranslations('meta_keywords')) }}"
                             :product-meta-tags="{{ json_encode($product['meta_tags']) }}"
+                            :product-created-at="{{ json_encode($product->created_at->format('Y-m-d H:i:s')) }}"
                         @endif
 
 

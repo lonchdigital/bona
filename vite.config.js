@@ -35,6 +35,7 @@ export default defineConfig(({ mode }) => {
                 input: [
                     'resources/js/admin/app.js',
                     'resources/js/admin/scripts.js',
+                    'resources/js/admin/date-picker.js',
 
                     'resources/scss/libs.scss',
                     'resources/scss/main.scss',
