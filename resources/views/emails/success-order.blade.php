@@ -35,7 +35,7 @@
                                                             <img class="order-product-image" src="{{ $product->preview_image_full_url }}" alt="Product image">
                                                         </a>
                                                     </td>
-                                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a></td>
+                                                    <td class="art-column-name"><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a></td>
                                                     <td>
                                                         @if($product->pivot->attributes)
                                                             @php

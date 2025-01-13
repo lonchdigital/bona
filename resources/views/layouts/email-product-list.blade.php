@@ -274,8 +274,17 @@
             display: block;
             margin: 0 auto;
         }
+        .art-product-list .art-product-row .art-column-name {
+            padding: 0 20px;
+        }
         .art-product-list .art-product-row td {
             vertical-align: middle;
+        }
+
+        @media (max-width: 767px) {
+            .art-product-list .art-product-row .art-column-name {
+                min-width: 250px;
+            }
         }
 
 
