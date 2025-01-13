@@ -334,7 +334,7 @@ Route::prefix('payment')->group(function () {
     Route::name('payment.update-payment-status')->get('/update/{order}', UpdateOrderPaymentStatusAction::class);
 });
 
-/*Route::get('/testttt', function() {
+Route::get('/testttt', function() {
     $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
     $instagramFeed = $profile?->feed();
 
@@ -350,6 +350,6 @@ Route::prefix('payment')->group(function () {
     } else {
         return response()->json(['error' => 'Profile not found'], 404);
     }
-});*/
+});
 
 Route::name('robots.txt.content')->get('robots.txt', ShowRobotsTxtFileContent::class);
