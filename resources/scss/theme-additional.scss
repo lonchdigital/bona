@@ -9563,9 +9563,10 @@ section.art-contacts-page-section {
         .swiper-button-prev,
         .swiper-button-next {
             color: #c5c5c5;
-            width: calc(30px / 44* 27);
-            height: 30px;
-            margin-top: calc(0px - 30px / 2);
+            /*width: calc(30px / 44* 27);*/
+            width: 60px;
+            height: 70px; // 30
+            margin-top: -40px; // calc(0px - 30px / 2)
 
             &:after {
                 font-size: 30px;
