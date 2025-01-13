@@ -6660,6 +6660,10 @@ select:focus {
                     line-height: 16px;
                     display: block;
                     margin-top: 10px;
+
+                    &.art-available {
+                        color: green;
+                    }
                 }
 
             }
