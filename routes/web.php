@@ -337,8 +337,9 @@ Route::prefix('payment')->group(function () {
 Route::get('/testttt', function() {
     $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
     $instagramFeed = $profile?->feed();
+    $instagramFeedTwo = $profile?->refreshFeed();
 
-    dd('hello?', $profile, $instagramFeed);
+    dd('hello?', $profile, $instagramFeed, $instagramFeedTwo);
 
     if ($profile !== null) {
         try {
