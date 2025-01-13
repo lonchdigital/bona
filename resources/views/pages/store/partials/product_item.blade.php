@@ -21,7 +21,7 @@
                     </span>
 
                 </div>
-                <span class="availability-status">{{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}</span>
+                <span class="availability-status{{ ($product->availability_status_id === \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_STOCK) ? ' art-available' : '' }}">{{ \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id)['name'] }}</span>
             </div>
         </a>
     </div>
