@@ -47,6 +47,7 @@ export function init () {
 
     // home slider icons
     let HomeSliderIcons= new Swiper(".swiper.owl-icons", {
+        loop: true,
         slidesPerView: 6,
         spaceBetween: 30,
         navigation: {
