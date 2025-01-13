@@ -231,7 +231,7 @@ class ProductService extends BaseService
                         }
                     });
             })
-            ->paginate($perPage, ['*'], null, $page);
+            ->paginate($perPage);
     }
 
     public function getProductsByFieldPaginated(int $perPage, int $page, ProductField $productField, string $productOptionID)
