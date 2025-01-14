@@ -50,7 +50,7 @@ class ShowCatalogPageAction extends BaseAction
         $productsPaginated = $productService->getProductsByTypePaginated(
             $productType,
             $filtersData,
-            $filtersData->filters['per_page'] ?? 1, //was 18
+            $filtersData->filters['per_page'] ?? 18,
             $page,
         );
 
