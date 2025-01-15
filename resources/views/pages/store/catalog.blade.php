@@ -24,8 +24,6 @@
 
     @include('pages.store.partials.page_header', ['links' => [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) => $productType->name]])
 
-
-    {{--    @dd($selectedCategory)--}}
     <!-- ======================== Products ======================== -->
     <section class="products art-products-catalog">
         <div class="container">
@@ -48,6 +46,7 @@
                         </div>
 
                         <form action="#" id="filter-left-form">
+{{--                            @dd($filters)--}}
 
                             @include('pages.store.partials.sidebar_filters', ['filters' => $filters, 'filtersData' => $filtersData, 'productsMaxPrice' => $productsMaxPrice, 'productStatuses' => $productStatuses])
 

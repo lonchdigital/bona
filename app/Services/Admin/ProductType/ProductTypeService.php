@@ -265,28 +265,6 @@ class ProductTypeService extends BaseService
         });
     }
 
-    // TODO:: I had to change the request. Remove if I do not need it
-    /*public function searchAdditionalProducts($productType, array $request)
-    {
-        $query = Product::query();
-
-        if( !is_null($request['excludePostIds']) ) {
-            $excludePostIds = explode(",", $request['excludePostIds']);
-            $query->whereNotIn('id', $excludePostIds);
-        }
-
-        if( !is_null($request['search']) ) {
-            $searchTerm = str_replace(' ', '\s*', $request['search']);
-            $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
-            $query->where('name', 'REGEXP', '.*' . $searchTerm . '.*')
-                ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request['search']) . '%']);
-        }
-
-        return [
-            'documents' => $query->select(['id', 'name'])->limit(6)->get()
-        ];
-    }*/
-
     public function searchAdditionalProducts($productType, array $request)
     {
         $query = Product::query();
