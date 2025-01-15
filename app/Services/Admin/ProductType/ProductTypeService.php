@@ -292,14 +292,17 @@ class ProductTypeService extends BaseService
         $query = Product::query();
 
         if (!is_null($request['excludePostIds'])) {
-            $excludePostIds = explode(",", $request['excludePostIds']);
+//            $excludePostIds = explode(",", $request['excludePostIds']);
+            $excludePostIds = array_map('intval', explode(",", $request['excludePostIds']));
             $query->whereNotIn('id', $excludePostIds);
         }
 
-        if (!is_null($request['search'])) {
+        if ( !is_null($request['search']) ) {
             $searchTerm = '%' . $request['search'] . '%';
-            $query->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm])
-                ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk"))) LIKE ?', [$searchTerm, $searchTerm]);
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm])
+                    ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk"))) LIKE ?', [$searchTerm, $searchTerm]);
+            });
         }
 
         return [
