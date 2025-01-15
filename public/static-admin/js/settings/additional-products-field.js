@@ -75,21 +75,24 @@ $(function() {
 
     function ajaxThematicFilter(success, fail, searchValue, excludeAdditionalProductIds)
     {
+        if( searchValue.length > 2 ) {
 
-        $.ajax({
-            url: additional_product_search_route,
-            type: 'post',
-            data: {
-                _token: csrf,
-                search: searchValue,
-                excludePostIds: excludeAdditionalProductIds
-            },
-            dataType: 'json'
-        }).done(function(data) {
-            success(data);
-        }).fail(function () {
-            fail();
-        });
+            $.ajax({
+                url: additional_product_search_route,
+                type: 'post',
+                data: {
+                    _token: csrf,
+                    search: searchValue,
+                    excludePostIds: excludeAdditionalProductIds
+                },
+                dataType: 'json'
+            }).done(function(data) {
+                success(data);
+            }).fail(function () {
+                fail();
+            });
+
+        }
     }
 
 
