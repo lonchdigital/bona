@@ -788,8 +788,43 @@ class ProductFiltersService extends BaseService
         return $query;
     }
 
+
+    // TODO:: old getFiltersByProductType
+//    public function getFiltersByProductType(ProductType $productType): array
+//    {
+//        $mainFilters = collect();
+//        $fullFilters = [
+//            'left' => collect(),
+//            'middle' => collect(),
+//            'right' => collect(),
+//        ];
+//
+//        foreach ($productType->fields as $filed) {
+//            if ($filed->pivot->show_as_filter) {
+//                if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_LEFT) {
+//                    $fullFilters['left'][] = $filed;
+//                }
+//                /*if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_MIDDLE) {);
+//                    $fullFilters['middle'][] = $filed;
+//                }*/
+//            }
+//
+//
+//            if ($filed->pivot->show_as_filter && $filed->pivot->show_on_main_filters_list) {
+//                $mainFilters[] = $filed;
+//            }
+//        }
+//
+//        return [
+//            'main' => $mainFilters,
+//            'full' => $fullFilters,
+//        ];
+//    }
+
     public function getFiltersByProductType(ProductType $productType): array
     {
+        $allFields = $productType->fields()->distinct()->get(); // TODO:: all magic here
+
         $mainFilters = collect();
         $fullFilters = [
             'left' => collect(),
@@ -797,20 +832,15 @@ class ProductFiltersService extends BaseService
             'right' => collect(),
         ];
 
-        foreach ($productType->fields as $filed) {
-            if ($filed->pivot->show_as_filter) {
-                if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_LEFT) {
-                    $fullFilters['left'][] = $filed;
+        foreach ($allFields as $field) {
+            if ($field->pivot->show_as_filter) {
+                if ($field->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_LEFT) {
+                    $fullFilters['left'][] = $field;
                 }
-                /*if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_MIDDLE) {);
-                    $fullFilters['middle'][] = $filed;
-                }*/
             }
 
-
-
-            if ($filed->pivot->show_as_filter && $filed->pivot->show_on_main_filters_list) {
-                $mainFilters[] = $filed;
+            if ($field->pivot->show_as_filter && $field->pivot->show_on_main_filters_list) {
+                $mainFilters[] = $field;
             }
         }
 
