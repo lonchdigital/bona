@@ -165,7 +165,7 @@
                                                                 </div>
                                                                 <div class="checkbox checkbox-white agreement-line agree-field">
                                                                     <input type="checkbox" name="agree" value="1">
-                                                                    <label>{{ trans('base.agreement_line_start') . ' ' . trans('base.agreement_line_end') }}</label>
+                                                                    <label>{{ trans('base.agreement_line_start') . ' ' }}<a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}" class="color-white">{{ trans('base.agreement_line_end') }}</a></label>
                                                                 </div>
                                                                 <input type="hidden" name="event" value="submit_form_order_count">
                                                                 <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>

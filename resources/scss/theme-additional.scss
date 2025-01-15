@@ -564,6 +564,14 @@ input, textarea, select {
 .checkbox label a {
     color: #8b8b8b;
     text-decoration: underline;
+
+    &.color-white {
+        color: #fff;
+    }
+}
+
+.color-white {
+    color: #fff;
 }
 
 .checkbox label a:hover {
