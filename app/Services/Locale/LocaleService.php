@@ -20,6 +20,11 @@ class LocaleService extends BaseService
     public static function generateLinkByLocale(string $currentLink, string $currentLocale, string $newLocale): string
     {
         $urlParsed = parse_url($currentLink);
+
+        if ($urlParsed === false || !isset($urlParsed['scheme'], $urlParsed['host'])) {
+            return $currentLink;
+        }
+
         $port = isset($urlParsed['port']) ? ':' . $urlParsed['port'] : '';
         $newUrl = $urlParsed['scheme'] . '://' . $urlParsed['host'] . $port;
         $currentPath = isset($urlParsed['path']) ? $urlParsed['path'] : '';
