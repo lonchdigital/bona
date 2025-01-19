@@ -6,12 +6,13 @@
             <div class="col-12">
                 <h2 class="page-title">{{ trans('admin.home_page_edit_heading') }}</h2>
 
-{{--                @dd($allProductTypes)--}}
+{{--                @dd($brands, 'hello')--}}
 
                 <home-page-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
                     product-search-route="{{ route('admin.product.list.all') }}"
+                    brand-search-route="{{ route('admin.brand.list.all') }}"
                     submit-route="{{ route('admin.home-page.edit') }}"
                     :available-products="{{ json_encode($products) }}"
                     :wallpapers-fields="{{ json_encode($fields) }}"
@@ -41,6 +42,10 @@
 
                     @if(count($selectedBestSalesProducts))
                         :selected-best-sales-products="{{ json_encode($selectedBestSalesProducts) }}"
+                    @endif
+
+                    @if(count($brands))
+                        :selected-brands="{{ json_encode($brands) }}"
                     @endif
 
                     @if(count($selectedProductFieldOptions))

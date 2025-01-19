@@ -8,6 +8,7 @@ use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticleEditPageAction;
 use App\Http\Actions\Admin\BlogArticles\Pages\ShowBlogArticlesListPageAction;
 use App\Http\Actions\Admin\BlogPage\Pages\ShowBlogPageEditPageAction;
 use App\Http\Actions\Admin\BlogPage\BlogPageEditAction;
+use App\Http\Actions\Admin\Brands\GetAllBrandsBySearchAction;
 use App\Http\Actions\Admin\LogoutAction;
 use App\Http\Actions\Admin\Orders\MonoBankConfirmOrderAction;
 use App\Http\Actions\Admin\Orders\MonoBankRejectOrderAction;
@@ -268,6 +269,9 @@ Route::prefix('admin')->middleware([
 
     //Brands
     Route::prefix('brand')->group(function () {
+        // search
+        Route::name('admin.brand.list.all')->get('/search', GetAllBrandsBySearchAction::class);
+
         //List
         Route::name('admin.brand.list.page')->get('/', ShowBrandsListPageAction::class);
 //        Route::name('admin.brand.collections.list')->get('{brand}/collections', GetCollectionsByBrandAction::class);

@@ -2,9 +2,10 @@
 import axios from "axios";
 import MultiLanguageInputComponent from "./MultiLanguageInputComponent.vue";
 import DateInputComponent from "../components/DateInputComponent.vue";
+import SelectComponent from "../components/SelectComponent.vue";
 
 export default {
-    components: {MultiLanguageInputComponent, DateInputComponent},
+    components: {MultiLanguageInputComponent, DateInputComponent, SelectComponent},
     props: {
         testimonialId: {
             type: Number,

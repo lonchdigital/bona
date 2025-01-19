@@ -640,7 +640,7 @@
                 <div class="swiper-wrapper">
                     @foreach( $brands as $brand )
                         <div class="swiper-slide">
-                            @include('pages.store.partials.brand_item', ['brand' => $brand])
+                            @include('pages.store.partials.brand_item', ['brand' => $brand->brand])
                         </div>
                     @endforeach
                 </div>

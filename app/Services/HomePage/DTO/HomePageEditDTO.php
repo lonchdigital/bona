@@ -16,12 +16,10 @@ class HomePageEditDTO implements BaseDTO
         public readonly ?array $selectedProductTypes,
         public readonly ?array $selectedProductsId,
         public readonly ?array $selectedBestSalesProductsId,
+        public readonly ?array $selectedBrandsId,
         public readonly ?array $testimonials,
         public readonly ?array $faqs,
         public readonly ?array $seoTitle,
         public readonly ?array $seoText,
-
-//        public readonly int $selectedFieldId,
-//        public readonly array $selectedOptionsId,
     ){ }
 }
