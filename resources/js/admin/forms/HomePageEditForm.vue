@@ -7,6 +7,7 @@ import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
 import TextAreaComponent from "../components/TextAreaComponent.vue";
+import SelectComponent from "../components/SelectComponent.vue";
 
 export default {
     components: {MultiLanguageRichTextEditorComponent,
@@ -14,7 +15,8 @@ export default {
         HomePageTestimonialComponent,
         HomePageFaqComponent,
         MultiLanguageInputComponent,
-        TextAreaComponent
+        TextAreaComponent,
+        SelectComponent
     },
     props: {
         submitRoute: {
@@ -30,6 +32,10 @@ export default {
             default: '',
         },
         productSearchRoute: {
+            type: String,
+            default: '',
+        },
+        brandSearchRoute: {
             type: String,
             default: '',
         },
@@ -93,6 +99,10 @@ export default {
             type: Array,
             default: [],
         },
+        selectedBrands: {
+            type: Array,
+            default: [],
+        },
         wallpapersByFieldId: {
             type: Number,
             default: null,
@@ -129,8 +139,10 @@ export default {
             collections: [],
             productTypes: [],
             products: [],
+            brands: [],
             selectedNewProductsShow: [],
             selectedBestSalesProductsShow: [],
+            selectedBrandsShow: [],
             selectedFieldId: null,
             selectedOptions: [],
             errors: [],
@@ -138,7 +150,6 @@ export default {
     },
     mounted() {
         this.selectedLanguage = this.baseLanguage;
-
 
         if (this.sliderSlides) {
             this.slides = this.sliderSlides;
@@ -148,13 +159,12 @@ export default {
             this.testimonials = this.testimonialList;
         }
 
-        console.log( this.testimonials );
-
         if (this.faqList) {
             this.faqs = this.faqList;
         }
 
         this.loadProducts('');
+        this.loadBrands('');
 
         if (this.wallpapersByFieldId) {
             this.selectedFieldId = this.wallpapersByFieldId;
@@ -188,6 +198,18 @@ export default {
                 } else {
                     this.loadProducts('');
                 }
+            });
+        }
+
+        if( Array.isArray(this.selectedBrands) ) {
+            this.selectedBrands.forEach((item, i) => {
+                if (item.brand && item.brand.hasOwnProperty('id') && item.brand.hasOwnProperty('name')) {
+                    this.selectedBrandsShow.push(item.brand.id);
+                    this.brands.push({id: item.brand.id, text: item.brand.name[this.selectedLanguage]});
+                } else {
+                    this.loadBrands('');
+                }
+
             });
         }
 
@@ -231,8 +253,6 @@ export default {
             this.selectedLanguage = newSelectedLanguage;
         },
         handleFormSubmit(errors) {
-            console.log('33333333333333333');
-            console.log(errors);
             this.errors = errors;
         },
         loadCollections(query) {
@@ -247,6 +267,13 @@ export default {
                 this.products = result.data.data;
             }).catch(() => {
                 this.products = [];
+            });
+        },
+        loadBrands(query) {
+            axios.get(this.brandSearchRoute + '?query=' + query).then((result) => {
+                this.brands = result.data.data;
+            }).catch(() => {
+                this.brands = [];
             });
         },
     }
@@ -424,6 +451,22 @@ export default {
                 </div>
 
 
+
+                <p class="mt-4"></p>
+
+                <select-component
+                    :is-multi-select="true"
+                    :model-value="selectedBrandsShow"
+                    :title="$t('admin.brands')"
+                    :options="brands"
+                    label="text"
+                    value-prop="id"
+                    name="selected_brands_id"
+                    :max-items="6"
+                    @search-change="(query) => loadProducts(query)"
+                    :is-required="false"
+                    :errors="errors"
+                />
 
 
 

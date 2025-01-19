@@ -58,6 +58,10 @@ class HomePageEditRequest extends BaseRequest
                 'nullable',
                 'exists:products,id',
             ],
+            'selected_brands_id' => [
+                'nullable',
+                'exists:brands,id',
+            ],
             /*'selected_field_id' => [
                 'required',
                 'exists:product_fields,id',
@@ -197,13 +201,11 @@ class HomePageEditRequest extends BaseRequest
             explode(',', $this->input('selected_product_types')),
             explode(',', $this->input('selected_products_id')),
             explode(',', $this->input('selected_best_sales_products_id')),
+            explode(',', $this->input('selected_brands_id')),
             $this->validated('testimonials'),
             $this->validated('faqs'),
             $this->input('seo_title'),
             $this->input('seo_text'),
-
-//            $this->input('selected_field_id'),
-//            explode(',', $this->input('selected_field_options_id')),
         );
     }
 }

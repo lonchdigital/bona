@@ -32,8 +32,6 @@ class HomePageService extends BaseService
     {
         return $this->coverWithDBTransaction(function () use($request) {
 
-//            dd('edit HOME PAGE', $request);
-
             $homePageConfig = $this->getHomePageConfig();
             $dataToUpdate = [
                 'meta_title' => $request->metaTitle,
@@ -56,6 +54,7 @@ class HomePageService extends BaseService
 
             $this->syncNewProducts($request->selectedProductsId);
             $this->syncBestSalesProducts($request->selectedBestSalesProductsId);
+            $this->syncBrands($request->selectedBrandsId);
 
              return ServiceActionResult::make(true, trans('admin.home_page_edit_success'));
         });
