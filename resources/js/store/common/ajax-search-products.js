@@ -37,7 +37,7 @@ function searchProductsMainHeader(query, success, fail)
 {
     const product_search_route = routes.product.product_search_route;
 
-    if( query.length >= 4 ) {
+    if( query.length >= 3 ) {
 
         $.ajax({
             url: product_search_route,
