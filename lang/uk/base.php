@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'client_testimonials' => 'Відгуки клиієнтів',
     'choose_language_to_display_website' => 'На якій мові бажаєте переглядати сайт',
     'choose_language' => 'Оберіть мову',
     'site_title' => 'Інтернет-магазин дверей!',

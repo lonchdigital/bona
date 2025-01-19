@@ -30,7 +30,18 @@
 </head>
 <body class="vertical  light  ">
 <div class="wrapper" id="app">
-    <nav class="topnav navbar navbar-light d-flex justify-content-end">
+    <nav class="topnav navbar navbar-light d-flex justify-content-between">
+        <ul class="nav">
+            <li class="nav-item nav-notif">
+                <a href="#" id="admin-side-menu-toggle" class="nav-link text-muted my-2">
+                    <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </a>
+            </li>
+        </ul>
         <ul class="nav">
             @foreach(app()->make(\App\Services\Application\ApplicationConfigService::class)->getAvailableLanguages() as $availableLanguage)
                 @if (mb_strtoupper($availableLanguage) !== mb_strtoupper(app()->getLocale()))
@@ -50,7 +61,7 @@
         </ul>
     </nav>
     <aside class="sidebar-left border-right bg-white shadow" id="leftSidebar" data-simplebar>
-        <a href="#" class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
+        <a href="#" class="btn toggle-btn d-lg-none text-muted ml-2 mt-3" id="adminCloseSideMenu">
             <i class="fe fe-x"><span class="sr-only"></span></i>
         </a>
         <nav class="vertnav navbar navbar-light">

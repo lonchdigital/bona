@@ -491,7 +491,7 @@
 
             <!-- === quotes header === -->
             <header>
-                <h2 class="title h2">{{ trans('base.what_clients_say') }}</h2>
+                <h2 class="title h2">{{ trans('base.client_testimonials') }}</h2>
             </header>
 
             <div class="row">

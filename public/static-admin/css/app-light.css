@@ -7510,6 +7510,20 @@ button:focus {
 .vertnav .dropdown-toggle::after {
   float: right; }
 
+#admin-side-menu-toggle {
+    padding-left: 0;
+    display: none;
+}
+#admin-side-menu-toggle svg {
+    width: 30px;
+    height: 30px;
+}
+@media (max-width: 991px) {
+    #admin-side-menu-toggle {
+        display: block;
+    }
+}
+
 .vertical .sidebar-left,
 .vertical.hover .sidebar-left,
 .narrow.open .sidebar-left {
