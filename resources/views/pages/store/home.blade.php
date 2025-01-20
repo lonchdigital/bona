@@ -36,21 +36,34 @@
         <div class="swiper owl-slider art-slider-pc">
             <div class="swiper-wrapper">
                 @foreach($slides as $slide)
-                    <div class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }})" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
+                    @if($slide->slide_url)
+                        <a href="{{ $slide->slide_url }}" class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }})" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
+                    @else
+                        <div class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }})" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
+                    @endif
+
                         <div class="box">
                             <div class="container">
                                 <h2 class="title animated h1" data-animation="fadeInDown">{{ $slide->title }}</h2>
                                 <div class="slider-description animated font-two" data-animation="fadeInUp">{!! $slide->description !!}</div>
-                                <div class="animated text-center" data-animation="fadeInUp">
-                                    @if($slide->button_url == '#')
-                                        <a href="#" class="btn btn-empty" data-fancybox data-src="#dialog-call-consultation">{{ $slide->button_text }}</a>
-                                    @else
-                                        <a href="{{ $slide->button_url }}" class="btn btn-empty">{{ $slide->button_text }}</a>
-                                    @endif
-                                </div>
+                                @if($slide->display_button && !$slide->slide_url)
+                                    <div class="animated text-center" data-animation="fadeInUp">
+                                        @if($slide->button_url == '#')
+                                            <a href="#" class="btn btn-empty" data-fancybox data-src="#dialog-call-consultation">{{ $slide->button_text }}</a>
+                                        @else
+                                            <a href="{{ $slide->button_url }}" class="btn btn-empty">{{ $slide->button_text }}</a>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    </div>
+
+                    @if($slide->slide_url)
+                        </a>
+                    @else
+                        </div>
+                    @endif
+
                 @endforeach
             </div>
             <div class="swiper-pagination"></div>

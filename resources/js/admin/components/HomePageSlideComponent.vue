@@ -1,6 +1,7 @@
 <script>
 import axios from "axios";
 import MultiLanguageInputComponent from "./MultiLanguageInputComponent.vue";
+// import CheckBoxComponent from "./CheckBoxComponent";
 
 export default {
     components: {MultiLanguageInputComponent},
@@ -46,12 +47,22 @@ export default {
 </script>
 
 <template>
-    <div class="row art-repeater-row" :key="slideId">
+
+    <div class="col-md-4 art-repeater-row" :key="slideId">
         <div class="col">
             <div class="row">
                 <div class="col">
                     <input type="hidden" v-if="slideId !== null" :name="'slides[' + index + '][id]'" :value="slideId">
 
+                    <div class="form-group mb-3">
+                        <input-component
+                            :title="$t('admin.slide_url')"
+                            :name="'slides[' + index + '][slide_url]'"
+                            :model-value="slide.hasOwnProperty('slide_url') ? slide.slide_url : []"
+                            :errors="errors"
+                            :is-required="true"
+                        />
+                    </div>
 
                     <multi-language-input-component
                         :title="$t('admin.slide_title')"
@@ -89,6 +100,14 @@ export default {
                         :is-required="true"
                         :errors="errors"
                         :init-data="slide.hasOwnProperty('slide_image_mobile_url') ? slide.slide_image_mobile_url : null"
+                    />
+
+                    <check-box-component
+                        :title="$t('admin.display_button')"
+                        v-model="slide.display_button"
+                        :name="'slides[' + index + '][display_button]'"
+                        :isRequired="false"
+                        :errors="errors"
                     />
 
                     <multi-language-input-component

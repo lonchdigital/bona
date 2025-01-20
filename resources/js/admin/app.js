@@ -21,6 +21,7 @@ import VideoBlockComponent from "./components/blogArticleBlockComponents/VideoBl
 import SliderBlockComponent from "./components/blogArticleBlockComponents/SliderBlockComponent.vue";
 import QuestionsAndAnswersBlockComponent from "./components/blogArticleBlockComponents/QuestionsAndAnswersBlockComponent.vue";
 import InputComponent from "./components/InputComponent.vue";
+import CheckBoxComponent from "./components/CheckBoxComponent.vue";
 import SelectComponent from "./components/SelectComponent.vue";
 import SelectColorComponent from "./components/SelectColorComponent.vue";
 import ReactiveFormContainer from "./containers/ReactiveFormContainer.vue";
@@ -70,6 +71,7 @@ app.component('video-block-component', VideoBlockComponent);
 app.component('slider-block-component', SliderBlockComponent);
 app.component('questions-and-answers-block-component', QuestionsAndAnswersBlockComponent);
 app.component('input-component', InputComponent);
+app.component('check-box-component', CheckBoxComponent);
 app.component('select-component', SelectComponent);
 app.component('select-color-component', SelectColorComponent);
 app.component('reactive-form-container', ReactiveFormContainer);

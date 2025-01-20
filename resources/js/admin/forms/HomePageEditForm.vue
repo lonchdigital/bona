@@ -328,22 +328,25 @@ export default {
                         {{ $t('admin.slider') }}
                     </strong>
                 </p>
-                <home-page-slide-component
-                    v-for="(slide, index) in slides"
-                    :slide-id="slide.hasOwnProperty('id') ? slide.id : null"
-                    :slide="slide"
-                    :index="index"
-                    :base-language="baseLanguage"
-                    :selected-language="selectedLanguage"
-                    :available-languages="availableLanguages"
-                    :errors="errors"
-                    @delete-slide="() => deleteSlide(index)"
-                />
+                <div class="row">
+                    <home-page-slide-component
+                        v-for="(slide, index) in slides"
+                        :slide-id="slide.hasOwnProperty('id') ? slide.id : null"
+                        :slide="slide"
+                        :index="index"
+                        :base-language="baseLanguage"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        @delete-slide="() => deleteSlide(index)"
+                    />
+                </div>
                 <div class="row">
                     <div class="col">
                         <a href="#" id="add-option" class="btn mb-2 btn-secondary" @click.prevent="addSlide"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.slide_add')}}</a>
                     </div>
                 </div>
+
 
 
                 <p class="mt-4"></p>

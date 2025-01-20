@@ -86,6 +86,14 @@ class HomePageEditRequest extends BaseRequest
                     'required',
                     'string'
                 ];
+                $rules['slides.' . $index . '.slide_url'] = [
+                    'nullable',
+                    'string'
+                ];
+                $rules['slides.' . $index . '.display_button'] = [
+                    'nullable',
+                    'boolean'
+                ];
             }
         }
 
