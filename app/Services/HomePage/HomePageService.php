@@ -30,6 +30,7 @@ class HomePageService extends BaseService
 
     public function editHomePage(HomePageEditDTO $request): ServiceActionResult
     {
+//        dd($request->slides);
         return $this->coverWithDBTransaction(function () use($request) {
 
             $homePageConfig = $this->getHomePageConfig();
@@ -108,9 +109,11 @@ class HomePageService extends BaseService
         if ($slides) {
             foreach ($slides as $slide) {
                 $dataToUpdate = [
+                    'slide_url' => $slide['slide_url'],
                     'title' => $slide['title'],
                     'description' => $slide['description'],
                     'button_text' => $slide['button_text'],
+                    'display_button' => $slide['display_button'],
                     'button_url' => $slide['button_url']
                 ];
 
