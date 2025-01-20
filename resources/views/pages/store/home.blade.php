@@ -99,6 +99,11 @@
                                         <input type="text" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}">
                                     </div>
                                 </div>
+                                <div class="art-fields-row">
+                                    <div class="art-solid-field">
+                                        <textarea class="art-light-field" name="description" placeholder="{{ trans('base.your_message') }}"></textarea>
+                                    </div>
+                                </div>
                                 <div class="checkbox checkbox-white agreement-line agree-field">
                                     <input type="checkbox" name="agree" value="1">
                                     <label>{{ trans('base.agreement_line_start') . ' ' }}<a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}" class="color-white">{{ trans('base.agreement_line_end') }}</a></label>

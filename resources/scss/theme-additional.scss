@@ -6154,17 +6154,27 @@ textarea {
     height: 44px;
 }
 
-input.art-light-field {
-    outline: none;
-    border: 1px solid #FFF;
-    color: #FFF;
-    height: 44px;
-    width: 100%;
-    font-weight: 400;
-    background: rgba(217, 217, 217, 0.18);
-    padding: 0 18px;
-
+textarea,
+input {
+    &.art-light-field {
+        outline: none;
+        border: 1px solid #FFF;
+        color: #FFF;
+        height: 44px;
+        width: 100%;
+        font-weight: 400;
+        background: rgba(217, 217, 217, 0.18);
+        padding: 0 18px;
+    }
 }
+textarea.art-light-field {
+    border-radius: 30px;
+    font-size: 13px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    height: 125px;
+}
+
 .art-light-field::placeholder {
     color: #FFF;
 }
@@ -6319,6 +6329,11 @@ select:focus {
 
             div {
                 width: 229px;
+
+                &.art-solid-field {
+                    width: 472px;
+                    margin-right: 0 !important;
+                }
 
                 @media (max-width: 550px) {
                     width: 100%;

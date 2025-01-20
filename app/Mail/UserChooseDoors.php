@@ -16,7 +16,12 @@ class UserChooseDoors extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private readonly string $title, private readonly string $name, private readonly string $phone)
+    public function __construct(
+        private readonly string $title,
+        private readonly string $name,
+        private readonly string $phone,
+        private readonly string|null $description
+    )
     {}
 
     /**
@@ -39,7 +44,8 @@ class UserChooseDoors extends Mailable
             with: [
                 'title' => $this->title,
                 'name' => $this->name,
-                'phone' => $this->phone
+                'phone' => $this->phone,
+                'description' => $this->description
             ],
         );
     }

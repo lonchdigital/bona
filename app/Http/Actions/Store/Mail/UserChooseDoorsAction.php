@@ -17,8 +17,6 @@ class UserChooseDoorsAction extends BaseAction
         UserChooseDoorsService $userChooseDoorsService
     )
     {
-//        dd($request);
-
         $result = $userChooseDoorsService->userChooseDoors($request->toDTO());
         return json_encode($result);
     }
