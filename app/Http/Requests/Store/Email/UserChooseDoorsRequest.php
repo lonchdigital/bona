@@ -16,6 +16,7 @@ class UserChooseDoorsRequest extends BaseRequest
                 'string',
                 'regex:/^[^_]*$/',
                 'min:16'],
+            'description' => ['nullable', 'string'],
             'agree' => ['accepted']
         ];
     }
@@ -45,6 +46,7 @@ class UserChooseDoorsRequest extends BaseRequest
             $this->input('title'),
             $this->input('name'),
             $this->input('phone'),
+            $this->input('description'),
             $this->input('agree'),
         );
     }

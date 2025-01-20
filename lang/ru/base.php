@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'your_message' => 'Ваше сообщение',
     'client_testimonials' => 'Отзывы клиентов',
     'choose_language_to_display_website' => 'На каком языке хотите просматривать сайт',
     'choose_language' => 'Выберите язык',
