@@ -258,6 +258,7 @@ class ProductTypeService extends BaseService
 
                 $this->deleteImage($productType->image_path);
 
+                $productType->attributes()->detach();
                 $productType->delete();
 
                 return ServiceActionResult::make(true, trans('admin.product_type_delete_success'));
