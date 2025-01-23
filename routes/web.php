@@ -334,23 +334,4 @@ Route::prefix('payment')->group(function () {
     Route::name('payment.update-payment-status')->get('/update/{order}', UpdateOrderPaymentStatusAction::class);
 });
 
-Route::get('/testttt', function() {
-    $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
-    $instagramFeed = $profile?->feed();
-//    $instagramFeedTwo = $profile?->refreshFeed();
-
-    dd('hello?', $profile, $instagramFeed);
-
-    if ($profile !== null) {
-        try {
-            $profile->refreshFeed();
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    } else {
-        return response()->json(['error' => 'Profile not found'], 404);
-    }
-});
-
 Route::name('robots.txt.content')->get('robots.txt', ShowRobotsTxtFileContent::class);

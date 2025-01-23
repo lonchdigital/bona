@@ -17,6 +17,8 @@ use App\Models\SeoText;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\HomePage\DTO\HomePageEditDTO;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -367,5 +369,44 @@ class HomePageService extends BaseService
 
             return $data;
         //});
+    }
+
+    public function getInstagramFeed(): array|null
+    {
+        $accessToken = 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
+        $instagramBusinessAccountId = '17841402102840082';
+
+        if (Cache::has('instagram_feed')) {
+            return Cache::get('instagram_feed');
+        }
+
+        $client = new Client();
+        $url = "https://graph.facebook.com/v19.0/{$instagramBusinessAccountId}/media";
+
+        try {
+            $response = $client->request('GET', $url, [
+                'query' => [
+                    'fields' => 'id,media_type,media_url,permalink', // id,media_type,media_url,caption,permalink,timestamp
+                    'access_token' => $accessToken
+                ]
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                return null;
+            }
+
+            $result = json_decode($response->getBody(), true);
+
+            if (empty($result['data'])) {
+                return null;
+            }
+
+            Cache::put('instagram_feed', $result['data'], now()->addMinutes(1440)); // Cache for 24 hours
+
+            return $result['data'];
+
+        } catch (RequestException $e) {
+            return null;
+        }
     }
 }
