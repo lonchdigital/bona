@@ -446,12 +446,11 @@
                     </div>
                 </div>
             </header>
-
             <div class="gallery clearfix mt-10">
                 <div class="swiper art-instagram-owl-items art-instagram art-big-wrapper art-swiper-common">
                     <div class="swiper-wrapper">
                         @foreach($instagramFeed as $instagramItem)
-                            @if(isset($instagramItem['media_url']))
+                            @if(isset($instagramItem['media_url']) && $instagramItem['media_type'] != 'VIDEO')
                                 <a href="{{ $instagramItem['permalink'] }}" target="_blank" class="swiper-slide">
                                     <img src="{{ $instagramItem['media_url'] }}" alt="Alternate Text" loading="lazy">
                                 </a>
