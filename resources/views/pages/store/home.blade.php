@@ -436,7 +436,6 @@
         </section>
     @endif
 
-
     @if(!is_null($instagramFeed) && count($instagramFeed))
         <!-- ========================  Instagram ======================== -->
         <section class="instagram">
@@ -449,24 +448,18 @@
             </header>
 
             <div class="gallery clearfix mt-10">
-                @if(array_key_exists('instagram', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['instagram']))
-                    <div class="swiper art-instagram-owl-items art-instagram art-big-wrapper art-swiper-common">
-                        <div class="swiper-wrapper">
-                            @foreach($instagramFeed as $instagramItem)
-                                <a href="{{ $applicationGlobalOptions['instagram'] }}" target="_blank" class="swiper-slide">
-                                    <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
+                <div class="swiper art-instagram-owl-items art-instagram art-big-wrapper art-swiper-common">
+                    <div class="swiper-wrapper">
+                        @foreach($instagramFeed as $instagramItem)
+                            @if(isset($instagramItem['media_url']))
+                                <a href="{{ $instagramItem['permalink'] }}" target="_blank" class="swiper-slide">
+                                    <img src="{{ $instagramItem['media_url'] }}" alt="Alternate Text" loading="lazy">
                                 </a>
-                            @endforeach
-                        </div>
-                        <div class="swiper-pagination"></div>
+                            @endif
+                        @endforeach
                     </div>
-                @else
-                    @foreach($instagramFeed as $instagramItem)
-                        <div class="item">
-                            <img src="{{ $instagramItem->url }}" alt="Alternate Text" loading="lazy">
-                        </div>
-                    @endforeach
-                @endif
+                    <div class="swiper-pagination"></div>
+                </div>
             </div>
         </section>
     @endif

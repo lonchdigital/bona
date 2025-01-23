@@ -24,11 +24,11 @@ class ShowHomePageAction extends BaseAction
 //        $categoryService = app()->make(CategoryService::class);
 
 
-        $profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
-//        $instagramFeed = $profile?->refreshFeed();
+        /*$profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
+        $instagramFeed = $profile?->refreshFeed();
         $instagramFeed = $profile?->feed();
 
-       /* if( $profile !== null ) {
+        if( $profile !== null ) {
             $profile->refreshFeed();
             $instagramFeed = $profile?->feed();
         } else {
@@ -55,7 +55,7 @@ class ShowHomePageAction extends BaseAction
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'articles' => $blogArticleService->getLatestArticles(3),
-            'instagramFeed' => $instagramFeed,
+            'instagramFeed' => $homePageService->getInstagramFeed()
         ]);
     }
 }
