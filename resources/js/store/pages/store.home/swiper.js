@@ -83,9 +83,12 @@ export function init () {
         let NewProductsGallery = new Swiper(".art-instagram-owl-items.art-instagram", {
             slidesPerView: 4,
             spaceBetween: 30,
+            loop: true,
             pagination: {
                 el: ".swiper-pagination",
                 clickable: true,
+                dynamicBullets: true,
+                dynamicMainBullets: 6
             },
             breakpoints: {
                 100: {
