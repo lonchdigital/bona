@@ -421,16 +421,16 @@ class HomePageService extends BaseService
     {
         $cacheKey = 'instagram_feed';
 
-        if (Cache::has($cacheKey)) {
+        /*if (Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
-        }
+        }*/
 
         $accessToken = ApplicationConfig::where('config_name', 'instagramAccessToken')->value('config_data');
 
-        if (!$accessToken) {
-            //$accessToken = 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
+        /*if (!$accessToken) {
+            $accessToken = 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
             $accessToken = 'EAAGlXZBo595EBO7MiV5poqhVztwmeGKpowsPXnfTrBOZAaHmZAeVisZAYZAFvSXYJ4t3jhiZBVM2kJ9zZCVVCtBpwu6BDvA54tyGHlwuAzEkl79vARI06qoYvSqsyxafoGr8AkS01wZC3g6VR58T5RwjCmUROktOiHuI3ttkquZB2FYKhR1ZBHhiuRnykwJZBx6QkZBuMACNQHBZC';
-        }
+        }*/
 
         $instagramBusinessAccountId = '17841402102840082';
         $client = new Client();
