@@ -421,9 +421,9 @@ class HomePageService extends BaseService
     {
         $cacheKey = 'instagram_feed';
 
-        /*if (Cache::has($cacheKey)) {
+        if (Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
-        }*/
+        }
 
         $accessToken = ApplicationConfig::where('config_name', 'instagramAccessToken')->value('config_data');
 
