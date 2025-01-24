@@ -3,6 +3,7 @@
 namespace App\Services\HomePage;
 
 use App\DataClasses\ProductSpecialOfferOptionsDataClass;
+use App\Models\ApplicationConfig;
 use App\Models\HomePageBestSalesProducts;
 use App\Models\HomePageNewProducts;
 use App\Models\HomePageBrands;
@@ -371,14 +372,19 @@ class HomePageService extends BaseService
         //});
     }
 
-    public function getInstagramFeed(): array|null
+    /*public function getInstagramFeed(): array|null
     {
-        $accessToken = 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
+        $dataToUpdate = [];
+        $accessToken = ApplicationConfig::where('config_name', 'instagramAccessToken')->first();
+        $dataToUpdate['instagramAccessToken'] = (!is_null($accessToken)) ? $accessToken->config_data : 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
+        ApplicationConfig::updateOrCreate(['config_name' => 'instagramAccessToken'], ['config_data' => $dataToUpdate['instagramAccessToken']]);
+
+        //$accessToken = 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
         $instagramBusinessAccountId = '17841402102840082';
 
-        if (Cache::has('instagram_feed')) {
-            return Cache::get('instagram_feed');
-        }
+//        if (Cache::has('instagram_feed')) {
+//            return Cache::get('instagram_feed');
+//        }
 
         $client = new Client();
         $url = "https://graph.facebook.com/v19.0/{$instagramBusinessAccountId}/media";
@@ -387,6 +393,53 @@ class HomePageService extends BaseService
             $response = $client->request('GET', $url, [
                 'query' => [
                     'fields' => 'id,media_type,media_url,permalink', // id,media_type,media_url,caption,permalink,timestamp
+                    'access_token' => $dataToUpdate['instagramAccessToken']
+                ]
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                return null;
+            }
+
+            $result = json_decode($response->getBody(), true);
+
+            if (empty($result['data'])) {
+                return null;
+            }
+
+            //Cache::put('instagram_feed', $result['data'], now()->addMinutes(1440)); // Cache for 24 hours
+
+            return $result['data'];
+
+        } catch (RequestException $e) {
+            return null;
+        }
+    }*/
+
+
+    public function getInstagramFeed(): ?array
+    {
+        $cacheKey = 'instagram_feed';
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
+        $accessToken = ApplicationConfig::where('config_name', 'instagramAccessToken')->value('config_data');
+
+        if (!$accessToken) {
+            //$accessToken = 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
+            $accessToken = 'EAAGlXZBo595EBO7MiV5poqhVztwmeGKpowsPXnfTrBOZAaHmZAeVisZAYZAFvSXYJ4t3jhiZBVM2kJ9zZCVVCtBpwu6BDvA54tyGHlwuAzEkl79vARI06qoYvSqsyxafoGr8AkS01wZC3g6VR58T5RwjCmUROktOiHuI3ttkquZB2FYKhR1ZBHhiuRnykwJZBx6QkZBuMACNQHBZC';
+        }
+
+        $instagramBusinessAccountId = '17841402102840082';
+        $client = new Client();
+        $url = "https://graph.facebook.com/v19.0/{$instagramBusinessAccountId}/media";
+
+        try {
+            $response = $client->request('GET', $url, [
+                'query' => [
+                    'fields' => 'id,media_type,media_url,permalink',
                     'access_token' => $accessToken
                 ]
             ]);
@@ -401,9 +454,56 @@ class HomePageService extends BaseService
                 return null;
             }
 
-            Cache::put('instagram_feed', $result['data'], now()->addMinutes(1440)); // Cache for 24 hours
+            Cache::put($cacheKey, $result['data'], now()->addMinutes(1440));
 
             return $result['data'];
+
+        } catch (RequestException $e) {
+
+            // token is expired
+            if ($e->getCode() === 400 || $e->getCode() === 401) {
+                $newToken = $this->refreshInstagramToken($accessToken);
+
+                if ($newToken) {
+                    // make request with new token
+                    return $this->getInstagramFeed();
+                }
+            }
+            return null;
+        }
+    }
+
+    private function refreshInstagramToken(string $oldToken): ?string
+    {
+        $client = new Client();
+        $appId = env('INSTAGRAM_APP_ID');
+        $appSecret = env('INSTAGRAM_APP_SECRET');
+
+        try {
+            $response = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
+                'query' => [
+                    'grant_type' => 'fb_exchange_token',
+                    'client_id' => $appId,
+                    'client_secret' => $appSecret,
+                    'fb_exchange_token' => $oldToken,
+                ]
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                return null;
+            }
+
+            $data = json_decode($response->getBody(), true);
+            $newToken = $data['access_token'] ?? null;
+
+            if ($newToken) {
+                ApplicationConfig::updateOrCreate(
+                    ['config_name' => 'instagramAccessToken'],
+                    ['config_data' => $newToken]
+                );
+            }
+
+            return $newToken;
 
         } catch (RequestException $e) {
             return null;
