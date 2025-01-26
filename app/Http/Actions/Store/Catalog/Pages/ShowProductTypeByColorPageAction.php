@@ -36,7 +36,7 @@ class ShowProductTypeByColorPageAction extends BaseAction
         $page = $filtersData->filters['page'] ?? 1;
 
         $productsPaginated = $productService->getProductTypeByColorPaginated(
-            $filtersData->filters['per_page'] ?? 18,
+            $filtersData->filters['per_page'] ?? 20,
             $page,
             $productType,
             $color
