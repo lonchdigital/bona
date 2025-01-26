@@ -94,26 +94,28 @@ export function init () {
     const sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
 
     function buildMainProductSlider(targetColorId) {
+        let $slidesSingle = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
+        let $slidesThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
 
-        let $hiddenSlidesSingleWallpaper = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
-        let $hiddenSlidesWallpaperThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
-
-        if ($hiddenSlidesSingleWallpaper.length === 0) {
-            $hiddenSlidesSingleWallpaper = sliderSingle.find('.swiper-slide[data-color-id="0"]');
-        }
-        if ($hiddenSlidesWallpaperThumbs.length === 0) {
-            $hiddenSlidesWallpaperThumbs = sliderThumbs.find('.swiper-slide[data-color-id="0"]');
-        }
-
+        let $defaultSlidesSingle = sliderSingle.find('.swiper-slide[data-color-id="0"]');
+        let $defaultSlidesThumbs = sliderThumbs.find('.swiper-slide[data-color-id="0"]');
 
         SwiperSingleWallpaper.removeAllSlides();
         SwiperSingleWallpaperThumbs.removeAllSlides();
 
-        $hiddenSlidesSingleWallpaper.each(function() {
+
+        $slidesSingle.each(function() {
+            SwiperSingleWallpaper.appendSlide($(this).clone());
+        });
+        $defaultSlidesSingle.each(function() {
             SwiperSingleWallpaper.appendSlide($(this).clone());
         });
 
-        $hiddenSlidesWallpaperThumbs.each(function() {
+
+        $slidesThumbs.each(function() {
+            SwiperSingleWallpaperThumbs.appendSlide($(this).clone());
+        });
+        $defaultSlidesThumbs.each(function() {
             SwiperSingleWallpaperThumbs.appendSlide($(this).clone());
         });
 
