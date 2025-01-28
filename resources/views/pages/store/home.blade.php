@@ -128,7 +128,8 @@
                 <div class="swiper-wrapper">
 
                     <div class="swiper-slide">
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product-type-by-color.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'interior-doors')->first()->slug, 'color' => 7]) }}">
+{{--                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product-type-by-color.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'interior-doors')->first()->slug, 'color' => 7]) }}">--}}
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'bele-dvery')->first()->slug]) }}">
                         <figure>
                             <div class="icon-wrapper">
                                 <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
