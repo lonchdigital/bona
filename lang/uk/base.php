@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'we_are_in_instagram' => 'Ми в Instagram',
+    'subscribe' => 'Підписатися',
     'your_message' => 'Ваше повідомлення',
     'client_testimonials' => 'Відгуки клиієнтів',
     'choose_language_to_display_website' => 'На якій мові бажаєте переглядати сайт',

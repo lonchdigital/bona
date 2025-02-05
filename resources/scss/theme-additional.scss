@@ -6464,7 +6464,24 @@ select:focus {
     .swiper-pagination {
         bottom: -8px;
     }
+    .swiper-button-prev,
+    .swiper-button-next {
+        color: #D59958;
 
+        &:before {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 120px;
+            background: transparent;
+            z-index: -1;
+        }
+    }
+
+}
+.swiper.art-instagram-owl-items.art-instagram {
+    padding: 30px 36px;
+    width: 92%;
 }
 
 

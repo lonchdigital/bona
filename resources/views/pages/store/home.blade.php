@@ -443,12 +443,12 @@
             <header>
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h2 class="title h2">{{ trans('base.our_works') }}</h2>
+                        <h2 class="title h2">{{ trans('base.we_are_in_instagram') }}</h2>
                     </div>
                 </div>
             </header>
             <div class="gallery clearfix mt-10">
-                <div class="swiper art-instagram-owl-items art-instagram art-big-wrapper art-swiper-common">
+                <div class="swiper art-instagram-owl-items art-instagram art-big-wrapper art-swiper-common" id="art-instagram-owl-items">
                     <div class="swiper-wrapper">
                         @foreach($instagramFeed as $instagramItem)
                             @if(isset($instagramItem['media_url']) && $instagramItem['media_type'] != 'VIDEO')
@@ -459,8 +459,15 @@
                         @endforeach
                     </div>
                     <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
                 </div>
             </div>
+
+            <div class="wrapper-more">
+                <a href="https://www.instagram.com/bona_doors/" class="btn btn-empty color-dark" target="_blank">{{trans('base.subscribe')}}</a>
+            </div>
+
         </section>
     @endif
 
