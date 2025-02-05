@@ -79,8 +79,8 @@ export function init () {
     });
 
     // instagram
-    if ($('.art-instagram-owl-items.art-instagram').length > 0) {
-        let NewProductsGallery = new Swiper(".art-instagram-owl-items.art-instagram", {
+    if ($('#art-instagram-owl-items.art-instagram').length > 0) {
+        let NewProductsGallery = new Swiper("#art-instagram-owl-items.art-instagram", {
             slidesPerView: 4,
             spaceBetween: 30,
             loop: true,
@@ -89,6 +89,10 @@ export function init () {
                 clickable: true,
                 dynamicBullets: true,
                 dynamicMainBullets: 6
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev"
             },
             breakpoints: {
                 100: {
@@ -99,9 +103,6 @@ export function init () {
                 },
                 768: {
                     slidesPerView: 5
-                },
-                1200: {
-                    slidesPerView: 6
                 }
             },
             on: {
