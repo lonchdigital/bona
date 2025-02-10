@@ -41,7 +41,7 @@
 
                             @include('pages.store.partials.sidebar_filters', ['filters' => $filters, 'filtersData' => $filtersData, 'productsMaxPrice' => $productsMaxPrice, 'productStatuses' => $productStatuses])
 
-                            @if($productType->has_color)
+                            @if($productType->has_color && count($colors) > 0)
                                 <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
                                     <div class="filter-box filter-item1 filter-item--colors active">
                                         <div class="title font-title">
