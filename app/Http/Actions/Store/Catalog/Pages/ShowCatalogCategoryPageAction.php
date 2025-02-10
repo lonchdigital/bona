@@ -40,7 +40,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
         $filtersData = $request->toDTO();
 
         $baseCurrency = $currencyService->getBaseCurrency();
-        $colors = $colorService->getAvailableColorsByProductType($productType);
+        $colors = $colorService->getAvailableColorsByProductTypeAndCategory($productType, $category);
         $countries = $countryService->getAvailableCountriesByProductType($productType);
         $brands = $brandService->getAvailableBrandsByProductType($productType);
         $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
@@ -73,7 +73,6 @@ class ShowCatalogCategoryPageAction extends BaseAction
             return $field;
         });
 
-//        dd($category);
 
         return view('pages.store.catalog-category', [
             'filters' => $catalogService->getFiltersByProductType($productType),
