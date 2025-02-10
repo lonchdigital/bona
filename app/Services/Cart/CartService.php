@@ -96,9 +96,12 @@ class CartService extends BaseService
 
     private function prepareRequestProductAttributes(array $requestProductAttributes): array
     {
-        $dataToReturn['color_name'] = $requestProductAttributes['color_id'];
-        unset($requestProductAttributes['color_id']);
-        unset($requestProductAttributes['color_name']);
+        $dataToReturn = [];
+        if( isset($requestProductAttributes['color_id']) ) {
+            $dataToReturn['color_name'] = $requestProductAttributes['color_id'];
+            unset($requestProductAttributes['color_id']);
+            unset($requestProductAttributes['color_name']);
+        }
 
         foreach ( $requestProductAttributes as $key => $attributeValue ) {
             if( is_null($attributeValue) ) {
@@ -120,7 +123,6 @@ class CartService extends BaseService
 
         foreach ($allProductVariations as $allProductVariation) {
             $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributesAlt);
-//            $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
             if($isRequestedProduct) {
                 $count = $allProductVariation->count + 1;
@@ -140,10 +142,12 @@ class CartService extends BaseService
 
 
             if( !is_null($requestProductAttributes) ) {
-                $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
-                unset($requestProductAttributes['color_id']);
-                unset($requestProductAttributes['color_name']);
 
+                if( isset($requestProductAttributes['color_id']) ) {
+                    $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
+                    unset($requestProductAttributes['color_id']);
+                    unset($requestProductAttributes['color_name']);
+                }
 
                 foreach ($requestProductAttributes as $attributeKey => $productAttr ) {
                     if( !is_null($productAttr) ) {
