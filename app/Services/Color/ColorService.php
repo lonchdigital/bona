@@ -49,6 +49,20 @@ class ColorService extends BaseService
         })->get();
     }
 
+    public function getAvailableColorsByProductTypeAndCategory($productType, $category): Collection
+    {
+        $typeId = $productType->id;
+        $categoryId = $category->id;
+
+        return Color::whereHas('products', function ($query) use ($typeId, $categoryId) {
+            $query->whereHas('productType', function ($query) use ($typeId) {
+                $query->where('product_types.id', $typeId);
+            })->whereHas('categories', function ($query) use ($categoryId) {
+                $query->where('categories.id', $categoryId);
+            });
+        })->get();
+    }
+
     public function getAllColors(): Collection
     {
         return Color::all();
