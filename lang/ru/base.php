@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'leave_request' => 'Оставить заявку',
     'we_are_in_instagram' => 'Мы в Instagram',
     'subscribe' => 'Подписаться',
     'your_message' => 'Ваше сообщение',
