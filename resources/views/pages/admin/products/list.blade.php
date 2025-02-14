@@ -172,7 +172,7 @@
                                             <!-- table end -->
                                         </div>
                                     </div>
-                                    {{ $productsPaginated->links('pagination.admin') }}
+                                    {{ $productsPaginated->appends(request()->query())->links('pagination.admin') }}
                                 </div>
                             </div>
                         </div>
