@@ -7205,6 +7205,9 @@ select:focus {
         .color-name {
             font-weight: 500;
             cursor: pointer;
+
+            position: relative;
+            top: 4px;
         }
     }
 }
