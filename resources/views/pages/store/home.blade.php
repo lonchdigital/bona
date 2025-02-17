@@ -642,30 +642,32 @@
         </div>
     </section>
 
-    <!-- ======================== Our Partners ======================== -->
-    <section class="art-brands-list">
-        <div class="container">
+    @if( count($brands) > 0 )
+        <!-- ======================== Our Partners ======================== -->
+        <section class="art-brands-list">
+            <div class="container">
 
-            <header>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <h2 class="title h2">{{trans('base.our_partners')}}</h2>
-                    </div>
-                </div>
-            </header>
-
-            <div class="swiper art-brands-owl-items mt-6">
-                <div class="swiper-wrapper">
-                    @foreach( $brands as $brand )
-                        <div class="swiper-slide">
-                            @include('pages.store.partials.brand_item', ['brand' => $brand->brand])
+                <header>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h2 class="title h2">{{trans('base.our_partners')}}</h2>
                         </div>
-                    @endforeach
+                    </div>
+                </header>
+
+                <div class="swiper art-brands-owl-items mt-6">
+                    <div class="swiper-wrapper">
+                        @foreach( $brands as $brand )
+                            <div class="swiper-slide">
+                                @include('pages.store.partials.brand_item', ['brand' => $brand->brand])
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
-                <div class="swiper-pagination"></div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     <!-- ======================== SEO ======================== -->
     <section class="seo-section pt-none11">
