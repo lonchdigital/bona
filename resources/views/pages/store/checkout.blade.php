@@ -43,6 +43,13 @@
                                                                        name="first_name"
                                                                        placeholder="{{ trans('base.name') }}"
                                                                        value="{{ old('first_name') }}">
+                                                                <div class="row mb-5">
+                                                                    <div class="col-12 text-danger">
+                                                                        @error('first_name')
+                                                                        <div class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
@@ -51,19 +58,17 @@
                                                                        name="last_name"
                                                                        placeholder="{{ trans('base.last_name') }}"
                                                                        value="{{ old('last_name') }}">
+                                                                <div class="row mb-5">
+                                                                    <div class="col-12 text-danger">
+                                                                        @error('last_name')
+                                                                        <div class="field-error-help-descr">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="row mb-5">
-                                                        <div class="col-12 text-danger">
-                                                            @error('first_name')
-                                                            <div class="field-error-help-descr">{{ $message }}</div>
-                                                            @enderror
-                                                            @error('last_name')
-                                                            <div class="field-error-help-descr">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
+
                                                     <div class="field  @if($errors->has('phone')) field-error @endif  mb-1 mb-lg-1 mb-xl-1 d-flex flex-column-reverse">
                                                         <input type="tel" class="art-form-light-control" id="phone" name="phone"
                                                                placeholder="{{ trans('base.phone') }}"
@@ -801,7 +806,7 @@
                                                     </div>
                                                 </div>
 
-                                                @if(old('delivery_type_id') != App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)
+                                                @if( !is_null(old('delivery_type_id')) && old('delivery_type_id') != App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY )
                                                     @error('phone')
                                                     <div class="row">
                                                         <div class="col-12 text-danger">
