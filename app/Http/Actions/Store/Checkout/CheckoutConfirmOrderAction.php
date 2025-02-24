@@ -48,8 +48,9 @@ class CheckoutConfirmOrderAction extends BaseAction
         $cart = $this->getCart($cartService);
         $order = $orderService->createOrderByCart($cart, $request->toDTO(), $authUser);
 
+
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
-            return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order->id]);
+            return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order]);
         } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
