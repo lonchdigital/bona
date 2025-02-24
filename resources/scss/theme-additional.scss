@@ -8972,14 +8972,17 @@ section.art-common-page-section {
         }
 
         .art-delete-button {
-            /*position: absolute;
-            right: 0;
-            bottom: -45px;*/
 
-            .delete-product-from-cart-button {
+            .link-wrapper {
                 display: flex;
                 justify-content: flex-end;
+
+                .delete-product-from-cart-button {
+
+                }
             }
+
+
         }
     }
 
