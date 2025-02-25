@@ -65,9 +65,11 @@ class PaymentService extends BaseService
             $order, $payment_period, $merchant_type, $response_url, $redirect_url, $store_password, $store_id
         );
 
+        // "orderId" => $order->id,
+
         $data = [
             "storeId" => $store_id,
-            "orderId" => $order->id,
+            "orderId" => 244,
             "amount" => 0,
             "partsCount" => $payment_period,
             "merchantType" => $merchant_type,
