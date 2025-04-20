@@ -114,11 +114,18 @@ class PaymentService extends BaseService
     {
 
         $product_str = '';
-        $amount = 0;
+        /*$amount = 0;
         foreach ($order->products as $product) {
             $count = $product->pivot->count;
             $amount = $count * ($product->pivot->price + $product->pivot->attributes_price);
             $product_str .= ($product->name.$count.$this->withoutFloating($product->pivot->price + $product->pivot->attributes_price));
+        }*/
+        $amount = 0;
+        foreach ($order->products as $product) {
+            $count = $product->pivot->count;
+            $price = $product->pivot->price + $product->pivot->attributes_price;
+            $amount += $count * $price;
+            $product_str .= ($product->name . $count . $this->withoutFloating($price));
         }
         $str =  base64_encode(sha1(
             $store_password
@@ -136,9 +143,13 @@ class PaymentService extends BaseService
         return $str;
     }
 
-    private function withoutFloating(float $number): string
+    /*private function withoutFloating(float $number): string
     {
         return (string)round($number, 2, PHP_ROUND_HALF_DOWN) * 100;
+    }*/
+    private function withoutFloating(float $number): string
+    {
+        return number_format(round($number * 100, 0, PHP_ROUND_HALF_DOWN), 0, '', '');
     }
 
     public function paypartByCardForm(float $amount, int $orderId): array
