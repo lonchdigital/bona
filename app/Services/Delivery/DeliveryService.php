@@ -5,6 +5,8 @@ namespace App\Services\Delivery;
 use App\Intergations\MeestExpress\MeestExpress;
 use App\Services\Base\BaseService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use LisDev\Delivery\NovaPoshtaApi2;
 use GuzzleHttp\Client;
 
@@ -14,20 +16,22 @@ class DeliveryService extends BaseService
     {
         try {
             $np = new NovaPoshtaApi2(
-                config('delivery.np_api_key'),
+                null,
                 app()->getLocale(),
                 true,
             );
 
-//            dd($np->getCities(1, $query)['data']);
-
-            return collect($np->getCities(1, $query)['data'])->map(function ($city) {
+            return collect($np->getCities("1", $query)['data'])->map(function ($city) {
                 $city['value'] = $city['Ref'];
                 $city['text'] = app()->getLocale() === 'ru' ? $city['DescriptionRu'] : $city['Description'] . ' (' . (app()->getLocale() === 'ru' ? $city['AreaDescriptionRu'] : $city['AreaDescription']) . ' ' . mb_strtolower(trans('base.region')) . ')';
 
                 return $city;
             });
         } catch (\Exception $exception) {
+            Log::error('getNpCities33: ' . $exception->getMessage(), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return collect([]);
         }
     }
@@ -36,18 +40,23 @@ class DeliveryService extends BaseService
     {
         try {
             $np = new NovaPoshtaApi2(
-                config('delivery.np_api_key'),
+                null,
                 app()->getLocale(),
                 true,
             );
 
-            return collect($np->getCities(1, '', $ref)['data'])->map(function ($city) {
+            return collect($np->getCities("1", '', $ref)['data'])->map(function ($city) {
                 $city['value'] = $city['Ref'];
                 $city['text'] = app()->getLocale() === 'ru' ? $city['DescriptionRu'] : $city['Description'] . ' (' . (app()->getLocale() === 'ru' ? $city['AreaDescriptionRu'] : $city['AreaDescription']) . ' ' . mb_strtolower(trans('base.region')) . ')';
 
                 return $city;
             })[0];
         } catch (\Exception $exception) {
+            Log::error('Ошибка при получении города Новой Почты: ' . $exception->getMessage(), [
+                'ref' => $ref,
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return [];
         }
     }
