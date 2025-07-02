@@ -306,6 +306,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+{{--                                                @dd('hi3', json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpCityByRef('Льво')))--}}
                                                 <div id="delivery-2"
                                                      class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) art-show @else art-hide @endif"
                                                      data-parent="#checkout-delivery-accordion">

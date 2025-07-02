@@ -259,6 +259,10 @@ $optionalLanguageRoutes = function () {
         Route::name('store.checkout.partial.mono.bank.payment')->post('/partial-mono-bank', ConfirmMonoBankPartialPaymentAction::class);
     });
 
+    Route::get('/test-json', function () {
+        return response()->json([]);
+    });
+
     // TODO:: Do we need brands pages?
     Route::prefix('brands')->group(function () {
         Route::name('store.brands.list.page')->get('/list/{letter?}', ShowBrandsListPageAction::class);
