@@ -474,51 +474,19 @@ Log::info('success');
         }
     }
 
-    // private function refreshInstagramToken(string $oldToken): ?string
-    // {
-    //     $client = new Client();
-    //     $appId = env('INSTAGRAM_APP_ID');
-    //     $appSecret = env('INSTAGRAM_APP_SECRET');
-
-    //     try {
-    //         $response = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
-    //             'query' => [
-    //                 'grant_type' => 'fb_exchange_token',
-    //                 'client_id' => $appId,
-    //                 'client_secret' => $appSecret,
-    //                 'fb_exchange_token' => $oldToken,
-    //             ]
-    //         ]);
-
-    //         if ($response->getStatusCode() !== 200) {
-    //             return null;
-    //         }
-
-    //         $data = json_decode($response->getBody(), true);
-    //         $newToken = $data['access_token'] ?? null;
-
-    //         if ($newToken) {
-    //             ApplicationConfig::updateOrCreate(
-    //                 ['config_name' => 'instagramAccessToken'],
-    //                 ['config_data' => $newToken]
-    //             );
-    //         }
-
-    //         return $newToken;
-
-    //     } catch (RequestException $e) {
-    //         return null;
-    //     }
-    // }
     private function refreshInstagramToken(string $oldToken): ?string
     {
         $client = new Client();
+        $appId = env('INSTAGRAM_APP_ID');
+        $appSecret = env('INSTAGRAM_APP_SECRET');
 
         try {
-            $response = $client->request('GET', 'https://graph.instagram.com/refresh_access_token', [
+            $response = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
                 'query' => [
-                    'grant_type' => 'ig_refresh_token',
-                    'access_token' => $oldToken,
+                    'grant_type' => 'fb_exchange_token',
+                    'client_id' => $appId,
+                    'client_secret' => $appSecret,
+                    'fb_exchange_token' => $oldToken,
                 ]
             ]);
 
@@ -539,7 +507,6 @@ Log::info('success');
             return $newToken;
 
         } catch (RequestException $e) {
-            \Log::error("Instagram token refresh failed: " . $e->getMessage());
             return null;
         }
     }
