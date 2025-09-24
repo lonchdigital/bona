@@ -23,6 +23,7 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -420,7 +421,7 @@ class HomePageService extends BaseService
     public function getInstagramFeed(): ?array
     {
         $cacheKey = 'instagram_feed';
-
+Log::info('success');
         if (Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
         }
