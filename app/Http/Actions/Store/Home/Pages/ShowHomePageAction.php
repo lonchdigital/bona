@@ -9,6 +9,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\HomePage\HomePageService;
 use App\Services\Brand\BrandService;
 use Abordage\LastModified\Facades\LastModified;
+use Illuminate\Support\Facades\Log;
 
 class ShowHomePageAction extends BaseAction
 {
@@ -40,7 +41,7 @@ class ShowHomePageAction extends BaseAction
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);
 
         LastModified::set($config->updated_at);
-
+Log::info('123456');
         return view('pages.store.home', [
             'config' => $config,
             'slides' => $homePageService->getHomePageSlides(),
