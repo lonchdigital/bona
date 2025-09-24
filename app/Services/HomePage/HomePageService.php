@@ -421,7 +421,7 @@ class HomePageService extends BaseService
     public function getInstagramFeed(): ?array
     {
         $cacheKey = 'instagram_feed';
-Log::info('success');
+
         if (Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
         }
@@ -432,7 +432,7 @@ Log::info('success');
             //$accessToken = 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n';
             $accessToken = 'EAAGlXZBo595EBO7MiV5poqhVztwmeGKpowsPXnfTrBOZAaHmZAeVisZAYZAFvSXYJ4t3jhiZBVM2kJ9zZCVVCtBpwu6BDvA54tyGHlwuAzEkl79vARI06qoYvSqsyxafoGr8AkS01wZC3g6VR58T5RwjCmUROktOiHuI3ttkquZB2FYKhR1ZBHhiuRnykwJZBx6QkZBuMACNQHBZC';
         }
-
+Log::info($accessToken);
         $instagramBusinessAccountId = '17841402102840082';
         $client = new Client();
         $url = "https://graph.facebook.com/v19.0/{$instagramBusinessAccountId}/media";
