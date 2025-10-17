@@ -163,9 +163,11 @@ export function init () {
         },
         on: {
             init: function () {
+                console.log(456);
                 this.update();
             },
             resize: function () {
+                console.log(654);
                 this.update();
             }
         }

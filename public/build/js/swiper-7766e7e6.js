@@ -1,1 +1,0 @@
-import{S as e}from"./app-b6313ac6.js";import"./jquery-e5de2a9e.js";function t(){new e(".popular-city",{slidesPerView:"auto",spaceBetween:30,freeMode:!0,grabCursor:!0,scrollbar:{el:".popular-city .swiper-scrollbar"},mousewheel:!0})}export{t as init};
