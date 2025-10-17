@@ -107,17 +107,11 @@ export function init () {
 
 
         $slidesSingle.each(function() {
-            // console.log(123);
             SwiperSingleWallpaper.appendSlide($(this).clone());
         });
-        // $defaultSlidesSingle.each(function() {
-        //     // console.log(321);
-        //     SwiperSingleWallpaper.appendSlide($(this).clone());
-        // });
-        // appendUniqueSlides(SwiperSingleWallpaper, $slidesSingle);
-        // if (targetColorId !== 0) {
-        //     appendUniqueSlides(SwiperSingleWallpaper, $defaultSlidesSingle);
-        // }
+        $defaultSlidesSingle.each(function() {
+            SwiperSingleWallpaper.appendSlide($(this).clone());
+        });
 
 
         $slidesThumbs.each(function() {
@@ -236,16 +230,4 @@ function showProductsFromSameCollectionSwiper()
     list.removeClass('loading-skeleton');
     wrapper.removeClass('invisible');
     control.removeClass('invisible');
-}
-
-function appendUniqueSlides(swiper, slides) {
-    const added = new Set();
-
-    slides.each(function() {
-        const src = $(this).find('img').attr('src');
-        if (!added.has(src)) {
-            swiper.appendSlide($(this).clone());
-            added.add(src);
-        }
-    });
 }
