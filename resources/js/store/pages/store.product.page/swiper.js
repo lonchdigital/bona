@@ -115,7 +115,9 @@ export function init () {
         //     SwiperSingleWallpaper.appendSlide($(this).clone());
         // });
         appendUniqueSlides(SwiperSingleWallpaper, $slidesSingle);
-        appendUniqueSlides(SwiperSingleWallpaper, $defaultSlidesSingle);
+        if (targetColorId !== 0) {
+            appendUniqueSlides(SwiperSingleWallpaper, $defaultSlidesSingle);
+        }
 
 
         $slidesThumbs.each(function() {
