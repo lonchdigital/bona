@@ -27,7 +27,9 @@
                             </li>
                         @else
                             <li class="page-item current-page">
-                                <a class="page-link page-link-clickable" href="#{{ $page }}">{{ $page }}</a>
+                                <a class="page-link page-link-clickable" href="#{{ $page }}" style="height: 32px;
+                                    width: 32px;
+                                    border-radius: 50%;">{{ $page }}</a>
                             </li>
                         @endif
                     @endforeach
