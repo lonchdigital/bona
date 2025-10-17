@@ -94,6 +94,8 @@ export function init () {
     const sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
 
     function buildMainProductSlider(targetColorId) {
+        // console.log('color');
+        // console.log(targetColorId);
         let $slidesSingle = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
         let $slidesThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
 
@@ -103,28 +105,25 @@ export function init () {
         SwiperSingleWallpaper.removeAllSlides();
         SwiperSingleWallpaperThumbs.removeAllSlides();
 
-        let addedSrcs = new Set();
 
-        function appendUniqueSlides($slides, swiperInstance) {
-            $slides.each(function() {
-                const imgSrc = $(this).find('img').attr('src');
-                if (!addedSrcs.has(imgSrc)) {
-                    addedSrcs.add(imgSrc);
-                    swiperInstance.appendSlide($(this).clone());
-                }
-            });
-        }
+        $slidesSingle.each(function() {
+            SwiperSingleWallpaper.appendSlide($(this).clone());
+        });
+        $defaultSlidesSingle.each(function() {
+            SwiperSingleWallpaper.appendSlide($(this).clone());
+        });
 
-        appendUniqueSlides($slidesSingle, SwiperSingleWallpaper);
-        appendUniqueSlides($defaultSlidesSingle, SwiperSingleWallpaper);
 
-        appendUniqueSlides($slidesThumbs, SwiperSingleWallpaperThumbs);
-        appendUniqueSlides($defaultSlidesThumbs, SwiperSingleWallpaperThumbs);
+        $slidesThumbs.each(function() {
+            SwiperSingleWallpaperThumbs.appendSlide($(this).clone());
+        });
+        $defaultSlidesThumbs.each(function() {
+            SwiperSingleWallpaperThumbs.appendSlide($(this).clone());
+        });
 
         SwiperSingleWallpaper.update();
         SwiperSingleWallpaperThumbs.update();
     }
-
     $('.art-colors-list .color-btn').on('click', function() {
         var targetColorId = $(this).data('color-id');
 
