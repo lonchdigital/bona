@@ -21,7 +21,9 @@
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
                             <li class="page-item current-page active">
-                                <a class="page-link page-link-clickable" href="#{{ $page }}">{{ $page }}</a>
+                                <a class="page-link page-link-clickable" href="#{{ $page }}" style="height: 32px;
+                                    width: 32px;
+                                    border-radius: 50%;">{{ $page }}</a>
                             </li>
                         @else
                             <li class="page-item current-page">
