@@ -94,8 +94,6 @@ export function init () {
     const sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
 
     function buildMainProductSlider(targetColorId) {
-        // console.log('color');
-        // console.log(targetColorId);
         let $slidesSingle = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
         let $slidesThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
 
@@ -105,21 +103,27 @@ export function init () {
         SwiperSingleWallpaper.removeAllSlides();
         SwiperSingleWallpaperThumbs.removeAllSlides();
 
+        // окремі множини для основного і прев’ю слайдерів
+        let addedMainSrcs = new Set();
+        let addedThumbsSrcs = new Set();
 
-        $slidesSingle.each(function() {
-            SwiperSingleWallpaper.appendSlide($(this).clone());
-        });
-        $defaultSlidesSingle.each(function() {
-            SwiperSingleWallpaper.appendSlide($(this).clone());
-        });
+        function appendUniqueSlides($slides, swiperInstance, addedSet) {
+            $slides.each(function() {
+                const imgSrc = $(this).find('img').attr('src');
+                if (!addedSet.has(imgSrc)) {
+                    addedSet.add(imgSrc);
+                    swiperInstance.appendSlide($(this).clone());
+                }
+            });
+        }
 
+        // головний свайпер
+        appendUniqueSlides($slidesSingle, SwiperSingleWallpaper, addedMainSrcs);
+        appendUniqueSlides($defaultSlidesSingle, SwiperSingleWallpaper, addedMainSrcs);
 
-        $slidesThumbs.each(function() {
-            SwiperSingleWallpaperThumbs.appendSlide($(this).clone());
-        });
-        $defaultSlidesThumbs.each(function() {
-            SwiperSingleWallpaperThumbs.appendSlide($(this).clone());
-        });
+        // свайпер з мініатюрами
+        appendUniqueSlides($slidesThumbs, SwiperSingleWallpaperThumbs, addedThumbsSrcs);
+        appendUniqueSlides($defaultSlidesThumbs, SwiperSingleWallpaperThumbs, addedThumbsSrcs);
 
         SwiperSingleWallpaper.update();
         SwiperSingleWallpaperThumbs.update();
