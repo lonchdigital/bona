@@ -94,8 +94,8 @@ export function init () {
     const sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
 
     function buildMainProductSlider(targetColorId) {
-        console.log('color');
-        console.log(targetColorId);
+        // console.log('color');
+        // console.log(targetColorId);
         let $slidesSingle = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
         let $slidesThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
 
@@ -106,14 +106,16 @@ export function init () {
         SwiperSingleWallpaperThumbs.removeAllSlides();
 
 
-        $slidesSingle.each(function() {
-            console.log(123);
-            SwiperSingleWallpaper.appendSlide($(this).clone());
-        });
-        $defaultSlidesSingle.each(function() {
-            console.log(321);
-            SwiperSingleWallpaper.appendSlide($(this).clone());
-        });
+        // $slidesSingle.each(function() {
+        //     // console.log(123);
+        //     SwiperSingleWallpaper.appendSlide($(this).clone());
+        // });
+        // $defaultSlidesSingle.each(function() {
+        //     // console.log(321);
+        //     SwiperSingleWallpaper.appendSlide($(this).clone());
+        // });
+        appendUniqueSlides(SwiperSingleWallpaper, $slidesSingle);
+        appendUniqueSlides(SwiperSingleWallpaper, $defaultSlidesSingle);
 
 
         $slidesThumbs.each(function() {
@@ -232,4 +234,16 @@ function showProductsFromSameCollectionSwiper()
     list.removeClass('loading-skeleton');
     wrapper.removeClass('invisible');
     control.removeClass('invisible');
+}
+
+function appendUniqueSlides(swiper, slides) {
+    const added = new Set();
+
+    slides.each(function() {
+        const src = $(this).find('img').attr('src');
+        if (!added.has(src)) {
+            swiper.appendSlide($(this).clone());
+            added.add(src);
+        }
+    });
 }
