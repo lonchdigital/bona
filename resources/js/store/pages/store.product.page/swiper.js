@@ -106,18 +106,18 @@ export function init () {
         SwiperSingleWallpaperThumbs.removeAllSlides();
 
 
-        // $slidesSingle.each(function() {
-        //     // console.log(123);
-        //     SwiperSingleWallpaper.appendSlide($(this).clone());
-        // });
+        $slidesSingle.each(function() {
+            // console.log(123);
+            SwiperSingleWallpaper.appendSlide($(this).clone());
+        });
         // $defaultSlidesSingle.each(function() {
         //     // console.log(321);
         //     SwiperSingleWallpaper.appendSlide($(this).clone());
         // });
-        appendUniqueSlides(SwiperSingleWallpaper, $slidesSingle);
-        if (targetColorId !== 0) {
-            appendUniqueSlides(SwiperSingleWallpaper, $defaultSlidesSingle);
-        }
+        // appendUniqueSlides(SwiperSingleWallpaper, $slidesSingle);
+        // if (targetColorId !== 0) {
+        //     appendUniqueSlides(SwiperSingleWallpaper, $defaultSlidesSingle);
+        // }
 
 
         $slidesThumbs.each(function() {
