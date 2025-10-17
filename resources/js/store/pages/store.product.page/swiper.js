@@ -163,43 +163,41 @@ export function init () {
         },
         on: {
             init: function () {
-                console.log(456);
                 this.update();
             },
             resize: function () {
-                console.log(654);
                 this.update();
             }
         }
     });
 
-    let SimilarProductsGalleryThreeInRow = new Swiper(".art-products-owl-items.art-three-in-row", {
-        slidesPerView: 3,
-        spaceBetween: 30,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        breakpoints: {
-            500: {
-                slidesPerView: 1
-            },
-            768: {
-                slidesPerView: 2
-            },
-            1200: {
-                slidesPerView: 3
-            }
-        },
-        on: {
-            init: function () {
-                this.update();
-            },
-            resize: function () {
-                this.update();
-            }
-        }
-    });
+    // let SimilarProductsGalleryThreeInRow = new Swiper(".art-products-owl-items.art-three-in-row", {
+    //     slidesPerView: 3,
+    //     spaceBetween: 30,
+    //     pagination: {
+    //         el: ".swiper-pagination",
+    //         clickable: true,
+    //     },
+    //     breakpoints: {
+    //         500: {
+    //             slidesPerView: 1
+    //         },
+    //         768: {
+    //             slidesPerView: 2
+    //         },
+    //         1200: {
+    //             slidesPerView: 3
+    //         }
+    //     },
+    //     on: {
+    //         init: function () {
+    //             this.update();
+    //         },
+    //         resize: function () {
+    //             this.update();
+    //         }
+    //     }
+    // });
 
 
 }
