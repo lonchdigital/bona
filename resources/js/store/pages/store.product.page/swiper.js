@@ -94,6 +94,8 @@ export function init () {
     const sliderThumbs = $('.art-gallery-all-slides-container .art-swiper-single-wallpaper-thumbs');
 
     function buildMainProductSlider(targetColorId) {
+        console.log('color');
+        console.log(targetColorId);
         let $slidesSingle = sliderSingle.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
         let $slidesThumbs = sliderThumbs.find('.swiper-slide[data-color-id="' + targetColorId + '"]');
 
@@ -105,9 +107,11 @@ export function init () {
 
 
         $slidesSingle.each(function() {
+            console.log(123);
             SwiperSingleWallpaper.appendSlide($(this).clone());
         });
         $defaultSlidesSingle.each(function() {
+            console.log(321);
             SwiperSingleWallpaper.appendSlide($(this).clone());
         });
 
