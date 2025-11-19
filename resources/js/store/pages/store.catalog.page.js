@@ -28,6 +28,8 @@ export default async function () {
         FilterSubmit,
         Swiper,
         Pagination,
+        FancyBox,
+        Email,
     ] = await Promise.all([
         // import('./store.catalog.page/svelte-range-slider'),
         import('./store.catalog.page/tooltip'),
@@ -35,7 +37,9 @@ export default async function () {
         import('./store.catalog.page/searchable-list'),
         import('./store.catalog.page/filter-submit'),
         import('./store.catalog.page/swiper'),
-        import('./store.catalog.page/pagination')
+        import('./store.catalog.page/pagination'),
+        import('./store.product.page/fancybox'),
+        import('./store.product.page/email')
     ]);
 
     Swiper.init();
@@ -45,6 +49,8 @@ export default async function () {
     SearchableList.init();
     FilterSubmit.init();
     Pagination.init();
+    FancyBox.init();
+    Email.init();
 }
 
 async function handleCheckBoxes(label, callback)

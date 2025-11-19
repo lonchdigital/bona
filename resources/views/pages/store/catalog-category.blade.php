@@ -172,6 +172,7 @@
 
             </div><!--/row-->
 
+            @include('pages.store.partials.order-count')
         </div><!--/container-->
     </section>
 

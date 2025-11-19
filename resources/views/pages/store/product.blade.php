@@ -297,6 +297,10 @@
                                     <span class="product-cost-description font-two">{{trans('base.product_cost_description')}}</span>
                                 </div>
 
+                                @if(empty($product->price))
+                                    {{-- <button class="btn calc-btn" data-fancybox data-src="#order-count" style="max-width: 170px;">{{ trans('base.order_count') }}</button> --}}
+                                    <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#order-count">{{ trans('base.order_count') }}</a>
+                                @else
                                     @if( in_array($product->availability_status_id, [3, 4]) )
                                         <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#order-count">{{ trans('base.leave_request') }}</a>
 
@@ -352,6 +356,7 @@
                                             </div>
                                         </div>
                                     @endif
+                                @endif
 
 
 
