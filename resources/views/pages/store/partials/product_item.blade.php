@@ -2,7 +2,7 @@
     <div class="art-product-data">
         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="">
             <div class="image">
-                <img src="https://bona-doors.com.ua/storage/product-images/10.2025/ebde465eaaef76fd47010e966782a3e1055284ef_LDiHO6aQWh_preview.webp" alt="Product Image" loading="lazy">
+                <img src="{{ $product->preview_image_url }}" alt="Product Image" loading="lazy">
             </div>
             <div class="text">
                 <div class="product-title">{{ $product->name }}</div>
