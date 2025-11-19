@@ -280,22 +280,24 @@
                                     </div>
                                 @endif
 
-                                <div class="price">
-                                    <div class="price-hot-wrapper">
-                                        @if($product->old_price > $product->price)
-                                            <div class="art-hot-price-data">
-                                                <span id="product-price" data-count="1" data-start-price="{{ $product->price }}" data-product-price="{{ $product->price }}" class="card-link-price--hot">{{ $product->price }}</span>
+                                @if(!empty($product->price))
+                                    <div class="price">
+                                        <div class="price-hot-wrapper">
+                                            @if($product->old_price > $product->price)
+                                                <div class="art-hot-price-data">
+                                                    <span id="product-price" data-count="1" data-start-price="{{ $product->price }}" data-product-price="{{ $product->price }}" class="card-link-price--hot">{{ $product->price }}</span>
+                                                    <span class="currency">{{ $baseCurrency->name_short }}</span>
+                                                </div>
+                                                <span class="card-link-price--old">{{ $product->old_price }} {{ $baseCurrency->name_short }}</span>
+                                            @else
+                                                <span id="product-price" data-count="1" data-start-price="{{ $product->price }}" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
                                                 <span class="currency">{{ $baseCurrency->name_short }}</span>
-                                            </div>
-                                            <span class="card-link-price--old">{{ $product->old_price }} {{ $baseCurrency->name_short }}</span>
-                                        @else
-                                            <span id="product-price" data-count="1" data-start-price="{{ $product->price }}" data-product-price="{{ $product->price }}">{{ $product->price }}</span>
-                                            <span class="currency">{{ $baseCurrency->name_short }}</span>
-                                        @endif
+                                            @endif
 
+                                        </div>
+                                        <span class="product-cost-description font-two">{{trans('base.product_cost_description')}}</span>
                                     </div>
-                                    <span class="product-cost-description font-two">{{trans('base.product_cost_description')}}</span>
-                                </div>
+                                @endif
 
                                 @if(empty($product->price))
                                     {{-- <button class="btn calc-btn" data-fancybox data-src="#order-count" style="max-width: 170px;">{{ trans('base.order_count') }}</button> --}}
@@ -466,8 +468,7 @@
                             @endif
 
                         </div> <!--/tab-content-->
-
-
+                        @include('pages.store.partials.order-count')
                     </div>
                 </div> <!--/row-->
             </div> <!--/container-->
