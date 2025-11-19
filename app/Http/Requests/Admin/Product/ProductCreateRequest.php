@@ -79,7 +79,7 @@ class ProductCreateRequest extends BaseRequest
                 'numeric',
             ],*/
             'price' => [
-                'required',
+                'nullable',
                 'numeric',
             ],
             /*'purchase_price_in_currency' => [
