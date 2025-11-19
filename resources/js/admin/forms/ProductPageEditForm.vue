@@ -516,7 +516,7 @@ export default {
                         :name="'price'"
                         :model-value="price"
                         :errors="errors"
-                        :is-required="true"
+                        :is-required="false"
                     />
                 </div>
 
