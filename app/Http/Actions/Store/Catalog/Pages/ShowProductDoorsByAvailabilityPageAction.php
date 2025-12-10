@@ -25,7 +25,7 @@ class ShowProductDoorsByAvailabilityPageAction extends BaseAction
         $filtersData = $request->toDTO();
         $baseCurrency = $currencyService->getBaseCurrency();
 
-        $page = $filtersData->filters['page'] ?? 1;
+        $page = $request->get('page') ?? 1;
 
         $productsPaginated = $productService->getProductsDoorsByAvailabilityPaginated(
             $filtersData->filters['per_page'] ?? 24,
