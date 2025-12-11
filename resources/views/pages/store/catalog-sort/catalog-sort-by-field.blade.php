@@ -55,7 +55,7 @@
                     @endif
 
                     <!--Pagination-->
-                {{ $productsPaginated->links('pagination.common') }}
+                {{ $productsPaginated->links('pagination.available-store') }}
 
                 </div> <!--/product items-->
 
