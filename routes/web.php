@@ -137,7 +137,7 @@ use Illuminate\Support\Facades\Log;
 //     return 133;
 // });
 Route::get('/instagram-auth', function () {
-    $appId = '1538984074010107';
+    $appId = '1525654025346152';
     $redirect = route('instagram.callback');
 
     $url = "https://www.facebook.com/v19.0/dialog/oauth?"
@@ -158,8 +158,8 @@ Route::get('/instagram-callback', function () {
         return 'No code parameter returned';
     }
 
-    $appId = '1538984074010107';
-    $appSecret = '641982ada3cae972f52f2043cc8cd3e1';
+    $appId = '1525654025346152';
+    $appSecret = 'QOVWkcUHAoUlcBynJVGW0v5lpUM';
     $redirectUri = route('instagram.callback');
 
     $client = new Client();
