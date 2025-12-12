@@ -136,69 +136,74 @@ use Illuminate\Support\Facades\Log;
 
 //     return 133;
 // });
+// STEP 1 — Redirect user to Facebook OAuth
 Route::get('/instagram-auth', function () {
-    $appId = '1538984074010107';
+    $appId = config('services.facebook.client_id');
+
     $redirect = route('instagram.callback');
 
-    $url = "https://www.facebook.com/v19.0/dialog/oauth?"
-        . http_build_query([
-            'client_id' => $appId,
-            'redirect_uri' => $redirect,
-            'scope' => 'instagram_basic,instagram_manage_insights,pages_show_list',
-            'response_type' => 'code'
-        ]);
+    $url = "https://www.facebook.com/v19.0/dialog/oauth?" . http_build_query([
+        'client_id' => $appId,
+        'redirect_uri' => $redirect,
+        'scope' => 'instagram_basic,instagram_manage_insights,pages_show_list',
+        'response_type' => 'code'
+    ]);
 
     return redirect()->away($url);
 });
 
+// STEP 2 — CALLBACK: exchange CODE → SHORT TOKEN → LONG TOKEN
 Route::get('/instagram-callback', function () {
     $code = request('code');
 
     if (!$code) {
-        return 'No code parameter returned';
+        return 'Error: no code received';
     }
 
-    $appId = '1538984074010107';
-    $appSecret = '641982ada3cae972f52f2043cc8cd3e1';
+    $appId = config('services.facebook.client_id');
+    $appSecret = config('services.facebook.client_secret');
     $redirectUri = route('instagram.callback');
 
     $client = new Client();
 
     try {
-        $shortResponse = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
+        // 1) CODE → SHORT-LIVED TOKEN
+        $shortResp = $client->get('https://graph.facebook.com/v19.0/oauth/access_token', [
             'query' => [
                 'client_id' => $appId,
                 'redirect_uri' => $redirectUri,
                 'client_secret' => $appSecret,
-                'code' => $code
+                'code' => $code,
             ]
         ]);
 
-        $short = json_decode($shortResponse->getBody(), true);
+        $short = json_decode($shortResp->getBody(), true);
         $shortToken = $short['access_token'];
 
-        $longResponse = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
+        // 2) SHORT → LONG-LIVED TOKEN
+        $longResp = $client->get('https://graph.facebook.com/v19.0/oauth/access_token', [
             'query' => [
                 'grant_type' => 'fb_exchange_token',
                 'client_id' => $appId,
                 'client_secret' => $appSecret,
-                'fb_exchange_token' => $shortToken
+                'fb_exchange_token' => $shortToken,
             ]
         ]);
 
-        $long = json_decode($longResponse->getBody(), true);
+        $long = json_decode($longResp->getBody(), true);
         $longToken = $long['access_token'];
 
+        // SAVE TOKEN
         ApplicationConfig::updateOrCreate(
             ['config_name' => 'instagramAccessToken'],
             ['config_data' => $longToken]
         );
 
-        return "Long-lived Instagram token saved: <br><br><code>{$longToken}</code>";
+        return "✔️ Instagram long-lived token saved:<br><br><code>{$longToken}</code>";
 
     } catch (\Exception $e) {
-        Log::error('Instagram OAuth error', ['error' => $e->getMessage()]);
-        return 'Error: ' . $e->getMessage();
+        \Log::error('Instagram OAuth error', ['error' => $e->getMessage()]);
+        return "Error: " . $e->getMessage();
     }
 })->name('instagram.callback');
 
