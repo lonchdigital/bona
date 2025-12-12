@@ -89,6 +89,9 @@ use App\Services\Application\ApplicationConfigService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Actions\Store\Mail\UserChooseDoorsAction;
 use App\Http\Actions\Store\Mail\OrderCountDoorsAction;
+use App\Models\ApplicationConfig;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +103,104 @@ use App\Http\Actions\Store\Mail\OrderCountDoorsAction;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// Route::get('/update-token', function() {
+//     $client = new Client();
+//     $url = 'https://graph.facebook.com/v19.0/refresh_access_token';
+
+//     try {
+//         $response = $client->request('GET', $url, [
+//             'query' => [
+//                 'grant_type' => 'ig_refresh_token',
+//                 'access_token' => 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n'
+//             ]
+//         ]);
+
+//         if ($response->getStatusCode() === 200) {
+//             $data = json_decode($response->getBody(), true);
+
+//             // Save new token to DB
+//             ApplicationConfig::updateOrCreate(
+//                 ['config_name' => 'instagramAccessToken'],
+//                 ['config_data' => $data['access_token']]
+//             );
+
+//             return $data['access_token'];
+//         }
+//     } catch (Exception $e) {
+//         Log::error('Instagram Token Refresh Error', [
+//             'error' => $e->getMessage(),
+//         ]);
+//         return null;
+//     }
+
+//     return 133;
+// });
+Route::get('/instagram-auth', function () {
+    $appId = '1525654025346152';
+    $redirect = route('instagram.callback');
+
+    $url = "https://www.facebook.com/v19.0/dialog/oauth?"
+        . http_build_query([
+            'client_id' => $appId,
+            'redirect_uri' => $redirect,
+            'scope' => 'instagram_basic,instagram_manage_insights,pages_show_list',
+            'response_type' => 'code'
+        ]);
+
+    return redirect()->away($url);
+});
+
+Route::get('/instagram-callback', function () {
+    $code = request('code');
+
+    if (!$code) {
+        return 'No code parameter returned';
+    }
+
+    $appId = '1525654025346152';
+    $appSecret = '641982ada3cae972f52f2043cc8cd3e1';
+    $redirectUri = route('instagram.callback');
+
+    $client = new Client();
+
+    try {
+        $shortResponse = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
+            'query' => [
+                'client_id' => $appId,
+                'redirect_uri' => $redirectUri,
+                'client_secret' => $appSecret,
+                'code' => $code
+            ]
+        ]);
+
+        $short = json_decode($shortResponse->getBody(), true);
+        $shortToken = $short['access_token'];
+
+        $longResponse = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
+            'query' => [
+                'grant_type' => 'fb_exchange_token',
+                'client_id' => $appId,
+                'client_secret' => $appSecret,
+                'fb_exchange_token' => $shortToken
+            ]
+        ]);
+
+        $long = json_decode($longResponse->getBody(), true);
+        $longToken = $long['access_token'];
+
+        ApplicationConfig::updateOrCreate(
+            ['config_name' => 'instagramAccessToken'],
+            ['config_data' => $longToken]
+        );
+
+        return "Long-lived Instagram token saved: <br><br><code>{$longToken}</code>";
+
+    } catch (\Exception $e) {
+        Log::error('Instagram OAuth error', ['error' => $e->getMessage()]);
+        return 'Error: ' . $e->getMessage();
+    }
+})->name('instagram.callback');
 
 $optionalLanguageRoutes = function () {
     /**
