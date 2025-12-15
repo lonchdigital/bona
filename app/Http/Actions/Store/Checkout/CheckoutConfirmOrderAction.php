@@ -70,7 +70,7 @@ class CheckoutConfirmOrderAction extends BaseAction
 
         } elseif( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ) {
 
-            $response = $paymentMonoBankService->createMonoBankPartialPaymentOrder($order, $phone);
+            $response = $paymentMonoBankService->createMonoBankPartialPaymentOrder($order, $phone, $request->get('mono_payment_period'));
             if (!is_null($response)) {
                 return response()->redirectToRoute('store.checkout.thank-you.mono-bank', ['order' => $order]);
             } else {

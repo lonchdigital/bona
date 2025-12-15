@@ -26,7 +26,7 @@ class PaymentMonoBankService extends BaseService
         $this->mono_bank_client_store_id = env('MONOBANK_CLIENT_STORE_ID');
     }
 
-    public function createMonoBankPartialPaymentOrder(Order $order, string $phone)
+    public function createMonoBankPartialPaymentOrder(Order $order, string $phone, string $period)
     {
         $client = new Client();
 
@@ -46,7 +46,7 @@ class PaymentMonoBankService extends BaseService
             ],
             "available_programs" => [
                 [
-                    "available_parts_count" => [3,4,5,6],
+                    "available_parts_count" => [$period],
                     "type" => "payment_installments",
                 ]
             ],

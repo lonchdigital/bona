@@ -62,6 +62,21 @@ export default async function () {
         }
     });
 
+    let collapseMonoPartialPayment = $('#collapseMonoPartialPayment');
+    $('input[name="payment_type_id"]').change(function () {
+        if($(this).is(':checked')) {
+            const id = $(this).attr('id');
+
+            if( id === 'payment-card_paypart-mono-bank' ) {
+                collapseMonoPartialPayment.slideDown(300);
+            } else {
+                collapseMonoPartialPayment.slideUp(300);
+            }
+
+            $('.selected-payment-type').text($('label[for="' + id + '"]').text());
+        }
+    });
+
 
     // Accordion
     $('input.art-accordion-delivery').on('change', function() {

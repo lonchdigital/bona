@@ -475,7 +475,7 @@
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}">
                                                             <label class="custom-control-label"
                                                                    for="payment-card_paypart">
-                                                                <span class="i-np mr-2"><img src="{{ asset('public/static-images/liq.png') }}" style="width: 24px" alt="monobank"></span>
+                                                                <span class="i-np mr-2"><img src="{{ asset('public/static-images/liq.png') }}" style="width: 24px" alt="liqpay"></span>
                                                                 {{ trans('base.checkout_payment_paypart') }}
                                                             </label>
                                                         </div>
@@ -517,6 +517,23 @@
                                                                 <span class="i-np mr-2"><img src="{{ asset('public/static-images/monobank.png') }}" style="width: 24px" alt="monobank"></span>
                                                                 {{ trans('base.checkout_payment_paypart_mono_bank') }}
                                                             </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="" id="collapseMonoPartialPayment" @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) style="display: block" @else style="display: none" @endif>
+                                                <div class="row">
+                                                    <div class="col mt-1">
+                                                        <div class="delivery-title mb-1">
+                                                            {{ trans('base.payment_period') }}
+                                                        </div>
+                                                        <div>
+                                                            <select class="art-form-light-control art-plain-select" name="mono_payment_period" id="mono_payment_period" style="width: 150px">
+                                                                <option @if(old('payment_period') == 3) selected @endif value="3">3 {{ trans('base.short_month') }}</option>
+                                                                <option @if(old('payment_period') == 4) selected @endif value="4">4 {{ trans('base.short_month') }}</option>
+                                                                <option @if(old('payment_period') == 5) selected @endif value="5">5 {{ trans('base.short_month') }}</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>

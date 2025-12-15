@@ -188,6 +188,18 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             ];
         }
 
+        if (
+            in_array(
+                $this->input('payment_type_id'),
+                [PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK]
+            ))
+        {
+            $rules['mono_payment_period'] = [
+                'integer',
+                'required'
+            ];
+        }
+
         return $rules;
     }
 
