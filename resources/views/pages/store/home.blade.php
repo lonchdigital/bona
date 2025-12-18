@@ -472,9 +472,9 @@
     @endif
 
     <section class="instagram">
-    <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
-    <script src="https://elfsightcdn.com/platform.js" async></script>
-    <div class="elfsight-app-f85feb4c-b53a-43eb-a103-554c0704ae89" data-elfsight-app-lazy></div>
+        <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+        <script src="https://elfsightcdn.com/platform.js" async></script>
+        <div class="elfsight-app-f85feb4c-b53a-43eb-a103-554c0704ae89" data-elfsight-app-lazy></div>
     </section>
 
     <!-- ========================  Blog ======================== -->
@@ -699,4 +699,23 @@
 {{--    @vite('resources/js/store/all.common.files.js')--}}
 {{--    @vite('resources/js/store/pages/store.home.js')--}}
 {{--    @vite('resources/js/store/homepage.js')--}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const observer = new MutationObserver(function () {
+            const elfsightLink = document.querySelector(
+                'a[href*="elfsight.com/instagram-feed-instashow"]'
+            );
+
+            if (elfsightLink) {
+                elfsightLink.remove();
+                observer.disconnect(); // зупиняємо спостереження
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+</script>
 @endpush
