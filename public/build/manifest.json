@@ -540,7 +540,7 @@
     "src": "resources/scss/main.scss"
   },
   "resources/scss/theme-additional.scss": {
-    "file": "assets/theme-additional-0525d90e.css",
+    "file": "assets/theme-additional-6e7b3b3a.css",
     "isEntry": true,
     "src": "resources/scss/theme-additional.scss"
   },
