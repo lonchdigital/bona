@@ -471,6 +471,12 @@
         </section>
     @endif
 
+    <section class="instagram">
+    <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+    <script src="https://elfsightcdn.com/platform.js" async></script>
+    <div class="elfsight-app-f85feb4c-b53a-43eb-a103-554c0704ae89" data-elfsight-app-lazy></div>
+    </section>
+
     <!-- ========================  Blog ======================== -->
 
     <section class="blog">
