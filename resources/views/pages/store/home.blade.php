@@ -709,24 +709,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const observer = new MutationObserver(function () {
-
                 const elfsightLink = document.querySelector(
                     'a[href*="elfsight.com/instagram-feed-instashow"]'
                 );
 
                 if (elfsightLink) {
                     elfsightLink.remove();
-                }
-
-                const titleContainer = document.querySelector(
-                    '.eapps-instagram-feed-title-container'
-                );
-
-                if (titleContainer) {
-                    titleContainer.remove();
-                }
-
-                if (!elfsightLink && !titleContainer) {
                     observer.disconnect();
                 }
             });
