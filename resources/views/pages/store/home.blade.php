@@ -472,6 +472,13 @@
     @endif
 
     <section class="instagram">
+        <header>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="title h2">{{ trans('base.we_are_in_instagram') }}</h2>
+                </div>
+            </div>
+        </header>
         <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
         <script src="https://elfsightcdn.com/platform.js" async></script>
         <div class="elfsight-app-f85feb4c-b53a-43eb-a103-554c0704ae89" data-elfsight-app-lazy></div>
@@ -699,23 +706,35 @@
 {{--    @vite('resources/js/store/all.common.files.js')--}}
 {{--    @vite('resources/js/store/pages/store.home.js')--}}
 {{--    @vite('resources/js/store/homepage.js')--}}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const observer = new MutationObserver(function () {
-            const elfsightLink = document.querySelector(
-                'a[href*="elfsight.com/instagram-feed-instashow"]'
-            );
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const observer = new MutationObserver(function () {
 
-            if (elfsightLink) {
-                elfsightLink.remove();
-                observer.disconnect(); // зупиняємо спостереження
-            }
-        });
+                const elfsightLink = document.querySelector(
+                    'a[href*="elfsight.com/instagram-feed-instashow"]'
+                );
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+                if (elfsightLink) {
+                    elfsightLink.remove();
+                }
+
+                const titleContainer = document.querySelector(
+                    '.eapps-instagram-feed-title-container'
+                );
+
+                if (titleContainer) {
+                    titleContainer.remove();
+                }
+
+                if (!elfsightLink && !titleContainer) {
+                    observer.disconnect();
+                }
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
         });
-    });
-</script>
+    </script>
 @endpush
