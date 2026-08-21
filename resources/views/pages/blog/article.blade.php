@@ -258,7 +258,9 @@
 
                                 </div>
 
-                                @php($shareUrl = url()->current())
+                                @php
+                                    $shareUrl = url()->current();
+                                @endphp
 
                                 <div class="art-post-share">
                                     <span class="art-post-share__label">{{ trans('base.article_share') }}</span>

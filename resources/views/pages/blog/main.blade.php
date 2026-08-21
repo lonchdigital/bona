@@ -39,7 +39,9 @@
 
 @endsection
 
-@php($blogCoverArticle = $articles->first())
+@php
+    $blogCoverArticle = $articles->first();
+@endphp
 
 @if($blogCoverArticle && $blogCoverArticle->og_image_url)
     @section('og_image', $blogCoverArticle->og_image_url)
