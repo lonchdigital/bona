@@ -184,6 +184,8 @@ class SerpAgentHtmlService
                 continue;
             }
 
+            $url = $this->normalizeInternalUrl($url);
+
             $items .= '<li><a href="' . e($url) . '">' . e($title) . '</a></li>';
         }
 
@@ -290,8 +292,16 @@ class SerpAgentHtmlService
                 continue;
             }
 
-            if (in_array($name, ['href', 'src'], true) && !$this->isSafeUrl($attribute->nodeValue)) {
-                $element->removeAttribute($attribute->nodeName);
+            if (in_array($name, ['href', 'src'], true)) {
+                if (!$this->isSafeUrl($attribute->nodeValue)) {
+                    $element->removeAttribute($attribute->nodeName);
+
+                    continue;
+                }
+
+                if ($name === 'href') {
+                    $element->setAttribute('href', $this->normalizeInternalUrl($attribute->nodeValue));
+                }
             }
         }
 
@@ -330,6 +340,63 @@ class SerpAgentHtmlService
         }
 
         $parent->removeChild($element);
+    }
+
+    /**
+     * Articles moved from /blog/article/{slug} to /blog/{slug}. Serp Agent
+     * learned the old shape from the site and keeps emitting it in its link
+     * lists, so those links are rewritten instead of bouncing every visitor
+     * through a redirect. Only our own links are touched.
+     */
+    private function normalizeInternalUrl(string $url): string
+    {
+        $url = trim($url);
+
+        if ($url === '') {
+            return $url;
+        }
+
+        $parts = parse_url($url);
+
+        if (!is_array($parts) || !isset($parts['path'])) {
+            return $url;
+        }
+
+        if (isset($parts['host'])) {
+            $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
+
+            if ($appHost === null || strcasecmp($parts['host'], $appHost) !== 0) {
+                return $url;
+            }
+        }
+
+        $path = preg_replace('#^((?:/(?:ru|uk))?)/blog/article/#i', '$1/blog/', $parts['path'], 1);
+
+        if ($path === $parts['path']) {
+            return $url;
+        }
+
+        $rebuilt = '';
+
+        if (isset($parts['scheme'], $parts['host'])) {
+            $rebuilt .= $parts['scheme'] . '://' . $parts['host'];
+
+            if (isset($parts['port'])) {
+                $rebuilt .= ':' . $parts['port'];
+            }
+        }
+
+        $rebuilt .= $path;
+
+        if (isset($parts['query'])) {
+            $rebuilt .= '?' . $parts['query'];
+        }
+
+        if (isset($parts['fragment'])) {
+            $rebuilt .= '#' . $parts['fragment'];
+        }
+
+        return $rebuilt;
     }
 
     private function isSafeUrl(?string $url): bool
