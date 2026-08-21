@@ -45,6 +45,18 @@ class AboutUsPageEditRequest extends BaseRequest
             'nullable',
             'string'
         ];
+        $rules['cta_button_url'] = ['nullable', 'string'];
+
+        $rules['fact'] = ['nullable', 'array'];
+        $rules['fact.*.id'] = ['nullable', 'integer'];
+        $rules['fact.*.value'] = ['nullable', 'string', 'max:60'];
+
+        $rules['step'] = ['nullable', 'array'];
+        $rules['step.*.id'] = ['nullable', 'integer'];
+
+        $rules['team'] = ['nullable', 'array'];
+        $rules['team.*.id'] = ['nullable', 'integer'];
+        $rules['team.*.photo'] = ['nullable', 'image', 'max:10240'];
 
         foreach ($this->availableLanguages as $availableLanguage) {
             $rules['meta_title.' . $availableLanguage] = [
@@ -72,6 +84,24 @@ class AboutUsPageEditRequest extends BaseRequest
                 'nullable',
                 'string'
             ];
+
+            foreach ([
+                'facts_title', 'history_title', 'steps_title', 'team_title',
+                'cta_title', 'cta_button_text',
+            ] as $sectionField) {
+                $rules[$sectionField . '.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
+            }
+
+            $rules['history_text.' . $availableLanguage] = ['nullable', 'string'];
+            $rules['cta_text.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
+
+            $rules['fact.*.label.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['step.*.title.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['step.*.text.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['team.*.name.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['team.*.role.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['team.*.experience.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['team.*.quote.' . $availableLanguage] = ['nullable', 'string', 'max:500'];
         }
 
         return  $rules;
@@ -108,6 +138,45 @@ class AboutUsPageEditRequest extends BaseRequest
             $this->file('image'),
             (bool) $this->input('image_deleted'),
             $this->input('iframe'),
+
+            $this->input('facts_title'),
+            $this->input('history_title'),
+            $this->input('history_text'),
+            $this->input('steps_title'),
+            $this->input('team_title'),
+            $this->input('cta_title'),
+            $this->input('cta_text'),
+            $this->input('cta_button_text'),
+            $this->input('cta_button_url'),
+
+            $this->input('fact'),
+            $this->input('step'),
+            $this->withUploads('team', 'photo'),
         );
+    }
+
+    /**
+     * Merges the uploaded files back into the plain input, so the service is
+     * handed one list per block instead of two parallel ones.
+     */
+    private function withUploads(string $key, string $fileField): ?array
+    {
+        $rows = $this->input($key);
+
+        if (!is_array($rows)) {
+            return null;
+        }
+
+        foreach ($rows as $index => $row) {
+            $uploaded = $this->file($key . '.' . $index . '.' . $fileField);
+
+            if ($uploaded) {
+                $rows[$index][$fileField] = $uploaded;
+            } else {
+                unset($rows[$index][$fileField]);
+            }
+        }
+
+        return $rows;
     }
 }

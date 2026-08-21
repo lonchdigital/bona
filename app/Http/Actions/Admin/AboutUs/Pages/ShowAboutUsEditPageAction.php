@@ -17,6 +17,9 @@ class ShowAboutUsEditPageAction extends BaseAction
         return view('pages.admin.about-us.edit', [
             'availableLanguages' => $applicationService->getAvailableLanguages(),
             'aboutUsConfig' => $aboutUsService->getAboutUsConfig(),
+            'aboutUsFacts' => $aboutUsService->getFacts(),
+            'aboutUsSteps' => $aboutUsService->getSteps(),
+            'aboutUsTeam' => $aboutUsService->getTeamMembers(),
         ]);
     }
 

@@ -25,6 +25,11 @@ class ShowAboutUsPageAction extends BaseAction
             'aboutUsConfig' => $config,
             'brands' => $brandService->getBrands(),
             'articles' => $blogArticleService->getLatestArticles(3),
+            // Each block renders only when it has something in it, so the page
+            // can be filled in a piece at a time.
+            'aboutUsFacts' => $aboutUsPageService->getFacts(),
+            'aboutUsSteps' => $aboutUsPageService->getSteps(),
+            'aboutUsTeam' => $aboutUsPageService->getTeamMembers(),
         ]);
     }
 }

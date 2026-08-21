@@ -714,13 +714,57 @@
                 </div>
             </header>
 
-            <div class="seo-content">
+            {{-- Height limited with CSS only. The whole text stays in the
+                 markup, which is what a crawler reads; nothing is loaded or
+                 revealed by script, so none of it is hidden from search. --}}
+            <div class="seo-content art-seo-scroll" tabindex="0">
                 {!! $seoText['content'] !!}
             </div>
 
         </div>
     </section>
 @stop
+
+@push('head')
+    <style>
+        .seo-section .art-seo-scroll {
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 18px;
+            /* Scroll carries on to the page once the block reaches its end,
+               so the reader is never trapped inside it on a phone. */
+            scrollbar-width: thin;
+        }
+
+        .seo-section .art-seo-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .seo-section .art-seo-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .seo-section .art-seo-scroll::-webkit-scrollbar-thumb {
+            background: #cccccc;
+            border-radius: 3px;
+        }
+
+        .seo-section .art-seo-scroll::-webkit-scrollbar-thumb:hover {
+            background: #999999;
+        }
+
+        .seo-section .art-seo-scroll > *:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 767px) {
+            .seo-section .art-seo-scroll {
+                max-height: 60vh;
+                padding-right: 12px;
+            }
+        }
+    </style>
+@endpush
 
 @push('dynamic_scripts')
 {{--    @vite('resources/js/store/all.common.files.js')--}}

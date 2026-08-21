@@ -72,6 +72,106 @@
         </div>
     </section>
 
+    @if($aboutUsFacts->count())
+        <section class="art-section-pd art-about-facts">
+            <div class="container">
+                @if($aboutUsConfig->facts_title)
+                    <h2 class="title h2">{{ $aboutUsConfig->facts_title }}</h2>
+                @endif
+                <ul class="art-about-facts__list">
+                    @foreach($aboutUsFacts as $fact)
+                        <li>
+                            <span class="art-about-facts__value">{{ $fact->value }}</span>
+                            @if($fact->label)
+                                <span class="art-about-facts__label">{{ $fact->label }}</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
+
+    @if($aboutUsConfig->history_text)
+        <section class="art-section-pd art-about-history">
+            <div class="container">
+                @if($aboutUsConfig->history_title)
+                    <h2 class="title h2">{{ $aboutUsConfig->history_title }}</h2>
+                @endif
+                <div class="art-about-history__text">{!! $aboutUsConfig->history_text !!}</div>
+            </div>
+        </section>
+    @endif
+
+    @if($aboutUsSteps->count())
+        <section class="art-section-pd art-about-steps">
+            <div class="container">
+                @if($aboutUsConfig->steps_title)
+                    <h2 class="title h2">{{ $aboutUsConfig->steps_title }}</h2>
+                @endif
+                <ol class="art-about-steps__list">
+                    @foreach($aboutUsSteps as $step)
+                        <li>
+                            <h3>{{ $step->title }}</h3>
+                            @if($step->text)
+                                <p>{{ $step->text }}</p>
+                            @endif
+                        </li>
+                    @endforeach
+                </ol>
+            </div>
+        </section>
+    @endif
+
+    @if($aboutUsTeam->count())
+        <section class="art-section-pd art-about-team">
+            <div class="container">
+                @if($aboutUsConfig->team_title)
+                    <h2 class="title h2">{{ $aboutUsConfig->team_title }}</h2>
+                @endif
+                <ul class="art-about-team__list">
+                    @foreach($aboutUsTeam as $member)
+                        <li>
+                            @if($member->photo_url)
+                                <img src="{{ $member->photo_url }}" alt="{{ $member->name }}{{ $member->role ? ', ' . $member->role : '' }}" loading="lazy">
+                            @endif
+                            <span class="art-about-team__name">{{ $member->name }}</span>
+                            @if($member->role)
+                                <span class="art-about-team__role">{{ $member->role }}</span>
+                            @endif
+                            @if($member->experience)
+                                <span class="art-about-team__experience">{{ $member->experience }}</span>
+                            @endif
+                            @if($member->quote)
+                                <p class="art-about-team__quote">{{ $member->quote }}</p>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
+
+    @if($aboutUsConfig->cta_title || $aboutUsConfig->cta_text)
+        <section class="art-section-pd art-about-cta">
+            <div class="container text-center">
+                @if($aboutUsConfig->cta_title)
+                    <h2 class="title h2">{{ $aboutUsConfig->cta_title }}</h2>
+                @endif
+                @if($aboutUsConfig->cta_text)
+                    <p>{{ $aboutUsConfig->cta_text }}</p>
+                @endif
+                @if($aboutUsConfig->cta_button_text)
+                    <a href="{{ $aboutUsConfig->cta_button_url ?: '' }}"
+                       class="btn btn-main"
+                       @if(!$aboutUsConfig->cta_button_url) data-fancybox data-src="#dialog-call-measurer" @endif>
+                        {{ $aboutUsConfig->cta_button_text }}
+                    </a>
+                @endif
+            </div>
+        </section>
+    @endif
+
     <section class="art-brands-list">
         <div class="container">
 
