@@ -44,6 +44,84 @@ class BlogArticleService extends BaseService
         return BlogArticle::where('blog_category_id', $blogCategory->id)->paginate(config('domain.items_per_page'));
     }
 
+    /**
+     * Pulls the question and answer pairs back out of an article body so the
+     * page can describe them with FAQPage structured data.
+     *
+     * The FAQ is part of the stored HTML rather than a field of its own, so
+     * reading it back is the only way to describe it without asking the author
+     * to fill the same thing in twice.
+     *
+     * @return array<int, array{question: string, answer: string}>
+     */
+    public function extractFaq(BlogArticle $article, string $locale): array
+    {
+        $textBlock = $article->blocks
+            ->firstWhere('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT);
+
+        if (!$textBlock) {
+            return [];
+        }
+
+        $content = $textBlock->content;
+        $html = is_array($content) ? ($content[$locale] ?? '') : '';
+
+        if (!is_string($html) || !str_contains($html, 'accordion-item-wrapper') || !class_exists(\DOMDocument::class)) {
+            return [];
+        }
+
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $previousUseErrors = libxml_use_internal_errors(true);
+
+        $loaded = $document->loadHTML(
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+        );
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseErrors);
+
+        if (!$loaded) {
+            return [];
+        }
+
+        $xpath = new \DOMXPath($document);
+        $faq = [];
+
+        $wrappers = $xpath->query(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " accordion-item-wrapper ")]'
+        );
+
+        foreach ($wrappers as $wrapper) {
+            $question = $xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " question ")]', $wrapper)->item(0);
+            $answer = $xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " panel-data ")]', $wrapper)->item(0);
+
+            if (!$question || !$answer) {
+                continue;
+            }
+
+            $answerHtml = '';
+
+            foreach ($answer->childNodes as $child) {
+                $answerHtml .= $document->saveHTML($child);
+            }
+
+            $questionText = trim($question->textContent);
+            $answerHtml = trim($answerHtml);
+
+            if ($questionText === '' || $answerHtml === '') {
+                continue;
+            }
+
+            $faq[] = [
+                'question' => $questionText,
+                'answer' => $answerHtml,
+            ];
+        }
+
+        return $faq;
+    }
+
     public function createBlogArticle(EditBlogArticleDTO $request, User $creator): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use($request, $creator) {

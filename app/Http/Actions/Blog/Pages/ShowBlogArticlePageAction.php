@@ -28,6 +28,7 @@ class ShowBlogArticlePageAction extends BaseAction
             // Null until an author is created in the admin panel; the template
             // then falls back to the loose author fields in the global config.
             'articleAuthor' => $authorService->getDefaultAuthor(),
+            'articleFaq' => $blogArticleService->extractFaq($blogArticle, app()->getLocale()),
         ]);
     }
 }

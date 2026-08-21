@@ -79,7 +79,9 @@
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">--}}
     {{--    <link rel="stylesheet" href="{{ asset('assets/css/ion-range-slider.min.css') }}">--}}
 
-    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    {{-- Plain stylesheet link: "as" belongs to rel="preload", and the onload
+         only reassigned the rel it already had, so the pair did nothing. --}}
+    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">
     <noscript><link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}"></noscript>
 
 
@@ -137,7 +139,7 @@
     @endif
 
 <!-- Google Tag Manager -->
-    <script defer>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -168,7 +170,7 @@
 
                     <header class="art-light">
                         <div class="text-center">
-                            <h2 class="title h2">{{ trans('base.choose_language') }}</h2>
+                            <div class="title h2">{{ trans('base.choose_language') }}</div>
                             <div class="subtitle font-two">
                                 <p class="art-form-description">{{ trans('base.choose_language_to_display_website') }}</p>
                             </div>
@@ -202,7 +204,7 @@
 <a href="" id="user-choose-doors-success" data-fancybox data-src="#art-user-choose-doors" style="display: none">Launch Dialog</a>
 <div id="art-user-choose-doors" style="display: none">
     <div class="">
-        <h2>{{ trans('base.form_sent_success') }}</h2>
+        <div class="h2">{{ trans('base.form_sent_success') }}</div>
     </div>
 </div>
 
@@ -335,7 +337,7 @@
 
                                             <header class="art-light">
                                                 <div class="text-center">
-                                                    <h2 class="title h2">{{ trans('base.call_measurer') }}</h2>
+                                                    <div class="title h2">{{ trans('base.call_measurer') }}</div>
                                                     <div class="subtitle font-two">
                                                         <p class="art-form-description">{{ trans('base.call_measurer_description') }}</p>
                                                     </div>

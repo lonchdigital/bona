@@ -150,11 +150,30 @@
             // Built as arrays and encoded rather than written out by hand: the
             // hand written version broke as soon as a value contained a quote
             // or a line break, and search engines silently dropped it.
+            // Google stopped showing FAQ rich results in 2025, but Bing and the
+            // AI crawlers still read this, and it costs nothing to be correct.
+            $faqSchema = $articleFaq ? [
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => array_map(fn ($entry) => [
+                    '@type' => 'Question',
+                    'name' => $entry['question'],
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => $entry['answer'],
+                    ],
+                ], $articleFaq),
+            ] : null;
+
             $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
         @endphp
 
         <script type="application/ld+json">{!! json_encode($articleSchema, $schemaFlags) !!}</script>
         <script type="application/ld+json">{!! json_encode($breadcrumbSchema, $schemaFlags) !!}</script>
+
+        @if($faqSchema)
+            <script type="application/ld+json">{!! json_encode($faqSchema, $schemaFlags) !!}</script>
+        @endif
 
         <div class="container">
             <div class="row">
@@ -634,7 +653,7 @@
 
         // The accordion trigger is a heading, so it needs the keyboard
         // behaviour a button would have given for free.
-        document.querySelectorAll('.article-faq .accordion[role="button"]').forEach(function (heading) {
+        document.querySelectorAll('.article-faq .accordion[tabindex]').forEach(function (heading) {
             heading.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
                     event.preventDefault();

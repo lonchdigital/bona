@@ -141,7 +141,9 @@ class SerpAgentHtmlService
      *
      * The question stays a real <h3> rather than a button label: it is a
      * heading search engines should see, and .accordion only needs the class,
-     * not a particular tag.
+     * not a particular tag. It carries tabindex but no role: heading elements
+     * are not allowed to declare role="button", and the heading is what both
+     * search engines and screen readers should hear.
      */
     public function buildFaqSection(array $faq, string $locale): string
     {
@@ -168,7 +170,7 @@ class SerpAgentHtmlService
             $isFirst = false;
 
             $items .= '<div class="accordion-item-wrapper">'
-                . '<h3 class="accordion' . $openClass . '" role="button" tabindex="0">'
+                . '<h3 class="accordion' . $openClass . '" tabindex="0">'
                 . '<span class="question">' . e($question) . '</span>'
                 . '</h3>'
                 . '<div class="art-panel"' . $openStyle . '>'
