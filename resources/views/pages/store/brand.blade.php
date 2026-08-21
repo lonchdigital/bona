@@ -141,57 +141,6 @@
                         </div>
                     </div>
                 </section>
-                <section class="single-brand-slider mb-10 mb-md-14 mb-lg-22">
-                    <div class="container container-max">
-                        <div class="row">
-                            <div class="col d-flex flex-column-reverse d-lg-block">
-                                <div class="swiper-single-brand mb-26 my-lg-13">
-                                    <div class="swiper-wrapper">
-                                        @php
-                                            $displayedSlides = 0;
-                                        @endphp
-                                        @if (count($brand->slides) < 10 && count($brand->slides) > 0)
-                                            @while($displayedSlides < 10)
-                                                @foreach($brand->slides as $slide)
-                                                    @php
-                                                        $displayedSlides++;
-                                                    @endphp
-                                                    <div class="swiper-slide">
-                                                        <img src="{{ $slide->image_url }}" alt="img">
-                                                    </div>
-                                                @endforeach
-                                            @endwhile
-                                        @else
-                                            @foreach($brand->slides as $slide)
-                                                <div class="swiper-slide">
-                                                    <img src="{{ $slide->image_url }}" alt="img">
-                                                </div>
-                                            @endforeach
-                                        @endif
-
-                                    </div>
-                                </div>
-                                <div class="single-brand-slider-nav text-white text-center mt-6 mt-lg-0 px-4 px-xxl-8">
-                                    <div class="single-brand-slider-title mb-2 mb-lg-7">{{ $brand->slider_main_text }}</div>
-                                    <p class="mb-10 mb-lg-9">{{ $brand->slider_description_text }}</p>
-                                    <div class="swiper-control">
-                                        <div class="button-slider-prev">
-                                            <svg>
-                                                <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-arrow-circle"></use>
-                                            </svg>
-                                        </div>
-                                        <div class="swiper-pagination"></div>
-                                        <div class="button-slider-next">
-                                            <svg>
-                                                <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-arrow-circle"></use>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
                 <section class="collection-other collection-all">
                     <div class="container">
                         <div class="row">

@@ -23,11 +23,6 @@ class Brand extends Model implements Sitemapable
     }
 
 
-    public function slides()
-    {
-        return $this->hasMany(BrandSlide::class);
-    }
-
     public function logoImageUrl(): Attribute
     {
         return Attribute::make(function () {
