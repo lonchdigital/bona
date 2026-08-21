@@ -24,12 +24,12 @@
     "src": "lang/php_en.json"
   },
   "lang/php_ru.json": {
-    "file": "js/php_ru-f584523b.js",
+    "file": "js/php_ru-cca39b88.js",
     "isDynamicEntry": true,
     "src": "lang/php_ru.json"
   },
   "lang/php_uk.json": {
-    "file": "js/php_uk-2f714426.js",
+    "file": "js/php_uk-d339d3a4.js",
     "isDynamicEntry": true,
     "src": "lang/php_uk.json"
   },
@@ -205,7 +205,7 @@
       "lang/php_uk.json",
       "lang/uk.json"
     ],
-    "file": "js/app-409bf8d9.js",
+    "file": "js/app-a3bdc82b.js",
     "imports": [
       "_jquery-5c3435d1.js",
       "_bootstrap-08b03379.js",

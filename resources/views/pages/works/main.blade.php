@@ -18,7 +18,7 @@
 @endsection
 
 @php
-    $worksCover = $works->first();
+    $worksCover = $works->isNotEmpty() ? $works->first() : null;
 @endphp
 
 @if($worksCover && $worksCover->og_image_url)
@@ -61,7 +61,9 @@
         ];
     @endphp
 
-    <script type="application/ld+json">{!! json_encode($worksListSchema, $schemaFlags) !!}</script>
+    @if($works->isNotEmpty())
+        <script type="application/ld+json">{!! json_encode($worksListSchema, $schemaFlags) !!}</script>
+    @endif
     <script type="application/ld+json">{!! json_encode($worksBreadcrumbSchema, $schemaFlags) !!}</script>
 
     <section class="blog art-section-pd">
@@ -89,12 +91,14 @@
                     </div>
                 @else
                     <div class="col-12">
-                        <p class="nothing-found-text mt-5">{{ trans('base.nothing_found') }}</p>
+                        <p class="nothing-found-text mt-5">{{ trans('base.works_empty') }}</p>
                     </div>
                 @endif
             </div>
 
-            {{ $works->links('pagination.common') }}
+            @if($works->hasPages())
+                {{ $works->links('pagination.common') }}
+            @endif
 
         </div>
     </section>

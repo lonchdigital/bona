@@ -52,6 +52,11 @@ class CreateWorkRequest extends BaseRequest
             'duration' => ['nullable', 'string', 'max:191'],
             'client_name' => ['nullable', 'string', 'max:191'],
             'is_published' => ['nullable'],
+            'service_title' => ['nullable', 'array'],
+            'service_description' => ['nullable', 'array'],
+            'price_note' => ['nullable', 'array'],
+            'price_from' => ['nullable', 'numeric', 'min:0', 'max:99999999'],
+            'price_currency' => ['nullable', 'string', 'size:3'],
 
             'work_image' => ['nullable', 'array'],
             'work_image.*.id' => ['nullable', 'integer'],
@@ -79,6 +84,9 @@ class CreateWorkRequest extends BaseRequest
             $rules['description.' . $availableLanguage] = ['nullable', 'string'];
             $rules['client_quote.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
             $rules['work_image.*.caption.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['service_title.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['service_description.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['price_note.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
         }
 
         return $rules;
@@ -121,6 +129,11 @@ class CreateWorkRequest extends BaseRequest
             $this->input('duration'),
             $this->input('client_quote'),
             $this->input('client_name'),
+            $this->input('service_title'),
+            $this->input('service_description'),
+            $this->input('price_from'),
+            $this->input('price_currency'),
+            $this->input('price_note'),
             (bool) $this->input('is_published', true),
             $this->buildImages(),
         );

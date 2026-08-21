@@ -96,6 +96,12 @@ export default {
             type: Array,
             default: () => [],
         },
+
+        workServiceTitle: {type: Object, default: {}},
+        workServiceDescription: {type: Object, default: {}},
+        workPriceNote: {type: Object, default: {}},
+        workPriceFrom: {type: [String, Number], default: ''},
+        workPriceCurrency: {type: String, default: 'UAH'},
     },
     data() {
         return {
@@ -288,6 +294,61 @@ export default {
                         :errors="errors"
                     />
                 </div>
+
+                <hr>
+
+                <p><strong>{{ $t('admin.work_service_block') }}</strong></p>
+
+                <multi-language-input-component
+                    :title="$t('admin.work_service_title')"
+                    name="service_title"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workServiceTitle"
+                    :errors="errors"
+                />
+
+                <multi-language-text-area-component
+                    :title="$t('admin.work_service_description')"
+                    name="service_description"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workServiceDescription"
+                    :errors="errors"
+                />
+
+                <div class="form-group mb-3">
+                    <input-component
+                        :title="$t('admin.work_price_from')"
+                        name="price_from"
+                        type="number"
+                        :model-value="workPriceFrom"
+                        :errors="errors"
+                    />
+                </div>
+
+                <div class="form-group mb-3">
+                    <input-component
+                        :title="$t('admin.work_price_currency')"
+                        name="price_currency"
+                        :model-value="workPriceCurrency"
+                        :errors="errors"
+                    />
+                </div>
+
+                <multi-language-input-component
+                    :title="$t('admin.work_price_note')"
+                    name="price_note"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workPriceNote"
+                    :errors="errors"
+                />
+
+                <hr>
 
                 <div class="form-group mb-3">
                     <check-box-component

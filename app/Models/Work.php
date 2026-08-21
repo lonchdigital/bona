@@ -18,6 +18,9 @@ class Work extends Model implements Sitemapable
         'intro',
         'description',
         'client_quote',
+        'service_title',
+        'service_description',
+        'price_note',
         'meta_title',
         'meta_description',
         'meta_keywords',
@@ -25,6 +28,7 @@ class Work extends Model implements Sitemapable
 
     protected $casts = [
         'is_published' => 'boolean',
+        'price_from' => 'decimal:2',
     ];
 
     protected $guarded = [];

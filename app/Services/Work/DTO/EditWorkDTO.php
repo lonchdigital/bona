@@ -21,6 +21,11 @@ class EditWorkDTO implements BaseDTO
         public readonly ?string       $duration = null,
         public readonly ?array        $clientQuote = null,
         public readonly ?string       $clientName = null,
+        public readonly ?array        $serviceTitle = null,
+        public readonly ?array        $serviceDescription = null,
+        public readonly ?string       $priceFrom = null,
+        public readonly ?string       $priceCurrency = null,
+        public readonly ?array        $priceNote = null,
         public readonly bool          $isPublished = true,
         /**
          * Gallery rows as they came from the form. Each may carry an "id" for a

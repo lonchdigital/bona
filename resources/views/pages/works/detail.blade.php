@@ -81,6 +81,34 @@
             ] : null,
         ]);
 
+        // A project page is a page about work that was sold, so it can be
+        // described as an offer rather than only as a picture.
+        $serviceTitle = (string) $work->service_title;
+        $priceFrom = $work->price_from !== null ? (float) $work->price_from : null;
+
+        $serviceSchema = $serviceTitle ? array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'Service',
+            '@id' => $workUrl . '#service',
+            'name' => $serviceTitle,
+            'description' => (string) $work->service_description ?: null,
+            'serviceType' => $serviceTitle,
+            'provider' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+            'areaServed' => array_map(
+                fn (string $area) => ['@type' => 'AdministrativeArea', 'name' => $area],
+                (array) config('organization.area_served', [])
+            ),
+            'isRelatedTo' => ['@id' => $workUrl . '#project'],
+            'offers' => $priceFrom ? array_filter([
+                '@type' => 'Offer',
+                'price' => $priceFrom,
+                'priceCurrency' => $work->price_currency ?: 'UAH',
+                'availability' => 'https://schema.org/InStock',
+                'url' => $workUrl,
+                'description' => (string) $work->price_note ?: null,
+            ]) : null,
+        ]) : null;
+
         $workBreadcrumbSchema = [
             '@context' => 'https://schema.org',
             '@type' => 'BreadcrumbList',
@@ -93,6 +121,9 @@
     @endphp
 
     <script type="application/ld+json">{!! json_encode($workSchema, $schemaFlags) !!}</script>
+    @if($serviceSchema)
+        <script type="application/ld+json">{!! json_encode($serviceSchema, $schemaFlags) !!}</script>
+    @endif
     <script type="application/ld+json">{!! json_encode($workBreadcrumbSchema, $schemaFlags) !!}</script>
 
     <section class="blog art-section-pd art-work-page">
@@ -134,6 +165,30 @@
                         <div class="art-work-section art-work-solution">
                             <h2>{{ trans('base.work_solution') }}</h2>
                             {!! $workDescription !!}
+                        </div>
+                    @endif
+
+                    @if($serviceTitle || $priceFrom)
+                        <div class="art-work-section art-work-service">
+                            <h2>{{ trans('base.work_service') }}</h2>
+
+                            @if($serviceTitle)
+                                <p class="art-work-service__name">{{ $serviceTitle }}</p>
+                            @endif
+
+                            @if($work->service_description)
+                                <p>{{ $work->service_description }}</p>
+                            @endif
+
+                            @if($priceFrom)
+                                <p class="art-work-service__price">
+                                    <span class="art-work-service__price-label">{{ trans('base.work_price_from') }}</span>
+                                    <span class="art-work-service__price-value">{{ number_format($priceFrom, 0, ',', ' ') }} {{ $work->price_currency ?: 'UAH' }}</span>
+                                    @if($work->price_note)
+                                        <span class="art-work-service__price-note">{{ $work->price_note }}</span>
+                                    @endif
+                                </p>
+                            @endif
                         </div>
                     @endif
 
@@ -274,6 +329,35 @@
             font-style: normal;
             font-weight: 500;
             font-size: 14px;
+        }
+
+        .art-work-service__name {
+            font-weight: 500;
+        }
+
+        .art-work-service__price {
+            margin-top: 12px;
+            padding: 14px 18px;
+            background-color: #f5f5f5;
+            display: inline-block;
+        }
+
+        .art-work-service__price-label {
+            display: block;
+            font-size: 13px;
+            color: #777777;
+        }
+
+        .art-work-service__price-value {
+            font-size: 22px;
+            font-weight: 500;
+        }
+
+        .art-work-service__price-note {
+            display: block;
+            font-size: 13px;
+            font-weight: 300;
+            color: #777777;
         }
 
         .art-work-cta {
