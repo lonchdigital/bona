@@ -55,6 +55,20 @@ class Author extends Model implements Sitemapable
         return Attribute::make(fn () => \App\Helpers\PreviewImage::url($this->photo_path));
     }
 
+    /**
+     * The profiles the Person structured data points at through sameAs.
+     *
+     * @return array<int, string>
+     */
+    public function sameAsLinks(): array
+    {
+        return array_values(array_filter([
+            $this->instagram_url,
+            $this->facebook_url,
+            $this->linkedin_url,
+        ]));
+    }
+
     public function toArray(): array
     {
         $array = parent::toArray();
