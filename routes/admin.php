@@ -120,6 +120,12 @@ use App\Http\Actions\Admin\ProductTypes\ProductTypeEditAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeSearchProductsAction;
 
 use App\Http\Actions\Admin\VisitRequests\VisitRequestDeleteAction;
+use App\Http\Actions\Admin\Authors\AuthorCreateAction;
+use App\Http\Actions\Admin\Authors\AuthorDeleteAction;
+use App\Http\Actions\Admin\Authors\AuthorEditAction;
+use App\Http\Actions\Admin\Authors\Pages\ShowAuthorCreatePageAction;
+use App\Http\Actions\Admin\Authors\Pages\ShowAuthorEditPageAction;
+use App\Http\Actions\Admin\Authors\Pages\ShowAuthorsListPageAction;
 use App\Http\Actions\Admin\Works\Pages\ShowWorksListPageAction;
 use App\Http\Actions\Admin\Works\Pages\ShowWorkCreatePageAction;
 use App\Http\Actions\Admin\Works\Pages\ShowWorkEditPageAction;
@@ -230,6 +236,23 @@ Route::prefix('admin')->middleware([
 
         //Delete
         Route::name('admin.work.delete')->post('{work}/delete', WorkDeleteAction::class);
+    });
+
+    //Authors
+    Route::prefix('author')->group(function () {
+        //List
+        Route::name('admin.author.list.page')->get('/', ShowAuthorsListPageAction::class);
+
+        //Create
+        Route::name('admin.author.create.page')->get('create', ShowAuthorCreatePageAction::class);
+        Route::name('admin.author.create')->post('create', AuthorCreateAction::class);
+
+        //Edit
+        Route::name('admin.author.edit.page')->get('{author}', ShowAuthorEditPageAction::class);
+        Route::name('admin.author.edit')->post('{author}', AuthorEditAction::class);
+
+        //Delete
+        Route::name('admin.author.delete')->post('{author}/delete', AuthorDeleteAction::class);
     });
 
     //Product Categories

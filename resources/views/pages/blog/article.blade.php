@@ -84,11 +84,27 @@
             $articleUrl = url()->current();
             $articleDescription = (string) ($blogArticle->meta_description ?: $blogArticle->preview_text);
 
-            $authorName = $applicationGlobalOptions['authorName'][app()->getLocale()] ?? null;
-            $authorJobTitle = $applicationGlobalOptions['authorDescription'][app()->getLocale()] ?? null;
-            $authorAvatar = ($applicationGlobalOptions['authorAvatar'] ?? null)
-                ? url('/storage/' . $applicationGlobalOptions['authorAvatar'])
+            $articleAuthor = $articleAuthor ?? null;
+
+            $authorPageUrl = $articleAuthor
+                ? App\Helpers\MultiLangRoute::getMultiLangRoute('store.author.page', ['authorSlug' => $articleAuthor->slug])
                 : null;
+
+            // The author record is the source of truth; the loose fields in the
+            // global config are what the site used before it had author pages.
+            $authorName = $articleAuthor
+                ? (string) $articleAuthor->name
+                : ($applicationGlobalOptions['authorName'][app()->getLocale()] ?? null);
+
+            $authorJobTitle = $articleAuthor
+                ? (string) $articleAuthor->job_title
+                : ($applicationGlobalOptions['authorDescription'][app()->getLocale()] ?? null);
+
+            $authorAvatar = $articleAuthor
+                ? $articleAuthor->og_image_url
+                : (($applicationGlobalOptions['authorAvatar'] ?? null)
+                    ? url('/storage/' . $applicationGlobalOptions['authorAvatar'])
+                    : null);
 
             $publisher = [
                 '@type' => 'Organization',
@@ -110,9 +126,12 @@
                 'articleSection' => trans('base.blog'),
                 'author' => $authorName ? array_filter([
                     '@type' => 'Person',
+                    '@id' => $authorPageUrl ? url($authorPageUrl) . '#person' : null,
                     'name' => $authorName,
                     'jobTitle' => $authorJobTitle,
                     'image' => $authorAvatar,
+                    'url' => $authorPageUrl ? url($authorPageUrl) : null,
+                    'sameAs' => $articleAuthor?->sameAsLinks() ?: null,
                     'worksFor' => $publisher,
                 ]) : null,
                 'publisher' => $publisher,
@@ -183,18 +202,38 @@
                                 <div class="art-post-author">
 
                                     <div class="author-avatar">
-                                        @if(array_key_exists('authorAvatar', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorAvatar']))
-                                            <img src="{{ '/storage/' . $applicationGlobalOptions['authorAvatar'] }}" alt="Author avatar">
+                                        @if($articleAuthor && $articleAuthor->photo_url)
+                                            <a href="{{ $authorPageUrl }}">
+                                                <img src="{{ $articleAuthor->photo_url }}" alt="{{ $authorName }}">
+                                            </a>
+                                        @elseif(array_key_exists('authorAvatar', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorAvatar']))
+                                            <img src="{{ '/storage/' . $applicationGlobalOptions['authorAvatar'] }}" alt="{{ $authorName ?: 'Author avatar' }}">
                                         @endif
                                     </div>
 
                                     <div class="author-data">
                                         <span class="post-author-label">{{ trans('base.author') }}</span>
-                                        @if(array_key_exists('authorName', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorName']))
-                                            <span class="post-author-itself">{{ $applicationGlobalOptions['authorName'][app()->getLocale()] }}</span>
+
+                                        @if($authorName)
+                                            <span class="post-author-itself">
+                                                @if($authorPageUrl)
+                                                    <a href="{{ $authorPageUrl }}" rel="author">{{ $authorName }}</a>
+                                                @else
+                                                    {{ $authorName }}
+                                                @endif
+                                            </span>
                                         @endif
-                                        @if(array_key_exists('authorDescription', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorDescription']))
-                                            <span class="post-author-status">{{ $applicationGlobalOptions['authorDescription'][app()->getLocale()] }}</span>
+
+                                        @if($authorJobTitle)
+                                            <span class="post-author-status">{{ $authorJobTitle }}</span>
+                                        @endif
+
+                                        @if($articleAuthor && $articleAuthor->short_description)
+                                            <span class="post-author-about">{{ $articleAuthor->short_description }}</span>
+                                        @endif
+
+                                        @if($authorPageUrl)
+                                            <a class="post-author-more" href="{{ $authorPageUrl }}">{{ trans('base.author_read_more') }} &rarr;</a>
                                         @endif
                                     </div>
 
@@ -348,6 +387,27 @@
             font-size: 14px;
             font-weight: 300;
             color: #777777;
+        }
+
+        .blog-post .art-post-author .post-author-itself a {
+            color: inherit;
+        }
+
+        .blog-post .art-post-author .post-author-itself a:hover {
+            text-decoration: underline;
+        }
+
+        .blog-post .art-post-author .post-author-about {
+            font-weight: 300;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .blog-post .art-post-author .post-author-more {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .blog-post .art-post-share {

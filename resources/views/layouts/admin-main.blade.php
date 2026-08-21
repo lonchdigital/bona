@@ -225,6 +225,12 @@
             <span class="ml-1 item-text">{{ trans('admin.blog_articles') }}</span>
         </a>
     </li>
+    <li class="nav-item w-100">
+        <a class="nav-link pl-3" href="{{ route('admin.author.list.page') }}">
+            <i class="fe fe-user fe-16"></i>
+            <span class="ml-1 item-text">{{ trans('admin.authors') }}</span>
+        </a>
+    </li>
 </ul>
 
 

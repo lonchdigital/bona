@@ -10,6 +10,7 @@ use App\Http\Actions\Auth\Pages\ShowSignInPageAction;
 use App\Http\Actions\Auth\Pages\ShowSignUpPageAction;
 use App\Http\Actions\Auth\SignInAction;
 use App\Http\Actions\Auth\SignUpAction;
+use App\Http\Actions\Store\Author\ShowAuthorPageAction;
 use App\Http\Actions\Blog\Pages\RedirectLegacyBlogArticleUrlAction;
 use App\Http\Actions\Blog\Pages\ShowBlogArticlePageAction;
 use App\Http\Actions\Blog\Pages\ShowBlogMainPageAction;
@@ -386,6 +387,10 @@ $optionalLanguageRoutes = function () {
 
     Route::prefix('page')->group(function () {
         Route::name('store.static-page.page')->get('/{staticPageSlug}', ShowStaticPagePageAction::class);
+    });
+
+    Route::prefix('author')->group(function () {
+        Route::name('store.author.page')->get('/{authorSlug}', ShowAuthorPageAction::class);
     });
 
     Route::prefix('blog')->group(function () {

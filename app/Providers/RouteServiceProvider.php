@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Author;
 use App\Models\BlogArticle;
 use App\Models\BlogCategory;
 use App\Models\Brand;
@@ -63,6 +64,10 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::bind('blogCategorySlug', function (string $slug) {
                 return BlogCategory::where('slug', $slug)->firstOrFail();
+            });
+
+            Route::bind('authorSlug', function (string $slug) {
+                return Author::where('slug', $slug)->firstOrFail();
             });
 
             Route::bind('blogArticleSlug', function (string $slug) {

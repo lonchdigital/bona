@@ -19,17 +19,17 @@
     "src": "flatpickr.css"
   },
   "lang/php_en.json": {
-    "file": "js/php_en-a5ce37c5.js",
+    "file": "js/php_en-cd4d92f0.js",
     "isDynamicEntry": true,
     "src": "lang/php_en.json"
   },
   "lang/php_ru.json": {
-    "file": "js/php_ru-b71fb4f4.js",
+    "file": "js/php_ru-c7088300.js",
     "isDynamicEntry": true,
     "src": "lang/php_ru.json"
   },
   "lang/php_uk.json": {
-    "file": "js/php_uk-1843c362.js",
+    "file": "js/php_uk-096e5e15.js",
     "isDynamicEntry": true,
     "src": "lang/php_uk.json"
   },
@@ -205,7 +205,7 @@
       "lang/php_uk.json",
       "lang/uk.json"
     ],
-    "file": "js/app-490b0c1c.js",
+    "file": "js/app-0c060a2d.js",
     "imports": [
       "_jquery-5c3435d1.js",
       "_bootstrap-08b03379.js",

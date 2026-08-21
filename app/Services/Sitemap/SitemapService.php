@@ -3,6 +3,7 @@
 namespace App\Services\Sitemap;
 
 use App\Models\BlogArticle;
+use App\Models\Author;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -102,6 +103,16 @@ class SitemapService extends BaseService
                 $urls->push(Url::create($langUrl)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                     ->setPriority(0.7)
+                );
+            }
+        }
+
+        // Author
+        foreach (Author::all() as $author) {
+            foreach ($author->toSitemapTag() as $langUrl) {
+                $urls->push(Url::create($langUrl)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                    ->setPriority(0.6)
                 );
             }
         }
