@@ -329,6 +329,43 @@
 
 @push('head')
     <style>
+        /* The blog hero is styled by .main-header.main-header-blog, whose
+           padding-top of 650px would push the crumbs into the middle of the
+           picture. They are lifted out of the flow instead, so they land right
+           under the site header, level with where they sit on every other page
+           (.main-header padding-top 145px + .art-page-header margin-top 14px). */
+        .main-header.main-header-blog {
+            position: relative;
+        }
+
+        .main-header.main-header-blog > header {
+            position: absolute;
+            top: 159px;
+            left: 0;
+            right: 0;
+            margin-bottom: 0;
+            z-index: 2;
+        }
+
+        @media (max-width: 991px) {
+            .main-header.main-header-blog > header {
+                top: 14px;
+            }
+        }
+
+        /* A light scrim over the cover, keeping the crumbs readable whatever
+           the photo happens to be. */
+        .main-header.main-header-blog:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, .2);
+            pointer-events: none;
+        }
+
         /* The crumbs sit straight on the cover photo, so they carry their own
            contrast instead of relying on whatever the picture happens to be. */
         .main-header-blog .art-article-breadcrumb {
