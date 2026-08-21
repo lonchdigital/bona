@@ -44,7 +44,16 @@
 
                         <div class="box">
                             <div class="container">
-                                <h2 class="title animated h1" data-animation="fadeInDown">{{ $slide->title }}</h2>
+                                {{-- The slide titles are empty, which left the home page
+                                     with three empty headings and no h1 at all. The first
+                                     slide carries the page heading, falling back to the
+                                     site's own wording, and an empty heading is simply
+                                     not printed. --}}
+                                @if($loop->first)
+                                    <h1 class="title animated h1" data-animation="fadeInDown">{{ $slide->title ?: trans('base.home_h1') }}</h1>
+                                @elseif($slide->title)
+                                    <h2 class="title animated h1" data-animation="fadeInDown">{{ $slide->title }}</h2>
+                                @endif
                                 <div class="slider-description animated font-two" data-animation="fadeInUp">{!! $slide->description !!}</div>
                                 @if($slide->display_button && !$slide->slide_url)
                                     <div class="animated text-center" data-animation="fadeInUp">
@@ -584,24 +593,25 @@
     <!-- ======================== FAQs ======================== -->
 
     @if( count($faqs) )
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-          @foreach($faqs as $faq)
-          {
-            "@type": "Question",
-            "name": "{{ $faq->question }}",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "<p>{{ $faq->answer }}</p>"
-            }
-          },
-            @endforeach
-          ]
-        }
-        </script>
+        @php
+            // Written out as a JSON string, this block carried a trailing comma
+            // and the raw line breaks of every answer, so nothing could parse
+            // it. Built as an array and encoded, it simply cannot break.
+            $homeFaqSchema = [
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => $faqs->map(fn ($faq) => [
+                    '@type' => 'Question',
+                    'name' => (string) $faq->question,
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => (string) $faq->answer,
+                    ],
+                ])->values()->all(),
+            ];
+        @endphp
+
+        <script type="application/ld+json">{!! json_encode($homeFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
     @endif
 
     <section class="faqs-section">

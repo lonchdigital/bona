@@ -95,48 +95,26 @@
 
         <meta property="og:title" content="{{ config('app.name') . ' - ' . trans('base.site_title') }}">
 
-        <script type="application/ld+json" defer>
-            {
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                "Name": "{{ trans('base.organization') }}",
-                "url": "{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}",
-                @if(array_key_exists('logoLight', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['logoLight']))
-                "logo": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
-                "image": "{{ '/storage/' . $applicationGlobalOptions['logoLight'] }}",
-                @endif
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressLocality": "Одеса",
-                    "postalCode": "",
-                    "addressCountry": "Україна"
-                },
-                @if( !is_null($contactsFooter) )
-                "email": "{{ $contactsFooter['email_one'] }}",
-                @endif
-                @if(array_key_exists('phoneOne', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['phoneOne']))
-                "telephone": "{{ $applicationGlobalOptions['phoneOne'] }}",
-                @endif
-                "sameAs": [
-                    ""
-                ]
-            }
-        </script>
-
-        <script type="application/ld+json" defer>
-            {
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "url": "{{ url( App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') ) }}",
-                "name": "{{ trans('base.organization') }}",
-                "potentialAction": {
-                    "@type": "SearchAction",
-                    "target": "{{ url( App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') ) }}/search?q={search_term_string}",
-                    "query-input": "required name=search_term_string"
-                }
-            }
-        </script>
+        {{-- SearchAction is gone. It pointed at /search?q=, which answers 404:
+             describing a search the site does not have is worse than
+             describing none at all. --}}
+        <script type="application/ld+json">{!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            '@id' => url('/') . '#website',
+            'url' => url('/'),
+            'name' => trans('base.organization'),
+            'inLanguage' => app()->getLocale(),
+            'publisher' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
     @endif
+
+    {{-- The business itself, described once for every page so the two
+         showrooms, the hours and the profiles all hang off one entity. --}}
+    <script type="application/ld+json">{!! json_encode(
+        app(\App\Services\Seo\OrganizationSchemaService::class)->build($applicationGlobalOptions ?? []),
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG
+    ) !!}</script>
 
 <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
