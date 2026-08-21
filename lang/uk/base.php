@@ -315,6 +315,7 @@ return [
     'navigation' => 'Навігація',
     'footer_address' => 'Адреси магазинів',
     'quantity' => 'Кількість',
+    'home' => 'Головна',
     'article_share' => 'Поділитися',
     'article_copy_link' => 'Скопіювати посилання',
     'article_link_copied' => 'Посилання скопійовано',

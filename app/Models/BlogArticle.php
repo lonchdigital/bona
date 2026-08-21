@@ -37,6 +37,31 @@ class BlogArticle extends Model implements Sitemapable
         });
     }
 
+    /**
+     * Absolute URL of the cover image for og:image. Messengers preview jpg far
+     * more reliably than webp, and the project stores a jpg next to every webp
+     * cover, so the jpg twin is preferred when it is there.
+     */
+    public function ogImageUrl(): Attribute
+    {
+        return Attribute::make(function () {
+            if (!$this->hero_image_path) {
+                return null;
+            }
+
+            $path = $this->hero_image_path;
+
+            $jpgPath = pathinfo($path, PATHINFO_DIRNAME)
+                . '/' . pathinfo($path, PATHINFO_FILENAME) . '.jpg';
+
+            if (Storage::disk(config('app.images_disk_default'))->exists($jpgPath)) {
+                $path = $jpgPath;
+            }
+
+            return url(Storage::url($path));
+        });
+    }
+
     public function toArray(): array
     {
         $array = parent::toArray();

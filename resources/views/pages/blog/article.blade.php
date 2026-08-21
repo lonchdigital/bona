@@ -26,25 +26,51 @@
         @endif
 
         <meta property="og:title" content="{{ $blogArticle->name . ' - ' . trans('base.site_title') }}">
+        <meta property="og:description" content="{{ $blogArticle->meta_description ?: $blogArticle->preview_text }}">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $blogArticle->name }}">
+        <meta name="twitter:description" content="{{ $blogArticle->meta_description ?: $blogArticle->preview_text }}">
+        @if($blogArticle->og_image_url)
+            <meta name="twitter:image" content="{{ $blogArticle->og_image_url }}">
+        @endif
 
     @endif
 
 @endsection
 
+{{-- Without these the layout falls back to the 32x32 favicon, which is what
+     messengers kept showing for every shared article. --}}
+@section('og_type', 'article')
+
+@if($blogArticle->og_image_url)
+    @section('og_image', $blogArticle->og_image_url)
+@endif
+
 @section('content')
 
     <!-- ========================  Main header ======================== -->
 
+    @php
+        $homeUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
+        $blogUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page');
+    @endphp
+
     <section class="main-header main-header-blog" style="background-image:url({{ $blogArticle->hero_image_url }})">
         <header>
-                {{-- TODO:: Remove when finish --}}
-<!--            <div class="container text-center">
-                <ol class="breadcrumb breadcrumb-inverted">
-                    <li><a href="index.html"><span class="icon icon-home"></span></a></li>
-                    <li><a href="blog-grid.html">Blog Category</a></li>
-                    <li><a class="active" href="article.html">Decorating When You're...</a></li>
+            <div class="container">
+                <ol class="breadcrumb breadcrumb-inverted font-two art-article-breadcrumb">
+                    <li>
+                        <a href="{{ $homeUrl }}"><span class="icon icon-home"></span> {{ trans('base.home') }}</a>
+                    </li>
+                    <li>
+                        <a href="{{ $blogUrl }}">{{ trans('base.blog') }}</a>
+                    </li>
+                    <li>
+                        <span class="active">{{ $blogArticle->name }}</span>
+                    </li>
                 </ol>
-            </div>-->
+            </div>
         </header>
     </section>
 
@@ -54,43 +80,62 @@
 
         <!-- ========================  Blog post ======================== -->
 
-        <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "Article",
-                "mainEntityOfPage": {
-                    "@type": "WebPage",
-                    "@id": "{{ url('/') .'/'. $blogArticle->slug }}"
-                },
-                "headline": "{{ $blogArticle->name }}",
-                "image": "{{ url('/') .'/storage/'. $blogArticle->hero_image_path }}",
-                "publisher": {
-                    "@type": "Organization",
-                    "name": "Bona-Doors"
-                },
-                "articleBody": "<p>{{ $blogArticle->preview_text }}</p> ",
-                "articleSection": "Блог",
-                "datePublished": "{{ $blogArticle->created_at }}",
-                "dateModified": "{{ $blogArticle->updated_at }}"
-            }
-        </script>
+        @php
+            $articleUrl = url()->current();
+            $articleDescription = (string) ($blogArticle->meta_description ?: $blogArticle->preview_text);
 
-        @if(array_key_exists('authorName', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['authorName']))
-            <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "Person",
-                    "name": "{{ $applicationGlobalOptions['authorName'][app()->getLocale()] }}",
-                    "alternateName": "{{ $applicationGlobalOptions['authorName'][app()->getLocale()] }}",
-                    "image": "{{ '/storage/' . $applicationGlobalOptions['authorAvatar'] }}",
-                    "jobTitle": "{{ $applicationGlobalOptions['authorDescription'][app()->getLocale()] }}",
-                    "worksFor": {
-                        "@type": "Organization",
-                        "name": "{{ trans('base.organization') }}",
-                    }
-                }
-            </script>
-        @endif
+            $authorName = $applicationGlobalOptions['authorName'][app()->getLocale()] ?? null;
+            $authorJobTitle = $applicationGlobalOptions['authorDescription'][app()->getLocale()] ?? null;
+            $authorAvatar = ($applicationGlobalOptions['authorAvatar'] ?? null)
+                ? url('/storage/' . $applicationGlobalOptions['authorAvatar'])
+                : null;
+
+            $publisher = [
+                '@type' => 'Organization',
+                'name' => trans('base.organization'),
+                'url' => url('/'),
+            ];
+
+            $articleSchema = array_filter([
+                '@context' => 'https://schema.org',
+                '@type' => 'Article',
+                'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleUrl],
+                'url' => $articleUrl,
+                'headline' => (string) $blogArticle->name,
+                'description' => $articleDescription,
+                'image' => $blogArticle->og_image_url ? [$blogArticle->og_image_url] : null,
+                'inLanguage' => app()->getLocale(),
+                'datePublished' => $blogArticle->created_at?->toAtomString(),
+                'dateModified' => $blogArticle->updated_at?->toAtomString(),
+                'articleSection' => trans('base.blog'),
+                'author' => $authorName ? array_filter([
+                    '@type' => 'Person',
+                    'name' => $authorName,
+                    'jobTitle' => $authorJobTitle,
+                    'image' => $authorAvatar,
+                    'worksFor' => $publisher,
+                ]) : null,
+                'publisher' => $publisher,
+            ]);
+
+            $breadcrumbSchema = [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => trans('base.blog'), 'item' => url($blogUrl)],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => (string) $blogArticle->name, 'item' => $articleUrl],
+                ],
+            ];
+
+            // Built as arrays and encoded rather than written out by hand: the
+            // hand written version broke as soon as a value contained a quote
+            // or a line break, and search engines silently dropped it.
+            $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+        @endphp
+
+        <script type="application/ld+json">{!! json_encode($articleSchema, $schemaFlags) !!}</script>
+        <script type="application/ld+json">{!! json_encode($breadcrumbSchema, $schemaFlags) !!}</script>
 
         <div class="container">
             <div class="row">
@@ -245,6 +290,59 @@
 
 @push('head')
     <style>
+        /* The crumbs sit straight on the cover photo, so they carry their own
+           contrast instead of relying on whatever the picture happens to be. */
+        .main-header-blog .art-article-breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background: none;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+        }
+
+        .main-header-blog .art-article-breadcrumb > li {
+            display: inline-flex;
+            align-items: center;
+            max-width: 100%;
+            font-size: 13px;
+            color: #ffffff;
+        }
+
+        .main-header-blog .art-article-breadcrumb > li + li:before {
+            content: "/";
+            padding: 0 8px;
+            opacity: .6;
+        }
+
+        .main-header-blog .art-article-breadcrumb > li a {
+            color: #ffffff;
+            opacity: .85;
+        }
+
+        .main-header-blog .art-article-breadcrumb > li a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .main-header-blog .art-article-breadcrumb > li .icon-home {
+            margin-right: 6px;
+        }
+
+        .main-header-blog .art-article-breadcrumb > li .active {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            opacity: .75;
+        }
+
+        @media (max-width: 767px) {
+            .main-header-blog .art-article-breadcrumb > li .active {
+                max-width: 100%;
+            }
+        }
+
         .blog-post .blog-post-date {
             margin-top: 12px;
             font-size: 14px;

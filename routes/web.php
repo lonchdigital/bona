@@ -10,6 +10,7 @@ use App\Http\Actions\Auth\Pages\ShowSignInPageAction;
 use App\Http\Actions\Auth\Pages\ShowSignUpPageAction;
 use App\Http\Actions\Auth\SignInAction;
 use App\Http\Actions\Auth\SignUpAction;
+use App\Http\Actions\Blog\Pages\RedirectLegacyBlogArticleUrlAction;
 use App\Http\Actions\Blog\Pages\ShowBlogArticlePageAction;
 use App\Http\Actions\Blog\Pages\ShowBlogMainPageAction;
 //use App\Http\Actions\Store\Work\ShowWorkPageAction;
@@ -389,7 +390,12 @@ $optionalLanguageRoutes = function () {
 
     Route::prefix('blog')->group(function () {
         Route::name('blog.main.page')->get('/', ShowBlogMainPageAction::class);
-        Route::name('blog.article.page')->get('/article/{blogArticleSlug}', ShowBlogArticlePageAction::class);
+
+        // Registered before the article route so the old two segment URL is
+        // never swallowed by the one segment one.
+        Route::get('/article/{legacyBlogArticleSlug}', RedirectLegacyBlogArticleUrlAction::class);
+
+        Route::name('blog.article.page')->get('/{blogArticleSlug}', ShowBlogArticlePageAction::class);
     });
 
     // TODO: I was told to hide this route

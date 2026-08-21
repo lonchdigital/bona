@@ -17,6 +17,6 @@ class BlogPageConfig extends Model implements Sitemapable
 
     public function toSitemapTag(): Url | string | array
     {
-        return route('blog.article.page', ['blogPageSlug' => $this->slug]);
+        return route('blog.article.page', ['blogArticleSlug' => $this->slug]);
     }
 }

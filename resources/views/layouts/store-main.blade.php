@@ -16,9 +16,11 @@
     <meta name="author" content="">
 
     <meta property="og:locale" content="{{ app()->getLocale() }}">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="{{ request()->url() }}">
-    <meta property="og:image" content="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
+    {{-- Pages that own a meaningful picture override og_image; the favicon is
+         only the last resort, and messengers show whichever tag comes first. --}}
+    <meta property="og:image" content="@yield('og_image', Vite::asset('resources/img/favicon-32x32.png'))">
     <meta property="og:site_name" content="{{ mb_strtoupper(config('app.url')) }}">
     <link rel="apple-touch-icon" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/img/favicon-32x32.png') }}">

@@ -313,6 +313,7 @@ return [
     'navigation' => 'Навигация',
     'footer_address' => 'Адреса магазинов',
     'quantity' => 'Количество',
+    'home' => 'Главная',
     'article_share' => 'Поделиться',
     'article_copy_link' => 'Скопировать ссылку',
     'article_link_copied' => 'Ссылка скопирована',
