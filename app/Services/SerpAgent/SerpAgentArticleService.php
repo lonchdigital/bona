@@ -54,7 +54,12 @@ class SerpAgentArticleService extends BaseService
             throw new SerpAgentException('The payload contains no usable "content".');
         }
 
-        $body .= $this->buildAppendix($dto, $locale);
+        // Serp Agent writes the FAQ into the body and also sends it as a list.
+        // When the body already carries one it is turned into the accordion in
+        // place, and the list is not appended on top of it.
+        [$body, $hasInlineFaq] = $this->htmlService->convertInlineFaq($body, $locale);
+
+        $body .= $this->buildAppendix($dto, $locale, $hasInlineFaq);
 
         $slug = $this->resolveSlug($dto, $heading);
         $existingArticle = $this->findManagedArticle($dto, $slug);
@@ -206,11 +211,11 @@ class SerpAgentArticleService extends BaseService
         ]);
     }
 
-    private function buildAppendix(SerpAgentArticleDTO $dto, string $locale): string
+    private function buildAppendix(SerpAgentArticleDTO $dto, string $locale, bool $hasInlineFaq = false): string
     {
         $appendix = '';
 
-        if (config('serp-agent.append_faq')) {
+        if (config('serp-agent.append_faq') && !$hasInlineFaq) {
             $appendix .= $this->htmlService->buildFaqSection($dto->faq, $locale);
         }
 

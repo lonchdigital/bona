@@ -145,6 +145,162 @@ class SerpAgentHtmlService
      * are not allowed to declare role="button", and the heading is what both
      * search engines and screen readers should hear.
      */
+    /**
+     * Serp Agent sends the FAQ twice: written into the article body as a
+     * heading followed by question headings, and again as a structured list in
+     * the payload. Appending the list on top of the body printed every
+     * question twice.
+     *
+     * So the body wins: the FAQ already written into it is turned into the
+     * accordion in place, and the caller then knows not to append the list.
+     *
+     * @return array{0: string, 1: bool} the html, and whether a FAQ was found
+     */
+    public function convertInlineFaq(string $html, string $locale): array
+    {
+        $html = trim($html);
+
+        if ($html === '' || !class_exists(DOMDocument::class)) {
+            return [$html, false];
+        }
+
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $previousUseErrors = libxml_use_internal_errors(true);
+
+        $loaded = $document->loadHTML(
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+        );
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseErrors);
+
+        if (!$loaded) {
+            return [$html, false];
+        }
+
+        $xpath = new DOMXPath($document);
+        $root = $xpath->query('//div[@data-faq-root]')->item(0);
+
+        if (!$root instanceof DOMElement) {
+            return [$html, false];
+        }
+
+        $heading = null;
+
+        foreach ($xpath->query('//h2') as $candidate) {
+            if ($this->isFaqHeading($candidate->textContent)) {
+                $heading = $candidate;
+
+                break;
+            }
+        }
+
+        if (!$heading instanceof DOMElement) {
+            return [$html, false];
+        }
+
+        // Walk what follows the heading, grouping each question with
+        // everything that belongs to it, and stop at the next h2.
+        $items = [];
+        $index = -1;
+
+        for ($node = $heading->nextSibling; $node !== null; $node = $node->nextSibling) {
+            if (!$node instanceof DOMElement) {
+                continue;
+            }
+
+            $tag = strtolower($node->tagName);
+
+            if ($tag === 'h2') {
+                break;
+            }
+
+            if ($tag === 'h3') {
+                $items[] = ['question' => $node, 'answer' => []];
+                $index++;
+
+                continue;
+            }
+
+            if ($index >= 0) {
+                $items[$index]['answer'][] = $node;
+            }
+        }
+
+        if (!$items) {
+            return [$html, false];
+        }
+
+        $section = $document->createElement('section');
+        $section->setAttribute('class', 'article-faq');
+
+        $heading->parentNode->replaceChild($section, $heading);
+        $section->appendChild($heading);
+
+        $isFirst = true;
+
+        foreach ($items as $item) {
+            $wrapper = $document->createElement('div');
+            $wrapper->setAttribute('class', 'accordion-item-wrapper');
+
+            $trigger = $document->createElement('h3');
+            $trigger->setAttribute('class', 'accordion' . ($isFirst ? ' active' : ''));
+            $trigger->setAttribute('tabindex', '0');
+
+            $questionText = $document->createElement('span');
+            $questionText->setAttribute('class', 'question');
+            $questionText->appendChild($document->createTextNode(trim($item['question']->textContent)));
+            $trigger->appendChild($questionText);
+
+            $panel = $document->createElement('div');
+            $panel->setAttribute('class', 'art-panel');
+
+            if ($isFirst) {
+                $panel->setAttribute('style', 'max-height: 2000px;');
+            }
+
+            $panelData = $document->createElement('div');
+            $panelData->setAttribute('class', 'panel-data');
+
+            // appendChild moves the node, which also lifts it out of the body.
+            foreach ($item['answer'] as $answerNode) {
+                $panelData->appendChild($answerNode);
+            }
+
+            $panel->appendChild($panelData);
+
+            $wrapper->appendChild($trigger);
+            $wrapper->appendChild($panel);
+            $section->appendChild($wrapper);
+
+            $item['question']->parentNode?->removeChild($item['question']);
+
+            $isFirst = false;
+        }
+
+        $result = '';
+
+        foreach ($root->childNodes as $child) {
+            $result .= $document->saveHTML($child);
+        }
+
+        return [trim($result), true];
+    }
+
+    private function isFaqHeading(string $text): bool
+    {
+        $text = mb_strtolower(trim(preg_replace('/\s+/u', ' ', $text)));
+
+        foreach (self::HEADINGS['faq'] as $heading) {
+            if ($text === mb_strtolower($heading)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function buildFaqSection(array $faq, string $locale): string
     {
         if (!$faq) {
