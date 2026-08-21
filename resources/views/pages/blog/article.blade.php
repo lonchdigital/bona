@@ -418,6 +418,26 @@
             }
         }
 
+        /* The FAQ block reuses the site accordion, so it only needs the few
+           resets a heading brings along that a <button> did not. */
+        .blog-post .article-faq {
+            margin-top: 35px;
+        }
+
+        .blog-post .article-faq > h2 {
+            margin-bottom: 18px;
+        }
+
+        .blog-post .article-faq .accordion {
+            margin: 0;
+            font-weight: 500;
+            line-height: 1.35;
+        }
+
+        .blog-post .article-faq .art-panel .panel-data > *:last-child {
+            margin-bottom: 0;
+        }
+
         .blog-post .blog-post-date {
             margin-top: 12px;
             font-size: 14px;
@@ -504,6 +524,17 @@
 
 @push('dynamic_scripts')
     <script>
+        // The accordion trigger is a heading, so it needs the keyboard
+        // behaviour a button would have given for free.
+        document.querySelectorAll('.article-faq .accordion[role="button"]').forEach(function (heading) {
+            heading.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+                    event.preventDefault();
+                    heading.click();
+                }
+            });
+        });
+
         document.querySelectorAll('.js-article-share-copy').forEach(function (button) {
             button.addEventListener('click', function () {
                 var url = button.getAttribute('data-url');

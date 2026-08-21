@@ -133,6 +133,15 @@ class SerpAgentHtmlService
         return trim($sanitized);
     }
 
+    /**
+     * Rendered with the same accordion markup the FAQ block on the home page
+     * uses, so it inherits the site styling and the global click handler in
+     * public/assets/js/main.js without a line of new behaviour.
+     *
+     * The question stays a real <h3> rather than a button label: it is a
+     * heading search engines should see, and .accordion only needs the class,
+     * not a particular tag.
+     */
     public function buildFaqSection(array $faq, string $locale): string
     {
         if (!$faq) {
@@ -140,6 +149,7 @@ class SerpAgentHtmlService
         }
 
         $items = '';
+        $isFirst = true;
 
         foreach ($faq as $item) {
             $question = trim((string) ($item['question'] ?? ''));
@@ -149,9 +159,20 @@ class SerpAgentHtmlService
                 continue;
             }
 
-            $items .= '<div class="article-faq__item">'
-                . '<h3 class="article-faq__question">' . e($question) . '</h3>'
-                . '<div class="article-faq__answer">' . $answer . '</div>'
+            // The first entry starts open. The inline max-height is what the
+            // site's own handler toggles, so the two stay in step, and the
+            // answer is visible even if the script never runs.
+            $openClass = $isFirst ? ' active' : '';
+            $openStyle = $isFirst ? ' style="max-height: 2000px;"' : '';
+            $isFirst = false;
+
+            $items .= '<div class="accordion-item-wrapper">'
+                . '<h3 class="accordion' . $openClass . '" role="button" tabindex="0">'
+                . '<span class="question">' . e($question) . '</span>'
+                . '</h3>'
+                . '<div class="art-panel"' . $openStyle . '>'
+                . '<div class="panel-data">' . $answer . '</div>'
+                . '</div>'
                 . '</div>';
         }
 
