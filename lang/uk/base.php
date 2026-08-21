@@ -364,7 +364,7 @@ return [
     'filter' => 'Фільтрувати',
     'filter_noun' => 'Фільтр',
     'product_cost_description' => '*Вартість орієнтовна. За точним прорахунком зверніться до консультанта',
-    'our_works' => 'Нашi работи',
+    'our_works' => 'Наші роботи',
     'want_choose_door' => 'Не знаєте які двері обрати?',
     'agreement_line_start' => 'Даю згоду на обробку',
     'agreement_line_end' => 'персональних даних',
