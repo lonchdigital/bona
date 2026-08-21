@@ -372,12 +372,58 @@ class SerpAgentArticleService extends BaseService
         $defaultHeroImage = trim((string) config('serp-agent.default_hero_image'));
 
         if ($defaultHeroImage !== '') {
-            return ['path' => $defaultHeroImage, 'downloaded' => false];
+            $copiedPath = $this->copyDefaultHeroImage($defaultHeroImage);
+
+            if ($copiedPath) {
+                return ['path' => $copiedPath, 'downloaded' => true];
+            }
         }
 
         throw new SerpAgentException(
             'The payload carries no usable image and SERP_AGENT_DEFAULT_HERO_IMAGE is not configured, while a blog article requires a cover image.'
         );
+    }
+
+    /**
+     * Every article gets its own copy of the fallback cover instead of sharing
+     * one file: deleting an article in the admin panel deletes its cover image,
+     * which would otherwise take the fallback away from every future article.
+     */
+    private function copyDefaultHeroImage(string $defaultHeroImage): ?string
+    {
+        $disk = Storage::disk(config('app.images_disk_default'));
+
+        if (!$disk->exists($defaultHeroImage)) {
+            Log::error('SerpAgent: SERP_AGENT_DEFAULT_HERO_IMAGE points at a file that does not exist.', [
+                'path' => $defaultHeroImage,
+            ]);
+
+            return null;
+        }
+
+        try {
+            $extension = pathinfo($defaultHeroImage, PATHINFO_EXTENSION) ?: 'webp';
+            $target = self::ARTICLE_IMAGES_FOLDER . '/' . sha1(microtime(true) . $defaultHeroImage) . '_' . Str::random(10);
+
+            $disk->put($target . '.' . $extension, $disk->get($defaultHeroImage));
+
+            // The rest of the project stores a jpg next to every webp cover.
+            $jpgCompanion = pathinfo($defaultHeroImage, PATHINFO_DIRNAME)
+                . '/' . pathinfo($defaultHeroImage, PATHINFO_FILENAME) . '.jpg';
+
+            if ($extension !== 'jpg' && $disk->exists($jpgCompanion)) {
+                $disk->put($target . '.jpg', $disk->get($jpgCompanion));
+            }
+
+            return $target . '.' . $extension;
+        } catch (Throwable $throwable) {
+            Log::error('SerpAgent: the fallback cover image could not be copied.', [
+                'path' => $defaultHeroImage,
+                'error' => $throwable->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     private function downloadHeroImage(string $url): ?string
