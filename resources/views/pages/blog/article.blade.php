@@ -366,8 +366,8 @@
             pointer-events: none;
         }
 
-        /* The crumbs sit straight on the cover photo, so they carry their own
-           contrast instead of relying on whatever the picture happens to be. */
+        /* Readability comes from the scrim over the cover, so the crumbs need
+           no text shadow of their own. */
         .main-header-blog .art-article-breadcrumb {
             display: flex;
             flex-wrap: wrap;
@@ -375,7 +375,6 @@
             margin: 0;
             padding: 0;
             background: none;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
         }
 
         .main-header-blog .art-article-breadcrumb > li {
