@@ -1,0 +1,456 @@
+<?php
+
+namespace App\Services\SerpAgent;
+
+use App\DataClasses\BlogArticleBlockTypesDataClass;
+use App\Models\BlogArticle;
+use App\Models\BlogArticleBlock;
+use App\Models\Role;
+use App\Models\User;
+use App\Services\Application\ApplicationConfigService;
+use App\Services\Base\BaseService;
+use App\Services\SerpAgent\DTO\SerpAgentArticleDTO;
+use App\Services\SerpAgent\Exceptions\SerpAgentException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
+use Throwable;
+
+class SerpAgentArticleService extends BaseService
+{
+    /**
+     * Written to blog_articles.external_source so that articles owned by this
+     * integration can be updated on a repeated delivery, while articles
+     * written by hand in the admin panel are never overwritten.
+     */
+    const EXTERNAL_SOURCE = 'serp-agent';
+
+    const ARTICLE_IMAGES_FOLDER = 'blog-article-images';
+
+    public function __construct(
+        private readonly SerpAgentHtmlService $htmlService,
+        private readonly ApplicationConfigService $applicationConfigService,
+    ) { }
+
+    /**
+     * @return array{action: string, id: int, slug: string, url: string}
+     */
+    public function storeArticle(SerpAgentArticleDTO $dto): array
+    {
+        $languages = $this->applicationConfigService->getAvailableLanguages();
+        $locale = in_array($dto->locale, $languages, true) ? $dto->locale : (string) config('app.fallback_locale');
+
+        $heading = $dto->heading();
+
+        if ($heading === null) {
+            throw new SerpAgentException('The payload contains no "h1" and no "title".');
+        }
+
+        $body = $this->htmlService->sanitize($dto->content);
+
+        if ($body === '') {
+            throw new SerpAgentException('The payload contains no usable "content".');
+        }
+
+        $body .= $this->buildAppendix($dto, $locale);
+
+        $slug = $this->resolveSlug($dto, $heading);
+        $existingArticle = $this->findManagedArticle($dto, $slug);
+
+        $this->guardSlugIsAvailable($slug, $existingArticle);
+
+        $author = $this->resolveAuthor();
+        $heroImage = $this->resolveHeroImage($dto, $existingArticle);
+
+        try {
+            return $this->coverWithDBTransactionWithoutResponse(
+                function () use ($dto, $existingArticle, $slug, $locale, $languages, $heading, $body, $author, $heroImage) {
+                    $article = $this->persistArticle(
+                        $dto, $existingArticle, $slug, $locale, $languages, $heading, $body, $author, $heroImage['path']
+                    );
+
+                    return [
+                        'action' => $existingArticle ? 'updated' : 'created',
+                        'id' => $article->id,
+                        'slug' => $article->slug,
+                        'url' => route('blog.article.page', ['blogArticleSlug' => $article->slug]),
+                    ];
+                }
+            );
+        } catch (Throwable $throwable) {
+            // Images are stored before the transaction opens, so a failed write
+            // must not leave an orphan behind. Only a file downloaded for this
+            // very delivery may be removed — never the shared default image.
+            if ($heroImage['downloaded'] && $heroImage['path']) {
+                $this->deleteImage($heroImage['path']);
+            }
+
+            throw $throwable;
+        }
+    }
+
+    private function persistArticle(
+        SerpAgentArticleDTO $dto,
+        ?BlogArticle $existingArticle,
+        string $slug,
+        string $locale,
+        array $languages,
+        string $heading,
+        string $body,
+        User $author,
+        ?string $heroImagePath,
+    ): BlogArticle {
+        $previewText = $this->resolvePreviewText($dto, $body, $heading);
+
+        $fields = [
+            'slug' => $slug,
+            'external_source' => self::EXTERNAL_SOURCE,
+            'name' => $this->mergeTranslations($existingArticle, 'name', $heading, $locale, $languages),
+            'preview_text' => $this->mergeTranslations($existingArticle, 'preview_text', $previewText, $locale, $languages),
+        ];
+
+        if ($dto->externalId) {
+            $fields['external_id'] = $dto->externalId;
+        }
+
+        foreach ([
+            'meta_title' => $dto->metaTitle ?: $heading,
+            'meta_description' => $dto->metaDescription,
+            'meta_keywords' => $dto->metaKeywords,
+        ] as $attribute => $value) {
+            $translations = $this->mergeTranslations($existingArticle, $attribute, $value, $locale, $languages);
+
+            if ($translations) {
+                $fields[$attribute] = $translations;
+            }
+        }
+
+        if ($heroImagePath) {
+            $fields['hero_image_path'] = $heroImagePath;
+        }
+
+        if ($existingArticle) {
+            $previousHeroImagePath = $existingArticle->hero_image_path;
+
+            $existingArticle->update($fields);
+
+            if ($heroImagePath
+                && $previousHeroImagePath
+                && $previousHeroImagePath !== $heroImagePath
+                && $previousHeroImagePath !== trim((string) config('serp-agent.default_hero_image'))
+            ) {
+                $this->deleteImage($previousHeroImagePath);
+            }
+
+            $article = $existingArticle;
+        } else {
+            $fields['creator_id'] = $author->id;
+
+            $article = BlogArticle::create($fields);
+        }
+
+        $this->syncTextBlock($article, $body, $locale, $languages);
+
+        return $article;
+    }
+
+    /**
+     * The article template renders the blocks of an article in insertion order
+     * and only knows text, image and video blocks. The whole delivered body
+     * therefore lives in a single text block, which is reused on updates so
+     * that image or video blocks added by hand survive.
+     */
+    private function syncTextBlock(BlogArticle $article, string $body, string $locale, array $languages): void
+    {
+        $textBlock = $article->blocks()
+            ->where('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT)
+            ->orderBy('id')
+            ->first();
+
+        $content = [];
+
+        if ($textBlock) {
+            $existingContent = $textBlock->content;
+
+            if (is_array($existingContent)) {
+                $content = $existingContent;
+            }
+        }
+
+        $content[$locale] = $body;
+
+        if (config('serp-agent.mirror_to_other_locales')) {
+            foreach ($languages as $language) {
+                if ($language === $locale) {
+                    continue;
+                }
+
+                if (!isset($content[$language]) || trim((string) $content[$language]) === '') {
+                    $content[$language] = $body;
+                }
+            }
+        }
+
+        if ($textBlock) {
+            $textBlock->update(['content' => $content]);
+
+            return;
+        }
+
+        BlogArticleBlock::create([
+            'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
+            'blog_article_id' => $article->id,
+            'content' => $content,
+        ]);
+    }
+
+    private function buildAppendix(SerpAgentArticleDTO $dto, string $locale): string
+    {
+        $appendix = '';
+
+        if (config('serp-agent.append_faq')) {
+            $appendix .= $this->htmlService->buildFaqSection($dto->faq, $locale);
+        }
+
+        if (config('serp-agent.append_related')) {
+            $appendix .= $this->htmlService->buildLinksSection($dto->relatedArticles, 'related', $locale);
+            $appendix .= $this->htmlService->buildLinksSection($dto->recommendedResources, 'resources', $locale);
+        }
+
+        return $appendix;
+    }
+
+    private function resolveSlug(SerpAgentArticleDTO $dto, string $heading): string
+    {
+        $slug = Str::slug((string) ($dto->slug ?: $heading));
+
+        if ($slug === '') {
+            throw new SerpAgentException('Neither "slug" nor the heading can be turned into a URL slug.');
+        }
+
+        return Str::limit($slug, 180, '');
+    }
+
+    private function findManagedArticle(SerpAgentArticleDTO $dto, string $slug): ?BlogArticle
+    {
+        if ($dto->externalId) {
+            $article = BlogArticle::where('external_source', self::EXTERNAL_SOURCE)
+                ->where('external_id', $dto->externalId)
+                ->first();
+
+            if ($article) {
+                return $article;
+            }
+        }
+
+        return BlogArticle::where('slug', $slug)
+            ->where('external_source', self::EXTERNAL_SOURCE)
+            ->first();
+    }
+
+    /**
+     * An article written in the admin panel must never be replaced by a
+     * delivery that happens to use the same slug.
+     */
+    private function guardSlugIsAvailable(string $slug, ?BlogArticle $existingArticle): void
+    {
+        $occupied = BlogArticle::where('slug', $slug)
+            ->when($existingArticle, fn ($query) => $query->whereKeyNot($existingArticle->getKey()))
+            ->exists();
+
+        if ($occupied) {
+            throw new SerpAgentException(
+                'The slug "' . $slug . '" already belongs to another article on the site. Change the slug in Serp Agent and send the article again.',
+                409
+            );
+        }
+    }
+
+    private function resolvePreviewText(SerpAgentArticleDTO $dto, string $body, string $heading): string
+    {
+        $previewText = trim((string) ($dto->excerpt ?: $dto->metaDescription));
+
+        if ($previewText === '') {
+            $previewText = Str::limit($this->htmlService->toPlainText($body), 300);
+        }
+
+        return $previewText !== '' ? $previewText : $heading;
+    }
+
+    /**
+     * Keeps the translations an editor may have written by hand and fills only
+     * what is empty, so a Ukrainian delivery never wipes a Russian version.
+     */
+    private function mergeTranslations(
+        ?BlogArticle $article,
+        string $attribute,
+        ?string $value,
+        string $locale,
+        array $languages,
+    ): array {
+        $translations = [];
+
+        if ($article) {
+            $existingTranslations = $article->getTranslations($attribute);
+
+            if (is_array($existingTranslations)) {
+                $translations = array_filter($existingTranslations, fn ($item) => is_string($item));
+            }
+        }
+
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return $translations;
+        }
+
+        $translations[$locale] = $value;
+
+        if (config('serp-agent.mirror_to_other_locales')) {
+            foreach ($languages as $language) {
+                if ($language === $locale) {
+                    continue;
+                }
+
+                if (!isset($translations[$language]) || trim($translations[$language]) === '') {
+                    $translations[$language] = $value;
+                }
+            }
+        }
+
+        return $translations;
+    }
+
+    private function resolveAuthor(): User
+    {
+        $authorEmail = trim((string) config('serp-agent.author_email'));
+
+        if ($authorEmail !== '') {
+            $author = User::where('email', $authorEmail)->first();
+
+            if ($author) {
+                return $author;
+            }
+
+            Log::warning('SerpAgent: SERP_AGENT_AUTHOR_EMAIL does not match any user, falling back to the first admin.', [
+                'email' => $authorEmail,
+            ]);
+        }
+
+        $admin = User::where('role_id', Role::ADMIN_ROLE_ID)->orderBy('id')->first();
+
+        if (!$admin) {
+            throw new SerpAgentException('There is no admin user the article could be attributed to.', 500);
+        }
+
+        return $admin;
+    }
+
+    /**
+     * blog_articles.hero_image_path is NOT NULL, so a new article always needs
+     * an image. Returns null when the article already has one worth keeping.
+     */
+    /**
+     * @return array{path: ?string, downloaded: bool}
+     */
+    private function resolveHeroImage(SerpAgentArticleDTO $dto, ?BlogArticle $existingArticle): array
+    {
+        if ($dto->imageUrl) {
+            $downloadedPath = $this->downloadHeroImage($dto->imageUrl);
+
+            if ($downloadedPath) {
+                return ['path' => $downloadedPath, 'downloaded' => true];
+            }
+        }
+
+        if ($existingArticle) {
+            return ['path' => null, 'downloaded' => false];
+        }
+
+        $defaultHeroImage = trim((string) config('serp-agent.default_hero_image'));
+
+        if ($defaultHeroImage !== '') {
+            return ['path' => $defaultHeroImage, 'downloaded' => false];
+        }
+
+        throw new SerpAgentException(
+            'The payload carries no usable image and SERP_AGENT_DEFAULT_HERO_IMAGE is not configured, while a blog article requires a cover image.'
+        );
+    }
+
+    private function downloadHeroImage(string $url): ?string
+    {
+        if (!$this->isDownloadableUrl($url)) {
+            Log::warning('SerpAgent: refused to download the cover image.', ['url' => $url]);
+
+            return null;
+        }
+
+        try {
+            $response = Http::timeout((int) config('serp-agent.image.timeout'))
+                ->withOptions(['allow_redirects' => ['max' => 3]])
+                ->get($url);
+
+            if (!$response->successful()) {
+                Log::warning('SerpAgent: cover image download failed.', [
+                    'url' => $url,
+                    'status' => $response->status(),
+                ]);
+
+                return null;
+            }
+
+            $contents = $response->body();
+            $maxBytes = (int) config('serp-agent.image.max_bytes');
+
+            if ($contents === '' || strlen($contents) > $maxBytes) {
+                Log::warning('SerpAgent: cover image is empty or too large.', [
+                    'url' => $url,
+                    'bytes' => strlen($contents),
+                ]);
+
+                return null;
+            }
+
+            $path = self::ARTICLE_IMAGES_FOLDER . '/' . sha1(microtime(true) . $url) . '_' . Str::random(10);
+            $disk = Storage::disk(config('app.images_disk_default'));
+
+            $disk->put($path . '.webp', Image::make($contents)->encode('webp', 70));
+            $disk->put($path . '.jpg', Image::make($contents)->encode('jpg', 70));
+
+            return $path . '.webp';
+        } catch (Throwable $throwable) {
+            Log::warning('SerpAgent: cover image could not be processed.', [
+                'url' => $url,
+                'error' => $throwable->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    private function isDownloadableUrl(string $url): bool
+    {
+        $parts = parse_url($url);
+
+        if (!is_array($parts) || !isset($parts['scheme'], $parts['host'])) {
+            return false;
+        }
+
+        if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
+            return false;
+        }
+
+        $host = $parts['host'];
+        $ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
+
+        // gethostbyname returns the hostname itself when it cannot resolve it.
+        if ($ip === $host && !filter_var($host, FILTER_VALIDATE_IP)) {
+            return false;
+        }
+
+        return (bool) filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+    }
+}
