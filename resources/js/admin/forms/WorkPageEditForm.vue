@@ -4,13 +4,17 @@ import axios from "axios";
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
 import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
+import MultiLanguageTextAreaComponent from "../components/MultiLanguageTextAreaComponent.vue";
+import WorkImageComponent from "../components/WorkImageComponent.vue";
 import * as transliteration from 'transliteration';
 
 export default {
     components: {
         MultiLanguageRichTextEditorComponent,
         MultiLanguageInputComponent,
+        MultiLanguageTextAreaComponent,
         ImageFileInputComponent,
+        WorkImageComponent,
     },
     props: {
         submitRoute: {
@@ -55,12 +59,50 @@ export default {
             type: String,
             default: '',
         },
+
+        workIntro: {
+            type: Object,
+            default: {},
+        },
+        workDescription: {
+            type: Object,
+            default: {},
+        },
+        workClientQuote: {
+            type: Object,
+            default: {},
+        },
+        workLocation: {
+            type: String,
+            default: '',
+        },
+        workDoorsCount: {
+            type: [String, Number],
+            default: '',
+        },
+        workDuration: {
+            type: String,
+            default: '',
+        },
+        workClientName: {
+            type: String,
+            default: '',
+        },
+        workIsPublished: {
+            type: Boolean,
+            default: true,
+        },
+        workImages: {
+            type: Array,
+            default: () => [],
+        },
     },
     data() {
         return {
             selectedLanguage: '',
             errors: [],
             workSlugData: '',
+            images: [],
         }
     },
     created() {
@@ -69,7 +111,7 @@ export default {
     mounted() {
         this.selectedLanguage = this.baseLanguage;
         this.workSlugData = this.workSlug;
-
+        this.images = this.workImages ? [...this.workImages] : [];
     },
     computed: {
         /*slug() {
@@ -94,6 +136,12 @@ export default {
                 value = event.target.value;
                 this.workSlugData = transliteration.slugify(value);
             }
+        },
+        addImage() {
+            this.images.push({});
+        },
+        deleteImage(index) {
+            this.images.splice(index, 1);
         },
 
     }
@@ -172,6 +220,108 @@ export default {
                         :errors="errors"
                         :init-data="workImage"
                     />
+                </div>
+
+                <multi-language-text-area-component
+                    :title="$t('admin.work_intro')"
+                    name="intro"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workIntro"
+                    :errors="errors"
+                />
+
+                <multi-language-rich-text-editor-component
+                    :title="$t('admin.work_description')"
+                    name="description"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workDescription"
+                    :errors="errors"
+                />
+
+                <div class="form-group mb-3">
+                    <input-component
+                        :title="$t('admin.work_location')"
+                        name="location"
+                        :model-value="workLocation"
+                        :errors="errors"
+                    />
+                </div>
+
+                <div class="form-group mb-3">
+                    <input-component
+                        :title="$t('admin.work_doors_count')"
+                        name="doors_count"
+                        type="number"
+                        :model-value="workDoorsCount"
+                        :errors="errors"
+                    />
+                </div>
+
+                <div class="form-group mb-3">
+                    <input-component
+                        :title="$t('admin.work_duration')"
+                        name="duration"
+                        :model-value="workDuration"
+                        :errors="errors"
+                    />
+                </div>
+
+                <multi-language-text-area-component
+                    :title="$t('admin.work_client_quote')"
+                    name="client_quote"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workClientQuote"
+                    :errors="errors"
+                />
+
+                <div class="form-group mb-3">
+                    <input-component
+                        :title="$t('admin.work_client_name')"
+                        name="client_name"
+                        :model-value="workClientName"
+                        :errors="errors"
+                    />
+                </div>
+
+                <div class="form-group mb-3">
+                    <check-box-component
+                        :title="$t('admin.work_is_published')"
+                        name="is_published"
+                        :model-value="workIsPublished"
+                        :errors="errors"
+                    />
+                </div>
+
+                <hr>
+
+                <p><strong>{{ $t('admin.work_gallery') }}</strong></p>
+
+                <div class="form-group mb-3 art-admin-repeater-four-width">
+                    <work-image-component
+                        v-for="(image, index) in images"
+                        :key="index"
+                        :image-id="image.hasOwnProperty('id') ? image.id : null"
+                        :image="image"
+                        :index="index"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        @delete-image="() => deleteImage(index)"
+                    />
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <a href="#" class="btn mb-2 btn-secondary" @click.prevent="addImage">
+                            <span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.work_gallery_add') }}
+                        </a>
+                    </div>
                 </div>
 
             </div>

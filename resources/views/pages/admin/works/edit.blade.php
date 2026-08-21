@@ -26,6 +26,19 @@
 
                     @if(isset($work))
                     :work-image="{{ json_encode($work->image_url) }}"
+                    :work-intro="{{ json_encode($work->getTranslations('intro')) }}"
+                    :work-description="{{ json_encode($work->getTranslations('description')) }}"
+                    :work-client-quote="{{ json_encode($work->getTranslations('client_quote')) }}"
+                    :work-location="{{ json_encode($work->location) }}"
+                    :work-doors-count="{{ json_encode($work->doors_count) }}"
+                    :work-duration="{{ json_encode($work->duration) }}"
+                    :work-client-name="{{ json_encode($work->client_name) }}"
+                    :work-is-published="{{ json_encode((bool) $work->is_published) }}"
+                    :work-images="{{ json_encode($work->images->map(fn ($image) => [
+                        'id' => $image->id,
+                        'caption' => $image->getTranslations('caption'),
+                        'image_url' => $image->image_url,
+                    ])) }}"
                     @endif
 
                     {{--end--}}

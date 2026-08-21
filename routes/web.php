@@ -15,7 +15,8 @@ use App\Http\Actions\Store\Faq\ShowFaqPageAction;
 use App\Http\Actions\Blog\Pages\RedirectLegacyBlogArticleUrlAction;
 use App\Http\Actions\Blog\Pages\ShowBlogArticlePageAction;
 use App\Http\Actions\Blog\Pages\ShowBlogMainPageAction;
-//use App\Http\Actions\Store\Work\ShowWorkPageAction;
+use App\Http\Actions\Store\Work\ShowWorkDetailPageAction;
+use App\Http\Actions\Store\Work\ShowWorkPageAction;
 use App\Http\Actions\EmailSubscription\ConfirmSubscriptionAction;
 use App\Http\Actions\EmailSubscription\SubscribeEmailAction;
 use App\Http\Actions\Locale\ChangeLocaleAction;
@@ -406,10 +407,10 @@ $optionalLanguageRoutes = function () {
         Route::name('blog.article.page')->get('/{blogArticleSlug}', ShowBlogArticlePageAction::class);
     });
 
-    // TODO: I was told to hide this route
-    /*Route::prefix('works')->group(function () {
+    Route::prefix('nashi-roboty')->group(function () {
         Route::name('store.works.page')->get('/', ShowWorkPageAction::class);
-    });*/
+        Route::name('store.work.page')->get('/{workSlug}', ShowWorkDetailPageAction::class);
+    });
 
 
     Route::prefix('payment')->group(function () {

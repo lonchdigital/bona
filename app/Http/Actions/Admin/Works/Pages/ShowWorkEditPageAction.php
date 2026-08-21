@@ -9,7 +9,7 @@ class ShowWorkEditPageAction
     public function __invoke(Work $work)
     {
         return view('pages.admin.works.edit', [
-            'work' => $work,
+            'work' => $work->load('images'),
         ]);
     }
 }

@@ -14,6 +14,19 @@ class EditWorkDTO implements BaseDTO
         public readonly ?array        $metaDescription,
         public readonly ?array        $metaKeyWords,
         public readonly ?UploadedFile $mainImage,
+        public readonly ?array        $intro = null,
+        public readonly ?array        $description = null,
+        public readonly ?string       $location = null,
+        public readonly ?int          $doorsCount = null,
+        public readonly ?string       $duration = null,
+        public readonly ?array        $clientQuote = null,
+        public readonly ?string       $clientName = null,
+        public readonly bool          $isPublished = true,
+        /**
+         * Gallery rows as they came from the form. Each may carry an "id" for a
+         * row that already exists and an "image" only when it is replaced.
+         */
+        public readonly ?array        $images = null,
     )
     { }
 }

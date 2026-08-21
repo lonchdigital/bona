@@ -12,6 +12,7 @@ use App\Models\FilterGroup;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\WishList;
+use App\Models\Work;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -64,6 +65,10 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::bind('blogCategorySlug', function (string $slug) {
                 return BlogCategory::where('slug', $slug)->firstOrFail();
+            });
+
+            Route::bind('workSlug', function (string $slug) {
+                return Work::where('slug', $slug)->firstOrFail();
             });
 
             Route::bind('authorSlug', function (string $slug) {

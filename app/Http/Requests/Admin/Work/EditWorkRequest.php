@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Admin\Work;
 
-use App\Services\Work\DTO\EditWorkDTO;
-
 class EditWorkRequest extends CreateWorkRequest
 {
 
@@ -38,17 +36,5 @@ class EditWorkRequest extends CreateWorkRequest
         }
 
         return $attributes;
-    }
-
-    public function toDTO(): EditWorkDTO
-    {
-        return new EditWorkDTO(
-            $this->input('name'),
-            $this->input('slug'),
-            $this->input('meta_title'),
-            $this->input('meta_description'),
-            $this->input('meta_keywords'),
-            $this->file('main_image'),
-        );
     }
 }

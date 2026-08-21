@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ServicesConfig;
 use App\Models\ProductType;
 use App\Models\StaticPage;
+use App\Models\Work;
 use App\Services\Base\BaseService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -121,6 +122,23 @@ class SitemapService extends BaseService
                 $urls->push(Url::create($langUrl)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                     ->setPriority(0.7)
+                );
+            }
+        }
+
+        // Works
+        foreach (['/nashi-roboty', '/ru/nashi-roboty'] as $worksUrl) {
+            $urls->push(Url::create($worksUrl)
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setPriority(0.7)
+            );
+        }
+
+        foreach (Work::published()->get() as $work) {
+            foreach ($work->toSitemapTag() as $langUrl) {
+                $urls->push(Url::create($langUrl)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                    ->setPriority(0.6)
                 );
             }
         }
