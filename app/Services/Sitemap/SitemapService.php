@@ -33,6 +33,14 @@ class SitemapService extends BaseService
             ->setPriority(1)
         );
 
+        // FAQ hub
+        foreach (['/faq', '/ru/faq'] as $faqUrl) {
+            $urls->push(Url::create($faqUrl)
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setPriority(0.7)
+            );
+        }
+
         // Add Services
         $allLangUrls = ServicesConfig::first()->toSitemapTag();
         foreach ($allLangUrls as $langUrl) {
