@@ -53,6 +53,7 @@
                             <div class="empty-gap"></div>
                             <div class="additional-phone"><a href="tel:{{ str_replace(' ', '', $contactsConfig->phone_one) }}">{{ $contactsConfig->phone_one }}</a></div>
                             <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_one }}">{{ $contactsConfig->email_one }}</a></div>
+                            <div class="additional-hours">{{ trans('base.working_hours_label') }}: {{ trans('base.working_hours') }}</div>
                         </div>
 
                     </div>
@@ -73,6 +74,7 @@
                             <div class="empty-gap"></div>
                             <div class="additional-phone"><a href="tel:{{ str_replace(' ', '', $contactsConfig->phone_two) }}">{{ $contactsConfig->phone_two }}</a></div>
                             <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_two }}">{{ $contactsConfig->email_two }}</a></div>
+                            <div class="additional-hours">{{ trans('base.working_hours_label') }}: {{ trans('base.working_hours') }}</div>
                         </div>
 
                     </div>
@@ -81,6 +83,9 @@
                     </div>
                 </div>
 
+                {{-- The third salon was never filled in, so this rendered as an
+                     empty address with a stray comma in front of it. --}}
+                @if($contactsConfig->address_three)
                 <div class="art-contacts-line">
                     <div class="art-contacts-left">
 
@@ -93,6 +98,7 @@
                             <div class="empty-gap"></div>
                             <div class="additional-phone"><a href="tel:{{ str_replace(' ', '', $contactsConfig->phone_three) }}">{{ $contactsConfig->phone_three }}</a></div>
                             <div class="additional-email"><a href="mailto:{{ $contactsConfig->email_three }}">{{ $contactsConfig->email_three }}</a></div>
+                            <div class="additional-hours">{{ trans('base.working_hours_label') }}: {{ trans('base.working_hours') }}</div>
                         </div>
 
                     </div>
@@ -100,6 +106,7 @@
                         {!! $contactsConfig->iframe_address_three !!}
                     </div>
                 </div>
+                @endif
 
             @endif
 

@@ -13,7 +13,8 @@ use App\Models\StaticPage;
 use App\Services\Base\BaseService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Spatie\Sitemap\SitemapGenerator;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
 class SitemapService extends BaseService
@@ -49,11 +50,20 @@ class SitemapService extends BaseService
             foreach ($products as $product) {
                 $allLangUrls = $product->toSitemapTag();
 
+                $productImagePath = $product->preview_image_path ?: $product->main_image_path;
+
                 foreach ($allLangUrls as $langUrl) {
-                    $urls->push(Url::create($langUrl)
+                    $url = Url::create($langUrl)
                         ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                        ->setPriority(0.8)
-                    );
+                        ->setPriority(0.8);
+
+                    // Declared against the page it belongs to, which is what
+                    // image search expects, rather than as a page of its own.
+                    if ($productImagePath) {
+                        $url->addImage(url(Storage::url($productImagePath)), (string) $product->name);
+                    }
+
+                    $urls->push($url);
                 }
             }
             $currentPage++;
@@ -129,9 +139,13 @@ class SitemapService extends BaseService
             }
         }
 
-        // create SitemapGenerator with all urls
-        SitemapGenerator::create(config('app.url'))
-            ->getSitemap()
+        /*
+         * Written from the list above and nothing else. It used to start from
+         * SitemapGenerator::getSitemap(), which crawls the site and adds
+         * whatever it runs into: that is how 1600 image files and the sign in
+         * pages ended up listed as pages in their own right.
+         */
+        Sitemap::create()
             ->add($urls->toArray())
             ->writeToFile(public_path('sitemap.xml'));
     }

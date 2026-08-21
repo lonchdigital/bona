@@ -53,7 +53,7 @@
                                         <img src="{{ $brand->head_image_url }}" alt="img">
                                     </div>
                                     <div class="single-brand-logo px-4 py-6">
-                                        <img src="{{ $brand->logo_image_url }}" alt="img">
+                                        <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}">
                                     </div>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@
                                     @foreach($discoverBrands as $brand)
                                         <div class="brand-other-item">
                                             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brand.page', ['brandSlug' => $brand->slug]) }}">
-                                                <img src="{{ $brand->logo_image_url }}" alt="img">
+                                                <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}">
                                             </a>
                                         </div>
                                     @endforeach

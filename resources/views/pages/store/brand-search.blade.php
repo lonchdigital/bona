@@ -56,7 +56,7 @@
                                     @foreach($brandsFound as $brand)
                                         <div class="all-brands-item text-center">
                                             <div class="all-brands-item-inner">
-                                                <img src="{{ $brand->logo_image_url }}" alt="img">
+                                                <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}">
                                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brand.page', ['brandSlug' => $brand->slug]) }}" class="btn btn-outline-black-custom py-1 px-1 px-xl-5">{{ trans('base.all_collections_of_brand') }}</a>
                                             </div>
                                         </div>

@@ -27,6 +27,16 @@
     <link rel="preload" href="{{ asset('storage/bg-images/home-slider-mob-bg.jpg') }}" as="image">
 @endsection
 
+{{-- Without this the layout falls back to the 32x32 favicon, which is what
+     every share of the home page was showing. --}}
+@php
+    $homeOgImage = optional($slides->first())->slide_image_url;
+@endphp
+
+@if($homeOgImage)
+    @section('og_image', url($homeOgImage))
+@endif
+
 @section('content')
 
     <!-- ========================  Header content ======================== -->

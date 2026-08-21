@@ -591,17 +591,22 @@
                                         <span class="city">{{ $contactsFooter['city_one'] .', '.$contactsFooter['address_one'] }}</span>
                                         <span class="phone">{{ $contactsFooter['phone_one'] }}</span>
                                         <span class="email">{{ $contactsFooter['email_one'] }}</span>
+                                        <span class="hours">{{ trans('base.working_hours') }}</span>
                                     </div>
                                     <div class="art-address-wrapper">
                                         <span class="city">{{ $contactsFooter['city_two'] .', '.$contactsFooter['address_two'] }}</span>
                                         <span class="phone">{{ $contactsFooter['phone_two'] }}</span>
                                         <span class="email">{{ $contactsFooter['email_two'] }}</span>
+                                        <span class="hours">{{ trans('base.working_hours') }}</span>
                                     </div>
-                                    <div class="art-address-wrapper">
-                                        <span class="city">{{ $contactsFooter['city_three'] .', '.$contactsFooter['address_three'] }}</span>
-                                        <span class="phone">{{ $contactsFooter['phone_three'] }}</span>
-                                        <span class="email">{{ $contactsFooter['email_three'] }}</span>
-                                    </div>
+                                    @if($contactsFooter['address_three'])
+                                        <div class="art-address-wrapper">
+                                            <span class="city">{{ $contactsFooter['city_three'] .', '.$contactsFooter['address_three'] }}</span>
+                                            <span class="phone">{{ $contactsFooter['phone_three'] }}</span>
+                                            <span class="email">{{ $contactsFooter['email_three'] }}</span>
+                                            <span class="hours">{{ trans('base.working_hours') }}</span>
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
 

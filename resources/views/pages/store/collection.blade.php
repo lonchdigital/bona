@@ -62,7 +62,7 @@
                                                 <div class="content">
                                                     <a href="#">
                                                         <div class="logo">
-                                                            <img src="{{ $collection->brand->logo_image_url }}" alt="img">
+                                                            <img src="{{ $collection->brand->logo_image_url }}" alt="{{ $collection->brand->name }}">
                                                         </div>
                                                     </a>
                                                 </div>
@@ -240,7 +240,7 @@
                                                 @if( $anotherCollection->products_count < 4)
                                                     @if( $anotherCollection->products_count < 1)
                                                         <div class="w-100">
-                                                            <img src="{{ $collection->brand->logo_image_url }}" alt="img">
+                                                            <img src="{{ $collection->brand->logo_image_url }}" alt="{{ $collection->brand->name }}">
                                                         </div>
                                                     @else
                                                         <div class="w-100">
@@ -266,7 +266,7 @@
                                                 @endif
                                             </div>
                                             <div class="collection-other-logo text-center">
-                                                <img src="{{ $collection->brand->logo_image_url }}" alt="img">
+                                                <img src="{{ $collection->brand->logo_image_url }}" alt="{{ $collection->brand->name }}">
                                             </div>
                                         </div>
                                     </a>

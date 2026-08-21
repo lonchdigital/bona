@@ -20,9 +20,19 @@
         @endif
 
         <meta property="og:title" content="{{ trans('base.about_us') . ' - ' . trans('base.site_title') }}">
+
+        @if($aboutUsConfig->meta_description)
+            <meta property="og:description" content="{{ $aboutUsConfig->meta_description }}">
+        @endif
+
+        <meta name="twitter:card" content="summary_large_image">
     @endif
 
 @endsection
+
+@if(isset($aboutUsConfig) && $aboutUsConfig->image)
+    @section('og_image', url($aboutUsConfig->imageUrl))
+@endif
 
 @section('content')
 
