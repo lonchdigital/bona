@@ -247,7 +247,9 @@
                                             <span class="post-author-status">{{ $authorJobTitle }}</span>
                                         @endif
 
-                                        @if($articleAuthor && $articleAuthor->short_description)
+                                        @if($articleAuthor
+                                            && $articleAuthor->short_description
+                                            && trim((string) $articleAuthor->short_description) !== trim((string) $authorJobTitle))
                                             <span class="post-author-about">{{ $articleAuthor->short_description }}</span>
                                         @endif
 
@@ -497,13 +499,15 @@
             background-color: #fafafa;
         }
 
-        .blog .blog-post .blog-post-text ul,
+        /* Scoped away from the share row, whose list carries icons rather
+           than prose and must keep its own styling. */
+        .blog .blog-post .blog-post-text ul:not(.art-post-share__list),
         .blog .blog-post .blog-post-text ol {
             margin: 0 0 20px;
             padding-left: 22px;
         }
 
-        .blog .blog-post .blog-post-text ul {
+        .blog .blog-post .blog-post-text ul:not(.art-post-share__list) {
             list-style: disc;
         }
 
@@ -511,7 +515,8 @@
             list-style: decimal;
         }
 
-        .blog .blog-post .blog-post-text li {
+        .blog .blog-post .blog-post-text ul:not(.art-post-share__list) > li,
+        .blog .blog-post .blog-post-text ol > li {
             margin-bottom: 8px;
             font-weight: 300;
         }
