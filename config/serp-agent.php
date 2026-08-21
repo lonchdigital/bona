@@ -65,6 +65,16 @@ return [
     'append_related' => (bool) env('SERP_AGENT_APPEND_RELATED', true),
 
     /*
+     * "Save & Test" in the Serp Agent panel does not send an empty ping — it
+     * sends a whole demo article whose image URL is a placeholder that answers
+     * 401. Deliveries carrying one of these slugs are acknowledged with a 200
+     * and deliberately not published.
+     */
+    'test_slugs' => [
+        'test-article-serp-agent',
+    ],
+
+    /*
      * Demote <h1> inside the received body to <h2>. The article template
      * already prints the article name as the page <h1>.
      */

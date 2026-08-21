@@ -37,11 +37,36 @@ class SerpAgentArticleDTO implements BaseDTO
     }
 
     /**
-     * A payload that carries neither a heading nor a body is treated as the
-     * connectivity check behind the panel's "Save & Test" button.
+     * A payload that carries neither a heading nor a body is a bare
+     * connectivity check.
      */
     public function isConnectivityCheck(): bool
     {
         return $this->heading() === null && trim((string) $this->content) === '';
+    }
+
+    /**
+     * The panel's "Save & Test" button sends a complete demo article instead of
+     * a ping, pointing at an image URL that is not actually served. It is
+     * recognised by its fixed slug so the test can succeed without a throwaway
+     * article appearing on the live blog.
+     *
+     * @param array<int, string> $testSlugs
+     */
+    public function isTestDelivery(array $testSlugs): bool
+    {
+        if ($this->slug === null) {
+            return false;
+        }
+
+        $slug = strtolower(trim($this->slug));
+
+        foreach ($testSlugs as $testSlug) {
+            if ($slug === strtolower(trim((string) $testSlug))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

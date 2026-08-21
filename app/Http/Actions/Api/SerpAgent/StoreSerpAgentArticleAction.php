@@ -17,12 +17,23 @@ class StoreSerpAgentArticleAction
     ): JsonResponse {
         $dto = $request->toDTO();
 
-        // "Save & Test" in the Serp Agent panel only checks that the endpoint
-        // answers and sends no article along with it.
         if ($dto->isConnectivityCheck()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Webhook is reachable and the secret is valid.',
+            ]);
+        }
+
+        // The panel's "Save & Test" sends a demo article, which must not end up
+        // on the live blog.
+        if ($dto->isTestDelivery((array) config('serp-agent.test_slugs'))) {
+            Log::info('SerpAgent: test delivery acknowledged, nothing published.', [
+                'slug' => $dto->slug,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Test delivery received. The webhook and the secret are valid; the demo article was not published.',
             ]);
         }
 
