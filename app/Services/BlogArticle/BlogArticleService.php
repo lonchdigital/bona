@@ -22,7 +22,11 @@ class BlogArticleService extends BaseService
 
     public function getBlogArticlesListPaginated()
     {
-        return BlogArticle::paginate(config('domain.blog_items_per_page'));
+        // Newest first. Without an explicit order the database returns the rows
+        // by primary key, which put every freshly published article last.
+        return BlogArticle::latest()
+            ->orderByDesc('id')
+            ->paginate(config('domain.blog_items_per_page'));
     }
 
     public function getLatestArticlesExceptCurrent(int $currentArticleId)
