@@ -428,10 +428,101 @@
             margin-bottom: 18px;
         }
 
-        .blog-post .article-faq .accordion {
+        /* The theme gives every heading inside an article margin-top: 35px
+           through .blog .blog-post .blog-post-text h3, which outweighs a
+           shorter selector and left a gap above every question. */
+        .blog .blog-post .blog-post-text .article-faq .accordion {
             margin: 0;
             font-weight: 500;
             line-height: 1.35;
+        }
+
+        /*
+            Article body: tables, lists and quotes arrive as plain HTML from
+            Serp Agent, so the theme styles them here rather than in the
+            editor.
+        */
+        .blog .blog-post .blog-post-text .article-table {
+            margin: 25px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .blog .blog-post .blog-post-text table {
+            width: 100%;
+            /* Narrower than this a table stops being readable, so it scrolls
+               inside its wrapper instead of squeezing the columns. */
+            min-width: 520px;
+            margin: 0;
+            border-collapse: collapse;
+            font-size: 15px;
+            font-weight: 300;
+        }
+
+        .blog .blog-post .blog-post-text table th,
+        .blog .blog-post .blog-post-text table td {
+            padding: 12px 14px;
+            border: 1px solid #dddddd;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .blog .blog-post .blog-post-text table th {
+            background-color: #f5f5f5;
+            font-weight: 500;
+        }
+
+        .blog .blog-post .blog-post-text table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .blog .blog-post .blog-post-text ul,
+        .blog .blog-post .blog-post-text ol {
+            margin: 0 0 20px;
+            padding-left: 22px;
+        }
+
+        .blog .blog-post .blog-post-text ul {
+            list-style: disc;
+        }
+
+        .blog .blog-post .blog-post-text ol {
+            list-style: decimal;
+        }
+
+        .blog .blog-post .blog-post-text li {
+            margin-bottom: 8px;
+            font-weight: 300;
+        }
+
+        .blog .blog-post .blog-post-text blockquote {
+            margin: 25px 0;
+            padding: 6px 0 6px 20px;
+            border-left: 3px solid #333333;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .blog .blog-post .blog-post-text blockquote > *:last-child {
+            margin-bottom: 0;
+        }
+
+        /* The theme stretches every article image to 100%; without this the
+           proportions go with it. */
+        .blog .blog-post .blog-post-text img {
+            height: auto;
+        }
+
+        @media (max-width: 767px) {
+            .blog .blog-post .blog-post-text table {
+                min-width: 440px;
+                font-size: 14px;
+            }
+
+            .blog .blog-post .blog-post-text table th,
+            .blog .blog-post .blog-post-text table td {
+                padding: 10px;
+            }
         }
 
         .blog-post .article-faq .art-panel .panel-data > *:last-child {
@@ -524,6 +615,23 @@
 
 @push('dynamic_scripts')
     <script>
+        // Tables get a scrolling wrapper so a wide one does not drag the
+        // whole page sideways on a phone. New articles arrive already
+        // wrapped; this covers everything published before that.
+        document.querySelectorAll('.blog-post-text table').forEach(function (table) {
+            var parent = table.parentElement;
+
+            if (parent && parent.classList.contains('article-table')) {
+                return;
+            }
+
+            var wrapper = document.createElement('div');
+            wrapper.className = 'article-table';
+
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        });
+
         // The accordion trigger is a heading, so it needs the keyboard
         // behaviour a button would have given for free.
         document.querySelectorAll('.article-faq .accordion[role="button"]').forEach(function (heading) {

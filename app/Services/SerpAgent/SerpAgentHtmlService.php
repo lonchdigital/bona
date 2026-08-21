@@ -123,6 +123,7 @@ class SerpAgentHtmlService
         }
 
         $this->cleanChildren($root);
+        $this->wrapTables($document, $root);
 
         $sanitized = '';
 
@@ -256,6 +257,34 @@ class SerpAgentHtmlService
         $headings = self::HEADINGS[$type] ?? [];
 
         return $headings[$locale] ?? $headings['uk'] ?? '';
+    }
+
+    /**
+     * A wide table would drag the whole article sideways on a phone, so each
+     * one is given a wrapper the stylesheet can scroll on its own.
+     */
+    private function wrapTables(DOMDocument $document, DOMElement $root): void
+    {
+        $xpath = new DOMXPath($document);
+
+        foreach (iterator_to_array($xpath->query('.//table', $root)) as $table) {
+            $parent = $table->parentNode;
+
+            if (!$parent instanceof DOMNode) {
+                continue;
+            }
+
+            if ($parent instanceof DOMElement
+                && str_contains($parent->getAttribute('class'), 'article-table')) {
+                continue;
+            }
+
+            $wrapper = $document->createElement('div');
+            $wrapper->setAttribute('class', 'article-table');
+
+            $parent->replaceChild($wrapper, $table);
+            $wrapper->appendChild($table);
+        }
     }
 
     private function cleanChildren(DOMNode $node): void
