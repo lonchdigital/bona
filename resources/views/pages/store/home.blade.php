@@ -30,11 +30,11 @@
 {{-- Without this the layout falls back to the 32x32 favicon, which is what
      every share of the home page was showing. --}}
 @php
-    $homeOgImage = optional($slides->first())->slide_image_url;
+    $homeOgImage = App\Helpers\PreviewImage::url(optional($slides->first())->slide_image_path);
 @endphp
 
 @if($homeOgImage)
-    @section('og_image', url($homeOgImage))
+    @section('og_image', $homeOgImage)
 @endif
 
 @section('content')

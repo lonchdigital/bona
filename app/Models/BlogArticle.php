@@ -44,22 +44,7 @@ class BlogArticle extends Model implements Sitemapable
      */
     public function ogImageUrl(): Attribute
     {
-        return Attribute::make(function () {
-            if (!$this->hero_image_path) {
-                return null;
-            }
-
-            $path = $this->hero_image_path;
-
-            $jpgPath = pathinfo($path, PATHINFO_DIRNAME)
-                . '/' . pathinfo($path, PATHINFO_FILENAME) . '.jpg';
-
-            if (Storage::disk(config('app.images_disk_default'))->exists($jpgPath)) {
-                $path = $jpgPath;
-            }
-
-            return url(Storage::url($path));
-        });
+        return Attribute::make(fn () => \App\Helpers\PreviewImage::url($this->hero_image_path));
     }
 
     public function toArray(): array

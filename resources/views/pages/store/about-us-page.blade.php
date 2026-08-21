@@ -31,7 +31,7 @@
 @endsection
 
 @if(isset($aboutUsConfig) && $aboutUsConfig->image)
-    @section('og_image', url($aboutUsConfig->imageUrl))
+    @section('og_image', App\Helpers\PreviewImage::url($aboutUsConfig->image))
 @endif
 
 @section('content')

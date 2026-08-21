@@ -52,36 +52,7 @@ class Author extends Model implements Sitemapable
      */
     public function ogImageUrl(): Attribute
     {
-        return Attribute::make(function () {
-            if (!$this->photo_path) {
-                return null;
-            }
-
-            $path = $this->photo_path;
-
-            $jpgPath = pathinfo($path, PATHINFO_DIRNAME)
-                . '/' . pathinfo($path, PATHINFO_FILENAME) . '.jpg';
-
-            if (Storage::disk(config('app.images_disk_default'))->exists($jpgPath)) {
-                $path = $jpgPath;
-            }
-
-            return url(Storage::url($path));
-        });
-    }
-
-    /**
-     * The profiles the Person structured data points at through sameAs.
-     *
-     * @return array<int, string>
-     */
-    public function sameAsLinks(): array
-    {
-        return array_values(array_filter([
-            $this->instagram_url,
-            $this->facebook_url,
-            $this->linkedin_url,
-        ]));
+        return Attribute::make(fn () => \App\Helpers\PreviewImage::url($this->photo_path));
     }
 
     public function toArray(): array
