@@ -707,9 +707,9 @@
                                                                    class="table-product d-flex align-items-center">
                                                                     <div class="table-product-image mr-3 d-block">
                                                                         @if( $product->pivot->current_image_path !== null )
-                                                                            <img src="{{ '/storage/' . $product->pivot->current_image_path }}" alt="img">
+                                                                            <img src="{{ '/storage/' . $product->pivot->current_image_path }}" alt="{{ $product->name }}">
                                                                         @else
-                                                                            <img src="{{ $product->main_image_url }}" alt="img">
+                                                                            <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}">
                                                                         @endif
                                                                     </div>
                                                                     <div class="table-product-info d-block">
@@ -809,13 +809,13 @@
                                                         <div class="pay-title mr-lg-2 mb-2 mb-lg-0">{{ trans('base.payments_methods') }}:</div>
                                                         <div class="pay-list d-flex align-items-center justify-content-center">
                                                             <div class="pay-list-item overflow-hidden d-flex align-items-center justify-content-center">
-                                                                <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="img">
+                                                                <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa">
                                                             </div>
                                                             <div class="pay-list-item overflow-hidden d-flex align-items-center justify-content-center">
-                                                                <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="img">
+                                                                <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard">
                                                             </div>
                                                             <div class="pay-list-item overflow-hidden d-flex align-items-center justify-content-center">
-                                                                <img src="{{ Vite::asset('resources/img/payment/cash.svg') }}" alt="img">
+                                                                <img src="{{ Vite::asset('resources/img/payment/cash.svg') }}" alt="Cash">
                                                             </div>
                                                         </div>
                                                     </div>

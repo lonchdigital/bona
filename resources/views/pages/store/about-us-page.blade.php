@@ -208,7 +208,7 @@
                             <article class="art-post-archive-item">
                                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]) }}">
                                     <div class="image" style="background-image:url({{ $article->hero_image_url }})">
-                                        <img src="{{ $article->hero_image_url }}" alt="">
+                                        <img src="{{ $article->hero_image_url }}" alt="{{ $article->name }}">
                                     </div>
                                     <div class="entry entry-post">
                                         <div class="preview-post-left">

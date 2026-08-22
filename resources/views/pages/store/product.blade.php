@@ -125,13 +125,13 @@
                         <div class="art-swiper-single-wallpaper">
                             <div class="swiper-slide" data-color-id="{{ $product->main_color_id ?? 0 }}">
                                 <a data-fancybox="single-wallpaper-gallery" href="{{ $product->main_image_url }}">
-                                    <img src="{{ $product->main_image_url }}" alt="img">
+                                    <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}">
                                 </a>
                             </div>
                             @foreach($productGallery as $image)
                                 <div class="swiper-slide" data-color-id="{{ $image->color_id ?? 0 }}">
                                     <a data-fancybox="single-wallpaper-gallery" href="{{ $image->gallery_image_url }}">
-                                        <img src="{{ $image->gallery_image_url }}" alt="img">
+                                        <img src="{{ $image->gallery_image_url }}" alt="{{ $product->name }}">
                                     </a>
                                 </div>
                             @endforeach
@@ -140,13 +140,13 @@
                         <div class="art-swiper-single-wallpaper-thumbs">
                             <div class="swiper-slide" data-color-id="{{ $product->main_color_id ?? 0 }}">
                                 <div class="art-swiper-slide">
-                                    <img src="{{ $product->main_image_url }}" alt="img">
+                                    <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}">
                                 </div>
                             </div>
                             @foreach($productGallery as $image)
                                 <div class="swiper-slide" data-color-id="{{ $image->color_id ?? 0 }}">
                                     <div class="art-swiper-slide">
-                                        <img src="{{ $image->gallery_image_url }}" alt="img">
+                                        <img src="{{ $image->gallery_image_url }}" alt="{{ $product->name }}">
                                     </div>
                                 </div>
                             @endforeach

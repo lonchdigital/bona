@@ -126,13 +126,13 @@
                                         <div class="pay-title">{{ trans('base.payments_methods') }}:</div>
                                         <div class="pay-list d-flex align-items-center justify-content-center">
                                             <div class="pay-list-item bg-white overflow-hidden d-flex align-items-center justify-content-center">
-                                                <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="img">
+                                                <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa">
                                             </div>
                                             <div class="pay-list-item bg-white overflow-hidden d-flex align-items-center justify-content-center">
-                                                <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="img">
+                                                <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard">
                                             </div>
                                             <div class="pay-list-item bg-white overflow-hidden d-flex align-items-center justify-content-center">
-                                                <img src="{{ Vite::asset('resources/img/payment/cash.svg') }}" alt="img">
+                                                <img src="{{ Vite::asset('resources/img/payment/cash.svg') }}" alt="Cash">
                                             </div>
                                         </div>
                                     </div>

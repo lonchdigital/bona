@@ -205,7 +205,7 @@
                                     @elseif($block->type_id === \App\DataClasses\BlogArticleBlockTypesDataClass::TYPE_IMAGE)
                                         <div class="mx-auto">
                                             @foreach( $block->content['images'] as $image )
-                                                <img src="{{ $image['image_url'] }}" alt="">
+                                                <img src="{{ $image['image_url'] }}" alt="{{ $blogArticle->name }}">
                                             @endforeach
                                         </div>
                                     @elseif($block->type_id === \App\DataClasses\BlogArticleBlockTypesDataClass::TYPE_VIDEO)

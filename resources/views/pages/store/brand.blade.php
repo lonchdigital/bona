@@ -50,7 +50,7 @@
                             <div class="col">
                                 <div class="single-brand-banner-top-content position-relative">
                                     <div class="main-pic">
-                                        <img src="{{ $brand->head_image_url }}" alt="img">
+                                        <img src="{{ $brand->head_image_url }}" alt="{{ $brand->name }}">
                                     </div>
                                     <div class="single-brand-logo px-4 py-6">
                                         <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}">

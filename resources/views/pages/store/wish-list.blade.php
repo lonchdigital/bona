@@ -121,7 +121,7 @@
                                                 <div class="col-12 col-xl-6">
                                                     <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="table-product d-flex align-items-lg-center">
                                                         <div class="table-product-image mr-3 d-block">
-                                                            <img src="{{ $product->main_image_url }}" alt="img">
+                                                            <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}">
                                                         </div>
                                                         <div class="table-product-info d-flex flex-row-reverse justify-content-between d-xl-block">
                                                             <div class="table-price text-right d-flex align-items-end d-xl-none">1799 грн.</div>

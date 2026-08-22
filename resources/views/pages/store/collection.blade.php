@@ -53,10 +53,10 @@
                                             <div class="swiper-slide">
                                                 <div class="bg-wrap row no-gutters">
                                                     <div class="col">
-                                                        <img src="{{ $slide->image_1_url }}" alt="img">
+                                                        <img src="{{ $slide->image_1_url }}" alt="{{ $collection->name }}">
                                                     </div>
                                                     <div class="col">
-                                                        <img src="{{ $slide->image_2_url }}" alt="img">
+                                                        <img src="{{ $slide->image_2_url }}" alt="{{ $collection->name }}">
                                                     </div>
                                                 </div>
                                                 <div class="content">
@@ -244,7 +244,7 @@
                                                         </div>
                                                     @else
                                                         <div class="w-100">
-                                                            <img src="{{ $anotherCollection->products->first()->preview_image_url }}" alt="img">
+                                                            <img src="{{ $anotherCollection->products->first()->preview_image_url }}" alt="{{ $anotherCollection->name }}">
                                                         </div>
                                                     @endif
                                                 @else
@@ -260,7 +260,7 @@
                                                             $shownImages++;
                                                         @endphp
                                                         <div class="collection-other-pic">
-                                                            <img src="{{ $product->preview_image_url }}" alt="img">
+                                                            <img src="{{ $product->preview_image_url }}" alt="{{ $product->name }}">
                                                         </div>
                                                     @endforeach
                                                 @endif
