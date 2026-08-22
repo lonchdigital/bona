@@ -345,6 +345,8 @@ return [
     'product_reviews_empty' => 'Об этом товаре ещё нет отзывов. Будьте первым.',
     'product_review_about_hint' => 'Расскажите именно об этих дверях: как выглядят, как встали, как держатся в использовании.',
     'product_review_based_on' => 'на основе :COUNT отзывов',
+    'llms_categories' => 'Подкатегории',
+    'llms_brands' => 'Бренды',
     'home' => 'Главная',
     'article_share' => 'Поделиться',
     'article_copy_link' => 'Скопировать ссылку',

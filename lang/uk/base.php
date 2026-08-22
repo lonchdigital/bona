@@ -347,6 +347,8 @@ return [
     'product_reviews_empty' => 'Про цей товар ще немає відгуків. Будьте першим.',
     'product_review_about_hint' => 'Розкажіть саме про ці двері: як виглядають, як стали, як тримаються в користуванні.',
     'product_review_based_on' => 'на основі :COUNT відгуків',
+    'llms_categories' => 'Підкатегорії',
+    'llms_brands' => 'Бренди',
     'home' => 'Головна',
     'article_share' => 'Поділитися',
     'article_copy_link' => 'Скопіювати посилання',

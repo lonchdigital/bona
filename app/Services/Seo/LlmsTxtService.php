@@ -2,6 +2,8 @@
 
 namespace App\Services\Seo;
 
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\ProductType;
 use App\Models\StaticPage;
 
@@ -28,6 +30,42 @@ class LlmsTxtService
         foreach (ProductType::orderBy('id')->get() as $productType) {
             $url = route('store.catalog.page', ['productTypeSlug' => $productType->slug]);
             $lines[] = '- [' . $this->clean((string) $productType->name) . '](' . $url . ')';
+        }
+
+        // Subcategories and brands are real landing pages people search for.
+        // The 1081 products are not listed: llms.txt is a short map an answer
+        // engine reads in full, and the sitemap below already holds the lot.
+        $categories = Category::with('productType')->orderBy('id')->get();
+
+        if ($categories->isNotEmpty()) {
+            $lines[] = '';
+            $lines[] = '## ' . trans('base.llms_categories');
+            $lines[] = '';
+
+            foreach ($categories as $category) {
+                if (!$category->productType) {
+                    continue;
+                }
+
+                $url = route('store.catalog-category.page', [
+                    'productTypeSlug' => $category->productType->slug,
+                    'categorySlug' => $category->slug,
+                ]);
+
+                $lines[] = '- [' . $this->clean((string) $category->name) . '](' . $url . ')';
+            }
+        }
+
+        $brands = Brand::orderBy('id')->get();
+
+        if ($brands->isNotEmpty()) {
+            $lines[] = '';
+            $lines[] = '## ' . trans('base.llms_brands');
+            $lines[] = '';
+
+            foreach ($brands as $brand) {
+                $lines[] = '- [' . $this->clean((string) $brand->name) . '](' . route('store.brand.page', ['brandSlug' => $brand->slug]) . ')';
+            }
         }
 
         $lines[] = '';

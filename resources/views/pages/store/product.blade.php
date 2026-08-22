@@ -45,7 +45,20 @@
             ];
 
             $productUrl = url()->current();
-            $productImage = $product->main_image_url ? url($product->main_image_url) : null;
+            /*
+             * Built from the product's own pictures. main_image_url falls back
+             * to the category image for sub products, which would describe the
+             * item with a picture of something else, so the stored path is read
+             * directly. Google takes several images gladly, and 346 products
+             * here have a gallery.
+             */
+            $productImages = collect([$product->main_image_path])
+                ->merge($productGallery->pluck('image_path'))
+                ->filter()
+                ->map(fn ($path) => url(\Illuminate\Support\Facades\Storage::url($path)))
+                ->unique()
+                ->values()
+                ->all();
 
             $productDescription = trim(preg_replace('/\s+/u', ' ', html_entity_decode(
                 strip_tags((string) ($productText['content'] ?? '')),
@@ -60,7 +73,7 @@
                 'name' => (string) $product->name,
                 'url' => $productUrl,
                 'sku' => $product->sku ?: null,
-                'image' => $productImage ? [$productImage] : null,
+                'image' => $productImages ?: null,
                 'description' => $productDescription !== '' ? \Illuminate\Support\Str::limit($productDescription, 900) : null,
                 'brand' => $product->brand ? ['@type' => 'Brand', 'name' => (string) $product->brand->name] : null,
                 /*
