@@ -188,24 +188,28 @@
     @if( count($faqs) )
         <!-- ======================== FAQs ======================== -->
 
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-          @foreach($faqs as $faq)
-           {
-            "@type": "Question",
-            "name": "{{ $faq->question }}",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "<p>{{ $faq->answer }}</p>"
-            }
-          },
-            @endforeach
-            ]
-          }
-        </script>
+        @php
+            /*
+             * Written out as a JSON string, this carried a trailing comma and
+             * the raw line breaks of every answer, so nothing could parse it —
+             * the same flaw the home page had. Encoded from an array, neither
+             * can happen.
+             */
+            $categoryFaqSchema = [
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => collect($faqs)->map(fn ($faq) => [
+                    '@type' => 'Question',
+                    'name' => (string) $faq->question,
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => (string) $faq->answer,
+                    ],
+                ])->values()->all(),
+            ];
+        @endphp
+
+        <script type="application/ld+json">{!! json_encode($categoryFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
 
         <section class="faqs-section">
             <div class="container">
