@@ -29,29 +29,79 @@
     <!-- ========================  Product ======================== -->
     <section class="product">
 
-        <script type="application/ld+json">
-            {
-                "@context": "https://schema.org/",
-                "@type": "Product",
-                "name": "{{ $product->name }}",
-                "image": "{{ url('/') . $product->main_image_url }}",
-                @if( !is_null($productText['content']))
-                "description": "{{ $productText['content'] }}",
-                @endif
-                @if( !is_null($product->brand) )
-                "brand": {
-                    "@type": "Brand",
-                    "name": "{{ $product->brand->name }}"
-                },
-                @endif
-                "offers": {
-                    "@type": "Offer",
-                    "priceCurrency": "{{ $baseCurrency->name_short }}",
-                    "price": "{{ $product->price }}",
-                    "availability": "{{ ($product->availability_status_id == 2) ? trans('shop.product_status_stock') : trans('shop.product_status_out_of_stock') }}"
-                }
-            }
-        </script>
+        @php
+            /*
+             * Written out as a JSON string, this block fed Google the shop's
+             * own labels: "грн." where an ISO currency code belongs and
+             * "В наявності" where a schema.org URL belongs. Both are rejected,
+             * which is why the catalogue earns no rich results. Built from an
+             * array, the values can only be the ones schema.org accepts.
+             */
+            $availabilityMap = [
+                \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_STOCK => 'https://schema.org/InStock',
+                \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_ORDER => 'https://schema.org/BackOrder',
+                \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_OF_STOCK => 'https://schema.org/OutOfStock',
+                \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_ASK_MANAGER => 'https://schema.org/LimitedAvailability',
+            ];
+
+            $productUrl = url()->current();
+            $productImage = $product->main_image_url ? url($product->main_image_url) : null;
+
+            $productDescription = trim(preg_replace('/\s+/u', ' ', html_entity_decode(
+                strip_tags((string) ($productText['content'] ?? '')),
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8'
+            )));
+
+            $productSchema = array_filter([
+                '@context' => 'https://schema.org',
+                '@type' => 'Product',
+                '@id' => $productUrl . '#product',
+                'name' => (string) $product->name,
+                'url' => $productUrl,
+                'sku' => $product->sku ?: null,
+                'image' => $productImage ? [$productImage] : null,
+                'description' => $productDescription !== '' ? \Illuminate\Support\Str::limit($productDescription, 900) : null,
+                'brand' => $product->brand ? ['@type' => 'Brand', 'name' => (string) $product->brand->name] : null,
+                /*
+                 * Present only when a real, approved review exists. An empty
+                 * or invented rating is exactly what earns a manual penalty,
+                 * and it would take the rest of the site's markup with it.
+                 */
+                'aggregateRating' => $productRatingSummary ? [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => $productRatingSummary['average'],
+                    'reviewCount' => $productRatingSummary['count'],
+                    'bestRating' => $productRatingSummary['best'],
+                    'worstRating' => $productRatingSummary['worst'],
+                ] : null,
+                'review' => $productReviews->take(10)->map(fn ($item) => [
+                    '@type' => 'Review',
+                    'author' => ['@type' => 'Person', 'name' => $item->author_name],
+                    'datePublished' => optional($item->publishedDate())->toDateString(),
+                    'reviewRating' => [
+                        '@type' => 'Rating',
+                        'ratingValue' => $item->rating,
+                        'bestRating' => 5,
+                        'worstRating' => 1,
+                    ],
+                    'reviewBody' => $item->review,
+                ])->values()->all() ?: null,
+                'offers' => $product->price ? array_filter([
+                    '@type' => 'Offer',
+                    'url' => $productUrl,
+                    'price' => (string) $product->price,
+                    'priceCurrency' => $baseCurrency->code ?: 'UAH',
+                    'availability' => $availabilityMap[$product->availability_status_id] ?? null,
+                    'itemCondition' => 'https://schema.org/NewCondition',
+                    'seller' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+                ]) : null,
+            ]);
+
+            $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+        @endphp
+
+        <script type="application/ld+json">{!! json_encode($productSchema, $schemaFlags) !!}</script>
 
         <div class="main">
             <div class="container">
@@ -504,6 +554,108 @@
 
     <x-precise-form-component />
 
+    <section class="art-section-pd art-product-reviews" id="product-reviews">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="title h2">{{ trans('base.product_reviews_title') }}</h2>
+
+                    @if($productRatingSummary)
+                        <div class="art-product-reviews__summary">
+                            <span class="art-product-reviews__average">{{ $productRatingSummary['average'] }}</span>
+                            <span class="art-product-reviews__of">/ 5</span>
+                            <span class="art-product-reviews__count">
+                                {{ trans('base.product_review_based_on', ['COUNT' => $productRatingSummary['count']]) }}
+                            </span>
+                        </div>
+                    @endif
+
+                    @if(Session::has('review_success'))
+                        <div class="art-product-reviews__notice art-product-reviews__notice--ok">{{ Session::get('review_success') }}</div>
+                    @endif
+                    @if(Session::has('review_error'))
+                        <div class="art-product-reviews__notice art-product-reviews__notice--fail">{{ Session::get('review_error') }}</div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-7">
+                    @if($productReviews->isEmpty())
+                        <p class="art-product-reviews__empty">{{ trans('base.product_reviews_empty') }}</p>
+                    @else
+                        <ul class="art-product-reviews__list">
+                            @foreach($productReviews as $review)
+                                <li class="art-product-reviews__item">
+                                    <div class="art-product-reviews__head">
+                                        <span class="art-product-reviews__author">{{ $review->author_name }}</span>
+                                        <span class="art-product-reviews__rating">{{ $review->rating }}/5</span>
+                                        <time datetime="{{ optional($review->publishedDate())->toDateString() }}">
+                                            {{ optional($review->publishedDate())->translatedFormat('d F Y') }}
+                                        </time>
+                                    </div>
+                                    <p class="art-product-reviews__text">{{ $review->review }}</p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+
+                <div class="col-lg-5">
+                    <form action="{{ route('store.product-review.submit') }}" method="POST" class="art-product-reviews__form">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                        <p class="art-product-reviews__form-title">{{ trans('base.product_review_leave') }}</p>
+                        <p class="art-product-reviews__hint">{{ trans('base.product_review_about_hint') }}</p>
+
+                        <div class="form-group">
+                            <label for="review-rating">{{ trans('base.product_review_rating') }}</label>
+                            <select id="review-rating" name="rating" class="art-light-field" required>
+                                @foreach([5, 4, 3, 2, 1] as $ratingOption)
+                                    <option value="{{ $ratingOption }}" @selected(old('rating', 5) == $ratingOption)>{{ $ratingOption }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="review-name">{{ trans('base.name') }}</label>
+                            <input id="review-name" type="text" name="author_name" class="art-light-field" value="{{ old('author_name') }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="review-email">{{ trans('base.email') }}</label>
+                            <input id="review-email" type="email" name="author_email" class="art-light-field" value="{{ old('author_email') }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="review-text">{{ trans('base.product_review_text') }}</label>
+                            <textarea id="review-text" name="review" class="art-light-field" rows="5" required>{{ old('review') }}</textarea>
+                        </div>
+
+                        {{-- Honeypot: hidden from people, irresistible to bots. --}}
+                        <div class="art-product-reviews__trap" aria-hidden="true">
+                            <label for="review-website">Website</label>
+                            <input id="review-website" type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        @if($errors->any())
+                            <ul class="art-product-reviews__errors">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+
+                        <button type="submit" class="btn btn-main">{{ trans('base.send') }}</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     @if(count($sameTypeProducts))
         <!-- ======================== Products  ======================== -->
         <section class="products">
@@ -544,4 +696,41 @@
             add_to_wish_list_text: '{{ trans('base.add_to_wish_list') }}',
         }
     </script>
+@endpush
+
+@push('head')
+    <style>
+        .art-product-reviews__summary { display: flex; align-items: baseline; margin-bottom: 20px; }
+        .art-product-reviews__average { font-size: 34px; font-weight: 500; line-height: 1; }
+        .art-product-reviews__of { margin: 0 10px 0 4px; color: #777777; }
+        .art-product-reviews__count { font-size: 14px; font-weight: 300; color: #777777; }
+
+        .art-product-reviews__notice { padding: 12px 16px; margin-bottom: 20px; font-size: 14px; }
+        .art-product-reviews__notice--ok { background-color: #eef7ee; border-left: 3px solid #4b9b52; }
+        .art-product-reviews__notice--fail { background-color: #fbeeee; border-left: 3px solid #c05c5c; }
+
+        .art-product-reviews__list { list-style: none; margin: 0; padding: 0; }
+        .art-product-reviews__item { padding: 18px 0; border-bottom: 1px solid #dddddd; }
+        .art-product-reviews__head { display: flex; flex-wrap: wrap; align-items: baseline; margin-bottom: 8px; font-size: 14px; }
+        .art-product-reviews__author { font-weight: 500; margin-right: 12px; }
+        .art-product-reviews__rating { margin-right: 12px; font-weight: 500; }
+        .art-product-reviews__head time { color: #777777; font-weight: 300; }
+        .art-product-reviews__text { margin: 0; font-weight: 300; }
+        .art-product-reviews__empty { font-weight: 300; color: #777777; }
+
+        .art-product-reviews__form { padding: 24px; background-color: #f5f5f5; }
+        .art-product-reviews__form-title { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
+        .art-product-reviews__hint { font-size: 13px; font-weight: 300; color: #777777; margin-bottom: 18px; }
+        .art-product-reviews__form .form-group { margin-bottom: 14px; }
+        .art-product-reviews__form label { display: block; font-size: 13px; margin-bottom: 4px; }
+        .art-product-reviews__form .art-light-field { width: 100%; }
+        .art-product-reviews__errors { list-style: none; margin: 0 0 14px; padding: 0; font-size: 13px; color: #c05c5c; }
+
+        /* Kept out of sight and out of the tab order: only a bot fills it in. */
+        .art-product-reviews__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+        @media (max-width: 991px) {
+            .art-product-reviews__form { margin-top: 25px; }
+        }
+    </style>
 @endpush

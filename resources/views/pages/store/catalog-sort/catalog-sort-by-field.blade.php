@@ -15,6 +15,11 @@
         @if($productType->meta_title)
             <title>{{ $productType->meta_title }}</title>
             <meta name="title" content="{{ $productType->meta_title }}">
+        @else
+            {{-- This page has no product type of its own, so the branch above
+                 produced nothing and the tab sat empty. --}}
+            <title>{{ $selectedOptionName }} | {{ config('app.name') }}</title>
+            <meta name="title" content="{{ $selectedOptionName }}">
         @endif
         <meta name="description" content="{{ $productType->meta_description }}">
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
@@ -34,7 +39,7 @@
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h2 class="title">{{ $selectedOptionName }}</h2>
+                        <h1 class="title">{{ $selectedOptionName }}</h1>
                     </div>
                 </header>
             </div>

@@ -17,7 +17,10 @@ class StoreSerpAgentArticleAction
     ): JsonResponse {
         $dto = $request->toDTO();
 
-        if ($dto->isConnectivityCheck()) {
+        // Checked before the connectivity test: a translations_updated
+        // delivery carries no article, and would otherwise be mistaken for a
+        // bare ping and dropped.
+        if (!$dto->isTranslationsUpdate && $dto->isConnectivityCheck()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Webhook is reachable and the secret is valid.',

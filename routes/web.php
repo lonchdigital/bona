@@ -74,6 +74,8 @@ use App\Http\Actions\Store\Payment\UpdateOrderPaymentStatusAction;
 use App\Http\Actions\Store\Product\GetSimilarProductsPaginatedAction;
 use App\Http\Actions\Store\Product\Pages\ShowProductPageAction;
 use App\Http\Actions\Store\Product\SearchProductAction;
+use App\Http\Actions\Store\ProductReview\SubmitProductReviewAction;
+use App\Http\Actions\Store\Seo\ShowLlmsTxtFileContent;
 use App\Http\Actions\Store\Seo\ShowRobotsTxtFileContent;
 use App\Http\Actions\Store\ServicesPage\Pages\ShowServicesPageAction;
 use App\Http\Actions\Store\StaticPage\Pages\ShowStaticPagePageAction;
@@ -391,6 +393,11 @@ $optionalLanguageRoutes = function () {
         Route::name('store.static-page.page')->get('/{staticPageSlug}', ShowStaticPagePageAction::class);
     });
 
+    // Throttled on top of the honeypot: a form open to everyone needs both.
+    Route::name('store.product-review.submit')
+        ->middleware('throttle:5,10')
+        ->post('/product-review', SubmitProductReviewAction::class);
+
     Route::name('store.faq.page')->get('/faq', ShowFaqPageAction::class);
 
     Route::prefix('author')->group(function () {
@@ -460,3 +467,4 @@ Route::prefix('payment')->group(function () {
 });
 
 Route::name('robots.txt.content')->get('robots.txt', ShowRobotsTxtFileContent::class);
+Route::name('llms.txt.content')->get('llms.txt', ShowLlmsTxtFileContent::class);

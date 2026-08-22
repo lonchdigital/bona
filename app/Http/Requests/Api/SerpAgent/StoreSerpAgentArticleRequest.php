@@ -28,6 +28,11 @@ class StoreSerpAgentArticleRequest extends BaseRequest
         $this->merge([
             'external_id' => $this->stringOfAny(['externalId', 'external_id', 'articleId', 'article_id', 'id']),
             'locale' => $this->normalizeLocale($this->stringOfAny(['locale', 'language', 'lang'])),
+            'translation_group_id' => $this->stringOfAny([
+                'translationGroupId', 'translation_group_id', 'translationGroup', 'groupId',
+            ]),
+            // A repeat delivery that only refreshes the language links.
+            'serp_event' => $this->stringOfAny(['event', 'eventType', 'event_type', 'type']),
             'title' => $this->stringOfAny(['title', 'name']),
             'h1' => $this->stringOfAny(['h1', 'heading']),
             'slug' => $this->stringOfAny(['slug', 'permalink']),
@@ -60,6 +65,8 @@ class StoreSerpAgentArticleRequest extends BaseRequest
     {
         return [
             'external_id' => ['nullable', 'string', 'max:191'],
+            'translation_group_id' => ['nullable', 'string', 'max:191'],
+            'serp_event' => ['nullable', 'string', 'max:64'],
             'locale' => ['nullable', 'string', 'in:' . implode(',', $this->availableLanguages)],
             'title' => ['nullable', 'string', 'max:255'],
             'h1' => ['nullable', 'string', 'max:255'],
@@ -96,6 +103,8 @@ class StoreSerpAgentArticleRequest extends BaseRequest
         return new SerpAgentArticleDTO(
             externalId: $this->input('external_id'),
             locale: $this->input('locale') ?: (string) config('serp-agent.default_locale'),
+            translationGroupId: $this->input('translation_group_id'),
+            isTranslationsUpdate: strtolower((string) $this->input('serp_event')) === 'translations_updated',
             title: $this->input('title'),
             h1: $this->input('h1'),
             slug: $this->input('slug'),

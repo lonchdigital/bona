@@ -9,6 +9,10 @@ class SerpAgentArticleDTO implements BaseDTO
     public function __construct(
         public readonly ?string $externalId,
         public readonly string $locale,
+        /** Ties the language versions of one article together. */
+        public readonly ?string $translationGroupId,
+        /** True when this delivery only refreshes the language links. */
+        public readonly bool $isTranslationsUpdate,
         public readonly ?string $title,
         public readonly ?string $h1,
         public readonly ?string $slug,

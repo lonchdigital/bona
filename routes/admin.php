@@ -120,6 +120,10 @@ use App\Http\Actions\Admin\ProductTypes\ProductTypeEditAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeSearchProductsAction;
 
 use App\Http\Actions\Admin\VisitRequests\VisitRequestDeleteAction;
+use App\Http\Actions\Admin\ProductReviews\Pages\ShowProductReviewsListPageAction;
+use App\Http\Actions\Admin\ProductReviews\ProductReviewApproveAction;
+use App\Http\Actions\Admin\ProductReviews\ProductReviewDeleteAction;
+use App\Http\Actions\Admin\ProductReviews\ProductReviewRejectAction;
 use App\Http\Actions\Admin\Authors\AuthorCreateAction;
 use App\Http\Actions\Admin\Authors\AuthorDeleteAction;
 use App\Http\Actions\Admin\Authors\AuthorEditAction;
@@ -236,6 +240,15 @@ Route::prefix('admin')->middleware([
 
         //Delete
         Route::name('admin.work.delete')->post('{work}/delete', WorkDeleteAction::class);
+    });
+
+    //Product reviews
+    Route::prefix('product-review')->group(function () {
+        Route::name('admin.product-review.list.page')->get('/', ShowProductReviewsListPageAction::class);
+
+        Route::name('admin.product-review.approve')->post('{productReview}/approve', ProductReviewApproveAction::class);
+        Route::name('admin.product-review.reject')->post('{productReview}/reject', ProductReviewRejectAction::class);
+        Route::name('admin.product-review.delete')->post('{productReview}/delete', ProductReviewDeleteAction::class);
     });
 
     //Authors

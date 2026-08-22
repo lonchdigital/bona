@@ -1,5 +1,14 @@
 @extends('layouts.store-main')
 
+@section('title')
+    {{-- These pages shared one title with the whole shop and were being
+         indexed alongside it. Each says what it is, and none of them
+         belongs in search results. --}}
+    <title>{{ trans('auth.reset_password_title') }} | {{ config('app.name') }}</title>
+    <meta name="title" content="{{ trans('auth.reset_password_title') }}">
+    <meta name="robots" content="noindex, follow">
+@endsection
+
 @section('content')
 
     @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.reset_password_title')]])
@@ -10,7 +19,7 @@
                 <div class="container">
                     <div class="row justify-content-md-center">
                         <div class="col-lg-4 mb-5">
-                            <h2 class="mt-5 text-center">{{ trans('auth.reset_password_title') }}</h2>
+                            <h1 class="mt-5 text-center">{{ trans('auth.reset_password_title') }}</h1>
                             <p class="text-center">{{ trans('auth.reset_password_text') }}</p>
                             <form action="{{ route('auth.forgot-password') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
                                 @csrf

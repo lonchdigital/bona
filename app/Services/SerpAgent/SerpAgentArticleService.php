@@ -42,6 +42,10 @@ class SerpAgentArticleService extends BaseService
         $languages = $this->applicationConfigService->getAvailableLanguages();
         $locale = in_array($dto->locale, $languages, true) ? $dto->locale : (string) config('app.fallback_locale');
 
+        if ($dto->isTranslationsUpdate) {
+            return $this->applyTranslationsUpdate($dto);
+        }
+
         $heading = $dto->heading();
 
         if ($heading === null) {
@@ -63,6 +67,16 @@ class SerpAgentArticleService extends BaseService
 
         $slug = $this->resolveSlug($dto, $heading);
         $existingArticle = $this->findManagedArticle($dto, $slug);
+
+        /*
+         * An article here is one record holding every language, so a Russian
+         * delivery fills the Russian translations of the article that already
+         * exists. Its slug is the URL both languages are served from, so only
+         * a delivery in the site's main language may change it.
+         */
+        if ($existingArticle && $locale !== (string) config('app.fallback_locale')) {
+            $slug = $existingArticle->slug;
+        }
 
         $this->guardSlugIsAvailable($slug, $existingArticle);
 
@@ -96,6 +110,40 @@ class SerpAgentArticleService extends BaseService
         }
     }
 
+    /**
+     * A translations_updated delivery is a repeat: it refreshes the links
+     * between language versions rather than bringing an article.
+     *
+     * Those links need no refreshing here. Both languages of an article live
+     * at the same slug, one under /ru, and the hreflang tags are built from
+     * the URL on every request, so they cannot go stale. All that is worth
+     * keeping is the group, which is how a later delivery in either language
+     * finds this article again.
+     */
+    private function applyTranslationsUpdate(SerpAgentArticleDTO $dto): array
+    {
+        $slug = $dto->slug ? Str::slug($dto->slug) : '';
+        $article = $this->findManagedArticle($dto, $slug);
+
+        if (!$article) {
+            throw new SerpAgentException(
+                'No article matches this translation group, so there is nothing to update. Send the article itself first.',
+                404
+            );
+        }
+
+        if ($dto->translationGroupId && $article->translation_group_id !== $dto->translationGroupId) {
+            $article->update(['translation_group_id' => $dto->translationGroupId]);
+        }
+
+        return [
+            'action' => 'translations_acknowledged',
+            'id' => $article->id,
+            'slug' => $article->slug,
+            'url' => route('blog.article.page', ['blogArticleSlug' => $article->slug]),
+        ];
+    }
+
     private function persistArticle(
         SerpAgentArticleDTO $dto,
         ?BlogArticle $existingArticle,
@@ -118,6 +166,10 @@ class SerpAgentArticleService extends BaseService
 
         if ($dto->externalId) {
             $fields['external_id'] = $dto->externalId;
+        }
+
+        if ($dto->translationGroupId) {
+            $fields['translation_group_id'] = $dto->translationGroupId;
         }
 
         foreach ([
@@ -240,6 +292,19 @@ class SerpAgentArticleService extends BaseService
 
     private function findManagedArticle(SerpAgentArticleDTO $dto, string $slug): ?BlogArticle
     {
+        // The group is what ties the language versions together, so it is the
+        // first thing to look at: without it a Russian delivery would land as
+        // a second article.
+        if ($dto->translationGroupId) {
+            $article = BlogArticle::where('external_source', self::EXTERNAL_SOURCE)
+                ->where('translation_group_id', $dto->translationGroupId)
+                ->first();
+
+            if ($article) {
+                return $article;
+            }
+        }
+
         if ($dto->externalId) {
             $article = BlogArticle::where('external_source', self::EXTERNAL_SOURCE)
                 ->where('external_id', $dto->externalId)

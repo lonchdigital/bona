@@ -159,6 +159,19 @@ class Product extends Model implements Sitemapable
         }
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(ProductReview::class)
+            ->approved()
+            ->orderByDesc('published_at')
+            ->orderByDesc('id');
+    }
+
     public function toArray(): array
     {
         $array = parent::toArray();

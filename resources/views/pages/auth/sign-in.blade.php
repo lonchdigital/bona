@@ -1,5 +1,14 @@
 @extends('layouts.store-main')
 
+@section('title')
+    {{-- These pages shared one title with the whole shop and were being
+         indexed alongside it. Each says what it is, and none of them
+         belongs in search results. --}}
+    <title>{{ trans('auth.sign_in') }} | {{ config('app.name') }}</title>
+    <meta name="title" content="{{ trans('auth.sign_in') }}">
+    <meta name="robots" content="noindex, follow">
+@endsection
+
 @section('content')
 
     @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.sign_in')]])
@@ -10,7 +19,7 @@
                 <div class="container">
                     <div class="row justify-content-md-center">
                         <div class="col-lg-4 mb-5">
-                            <h2 class="mt-5 text-center">{{ trans('auth.sign_in') }}</h2>
+                            <h1 class="mt-5 text-center">{{ trans('auth.sign_in') }}</h1>
                             <form action="{{ route('auth.sign-in') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
                                 @csrf
                                 <div class="form-group">

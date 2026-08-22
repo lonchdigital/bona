@@ -7,6 +7,7 @@ use App\Http\Actions\Admin\BaseAction;
 use App\Models\SeoGenConfig;
 use App\Services\Cart\CartService;
 use App\Services\Product\ProductService;
+use App\Services\ProductReview\ProductReviewService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Seogen\SeogenService;
 use App\Services\WishList\WishListService;
@@ -20,6 +21,7 @@ class ShowProductPageAction extends BaseAction
         ProductService $productService,
         WishListService $wishListService,
         CartService $cartService,
+        ProductReviewService $productReviewService,
     )
     {
 
@@ -81,6 +83,11 @@ class ShowProductPageAction extends BaseAction
             'cartService' => $cartService,
 
             'attributeOptions' => $productService->getAttributeNamesWithOptions($product->id, $product->productType),
+
+            // Only approved reviews reach the page, and the rating summary is
+            // null until at least one exists.
+            'productReviews' => $productReviewService->getApprovedReviews($product),
+            'productRatingSummary' => $productReviewService->getRatingSummary($product),
         ]);
     }
 }

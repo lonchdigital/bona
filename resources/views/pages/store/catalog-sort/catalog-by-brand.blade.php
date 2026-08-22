@@ -24,7 +24,7 @@
             <div class="row">
                 <header class=" col-12 art-header-left">
                     <div>
-                        <h2 class="title">{{ trans('base.brands_products') . ' ' . $brand->name }}</h2>
+                        <h1 class="title">{{ trans('base.brands_products') . ' ' . $brand->name }}</h1>
                     </div>
                 </header>
             </div>
