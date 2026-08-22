@@ -17,7 +17,7 @@ class SubmitProductReviewRequest extends BaseRequest
         return [
             'product_id' => ['required', 'integer', 'exists:products,id'],
             'author_name' => ['required', 'string', 'min:2', 'max:120'],
-            'author_email' => ['nullable', 'email', 'max:191'],
+            'author_email' => ['required', 'email', 'max:191'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'review' => ['required', 'string', 'min:20', 'max:2000'],
             // Honeypot: a field a person never sees and never fills in.

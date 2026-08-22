@@ -571,7 +571,7 @@
         <div class="container">
 
             <div class="row">
-                <div class="col-12">
+                <div class="col-lg-8">
                     <h2 class="title h2">{{ trans('base.product_reviews_title') }}</h2>
 
                     @if($productRatingSummary)
@@ -590,11 +590,17 @@
                     @if(Session::has('review_error'))
                         <div class="art-product-reviews__notice art-product-reviews__notice--fail">{{ Session::get('review_error') }}</div>
                     @endif
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-lg-7">
+                    @if($errors->any())
+                        <div class="art-product-reviews__notice art-product-reviews__notice--fail">
+                            <ul>
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     @if($productReviews->isEmpty())
                         <p class="art-product-reviews__empty">{{ trans('base.product_reviews_empty') }}</p>
                     @else
@@ -613,61 +619,79 @@
                             @endforeach
                         </ul>
                     @endif
-                </div>
 
-                <div class="col-lg-5">
-                    <form action="{{ route('store.product-review.submit') }}" method="POST" class="art-product-reviews__form">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-
-                        <p class="art-product-reviews__form-title">{{ trans('base.product_review_leave') }}</p>
-                        <p class="art-product-reviews__hint">{{ trans('base.product_review_about_hint') }}</p>
-
-                        <div class="form-group">
-                            <label for="review-rating">{{ trans('base.product_review_rating') }}</label>
-                            <select id="review-rating" name="rating" class="art-light-field" required>
-                                @foreach([5, 4, 3, 2, 1] as $ratingOption)
-                                    <option value="{{ $ratingOption }}" @selected(old('rating', 5) == $ratingOption)>{{ $ratingOption }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="review-name">{{ trans('base.name') }}</label>
-                            <input id="review-name" type="text" name="author_name" class="art-light-field" value="{{ old('author_name') }}" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="review-email">{{ trans('base.email') }}</label>
-                            <input id="review-email" type="email" name="author_email" class="art-light-field" value="{{ old('author_email') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="review-text">{{ trans('base.product_review_text') }}</label>
-                            <textarea id="review-text" name="review" class="art-light-field" rows="5" required>{{ old('review') }}</textarea>
-                        </div>
-
-                        {{-- Honeypot: hidden from people, irresistible to bots. --}}
-                        <div class="art-product-reviews__trap" aria-hidden="true">
-                            <label for="review-website">Website</label>
-                            <input id="review-website" type="text" name="website" tabindex="-1" autocomplete="off">
-                        </div>
-
-                        @if($errors->any())
-                            <ul class="art-product-reviews__errors">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-
-                        <button type="submit" class="btn btn-main">{{ trans('base.send') }}</button>
-                    </form>
+                    <a href="" class="btn btn-main art-product-reviews__open"
+                       data-fancybox data-src="#dialog-product-review">{{ trans('base.product_review_leave') }}</a>
                 </div>
             </div>
 
         </div>
     </section>
+
+    {{-- The form lives in the site's own popup rather than sitting in the page:
+         it is only needed once someone decides to write something. --}}
+    <div id="dialog-product-review" class="art-popup-call-measurer">
+        <div class="art-measurer-form-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <form action="{{ route('store.product-review.submit') }}" method="post" class="art-contact-form art-review-form">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                            <header class="art-light">
+                                <div class="text-center">
+                                    <div class="title h2">{{ trans('base.product_review_leave') }}</div>
+                                    <div class="subtitle font-two">
+                                        <p class="art-form-description">{{ trans('base.product_review_about_hint') }}</p>
+                                    </div>
+                                </div>
+                            </header>
+
+                            <div class="art-fields-row">
+                                <div>
+                                    <label class="art-review-form__label" for="review-rating">{{ trans('base.product_review_rating') }}</label>
+                                    <select id="review-rating" name="rating" class="art-light-field" required>
+                                        @foreach([5, 4, 3, 2, 1] as $ratingOption)
+                                            <option value="{{ $ratingOption }}" @selected(old('rating', 5) == $ratingOption)>{{ $ratingOption }} / 5</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="art-review-form__label" for="review-name">{{ trans('base.name') }}</label>
+                                    <input id="review-name" type="text" class="art-light-field" name="author_name"
+                                           value="{{ old('author_name') }}" required>
+                                </div>
+                            </div>
+
+                            <div class="art-fields-row">
+                                <div class="art-solid-field">
+                                    <label class="art-review-form__label" for="review-email">{{ trans('base.email') }}</label>
+                                    <input id="review-email" type="email" class="art-light-field" name="author_email"
+                                           value="{{ old('author_email') }}" required>
+                                </div>
+                            </div>
+
+                            <div class="art-fields-row">
+                                <div class="art-solid-field">
+                                    <label class="art-review-form__label" for="review-text">{{ trans('base.product_review_text') }}</label>
+                                    <textarea id="review-text" class="art-light-field" name="review" rows="5" required>{{ old('review') }}</textarea>
+                                </div>
+                            </div>
+
+                            {{-- Hidden from people, irresistible to bots. --}}
+                            <div class="art-review-form__trap" aria-hidden="true">
+                                <label for="review-website">Website</label>
+                                <input id="review-website" type="text" name="website" tabindex="-1" autocomplete="off">
+                            </div>
+
+                            <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @if(count($sameTypeProducts))
         <!-- ======================== Products  ======================== -->
@@ -703,6 +727,22 @@
 @endsection
 
 @push('dynamic_scripts')
+    @if($errors->any() || Session::has('review_error'))
+        <script>
+            // The form was sent back with something to correct, so the popup
+            // opens again instead of leaving the reader to find it.
+            document.addEventListener('DOMContentLoaded', function () {
+                var opener = document.querySelector('.art-product-reviews__open');
+
+                if (opener) {
+                    opener.click();
+                }
+            });
+        </script>
+    @endif
+@endpush
+
+@push('dynamic_scripts')
     <script type="text/javascript">
         const product = {
             similar_products_route: '{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.similar-products', ['productSlug' => $product->slug]) }}',
@@ -731,19 +771,38 @@
         .art-product-reviews__text { margin: 0; font-weight: 300; }
         .art-product-reviews__empty { font-weight: 300; color: #777777; }
 
-        .art-product-reviews__form { padding: 24px; background-color: #f5f5f5; }
-        .art-product-reviews__form-title { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
-        .art-product-reviews__hint { font-size: 13px; font-weight: 300; color: #777777; margin-bottom: 18px; }
-        .art-product-reviews__form .form-group { margin-bottom: 14px; }
-        .art-product-reviews__form label { display: block; font-size: 13px; margin-bottom: 4px; }
-        .art-product-reviews__form .art-light-field { width: 100%; }
-        .art-product-reviews__errors { list-style: none; margin: 0 0 14px; padding: 0; font-size: 13px; color: #c05c5c; }
+        .art-product-reviews__open { margin-top: 25px; }
 
-        /* Kept out of sight and out of the tab order: only a bot fills it in. */
-        .art-product-reviews__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-
-        @media (max-width: 991px) {
-            .art-product-reviews__form { margin-top: 25px; }
+        /* Labels sit above the fields inside the popup, which is dark, so they
+           follow the field colour rather than the page text colour. */
+        .art-review-form__label {
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #ffffff;
+            opacity: .75;
         }
+
+        /* The rating is a select, and without a matching height its value sat
+           outside the field. */
+        .art-review-form select.art-light-field {
+            height: 48px;
+            line-height: 1.4;
+            padding: 10px 14px;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .art-review-form select.art-light-field option { color: #333333; }
+
+        .art-review-form__trap {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
     </style>
 @endpush
