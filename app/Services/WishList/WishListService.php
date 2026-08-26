@@ -12,9 +12,50 @@ use Illuminate\Support\Str;
 
 class WishListService extends BaseService
 {
-    public function getWishListByUser(User $user): ?WishList
+    public function getWishListByUser(?User $user): ?WishList
     {
+        if (!$user) {
+            return null;
+        }
+
         return $user->wishList;
+    }
+
+    public function getWishListByToken(string $token): ?WishList
+    {
+        return WishList::where('token', $token)->first();
+    }
+
+    public function getCurrentWishList(?User $user, ?string $guestToken): ?WishList
+    {
+        return $this->getWishListByUser($user) ?? ($guestToken ? $this->getWishListByToken($guestToken) : null);
+    }
+
+    public function createWishListForUser(User $user): WishList
+    {
+        return WishList::create([
+            'owner_id' => $user->id,
+            'access_token' => $this->generateAccessToken(),
+        ]);
+    }
+
+    public function createWishListForGuest(string $token): WishList
+    {
+        return WishList::create([
+            'owner_id' => null,
+            'token' => $token,
+            'access_token' => $this->generateAccessToken(),
+        ]);
+    }
+
+    /**
+     * Randomness alone. Appending the id of the newest row cost a query and
+     * gave two lists created at the same moment the same suffix, leaving
+     * uniqueness to the random part regardless.
+     */
+    private function generateAccessToken(): string
+    {
+        return Str::random(40);
     }
 
     public function getProductsByWishList(?WishList $wishList): Collection
@@ -25,18 +66,9 @@ class WishListService extends BaseService
         return collect();
     }
 
-    public function addProductToWishList(User $owner, ?WishList $wishList, Product $product): ServiceActionResult
+    public function addProductToWishList(WishList $wishList, Product $product): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($owner, $wishList, $product) {
-            if (!$wishList) {
-                $latestWishList = WishList::latest()->first();
-
-                $wishList = WishList::create([
-                    'owner_id' => $owner->id,
-                    'access_token' => Str::random(16) . '_' . ($latestWishList ? $latestWishList->id : 1),
-                ]);
-            }
-
+        return $this->coverWithDBTransaction(function () use ($wishList, $product) {
             if (!$wishList->products()->where('product_id', $product->id)->exists()) {
                 $wishList->products()->attach($product->id);
             }
@@ -45,11 +77,10 @@ class WishListService extends BaseService
         });
     }
 
-    public function removeProductFromWishList(User $owner, ?WishList $wishList, Product $product): ServiceActionResult
+    public function removeProductFromWishList(WishList $wishList, Product $product): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($owner, $wishList, $product) {
-
-            if ($wishList && $wishList->products()->where('product_id', $product->id)->exists()) {
+        return $this->coverWithDBTransaction(function () use ($wishList, $product) {
+            if ($wishList->products()->where('product_id', $product->id)->exists()) {
                 $wishList->products()->detach($product->id);
             }
 
@@ -57,10 +88,48 @@ class WishListService extends BaseService
         });
     }
 
+    public function mergeGuestWishListIntoUserWishList(User $user, string $guestToken): void
+    {
+        $guestWishList = $this->getWishListByToken($guestToken);
+
+        if (!$guestWishList) {
+            return;
+        }
+
+        $this->coverWithDBTransaction(function () use ($user, $guestWishList) {
+            $userWishList = $this->getWishListByUser($user);
+
+            if (!$userWishList) {
+                $guestWishList->owner_id = $user->id;
+                $guestWishList->token = null;
+                $guestWishList->save();
+
+                return;
+            }
+
+            $productIds = $guestWishList->products()->select(['product_id'])->get()->pluck('product_id');
+
+            if ($productIds->isNotEmpty()) {
+                $userWishList->products()->syncWithoutDetaching($productIds);
+            }
+
+            $guestWishList->delete();
+        });
+    }
+
     public function getWishListProductsId(?WishList $wishList): Collection
     {
         if ($wishList) {
             return $wishList->products()->select(['product_id'])->get()->pluck('product_id');
+        }
+
+        return collect();
+    }
+
+    public function getWishListProductsSlugs(?WishList $wishList): Collection
+    {
+        if ($wishList) {
+            return $wishList->products()->select(['products.slug'])->get()->pluck('slug');
         }
 
         return collect();

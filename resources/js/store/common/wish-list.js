@@ -1,0 +1,204 @@
+import $ from 'jquery';
+import iconUrl from '$img/icon.svg';
+
+const WISH_LIST_ACTIVE_CLASS = 'link-heart-active';
+
+export default {
+    init: async function () {
+        markActiveHearts();
+        updateHeaderWishListCount();
+
+        $(document).on('click', '.link-heart, .product-wish-list-button', function (event) {
+            event.preventDefault();
+            handleHeartClick($(this));
+        });
+
+        $(document).on('click', '.delete-product-from-wish-list', function (event) {
+            event.preventDefault();
+            const slug = $(this).attr('href').substring(1);
+            const itemBody = $(this).closest('.list-product-item-wrap');
+
+            removeFromWishList(
+                slug,
+                function (data) {
+                    if (data.data.hasOwnProperty('success') && data.data.success) {
+                        itemBody.remove();
+                        updateHeaderWishListCount();
+                    }
+                }
+            );
+        });
+
+        $(document).on('click', '.btn-wish-list-share', function (event) {
+            event.preventDefault();
+            const linkToShare = $(this).attr('href');
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(linkToShare).catch(function () {
+                    fallbackCopyTextToClipboard(linkToShare);
+                });
+            } else {
+                fallbackCopyTextToClipboard(linkToShare);
+            }
+        });
+    },
+};
+
+function handleHeartClick($heart)
+{
+    const productSlug = $heart.attr('id');
+    const isActive = $heart.hasClass(WISH_LIST_ACTIVE_CLASS);
+
+    if (!isActive) {
+        $heart.addClass(WISH_LIST_ACTIVE_CLASS);
+
+        addToWishList(productSlug, function (data) {
+            if (!isRequestSuccessful(data)) {
+                $heart.removeClass(WISH_LIST_ACTIVE_CLASS);
+                return;
+            }
+
+            incrementHeaderWishListCount();
+        }, function () {
+            $heart.removeClass(WISH_LIST_ACTIVE_CLASS);
+        });
+    } else {
+        $heart.removeClass(WISH_LIST_ACTIVE_CLASS);
+
+        removeFromWishList(productSlug, function (data) {
+            if (!isRequestSuccessful(data)) {
+                $heart.addClass(WISH_LIST_ACTIVE_CLASS);
+                return;
+            }
+
+            decrementHeaderWishListCount();
+        }, function () {
+            $heart.addClass(WISH_LIST_ACTIVE_CLASS);
+        });
+    }
+}
+
+function markActiveHearts()
+{
+    getWishListProductSlugs(function (slugs) {
+        $('.link-heart[id], .product-wish-list-button[id]').each(function () {
+            if (slugs.indexOf($(this).attr('id')) !== -1) {
+                $(this).addClass(WISH_LIST_ACTIVE_CLASS);
+            }
+        });
+    });
+}
+
+function updateHeaderWishListCount()
+{
+    getWishListProductSlugs(function (slugs) {
+        setHeaderWishListCount(slugs.length);
+    });
+}
+
+function setHeaderWishListCount(count)
+{
+    const $countElement = $('.art-main-wishlist-count');
+
+    if (count > 0) {
+        $countElement.removeClass('d-none').text(count);
+    } else {
+        $countElement.addClass('d-none').text('');
+    }
+}
+
+function incrementHeaderWishListCount()
+{
+    changeHeaderWishListCount(1);
+}
+
+function decrementHeaderWishListCount()
+{
+    changeHeaderWishListCount(-1);
+}
+
+function changeHeaderWishListCount(delta)
+{
+    const $countElement = $('.art-main-wishlist-count');
+
+    let currentCount = parseInt($countElement.text());
+
+    if (isNaN(currentCount)) {
+        currentCount = 0;
+    }
+
+    setHeaderWishListCount(currentCount + delta);
+}
+
+function isRequestSuccessful(data)
+{
+    return data && data.data && data.data.hasOwnProperty('success') && data.data.success;
+}
+
+//api
+function getWishListProductSlugs(success)
+{
+    $.ajax({
+        url: routes.wish_list.products_slugs_route,
+        type: 'get',
+        dataType: 'json',
+    }).done(function (data) {
+        success(data.data.slugs || []);
+    }).fail(function () {
+        success([]);
+    });
+}
+
+function addToWishList(slug, success, fail)
+{
+    const routeWithSlug = routes.wish_list.product_add_route.replace('PRODUCT_SLUG', slug);
+
+    $.ajax({
+        url: routeWithSlug,
+        type: 'post',
+        data: {
+            _token: csrf,
+        },
+        dataType: 'json',
+    }).done(function (data) {
+        success(data);
+    }).fail(fail);
+}
+
+function removeFromWishList(slug, success, fail)
+{
+    const routeWithSlug = routes.wish_list.product_delete_route.replace('PRODUCT_SLUG', slug);
+
+    $.ajax({
+        url: routeWithSlug,
+        type: 'post',
+        data: {
+            _token: csrf,
+        },
+        dataType: 'json',
+    }).done(function (data) {
+        success(data);
+    }).fail(fail);
+}
+
+function fallbackCopyTextToClipboard(text)
+{
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        document.execCommand('copy');
+    } catch (err) {
+        console.error('[WishList]: Unable to copy text to clipboard.');
+    }
+
+    document.body.removeChild(textArea);
+}

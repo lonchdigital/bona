@@ -9,18 +9,17 @@ use Illuminate\Http\Request;
 
 class ProductAddToWishListAction extends BaseAction
 {
+    use NeedWishList;
+
     public function __invoke(Product $product, Request $request, WishListService $wishListService)
     {
-        $user = $this->getAuthUser();
-
-        $wishList = $wishListService->getWishListByUser($user);
+        $wishList = $this->getOrCreateWishList($wishListService);
 
         $result = $wishListService->addProductToWishList(
-            $user,
             $wishList,
             $product
         );
 
-        return $this->handleActionResult('', $request, $result);
+        return $this->handleActionResult(route('store.wishlist.private.page'), $request, $result);
     }
 }

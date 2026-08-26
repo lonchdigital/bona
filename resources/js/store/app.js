@@ -7,6 +7,7 @@ import ShowMenu from "./common/show-menu";
 import ScrollTop from "./common/scroll-top";
 import InputCounter from './common/input-counter';
 import Cart from './common/cart';
+import WishList from './common/wish-list';
 import CommonEmails from './common/common-emails';
 import PopUps from './common/pop-ups';
 import AjaxSearchProducts from './common/ajax-search-products';
@@ -69,6 +70,7 @@ async function init()
         ScrollTop.init(),
         ShowMenu.init(),
         Cart.init(),
+        WishList.init(),
         CommonEmails.init(),
         PopUps.init(),
         AjaxSearchProducts.init(),

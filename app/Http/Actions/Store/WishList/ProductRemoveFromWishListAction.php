@@ -5,22 +5,31 @@ namespace App\Http\Actions\Store\WishList;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Actions\Admin\BaseAction;
+use App\Services\Base\ServiceActionResult;
 use App\Services\WishList\WishListService;
 
 class ProductRemoveFromWishListAction extends BaseAction
 {
+    use NeedWishList;
+
     public function __invoke(Product $product, Request $request, WishListService $wishListService)
     {
-        $user = $this->getAuthUser();
+        $wishList = $this->getWishList($wishListService);
 
-        $wishList = $wishListService->getWishListByUser($user);
+        // Nothing to remove from is the state the caller wanted anyway.
+        if (!$wishList) {
+            return $this->handleActionResult(
+                route('store.wishlist.private.page'),
+                $request,
+                ServiceActionResult::make(true, trans('base.wish_list_product_remove_success'))
+            );
+        }
 
         $result = $wishListService->removeProductFromWishList(
-            $user,
             $wishList,
             $product
         );
 
-        return $this->handleActionResult('', $request, $result);
+        return $this->handleActionResult(route('store.wishlist.private.page'), $request, $result);
     }
 }

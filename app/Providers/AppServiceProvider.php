@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\WishList\GuestWishListToken;
+
 use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Cart\CartService;
@@ -20,7 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Shared for the request: a token issued now is not readable back from
+        // the cookie until the next one, so the instance has to remember it.
+        $this->app->singleton(GuestWishListToken::class);
     }
 
     /**

@@ -6,6 +6,7 @@ const routes = {
     wish_list: {
         product_add_route: '{{ route('store.wishlist.private.add-product', ['productSlug' => 'PRODUCT_SLUG']) }}',
         product_delete_route: '{{ route('store.wishlist.private.delete-product', ['productSlug' => 'PRODUCT_SLUG']) }}',
+        products_slugs_route: '{{ route('store.wishlist.products-slugs') }}',
     },
     cart: {
         products_list_route: '{{ route('store.cart.products-with-summary') }}',

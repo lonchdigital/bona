@@ -90,15 +90,13 @@
                                                                                 @endforeach
                                                                             </div>
                                                                         @endif
-                                                                        @auth
-                                                                            <span class="link-heart @if($wishListProducts->contains($product->id)) link-heart-active @endif" id="{{ $product->slug }}">
+                                                                        <span class="link-heart @if(collect($wishListProducts ?? [])->contains($product->id)) link-heart-active @endif" id="{{ $product->slug }}">
                                                                             <span>{{ trans('base.add_to_wish_list') }}</span>
                                                                             <svg>
                                                                                 <use
                                                                                     xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
                                                                             </svg>
                                                                         </span>
-                                                                        @endauth
                                                                     </span>
                                                                 <span class="card-link-title">
 								                                        {{ $product->id }} {{ $product->name }}

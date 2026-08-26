@@ -417,6 +417,11 @@
                                                     <button type="button" class="btn btn-main single-product-add-to-cart" id="{{ $product->slug }}">
                                                         {{ trans('base.add_to_cart') }}
                                                     </button>
+                                                    <span class="link-heart product-wish-list-button single-product-wish-list{{ collect($wishListProducts ?? [])->contains($product->id) ? ' link-heart-active' : '' }}" id="{{ $product->slug }}" aria-label="{{ trans('base.add_to_wish_list') }}">
+                                                        <svg>
+                                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
+                                                        </svg>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

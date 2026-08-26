@@ -79,6 +79,7 @@ use App\Http\Actions\Store\Seo\ShowLlmsTxtFileContent;
 use App\Http\Actions\Store\Seo\ShowRobotsTxtFileContent;
 use App\Http\Actions\Store\ServicesPage\Pages\ShowServicesPageAction;
 use App\Http\Actions\Store\StaticPage\Pages\ShowStaticPagePageAction;
+use App\Http\Actions\Store\WishList\GetWishListProductSlugsAction;
 use App\Http\Actions\Store\WishList\Pages\ShowWishListByTokenPageAction;
 use App\Http\Actions\Store\WishList\Pages\ShowWishListPageAction;
 use App\Http\Actions\Store\WishList\ProductAddToWishListAction;
@@ -327,17 +328,12 @@ $optionalLanguageRoutes = function () {
         Route::name('store.product.similar-products')->get('/{productSlug}/similar', GetSimilarProductsPaginatedAction::class);
     });
 
-    Route::prefix('wishList')
-        ->middleware([
-            AuthenticatedOnly::class,
-        ])
-        ->group(function () {
-            Route::name('store.wishlist.private.page')->get('/', ShowWishListPageAction::class);
-            Route::name('store.wishlist.private.add-product')->post('product/{productSlug}/add', ProductAddToWishListAction::class);
-            Route::name('store.wishlist.private.delete-product')->post('product/{productSlug}/delete', ProductRemoveFromWishListAction::class);
-        });
-
     Route::prefix('wishList')->group(function () {
+        Route::name('store.wishlist.private.page')->get('/', ShowWishListPageAction::class);
+        Route::name('store.wishlist.private.add-product')->post('product/{productSlug}/add', ProductAddToWishListAction::class);
+        Route::name('store.wishlist.private.delete-product')->post('product/{productSlug}/delete', ProductRemoveFromWishListAction::class);
+        Route::name('store.wishlist.products-slugs')->get('/products/slugs', GetWishListProductSlugsAction::class);
+
         Route::name('store.wishlist.public')->get('/{wishListAccessToken}', ShowWishListByTokenPageAction::class);
     });
 

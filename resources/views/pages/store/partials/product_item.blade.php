@@ -2,6 +2,11 @@
     <div class="art-product-data">
         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}" class="">
             <div class="image">
+                <span class="link-heart" id="{{ $product->slug }}" aria-label="{{ trans('base.add_to_wish_list') }}">
+                    <svg>
+                        <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
+                    </svg>
+                </span>
                 <img src="{{ $product->preview_image_url }}" alt="Product Image" loading="lazy">
             </div>
             <div class="text">

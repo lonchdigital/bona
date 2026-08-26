@@ -124,7 +124,7 @@
                                                             <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}">
                                                         </div>
                                                         <div class="table-product-info d-flex flex-row-reverse justify-content-between d-xl-block">
-                                                            <div class="table-price text-right d-flex align-items-end d-xl-none">1799 грн.</div>
+                                                            <div class="table-price text-right d-flex align-items-end d-xl-none">{{ $product->price }} {{ $baseCurrency->name_short }}</div>
                                                             <div class="mr-4">
                                                                 <div class="table-product-code mb-2">{{ trans('base.sku') }} <span>{{ $product->sku }}</span></div>
                                                                 <div class="table-product-name h4 mb-0 d-block" id="test">{{ $product->name }}</div>

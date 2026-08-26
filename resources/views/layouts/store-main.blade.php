@@ -350,6 +350,17 @@
 
                     <ul class="header-main-others">
 
+                        <!-- WISH LIST START -->
+                        <li class="list-inline-item basket-list wish-list-header-list">
+                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.wishlist.private.page') }}" class="wishlist-link" aria-label="{{ trans('base.wish_list') }}">
+                                <span class="after art-main-wishlist-count d-none"></span>
+                                <svg>
+                                    <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <!-- WISH LIST END -->
+
                         <!-- USER PROFILE START -->
                         @auth
                             <li class="list-inline-item basket-list user-profile-list" id="basket-link">
