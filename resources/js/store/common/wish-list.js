@@ -13,22 +13,6 @@ export default {
             handleHeartClick($(this));
         });
 
-        $(document).on('click', '.delete-product-from-wish-list', function (event) {
-            event.preventDefault();
-            const slug = $(this).attr('href').substring(1);
-            const itemBody = $(this).closest('.list-product-item-wrap');
-
-            removeFromWishList(
-                slug,
-                function (data) {
-                    if (data.data.hasOwnProperty('success') && data.data.success) {
-                        itemBody.remove();
-                        updateHeaderWishListCount();
-                    }
-                }
-            );
-        });
-
         $(document).on('click', '.btn-wish-list-share', function (event) {
             event.preventDefault();
             const linkToShare = $(this).attr('href');
@@ -72,10 +56,38 @@ function handleHeartClick($heart)
             }
 
             decrementHeaderWishListCount();
+            dropCardFromOwnWishList($heart);
         }, function () {
             $heart.addClass(WISH_LIST_ACTIVE_CLASS);
         });
     }
+}
+
+/*
+ * Everywhere else an unticked heart just loses its colour. On a person's own
+ * wish list the card is the entry itself, so leaving it sitting there reads as
+ * "nothing happened" — it steps aside instead, and an emptied list reloads to
+ * show the empty state rather than a blank grid.
+ */
+function dropCardFromOwnWishList($heart)
+{
+    const $grid = $heart.closest('[data-wish-list-owner]');
+
+    if (!$grid.length) {
+        return;
+    }
+
+    const $card = $heart.closest('.art-product-item');
+
+    $card.addClass('is-leaving');
+
+    window.setTimeout(function () {
+        $card.remove();
+
+        if (!$grid.find('.art-product-item').length) {
+            window.location.reload();
+        }
+    }, 250);
 }
 
 function markActiveHearts()

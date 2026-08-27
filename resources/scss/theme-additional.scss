@@ -10158,13 +10158,37 @@ section.art-contacts-page-section {
     Wish list (header icon, product cards)
     ----------------------------------
 */
+/*
+    The heart sat under the blanket rule that paints every header svg black at
+    40px, so it loomed over a dark bar as a black blob and pushed the counter
+    into its middle. It now mirrors the cart exactly: same box, same offsets.
+*/
 .header-main-others li.list-inline-item.wish-list-header-list {
     position: relative;
+    display: flex;
+    align-items: center;
 
     a.wishlist-link {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
+        width: max-content;
+        line-height: 0;
         cursor: pointer;
+    }
+
+    a.wishlist-link svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2;
+        transition: stroke 0.3s ease-out 0s;
+    }
+
+    a.wishlist-link:hover svg {
+        stroke: $accent;
     }
 
     .art-main-wishlist-count {

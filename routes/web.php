@@ -24,8 +24,6 @@ use App\Http\Actions\StaticData\GetStaticDataScript;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandSearchPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandsListPageAction;
-//use App\Http\Actions\Store\Calculator\CalculateCountOfProductsAction;
-//use App\Http\Actions\Store\Calculator\Pages\ShowCalculatorPageAction;
 use App\Http\Actions\Store\Cart\AddProductToCartAction;
 use App\Http\Actions\Store\Cart\AddSubProductToCartAction;
 use App\Http\Actions\Store\Cart\AddPromoCodeToCartAction;
@@ -380,12 +378,6 @@ $optionalLanguageRoutes = function () {
         Route::name('store.brand.page')->get('/{brandSlug}', ShowBrandPageAction::class);
     });
 
-
-    // TODO:: remove when finish
-    /*Route::prefix('calculator')->group(function () {
-        Route::name('store.calculator.page')->get('/{productSlug?}', ShowCalculatorPageAction::class);
-        Route::name('store.calculator.calculate')->post('/calculate', CalculateCountOfProductsAction::class);
-    });*/
 
     Route::prefix('page')->group(function () {
         Route::name('store.static-page.page')->get('/{staticPageSlug}', ShowStaticPagePageAction::class);

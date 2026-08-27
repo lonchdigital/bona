@@ -660,9 +660,6 @@
     const locale = '{{ app()->getLocale() }}';
     const csrf = '{{ csrf_token() }}';
     const count_of_products_in_cart = {{ $countOfProductInCart }};
-    const show_visit_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_VISIT ? 'true' : 'false' }};
-    const show_taxi_modal = {{ old('modal_type_id') == \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_TAXI ? 'true' : 'false' }};
-    const show_modal_success = {{ Session::has('modal_success') ? 'true' : 'false' }};
 </script>
 @stack('dynamic_scripts')
 {{-- dinamic scripts end --}}

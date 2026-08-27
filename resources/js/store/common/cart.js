@@ -373,10 +373,6 @@ export default {
             });
         }
 
-        if (page === 'store.calculator.page') {
-            handleCalculatorAddToCartButton();
-        }
-
         /*if (page === 'store.wishlist.private.page') {
             handleWishListAddToCartButton();
         }*/
@@ -882,23 +878,6 @@ function getAllProductAttributes(art_this)
     });
 
     return productAttributes;
-}
-
-function handleCalculatorAddToCartButton()
-{
-    $('#calculator-add-to-cart').click(function (event) {
-        event.preventDefault();
-
-        const button = $(this);
-        const slug = $('#selected-product-slug-input').val();
-        const count = $('#count-of-rolls-input').val();
-
-        addProductToCart(slug, count, function (data) {
-            button.attr('disabled', 'true');
-            $('#calculator-result-success-message').text(translations.product_add_to_cart_success);
-            handleBasket(data);
-        });
-    });
 }
 
 /*function handleWishListAddToCartButton()
