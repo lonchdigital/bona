@@ -530,11 +530,6 @@
     "isEntry": true,
     "src": "resources/scss/libs.scss"
   },
-  "resources/scss/main.scss": {
-    "file": "assets/main-0d9bcdca.css",
-    "isEntry": true,
-    "src": "resources/scss/main.scss"
-  },
   "resources/scss/theme-additional.scss": {
     "file": "assets/theme-additional-b1400674.css",
     "isEntry": true,

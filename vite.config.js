@@ -38,7 +38,6 @@ export default defineConfig(({ mode }) => {
                     'resources/js/admin/date-picker.js',
 
                     'resources/scss/libs.scss',
-                    'resources/scss/main.scss',
                     'resources/scss/theme-additional.scss',
 
                     'resources/js/store/app.js'
