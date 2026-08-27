@@ -114,6 +114,48 @@ export default {
             );
         });
 
+        /*
+         * Buy in one click books an order for the product whose page it sits
+         * on, so it posts to that product's own route rather than the shared
+         * call-back endpoint the forms above use. Everything the shop needs to
+         * settle — address, delivery, payment — is agreed on the phone.
+         */
+        $(document).on('submit', '#one-click-order-form', function (event) {
+            event.preventDefault();
+
+            const $form = $(this);
+
+            $form.find('.field-error').remove();
+
+            $.ajax({
+                url: $form.attr('action'),
+                type: 'post',
+                data: $form.serialize(),
+                dataType: 'json',
+            }).done(function () {
+                $form.find('input[name="name"]').val('');
+                $form.find('input[name="phone"]').val('');
+
+                $('button.is-close-btn').click();
+                document.getElementById('user-choose-doors-success').click();
+
+                window.dataLayer.push({
+                    'event': $form.find('input[name="event"]').val()
+                });
+            }).fail(function (xhr) {
+                if (xhr.status === 422) {
+                    const errors = xhr.responseJSON.errors;
+
+                    for (let fieldName in errors) {
+                        $form.find('.' + fieldName + '-field')
+                            .after(`<p class="field-error ${fieldName}">${errors[fieldName][0]}</p>`);
+                    }
+                } else {
+                    console.error('[OneClick]: could not place the order.');
+                }
+            });
+        });
+
         function userCallMeasurErrors(errors, formData, formTag) {
             for (let fieldName in errors) {
                 formTag.find('input[name="'+ fieldName +'"]').val('');

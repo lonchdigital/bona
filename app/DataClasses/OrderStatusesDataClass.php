@@ -9,6 +9,7 @@ class OrderStatusesDataClass implements BaseDataClass
     const STATUS_SENT = 3;
     const STATUS_COMPLETE = 4;
     const STATUS_DECLINED = 5;
+    const STATUS_ONE_CLICK = 6;
 
     public static function get(?int $item = null): mixed
     {
@@ -37,6 +38,11 @@ class OrderStatusesDataClass implements BaseDataClass
                 'id' => self::STATUS_DECLINED,
                 'name' => trans('admin.order_status_declined'),
                 'color' => '#ff8080',
+            ],
+            [
+                'id' => self::STATUS_ONE_CLICK,
+                'name' => trans('admin.order_status_one_click'),
+                'color' => '#d59958',
             ]
         ]);
 

@@ -345,6 +345,7 @@ return [
     'order_status_sent' => 'Надіслано',
     'order_status_complete' => 'Виконано',
     'order_status_declined' => 'Відмінено',
+    'order_status_one_click' => 'Покупка в 1 клік',
     'order_update_success' => 'Замовлення успішно оновлено',
     'order_delete_success' => 'Замовлення успішно видалено',
     'products_import' => 'Імпорт товарів',

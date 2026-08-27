@@ -6,12 +6,14 @@ use App\DataClasses\DeliveryTypesDataClass;
 use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\OrderStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
+use App\DataClasses\RecipientTypesDataClass;
 use App\Mail\AdminNotificationEmail;
 use App\Mail\EmailSubscriptionEmail;
 use App\Mail\OrderStatusEmail;
 use App\Mail\UserCredentialsEmail;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Base\BaseService;
@@ -213,6 +215,77 @@ class OrderService extends BaseService
 
             return $order;
         });
+    }
+
+    /**
+     * Takes an order for a single product from someone who only left a name
+     * and a number.
+     *
+     * The orders table wants an account behind every order, and the admin
+     * screens read the customer straight off it, so one is found or made the
+     * same way checkout does for a guest — matched on the digits of the phone
+     * rather than the whole string, since the field carries the input mask's
+     * brackets and dashes. There is no address, delivery or payment to record:
+     * the shop rings back and settles all of that.
+     */
+    public function createOneClickOrder(Product $product, string $name, string $phone, ?User $user = null): Order
+    {
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($product, $name, $phone, $user) {
+            $user = $user ?? $this->resolveOneClickCustomer($name, $phone);
+
+            $order = Order::create([
+                'status_id' => OrderStatusesDataClass::STATUS_ONE_CLICK,
+                'user_id' => $user->id,
+                'recipient_type_id' => RecipientTypesDataClass::RECIPIENT_USER,
+                'custom_recipient_phone' => $phone,
+            ]);
+
+            $order->products()->sync([[
+                'product_id' => $product->id,
+                'count' => 1,
+                'price' => $product->price,
+                'attributes' => null,
+                'attributes_price' => null,
+            ]]);
+
+            if (config('domain.admin_notification_emails')) {
+                foreach (explode(',', config('domain.admin_notification_emails')) as $email) {
+                    Mail::to($email)->send(new AdminNotificationEmail(
+                        trans('admin.new_order_email_subject'),
+                        route('admin.order.details.page', ['order' => $order->id])
+                    ));
+                }
+            }
+
+            return $order;
+        });
+    }
+
+    /**
+     * The customer behind a one click order: their account if the phone is
+     * already known, otherwise a new one. The address is only there because
+     * the column demands something unique — nobody signs in with it, and a
+     * repeat customer on the same number lands on the same record.
+     */
+    private function resolveOneClickCustomer(string $name, string $phone): User
+    {
+        $digits = preg_replace('/\D/', '', $phone);
+
+        $existing = User::whereRaw("REGEXP_REPLACE(phone, '[^0-9]', '') = ?", [$digits])->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return User::create([
+            'email' => 'one-click-' . $digits . '@bona-doors.com.ua',
+            'first_name' => $name,
+            'last_name' => '',
+            'phone' => $phone,
+            'role_id' => Role::USER_ROLE_ID,
+            'language' => app()->getLocale(),
+            'password' => \Hash::make(\Str::random(32)),
+        ]);
     }
 
     public function updateOrderPaymentStatusId(Order $order, int $newStatusId): ServiceActionResult

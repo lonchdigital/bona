@@ -747,17 +747,18 @@
 
 
 {{--
-    The form is named so the existing user-call- handler picks it up: it
-    already posts, clears the fields, opens the thank you dialog and renders
-    whatever the server rejects. The phone carries phone-field, which is the
-    class the Ukrainian input mask is bound to.
+    Posts to the product's own one-click route, which books a real order for
+    it rather than a call-back request. The phone carries phone-field, the
+    class the Ukrainian input mask is bound to, and the server refuses a
+    number still holding the mask's placeholders.
 --}}
 <div id="dialog-buy-one-click" class="art-popup-call-measurer">
     <div class="art-measurer-form-wrapper">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
-                    <form action="#" id="user-call-one-click" method="post" class="art-contact-form">
+                    <form action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.one-click-order', ['productSlug' => $currentProduct->slug]) }}"
+                          id="one-click-order-form" method="post" class="art-contact-form">
                         @csrf
 
                         <header class="art-light">
@@ -780,9 +781,6 @@
                             </div>
                         </div>
 
-                        {{-- What the order is for, so the request arrives with the product on it. --}}
-                        <input type="hidden" name="description"
-                               value="{{ $currentProduct->name }} — {{ url()->current() }}">
                         <input type="hidden" name="agree" value="1">
                         <input type="hidden" name="event" value="submit_form_buy_one_click">
 

@@ -70,6 +70,7 @@ use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentOrdinaryPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentPaypartPageAction;
 use App\Http\Actions\Store\Payment\UpdateOrderPaymentStatusAction;
 use App\Http\Actions\Store\Product\Pages\ShowProductPageAction;
+use App\Http\Actions\Store\Order\CreateOneClickOrderAction;
 use App\Http\Actions\Store\Product\SearchProductAction;
 use App\Http\Actions\Store\ProductReview\SubmitProductReviewAction;
 use App\Http\Actions\Store\Seo\ShowLlmsTxtFileContent;
@@ -321,6 +322,7 @@ $optionalLanguageRoutes = function () {
 
     Route::prefix('product')->group(function () {
         Route::name('store.product.search')->post('/search', SearchProductAction::class);
+        Route::name('store.product.one-click-order')->middleware('throttle:5,1')->post('/{productSlug}/one-click', CreateOneClickOrderAction::class);
         Route::name('store.product.page')->get('/{productSlug}', ShowProductPageAction::class);
     });
 
