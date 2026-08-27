@@ -113,7 +113,7 @@ return [
     'wish_list_add_product' => 'Додати товар',
     'wish_list_go_to_main' => 'На головну',
     'go_to_main' => 'На головну',
-    'wish_list_product_add_success' => 'Товар успшіно додано до списку бажань!',
+    'wish_list_product_add_success' => 'Товар успішно додано до списку бажань!',
     'wish_list_product_remove_success' => 'Товар успішно видалено зі списку бажань',
     'wish_list_calculate_wallpaper' => 'Розрахувати',
     'wish_list_delete_product' => 'Видалити',
