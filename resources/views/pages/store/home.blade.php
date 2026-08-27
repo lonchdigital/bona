@@ -60,11 +60,20 @@
                                      with three empty headings and no h1 at all. The first
                                      slide carries the page heading, falling back to the
                                      site's own wording, and an empty heading is simply
-                                     not printed. --}}
+                                     not printed.
+
+                                     A title has to hold a letter or a digit to count. A
+                                     lone full stop left in the field once became the whole
+                                     h1 — it is not empty, so it won the fallback. --}}
+                                @php
+                                    $slideHeading = preg_match('/[\p{L}\p{N}]/u', (string) $slide->title)
+                                        ? $slide->title
+                                        : null;
+                                @endphp
                                 @if($loop->first)
-                                    <h1 class="title animated h1" data-animation="fadeInDown">{{ $slide->title ?: trans('base.home_h1') }}</h1>
-                                @elseif($slide->title)
-                                    <h2 class="title animated h1" data-animation="fadeInDown">{{ $slide->title }}</h2>
+                                    <h1 class="title animated h1" data-animation="fadeInDown">{{ $slideHeading ?: trans('base.home_h1') }}</h1>
+                                @elseif($slideHeading)
+                                    <h2 class="title animated h1" data-animation="fadeInDown">{{ $slideHeading }}</h2>
                                 @endif
                                 <div class="slider-description animated font-two" data-animation="fadeInUp">{!! $slide->description !!}</div>
                                 @if($slide->display_button && !$slide->slide_url)
