@@ -125,8 +125,6 @@ return [
     'wish_list_visit_show_room_call_to_action_text' => 'В :SHOWROOM_LINK обирати набагато простіше. Приїдь і переконайся!',
     'wish_list_in_showroom' => 'шоурумі',
     'showroom_visit_taxi' => 'Замовити таксі в шоурум',
-    'wish_list_invite_designer' => 'Запросити дизайнера із зразками',
-    'wish_list_invite_designer_text' => 'Дизайнер відвідає об\'єкт та привезе усі обрані зразки по Києву',
     'cart_product_add_success' => 'Товар успішно додано в кошик',
     'cart_product_count_change_success' => 'Кількість товарів у кошику успішно оновлено',
     'cart_product_delete_success' => 'Товар успішно видалено з кошику',

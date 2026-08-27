@@ -10,10 +10,6 @@ export default {
             $('#modal-visit').modal('show');
         }
 
-        if (show_designer_modal) {
-            $('#modal-designer').modal('show');
-        }
-
         if (show_taxi_modal) {
             $('#modal-taxi').modal('show');
         }

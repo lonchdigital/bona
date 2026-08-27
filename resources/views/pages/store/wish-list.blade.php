@@ -223,7 +223,6 @@
                                         <div class="d-flex flex-column">
                                             <button type="button" data-toggle="modal" data-target="#modal-visit" class="btn btn-black-custom mb-2">{{ trans('base.showroom_visit') }}</button>
 {{--                                            <button type="button" data-toggle="modal" data-target="#modal-taxi" class="btn btn-black-custom mb-2">{{ trans('base.showroom_visit_taxi') }}</button>--}}
-                                            <button type="button" data-toggle="modal" data-target="#modal-designer" class="btn btn-outline-black-custom">{{ trans('base.wish_list_invite_designer') }}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -236,182 +235,6 @@
     </div>
 </main>
 <!-- Modal-visit -->
-<div class="modal fade modal-custom" id="modal-designer" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <button type="button" class="btn btn-close p-0" data-dismiss="modal" aria-label="Close"></button>
-            <div class="left-side">
-                <img src="{{ Vite::asset('resources/img/modal-designer.svg') }}" alt="modal">
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('store.visit-request.create') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="modal_type_id" value="{{ \App\DataClasses\VisitRequestTypeDataClass::DESIGNER_APPOINTMENT }}">
-                    <div class="modal-text text-center mb-5">
-                        <div class="h3 mb-2 pr-5">
-                            {{ trans('base.wish_list_invite_designer') }}
-                        </div>
-                        <div class="modal-subtext">
-                            {{ trans('base.wish_list_invite_designer_text') }}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
-                                <div class="field">
-                                    <label for="name" class="custom-control-label2">{{ trans('base.name') }}</label>
-                                    <input type="text" class="form-control" id="name" name="visit_request_name" placeholder="{{ trans('base.your_name') }}" value="{{ old('visit_request_name') }}">
-                                    @error('visit_request_name')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="field">
-                                    <label for="phone" class="custom-control-label2">{{ trans('base.phone') }}</label>
-                                    <input type="tel" class="form-control phone" id="phone" name="visit_request_phone" placeholder="+38(0__)___-__-__" value="{{ old('visit_request_phone') }}">
-                                    @error('visit_request_phone')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col">
-                                <div class="field">
-                                    <label for="email" class="custom-control-label2">{{ trans('base.email') }}</label>
-                                    <input type="text" class="form-control" id="email" name="visit_request_email" placeholder="{{ trans('base.email') }}" value="{{ old('visit_request_email') }}">
-                                    @error('visit_request_email')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
-                                <label for="date" class="custom-control-label2">{{ trans('base.visit_date') }}</label>
-                                <div class="input-date">
-                                    <svg>
-                                        <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-calendar"></use>
-                                    </svg>
-                                    <div class="custom-control-number custom-control-number--date">
-                                        <div class="before"></div>
-                                        <input type="number" class="form-control" min="1" max="31" id="date" name="visit_request_date_day" value="{{ old('visit_request_date_day') }}">
-                                        <div class="minus-plus">
-                                            <span class="counter plus"></span>
-                                            <span class="counter minus"></span>
-                                        </div>
-                                    </div>
-                                    <div class="custom-control-number custom-control-number--date">
-                                        <div class="before"></div>
-                                        <input type="number" class="form-control" min="1" max="12" name="visit_request_date_month" value="{{ old('visit_request_date_month') }}">
-                                        <div class="minus-plus">
-                                            <span class="counter plus"></span>
-                                            <span class="counter minus"></span>
-                                        </div>
-                                    </div>
-                                    <div class="custom-control-number custom-control-number--date">
-                                        <div class="before"></div>
-                                        <input type="number" class="form-control" min="{{ \Carbon\Carbon::now()->year }}" value="{{ old('visit_request_date_year') ? old('visit_request_date_year') : \Carbon\Carbon::now()->year }}" name="visit_request_date_year">
-                                        <div class="minus-plus">
-                                            <span class="counter plus"></span>
-                                            <span class="counter minus"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                @error('visit_request_date_day')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                                @error('visit_request_date_month')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                                @error('visit_request_date_year')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <label for="date" class="custom-control-label2">{{ trans('base.visit_time') }}</label>
-                                <div class="input-date">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 3.6C7.36081 3.6 3.6 7.36081 3.6 12C3.6 16.6392 7.36081 20.4 12 20.4C16.6392 20.4 20.4 16.6392 20.4 12C20.4 7.36081 16.6392 3.6 12 3.6ZM12.6912 7.45345C12.6555 7.06578 12.3324 6.77201 11.9315 6.78171C11.4998 6.79215 11.1414 7.15058 11.1309 7.58229L11.0174 12.2755L11.0205 12.3665C11.0562 12.7542 11.3793 13.0479 11.7802 13.0382L16.4702 12.9248L16.5615 12.9173C16.9514 12.8628 17.2611 12.5251 17.2708 12.1242L17.2678 12.0332C17.232 11.6455 16.9089 11.3517 16.5081 11.3614L12.5997 11.4568L12.6943 7.54448L12.6912 7.45345Z" fill="#1D1D23"></path>
-                                    </svg>
-                                    <div class="custom-control-number custom-control-number--time">
-                                        {{ trans('base.visit_showroom_from_hours') }}
-                                    </div>
-                                    <div class="custom-control-number custom-control-number--date">
-                                        <div class="before"></div>
-                                        <input type="number" class="form-control" min="10" max="20" name="visit_request_time_hours" value="{{ old('visit_request_time_hours') }}">
-                                        <div class="minus-plus">
-                                            <span class="counter plus"></span>
-                                            <span class="counter minus"></span>
-                                        </div>
-                                    </div>
-                                    <div class="custom-control-number custom-control-number--date">
-                                        <div class="before"></div>
-                                        <input type="number" class="form-control" min="0" max="59" name="visit_request_time_minutes" value="{{ old('visit_request_time_minutes') }}">
-                                        <div class="minus-plus">
-                                            <span class="counter plus"></span>
-                                            <span class="counter minus"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                @error('visit_request_time_hours')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                                @error('visit_request_time_minutes')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
-                                <div class="field">
-                                    <label for="address" class="custom-control-label2">{{ trans('base.address') }} <span class="font-weight-normal">{{ trans('base.only_for_kyiv') }}</span></label>
-                                    <input type="text" class="form-control" id="address" placeholder="{{ trans('base.address') }}" name="visit_request_address" value="{{ old('visit_request_address') }}">
-                                    @error('visit_request_address')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="field">
-                                    <label for="parade" class="custom-control-label2">{{ trans('base.entrance_number') }}</label>
-                                    <input type="tel" class="form-control" id="parade" placeholder="{{ trans('base.entrance_number') }}" name="visit_request_entrance_number" value="{{ old('visit_request_entrance_number') }}">
-                                    @error('visit_request_entrance_number')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col">
-                                <div class="field">
-                                    <label for="address" class="custom-control-label2">{{ trans('base.comment') }}</label>
-                                    <textarea class="form-control h-100" rows="2" placeholder="{{ trans('base.comment') }}" name="visit_request_comment">{{ old('visit_request_comment') }}</textarea>
-                                    @error('visit_request_comment')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="wrapper-submit mt-6 mt-sm-8 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-black-custom">{{ trans('base.send') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal-visit -->
 <div class="modal fade modal-custom" id="modal-taxi" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -420,7 +243,7 @@
                 <img src="{{ Vite::asset('resources/img/modal-taxi.svg') }}" alt="modal">
             </div>
             <div class="modal-body">
-                <form action="{{ route('store.visit-request.create') }}" method="POST">
+                <form action="{{ route('store.choose.doors') }}" method="POST">
                     @csrf
                     <input type="hidden" name="modal_type_id" value="{{ \App\DataClasses\VisitRequestTypeDataClass::SHOWROOM_TAXI }}">
                     <div class="modal-text text-center mb-5">

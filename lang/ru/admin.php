@@ -501,7 +501,6 @@ return [
     'phone' => 'Телефон',
     'showroom_visit_request' => 'Запрос на посещение шоурума',
     'showroom_taxi_request' => 'Запрос на такси до шоурума',
-    'designer_appointment_request' => 'Запрос на выезд дизайнера',
     'visit_request_id' => 'Запрос на посещение №',
     'visit_request_edit_success' => 'Запрос на посещение успешно обновлен!',
     'visit_request_delete_success' => 'Запрос на посещение успешно удален!',

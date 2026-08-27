@@ -6,7 +6,6 @@ class VisitRequestTypeDataClass implements BaseDataClass
 {
     const SHOWROOM_VISIT = 1;
     const SHOWROOM_TAXI = 2;
-    const DESIGNER_APPOINTMENT = 3;
 
     public static function get(?int $item = null): mixed
     {
@@ -18,10 +17,6 @@ class VisitRequestTypeDataClass implements BaseDataClass
             [
                 'id' => self::SHOWROOM_TAXI,
                 'name' => trans('admin.showroom_taxi_request'),
-            ],
-            [
-                'id' => self::DESIGNER_APPOINTMENT,
-                'name' => trans('admin.designer_appointment_request'),
             ],
         ]);
 
