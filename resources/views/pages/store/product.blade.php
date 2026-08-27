@@ -186,7 +186,20 @@
                     <div class="col-md-5 col-sm-12 product-flex-info">
                         <div class="clearfix">
 
-                            <h1 class="title" data-title="Sofa">{{ $product->name }}</h1>
+                            {{--
+                                The heart used to live beside the cart button, inside one branch
+                                of a condition — so half the products never showed one at all.
+                                Next to the title it is always there, and it reads as the
+                                top-right corner of the product the way it does on a card.
+                            --}}
+                            <div class="art-product-title-row">
+                                <h1 class="title" data-title="Sofa">{{ $product->name }}</h1>
+                                <span class="link-heart product-wish-list-button single-product-wish-list{{ collect($wishListProducts ?? [])->contains($product->id) ? ' link-heart-active' : '' }}" id="{{ $product->slug }}" aria-label="{{ trans('base.add_to_wish_list') }}">
+                                    <svg viewBox="5 7 30 26">
+                                        <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
+                                    </svg>
+                                </span>
+                            </div>
                             <div class="clearfix">
 
                                 @if($product->sku)
@@ -417,11 +430,6 @@
                                                     <button type="button" class="btn btn-main single-product-add-to-cart" id="{{ $product->slug }}">
                                                         {{ trans('base.add_to_cart') }}
                                                     </button>
-                                                    <span class="link-heart product-wish-list-button single-product-wish-list{{ collect($wishListProducts ?? [])->contains($product->id) ? ' link-heart-active' : '' }}" id="{{ $product->slug }}" aria-label="{{ trans('base.add_to_wish_list') }}">
-                                                        <svg>
-                                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
-                                                        </svg>
-                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

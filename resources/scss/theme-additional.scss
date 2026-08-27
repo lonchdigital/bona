@@ -6626,6 +6626,13 @@ select:focus {
                 //min-height: 230px;
                 flex-grow: 3;
 
+                /*
+                    The heart inside is absolutely positioned. Without a
+                    positioned ancestor here it anchored itself to the page and
+                    drifted up into the header instead of sitting on the card.
+                */
+                position: relative;
+
                 display: flex;
                 justify-content: center;
                 align-items: flex-start;
@@ -10167,6 +10174,8 @@ section.art-contacts-page-section {
     position: relative;
     display: flex;
     align-items: center;
+    /* Same gap the profile icon keeps from the cart. */
+    margin-right: 16px;
 
     a.wishlist-link {
         display: flex;
@@ -10178,9 +10187,14 @@ section.art-contacts-page-section {
         cursor: pointer;
     }
 
+    /*
+        The sprite's heart fills only 58% of its 40x40 box, so a 20px svg drew
+        a 12px heart beside a 20px cart. The markup crops the box to the shape
+        itself, and these are the shape's own dimensions.
+    */
     a.wishlist-link svg {
-        width: 20px;
-        height: 20px;
+        width: 21px;
+        height: 18px;
         fill: none;
         stroke: #fff;
         stroke-width: 2;
@@ -10229,8 +10243,33 @@ section.art-contacts-page-section {
 
     &:hover svg,
     &.link-heart-active svg {
-        fill: #ff6662;
-        stroke: #ff6662;
+        fill: $accent;
+        stroke: $accent;
+    }
+}
+
+.art-product-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+
+    h1.title {
+        flex: 1 1 auto;
+    }
+
+    .single-product-wish-list.product-wish-list-button {
+        flex: 0 0 auto;
+        margin-left: 0;
+    }
+
+    @media (max-width: 575px) {
+        gap: 12px;
+
+        .single-product-wish-list.product-wish-list-button {
+            width: 42px;
+            height: 42px;
+        }
     }
 }
 
@@ -10257,7 +10296,7 @@ section.art-contacts-page-section {
 
     &:hover svg,
     &.link-heart-active svg {
-        fill: #ff6662;
-        stroke: #ff6662;
+        fill: $accent;
+        stroke: $accent;
     }
 }

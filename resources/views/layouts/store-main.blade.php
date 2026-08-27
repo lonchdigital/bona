@@ -354,7 +354,8 @@
                         <li class="list-inline-item basket-list wish-list-header-list">
                             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.wishlist.private.page') }}" class="wishlist-link" aria-label="{{ trans('base.wish_list') }}">
                                 <span class="after art-main-wishlist-count d-none"></span>
-                                <svg>
+                                {{-- Cropped to the heart itself; the sprite pads it out to 40x40. --}}
+                                <svg viewBox="5 7 30 26">
                                     <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
                                 </svg>
                             </a>

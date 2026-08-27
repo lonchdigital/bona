@@ -24,12 +24,12 @@
     "src": "lang/php_en.json"
   },
   "lang/php_ru.json": {
-    "file": "js/php_ru-18c1d08f.js",
+    "file": "js/php_ru-652014d1.js",
     "isDynamicEntry": true,
     "src": "lang/php_ru.json"
   },
   "lang/php_uk.json": {
-    "file": "js/php_uk-b491c49e.js",
+    "file": "js/php_uk-f7006711.js",
     "isDynamicEntry": true,
     "src": "lang/php_uk.json"
   },
@@ -201,7 +201,7 @@
       "lang/php_uk.json",
       "lang/uk.json"
     ],
-    "file": "js/app-4084946e.js",
+    "file": "js/app-deafc7d5.js",
     "imports": [
       "_jquery-5c3435d1.js",
       "_bootstrap-08b03379.js",
@@ -536,7 +536,7 @@
     "src": "resources/scss/main.scss"
   },
   "resources/scss/theme-additional.scss": {
-    "file": "assets/theme-additional-08e5522c.css",
+    "file": "assets/theme-additional-29275bf3.css",
     "isEntry": true,
     "src": "resources/scss/theme-additional.scss"
   },
