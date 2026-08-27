@@ -23,6 +23,15 @@
 
 @section('content')
 
+{{--
+    The "see more" carousel further down loops over $product, which leaves the
+    variable pointing at the last card it drew. Anything below it that means
+    *this* product has to have kept hold of it first.
+--}}
+@php
+    $currentProduct = $product;
+@endphp
+
     @include('pages.store.partials.page_header', ['links' => [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $product->productType->slug]) => $product->productType->name, 'own' => $product->name]])
 
 
@@ -773,7 +782,7 @@
 
                         {{-- What the order is for, so the request arrives with the product on it. --}}
                         <input type="hidden" name="description"
-                               value="{{ $product->name }} — {{ url()->current() }}">
+                               value="{{ $currentProduct->name }} — {{ url()->current() }}">
                         <input type="hidden" name="agree" value="1">
                         <input type="hidden" name="event" value="submit_form_buy_one_click">
 
