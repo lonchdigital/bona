@@ -55,6 +55,8 @@
                 success: function(data) {
                     if (data.data.hasOwnProperty('redirect_to')  && data.data.redirect_to !== '') {
                         window.location.href = data.data.redirect_to;
+                    } else if (window.adminToast) {
+                        window.adminToast(data.data.message, data.data.success);
                     }
 
                     form.data('submitted', false);

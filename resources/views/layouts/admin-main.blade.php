@@ -359,5 +359,60 @@
 {{--<script src='/static-admin/js/dropzone.min.js'></script>--}}
 {{--<script src="/static-admin/js/apps.js"></script>--}}
 @stack('scripts')
+
+{{--
+    Saving an edit no longer throws you back to the list, so the confirmation
+    has to come to you. Deliberately plain: the panel loads several script
+    bundles and none of them agree on a notification widget.
+--}}
+<div id="admin-toasts" aria-live="polite" aria-atomic="true"
+     style="position: fixed; right: 24px; bottom: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 10px;"></div>
+
+<script>
+    window.adminToast = function (message, isSuccess) {
+        if (!message) {
+            return;
+        }
+
+        var host = document.getElementById('admin-toasts');
+
+        if (!host) {
+            return;
+        }
+
+        var toast = document.createElement('div');
+        toast.setAttribute('role', 'status');
+        toast.textContent = message;
+        toast.style.cssText = [
+            'min-width: 240px',
+            'max-width: 420px',
+            'padding: 12px 18px',
+            'border-radius: 6px',
+            'color: #fff',
+            'font-size: 14px',
+            'line-height: 1.4',
+            'box-shadow: 0 6px 18px rgba(0, 0, 0, .18)',
+            'opacity: 0',
+            'transform: translateY(8px)',
+            'transition: opacity .2s ease-out, transform .2s ease-out',
+            'background: ' + (isSuccess === false ? '#dc3545' : '#28a745'),
+        ].join(';');
+
+        host.appendChild(toast);
+
+        window.requestAnimationFrame(function () {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        });
+
+        window.setTimeout(function () {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(8px)';
+            window.setTimeout(function () {
+                toast.remove();
+            }, 200);
+        }, 3500);
+    };
+</script>
 </body>
 </html>

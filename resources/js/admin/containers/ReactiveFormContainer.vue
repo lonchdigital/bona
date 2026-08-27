@@ -53,6 +53,8 @@ export default {
                 .then(function (response) {
                     if (response.hasOwnProperty('data') && response.data.hasOwnProperty('data') && response.data.data.hasOwnProperty('redirect_to')  && response.data.data.redirect_to !== '') {
                         window.location.href = response.data.data.redirect_to;
+                    } else if (window.adminToast) {
+                        window.adminToast(response.data.data.message, response.data.data.success);
                     }
                 }).catch(error => {
                 if (error.response && error.response.status === 422) {
