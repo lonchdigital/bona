@@ -14,7 +14,7 @@ export default {
         imageDeletedName: String,
         accept: {
             type: String,
-            default: 'image/jpeg, image/jpg, image/png',
+            default: 'image/jpeg, image/jpg, image/png, image/webp',
         },
         productsSearchRoute: String,
         content: Object,

@@ -60,7 +60,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" name="logo" id="logo" accept="image/jpeg, image/jpg, image/png">
+                                                    <input type="file" class="custom-file-input" name="logo" id="logo" accept="image/jpeg, image/jpg, image/png, image/webp">
                                                     <label class="custom-file-label" for="logo">{{ trans('admin.choose_file') }}</label>
                                                     <div class="mt-1 text-danger ajaxError" id="error-field-logo"></div>
                                                 </div>
