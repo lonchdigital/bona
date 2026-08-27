@@ -425,6 +425,11 @@
                                                     <button type="button" class="btn btn-main single-product-add-to-cart" id="{{ $product->slug }}">
                                                         {{ trans('base.add_to_cart') }}
                                                     </button>
+
+                                                    <button type="button" class="btn btn-one-click"
+                                                            data-fancybox data-src="#dialog-buy-one-click">
+                                                        {{ trans('base.buy_in_one_click') }}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -730,6 +735,62 @@
             </div> <!--/container-->
         </section>
     @endif
+
+
+{{--
+    The form is named so the existing user-call- handler picks it up: it
+    already posts, clears the fields, opens the thank you dialog and renders
+    whatever the server rejects. The phone carries phone-field, which is the
+    class the Ukrainian input mask is bound to.
+--}}
+<div id="dialog-buy-one-click" class="art-popup-call-measurer">
+    <div class="art-measurer-form-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <form action="#" id="user-call-one-click" method="post" class="art-contact-form">
+                        @csrf
+
+                        <header class="art-light">
+                            <div class="text-center">
+                                <div class="title h2">{{ trans('base.buy_in_one_click') }}</div>
+                                <div class="subtitle font-two">
+                                    <p class="art-form-description">{{ trans('base.buy_one_click_description') }}</p>
+                                </div>
+                            </div>
+                        </header>
+
+                        <div class="art-fields-row">
+                            <div>
+                                <input type="text" class="art-light-field name-field" name="name"
+                                       placeholder="{{ trans('base.name') }}" aria-required="true">
+                            </div>
+                            <div>
+                                <input type="tel" class="art-light-field phone-field" name="phone"
+                                       placeholder="{{ trans('base.phone') }}" inputmode="tel" aria-required="true">
+                            </div>
+                        </div>
+
+                        {{-- What the order is for, so the request arrives with the product on it. --}}
+                        <input type="hidden" name="description"
+                               value="{{ $product->name }} — {{ url()->current() }}">
+                        <input type="hidden" name="agree" value="1">
+                        <input type="hidden" name="event" value="submit_form_buy_one_click">
+
+                        <p>
+                            <button type="submit" class="btn btn-empty">{{ trans('base.buy_one_click_submit') }}</button>
+                        </p>
+
+                        <p class="art-form-agreement-note">
+                            {{ trans('base.buy_one_click_agreement_start') }}
+                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ trans('base.agreement_line_end') }}</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 

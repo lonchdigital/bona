@@ -8398,6 +8398,24 @@ nav .navigation-bottom .navigation-bottom-right .art-header-coll-button {
     margin: 0 70px;
     text-shadow: none;
 }
+/*
+    Adding a third icon to the row left the phone number short of the width it
+    needs and it broke across two lines. It keeps to one, and the call button
+    gives back some of its very generous margins before the row gets tight.
+*/
+nav .navigation-bottom .navigation-bottom-right .art-header-phone .phone-full-number {
+    white-space: nowrap;
+}
+@media (max-width: 1600px) {
+    nav .navigation-bottom .navigation-bottom-right .art-header-coll-button {
+        margin: 0 32px;
+    }
+}
+@media (max-width: 1319px) {
+    nav .navigation-bottom .navigation-bottom-right .art-header-coll-button {
+        margin: 0 24px;
+    }
+}
 nav .navigation-bottom .navigation-bottom-right .header-main-others {
     display: flex;
 }
@@ -10192,7 +10210,7 @@ section.art-contacts-page-section {
     }
 
     a.wishlist-link .art-heart {
-        height: 24px;
+        height: 21px;
     }
 
     a.wishlist-link:hover {
@@ -10358,6 +10376,47 @@ section.art-contacts-page-section {
             min-width: 0;
             width: 100%;
         }
+    }
+}
+
+/*
+    ----------------------------------
+    Buy in one click
+    ----------------------------------
+*/
+.btn.btn-one-click {
+    background-color: transparent;
+    border: 1px solid $accent;
+    color: #1d1d23;
+    margin-left: 12px;
+
+    &:hover,
+    &:active {
+        background-color: $accent;
+        color: #fff;
+    }
+
+    @media (max-width: 575px) {
+        margin-left: 0;
+        margin-top: 12px;
+        width: 100%;
+    }
+}
+
+/*
+    The popup is near black with white text, so this only needs to sit quieter
+    than the rest rather than change colour.
+*/
+.art-popup-call-measurer .art-form-agreement-note {
+    margin-top: 14px;
+    margin-bottom: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    opacity: 0.65;
+
+    a {
+        color: $accent;
+        text-decoration: underline;
     }
 }
 
