@@ -95,9 +95,15 @@
                                 <div class="mt-1 text-danger ajaxError" id="error-field-brand_id"></div>
                             </div>
 
+                            {{--
+                                A one-click order has neither a payment nor a delivery type: those
+                                are agreed on the call back. get(null) hands back the whole
+                                collection, and reaching for a name in it was an undefined key —
+                                which this app turns into an exception, so the page would not open.
+                            --}}
                             <div class="mb-3">
                                 <striong class="text-dark">{{ trans('admin.order_payment_type') }}</striong>
-                                <div class="mt-1">{{ \App\DataClasses\PaymentTypesDataClass::get($order->payment_type_id)['name'] }}</div>
+                                <div class="mt-1">{{ \App\DataClasses\PaymentTypesDataClass::get($order->payment_type_id)['name'] ?? '—' }}</div>
                             </div>
 
 
@@ -108,7 +114,7 @@
                             </p>
                             <div class="mb-3">
                                 <striong class="text-dark">{{ trans('admin.order_delivery_type') }}</striong>
-                                <div class="mt-1">{{ \App\DataClasses\DeliveryTypesDataClass::get($order->delivery_type_id)['name'] }}</div>
+                                <div class="mt-1">{{ \App\DataClasses\DeliveryTypesDataClass::get($order->delivery_type_id)['name'] ?? '—' }}</div>
                             </div>
                             @if($order->delivery_type_id == \App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)
                                 <div class="mb-3">
