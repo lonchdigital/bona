@@ -19,7 +19,9 @@ class GuestWishListToken
 {
     public const COOKIE_NAME = 'wish_list_token';
 
-    private const LIFETIME_MINUTES = 60 * 24 * 365;
+    private const LIFETIME_DAYS = 30;
+
+    private const LIFETIME_MINUTES = 60 * 24 * self::LIFETIME_DAYS;
 
     /**
      * Remembers a token created during this request: a queued cookie is not
@@ -43,24 +45,24 @@ class GuestWishListToken
 
     /**
      * The visitor's token, issuing one if they have none yet.
+     *
+     * An existing token is re-queued rather than left alone, so the thirty
+     * days run from the last time the visitor changed their list instead of
+     * from the first thing they ever saved.
      */
     public function ensure(): string
     {
-        $token = $this->existing();
+        $token = $this->existing() ?? Str::random(40);
 
-        if ($token !== null) {
-            return $token;
-        }
-
-        $this->created = Str::random(40);
+        $this->created = $token;
 
         Cookie::queue(
             self::COOKIE_NAME,
-            $this->created,
+            $token,
             self::LIFETIME_MINUTES
         );
 
-        return $this->created;
+        return $token;
     }
 
     /**

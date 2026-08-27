@@ -17,6 +17,7 @@ $blockquote-custom: #5d5f6f;
 $share-custom: #59267c;
 $delete-custom: #cacad2;
 $yellow-custom: #ffc93e;
+$accent-custom: #d59958; // site accent, same value theme-additional calls $accent
 
 //reset style
 *:focus {
@@ -1421,10 +1422,7 @@ ul.list-inline-categories {
 						right: 16px;
 						top: 16px;
                         &-active {
-                            svg {
-                                fill: $red-light-custom;
-                                stroke: $red-light-custom;
-                            }
+                            color: $accent-custom;
                         }
 					}
 					&-image {

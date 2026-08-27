@@ -135,15 +135,15 @@
                                 <div class="info-content-add d-flex align-items-center justify-content-between flex-wrap">
                                     <div class="d-flex flex-wrap align-items-center no-gutters w-100">
 
-                                        <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#order-count">{{ trans('base.order_count') }}</a>
+                                        <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#order-request">{{ trans('base.order_count') }}</a>
 
-                                        <div id="order-count" class="art-popup-call-measurer">
+                                        <div id="order-request" class="art-popup-call-measurer">
                                             <div class="art-measurer-form-wrapper">
                                                 <div class="container">
 
                                                     <div class="row">
                                                         <div class="col-12 text-center">
-                                                            <form action="#" id="order-count-form" method="post" class="art-contact-form">
+                                                            <form action="#" id="order-request-form" method="post" class="art-contact-form art-order-form">
                                                                 @csrf
 
                                                                 <header class="art-light">

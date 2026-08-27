@@ -20,6 +20,23 @@ use Spatie\Sitemap\Tags\Url;
 
 class SitemapService extends BaseService
 {
+    /**
+     * Mirrors how the catalogue itself gathers a type's products: either the
+     * product names the type outright, or it is attached to it alongside its
+     * own. Counting only the first would drop types that are far from empty.
+     */
+    private function productTypeHasProducts(ProductType $productType): bool
+    {
+        return Product::query()
+            ->where(function ($query) use ($productType) {
+                $query->where('product_type_id', $productType->id)
+                    ->orWhereHas('productTypes', function ($query) use ($productType) {
+                        $query->where('product_types.id', $productType->id);
+                    });
+            })
+            ->exists();
+    }
+
     public function generateSitemap(): void
     {
         $urls = new Collection();
@@ -92,6 +109,12 @@ class SitemapService extends BaseService
 
         // ProductType
         foreach (ProductType::all() as $ProductType) {
+            // A type holding nothing still answers 200, with "nothing found"
+            // where the grid should be — a soft 404 to offer a crawler.
+            if (!$this->productTypeHasProducts($ProductType)) {
+                continue;
+            }
+
             $allLangUrls = $ProductType->toSitemapTag();
 
             foreach ($allLangUrls as $langUrl) {

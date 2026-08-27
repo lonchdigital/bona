@@ -183,10 +183,7 @@
                                                                     @endif
                                                                     <span class="link-heart @if(collect($wishListProducts ?? [])->contains($product->id)) link-heart-active @endif" id="{{ $product->slug }}">
                                                                         <span>{{ trans('base.add_to_wish_list') }}</span>
-                                                                        <svg>
-                                                                            <use
-                                                                                xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
-                                                                        </svg>
+                                                                        <x-wish-heart/>
                                                                     </span>
                                                                 </span>
                                                         <span class="card-link-title">

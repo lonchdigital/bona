@@ -7,7 +7,6 @@ export function init () {
         window.dataLayer = window.dataLayer || [];
 
         // User Choose Doors
-        const $orderCountForm =  $('#order-count-form');
 
         /*
          * One order-count popup serves every card in a catalogue, so it can't
@@ -16,11 +15,19 @@ export function init () {
         $(document).on('click', '.calc-btn[data-product-name]', function () {
             const $button = $(this);
 
-            $orderCountForm.find('.art-current-product-link')
+            $('#order-count-form').find('.art-current-product-link')
                 .text($button.attr('data-product-name'))
                 .attr('href', $button.attr('data-product-url'));
         });
-        $orderCountForm.submit(function(event) {
+        /*
+         * Two of these popups can share a page — "order count" and, for made
+         * to order products, "leave a request". They used to answer to the
+         * same id, so only the first was ever wired up; each is now bound
+         * through its own class and handled as the form that was submitted.
+         */
+        $(document).on('submit', '.art-order-form', function(event) {
+            const $orderCountForm = $(this);
+
             event.preventDefault();
 
             let formData = new FormData(this);
@@ -59,7 +66,7 @@ export function init () {
                 },
                 function (xhr) {
                     if (xhr.status === 422) {
-                        userChooseDoorsErrors(xhr.responseJSON.errors);
+                        userChooseDoorsErrors(xhr.responseJSON.errors, $orderCountForm);
                     } else {
                         console.error('[Email]: init: error during sending the email.');
                     }
@@ -69,7 +76,7 @@ export function init () {
 
         });
 
-        function userChooseDoorsErrors(errors)
+        function userChooseDoorsErrors(errors, $orderCountForm)
         {
             for (let fieldName in errors) {
                 $orderCountForm.find('input[name="'+ fieldName +'"]').val('');

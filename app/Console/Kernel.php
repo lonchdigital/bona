@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Needs a cron calling `php artisan schedule:run` every minute;
+        // without one this simply never fires and nothing else breaks.
+        $schedule->command('wishlist:prune-guests')->dailyAt('04:15');
     }
 
     /**

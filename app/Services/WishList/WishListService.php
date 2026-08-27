@@ -73,6 +73,10 @@ class WishListService extends BaseService
                 $wishList->products()->attach($product->id);
             }
 
+            // attach() leaves the list's own timestamp alone, and the thirty
+            // day window for a guest is measured from it.
+            $wishList->touch();
+
             return ServiceActionResult::make(true, trans('base.wish_list_product_add_success'));
         });
     }
@@ -83,6 +87,8 @@ class WishListService extends BaseService
             if ($wishList->products()->where('product_id', $product->id)->exists()) {
                 $wishList->products()->detach($product->id);
             }
+
+            $wishList->touch();
 
             return ServiceActionResult::make(true, trans('base.wish_list_product_remove_success'));
         });

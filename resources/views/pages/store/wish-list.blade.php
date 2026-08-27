@@ -13,20 +13,13 @@
         <div class="container">
             <div class="products-catalog-wrapper">
 
-            <div class="art-wish-list-head">
-                <h1 class="h2 title">{{ trans('base.wish_list') }}</h1>
-                @if(count($products))
-                    <span class="art-wish-list-counter">{{ count($products) }}</span>
-                @endif
-            </div>
+            <h1 class="h2 title">{{ trans('base.wish_list') }}</h1>
 
             @if(!count($products))
 
                 <div class="art-wish-list-empty">
                     <div class="art-wish-list-empty-icon">
-                        <svg>
-                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart"></use>
-                        </svg>
+                        <x-wish-heart/>
                     </div>
 
                     <p class="art-wish-list-empty-text">{{ trans('base.wish_list_description') }}</p>
@@ -68,12 +61,6 @@
                 <div class="art-wish-list-actions">
                     <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}"
                        class="btn btn-main">{{ trans('base.wish_list_go_to_catalog') }}</a>
-
-                    @if(!$isPublic)
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.wishlist.public', ['wishListAccessToken' => $wishList->access_token]) }}"
-                           class="btn btn-wish-list-share"
-                           title="{{ trans('base.wish_list_share_tooltip') }}">{{ trans('base.wish_list_share') }}</a>
-                    @endif
                 </div>
 
             @endif

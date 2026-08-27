@@ -20,30 +20,19 @@ $wish-list-accent: #D59958;
         padding-bottom: 40px;
     }
 
-    .art-wish-list-head {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 30px;
+    /*
+        The wrapper is the catalogue's, and there the left rule separates the
+        products from the filter column beside them. This page has no such
+        column, so the rule was drawing a line down the side of nothing.
+    */
+    .products-catalog-wrapper {
+        border-left: none;
+        padding-left: 0;
 
-        h1 {
-            margin: 0;
+        > .title {
+            margin-left: 0;
+            margin-bottom: 30px;
         }
-    }
-
-    .art-wish-list-counter {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 28px;
-        height: 28px;
-        padding: 0 9px;
-        border-radius: 14px;
-        background: $wish-list-accent;
-        color: #fff;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 1;
     }
 
     .art-wish-list-grid {
@@ -72,18 +61,6 @@ $wish-list-accent: #D59958;
             }
         }
     }
-
-    .btn.btn-wish-list-share {
-        background: transparent;
-        border: 1px solid $wish-list-accent;
-        color: #1d1d23;
-
-        &:hover,
-        &:active {
-            background: $wish-list-accent;
-            color: #fff;
-        }
-    }
 }
 
 /*
@@ -100,13 +77,11 @@ $wish-list-accent: #D59958;
     .art-wish-list-empty-icon {
         line-height: 0;
         margin-bottom: 24px;
+        color: $wish-list-accent;
 
-        svg {
-            width: 64px;
+        .art-heart {
             height: 64px;
-            fill: none;
-            stroke: $wish-list-accent;
-            stroke-width: 1.5;
+            margin: 0 auto;
         }
     }
 

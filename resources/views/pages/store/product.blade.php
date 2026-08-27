@@ -195,9 +195,7 @@
                             <div class="art-product-title-row">
                                 <h1 class="title" data-title="Sofa">{{ $product->name }}</h1>
                                 <span class="link-heart product-wish-list-button single-product-wish-list{{ collect($wishListProducts ?? [])->contains($product->id) ? ' link-heart-active' : '' }}" id="{{ $product->slug }}" aria-label="{{ trans('base.add_to_wish_list') }}">
-                                    <svg viewBox="5 7 30 26">
-                                        <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-heart-hover"></use>
-                                    </svg>
+                                    <x-wish-heart/>
                                 </span>
                             </div>
                             <div class="clearfix">
@@ -380,15 +378,15 @@
                                     <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#order-count">{{ trans('base.order_count') }}</a>
                                 @else
                                     @if( in_array($product->availability_status_id, [3, 4]) )
-                                        <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#order-count">{{ trans('base.leave_request') }}</a>
+                                        <a href="" class="btn btn-main art-header-coll-button" data-fancybox data-src="#order-request">{{ trans('base.leave_request') }}</a>
 
-                                        <div id="order-count" class="art-popup-call-measurer">
+                                        <div id="order-request" class="art-popup-call-measurer">
                                             <div class="art-measurer-form-wrapper">
                                                 <div class="container">
 
                                                     <div class="row">
                                                         <div class="col-12 text-center">
-                                                            <form action="#" id="order-count-form" method="post" class="art-contact-form">
+                                                            <form action="#" id="order-request-form" method="post" class="art-contact-form art-order-form">
                                                                 @csrf
 
                                                                 <header class="art-light">

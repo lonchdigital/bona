@@ -9,7 +9,7 @@
 
                     <div class="row">
                         <div class="col-12 text-center">
-                            <form action="#" id="order-count-form" method="post" class="art-contact-form">
+                            <form action="#" id="order-count-form" method="post" class="art-contact-form art-order-form">
                                 @csrf
 
                                 <header class="art-light">

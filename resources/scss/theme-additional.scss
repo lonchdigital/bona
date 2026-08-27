@@ -10187,22 +10187,16 @@ section.art-contacts-page-section {
         cursor: pointer;
     }
 
-    /*
-        The sprite's heart fills only 58% of its 40x40 box, so a 20px svg drew
-        a 12px heart beside a 20px cart. The markup crops the box to the shape
-        itself, and these are the shape's own dimensions.
-    */
-    a.wishlist-link svg {
-        width: 21px;
-        height: 18px;
-        fill: none;
-        stroke: #fff;
-        stroke-width: 2;
-        transition: stroke 0.3s ease-out 0s;
+    a.wishlist-link {
+        color: #fff;
     }
 
-    a.wishlist-link:hover svg {
-        stroke: $accent;
+    a.wishlist-link .art-heart {
+        height: 24px;
+    }
+
+    a.wishlist-link:hover {
+        color: $accent;
     }
 
     .art-main-wishlist-count {
@@ -10224,6 +10218,34 @@ section.art-contacts-page-section {
     }
 }
 
+/*
+    ----------------------------------
+    Wish list heart
+    ----------------------------------
+
+    Two shapes ship in the markup and only one shows at a time, so the colour
+    is carried by `color` and each context just says how tall it is.
+*/
+.art-heart {
+    display: block;
+    width: auto;
+    transition: color 0.3s ease-out 0s;
+}
+
+.art-heart-filled {
+    display: none;
+}
+
+.link-heart-active .art-heart-outline,
+.link-heart.link-heart-active .art-heart-outline {
+    display: none;
+}
+
+.link-heart-active .art-heart-filled,
+.link-heart.link-heart-active .art-heart-filled {
+    display: block;
+}
+
 .art-product-item .image .link-heart {
     position: absolute;
     right: 12px;
@@ -10231,20 +10253,15 @@ section.art-contacts-page-section {
     z-index: 2;
     cursor: pointer;
     line-height: 0;
+    color: #b5b5b6;
 
-    svg {
-        width: 22px;
+    .art-heart {
         height: 22px;
-        fill: #fff;
-        stroke: #1d1d23;
-        stroke-width: 2;
-        transition: all 0.3s ease-out 0s;
     }
 
-    &:hover svg,
-    &.link-heart-active svg {
-        fill: $accent;
-        stroke: $accent;
+    &:hover,
+    &.link-heart-active {
+        color: $accent;
     }
 }
 
@@ -10285,18 +10302,15 @@ section.art-contacts-page-section {
     cursor: pointer;
     vertical-align: middle;
 
-    svg {
-        width: 24px;
+    color: #b5b5b6;
+
+    .art-heart {
         height: 24px;
-        fill: none;
-        stroke: #1d1d23;
-        stroke-width: 2;
-        transition: all 0.3s ease-out 0s;
     }
 
-    &:hover svg,
-    &.link-heart-active svg {
-        fill: $accent;
-        stroke: $accent;
+    &:hover,
+    &.link-heart-active {
+        color: $accent;
+        border-color: $accent;
     }
 }
