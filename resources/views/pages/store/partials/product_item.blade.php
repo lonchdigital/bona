@@ -26,7 +26,9 @@
                             <i class="icon icon-cart"></i>
                         </span>
                     @else
-                        <button class="btn calc-btn" data-fancybox data-src="#order-count">{{ trans('base.order_count') }}</button>
+                        <button class="btn calc-btn" data-fancybox data-src="#order-count"
+                                data-product-name="{{ $product->name }}"
+                                data-product-url="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}">{{ trans('base.order_count') }}</button>
                     @endif
 
                 </div>

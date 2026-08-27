@@ -41,8 +41,17 @@
                                 <input type="hidden" name="event" value="submit_form_order_count">
                                 <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
 
-                                <a href="{{ url()->current() }}"
-                                    class="d-none art-current-product-link">{{ $product->name }}</a>
+                                {{--
+                                    This link tells the admin which product an enquiry is about.
+                                    On a product page that is the page itself. On a catalogue the
+                                    popup is shared by every card, so it starts empty and the card
+                                    that opens it fills it in — it used to read whichever product
+                                    the grid happened to loop over last, and on a catalogue with
+                                    no products at all there was no such variable and the page
+                                    answered 500.
+                                --}}
+                                <a href="{{ isset($product) ? url()->current() : '' }}"
+                                    class="d-none art-current-product-link">{{ $product->name ?? '' }}</a>
 
                             </form>
                         </div>

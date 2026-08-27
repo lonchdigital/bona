@@ -8,6 +8,18 @@ export function init () {
 
         // User Choose Doors
         const $orderCountForm =  $('#order-count-form');
+
+        /*
+         * One order-count popup serves every card in a catalogue, so it can't
+         * know which product it is about until a card opens it.
+         */
+        $(document).on('click', '.calc-btn[data-product-name]', function () {
+            const $button = $(this);
+
+            $orderCountForm.find('.art-current-product-link')
+                .text($button.attr('data-product-name'))
+                .attr('href', $button.attr('data-product-url'));
+        });
         $orderCountForm.submit(function(event) {
             event.preventDefault();
 
