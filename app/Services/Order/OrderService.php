@@ -238,6 +238,8 @@ class OrderService extends BaseService
                 'user_id' => $user->id,
                 'recipient_type_id' => RecipientTypesDataClass::RECIPIENT_USER,
                 'custom_recipient_phone' => $phone,
+                // Nothing has been paid yet — that is settled on the call back.
+                'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_UNPAID,
             ]);
 
             $order->products()->sync([[
