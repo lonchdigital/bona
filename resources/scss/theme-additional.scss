@@ -1527,6 +1527,43 @@ nav .cart-wrapper.open {
     text-transform: none;
 }
 
+/*
+    ----------------------------------
+    Slide text column
+    ----------------------------------
+
+    The photographs carry artwork of their own on the right — the eVidnovlennya
+    badge, lettering baked into the picture — and a heading spanning the whole
+    container ran straight across it. The words keep to the left of the slide
+    and the heading scales with the viewport, so a long one wraps to a sensible
+    number of lines instead of growing into the image.
+
+    Kept here rather than in the text field: an editor writing a title should
+    not have to think about where it lands.
+*/
+@media (min-width: 768px) {
+
+    .header-content .swiper-slide .box .container > .title,
+    .header-content .swiper-slide .box .container > .slider-description,
+    .header-content .swiper-slide .box .container > .animated {
+        max-width: 62%;
+    }
+
+    .header-content .swiper-slide .box .container > .title {
+        margin-bottom: 18px;
+        line-height: 1.15;
+    }
+}
+
+@media (min-width: 1200px) {
+
+    .header-content .swiper-slide .box .container > .title,
+    .header-content .swiper-slide .box .container > .slider-description,
+    .header-content .swiper-slide .box .container > .animated {
+        max-width: 54%;
+    }
+}
+
 .header-content .swiper-slide .slider-description {
     font-size: 16px;
     Line-height: 22.4px;
@@ -1549,8 +1586,9 @@ nav .cart-wrapper.open {
     .header-content .swiper-slide {
         height: 700px;
     }
+    /* Room for a long heading without it ever reaching the old 64px. */
     .header-content .swiper-slide .title {
-        font-size: 64px;
+        font-size: clamp(34px, 2.9vw, 50px);
     }
 }
 
