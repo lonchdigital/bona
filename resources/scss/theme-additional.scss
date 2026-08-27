@@ -10265,6 +10265,102 @@ section.art-contacts-page-section {
     }
 }
 
+/*
+    ----------------------------------
+    Wish list page
+    ----------------------------------
+
+    These used to live in wish-list.scss, which rides in the main.scss bundle
+    — a bundle no template ever links, so none of it reached a browser. The
+    page borrows the catalogue's grid and card; this only dresses what's left.
+*/
+.art-wish-list {
+    padding-bottom: 60px;
+
+    @media (max-width: 767px) {
+        padding-bottom: 40px;
+    }
+
+    /*
+        In the catalogue this rule divides the products from the filter column
+        beside them. There is no such column here, so it drew a line down the
+        side of nothing — and took the heading's indent with it.
+    */
+    .products-catalog-wrapper {
+        border-left: none;
+        padding-left: 0;
+
+        > .title {
+            margin-left: 0;
+            margin-bottom: 30px;
+        }
+    }
+
+    .art-wish-list-grid {
+        margin-bottom: 40px;
+    }
+
+    /* A card leaving the list shouldn't blink out — it shrinks away instead. */
+    .art-product-item.is-leaving {
+        opacity: 0;
+        transform: scale(0.96);
+        transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+        pointer-events: none;
+    }
+
+    .art-wish-list-actions .btn {
+        min-width: 220px;
+
+        @media (max-width: 575px) {
+            min-width: 0;
+            width: 100%;
+        }
+    }
+}
+
+.art-wish-list-empty {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px 0 60px;
+    text-align: center;
+
+    .art-wish-list-empty-icon {
+        line-height: 0;
+        margin-bottom: 24px;
+        color: $accent;
+
+        /*
+            An svg with a viewBox and no size of its own falls back to the
+            replaced-element default and fills whatever it is given, which is
+            how this once ran to the height of two screens.
+        */
+        .art-heart {
+            height: 72px;
+            margin: 0 auto;
+        }
+    }
+
+    .art-wish-list-empty-text {
+        margin-bottom: 32px;
+        font-size: 18px;
+        line-height: 1.5;
+        color: #55575e;
+
+        @media (max-width: 575px) {
+            font-size: 16px;
+        }
+    }
+
+    .art-wish-list-cta {
+        min-width: 240px;
+
+        @media (max-width: 575px) {
+            min-width: 0;
+            width: 100%;
+        }
+    }
+}
+
 .art-product-title-row {
     display: flex;
     align-items: flex-start;

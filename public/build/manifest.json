@@ -24,12 +24,12 @@
     "src": "lang/php_en.json"
   },
   "lang/php_ru.json": {
-    "file": "js/php_ru-652014d1.js",
+    "file": "js/php_ru-084216b4.js",
     "isDynamicEntry": true,
     "src": "lang/php_ru.json"
   },
   "lang/php_uk.json": {
-    "file": "js/php_uk-f7006711.js",
+    "file": "js/php_uk-8e8f31d0.js",
     "isDynamicEntry": true,
     "src": "lang/php_uk.json"
   },
@@ -201,7 +201,7 @@
       "lang/php_uk.json",
       "lang/uk.json"
     ],
-    "file": "js/app-deafc7d5.js",
+    "file": "js/app-b25d3400.js",
     "imports": [
       "_jquery-5c3435d1.js",
       "_bootstrap-08b03379.js",
@@ -262,7 +262,7 @@
       "resources/js/store/pages/store.product.page/email.js",
       "resources/js/store/pages/store.works.page/fancybox.js"
     ],
-    "file": "js/app-dded3533.js",
+    "file": "js/app-754cbc9e.js",
     "imports": [
       "_jquery-5c3435d1.js"
     ],
@@ -270,7 +270,7 @@
     "src": "resources/js/store/app.js"
   },
   "resources/js/store/common/email-subscription.js": {
-    "file": "js/email-subscription-4f2e5a40.js",
+    "file": "js/email-subscription-f957a1a6.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -287,7 +287,7 @@
     "src": "resources/js/store/pages/blog.article.page/plyr.js"
   },
   "resources/js/store/pages/blog.article.page/swiper.js": {
-    "file": "js/swiper-c2781616.js",
+    "file": "js/swiper-5da03a62.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -296,7 +296,7 @@
     "src": "resources/js/store/pages/blog.article.page/swiper.js"
   },
   "resources/js/store/pages/blog.main.page/swiper.js": {
-    "file": "js/swiper-55d6b77b.js",
+    "file": "js/swiper-956f2699.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -308,7 +308,7 @@
     "css": [
       "assets/swiper-7c8ef494.css"
     ],
-    "file": "js/swiper-91ba3a6c.js",
+    "file": "js/swiper-9b6df141.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -317,7 +317,7 @@
     "src": "resources/js/store/pages/store.about-us/swiper.js"
   },
   "resources/js/store/pages/store.all-products.page/filter-submit.js": {
-    "file": "js/filter-submit-6008f920.js",
+    "file": "js/filter-submit-f6040e4a.js",
     "imports": [
       "resources/js/store/app.js",
       "_svelte-range-slider-pips-4da35622.js",
@@ -327,7 +327,7 @@
     "src": "resources/js/store/pages/store.all-products.page/filter-submit.js"
   },
   "resources/js/store/pages/store.all-products.page/pagination.js": {
-    "file": "js/pagination-0b879dc3.js",
+    "file": "js/pagination-3492599d.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -336,7 +336,7 @@
     "src": "resources/js/store/pages/store.all-products.page/pagination.js"
   },
   "resources/js/store/pages/store.all-products.page/searchable-list.js": {
-    "file": "js/searchable-list-800f29f0.js",
+    "file": "js/searchable-list-2cdbfe0e.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -345,7 +345,7 @@
     "src": "resources/js/store/pages/store.all-products.page/searchable-list.js"
   },
   "resources/js/store/pages/store.all-products.page/swiper.js": {
-    "file": "js/swiper-7387398c.js",
+    "file": "js/swiper-39d2ea9d.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -354,7 +354,7 @@
     "src": "resources/js/store/pages/store.all-products.page/swiper.js"
   },
   "resources/js/store/pages/store.all-products.page/sync-filters.js": {
-    "file": "js/sync-filters-37c1caf1.js",
+    "file": "js/sync-filters-e43c12ed.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -363,7 +363,7 @@
     "src": "resources/js/store/pages/store.all-products.page/sync-filters.js"
   },
   "resources/js/store/pages/store.all-products.page/tooltip.js": {
-    "file": "js/tooltip-0baad680.js",
+    "file": "js/tooltip-ed29b9ac.js",
     "imports": [
       "resources/js/store/app.js",
       "_bootstrap-08b03379.js",
@@ -373,7 +373,7 @@
     "src": "resources/js/store/pages/store.all-products.page/tooltip.js"
   },
   "resources/js/store/pages/store.brand.page/swiper.js": {
-    "file": "js/swiper-59c7e0a3.js",
+    "file": "js/swiper-ad2c1772.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -382,7 +382,7 @@
     "src": "resources/js/store/pages/store.brand.page/swiper.js"
   },
   "resources/js/store/pages/store.catalog.page/filter-submit.js": {
-    "file": "js/filter-submit-984ed3db.js",
+    "file": "js/filter-submit-c0e4cb09.js",
     "imports": [
       "resources/js/store/app.js",
       "_svelte-range-slider-pips-4da35622.js",
@@ -392,7 +392,7 @@
     "src": "resources/js/store/pages/store.catalog.page/filter-submit.js"
   },
   "resources/js/store/pages/store.catalog.page/pagination.js": {
-    "file": "js/pagination-17ce40f6.js",
+    "file": "js/pagination-684dd6a9.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -401,7 +401,7 @@
     "src": "resources/js/store/pages/store.catalog.page/pagination.js"
   },
   "resources/js/store/pages/store.catalog.page/searchable-list.js": {
-    "file": "js/searchable-list-f55c8283.js",
+    "file": "js/searchable-list-0db4c70c.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -410,7 +410,7 @@
     "src": "resources/js/store/pages/store.catalog.page/searchable-list.js"
   },
   "resources/js/store/pages/store.catalog.page/swiper.js": {
-    "file": "js/swiper-1ed2b0bc.js",
+    "file": "js/swiper-bf70351d.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -419,7 +419,7 @@
     "src": "resources/js/store/pages/store.catalog.page/swiper.js"
   },
   "resources/js/store/pages/store.catalog.page/sync-filters.js": {
-    "file": "js/sync-filters-a18f3e20.js",
+    "file": "js/sync-filters-a08ad611.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -428,7 +428,7 @@
     "src": "resources/js/store/pages/store.catalog.page/sync-filters.js"
   },
   "resources/js/store/pages/store.catalog.page/tooltip.js": {
-    "file": "js/tooltip-75fffdd8.js",
+    "file": "js/tooltip-dc47f470.js",
     "imports": [
       "resources/js/store/app.js",
       "_bootstrap-08b03379.js",
@@ -438,7 +438,7 @@
     "src": "resources/js/store/pages/store.catalog.page/tooltip.js"
   },
   "resources/js/store/pages/store.checkout.page/fast-select.js": {
-    "file": "js/fast-select-37e836d4.js",
+    "file": "js/fast-select-d845436a.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -456,7 +456,7 @@
     "src": "resources/js/store/pages/store.checkout.page/flatpickr.js"
   },
   "resources/js/store/pages/store.checkout.page/swiper.js": {
-    "file": "js/swiper-69262026.js",
+    "file": "js/swiper-452f1f80.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -468,7 +468,7 @@
     "css": [
       "assets/swiper-7c8ef494.css"
     ],
-    "file": "js/swiper-18e01a5a.js",
+    "file": "js/swiper-85a09ea6.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -477,7 +477,7 @@
     "src": "resources/js/store/pages/store.home/swiper.js"
   },
   "resources/js/store/pages/store.product.page/email.js": {
-    "file": "js/email-e737ddab.js",
+    "file": "js/email-e10e28f3.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -486,7 +486,7 @@
     "src": "resources/js/store/pages/store.product.page/email.js"
   },
   "resources/js/store/pages/store.product.page/fancybox.js": {
-    "file": "js/fancybox-ea9885b2.js",
+    "file": "js/fancybox-e6d4c27b.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -498,7 +498,7 @@
     "css": [
       "assets/swiper-7c8ef494.css"
     ],
-    "file": "js/swiper-5047214b.js",
+    "file": "js/swiper-f4530b72.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -507,7 +507,7 @@
     "src": "resources/js/store/pages/store.product.page/swiper.js"
   },
   "resources/js/store/pages/store.product.page/tooltip.js": {
-    "file": "js/tooltip-e021837e.js",
+    "file": "js/tooltip-ee9ac8ec.js",
     "imports": [
       "resources/js/store/app.js",
       "_bootstrap-08b03379.js",
@@ -517,7 +517,7 @@
     "src": "resources/js/store/pages/store.product.page/tooltip.js"
   },
   "resources/js/store/pages/store.works.page/fancybox.js": {
-    "file": "js/fancybox-d66529fb.js",
+    "file": "js/fancybox-059afd5f.js",
     "imports": [
       "resources/js/store/app.js",
       "_jquery-5c3435d1.js"
@@ -531,12 +531,12 @@
     "src": "resources/scss/libs.scss"
   },
   "resources/scss/main.scss": {
-    "file": "assets/main-364ab07b.css",
+    "file": "assets/main-0d9bcdca.css",
     "isEntry": true,
     "src": "resources/scss/main.scss"
   },
   "resources/scss/theme-additional.scss": {
-    "file": "assets/theme-additional-22965296.css",
+    "file": "assets/theme-additional-b1400674.css",
     "isEntry": true,
     "src": "resources/scss/theme-additional.scss"
   },

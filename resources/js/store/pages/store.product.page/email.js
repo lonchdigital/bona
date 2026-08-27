@@ -9,17 +9,6 @@ export function init () {
         // User Choose Doors
 
         /*
-         * One order-count popup serves every card in a catalogue, so it can't
-         * know which product it is about until a card opens it.
-         */
-        $(document).on('click', '.calc-btn[data-product-name]', function () {
-            const $button = $(this);
-
-            $('#order-count-form').find('.art-current-product-link')
-                .text($button.attr('data-product-name'))
-                .attr('href', $button.attr('data-product-url'));
-        });
-        /*
          * Two of these popups can share a page — "order count" and, for made
          * to order products, "leave a request". They used to answer to the
          * same id, so only the first was ever wired up; each is now bound

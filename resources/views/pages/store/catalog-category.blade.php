@@ -172,7 +172,6 @@
 
             </div><!--/row-->
 
-            @include('pages.store.partials.order-count', ['product' => null])
         </div><!--/container-->
     </section>
 

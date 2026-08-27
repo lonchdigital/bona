@@ -178,7 +178,6 @@
                     {{ $productsPaginated->links('pagination.store') }}
                 </div> <!--/product items-->
 
-                @include('pages.store.partials.order-count', ['product' => null])
             </div><!--/row-->
 
         </div><!--/container-->

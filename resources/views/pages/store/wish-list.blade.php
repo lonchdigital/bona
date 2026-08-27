@@ -22,24 +22,7 @@
                         <x-wish-heart/>
                     </div>
 
-                    <p class="art-wish-list-empty-text">{{ trans('base.wish_list_description') }}</p>
-
-                    <div class="art-wish-list-steps">
-                        <div class="art-wish-list-step">
-                            <span class="art-wish-list-step-number">1</span>
-                            <div class="art-wish-list-step-body">
-                                <div class="art-wish-list-step-title">{{ trans('base.wish_list_find') }}</div>
-                                <p class="art-wish-list-step-text">{{ trans('base.wish_list_how_to_add') }}</p>
-                            </div>
-                        </div>
-                        <div class="art-wish-list-step">
-                            <span class="art-wish-list-step-number">2</span>
-                            <div class="art-wish-list-step-body">
-                                <div class="art-wish-list-step-title">{{ trans('base.wish_list_save') }}</div>
-                                <p class="art-wish-list-step-text">{{ trans('base.wish_list_how_to_add_2') }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="art-wish-list-empty-text">{{ trans('base.wish_list_is_empty') }}</p>
 
                     <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}"
                        class="btn btn-main art-wish-list-cta">{{ trans('base.wish_list_go_to_catalog') }}</a>
