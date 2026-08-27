@@ -328,7 +328,9 @@ $optionalLanguageRoutes = function () {
         Route::name('store.product.similar-products')->get('/{productSlug}/similar', GetSimilarProductsPaginatedAction::class);
     });
 
-    Route::prefix('wishList')->group(function () {
+    // Lowercase: RedirectToLowercase 301s every URL to lower case, so a
+    // camelCase prefix sent visitors to an address no route answered.
+    Route::prefix('wishlist')->group(function () {
         Route::name('store.wishlist.private.page')->get('/', ShowWishListPageAction::class);
         Route::name('store.wishlist.private.add-product')->post('product/{productSlug}/add', ProductAddToWishListAction::class);
         Route::name('store.wishlist.private.delete-product')->post('product/{productSlug}/delete', ProductRemoveFromWishListAction::class);
