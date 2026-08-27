@@ -19,7 +19,7 @@ class GuestWishListToken
 {
     public const COOKIE_NAME = 'wish_list_token';
 
-    private const LIFETIME_DAYS = 30;
+    public const LIFETIME_DAYS = 30;
 
     private const LIFETIME_MINUTES = 60 * 24 * self::LIFETIME_DAYS;
 

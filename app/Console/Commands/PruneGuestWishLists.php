@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\WishList;
+use App\Services\WishList\WishListService;
 use Illuminate\Console\Command;
 
 /**
@@ -15,36 +15,17 @@ use Illuminate\Console\Command;
  */
 class PruneGuestWishLists extends Command
 {
-    protected $signature = 'wishlist:prune-guests {--days=30 : How long an untouched guest list is kept}';
+    protected $signature = 'wishlist:prune-guests {--days= : Override the retention period, in days}';
 
     protected $description = 'Delete guest wish lists that have not been touched for the retention period';
 
-    public function handle(): int
+    public function handle(WishListService $wishListService): int
     {
-        $days = max(1, (int) $this->option('days'));
+        $pruned = $wishListService->pruneStaleGuestWishLists(
+            $this->option('days') !== null ? (int) $this->option('days') : null
+        );
 
-        $stale = WishList::query()
-            ->whereNull('owner_id')
-            ->where('updated_at', '<', now()->subDays($days));
-
-        $count = (clone $stale)->count();
-
-        if ($count === 0) {
-            $this->info('Nothing to prune.');
-
-            return self::SUCCESS;
-        }
-
-        // Chunked so a long-neglected table doesn't load in one go, and
-        // deleted one by one so the pivot rows go with them.
-        $stale->chunkById(200, function ($wishLists) {
-            foreach ($wishLists as $wishList) {
-                $wishList->products()->detach();
-                $wishList->delete();
-            }
-        });
-
-        $this->info("Pruned {$count} guest wish list(s) untouched for {$days} days.");
+        $this->info($pruned === 0 ? 'Nothing to prune.' : "Pruned {$pruned} guest wish list(s).");
 
         return self::SUCCESS;
     }
