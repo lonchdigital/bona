@@ -750,12 +750,6 @@
 @endpush
 
 @push('dynamic_scripts')
-    <script type="text/javascript">
-        const product = {
-            similar_products_route: '{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.similar-products', ['productSlug' => $product->slug]) }}',
-            add_to_wish_list_text: '{{ trans('base.add_to_wish_list') }}',
-        }
-    </script>
 @endpush
 
 @push('head')

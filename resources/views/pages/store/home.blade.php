@@ -767,9 +767,7 @@
 @endpush
 
 @push('dynamic_scripts')
-{{--    @vite('resources/js/store/all.common.files.js')--}}
 {{--    @vite('resources/js/store/pages/store.home.js')--}}
-{{--    @vite('resources/js/store/homepage.js')--}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const observer = new MutationObserver(function () {

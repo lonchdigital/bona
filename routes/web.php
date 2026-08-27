@@ -69,7 +69,6 @@ use App\Http\Actions\Store\Payment\Pages\ShowGoToPaymentPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentOrdinaryPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentPaypartPageAction;
 use App\Http\Actions\Store\Payment\UpdateOrderPaymentStatusAction;
-use App\Http\Actions\Store\Product\GetSimilarProductsPaginatedAction;
 use App\Http\Actions\Store\Product\Pages\ShowProductPageAction;
 use App\Http\Actions\Store\Product\SearchProductAction;
 use App\Http\Actions\Store\ProductReview\SubmitProductReviewAction;
@@ -323,7 +322,6 @@ $optionalLanguageRoutes = function () {
     Route::prefix('product')->group(function () {
         Route::name('store.product.search')->post('/search', SearchProductAction::class);
         Route::name('store.product.page')->get('/{productSlug}', ShowProductPageAction::class);
-        Route::name('store.product.similar-products')->get('/{productSlug}/similar', GetSimilarProductsPaginatedAction::class);
     });
 
     // Lowercase: RedirectToLowercase 301s every URL to lower case, so a

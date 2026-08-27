@@ -31,7 +31,6 @@ export default async function () {
         FancyBox,
         Email,
     ] = await Promise.all([
-        // import('./store.catalog.page/svelte-range-slider'),
         import('./store.catalog.page/tooltip'),
         import('./store.catalog.page/sync-filters'),
         import('./store.catalog.page/searchable-list'),
