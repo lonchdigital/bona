@@ -41,7 +41,17 @@ export default {
     data () {
         return {
             slideDescription: [],
+            /*
+             * Slides saved before this control existed have no value at all,
+             * and the column defaults to none, so both read as "no darkening".
+             */
+            overlayOpacity: Number(this.slide.overlay_opacity ?? 0),
         }
+    },
+    computed: {
+        overlayPreviewImage () {
+            return this.slide.slide_image_url || null;
+        },
     },
 }
 </script>
@@ -101,6 +111,52 @@ export default {
                         :errors="errors"
                         :init-data="slide.hasOwnProperty('slide_image_mobile_url') ? slide.slide_image_mobile_url : null"
                     />
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">
+                            {{ $t('admin.slide_overlay') }}:
+                            <strong v-if="overlayOpacity > 0">{{ overlayOpacity }}%</strong>
+                            <span v-else class="text-muted">{{ $t('admin.slide_overlay_none') }}</span>
+                        </label>
+
+                        <div class="d-flex align-items-center" style="gap: 12px;">
+                            <input
+                                type="range"
+                                class="form-range"
+                                min="0"
+                                max="100"
+                                step="5"
+                                v-model.number="overlayOpacity"
+                                style="flex: 1 1 auto;"
+                            >
+
+                            <span
+                                v-if="overlayPreviewImage"
+                                :style="{
+                                    position: 'relative',
+                                    display: 'block',
+                                    flex: '0 0 auto',
+                                    width: '104px',
+                                    height: '58px',
+                                    borderRadius: '4px',
+                                    overflow: 'hidden',
+                                    border: '1px solid #dee2e6',
+                                    backgroundImage: 'url(' + overlayPreviewImage + ')',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                }"
+                            >
+                                <span :style="{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    background: '#000',
+                                    opacity: overlayOpacity / 100,
+                                }"></span>
+                            </span>
+                        </div>
+
+                        <input type="hidden" :name="'slides[' + index + '][overlay_opacity]'" :value="overlayOpacity">
+                    </div>
 
                     <check-box-component
                         :title="$t('admin.display_button')"

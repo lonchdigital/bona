@@ -1492,6 +1492,22 @@ nav .cart-wrapper.open {
     background-size: cover;
 }
 
+/*
+    Darkening set per slide in the admin panel. The content above it already
+    carries a z-index, so the layer slides underneath without being told to.
+*/
+.header-content .swiper-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #000;
+    opacity: var(--slide-overlay, 0);
+    pointer-events: none;
+}
+
 .header-content .swiper-slide .box {
     position: absolute;
     width: 100%;

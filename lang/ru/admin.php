@@ -454,6 +454,8 @@ return [
     'video_link' => 'Ссылка на видео',
     'slide_image' => 'Изображение слайда (десктоп) 1920px x 1080px',
     'slide_image_mobile' => 'Изображение слайда (мобильный) 720px x 360px',
+    'slide_overlay' => 'Затемнение изображения',
+    'slide_overlay_none' => 'Без затемнения',
     'gallery_image' => 'Изображение галереи',
     'product_gallery' => 'Галерея товара',
     'product_characteristics' => 'Характеристики товара',

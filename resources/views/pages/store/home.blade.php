@@ -45,11 +45,13 @@
 
         <div class="swiper owl-slider art-slider-pc">
             <div class="swiper-wrapper">
+                {{-- Each slide carries its own darkening, set on the slide in the
+                     admin panel; zero means the image is shown untouched. --}}
                 @foreach($slides as $slide)
                     @if($slide->slide_url)
-                        <a href="{{ $slide->slide_url }}" class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }})" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
+                        <a href="{{ $slide->slide_url }}" class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }}); --slide-overlay: {{ ($slide->overlay_opacity ?? 0) / 100 }}" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
                     @else
-                        <div class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }})" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
+                        <div class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }}); --slide-overlay: {{ ($slide->overlay_opacity ?? 0) / 100 }}" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
                     @endif
 
                         <div class="box">

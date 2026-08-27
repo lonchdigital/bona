@@ -118,7 +118,10 @@ class HomePageService extends BaseService
                     'description' => $slide['description'],
                     'button_text' => $slide['button_text'],
                     'display_button' => $slide['display_button'],
-                    'button_url' => $slide['button_url']
+                    'button_url' => $slide['button_url'],
+                    // The control is optional, so a slide that predates it keeps
+                    // its image untouched rather than picking up a stray value.
+                    'overlay_opacity' => (int) ($slide['overlay_opacity'] ?? 0),
                 ];
 
                 if (isset($slide['image'])) {

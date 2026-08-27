@@ -82,6 +82,11 @@ class HomePageEditRequest extends BaseRequest
                     (isset($slide['id']) && $slide['id']) ? 'nullable' : 'required',
                     'image',
                 ];
+                $rules['slides.' . $index . '.overlay_opacity'] = [
+                    'nullable',
+                    'integer',
+                    'between:0,100',
+                ];
                 $rules['slides.' . $index . '.button_url'] = [
                     'required',
                     'string'
