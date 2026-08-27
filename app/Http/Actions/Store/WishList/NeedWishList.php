@@ -30,6 +30,9 @@ trait NeedWishList
         $wishList = $this->getWishList($wishListService);
 
         if ($wishList) {
+            // Touching the list is what keeps a guest's cookie alive.
+            $this->guestWishListToken()->refresh();
+
             return $wishList;
         }
 

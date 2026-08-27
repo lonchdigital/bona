@@ -66,6 +66,24 @@ class GuestWishListToken
     }
 
     /**
+     * Pushes the expiry back out to the full window without minting anything.
+     *
+     * ensure() only runs when a list is being created, so on its own it would
+     * date the window from the first thing a visitor ever saved. This is what
+     * makes the thirty days run from their last change instead.
+     */
+    public function refresh(): void
+    {
+        $token = $this->existing();
+
+        if ($token === null) {
+            return;
+        }
+
+        Cookie::queue(self::COOKIE_NAME, $token, self::LIFETIME_MINUTES);
+    }
+
+    /**
      * Dropped once the list has been handed over to a signed in account.
      */
     public function forget(): void
