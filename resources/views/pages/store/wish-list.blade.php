@@ -159,20 +159,6 @@
                                                                     </div>
                                                                 </div>
                                                             @endif
-                                                                <div class="col-auto item">
-                                                                    <div class="link-wrapper">
-                                                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.calculator.page', ['productSlug' => $product->slug]) }}" class="link-delete-button">
-                                                                            <span class="wrapper-delete-button">
-                                                                                <div class="i-calc">
-                                                                                    <svg>
-                                                                                        <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-calc"></use>
-                                                                                    </svg>
-                                                                                    <span class="ml-2">{{ trans('base.wish_list_calculate_wallpaper') }}</span>
-                                                                                </div>
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
                                                             @if(!$isPublic)
                                                                 <div class="col-auto item">
                                                                     <div class="link-wrapper">
