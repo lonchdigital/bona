@@ -194,6 +194,16 @@ class SitemapService extends BaseService
          * whatever it runs into: that is how 1600 image files and the sign in
          * pages ended up listed as pages in their own right.
          */
+        /*
+         * RedirectToLowercase sends every request to its lower case form, so
+         * an address with a capital in it is never the one a visitor lands
+         * on. Listing it here would hand crawlers a 301 to follow instead of
+         * the page itself, so the canonical form is what gets written.
+         */
+        $urls->each(function (Url $url) {
+            $url->setUrl(mb_strtolower($url->url));
+        });
+
         Sitemap::create()
             ->add($urls->toArray())
             ->writeToFile(public_path('sitemap.xml'));
