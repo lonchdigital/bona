@@ -383,12 +383,12 @@ class SerpAgentHtmlService
      * The long forms come first so "Питання" is never read as a bare "П".
      */
     private const QA_MARKERS = [
-        ['Питання', 'Відповідь'],
-        ['Вопрос', 'Ответ'],
-        ['Question', 'Answer'],
-        ['П', 'В'],
-        ['В', 'О'],
-        ['Q', 'A'],
+        ['uk', 'Питання', 'Відповідь'],
+        ['ru', 'Вопрос', 'Ответ'],
+        ['en', 'Question', 'Answer'],
+        ['uk', 'П', 'В'],
+        ['ru', 'В', 'О'],
+        ['en', 'Q', 'A'],
     ];
 
     private const QA_LABELS = [
@@ -413,9 +413,16 @@ class SerpAgentHtmlService
             return $html;
         }
 
-        [$questionLabel, $answerLabel] = self::QA_LABELS[$locale] ?? self::QA_LABELS['uk'];
+        /*
+         * The labels follow the markers the text was written with, not the
+         * field they sit in: a Russian field holding Ukrainian copy should
+         * not be given Russian labels over Ukrainian words.
+         */
+        foreach (self::QA_MARKERS as [$markerLanguage, $questionMarker, $answerMarker]) {
+            [$questionLabel, $answerLabel] = self::QA_LABELS[$markerLanguage]
+                ?? self::QA_LABELS[$locale]
+                ?? self::QA_LABELS['uk'];
 
-        foreach (self::QA_MARKERS as [$questionMarker, $answerMarker]) {
             $pattern = '~<p>\s*' . preg_quote($questionMarker, '~') . '\s*:\s*(.+?)\s*<br\s*/?>\s*'
                 . '(?:<strong>\s*)?' . preg_quote($answerMarker, '~') . '\s*:\s*(?:</strong>)?\s*(.+?)\s*</p>~su';
 
