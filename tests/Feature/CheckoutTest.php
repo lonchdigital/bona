@@ -143,4 +143,33 @@ class CheckoutTest extends TestCase
             'Замовлення має зберегти ціну, про яку домовлялись у кошику.'
         );
     }
+
+    public function test_an_instalment_period_the_shop_does_not_offer_is_refused(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+
+        // The form offers up to six; the bank's API would take twenty five.
+        $this->confirm([
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART,
+            'payment_period' => 25,
+        ])->assertSessionHasErrors('payment_period');
+
+        $this->assertSame(0, Order::count());
+    }
+
+    public function test_an_instalment_period_the_shop_offers_is_accepted(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+
+        $this->confirm([
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART,
+            'payment_period' => 3,
+        ])->assertSessionHasNoErrors();
+    }
 }

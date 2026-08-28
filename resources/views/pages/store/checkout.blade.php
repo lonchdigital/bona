@@ -491,11 +491,9 @@
                                                         </div>
                                                         <div>
                                                             <select class="art-form-light-control art-plain-select" name="payment_period" id="payment_period" style="width: 150px">
-                                                                <option @if(old('payment_period') == 2) selected @endif value="2">2 {{ trans('base.short_month') }}</option>
-                                                                <option @if(old('payment_period') == 3) selected @endif value="3">3 {{ trans('base.short_month') }}</option>
-                                                                <option @if(old('payment_period') == 4) selected @endif value="4">4 {{ trans('base.short_month') }}</option>
-                                                                <option @if(old('payment_period') == 5) selected @endif value="5">5 {{ trans('base.short_month') }}</option>
-                                                                <option @if(old('payment_period') == 6) selected @endif value="6">6 {{ trans('base.short_month') }}</option>
+                                                                @foreach(config('payment.privatbank.periods') as $period)
+                                                                    <option @if(old('payment_period') == $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
+                                                                @endforeach
                                                             </select>
                                                         </div>
                                                     </div>
@@ -530,9 +528,11 @@
                                                         </div>
                                                         <div>
                                                             <select class="art-form-light-control art-plain-select" name="mono_payment_period" id="mono_payment_period" style="width: 150px">
-                                                                <option @if(old('payment_period') == 3) selected @endif value="3">3 {{ trans('base.short_month') }}</option>
-                                                                <option @if(old('payment_period') == 4) selected @endif value="4">4 {{ trans('base.short_month') }}</option>
-                                                                <option @if(old('payment_period') == 5) selected @endif value="5">5 {{ trans('base.short_month') }}</option>
+                                                                {{-- These read old('payment_period') — the other bank's field —
+                                                                     so a rejected form put back the wrong choice, or none. --}}
+                                                                @foreach(config('payment.monobank.periods') as $period)
+                                                                    <option @if(old('mono_payment_period') == $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
+                                                                @endforeach
                                                             </select>
                                                         </div>
                                                     </div>
