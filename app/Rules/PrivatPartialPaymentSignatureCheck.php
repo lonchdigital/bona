@@ -18,8 +18,8 @@ class PrivatPartialPaymentSignatureCheck implements DataAwareRule, ValidationRul
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $store_id = env('PRIVATBANK_STORE_ID');
-        $store_password = env('PRIVATBANK_PASSWORD');
+        $store_id = config('payment.privatbank.store_id');
+        $store_password = config('payment.privatbank.password');
         $sign = base64_encode( sha1(
             $store_password .
             $store_id .

@@ -28,9 +28,9 @@ class PaymentMonoBankService extends BaseService
     public function __construct()
     {
         $this->response_url = route('store.checkout.partial.mono.bank.payment');
-        $this->mono_bank_api_url = (string) env('MONOBANK_API_URL', '');
-        $this->mono_bank_client_secret = (string) env('MONOBANK_CLIENT_SECRET', '');
-        $this->mono_bank_client_store_id = (string) env('MONOBANK_CLIENT_STORE_ID', '');
+        $this->mono_bank_api_url = (string) config('payment.monobank.api_url');
+        $this->mono_bank_client_secret = (string) config('payment.monobank.client_secret');
+        $this->mono_bank_client_store_id = (string) config('payment.monobank.store_id');
     }
 
     /**

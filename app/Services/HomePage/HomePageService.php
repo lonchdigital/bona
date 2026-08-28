@@ -489,8 +489,8 @@ Log::info($accessToken);
     private function refreshInstagramToken(string $oldToken): ?string
     {
         $client = new Client();
-        $appId = env('INSTAGRAM_APP_ID');
-        $appSecret = env('INSTAGRAM_APP_SECRET');
+        $appId = config('services.instagram.app_id');
+        $appSecret = config('services.instagram.app_secret');
 
         try {
             $response = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
