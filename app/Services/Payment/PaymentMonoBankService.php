@@ -18,12 +18,52 @@ class PaymentMonoBankService extends BaseService
     protected string $mono_bank_client_secret;
     protected string $mono_bank_client_store_id;
 
+    /*
+     * These were assigned straight from env() into typed string properties, so
+     * an environment without the Monobank credentials could not build this
+     * class at all — and checkout asks for it on every order, whatever payment
+     * was chosen. One missing line in .env took the whole checkout down rather
+     * than just instalments through Monobank.
+     */
     public function __construct()
     {
         $this->response_url = route('store.checkout.partial.mono.bank.payment');
-        $this->mono_bank_api_url = env('MONOBANK_API_URL');
-        $this->mono_bank_client_secret = env('MONOBANK_CLIENT_SECRET');
-        $this->mono_bank_client_store_id = env('MONOBANK_CLIENT_STORE_ID');
+        $this->mono_bank_api_url = (string) env('MONOBANK_API_URL', '');
+        $this->mono_bank_client_secret = (string) env('MONOBANK_CLIENT_SECRET', '');
+        $this->mono_bank_client_store_id = (string) env('MONOBANK_CLIENT_STORE_ID', '');
+    }
+
+    /**
+     * Whether this shop is set up to offer Monobank instalments at all.
+     */
+    public function isConfigured(): bool
+    {
+        return $this->mono_bank_api_url !== ''
+            && $this->mono_bank_client_secret !== ''
+            && $this->mono_bank_client_store_id !== '';
+    }
+
+    /**
+     * Whether a callback really came from Monobank.
+     *
+     * They sign the body the same way we sign ours — HMAC-SHA256 with the
+     * store secret — and send it in a header. Nothing checked it, so anyone
+     * who could name an order was able to post to the callback and have it
+     * marked paid.
+     *
+     * Compared with hash_equals so the comparison itself gives nothing away.
+     */
+    public function isCallbackAuthentic(string $rawBody, ?string $signature): bool
+    {
+        if (!$this->isConfigured() || !is_string($signature) || $signature === '') {
+            return false;
+        }
+
+        $expected = base64_encode(
+            hash_hmac('sha256', $rawBody, $this->mono_bank_client_secret, true)
+        );
+
+        return hash_equals($expected, $signature);
     }
 
     public function createMonoBankPartialPaymentOrder(Order $order, string $phone, string $period)

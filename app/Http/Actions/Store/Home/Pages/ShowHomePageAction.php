@@ -4,6 +4,7 @@ namespace App\Http\Actions\Store\Home\Pages;
 
 use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\HomePageConfig;
 use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Currency\CurrencyService;
 use App\Services\HomePage\HomePageService;
@@ -37,11 +38,15 @@ class ShowHomePageAction extends BaseAction
         }*/
 
 
-        $config = $homePageService->getHomePageConfig();
+        /*
+         * Absent on a fresh install, and the page read straight through it —
+         * so the front page answered 500 rather than showing itself with
+         * nothing filled in yet.
+         */
+        $config = $homePageService->getHomePageConfig() ?? new HomePageConfig();
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);
 
         LastModified::set($config->updated_at);
-Log::info('123456');
         return view('pages.store.home', [
             'config' => $config,
             'slides' => $homePageService->getHomePageSlides(),

@@ -73,6 +73,7 @@ trait MakesShopData
     {
         DB::table('currencies')->insertOrIgnore([
             'id' => 1,
+            'creator_id' => $this->author()->id,
             'name' => json_encode(['uk' => 'Гривня', 'ru' => 'Гривна'], JSON_UNESCAPED_UNICODE),
             'name_short' => json_encode(['uk' => 'грн', 'ru' => 'грн'], JSON_UNESCAPED_UNICODE),
             'code' => 'UAH',

@@ -313,13 +313,22 @@ class HomePageService extends BaseService
 
     public function getHomePageSeoTextByLanguage(string $language)
     {
-        $seoTextData = SeoText::where('page_type', config('constants.HOMEPAGE_TYPE'))->get();
-        $data = [];
+        /*
+         * get() hands back a collection, which is never null, so the guard
+         * below always passed and the row for this particular language was
+         * read whether or not it existed. Filling the SEO text in for one
+         * language and not the other took the other language's front page
+         * down with a 500.
+         */
+        $seoText = SeoText::where('page_type', config('constants.HOMEPAGE_TYPE'))
+            ->where('language', $language)
+            ->first();
 
-        if ($seoTextData) {
-            $data['title'] = $seoTextData->where('language', $language)->first()->title;
-            $data['content'] = $seoTextData->where('language', $language)->first()->content;
-            return $data;
+        if ($seoText) {
+            return [
+                'title' => $seoText->title,
+                'content' => $seoText->content,
+            ];
         }
 
         return null;

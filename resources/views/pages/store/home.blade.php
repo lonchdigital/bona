@@ -39,6 +39,18 @@
 
 @section('content')
 
+{{--
+    The tiles below name product types by code_name and read the slug straight
+    off the result. Nothing checked that the type is still there, so removing
+    one in the admin panel — or clearing its code name — took the whole front
+    page down with it. This is what they fall back to instead.
+--}}
+@php
+    $fallbackTypeSlug = optional($specificProductTypes->first())->slug ?? '';
+    $fallbackCategorySlug = optional(optional($specificProductTypes->first())->categories?->first())->slug ?? $fallbackTypeSlug;
+@endphp
+
+
     <!-- ========================  Header content ======================== -->
 
     <section class="art-home-slider header-content">
@@ -158,8 +170,8 @@
                 <div class="swiper-wrapper">
 
                     <div class="swiper-slide">
-{{--                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product-type-by-color.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'interior-doors')->first()->slug, 'color' => 7]) }}">--}}
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'bele-dvery')->first()->slug]) }}">
+{{--                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product-type-by-color.page', ['productTypeSlug' => (optional($specificProductTypes->where('code_name', 'interior-doors')->first())->slug ?: $fallbackTypeSlug), 'color' => 7]) }}">--}}
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => (optional($specificProductTypes->where('code_name', 'bele-dvery')->first())->slug ?: $fallbackTypeSlug)]) }}">
                         <figure>
                             <div class="icon-wrapper">
                                 <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -194,7 +206,7 @@
                     </div>
 
                     <div class="swiper-slide">
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'dvery-na-ulycu')->first()->slug]) }}">
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => (optional($specificProductTypes->where('code_name', 'dvery-na-ulycu')->first())->slug ?: $fallbackTypeSlug)]) }}">
                         <figure>
                             <div class="icon-wrapper">
                                 <svg width="56" height="54" viewBox="0 0 56 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -226,7 +238,7 @@
                     </div>
 
                     <div class="swiper-slide">
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'dzerkalni-dveri')->first()->slug]) }}">
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => (optional($specificProductTypes->where('code_name', 'dzerkalni-dveri')->first())->slug ?: $fallbackTypeSlug)]) }}">
                         <figure>
                             <div class="icon-wrapper">
                                 <svg width="30" height="54" viewBox="0 0 93 175" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -259,7 +271,7 @@
                     </div>
 
                     <div class="swiper-slide">
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'plyntus')->first()->slug]) }}">
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => (optional($specificProductTypes->where('code_name', 'plyntus')->first())->slug ?: $fallbackTypeSlug)]) }}">
                             <figure>
                                 <div class="icon-wrapper">
                                     <svg width="84" height="84" viewBox="0 0 175 139" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -272,7 +284,7 @@
                     </div>
 
                     <div class="swiper-slide">
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $specificProductTypes->where('code_name', 'klassyceskye-dvery')->first()->slug]) }}">
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => (optional($specificProductTypes->where('code_name', 'klassyceskye-dvery')->first())->slug ?: $fallbackTypeSlug)]) }}">
                         <figure>
                             <div class="icon-wrapper">
                                 <svg width="54" height="54" viewBox="0 0 93 175" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -293,8 +305,8 @@
                     {{--
                     <div class="swiper-slide">
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
-                                'categorySlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->categories()->where('code_name', 'vinilova-pidloga')->first()->slug,
-                                'productTypeSlug' => $specificProductTypes->where('code_name', 'pidloga')->first()->slug
+                                'categorySlug' => optional($specificProductTypes->where('code_name', 'pidloga')->first())?->categories()->where('code_name', 'vinilova-pidloga')->first()?->slug ?: $fallbackCategorySlug,
+                                'productTypeSlug' => (optional($specificProductTypes->where('code_name', 'pidloga')->first())->slug ?: $fallbackTypeSlug)
                                 ]) }}">
                             <figure>
                                 <div class="icon-wrapper">
@@ -329,8 +341,8 @@
 
                     <div class="swiper-slide">
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.products-rucky-by-availability.page', [
-                                'categorySlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->categories()->where('code_name', 'dverni-rucky')->first()->slug,
-                                'productTypeSlug' => $specificProductTypes->where('code_name', 'aksesuary')->first()->slug
+                                'categorySlug' => optional(optional($specificProductTypes->where('code_name', 'aksesuary')->first())->categories())->where('code_name', 'dverni-rucky')->first()?->slug ?: $fallbackCategorySlug,
+                                'productTypeSlug' => (optional($specificProductTypes->where('code_name', 'aksesuary')->first())->slug ?: $fallbackTypeSlug)
                                 ]) }}">
                             <figure>
                                 <div class="icon-wrapper">
