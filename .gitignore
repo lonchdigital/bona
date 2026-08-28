@@ -24,3 +24,6 @@ lang/php_*.json
 
 # macOS folder metadata, never useful in the repository
 .DS_Store
+
+# Layouts handed over as plain HTML, kept beside the project for reference
+/bona-html
