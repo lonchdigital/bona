@@ -6,6 +6,8 @@ use App\Models\BlogArticle;
 use App\Models\Author;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Faqs;
+use App\Models\HomePageConfig;
 use App\Models\Product;
 use App\Models\ServicesConfig;
 use App\Models\ProductType;
@@ -20,6 +22,22 @@ use Spatie\Sitemap\Tags\Url;
 
 class SitemapService extends BaseService
 {
+    /**
+     * Stamps a url with when the thing behind it last changed.
+     *
+     * Google reads lastmod to decide what is worth fetching again, and skips
+     * it when it is missing rather than guessing — so a record with no
+     * timestamp of its own simply goes without one.
+     */
+    private function withLastModified(Url $url, $changedAt): Url
+    {
+        if (!$changedAt) {
+            return $url;
+        }
+
+        return $url->setLastModificationDate(Carbon::parse($changedAt));
+    }
+
     /**
      * Mirrors how the catalogue itself gathers a type's products: either the
      * product names the type outright, or it is attached to it alongside its
@@ -42,30 +60,23 @@ class SitemapService extends BaseService
         $urls = new Collection();
 
         // Add homepage
-        $urls->push(Url::create('/')
-            ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
-            ->setPriority(1)
-        );
-        $urls->push(Url::create('/ru')
-            ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
-            ->setPriority(1)
-        );
+        $homePageChangedAt = HomePageConfig::query()->latest('updated_at')->value('updated_at');
+
+        $urls->push($this->withLastModified(Url::create('/'), $homePageChangedAt));
+        $urls->push($this->withLastModified(Url::create('/ru'), $homePageChangedAt));
 
         // FAQ hub
+        $faqChangedAt = Faqs::query()->latest('updated_at')->value('updated_at');
+
         foreach (['/faq', '/ru/faq'] as $faqUrl) {
-            $urls->push(Url::create($faqUrl)
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setPriority(0.7)
-            );
+            $urls->push($this->withLastModified(Url::create($faqUrl), $faqChangedAt));
         }
 
         // Add Services
-        $allLangUrls = ServicesConfig::first()->toSitemapTag();
+        $servicesConfig = ServicesConfig::first();
+        $allLangUrls = $servicesConfig->toSitemapTag();
         foreach ($allLangUrls as $langUrl) {
-            $urls->push(Url::create($langUrl)
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
-                ->setPriority(1)
-            );
+            $urls->push($this->withLastModified(Url::create($langUrl), $servicesConfig->updated_at));
         }
 
 
@@ -79,9 +90,7 @@ class SitemapService extends BaseService
                 $productImagePath = $product->preview_image_path ?: $product->main_image_path;
 
                 foreach ($allLangUrls as $langUrl) {
-                    $url = Url::create($langUrl)
-                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                        ->setPriority(0.8);
+                    $url = $this->withLastModified(Url::create($langUrl), $product->updated_at);
 
                     // Declared against the page it belongs to, which is what
                     // image search expects, rather than as a page of its own.
@@ -100,10 +109,7 @@ class SitemapService extends BaseService
             $allLangUrls = $category->toSitemapTag();
 
             foreach ($allLangUrls as $langUrl) {
-                $urls->push(Url::create($langUrl)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                    ->setPriority(0.8)
-                );
+                $urls->push($this->withLastModified(Url::create($langUrl), $category->updated_at));
             }
         }
 
@@ -118,10 +124,7 @@ class SitemapService extends BaseService
             $allLangUrls = $ProductType->toSitemapTag();
 
             foreach ($allLangUrls as $langUrl) {
-                $urls->push(Url::create($langUrl)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                    ->setPriority(0.8)
-                );
+                $urls->push($this->withLastModified(Url::create($langUrl), $ProductType->updated_at));
             }
         }
 
@@ -130,10 +133,7 @@ class SitemapService extends BaseService
             $allLangUrls = $brand->toSitemapTag();
 
             foreach ($allLangUrls as $langUrl) {
-                $urls->push(Url::create($langUrl)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                    ->setPriority(0.8)
-                );
+                $urls->push($this->withLastModified(Url::create($langUrl), $brand->updated_at));
             }
         }
 
@@ -142,37 +142,27 @@ class SitemapService extends BaseService
             $allLangUrls = $blogArticle->toSitemapTag();
 
             foreach ($allLangUrls as $langUrl) {
-                $urls->push(Url::create($langUrl)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                    ->setPriority(0.7)
-                );
+                $urls->push($this->withLastModified(Url::create($langUrl), $blogArticle->updated_at));
             }
         }
 
         // Works
+        $worksChangedAt = Work::published()->max('updated_at');
+
         foreach (['/nashi-roboty', '/ru/nashi-roboty'] as $worksUrl) {
-            $urls->push(Url::create($worksUrl)
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setPriority(0.7)
-            );
+            $urls->push($this->withLastModified(Url::create($worksUrl), $worksChangedAt));
         }
 
         foreach (Work::published()->get() as $work) {
             foreach ($work->toSitemapTag() as $langUrl) {
-                $urls->push(Url::create($langUrl)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                    ->setPriority(0.6)
-                );
+                $urls->push($this->withLastModified(Url::create($langUrl), $work->updated_at));
             }
         }
 
         // Author
         foreach (Author::all() as $author) {
             foreach ($author->toSitemapTag() as $langUrl) {
-                $urls->push(Url::create($langUrl)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                    ->setPriority(0.6)
-                );
+                $urls->push($this->withLastModified(Url::create($langUrl), $author->updated_at));
             }
         }
 
@@ -181,10 +171,7 @@ class SitemapService extends BaseService
             $allLangUrls = $staticPage->toSitemapTag();
 
             foreach ($allLangUrls as $langUrl) {
-                $urls->push(Url::create($langUrl)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                    ->setPriority(0.7)
-                );
+                $urls->push($this->withLastModified(Url::create($langUrl), $staticPage->updated_at));
             }
         }
 
