@@ -42,36 +42,41 @@ class AppServiceProvider extends ServiceProvider
     ): void
     {
 
-        $mainProductTypes = Cache::remember('mainProductTypes', 43200, function () use ($productTypeService) {
-            return $productTypeService->getProductTypes();
-        });
-
+        /*
+         * These used to be read here, in boot(), which runs before anything
+         * else on every request and every console command alike. That made the
+         * application unable to start against a database that has no tables
+         * yet — `migrate` could not run on a fresh checkout, because booting it
+         * queried tables the migration was about to create.
+         *
+         * Read inside the composer instead: the query happens when a layout
+         * that needs it is actually rendered, and console commands never touch
+         * the database to start.
+         */
         view()->composer(
             [
                 'layouts.admin-main',
                 'components.cart-window',
             ],
-            function ($view) use ($mainProductTypes) {
-                $view->with('productTypes', $mainProductTypes);
+            function ($view) use ($productTypeService) {
+                $view->with('productTypes', Cache::remember('mainProductTypes', 43200, function () use ($productTypeService) {
+                    return $productTypeService->getProductTypes();
+                }));
             }
         );
-
-        $sortedProductTypes = Cache::remember('sortedProductTypes', 43200, function () use ($productTypeService) {
-            return $productTypeService->getSortedProductTypes();
-        });
-        $contactsFooter = Cache::remember('contactsFooter', 43200, function () use ($contactsService) {
-            return $contactsService->getContactsFooter();
-        });
-
 
         view()->composer(
             [
                 'layouts.store-main',
             ],
-            function ($view) use ($sortedProductTypes, $contactsFooter) {
-                $view->with('productTypes', $sortedProductTypes);
+            function ($view) use ($productTypeService, $contactsService) {
+                $view->with('productTypes', Cache::remember('sortedProductTypes', 43200, function () use ($productTypeService) {
+                    return $productTypeService->getSortedProductTypes();
+                }));
                 $view->with('locationService', app()->make(LocaleService::class));
-                $view->with('contactsFooter', $contactsFooter);
+                $view->with('contactsFooter', Cache::remember('contactsFooter', 43200, function () use ($contactsService) {
+                    return $contactsService->getContactsFooter();
+                }));
             }
         );
 
@@ -109,17 +114,13 @@ class AppServiceProvider extends ServiceProvider
             $view->with('wishlistEmpty', $isWishListEmpty);
         });*/
 
-        $applicationGlobalOptions = Cache::remember('applicationGlobalOptions', 43200, function () use ($applicationService) {
-            return $applicationService->getAllApplicationConfigOptions();
-        });
-
-        $availableLanguages = $applicationService->getAvailableLanguages();
-
         view()->composer(
             '*',
-            function ($view) use ($applicationService, $applicationGlobalOptions, $availableLanguages) {
-                $view->with('availableLanguages', $availableLanguages)
-                    ->with('applicationGlobalOptions', $applicationGlobalOptions)
+            function ($view) use ($applicationService) {
+                $view->with('availableLanguages', $applicationService->getAvailableLanguages())
+                    ->with('applicationGlobalOptions', Cache::remember('applicationGlobalOptions', 43200, function () use ($applicationService) {
+                        return $applicationService->getAllApplicationConfigOptions();
+                    }))
                     ->with('baseLanguage', config('app.locale'));
             }
         );

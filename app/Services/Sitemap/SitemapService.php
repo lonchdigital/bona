@@ -73,10 +73,12 @@ class SitemapService extends BaseService
         }
 
         // Add Services
-        $servicesConfig = ServicesConfig::first();
-        $allLangUrls = $servicesConfig->toSitemapTag();
-        foreach ($allLangUrls as $langUrl) {
-            $urls->push($this->withLastModified(Url::create($langUrl), $servicesConfig->updated_at));
+        // Absent until someone fills the services page in — on a fresh
+        // install, and in any test that has not seeded it.
+        if ($servicesConfig = ServicesConfig::first()) {
+            foreach ($servicesConfig->toSitemapTag() as $langUrl) {
+                $urls->push($this->withLastModified(Url::create($langUrl), $servicesConfig->updated_at));
+            }
         }
 
 
