@@ -348,8 +348,14 @@ class SerpAgentHtmlService
         $doomed = [$heading];
 
         for ($node = $heading->nextSibling; $node !== null; $node = $node->nextSibling) {
-            if ($node instanceof DOMElement && strtolower($node->tagName) === 'h2') {
-                break;
+            if ($node instanceof DOMElement) {
+                // The accordion is a sibling, not a heading, so stopping only
+                // at the next h2 would swallow it whole when this runs over
+                // content that has already been through here once.
+                if (strtolower($node->tagName) === 'h2'
+                    || str_contains((string) $node->getAttribute('class'), 'article-faq')) {
+                    break;
+                }
             }
 
             $doomed[] = $node;
