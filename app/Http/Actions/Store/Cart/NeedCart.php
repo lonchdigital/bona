@@ -4,6 +4,7 @@ namespace App\Http\Actions\Store\Cart;
 
 use App\Models\Cart;
 use App\Services\Cart\CartService;
+use App\Services\Cart\GuestCartToken;
 
 trait NeedCart
 {
@@ -12,13 +13,20 @@ trait NeedCart
         if ($this->getAuthUser()) {
             $cart = $cartService->getCartForAuthUser($this->getAuthUser());
         } else {
-            $cart = $cartService->getCartForGuestUser(request()->session()->getId());
+            $cart = $cartService->getCartForGuestUser($this->guestCartToken()->existing() ?? '');
         }
 
         if (!$cart) {
-            $cart = $this->getAuthUser() ? $cartService->createCartByUser($this->getAuthUser()) : $cartService->createCartByToken(request()->session()->getId());
+            $cart = $this->getAuthUser()
+                ? $cartService->createCartByUser($this->getAuthUser())
+                : $cartService->createCartByToken($this->guestCartToken()->ensure());
         }
 
         return $cart;
+    }
+
+    private function guestCartToken(): GuestCartToken
+    {
+        return app(GuestCartToken::class);
     }
 }

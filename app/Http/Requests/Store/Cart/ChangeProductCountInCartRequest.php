@@ -13,6 +13,10 @@ class ChangeProductCountInCartRequest extends BaseRequest
             'product_count' => [
                 'required',
                 'integer',
+                // Nothing below one is a quantity. Without this the endpoint
+                // accepted zero, and a negative number would have been carried
+                // into the order total as a discount.
+                'min:1',
             ],
             'product_attributes' => [
                 'nullable',

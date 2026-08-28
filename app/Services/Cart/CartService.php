@@ -51,6 +51,57 @@ class CartService extends BaseService
         ]);
     }
 
+    /**
+     * Hands a guest's cart to the account that just signed in.
+     *
+     * If the account has no cart the guest's simply becomes theirs. If it has
+     * one, the lines are carried over: a quantity for a product already there
+     * is added to it rather than replacing it, since both were things the same
+     * person meant to buy.
+     */
+    public function mergeGuestCartIntoUserCart(User $user, string $guestToken): void
+    {
+        $guestCart = $this->getCartForGuestUser($guestToken);
+
+        if (!$guestCart) {
+            return;
+        }
+
+        $this->coverWithDBTransactionWithoutResponse(function () use ($user, $guestCart) {
+            $userCart = $this->getCartForAuthUser($user);
+
+            if (!$userCart) {
+                $guestCart->user_id = $user->id;
+                $guestCart->token = null;
+                $guestCart->save();
+
+                return;
+            }
+
+            foreach ($guestCart->products as $product) {
+                $existing = $userCart->products()->where('product_id', $product->id)->first();
+
+                if ($existing) {
+                    $userCart->products()->updateExistingPivot($product->id, [
+                        'count' => $existing->pivot->count + $product->pivot->count,
+                    ]);
+
+                    continue;
+                }
+
+                $userCart->products()->attach($product->id, [
+                    'count' => $product->pivot->count,
+                    'price' => $product->pivot->price,
+                    'attributes' => $product->pivot->attributes,
+                    'attributes_price' => $product->pivot->attributes_price,
+                ]);
+            }
+
+            $guestCart->products()->detach();
+            $guestCart->delete();
+        });
+    }
+
     public function isProductInCart(Product $product, Cart $cart): bool
     {
         return $cart->products()->where('product_id', $product->id)->exists();
@@ -256,11 +307,27 @@ class CartService extends BaseService
 
     private function isRequestedProduct($attributes, $requestProductAttributes): bool
     {
-//        dd($attributes, $requestProductAttributes);
-        $arr = [];
+        $arr = json_decode((string) $attributes, true);
+
+        /*
+         * A line put in the cart without attributes — anything whose type has
+         * none, an accessory say — stores null here. Reading a key straight
+         * off the decoded null threw, so adding the same product a second time
+         * answered 500 rather than raising its quantity.
+         *
+         * Such a line is the requested one only when the request carries no
+         * attributes either.
+         */
+        if (!is_array($arr)) {
+            return empty($requestProductAttributes);
+        }
+
+        if (empty($requestProductAttributes)) {
+            return false;
+        }
+
         $preparedArray = [];
-        $arr = json_decode($attributes, true);
-        $preparedArray['color_name'] = $arr['color_id'];
+        $preparedArray['color_name'] = $arr['color_id'] ?? null;
         unset($arr['color_id']);
         unset($arr['color_name']);
 
@@ -268,7 +335,13 @@ class CartService extends BaseService
             if(is_null($value)) {
                 continue;
             }
-            $preparedArray[$key] = (string)json_decode($value, true)['id'];
+            $decoded = json_decode($value, true);
+
+            if (!is_array($decoded) || !isset($decoded['id'])) {
+                continue;
+            }
+
+            $preparedArray[$key] = (string) $decoded['id'];
         }
 
 //        dd($preparedArray, $requestProductAttributes);

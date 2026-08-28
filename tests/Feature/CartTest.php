@@ -3,87 +3,40 @@
 namespace Tests\Feature;
 
 use App\Models\Cart;
-use App\Models\Product;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\MakesShopData;
 use Tests\TestCase;
 
 /**
  * The cart, as a visitor who is not signed in meets it.
  *
- * These are the checks that were being done by hand: add something, look at
+ * These are the checks that used to be done by hand: add something, look at
  * what the cart holds, change the quantity, look again. Written down they run
- * in a second and they run on every change from here on.
+ * in a second, and they run on every change from here on.
  */
 class CartTest extends TestCase
 {
     use RefreshDatabase;
+    use MakesShopData;
 
-    private function productType(): \App\Models\ProductType
+    private function addToCart(string $slug, int $count = 1)
     {
-        return \App\Models\ProductType::firstOrCreate(
-            ['slug' => 'test-doors'],
-            [
-                'name' => 'Тестові двері',
-                'creator_id' => $this->author()->id,
-                // Every one of these is NOT NULL with no default. Spelled out
-                // here because the project has no factory for this model yet.
-                'image_path' => 'test/type.webp',
-                'meta_title' => ['uk' => 'Тест', 'ru' => 'Тест'],
-                'meta_description' => ['uk' => 'Тест', 'ru' => 'Тест'],
-                'meta_keywords' => ['uk' => 'тест', 'ru' => 'тест'],
-            ]
-        );
-    }
-
-    private function country(): \App\Models\Country
-    {
-        return \App\Models\Country::firstOrCreate(
-            ['code' => 'UA'],
-            [
-                'name' => ['uk' => 'Україна', 'ru' => 'Украина'],
-                'image_path' => 'test/ua.svg',
-                'creator_id' => $this->author()->id,
-            ]
-        );
-    }
-
-    private function author(): User
-    {
-        return $this->author ??= User::factory()->create();
-    }
-
-    private ?User $author = null;
-
-    private function makeProduct(array $attributes = []): Product
-    {
-        return Product::create(array_merge([
-            'slug' => 'test-door-' . uniqid(),
-            'creator_id' => $this->author()->id,
-            'product_type_id' => $this->productType()->id,
-            'country_id' => $this->country()->id,
-            'name' => ['uk' => 'Тестові двері', 'ru' => 'Тестовая дверь'],
-            'price' => 5000,
-            'purchase_price_in_currency' => 3000,
-            'availability_status_id' => 1,
-            'is_active' => true,
-        ], $attributes));
+        return $this->keepCookies($this->postJson(
+            route('store.cart.add-product', ['productSlug' => $slug]),
+            ['product_count' => $count]
+        ));
     }
 
     public function test_a_guest_can_put_a_product_in_the_cart(): void
     {
         $product = $this->makeProduct();
 
-        $response = $this->postJson(route('store.cart.add-product', ['productSlug' => $product->slug]), [
-            'product_count' => 1,
-        ]);
-
-        $response->assertOk();
+        $this->addToCart($product->slug)->assertOk();
 
         $cart = Cart::first();
 
         $this->assertNotNull($cart, 'Кошик не створився.');
-        $this->assertCount(1, $cart->products, 'У кошику має бути один товар.');
+        $this->assertCount(1, $cart->products);
         $this->assertSame($product->id, $cart->products->first()->id);
     }
 
@@ -91,9 +44,7 @@ class CartTest extends TestCase
     {
         $product = $this->makeProduct();
 
-        $this->postJson(route('store.cart.add-product', ['productSlug' => $product->slug]), [
-            'product_count' => 3,
-        ])->assertOk();
+        $this->addToCart($product->slug, 3)->assertOk();
 
         $this->assertSame(3, (int) Cart::first()->products->first()->pivot->count);
     }
@@ -102,9 +53,7 @@ class CartTest extends TestCase
     {
         $product = $this->makeProduct(['price' => 5000]);
 
-        $this->postJson(route('store.cart.add-product', ['productSlug' => $product->slug]), [
-            'product_count' => 1,
-        ])->assertOk();
+        $this->addToCart($product->slug)->assertOk();
 
         // The price the customer agreed to, not whatever the product costs
         // when the order is looked at later.
@@ -113,20 +62,64 @@ class CartTest extends TestCase
         $this->assertSame(5000.0, (float) Cart::first()->products->first()->pivot->price);
     }
 
+    public function test_the_quantity_can_be_changed(): void
+    {
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug, 1)->assertOk();
+
+        $this->keepCookies($this->postJson(
+            route('store.cart.change-product-count', ['productSlug' => $product->slug]),
+            ['product_count' => 4]
+        ))->assertOk();
+
+        $this->assertSame(4, (int) Cart::first()->products->first()->pivot->count);
+    }
+
+    public function test_a_product_can_be_taken_out_of_the_cart(): void
+    {
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+        $this->assertCount(1, Cart::first()->products);
+
+        $this->keepCookies(
+            $this->postJson(route('store.cart.delete-product', ['productSlug' => $product->slug]))
+        )->assertOk();
+
+        $this->assertCount(0, Cart::first()->fresh()->products);
+    }
+
     public function test_two_visitors_do_not_share_a_cart(): void
     {
         $product = $this->makeProduct();
 
-        $this->postJson(route('store.cart.add-product', ['productSlug' => $product->slug]), ['product_count' => 1])
-            ->assertOk();
+        $this->addToCart($product->slug)->assertOk();
+        $firstCartId = Cart::first()->id;
 
-        // A second visitor: no cookies carried over from the first.
-        $this->flushSession();
-        $this->app['request']->cookies->replace([]);
+        $this->asNewVisitor()->addToCart($product->slug)->assertOk();
 
-        $second = $this->postJson(route('store.cart.add-product', ['productSlug' => $product->slug]), ['product_count' => 1]);
-        $second->assertOk();
+        $this->assertSame(
+            2,
+            Cart::count(),
+            'Другий відвідувач мав отримати власний кошик, а не чужий.'
+        );
+        $this->assertNotSame($firstCartId, Cart::orderByDesc('id')->first()->id);
+    }
 
-        $this->assertGreaterThanOrEqual(1, Cart::count());
+    public function test_the_cart_refuses_a_quantity_below_one(): void
+    {
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug, 0)->assertStatus(422);
+
+        $this->assertSame(0, Cart::count(), 'Кошик не мав створюватись від недійсного запиту.');
+    }
+
+    public function test_an_unknown_product_cannot_be_added(): void
+    {
+        $this->addToCart('there-is-no-such-door')->assertNotFound();
+
+        $this->assertSame(0, Cart::count());
     }
 }

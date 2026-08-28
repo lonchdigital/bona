@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Product;
 use App\Observers\ProductObserver;
+use App\Listeners\MergeGuestCartOnLogin;
 use App\Listeners\MergeGuestWishListOnLogin;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
@@ -24,6 +25,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         Login::class => [
             MergeGuestWishListOnLogin::class,
+            MergeGuestCartOnLogin::class,
         ],
     ];
 
