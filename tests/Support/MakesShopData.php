@@ -95,6 +95,15 @@ trait MakesShopData
         $this->defaultCookies = [];
         $this->unencryptedCookies = [];
 
+        /*
+         * These remember the token they issued during a request, because a
+         * queued cookie cannot be read back from the request that set it. In
+         * production every request gets a fresh container; in a test the same
+         * one is reused, so a new visitor has to be given fresh instances.
+         */
+        $this->app->forgetInstance(\App\Services\WishList\GuestWishListToken::class);
+        $this->app->forgetInstance(\App\Services\Cart\GuestCartToken::class);
+
         return $this;
     }
 }

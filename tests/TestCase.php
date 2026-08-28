@@ -23,6 +23,14 @@ abstract class TestCase extends BaseTestCase
          * would be testing something the site never does.
          */
         $this->withCredentials();
+
+        /*
+         * The site's own AJAX is jQuery, which sends this header; postJson does
+         * not. Several actions branch on it to decide between answering with
+         * JSON and redirecting, so without it a test would exercise a path no
+         * visitor ever takes.
+         */
+        $this->withHeader('X-Requested-With', 'XMLHttpRequest');
     }
 
     /**

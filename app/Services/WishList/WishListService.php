@@ -164,12 +164,21 @@ class WishListService extends BaseService
                 return;
             }
 
-            $productIds = $guestWishList->products()->select(['product_id'])->get()->pluck('product_id');
+            /*
+             * This selected product_id from the products table, which has no
+             * such column — it belongs to the pivot. The guest's products were
+             * silently dropped whenever the account already had a list of its
+             * own, which is the case this branch exists for.
+             */
+            $productIds = $guestWishList->products()->pluck('products.id')->all();
 
-            if ($productIds->isNotEmpty()) {
+            if ($productIds) {
                 $userWishList->products()->syncWithoutDetaching($productIds);
             }
 
+            // Detached first: deleting the list on its own left its pivot rows
+            // behind, pointing at a list that no longer exists.
+            $guestWishList->products()->detach();
             $guestWishList->delete();
         });
     }
@@ -177,7 +186,10 @@ class WishListService extends BaseService
     public function getWishListProductsId(?WishList $wishList): Collection
     {
         if ($wishList) {
-            return $wishList->products()->select(['product_id'])->get()->pluck('product_id');
+            // products has no product_id column — that belongs to the pivot.
+            // This handed back a list of nulls, so a saved product never came
+            // back marked as saved on the pages that ask.
+            return $wishList->products()->pluck('products.id');
         }
 
         return collect();
