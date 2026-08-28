@@ -122,4 +122,23 @@ class CartTest extends TestCase
 
         $this->assertSame(0, Cart::count());
     }
+
+    public function test_looking_at_the_cart_summary_does_not_create_one(): void
+    {
+        // The header asks for this on every page load. It used to answer by
+        // creating a cart, which is how the table came to hold a hundred and
+        // eighty thousand of them with six in use.
+        $this->keepCookies($this->getJson(route('store.cart.products-with-summary')))->assertOk();
+
+        $this->assertSame(0, Cart::count(), 'Перегляд підсумку не має створювати кошик.');
+    }
+
+    public function test_the_wish_list_page_does_not_create_a_cart(): void
+    {
+        $this->seedCurrency();
+
+        $this->get(route('store.wishlist.private.page'))->assertOk();
+
+        $this->assertSame(0, Cart::count());
+    }
 }

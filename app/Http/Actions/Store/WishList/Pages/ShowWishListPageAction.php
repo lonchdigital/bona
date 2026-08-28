@@ -22,12 +22,10 @@ class ShowWishListPageAction extends BaseAction
     {
         $wishList = $this->getWishList($wishListService);
 
-        $cart = $this->getCart($cartService);
 
         return view('pages.store.wish-list', [
             'isPublic' => false,
             'wishList' => $wishList,
-            'cart' => $cart,
             'products' => $wishListService->getProductsByWishList($wishList),
             'baseCurrency' => $currencyService->getBaseCurrency(),
         ]);

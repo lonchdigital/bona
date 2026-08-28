@@ -25,6 +25,25 @@ trait NeedCart
         return $cart;
     }
 
+    /**
+     * The visitor's cart if they have one, without making them a new one.
+     *
+     * The header widget asks for the cart summary on every page, and that used
+     * to go through getCart(), which creates. Every visitor to any page was
+     * therefore given a row of their own — over a hundred and eighty thousand
+     * of them by now, six with anything in.
+     */
+    public function getExistingCart(CartService $cartService): ?Cart
+    {
+        if ($this->getAuthUser()) {
+            return $cartService->getCartForAuthUser($this->getAuthUser());
+        }
+
+        $token = $this->guestCartToken()->existing();
+
+        return $token ? $cartService->getCartForGuestUser($token) : null;
+    }
+
     private function guestCartToken(): GuestCartToken
     {
         return app(GuestCartToken::class);

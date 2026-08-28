@@ -2,6 +2,7 @@
 
 namespace App\Http\Actions\Store\Cart;
 
+use App\Models\Cart;
 use App\Services\Cart\CartService;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Resources\Store\Cart\CartResource;
@@ -16,7 +17,8 @@ class GetProductsInCartWithSummaryAction extends BaseAction
         WishListService $wishListService,
     )
     {
-        $cart = $this->getCart($cartService);
+        // Reading a summary must not bring a cart into being.
+        $cart = $this->getExistingCart($cartService) ?? new Cart();
         $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
         return CartResource::make($cartService->getProductsInCartWithSummary($cart, $wishList));
     }
