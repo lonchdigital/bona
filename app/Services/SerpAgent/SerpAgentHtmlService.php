@@ -288,6 +288,86 @@ class SerpAgentHtmlService
         return [trim($result), true];
     }
 
+    /**
+     * Strips a FAQ written into the body as running text.
+     *
+     * convertInlineFaq only recognises questions written as headings. Serp
+     * Agent also sends them as paragraphs — "П: question / В: answer" — which
+     * cannot be turned into the accordion, so the article ended up carrying
+     * the questions twice: once as flat text and once as the real accordion
+     * built from the structured payload.
+     *
+     * The payload is the better copy of the two, so the flat one goes: the
+     * heading and everything under it up to the next h2.
+     */
+    public function removeInlineFaq(string $html, string $locale): string
+    {
+        $html = trim($html);
+
+        if ($html === '' || !class_exists(DOMDocument::class)) {
+            return $html;
+        }
+
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $previousUseErrors = libxml_use_internal_errors(true);
+
+        $loaded = $document->loadHTML(
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+        );
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseErrors);
+
+        if (!$loaded) {
+            return $html;
+        }
+
+        $xpath = new DOMXPath($document);
+        $root = $xpath->query('//div[@data-faq-root]')->item(0);
+
+        if (!$root instanceof DOMElement) {
+            return $html;
+        }
+
+        $heading = null;
+
+        foreach ($xpath->query('//h2') as $candidate) {
+            if ($this->isFaqHeading($candidate->textContent)) {
+                $heading = $candidate;
+
+                break;
+            }
+        }
+
+        if (!$heading instanceof DOMElement) {
+            return $html;
+        }
+
+        // Collect first: removing as we walk would cut the chain we follow.
+        $doomed = [$heading];
+
+        for ($node = $heading->nextSibling; $node !== null; $node = $node->nextSibling) {
+            if ($node instanceof DOMElement && strtolower($node->tagName) === 'h2') {
+                break;
+            }
+
+            $doomed[] = $node;
+        }
+
+        foreach ($doomed as $node) {
+            $node->parentNode?->removeChild($node);
+        }
+
+        $result = '';
+
+        foreach ($root->childNodes as $child) {
+            $result .= $document->saveHTML($child);
+        }
+
+        return trim($result);
+    }
+
     private function isFaqHeading(string $text): bool
     {
         $text = mb_strtolower(trim(preg_replace('/\s+/u', ' ', $text)));

@@ -63,6 +63,16 @@ class SerpAgentArticleService extends BaseService
         // place, and the list is not appended on top of it.
         [$body, $hasInlineFaq] = $this->htmlService->convertInlineFaq($body, $locale);
 
+        /*
+         * A body FAQ written as running text rather than headings cannot be
+         * turned into the accordion. When the payload carries the same
+         * questions as structured data, that flat copy is dropped so the
+         * article does not answer everything twice.
+         */
+        if (!$hasInlineFaq && $dto->faq) {
+            $body = $this->htmlService->removeInlineFaq($body, $locale);
+        }
+
         $body .= $this->buildAppendix($dto, $locale, $hasInlineFaq);
 
         $slug = $this->resolveSlug($dto, $heading);
