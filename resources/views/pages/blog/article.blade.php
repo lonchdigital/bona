@@ -441,6 +441,92 @@
             }
         }
 
+        /* A question and its answer, left in the running text by the writing
+           service, presented as a title card: dark panel, a gold rule down the
+           edge and the two words set small and wide above each line. */
+        .blog-post .article-qa {
+            position: relative;
+            margin: 42px 0;
+            padding: 32px 36px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #1d1d23 0%, #272730 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .blog-post .article-qa::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #d59958 0%, rgba(213, 153, 88, .12) 100%);
+        }
+
+        .blog-post .article-qa .article-qa-row {
+            display: grid;
+            grid-template-columns: 116px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .blog-post .article-qa .article-qa-row--question {
+            padding-bottom: 22px;
+        }
+
+        .blog-post .article-qa .article-qa-row--answer {
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .blog-post .article-qa .article-qa-label {
+            padding-top: 6px;
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: #d59958;
+            white-space: nowrap;
+        }
+
+        .blog-post .article-qa .article-qa-text p {
+            margin: 0;
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .blog-post .article-qa .article-qa-text p + p {
+            margin-top: 12px;
+        }
+
+        .blog-post .article-qa .article-qa-row--question .article-qa-text p {
+            font-size: 19px;
+            font-weight: 500;
+            line-height: 1.45;
+        }
+
+        @media (max-width: 767px) {
+
+            .blog-post .article-qa {
+                margin: 30px 0;
+                padding: 24px 22px;
+            }
+
+            .blog-post .article-qa .article-qa-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .blog-post .article-qa .article-qa-label {
+                padding-top: 0;
+            }
+
+            .blog-post .article-qa .article-qa-row--question .article-qa-text p {
+                font-size: 17px;
+            }
+        }
+
         /* The FAQ block reuses the site accordion, so it only needs the few
            resets a heading brings along that a <button> did not. */
         .blog-post .article-faq {

@@ -374,6 +374,77 @@ class SerpAgentHtmlService
         return trim($result);
     }
 
+    /**
+     * Pairs of markers a question and its answer are written with.
+     *
+     * Matched as a pair and in this order, which is what keeps them apart:
+     * "В" ends an answer in Ukrainian and opens a question in Russian, but no
+     * paragraph opens with one language's answer and closes with another's.
+     * The long forms come first so "Питання" is never read as a bare "П".
+     */
+    private const QA_MARKERS = [
+        ['Питання', 'Відповідь'],
+        ['Вопрос', 'Ответ'],
+        ['Question', 'Answer'],
+        ['П', 'В'],
+        ['В', 'О'],
+        ['Q', 'A'],
+    ];
+
+    private const QA_LABELS = [
+        'uk' => ['Питання', 'Відповідь'],
+        'ru' => ['Вопрос', 'Ответ'],
+        'en' => ['Question', 'Answer'],
+    ];
+
+    /**
+     * Dresses the question and answer pairs written into the body.
+     *
+     * Serp Agent drops them in as ordinary paragraphs opening with a bare
+     * "П:" and "В:", which reads as leftover shorthand rather than as part of
+     * the article. They keep their place in the text and get a card of their
+     * own, with the words spelled out whichever way they arrived.
+     */
+    public function styleInlineQa(string $html, string $locale): string
+    {
+        $html = trim($html);
+
+        if ($html === '') {
+            return $html;
+        }
+
+        [$questionLabel, $answerLabel] = self::QA_LABELS[$locale] ?? self::QA_LABELS['uk'];
+
+        foreach (self::QA_MARKERS as [$questionMarker, $answerMarker]) {
+            $pattern = '~<p>\s*' . preg_quote($questionMarker, '~') . '\s*:\s*(.+?)\s*<br\s*/?>\s*'
+                . '(?:<strong>\s*)?' . preg_quote($answerMarker, '~') . '\s*:\s*(?:</strong>)?\s*(.+?)\s*</p>~su';
+
+            $html = preg_replace_callback(
+                $pattern,
+                fn (array $m) => $this->buildQaCard($questionLabel, $m[1], $answerLabel, $m[2]),
+                $html
+            );
+        }
+
+        return $html;
+    }
+
+    private function buildQaCard(string $questionLabel, string $question, string $answerLabel, string $answer): string
+    {
+        return '<div class="article-qa">'
+            . '<div class="article-qa-row article-qa-row--question">'
+            . '<span class="article-qa-label">' . e($questionLabel) . '</span>'
+            // sanitizeFragment returns a paragraph of its own, so this is a
+            // div: a <p> here would nest one paragraph inside another.
+            . '<div class="article-qa-text">' . $this->sanitizeFragment($question) . '</div>'
+            . '</div>'
+            . '<div class="article-qa-row article-qa-row--answer">'
+            . '<span class="article-qa-label">' . e($answerLabel) . '</span>'
+            . '<div class="article-qa-text">' . $this->sanitizeFragment($answer) . '</div>'
+            . '</div>'
+            . '</div>';
+    }
+
     private function isFaqHeading(string $text): bool
     {
         $text = mb_strtolower(trim(preg_replace('/\s+/u', ' ', $text)));

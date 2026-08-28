@@ -73,6 +73,10 @@ class SerpAgentArticleService extends BaseService
             $body = $this->htmlService->removeInlineFaq($body, $locale);
         }
 
+        // Question and answer pairs left in the running text get a card of
+        // their own rather than opening with bare shorthand.
+        $body = $this->htmlService->styleInlineQa($body, $locale);
+
         $body .= $this->buildAppendix($dto, $locale, $hasInlineFaq);
 
         $slug = $this->resolveSlug($dto, $heading);
