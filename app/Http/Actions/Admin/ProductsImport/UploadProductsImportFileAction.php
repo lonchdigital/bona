@@ -2,11 +2,11 @@
 
 namespace App\Http\Actions\Admin\ProductsImport;
 
-use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
-use App\Http\Resources\BaseActionResource;
-use App\Services\Product\ProductImportUploadService;
 use App\Http\Requests\Admin\ProductsImport\UploadProductsImportFileRequest;
+use App\Http\Resources\BaseActionResource;
+use App\Models\ProductType;
+use App\Services\Product\ProductImportUploadService;
 
 class UploadProductsImportFileAction extends BaseAction
 {
@@ -30,7 +30,7 @@ class UploadProductsImportFileAction extends BaseAction
                     $beatifiedErrors = array_merge($beatifiedErrors, $errorsByRow);
                 }
 
-                if (!$result['allErrorsShowed']) {
+                if (! $result['allErrorsShowed']) {
                     $beatifiedErrors[] = trans('admin.products_import_and_others');
                 }
             } elseif ($result['singleError'] !== null) {
@@ -41,7 +41,7 @@ class UploadProductsImportFileAction extends BaseAction
                 ->json([
                     'errors' => [
                         'file' => $beatifiedErrors,
-                    ]
+                    ],
                 ], 422);
         }
     }

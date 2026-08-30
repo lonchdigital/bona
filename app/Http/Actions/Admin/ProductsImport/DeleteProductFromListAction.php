@@ -13,8 +13,7 @@ class DeleteProductFromListAction extends BaseAction
         ImportedProduct $importedProduct,
         Request $request,
         ProductImportService $productImportService,
-    )
-    {
+    ) {
         $productType = $importedProduct->productType->id;
 
         $result = $productImportService->deleteImportedProduct($importedProduct);

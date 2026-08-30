@@ -9,8 +9,7 @@ class PhoneNumberLengthRule implements ValidationRule
 {
     public function __construct(
         public readonly int $length
-    )
-    { }
+    ) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {

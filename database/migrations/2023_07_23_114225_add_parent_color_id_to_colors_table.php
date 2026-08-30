@@ -29,7 +29,6 @@ return new class extends Migration
     {
         Schema::table('colors', function (Blueprint $table) {
 
-
             $table->dropColumn('parent_color_id');
         });
     }

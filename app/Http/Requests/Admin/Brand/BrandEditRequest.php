@@ -10,7 +10,7 @@ class BrandEditRequest extends BrandCreateRequest
 
         $rules['logo'] = [
             'nullable',
-            'mimes:jpeg,png,jpg'
+            'mimes:jpeg,png,jpg',
         ];
 
         return $rules;

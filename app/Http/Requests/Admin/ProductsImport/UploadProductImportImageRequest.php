@@ -18,8 +18,8 @@ class UploadProductImportImageRequest extends BaseRequest
             ],
             'type_id' => [
                 'required',
-                'in:' . ImportedProductImageTypesDataClass::get()->pluck('id')->implode(','),
-            ]
+                'in:'.ImportedProductImageTypesDataClass::get()->pluck('id')->implode(','),
+            ],
         ];
     }
 

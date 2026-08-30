@@ -21,6 +21,7 @@ class CollectionSlide extends Model
             if ($this->image_1_path) {
                 return Storage::url($this->image_1_path);
             }
+
             return null;
         });
     }
@@ -31,6 +32,7 @@ class CollectionSlide extends Model
             if ($this->image_2_path) {
                 return Storage::url($this->image_2_path);
             }
+
             return null;
         });
     }

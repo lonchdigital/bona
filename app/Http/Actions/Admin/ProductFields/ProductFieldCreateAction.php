@@ -3,8 +3,8 @@
 namespace App\Http\Actions\Admin\ProductFields;
 
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\Admin\ProductField\ProductFieldService;
 use App\Http\Requests\Admin\ProductField\ProductFieldCreateRequest;
+use App\Services\Admin\ProductField\ProductFieldService;
 
 class ProductFieldCreateAction extends BaseAction
 {

@@ -12,6 +12,7 @@ class WishList extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'wish_list_products')->withTimestamps();

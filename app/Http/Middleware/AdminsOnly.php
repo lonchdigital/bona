@@ -11,7 +11,7 @@ class AdminsOnly
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::user()->isAdmin()) {
+        if (! Auth::user()?->isAdmin()) {
             return response()->view('404', [], 404);
         }
 

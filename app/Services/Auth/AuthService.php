@@ -2,9 +2,7 @@
 
 namespace App\Services\Auth;
 
-use App\Exceptions\ApplicationDomainException;
 use App\Mail\UserEmailConfirmationEmail;
-use App\Mail\UserForgotPasswordEmail;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserEmailActivationCode;
@@ -19,8 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Testing\Fluent\Concerns\Has;
 
 class AuthService extends BaseService
 {
@@ -31,7 +29,7 @@ class AuthService extends BaseService
 
             $userLanguage = app()->getLocale();
 
-            //create new user
+            // create new user
             $user = User::create([
                 'email' => $request->email,
                 'first_name' => $request->firstName,
@@ -47,7 +45,6 @@ class AuthService extends BaseService
                 'code' => Str::random(64),
             ]);
 
-
             Mail::to($user->email)->send(new UserEmailConfirmationEmail($userEmailActivationCode->code));
 
             DB::commit();
@@ -56,7 +53,6 @@ class AuthService extends BaseService
             $this->logCaughtException($throwable);
             throw $throwable;
         }
-
 
     }
 
@@ -67,7 +63,7 @@ class AuthService extends BaseService
     {
         $code = UserEmailActivationCode::where('code', $request->code)->first();
 
-        if (!$code) {
+        if (! $code) {
             return false;
         }
 
@@ -125,16 +121,8 @@ class AuthService extends BaseService
         request()->session()->regenerateToken();
     }
 
-    public function resetPassword(ForgotPasswordDTO $request): void
+    public function sendPasswordResetLink(ForgotPasswordDTO $request): string
     {
-        $newPassword = Str::random(8);
-
-        $user = User::where('email', $request->email)->first();
-
-        $user->update([
-            'password' => Hash::make($newPassword)
-        ]);
-
-        Mail::to($request->email)->send(new UserForgotPasswordEmail($newPassword));
+        return Password::sendResetLink(['email' => $request->email]);
     }
 }

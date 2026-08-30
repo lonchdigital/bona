@@ -8,5 +8,5 @@ class DeleteProductFromCartDTO implements BaseDTO
 {
     public function __construct(
         public readonly ?array $productAttributes,
-    ){ }
+    ) {}
 }

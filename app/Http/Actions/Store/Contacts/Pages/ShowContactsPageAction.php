@@ -4,8 +4,7 @@ namespace App\Http\Actions\Store\Contacts\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Services\Contacts\ContactsPageService;
-use Abordage\LastModified\Facades\LastModified;
-
+use App\Support\LastModified;
 
 class ShowContactsPageAction extends BaseAction
 {

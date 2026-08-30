@@ -2,7 +2,6 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
-use Abordage\LastModified\Facades\LastModified;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Category;
@@ -13,6 +12,7 @@ use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
+use App\Support\LastModified;
 
 class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
 {
@@ -20,11 +20,10 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
         ProductType $productType,
         Category $category,
         CatalogFilterRequest $request
-    )
-    {
+    ) {
         $productType->load(['fields', 'fields.options']);
 
-        //get services from service container
+        // get services from service container
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
         $countryService = app()->make(CountryService::class);
@@ -59,12 +58,12 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
             $page,
         );
 
-
         LastModified::set($category->updated_at);
 
         $allFields = $productType->fields;
         $allFields->map(function ($field) use ($productType, $category) {
             $field->options = $field->optionsWithProductsInCategory($productType, $category);
+
             return $field;
         });
 
@@ -81,7 +80,7 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getProductsMaxPriceByAvailabilityWithCategory($productType, $category),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
-            'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale())
+            'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale()),
         ]);
     }
 }

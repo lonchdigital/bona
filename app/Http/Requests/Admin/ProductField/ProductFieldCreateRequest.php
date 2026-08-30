@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\Admin\ProductField;
 
-use Illuminate\Validation\Rule;
-use App\Http\Requests\BaseRequest;
-use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\DataClasses\NumericFieldFilerTypesDataClass;
+use App\DataClasses\ProductFieldTypeOptionsDataClass;
+use App\Http\Requests\BaseRequest;
 use App\Services\Admin\ProductField\DTO\EditProductFieldDTO;
+use Illuminate\Validation\Rule;
 
 class ProductFieldCreateRequest extends BaseRequest
 {
@@ -21,7 +21,7 @@ class ProductFieldCreateRequest extends BaseRequest
             'slug' => [
                 'required',
                 'string',
-                'unique:product_fields,slug' . ($this->route('productField') ? ',' . $this->route('productField')->id : ''),
+                'unique:product_fields,slug'.($this->route('productField') ? ','.$this->route('productField')->id : ''),
             ],
             'product_field_type' => [
                 'required',
@@ -30,23 +30,23 @@ class ProductFieldCreateRequest extends BaseRequest
                     ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING,
                     ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER,
                     ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE,
-                    ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION
+                    ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION,
                 ]),
-            ]
+            ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['product_field_name.' . $availableLanguage] = [
+            $rules['product_field_name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
         }
 
-        //validations for field type SIZE
+        // validations for field type SIZE
         if ($this->input('product_field_type') == ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE) {
 
             foreach ($this->availableLanguages as $availableLanguage) {
-                $rules['product_field_size_name.' . $availableLanguage] = [
+                $rules['product_field_size_name.'.$availableLanguage] = [
                     'required',
                     'string',
                 ];
@@ -58,7 +58,7 @@ class ProductFieldCreateRequest extends BaseRequest
         ) {
             $rules['numeric_field_filter_type_id'] = [
                 'required',
-                'in:' . NumericFieldFilerTypesDataClass::get()->pluck('id')->implode(','),
+                'in:'.NumericFieldFilerTypesDataClass::get()->pluck('id')->implode(','),
             ];
 
             if ($this->input('numeric_field_filter_type_id') == NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
@@ -68,7 +68,7 @@ class ProductFieldCreateRequest extends BaseRequest
                 ];
 
                 foreach ($this->availableLanguages as $availableLanguage) {
-                    $rules['numeric_filter_option.*.name.' . $availableLanguage] = [
+                    $rules['numeric_filter_option.*.name.'.$availableLanguage] = [
                         'required',
                         'string',
                     ];
@@ -91,18 +91,17 @@ class ProductFieldCreateRequest extends BaseRequest
             }
         }
 
-
-        //validations for field type OPTION
+        // validations for field type OPTION
         if ($this->input('product_field_type') == ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
 
             $rules['product_field_option'] = [
                 'required',
                 'array',
-                'min:1'
+                'min:1',
             ];
 
             foreach ($this->availableLanguages as $availableLanguage) {
-                $rules['product_field_option.*.name.' . $availableLanguage] = [
+                $rules['product_field_option.*.name.'.$availableLanguage] = [
                     'required',
                     'string',
                 ];
@@ -129,7 +128,7 @@ class ProductFieldCreateRequest extends BaseRequest
             $rules['product_field_option.*.image'] = [
                 'required',
                 'mimes:jpeg,png,jpg',
-                'dimensions:min_width=150,min_height=150,max_width=350,max_height=350,ratio=1/1'
+                'dimensions:min_width=150,min_height=150,max_width=350,max_height=350,ratio=1/1',
             ];
         }
 
@@ -149,14 +148,14 @@ class ProductFieldCreateRequest extends BaseRequest
         ];
 
         foreach ($this->input('product_field_option') as $fieldOption) {
-            $attributes['product_field_option.' . $fieldOption['id'] . '.image'] = mb_strtolower(trans('admin.product_field_option_image'));
+            $attributes['product_field_option.'.$fieldOption['id'].'.image'] = mb_strtolower(trans('admin.product_field_option_image'));
         }
 
         foreach ($this->availableLanguages as $language) {
-            $attributes['product_field_name.' . $language] = $this->prepareAttribute(trans('admin.name'), $language);
-            $attributes['product_field_size_name.' . $language] = $this->prepareAttribute(trans('admin.point_name'), $language);
-            $attributes['product_field_option.*.name.' . $language] = $this->prepareAttribute(trans('admin.option_name'), $language);
-            $attributes['numeric_filter_option.*.name.' . $language] = $this->prepareAttribute(trans('admin.numeric_filter_option_name'), $language);
+            $attributes['product_field_name.'.$language] = $this->prepareAttribute(trans('admin.name'), $language);
+            $attributes['product_field_size_name.'.$language] = $this->prepareAttribute(trans('admin.point_name'), $language);
+            $attributes['product_field_option.*.name.'.$language] = $this->prepareAttribute(trans('admin.option_name'), $language);
+            $attributes['numeric_filter_option.*.name.'.$language] = $this->prepareAttribute(trans('admin.numeric_filter_option_name'), $language);
         }
 
         return $attributes;
@@ -177,5 +176,4 @@ class ProductFieldCreateRequest extends BaseRequest
             $this->input('numeric_filter_option'),
         );
     }
-
 }

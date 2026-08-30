@@ -5,8 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  phpunit:
+  backend:
     runs-on: ubuntu-latest
 
     services:
@@ -30,19 +37,24 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          # The version the site runs on.
-          php-version: '8.2'
+          php-version: '8.4'
           extensions: mbstring, pdo_mysql, gd, zip, bcmath, intl
           coverage: none
 
       - name: Cache composer packages
         uses: actions/cache@v4
         with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
+          path: ~/.composer/cache/files
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Audit PHP dependencies
+        run: composer audit --locked
+
+      - name: Check PHP style
+        run: ./vendor/bin/pint --test
 
       - name: Prepare the environment
         run: |
@@ -60,3 +72,24 @@ jobs:
         run: |
           php artisan migrate --force
           ./vendor/bin/phpunit
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit frontend dependencies
+        run: npm audit --audit-level=high
+
+      - name: Build frontend assets
+        run: npm run build

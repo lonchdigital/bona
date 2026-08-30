@@ -12,7 +12,7 @@ class CountryEditRequest extends CountryCreateRequest
             'nullable',
             'image',
             'mimes:svg',
-            'dimensions:min_width=28,min_height=20,max_width=112,max_height=80,ratio=7/5'
+            'dimensions:min_width=28,min_height=20,max_width=112,max_height=80,ratio=7/5',
         ];
 
         return $rules;

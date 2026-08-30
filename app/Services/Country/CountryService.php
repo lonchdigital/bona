@@ -32,14 +32,14 @@ class CountryService extends BaseService
 
     public function getAvailableCountriesByProductType(ProductType $productType)
     {
-        //TODO: implement with cache
+        // TODO: implement with cache
         return Country::get();
     }
 
     public function createCountry(User $creator, EditCountryDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request, $creator) {
-            $path = self::COUNTRY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.svg';
+        return $this->coverWithDBTransaction(function () use ($request, $creator) {
+            $path = self::COUNTRY_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.svg';
 
             $this->storeCountryImage($request->image, $path);
 
@@ -56,7 +56,7 @@ class CountryService extends BaseService
 
     public function editCountry(Country $country, EditCountryDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($country, $request) {
+        return $this->coverWithDBTransaction(function () use ($country, $request) {
             $oldImagePath = $country->image_path;
             $dataToUpdate = [
                 'name' => $request->name,
@@ -64,7 +64,7 @@ class CountryService extends BaseService
             ];
 
             if ($request->image) {
-                $newImagePath = self::COUNTRY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.svg';
+                $newImagePath = self::COUNTRY_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.svg';
 
                 $this->storeCountryImage($request->image, $newImagePath);
 
@@ -84,7 +84,7 @@ class CountryService extends BaseService
 
     public function deleteCountry(Country $country): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($country) {
+        return $this->coverWithDBTransaction(function () use ($country) {
             if (Product::where('country_id', $country->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.country_in_use'));
             }
@@ -102,17 +102,17 @@ class CountryService extends BaseService
         $dom = new DOMDocument('1.0', 'utf-8');
         $dom->load($imageToStore->path());
         $svg = $dom->documentElement;
-        if ( ! $svg->hasAttribute('viewBox') ) {
+        if (! $svg->hasAttribute('viewBox')) {
             $pattern = '/^(\d*\.\d+|\d+)(px)?$/';
 
-            $interpretable =  preg_match( $pattern, $svg->getAttribute('width'), $width ) &&
-                preg_match( $pattern, $svg->getAttribute('height'), $height );
+            $interpretable = preg_match($pattern, $svg->getAttribute('width'), $width) &&
+                preg_match($pattern, $svg->getAttribute('height'), $height);
 
-            if ( $interpretable ) {
+            if ($interpretable) {
                 $view_box = implode(' ', [0, 0, $width[0], $height[0]]);
                 $svg->setAttribute('viewBox', $view_box);
             } else { // this gets sticky
-                throw new \Exception("viewBox is dependent on environment");
+                throw new \Exception('viewBox is dependent on environment');
             }
         }
 
@@ -136,6 +136,4 @@ class CountryService extends BaseService
             Storage::disk(config('app.images_disk_default'))->delete($imagePath);
         }
     }
-
-
 }

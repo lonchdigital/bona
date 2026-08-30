@@ -14,7 +14,7 @@ class ConfirmEmailResendRequest extends BaseRequest
                 'required',
                 'email',
                 'exists:users,email',
-            ]
+            ],
         ];
     }
 

@@ -97,7 +97,7 @@ class SerpAgentHtmlService
             return '';
         }
 
-        if (!class_exists(DOMDocument::class)) {
+        if (! class_exists(DOMDocument::class)) {
             return $this->sanitizeWithoutDom($html);
         }
 
@@ -105,20 +105,20 @@ class SerpAgentHtmlService
         $previousUseErrors = libxml_use_internal_errors(true);
 
         $loaded = $document->loadHTML(
-            '<?xml encoding="UTF-8"?><div data-serp-agent-root="1">' . $html . '</div>',
+            '<?xml encoding="UTF-8"?><div data-serp-agent-root="1">'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
 
         libxml_clear_errors();
         libxml_use_internal_errors($previousUseErrors);
 
-        if (!$loaded) {
+        if (! $loaded) {
             return $this->sanitizeWithoutDom($html);
         }
 
         $root = (new DOMXPath($document))->query('//div[@data-serp-agent-root]')->item(0);
 
-        if (!$root instanceof DOMElement) {
+        if (! $root instanceof DOMElement) {
             return $this->sanitizeWithoutDom($html);
         }
 
@@ -160,7 +160,7 @@ class SerpAgentHtmlService
     {
         $html = trim($html);
 
-        if ($html === '' || !class_exists(DOMDocument::class)) {
+        if ($html === '' || ! class_exists(DOMDocument::class)) {
             return [$html, false];
         }
 
@@ -168,21 +168,21 @@ class SerpAgentHtmlService
         $previousUseErrors = libxml_use_internal_errors(true);
 
         $loaded = $document->loadHTML(
-            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
 
         libxml_clear_errors();
         libxml_use_internal_errors($previousUseErrors);
 
-        if (!$loaded) {
+        if (! $loaded) {
             return [$html, false];
         }
 
         $xpath = new DOMXPath($document);
         $root = $xpath->query('//div[@data-faq-root]')->item(0);
 
-        if (!$root instanceof DOMElement) {
+        if (! $root instanceof DOMElement) {
             return [$html, false];
         }
 
@@ -196,7 +196,7 @@ class SerpAgentHtmlService
             }
         }
 
-        if (!$heading instanceof DOMElement) {
+        if (! $heading instanceof DOMElement) {
             return [$html, false];
         }
 
@@ -206,7 +206,7 @@ class SerpAgentHtmlService
         $index = -1;
 
         for ($node = $heading->nextSibling; $node !== null; $node = $node->nextSibling) {
-            if (!$node instanceof DOMElement) {
+            if (! $node instanceof DOMElement) {
                 continue;
             }
 
@@ -228,7 +228,7 @@ class SerpAgentHtmlService
             }
         }
 
-        if (!$items) {
+        if (! $items) {
             return [$html, false];
         }
 
@@ -245,7 +245,7 @@ class SerpAgentHtmlService
             $wrapper->setAttribute('class', 'accordion-item-wrapper');
 
             $trigger = $document->createElement('h3');
-            $trigger->setAttribute('class', 'accordion' . ($isFirst ? ' active' : ''));
+            $trigger->setAttribute('class', 'accordion'.($isFirst ? ' active' : ''));
             $trigger->setAttribute('tabindex', '0');
 
             $questionText = $document->createElement('span');
@@ -304,7 +304,7 @@ class SerpAgentHtmlService
     {
         $html = trim($html);
 
-        if ($html === '' || !class_exists(DOMDocument::class)) {
+        if ($html === '' || ! class_exists(DOMDocument::class)) {
             return $html;
         }
 
@@ -312,21 +312,21 @@ class SerpAgentHtmlService
         $previousUseErrors = libxml_use_internal_errors(true);
 
         $loaded = $document->loadHTML(
-            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
 
         libxml_clear_errors();
         libxml_use_internal_errors($previousUseErrors);
 
-        if (!$loaded) {
+        if (! $loaded) {
             return $html;
         }
 
         $xpath = new DOMXPath($document);
         $root = $xpath->query('//div[@data-faq-root]')->item(0);
 
-        if (!$root instanceof DOMElement) {
+        if (! $root instanceof DOMElement) {
             return $html;
         }
 
@@ -340,7 +340,7 @@ class SerpAgentHtmlService
             }
         }
 
-        if (!$heading instanceof DOMElement) {
+        if (! $heading instanceof DOMElement) {
             return $html;
         }
 
@@ -421,8 +421,8 @@ class SerpAgentHtmlService
             [$questionLabel, $answerLabel] = self::QA_LABELS[$markerLanguage ?? $locale]
                 ?? self::QA_LABELS['uk'];
 
-            $pattern = '~<p>\s*' . preg_quote($questionMarker, '~') . '\s*:\s*(.+?)\s*<br\s*/?>\s*'
-                . '(?:<strong>\s*)?' . preg_quote($answerMarker, '~') . '\s*:\s*(?:</strong>)?\s*(.+?)\s*</p>~su';
+            $pattern = '~<p>\s*'.preg_quote($questionMarker, '~').'\s*:\s*(.+?)\s*<br\s*/?>\s*'
+                .'(?:<strong>\s*)?'.preg_quote($answerMarker, '~').'\s*:\s*(?:</strong>)?\s*(.+?)\s*</p>~su';
 
             $html = preg_replace_callback(
                 $pattern,
@@ -437,17 +437,17 @@ class SerpAgentHtmlService
     private function buildQaCard(string $questionLabel, string $question, string $answerLabel, string $answer): string
     {
         return '<div class="article-qa">'
-            . '<div class="article-qa-row article-qa-row--question">'
-            . '<span class="article-qa-label">' . e($questionLabel) . '</span>'
+            .'<div class="article-qa-row article-qa-row--question">'
+            .'<span class="article-qa-label">'.e($questionLabel).'</span>'
             // sanitizeFragment returns a paragraph of its own, so this is a
             // div: a <p> here would nest one paragraph inside another.
-            . '<div class="article-qa-text">' . $this->sanitizeFragment($question) . '</div>'
-            . '</div>'
-            . '<div class="article-qa-row article-qa-row--answer">'
-            . '<span class="article-qa-label">' . e($answerLabel) . '</span>'
-            . '<div class="article-qa-text">' . $this->sanitizeFragment($answer) . '</div>'
-            . '</div>'
-            . '</div>';
+            .'<div class="article-qa-text">'.$this->sanitizeFragment($question).'</div>'
+            .'</div>'
+            .'<div class="article-qa-row article-qa-row--answer">'
+            .'<span class="article-qa-label">'.e($answerLabel).'</span>'
+            .'<div class="article-qa-text">'.$this->sanitizeFragment($answer).'</div>'
+            .'</div>'
+            .'</div>';
     }
 
     private function isFaqHeading(string $text): bool
@@ -465,7 +465,7 @@ class SerpAgentHtmlService
 
     public function buildFaqSection(array $faq, string $locale): string
     {
-        if (!$faq) {
+        if (! $faq) {
             return '';
         }
 
@@ -488,13 +488,13 @@ class SerpAgentHtmlService
             $isFirst = false;
 
             $items .= '<div class="accordion-item-wrapper">'
-                . '<h3 class="accordion' . $openClass . '" tabindex="0">'
-                . '<span class="question">' . e($question) . '</span>'
-                . '</h3>'
-                . '<div class="art-panel"' . $openStyle . '>'
-                . '<div class="panel-data">' . $answer . '</div>'
-                . '</div>'
-                . '</div>';
+                .'<h3 class="accordion'.$openClass.'" tabindex="0">'
+                .'<span class="question">'.e($question).'</span>'
+                .'</h3>'
+                .'<div class="art-panel"'.$openStyle.'>'
+                .'<div class="panel-data">'.$answer.'</div>'
+                .'</div>'
+                .'</div>';
         }
 
         if ($items === '') {
@@ -502,17 +502,17 @@ class SerpAgentHtmlService
         }
 
         return '<section class="article-faq">'
-            . '<h2>' . e($this->heading('faq', $locale)) . '</h2>'
-            . $items
-            . '</section>';
+            .'<h2>'.e($this->heading('faq', $locale)).'</h2>'
+            .$items
+            .'</section>';
     }
 
     /**
-     * @param array<int, array{title?: string, url?: string}> $links
+     * @param  array<int, array{title?: string, url?: string}>  $links
      */
     public function buildLinksSection(array $links, string $type, string $locale): string
     {
-        if (!$links) {
+        if (! $links) {
             return '';
         }
 
@@ -522,23 +522,23 @@ class SerpAgentHtmlService
             $title = trim((string) ($link['title'] ?? ''));
             $url = trim((string) ($link['url'] ?? ''));
 
-            if ($title === '' || !$this->isSafeUrl($url)) {
+            if ($title === '' || ! $this->isSafeUrl($url)) {
                 continue;
             }
 
             $url = $this->normalizeInternalUrl($url);
 
-            $items .= '<li><a href="' . e($url) . '">' . e($title) . '</a></li>';
+            $items .= '<li><a href="'.e($url).'">'.e($title).'</a></li>';
         }
 
         if ($items === '') {
             return '';
         }
 
-        return '<section class="article-' . e($type) . '">'
-            . '<h2>' . e($this->heading($type, $locale)) . '</h2>'
-            . '<ul>' . $items . '</ul>'
-            . '</section>';
+        return '<section class="article-'.e($type).'">'
+            .'<h2>'.e($this->heading($type, $locale)).'</h2>'
+            .'<ul>'.$items.'</ul>'
+            .'</section>';
     }
 
     public function toPlainText(?string $html): string
@@ -565,8 +565,8 @@ class SerpAgentHtmlService
             return '';
         }
 
-        if (!preg_match('/<[a-z!\/]/i', $value)) {
-            return '<p>' . e($value) . '</p>';
+        if (! preg_match('/<[a-z!\/]/i', $value)) {
+            return '<p>'.e($value).'</p>';
         }
 
         return $this->sanitize($value);
@@ -590,7 +590,7 @@ class SerpAgentHtmlService
         foreach (iterator_to_array($xpath->query('.//table', $root)) as $table) {
             $parent = $table->parentNode;
 
-            if (!$parent instanceof DOMNode) {
+            if (! $parent instanceof DOMNode) {
                 continue;
             }
 
@@ -616,6 +616,7 @@ class SerpAgentHtmlService
 
             if ($child instanceof DOMElement) {
                 $this->cleanElement($child);
+
                 continue;
             }
 
@@ -640,7 +641,7 @@ class SerpAgentHtmlService
             $tag = 'h2';
         }
 
-        if (!array_key_exists($tag, self::ALLOWED_TAGS)) {
+        if (! array_key_exists($tag, self::ALLOWED_TAGS)) {
             $this->cleanChildren($element);
             $this->unwrapElement($element);
 
@@ -656,14 +657,14 @@ class SerpAgentHtmlService
         foreach (iterator_to_array($element->attributes) as $attribute) {
             $name = strtolower($attribute->nodeName);
 
-            if (!in_array($name, $allowedAttributes, true)) {
+            if (! in_array($name, $allowedAttributes, true)) {
                 $element->removeAttribute($attribute->nodeName);
 
                 continue;
             }
 
             if (in_array($name, ['href', 'src'], true)) {
-                if (!$this->isSafeUrl($attribute->nodeValue)) {
+                if (! $this->isSafeUrl($attribute->nodeValue)) {
                     $element->removeAttribute($attribute->nodeName);
 
                     continue;
@@ -701,7 +702,7 @@ class SerpAgentHtmlService
     {
         $parent = $element->parentNode;
 
-        if (!$parent) {
+        if (! $parent) {
             return;
         }
 
@@ -728,7 +729,7 @@ class SerpAgentHtmlService
 
         $parts = parse_url($url);
 
-        if (!is_array($parts) || !isset($parts['path'])) {
+        if (! is_array($parts) || ! isset($parts['path'])) {
             return $url;
         }
 
@@ -749,21 +750,21 @@ class SerpAgentHtmlService
         $rebuilt = '';
 
         if (isset($parts['scheme'], $parts['host'])) {
-            $rebuilt .= $parts['scheme'] . '://' . $parts['host'];
+            $rebuilt .= $parts['scheme'].'://'.$parts['host'];
 
             if (isset($parts['port'])) {
-                $rebuilt .= ':' . $parts['port'];
+                $rebuilt .= ':'.$parts['port'];
             }
         }
 
         $rebuilt .= $path;
 
         if (isset($parts['query'])) {
-            $rebuilt .= '?' . $parts['query'];
+            $rebuilt .= '?'.$parts['query'];
         }
 
         if (isset($parts['fragment'])) {
-            $rebuilt .= '#' . $parts['fragment'];
+            $rebuilt .= '#'.$parts['fragment'];
         }
 
         return $rebuilt;
@@ -785,7 +786,7 @@ class SerpAgentHtmlService
 
         if ($scheme === '') {
             // A relative path such as "blog/article/slug".
-            return !str_contains($url, ':');
+            return ! str_contains($url, ':');
         }
 
         return in_array($scheme, ['http', 'https', 'mailto', 'tel'], true);
@@ -796,9 +797,9 @@ class SerpAgentHtmlService
      */
     private function sanitizeWithoutDom(string $html): string
     {
-        $html = preg_replace('#<(' . implode('|', self::FORBIDDEN_TAGS) . ')\b[^>]*>.*?</\1>#is', '', $html);
-        $html = preg_replace('#<(' . implode('|', self::FORBIDDEN_TAGS) . ')\b[^>]*/?>#i', '', (string) $html);
-        $html = strip_tags((string) $html, '<' . implode('><', array_keys(self::ALLOWED_TAGS)) . '>');
+        $html = preg_replace('#<('.implode('|', self::FORBIDDEN_TAGS).')\b[^>]*>.*?</\1>#is', '', $html);
+        $html = preg_replace('#<('.implode('|', self::FORBIDDEN_TAGS).')\b[^>]*/?>#i', '', (string) $html);
+        $html = strip_tags((string) $html, '<'.implode('><', array_keys(self::ALLOWED_TAGS)).'>');
         $html = preg_replace('/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', (string) $html);
         $html = preg_replace('/(href|src)\s*=\s*("|\')\s*(javascript|vbscript|data):[^"\']*\2/i', '', (string) $html);
 

@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin\AboutUsPage;
 
 use App\Http\Requests\BaseRequest;
-use App\Models\HomePageConfig;
-use App\Rules\RequiredImageDeletedRule;
 use App\Services\AboutUsPage\DTO\AboutUsPageEditDTO;
 
 class AboutUsPageEditRequest extends BaseRequest
@@ -39,11 +37,11 @@ class AboutUsPageEditRequest extends BaseRequest
         ];
         $rules['button_url'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['iframe'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['cta_button_url'] = ['nullable', 'string'];
 
@@ -59,52 +57,52 @@ class AboutUsPageEditRequest extends BaseRequest
         $rules['team.*.photo'] = ['nullable', 'image', 'max:10240'];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
 
-            $rules['title.' . $availableLanguage] = [
+            $rules['title.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['description.' . $availableLanguage] = [
+            $rules['description.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['button_text.' . $availableLanguage] = [
+            $rules['button_text.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
 
             foreach ([
                 'facts_title', 'history_title', 'steps_title', 'team_title',
                 'cta_title', 'cta_button_text',
             ] as $sectionField) {
-                $rules[$sectionField . '.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
+                $rules[$sectionField.'.'.$availableLanguage] = ['nullable', 'string', 'max:255'];
             }
 
-            $rules['history_text.' . $availableLanguage] = ['nullable', 'string'];
-            $rules['cta_text.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['history_text.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['cta_text.'.$availableLanguage] = ['nullable', 'string', 'max:1000'];
 
-            $rules['fact.*.label.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
-            $rules['step.*.title.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
-            $rules['step.*.text.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
-            $rules['team.*.name.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
-            $rules['team.*.role.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
-            $rules['team.*.experience.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
-            $rules['team.*.quote.' . $availableLanguage] = ['nullable', 'string', 'max:500'];
+            $rules['fact.*.label.'.$availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['step.*.title.'.$availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['step.*.text.'.$availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['team.*.name.'.$availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['team.*.role.'.$availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['team.*.experience.'.$availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['team.*.quote.'.$availableLanguage] = ['nullable', 'string', 'max:500'];
         }
 
-        return  $rules;
+        return $rules;
     }
 
     public function attributes(): array
@@ -116,9 +114,9 @@ class AboutUsPageEditRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
         }
 
         return $attributes;
@@ -163,12 +161,12 @@ class AboutUsPageEditRequest extends BaseRequest
     {
         $rows = $this->input($key);
 
-        if (!is_array($rows)) {
+        if (! is_array($rows)) {
             return null;
         }
 
         foreach ($rows as $index => $row) {
-            $uploaded = $this->file($key . '.' . $index . '.' . $fileField);
+            $uploaded = $this->file($key.'.'.$index.'.'.$fileField);
 
             if ($uploaded) {
                 $rows[$index][$fileField] = $uploaded;

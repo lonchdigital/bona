@@ -34,6 +34,7 @@ return [
     'instagram' => [
         'app_id' => env('INSTAGRAM_APP_ID'),
         'app_secret' => env('INSTAGRAM_APP_SECRET'),
+        'business_account_id' => env('INSTAGRAM_BUSINESS_ACCOUNT_ID'),
     ],
 
     'facebook' => [

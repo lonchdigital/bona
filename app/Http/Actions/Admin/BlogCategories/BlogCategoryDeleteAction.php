@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\BlogCategories;
 
-use Illuminate\Http\Request;
-use App\Models\BlogCategory;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\BlogCategory;
 use App\Services\BlogCategory\BlogCategoryService;
+use Illuminate\Http\Request;
 
 class BlogCategoryDeleteAction extends BaseAction
 {

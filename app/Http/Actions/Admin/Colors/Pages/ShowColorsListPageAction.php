@@ -10,8 +10,7 @@ class ShowColorsListPageAction
     public function __invoke(
         ColorFilterRequest $request,
         ColorService $service
-    )
-    {
+    ) {
         $dto = $request->toDTO();
         $colorsPaginated = $service->getColorsPaginated($dto);
 

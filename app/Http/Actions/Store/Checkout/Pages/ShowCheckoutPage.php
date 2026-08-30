@@ -18,8 +18,7 @@ class ShowCheckoutPage extends BaseAction
         RegionService $regionService,
         CurrencyService $currencyService,
         DeliveryService $deliveryService,
-    )
-    {
+    ) {
         $cart = $this->getCart($cartService);
 
         return view('pages.store.checkout', [

@@ -11,11 +11,9 @@ class DeliveryEditAction extends BaseAction
     public function __invoke(
         DeliveryPageEditRequest $request,
         DeliveryPageService $deliveryPageService,
-    )
-    {
+    ) {
         $result = $deliveryPageService->editDeliveryPage($request->toDTO());
 
         return $this->handleActionResult(route('admin.pages.list.page'), $request, $result);
     }
 }
-

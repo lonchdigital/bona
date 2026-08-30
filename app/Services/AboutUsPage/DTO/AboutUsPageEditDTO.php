@@ -34,5 +34,5 @@ class AboutUsPageEditDTO implements BaseDTO
         public readonly ?array $facts = null,
         public readonly ?array $steps = null,
         public readonly ?array $teamMembers = null,
-    ){ }
+    ) {}
 }

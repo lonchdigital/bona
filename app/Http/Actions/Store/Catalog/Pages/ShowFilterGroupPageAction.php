@@ -15,8 +15,8 @@ use App\Services\Product\DTO\FilterProductDTO;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
 use App\Services\ProductCategory\CategoryService;
-//use App\Services\WishList\WishListService;
-use Abordage\LastModified\Facades\LastModified;
+// use App\Services\WishList\WishListService;
+use App\Support\LastModified;
 
 class ShowFilterGroupPageAction extends BaseAction
 {
@@ -24,11 +24,10 @@ class ShowFilterGroupPageAction extends BaseAction
         ProductType $productType,
         FilterGroup $filterGroup,
         CatalogFilterRequest $request
-    )
-    {
+    ) {
         $productType->load(['fields', 'fields.options']);
 
-        //get services from service container
+        // get services from service container
         $categoryService = app()->make(CategoryService::class);
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
@@ -36,7 +35,7 @@ class ShowFilterGroupPageAction extends BaseAction
         $brandService = app()->make(BrandService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
-//        $wishListService = app()->make(WishListService::class);
+        //        $wishListService = app()->make(WishListService::class);
         $filerGroupService = app()->make(FilterGroupService::class);
 
         $filtersData = new FilterProductDTO($filerGroupService->buildFilterArrayByFilterGroup($filterGroup));
@@ -65,9 +64,8 @@ class ShowFilterGroupPageAction extends BaseAction
             $page,
         );
 
-
         // TODO:: remove when finish
-//        $wishList = null;
+        //        $wishList = null;
         /*if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }*/
@@ -86,7 +84,7 @@ class ShowFilterGroupPageAction extends BaseAction
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
-//            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
+            //            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'filterGroup' => $filterGroup,
         ]);
     }

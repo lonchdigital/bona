@@ -2,8 +2,8 @@
 
 namespace App\Http\Actions\Admin\ProductsImport;
 
-use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\ProductType;
 use App\Services\Product\ProductImportDownloadExampleService;
 
 class DownloadProductsImportExampleAction extends BaseAction

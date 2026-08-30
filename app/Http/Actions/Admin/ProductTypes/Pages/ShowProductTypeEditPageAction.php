@@ -3,8 +3,8 @@
 namespace App\Http\Actions\Admin\ProductTypes\Pages;
 
 use App\Models\ProductType;
-use App\Services\Admin\ProductField\ProductFieldService;
 use App\Services\Admin\ProductAttribute\ProductAttributeService;
+use App\Services\Admin\ProductField\ProductFieldService;
 
 class ShowProductTypeEditPageAction
 {

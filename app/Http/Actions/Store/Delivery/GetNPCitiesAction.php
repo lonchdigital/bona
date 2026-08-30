@@ -6,7 +6,6 @@ use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\NovaPoshta\GetNpCitiesRequest;
 use App\Http\Resources\BaseListResource;
 use App\Services\Delivery\DeliveryService;
-use Illuminate\Http\Request;
 
 class GetNPCitiesAction extends BaseAction
 {
@@ -14,9 +13,10 @@ class GetNPCitiesAction extends BaseAction
     {
         BaseListResource::withoutWrapping();
         $npCityDTO = $request->toDTO();
+
         return BaseListResource::collection(
             $deliveryService->getNpCities(
-                $npCityDTO->query?? ''
+                $npCityDTO->query ?? ''
             )
         );
     }

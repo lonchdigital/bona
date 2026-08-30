@@ -5,7 +5,6 @@ namespace App\Http\Actions\Admin\ProductAttributes;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Admin\ProductAttribute\ProductAttributeCreateRequest;
 use App\Services\Admin\ProductAttribute\ProductAttributeService;
-use App\Services\Admin\ProductField\ProductFieldService;
 
 class ProductAttributeCreateAction extends BaseAction
 {

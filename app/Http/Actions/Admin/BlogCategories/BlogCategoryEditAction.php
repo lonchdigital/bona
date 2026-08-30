@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\BlogCategories;
 
-use App\Models\BlogCategory;
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\BlogCategory\BlogCategoryService;
 use App\Http\Requests\Admin\BlogCategory\EditBlogCategoryRequest;
+use App\Models\BlogCategory;
+use App\Services\BlogCategory\BlogCategoryService;
 
 class BlogCategoryEditAction extends BaseAction
 {

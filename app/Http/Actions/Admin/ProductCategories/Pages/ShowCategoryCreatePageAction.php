@@ -2,8 +2,8 @@
 
 namespace App\Http\Actions\Admin\ProductCategories\Pages;
 
-use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\ProductType;
 
 class ShowCategoryCreatePageAction extends BaseAction
 {

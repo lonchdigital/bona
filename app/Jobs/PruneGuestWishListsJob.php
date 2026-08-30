@@ -17,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
  * host gives the site's account no cron of its own, so a scheduled command
  * would simply never fire. The same after-response dispatch the sitemap uses.
  */
-class PruneGuestWishListsJob implements ShouldQueue, ShouldBeUnique
+class PruneGuestWishListsJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

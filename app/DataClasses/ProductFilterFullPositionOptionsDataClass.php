@@ -5,6 +5,7 @@ namespace App\DataClasses;
 class ProductFilterFullPositionOptionsDataClass implements BaseDataClass
 {
     const FILTER_POSITION_LEFT = 1;
+
     const FILTER_POSITION_MIDDLE = 2;
 
     public static function get(?int $item = null): mixed

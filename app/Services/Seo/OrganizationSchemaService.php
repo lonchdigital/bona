@@ -16,7 +16,7 @@ class OrganizationSchemaService
 {
     public function organizationId(): string
     {
-        return url('/') . '#organization';
+        return url('/').'#organization';
     }
 
     public function build(array $applicationGlobalOptions = []): array
@@ -70,7 +70,7 @@ class OrganizationSchemaService
         foreach ((array) config('organization.showrooms', []) as $index => $showroom) {
             $showrooms[] = array_filter([
                 '@type' => 'HomeGoodsStore',
-                '@id' => url('/') . '#showroom-' . ($index + 1),
+                '@id' => url('/').'#showroom-'.($index + 1),
                 'name' => $showroom['name'] ?? null,
                 'parentOrganization' => ['@id' => $this->organizationId()],
                 'url' => url('/'),
@@ -92,7 +92,7 @@ class OrganizationSchemaService
 
     private function address(array $showroom): ?array
     {
-        if (!$showroom) {
+        if (! $showroom) {
             return null;
         }
 
@@ -111,7 +111,7 @@ class OrganizationSchemaService
     {
         $hours = (array) config('organization.opening_hours', []);
 
-        if (!isset($hours['days'], $hours['opens'], $hours['closes'])) {
+        if (! isset($hours['days'], $hours['opens'], $hours['closes'])) {
             return [];
         }
 
@@ -139,6 +139,6 @@ class OrganizationSchemaService
     {
         $logo = $applicationGlobalOptions['logoLight'] ?? null;
 
-        return $logo ? url('/storage/' . $logo) : null;
+        return $logo ? url('/storage/'.$logo) : null;
     }
 }

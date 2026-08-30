@@ -11,10 +11,11 @@ class AuthenticatedOnly
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::user()) {
+        if (! Auth::user()) {
             if ($request->ajax()) {
-                return \response(json_encode(['error' => 'Access denied!']), 403);
+                return response()->json(['error' => 'Access denied!'], 403);
             }
+
             return redirect()->route('auth.sign-in');
         }
 

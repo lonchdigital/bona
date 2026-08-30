@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Services\Sitemap\SitemapService;
 use Illuminate\Console\Command;
-use Spatie\Sitemap\SitemapGenerator;
 
 class GenerateSitemap extends Command
 {

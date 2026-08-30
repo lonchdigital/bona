@@ -9,7 +9,7 @@ class ConfirmEmailAction
 {
     public function __invoke(ConfirmEmailRequest $request, AuthService $service)
     {
-        if($service->confirmEmail($request->toDTO())) {
+        if ($service->confirmEmail($request->toDTO())) {
             return view('pages.auth.email-confirmation-success');
         } else {
             return view('pages.auth.email-confirmation-fail');

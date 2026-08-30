@@ -12,6 +12,5 @@ class EditCurrencyDTO implements BaseDTO
         public readonly string $code,
         public readonly bool $isBase,
         public readonly ?float $rate,
-    )
-    { }
+    ) {}
 }

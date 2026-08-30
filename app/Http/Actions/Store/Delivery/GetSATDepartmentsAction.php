@@ -12,6 +12,7 @@ class GetSATDepartmentsAction extends BaseAction
     public function __invoke(Request $request, DeliveryService $deliveryService)
     {
         BaseListResource::withoutWrapping();
+
         return BaseListResource::collection($deliveryService->getSatDepartments($request->input('cityRef') ?? ''));
     }
 }

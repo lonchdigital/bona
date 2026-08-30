@@ -16,14 +16,14 @@ class StaticPage extends Model implements Sitemapable
         return $this->hasMany(StaticPageContent::class);
     }
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         $type = StaticPageTypesDataClass::get($this->type_id);
 
         if ($type !== null && isset($type['slug'])) {
             $urls = [];
             $urls[] = route('store.static-page.page', ['staticPageSlug' => $type['slug']]);
-            $urls[] = '/ru' . route('store.static-page.page', ['staticPageSlug' => $type['slug']], false);
+            $urls[] = '/ru'.route('store.static-page.page', ['staticPageSlug' => $type['slug']], false);
 
             return $urls;
         }

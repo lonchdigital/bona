@@ -6,8 +6,8 @@ use App\Models\DeliveryConfig;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\DeliveryPage\DTO\DeliveryPageEditDTO;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 
 class DeliveryPageService extends BaseService
 {
@@ -15,7 +15,7 @@ class DeliveryPageService extends BaseService
 
     public function editDeliveryPage(DeliveryPageEditDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request) {
+        return $this->coverWithDBTransaction(function () use ($request) {
 
             $existingConfig = DeliveryConfig::first();
 
@@ -31,46 +31,45 @@ class DeliveryPageService extends BaseService
                 'iframe' => $request->iframe,
             ];
 
-
             $imagesToDelete = [];
             $deliveryImage = null;
-            if( !is_null($request->image) ) {
+            if (! is_null($request->image)) {
                 $imagesToDelete[] = $existingConfig->image;
 
-                $newImagePath = self::DELIVERY_PAGE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
-                $dataToUpdate['image'] = $newImagePath . '.webp';
+                $newImagePath = self::DELIVERY_PAGE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
+                $dataToUpdate['image'] = $newImagePath.'.webp';
 
                 $deliveryImage['image'] = $request->image;
                 $deliveryImage['path'] = $newImagePath;
             }
 
-            if( !is_null( $deliveryImage ) ) {
+            if (! is_null($deliveryImage)) {
                 $this->storeImage($deliveryImage['path'], $deliveryImage['image'], 'webp');
                 $this->storeImage($deliveryImage['path'], $deliveryImage['image'], 'jpg');
             }
 
             foreach ($imagesToDelete as $imageToDelete) {
-                if(!is_null($imageToDelete)) {
+                if (! is_null($imageToDelete)) {
                     $this->deleteImage($imageToDelete);
                 }
             }
 
-            if( $request->imageDeleted ) {
+            if ($request->imageDeleted) {
                 $this->deleteImage($existingConfig->image);
                 $dataToUpdate['image'] = null;
             }
 
-            if( !is_null($existingConfig)){
+            if (! is_null($existingConfig)) {
                 $existingConfig->update($dataToUpdate);
             } else {
                 DeliveryConfig::create($dataToUpdate);
             }
 
+            Cache::forget('deliveryPage');
 
-             return ServiceActionResult::make(true, trans('admin.delivery_edit_success'));
+            return ServiceActionResult::make(true, trans('admin.delivery_edit_success'));
         });
     }
-
 
     public function getDeliveryConfig(): ?DeliveryConfig
     {

@@ -8,7 +8,6 @@ use App\Services\Base\ServiceActionResult;
 use App\Services\VisitRequest\DTO\VisitRequestEditDTO;
 use App\Services\VisitRequest\DTO\VisitRequestFilterDTO;
 
-
 class VisitRequestService extends BaseService
 {
     public function getVisitRequestsListPaginated(VisitRequestFilterDTO $request)
@@ -24,7 +23,7 @@ class VisitRequestService extends BaseService
 
     public function editVisitRequest(VisitRequest $visitRequest, VisitRequestEditDTO $request): ServiceActionResult
     {
-        return $this->coverWithTryCatch(function () use($visitRequest, $request) {
+        return $this->coverWithTryCatch(function () use ($visitRequest, $request) {
             $visitRequest->update([
                 'status_id' => $request->statusId,
             ]);
@@ -39,5 +38,4 @@ class VisitRequestService extends BaseService
 
         return ServiceActionResult::make(true, trans('admin.visit_request_delete_success'));
     }
-
 }

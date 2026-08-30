@@ -16,7 +16,8 @@ class MultilanguageTextArea extends Component
         public readonly string $fieldName,
         public readonly ?array $values,
         public readonly ?bool $isRequired = false,
-    ) { }
+    ) {}
+
     /**
      * Get the view / contents that represent the component.
      */

@@ -14,10 +14,8 @@ class ShowSeoGenPageAction extends BaseAction
     public function __invoke(
         ProductTypeService $productTypeService,
         SeogenService $seogenService,
-    )
-    {
+    ) {
         $seogenData = $seogenService->getSeogen();
-
 
         return view('pages.admin.seo_fields.seogen-edit', [
             'productTypes' => ProductTypeResource::collection($productTypeService->getProductTypes()),

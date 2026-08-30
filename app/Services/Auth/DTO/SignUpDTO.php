@@ -12,7 +12,5 @@ class SignUpDTO implements BaseDTO
         public readonly string $lastName,
         public readonly string $phone,
         public readonly string $password,
-    )
-    {
-    }
+    ) {}
 }

@@ -44,14 +44,14 @@ class AuthorEditRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = ['required', 'string', 'max:191'];
-            $rules['job_title.' . $availableLanguage] = ['nullable', 'string', 'max:191'];
-            $rules['short_description.' . $availableLanguage] = ['nullable', 'string', 'max:500'];
-            $rules['biography.' . $availableLanguage] = ['nullable', 'string'];
-            $rules['meta_title.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
-            $rules['meta_description.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
-            $rules['meta_keywords.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
-            $rules['certificate.*.title.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['name.'.$availableLanguage] = ['required', 'string', 'max:191'];
+            $rules['job_title.'.$availableLanguage] = ['nullable', 'string', 'max:191'];
+            $rules['short_description.'.$availableLanguage] = ['nullable', 'string', 'max:500'];
+            $rules['biography.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['meta_title.'.$availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['meta_description.'.$availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['meta_keywords.'.$availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['certificate.*.title.'.$availableLanguage] = ['nullable', 'string', 'max:255'];
         }
 
         return $rules;
@@ -89,12 +89,12 @@ class AuthorEditRequest extends BaseRequest
     {
         $certificates = $this->input('certificate');
 
-        if (!is_array($certificates)) {
+        if (! is_array($certificates)) {
             return null;
         }
 
         foreach ($certificates as $index => $certificate) {
-            $image = $this->file('certificate.' . $index . '.image');
+            $image = $this->file('certificate.'.$index.'.image');
 
             if ($image) {
                 $certificates[$index]['image'] = $image;

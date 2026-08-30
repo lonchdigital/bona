@@ -59,14 +59,14 @@ class BlogArticleService extends BaseService
         $textBlock = $article->blocks
             ->firstWhere('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT);
 
-        if (!$textBlock) {
+        if (! $textBlock) {
             return [];
         }
 
         $content = $textBlock->content;
         $html = is_array($content) ? ($content[$locale] ?? '') : '';
 
-        if (!is_string($html) || !str_contains($html, 'accordion-item-wrapper') || !class_exists(\DOMDocument::class)) {
+        if (! is_string($html) || ! str_contains($html, 'accordion-item-wrapper') || ! class_exists(\DOMDocument::class)) {
             return [];
         }
 
@@ -74,14 +74,14 @@ class BlogArticleService extends BaseService
         $previousUseErrors = libxml_use_internal_errors(true);
 
         $loaded = $document->loadHTML(
-            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
 
         libxml_clear_errors();
         libxml_use_internal_errors($previousUseErrors);
 
-        if (!$loaded) {
+        if (! $loaded) {
             return [];
         }
 
@@ -96,7 +96,7 @@ class BlogArticleService extends BaseService
             $question = $xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " question ")]', $wrapper)->item(0);
             $answer = $xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " panel-data ")]', $wrapper)->item(0);
 
-            if (!$question || !$answer) {
+            if (! $question || ! $answer) {
                 continue;
             }
 
@@ -124,9 +124,9 @@ class BlogArticleService extends BaseService
 
     public function createBlogArticle(EditBlogArticleDTO $request, User $creator): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request, $creator) {
+        return $this->coverWithDBTransaction(function () use ($request, $creator) {
 
-            $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+            $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
             $this->storeImage($heroImagePath, $request->heroImage, 'webp');
             $this->storeImage($heroImagePath, $request->heroImage, 'jpg');
 
@@ -135,7 +135,7 @@ class BlogArticleService extends BaseService
                 'name' => $request->name,
                 'slug' => $request->slug,
                 'preview_text' => $request->previewText,
-                'hero_image_path' => $heroImagePath . '.webp',
+                'hero_image_path' => $heroImagePath.'.webp',
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeywords,
@@ -161,13 +161,14 @@ class BlogArticleService extends BaseService
                     }
                 }
             }
+
             return ServiceActionResult::make(true, trans('admin.blog_article_create_success'));
         });
     }
 
     public function editBlogArticle(BlogArticle $article, EditBlogArticleDTO $request, User $creator): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($article, $request, $creator) {
+        return $this->coverWithDBTransaction(function () use ($article, $request) {
             $existingBlocks = $article->blocks;
             $imagesToDelete = [];
 
@@ -182,12 +183,12 @@ class BlogArticleService extends BaseService
             ];
 
             if ($request->heroImage) {
-                $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+                $heroImagePath = self::BLOG_ARTICLE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
 
                 $this->storeImage($heroImagePath, $request->heroImage, 'webp');
                 $this->storeImage($heroImagePath, $request->heroImage, 'jpg');
 
-                $fieldsToUpdate['hero_image_path'] = $heroImagePath . '.webp';
+                $fieldsToUpdate['hero_image_path'] = $heroImagePath.'.webp';
                 $imagesToDelete[] = $article->hero_image_path;
             }
 
@@ -198,8 +199,8 @@ class BlogArticleService extends BaseService
                     $blockModel = null;
                     if (isset($blockData['id'])) {
                         $blockModel = $article->blocks->where('id', $blockData['id'])->first();
-                        if (!$blockModel) {
-                            throw new \Exception('Block with id: ' . $blockData['id'] . 'is not exists on this article');
+                        if (! $blockModel) {
+                            throw new \Exception('Block with id: '.$blockData['id'].'is not exists on this article');
                         }
                     }
 
@@ -209,7 +210,7 @@ class BlogArticleService extends BaseService
                         } else {
                             $this->handleStoreTextBlock($article, $blockData);
                         }
-                    } else if ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_IMAGE ||
+                    } elseif ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_IMAGE ||
                         $blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SLIDER) {
                         if ($blockModel) {
                             foreach ($blockData['images'] as $index => $image) {
@@ -221,7 +222,7 @@ class BlogArticleService extends BaseService
                         } else {
                             $this->handleStoreBlockWithImageWithTooltip($article, $blockData);
                         }
-                    } else if ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
+                    } elseif ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
                         if ($blockModel) {
                             if (($blockData['quote_author_image_deleted'] || isset($blockData['quote_author_image'])) && isset($blockModel->content['quote_author_image_path'])) {
                                 $imagesToDelete[] = $blockModel->content['quote_author_image_path'];
@@ -230,7 +231,7 @@ class BlogArticleService extends BaseService
                         } else {
                             $this->handleStoreQuoteBlock($article, $blockData);
                         }
-                    } else if ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
+                    } elseif ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
                         if ($blockModel) {
                             if (isset($blockData['sponsor_image']) && isset($blockModel->content['sponsor_image_path'])) {
                                 $imagesToDelete[] = $blockModel->content['sponsor_image_path'];
@@ -239,13 +240,13 @@ class BlogArticleService extends BaseService
                         } else {
                             $this->handleStoreSponsorBlock($article, $blockData);
                         }
-                    } else if ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_VIDEO) {
+                    } elseif ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_VIDEO) {
                         if ($blockModel) {
                             $this->handleEditVideoBlock($blockModel, $blockData);
                         } else {
                             $this->handleStoreVideoBlock($article, $blockData);
                         }
-                    } else if ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS) {
+                    } elseif ($blockData['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS) {
                         if ($blockModel) {
                             $this->handleEditQuestionsAndAnswersBlock($blockModel, $blockData);
                         } else {
@@ -258,12 +259,11 @@ class BlogArticleService extends BaseService
 
             if ($request->blocks) {
                 $blocksInRequest = array_filter(array_column($request->blocks, 'id'), function ($id) {
-                    return !!$id;
+                    return (bool) $id;
                 });
             } else {
                 $blocksInRequest = [];
             }
-
 
             $existingBlockToDelete = $existingBlocks->whereNotIn('id', $blocksInRequest);
 
@@ -275,11 +275,11 @@ class BlogArticleService extends BaseService
                             $imagesToDelete[] = $image['image_path'];
                         }
                     }
-                } else if ($blockToDelete->type_id === BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
+                } elseif ($blockToDelete->type_id === BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
                     if (isset($blockToDelete->content['quote_author_image_path'])) {
                         $imagesToDelete[] = $blockToDelete->content['quote_author_image_path'];
                     }
-                } else if ($blockToDelete->type_id === BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
+                } elseif ($blockToDelete->type_id === BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
                     if (isset($blockToDelete->content['sponsor_image_path'])) {
                         $imagesToDelete[] = $blockToDelete->content['sponsor_image_path'];
                     }
@@ -298,7 +298,7 @@ class BlogArticleService extends BaseService
 
     public function deleteBlogArticle(BlogArticle $blogArticle): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($blogArticle) {
+        return $this->coverWithDBTransaction(function () use ($blogArticle) {
             $imagesToDelete = [];
 
             $imagesToDelete[] = $blogArticle->hero_image_path;
@@ -343,7 +343,7 @@ class BlogArticleService extends BaseService
     private function handleEditTextBlock(BlogArticleBlock $articleBlock, array $block): void
     {
         $articleBlock->update([
-            'content' =>  Arr::except($block, ['type_id', 'id']),
+            'content' => Arr::except($block, ['type_id', 'id']),
         ]);
     }
 
@@ -378,7 +378,7 @@ class BlogArticleService extends BaseService
         $content = Arr::only($block, $fieldsToStore);
 
         if (isset($block['quote_author_image'])) {
-            $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+            $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
             $this->storeArticleImage($imagePath, $block['quote_author_image']);
             $content['quote_author_image_path'] = $imagePath;
         }
@@ -401,7 +401,7 @@ class BlogArticleService extends BaseService
     {
         $content = $this->prepareContentForQuoteBlock($block);
 
-        if (!$block['quote_author_image_deleted'] && !isset($block['quote_author_image']) && isset($articleBlock->content['quote_author_image_path'])) {
+        if (! $block['quote_author_image_deleted'] && ! isset($block['quote_author_image']) && isset($articleBlock->content['quote_author_image_path'])) {
             $content['quote_author_image_path'] = $articleBlock->content['quote_author_image_path'];
         }
 
@@ -412,7 +412,7 @@ class BlogArticleService extends BaseService
 
     private function handleStoreSponsorBlock(BlogArticle $article, array $block): void
     {
-        $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+        $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
         $this->storeArticleImage($imagePath, $block['sponsor_image']);
 
         $block['sponsor_image_path'] = $imagePath;
@@ -423,7 +423,7 @@ class BlogArticleService extends BaseService
             'content' => Arr::only($block, [
                 'sponsor_text',
                 'sponsor_link',
-                'sponsor_image_path'
+                'sponsor_image_path',
             ]),
         ]);
     }
@@ -431,7 +431,7 @@ class BlogArticleService extends BaseService
     private function handleEditSponsorBlock(BlogArticleBlock $articleBlock, array $block): void
     {
         if (isset($block['sponsor_image'])) {
-            $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+            $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
             $this->storeArticleImage($imagePath, $block['sponsor_image']);
             $block['sponsor_image_path'] = $imagePath;
         } else {
@@ -444,20 +444,21 @@ class BlogArticleService extends BaseService
             'content' => Arr::only($block, [
                 'sponsor_text',
                 'sponsor_link',
-                'sponsor_image_path'
+                'sponsor_image_path',
             ]),
         ]);
     }
 
     private function getYouTubeVideoId(string $link): string
     {
-        if (str_contains($link, 'youtube.com') && !str_contains($link, 'embed')) {
+        if (str_contains($link, 'youtube.com') && ! str_contains($link, 'embed')) {
             $result = [];
             parse_str(parse_url($link)['query'], $result);
+
             return $result['v'];
-        } else if (str_contains($link, 'youtu.be')) {
+        } elseif (str_contains($link, 'youtu.be')) {
             return explode('youtu.be/', $link)[1];
-        } else if (str_contains($link, 'youtube.com') && str_contains($link, 'embed')) {
+        } elseif (str_contains($link, 'youtube.com') && str_contains($link, 'embed')) {
             return explode('/embed/', $link)[1];
         }
 
@@ -466,7 +467,7 @@ class BlogArticleService extends BaseService
 
     private function handleStoreVideoBlock(BlogArticle $article, array $block): void
     {
-        $videoLink = 'https://www.youtube.com/embed/' . $this->getYouTubeVideoId($block['video_link']);
+        $videoLink = 'https://www.youtube.com/embed/'.$this->getYouTubeVideoId($block['video_link']);
 
         BlogArticleBlock::create([
             'type_id' => $block['type_id'],
@@ -479,7 +480,7 @@ class BlogArticleService extends BaseService
 
     private function handleEditVideoBlock(BlogArticleBlock $articleBlock, array $block): void
     {
-        $videoLink = 'https://www.youtube.com/embed/' . $this->getYouTubeVideoId($block['video_link']);
+        $videoLink = 'https://www.youtube.com/embed/'.$this->getYouTubeVideoId($block['video_link']);
 
         $articleBlock->update([
             'content' => [
@@ -497,7 +498,7 @@ class BlogArticleService extends BaseService
             $imageData = [];
 
             if (isset($image['image'])) {
-                $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $imagePath = self::BLOG_ARTICLE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
                 $this->storeArticleImage($imagePath, $image['image']);
                 $imageData['image_path'] = $imagePath;
             }
@@ -523,7 +524,7 @@ class BlogArticleService extends BaseService
             $content[] = $imageData;
         }
 
-        return  $content;
+        return $content;
     }
 
     private function handleStoreBlockWithImageWithTooltip(BlogArticle $article, array $block): void
@@ -542,7 +543,7 @@ class BlogArticleService extends BaseService
         $content = $this->prepareContentForBlockWithImageWithTooltip($block);
 
         foreach ($content as $index => $image) {
-            if (!isset($content[$index]['image_path'])) {
+            if (! isset($content[$index]['image_path'])) {
                 $content[$index]['image_path'] = $articleBlock->content['images'][$index]['image_path'];
             }
         }

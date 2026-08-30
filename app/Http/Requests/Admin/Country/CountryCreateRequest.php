@@ -22,7 +22,7 @@ class CountryCreateRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $baseRules['name.' . $availableLanguage] = [
+            $baseRules['name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
@@ -39,7 +39,7 @@ class CountryCreateRequest extends BaseRequest
             'required',
             'image',
             'mimes:svg',
-            'dimensions:min_width=28,min_height=20,max_width=112,max_height=80,ratio=7/5'
+            'dimensions:min_width=28,min_height=20,max_width=112,max_height=80,ratio=7/5',
         ];
 
         return $rules;
@@ -53,7 +53,7 @@ class CountryCreateRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.country_name'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.country_name'), $availableLanguage);
         }
 
         return $attributes;

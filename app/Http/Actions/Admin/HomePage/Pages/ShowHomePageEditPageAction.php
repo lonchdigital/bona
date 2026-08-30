@@ -9,10 +9,9 @@ use App\Models\ProductField;
 use App\Models\ProductFieldOption;
 use App\Models\ProductType;
 use App\Services\Admin\ProductField\ProductFieldService;
+use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\HomePage\HomePageService;
 use App\Services\Product\ProductService;
-use App\Services\Admin\ProductType\ProductTypeService;
-
 
 class ShowHomePageEditPageAction extends BaseAction
 {
@@ -21,18 +20,17 @@ class ShowHomePageEditPageAction extends BaseAction
         HomePageService $homePageService,
         ProductService $productService,
         ProductTypeService $productTypeService,
-    )
-    {
+    ) {
 
         $products = $productService->getLimitedProducts(4)->map(function (Product $product) {
             $product->text = $product->name;
+
             return $product;
         });
 
-
         $wallpaperProductType = ProductType::where('slug', config('domain.wallpaper_product_type_slug'))->first();
 
-//        dd($wallpaperProductType);
+        //        dd($wallpaperProductType);
 
         if ($wallpaperProductType) {
             $customFields = $wallpaperProductType->fields()->select(['product_field_id as id', 'field_name'])
@@ -45,6 +43,7 @@ class ShowHomePageEditPageAction extends BaseAction
                         ->get()
                         ->map(function (ProductFieldOption $productFieldOption) {
                             $productFieldOption->text = $productFieldOption->name;
+
                             return $productFieldOption;
                         });
 
@@ -56,8 +55,7 @@ class ShowHomePageEditPageAction extends BaseAction
             $customFields = [];
         }
 
-
-//        dd($homePageService->getHomePageConfig());
+        //        dd($homePageService->getHomePageConfig());
 
         return view('pages.admin.home-page.edit', [
             'products' => $products,

@@ -16,8 +16,8 @@ use Tests\TestCase;
  */
 class CartTest extends TestCase
 {
-    use RefreshDatabase;
     use MakesShopData;
+    use RefreshDatabase;
 
     private function addToCart(string $slug, int $count = 1)
     {

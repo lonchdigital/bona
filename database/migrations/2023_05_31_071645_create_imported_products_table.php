@@ -30,7 +30,7 @@ return new class extends Migration
             $table->foreign('price_currency_id')
                 ->references('id')
                 ->on('currencies');
-            //use data class instead of foreign table
+            // use data class instead of foreign table
             $table->unsignedBigInteger('availability_status_id');
             $table->json('special_offers')->nullable();
             $table->string('preview_image_path')->nullable();

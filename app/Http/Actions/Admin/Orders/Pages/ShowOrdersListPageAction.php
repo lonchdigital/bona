@@ -13,8 +13,7 @@ class ShowOrdersListPageAction extends BaseAction
         OrderFilterRequest $request,
         OrderService $orderService,
         CurrencyService $currencyService,
-    )
-    {
+    ) {
         $dto = $request->toDTO();
 
         return view('pages.admin.orders.list', [

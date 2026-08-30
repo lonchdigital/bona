@@ -5,11 +5,17 @@ namespace App\DataClasses;
 class ImportedProductImageTypesDataClass implements BaseDataClass
 {
     const TYPE_MAIN_IMAGE = 1;
+
     const TYPE_PATTERN_IMAGE = 2;
+
     const TYPE_GALLERY_IMAGE_1 = 3;
+
     const TYPE_GALLERY_IMAGE_2 = 4;
+
     const TYPE_GALLERY_IMAGE_3 = 5;
+
     const TYPE_GALLERY_IMAGE_4 = 6;
+
     const TYPE_GALLERY_IMAGE_5 = 7;
 
     public static function get(?int $item = null): mixed

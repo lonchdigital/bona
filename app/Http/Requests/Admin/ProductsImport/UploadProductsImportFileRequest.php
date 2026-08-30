@@ -14,7 +14,7 @@ class UploadProductsImportFileRequest extends BaseRequest
                 'required',
                 'file',
                 'mimes:xlsx',
-            ]
+            ],
         ];
     }
 

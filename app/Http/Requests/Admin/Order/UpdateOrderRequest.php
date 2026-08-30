@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Admin\Order;
 
 use App\DataClasses\OrderPaymentStatusesDataClass;
+use App\DataClasses\OrderStatusesDataClass;
 use App\Http\Requests\BaseRequest;
 use App\Services\Order\DTO\UpdateOrderDTO;
-use App\DataClasses\OrderStatusesDataClass;
 
 class UpdateOrderRequest extends BaseRequest
 {
@@ -24,7 +24,6 @@ class UpdateOrderRequest extends BaseRequest
             ],
         ];
     }
-
 
     public function toDTO(): UpdateOrderDTO
     {

@@ -5,6 +5,7 @@ namespace App\DataClasses;
 class RecipientTypesDataClass implements BaseDataClass
 {
     const RECIPIENT_USER = 1;
+
     const RECIPIENT_CUSTOM = 2;
 
     public static function get(?int $item = null): mixed

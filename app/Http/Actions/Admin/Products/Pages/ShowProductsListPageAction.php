@@ -14,14 +14,13 @@ class ShowProductsListPageAction
 {
     public function __invoke(
         ProductFilterRequest $request,
-        ProductType          $productType,
-        ProductService       $service,
-        BrandService         $brandService,
-        ColorService         $colorService,
-        CountryService       $countryService,
-        CategoryService      $categoryService,
-    )
-    {
+        ProductType $productType,
+        ProductService $service,
+        BrandService $brandService,
+        ColorService $colorService,
+        CountryService $countryService,
+        CategoryService $categoryService,
+    ) {
         $dto = $request->toDTO();
 
         $productsPaginated = $service->getProductsByTypePaginatedAdmin($productType->id, $request->toDTO());

@@ -28,32 +28,30 @@ class StaticPageEditRequest extends BaseRequest
             ],
             'content' => [
                 'array',
-            ]
+            ],
         ];
 
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['content.' . $availableLanguage] = [
+            $rules['content.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
         }
 
         return $rules;
     }
-
 
     public function toDTO(): StaticPageEditDTO
     {

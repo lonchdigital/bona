@@ -1,52 +1,54 @@
 import "bootstrap";
 
-import { createApp } from 'vue/dist/vue.esm-bundler';
+import { createApp, defineAsyncComponent } from 'vue/dist/vue.esm-bundler';
 import { i18nVue } from "laravel-vue-i18n";
 
 import LanguageSwitcherComponent from "./components/LanguageSwitcherComponent.vue";
-import BlogArticleContainer from "./containers/BlogArticleContainer.vue";
-import BlogArticleBlocksContainer from "./containers/BlogArticleBlocksContainer.vue";
 import MultiLanguageInputComponent from "./components/MultiLanguageInputComponent.vue";
 import DateInputComponent from "./components/DateInputComponent.vue";
 import MultiLanguageTextAreaComponent from "./components/MultiLanguageTextAreaComponent.vue";
 import TextAreaComponent from "./components/TextAreaComponent.vue";
 import MultiLanguageRichTextEditorComponent from "./components/MultiLanguageRichTextEditorComponent.vue";
 import ImageFileInputComponent from "./components/ImageFileInputComponent.vue";
-import ImageWithTooltipBlockComponent from "./components/blogArticleBlockComponents/ImageWithTooltipBlockComponent.vue";
-import MultiLanguageRichTextEditorBlockComponent from "./components/blogArticleBlockComponents/MultiLanguageRichTextEditorBlockComponent.vue";
-import ImageWithTooltipBlockContainerComponent from "./components/blogArticleBlockComponents/ImageWithTooltipBlockContainerComponent.vue";
-import QuoteBlockComponent from "./components/blogArticleBlockComponents/QuoteBlockComponent.vue";
-import SponsorBlockComponent from "./components/blogArticleBlockComponents/SponsorBlockComponent.vue";
-import VideoBlockComponent from "./components/blogArticleBlockComponents/VideoBlockComponent.vue";
-import SliderBlockComponent from "./components/blogArticleBlockComponents/SliderBlockComponent.vue";
-import QuestionsAndAnswersBlockComponent from "./components/blogArticleBlockComponents/QuestionsAndAnswersBlockComponent.vue";
 import InputComponent from "./components/InputComponent.vue";
 import CheckBoxComponent from "./components/CheckBoxComponent.vue";
 import SelectComponent from "./components/SelectComponent.vue";
 import SelectColorComponent from "./components/SelectColorComponent.vue";
-import ReactiveFormContainer from "./containers/ReactiveFormContainer.vue";
-import BlogSlidesEditForm from "./forms/BlogSlidesEditForm.vue";
-import BlogSlideComponent from "./components/BlogSlideComponent.vue";
-import HomePageEditForm from "./forms/HomePageEditForm.vue";
-import ProductPageEditForm from "./forms/ProductPageEditForm.vue";
-import AuthorPageEditForm from "./forms/AuthorPageEditForm.vue";
-import AuthorCertificateComponent from "./components/AuthorCertificateComponent.vue";
-import WorkImageComponent from "./components/WorkImageComponent.vue";
-import AboutUsFactComponent from "./components/AboutUsFactComponent.vue";
-import AboutUsStepComponent from "./components/AboutUsStepComponent.vue";
-import AboutUsTeamMemberComponent from "./components/AboutUsTeamMemberComponent.vue";
-import WorkPageEditForm from "./forms/WorkPageEditForm.vue";
-import ServicesPageEditForm from "./forms/ServicesPageEditForm.vue";
-import CommonSectionPageEditForm from "./forms/CommonSectionPageEditForm.vue";
-import AboutUsPageEditForm from "./forms/AboutUsPageEditForm.vue";
-import ContactPageEditForm from "./forms/ContactPageEditForm.vue";
-import ApplicationConfigsPageEditForm from "./forms/ApplicationConfigsPageEditForm.vue";
-import SeogenEditFrom from "./forms/SeogenEditForm.vue";
-import FilterGroupsEditForm from "./forms/FilterGroupsEditForm.vue";
 
 import Multiselect from '@vueform/multiselect';
 
 const app = createApp({});
+const asyncComponent = loader => defineAsyncComponent(loader);
+
+const BlogArticleContainer = asyncComponent(() => import('./containers/BlogArticleContainer.vue'));
+const BlogArticleBlocksContainer = asyncComponent(() => import('./containers/BlogArticleBlocksContainer.vue'));
+const ImageWithTooltipBlockComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/ImageWithTooltipBlockComponent.vue'));
+const MultiLanguageRichTextEditorBlockComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/MultiLanguageRichTextEditorBlockComponent.vue'));
+const ImageWithTooltipBlockContainerComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/ImageWithTooltipBlockContainerComponent.vue'));
+const QuoteBlockComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/QuoteBlockComponent.vue'));
+const SponsorBlockComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/SponsorBlockComponent.vue'));
+const VideoBlockComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/VideoBlockComponent.vue'));
+const SliderBlockComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/SliderBlockComponent.vue'));
+const QuestionsAndAnswersBlockComponent = asyncComponent(() => import('./components/blogArticleBlockComponents/QuestionsAndAnswersBlockComponent.vue'));
+const ReactiveFormContainer = asyncComponent(() => import('./containers/ReactiveFormContainer.vue'));
+const BlogSlidesEditForm = asyncComponent(() => import('./forms/BlogSlidesEditForm.vue'));
+const BlogSlideComponent = asyncComponent(() => import('./components/BlogSlideComponent.vue'));
+const HomePageEditForm = asyncComponent(() => import('./forms/HomePageEditForm.vue'));
+const ProductPageEditForm = asyncComponent(() => import('./forms/ProductPageEditForm.vue'));
+const AuthorPageEditForm = asyncComponent(() => import('./forms/AuthorPageEditForm.vue'));
+const AuthorCertificateComponent = asyncComponent(() => import('./components/AuthorCertificateComponent.vue'));
+const WorkImageComponent = asyncComponent(() => import('./components/WorkImageComponent.vue'));
+const AboutUsFactComponent = asyncComponent(() => import('./components/AboutUsFactComponent.vue'));
+const AboutUsStepComponent = asyncComponent(() => import('./components/AboutUsStepComponent.vue'));
+const AboutUsTeamMemberComponent = asyncComponent(() => import('./components/AboutUsTeamMemberComponent.vue'));
+const WorkPageEditForm = asyncComponent(() => import('./forms/WorkPageEditForm.vue'));
+const ServicesPageEditForm = asyncComponent(() => import('./forms/ServicesPageEditForm.vue'));
+const CommonSectionPageEditForm = asyncComponent(() => import('./forms/CommonSectionPageEditForm.vue'));
+const AboutUsPageEditForm = asyncComponent(() => import('./forms/AboutUsPageEditForm.vue'));
+const ContactPageEditForm = asyncComponent(() => import('./forms/ContactPageEditForm.vue'));
+const ApplicationConfigsPageEditForm = asyncComponent(() => import('./forms/ApplicationConfigsPageEditForm.vue'));
+const SeogenEditFrom = asyncComponent(() => import('./forms/SeogenEditForm.vue'));
+const FilterGroupsEditForm = asyncComponent(() => import('./forms/FilterGroupsEditForm.vue'));
 
 app.use(i18nVue, {
     fallbackLang: 'uk',
@@ -104,4 +106,3 @@ app.component('filter-groups-edit-form', FilterGroupsEditForm);
 app.component('multiselect-component', Multiselect);
 
 app.mount('#app');
-

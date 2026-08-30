@@ -7,18 +7,15 @@ use App\DataClasses\ProductSpecialOfferOptionsDataClass;
 use App\DataClasses\ProductStatusDataClass;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Color;
 use App\Models\Country;
-use App\Models\Currency;
-use App\Models\ImportedProduct;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\Role;
 use App\Models\User;
-use App\Services\ProductCategory\CategoryService;
 use App\Services\Product\DTO\EditProductDTO;
 use App\Services\Product\ProductService;
+use App\Services\ProductCategory\CategoryService;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -29,10 +26,10 @@ use Laravel\Telescope\Telescope;
 class ProductSeeder extends Seeder
 {
     use WithFaker, WithoutModelEvents;
+
     /**
      * Run the database seeds.
      */
-
     public function __construct()
     {
         $this->setUpFaker();
@@ -44,7 +41,7 @@ class ProductSeeder extends Seeder
 
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
 
@@ -52,7 +49,7 @@ class ProductSeeder extends Seeder
 
         $currencyUSDId = 2;
 
-        $basePath = base_path() . '/resources/seed/products';
+        $basePath = base_path().'/resources/seed/products';
 
         $productType = ProductType::first();
 
@@ -61,12 +58,12 @@ class ProductSeeder extends Seeder
             $brand = $this->getRandomBrand();
 
             $isActive = true;
-            $name =  [
-                'uk' => 'Шпалери ' . $brand->name . ' тип ' . $fakeCode,
-                'ru' => 'Обои ' . $brand->name . ' тип ' . $fakeCode,
+            $name = [
+                'uk' => 'Шпалери '.$brand->name.' тип '.$fakeCode,
+                'ru' => 'Обои '.$brand->name.' тип '.$fakeCode,
             ];
-            $sku = $this->faker->numerify(mb_strtoupper($this->faker->randomLetter() . $this->faker->randomLetter()) . '00#########');
-            $slug = Str::slug($name['uk'] . '-' . $sku);
+            $sku = $this->faker->numerify(mb_strtoupper($this->faker->randomLetter().$this->faker->randomLetter()).'00#########');
+            $slug = Str::slug($name['uk'].'-'.$sku);
             $metaData = [
                 'uk' => 'Купити шпалери',
                 'ru' => 'Купить обои',
@@ -74,15 +71,15 @@ class ProductSeeder extends Seeder
 
             $specialOffers = ProductSpecialOfferOptionsDataClass::get()->pluck('id')->random(rand(0, rand(0, rand(0, 2))))->toArray();
 
-            if (!count($specialOffers)) {
+            if (! count($specialOffers)) {
                 $specialOffers = null;
             }
 
             $priceInUSD = $this->faker->randomFloat(2, 5, 40);
             $salePrice = $this->faker->boolean(30) ? $priceInUSD * 1.30 : null;
 
-            $mainImage = UploadedFile::fake()->createWithContent('main-image.jpg', file_get_contents($basePath . '/' . 'main-image.jpg'));
-            $patternImage = UploadedFile::fake()->createWithContent('main-image.jpg', file_get_contents($basePath . '/' . 'pattern-image.jpg'));
+            $mainImage = UploadedFile::fake()->createWithContent('main-image.jpg', file_get_contents($basePath.'/'.'main-image.jpg'));
+            $patternImage = UploadedFile::fake()->createWithContent('main-image.jpg', file_get_contents($basePath.'/'.'pattern-image.jpg'));
 
             $countryId = $this->getRandomCountry()->id;
             $brandId = $brand->id;
@@ -138,10 +135,10 @@ class ProductSeeder extends Seeder
 
             $productId = Product::latest()->first()->id;
 
-            for($child = 0; $child < rand(1, 3); $child++) {
+            for ($child = 0; $child < rand(1, 3); $child++) {
 
-                $sku = $this->faker->numerify(mb_strtoupper($this->faker->randomLetter() . $this->faker->randomLetter()) . '00#########');
-                $slug = Str::slug($name['uk'] . '-' . $sku);
+                $sku = $this->faker->numerify(mb_strtoupper($this->faker->randomLetter().$this->faker->randomLetter()).'00#########');
+                $slug = Str::slug($name['uk'].'-'.$sku);
 
                 $childDTO = new EditProductDTO(
                     $isActive,
@@ -241,7 +238,7 @@ class ProductSeeder extends Seeder
 
             $customFields[$fieldId] = [
                 'field_id' => $fieldId,
-                'value' => $value
+                'value' => $value,
             ];
         }
 

@@ -3,9 +3,9 @@
 namespace App\Http\Actions\Admin\ProductAttributes;
 
 use App\Http\Actions\Admin\BaseAction;
+use App\Http\Requests\Admin\ProductAttribute\ProductAttributeEditRequest;
 use App\Models\ProductAttribute;
 use App\Services\Admin\ProductAttribute\ProductAttributeService;
-use App\Http\Requests\Admin\ProductAttribute\ProductAttributeEditRequest;
 
 class ProductAttributeEditAction extends BaseAction
 {

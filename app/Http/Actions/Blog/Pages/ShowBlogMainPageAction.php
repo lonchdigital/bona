@@ -13,8 +13,7 @@ class ShowBlogMainPageAction extends BaseAction
         BlogArticleService $blogArticleService,
         ApplicationConfigService $applicationConfigService,
         BlogPageService $blogPageService
-    )
-    {
+    ) {
         $config = $blogPageService->getConfigData();
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);
 

@@ -9,5 +9,5 @@ class EditBlogCategoryDTO implements BaseDTO
     public function __construct(
         public readonly array $name,
         public readonly string $slug,
-    ) { }
+    ) {}
 }

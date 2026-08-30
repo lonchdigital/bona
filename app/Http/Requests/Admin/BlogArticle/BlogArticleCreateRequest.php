@@ -23,7 +23,7 @@ class BlogArticleCreateRequest extends BaseRequest
             ],
             'meta_tags' => [
                 'nullable',
-                'string'
+                'string',
             ],
             'hero_image_deleted' => [
                 'nullable',
@@ -33,8 +33,8 @@ class BlogArticleCreateRequest extends BaseRequest
             ],
             'block.*.type_id' => [
                 'integer',
-                'in:' . BlogArticleBlockTypesDataClass::get()->pluck('id')->implode(','),
-            ]
+                'in:'.BlogArticleBlockTypesDataClass::get()->pluck('id')->implode(','),
+            ],
         ];
 
         if ($this->input('block')) {
@@ -43,39 +43,38 @@ class BlogArticleCreateRequest extends BaseRequest
                     $this->addTextBlockRules($rules, $index);
                 } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_IMAGE) {
                     $this->addImageBlockRules($rules, $index);
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
                     $this->addQuoteBlockRules($rules, $index);
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
                     $this->addSponsorBlockRules($rules, $index);
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_VIDEO) {
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_VIDEO) {
                     $this->addVideoBlockRules($rules, $index);
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SLIDER) {
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SLIDER) {
                     $this->addImageBlockRules($rules, $index);
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS) {
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS) {
                     $this->addQuestionsAndAnswersBlockRules($rules, $index);
                 }
             }
         }
 
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['preview_text.' . $availableLanguage] = [
+            $rules['preview_text.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
@@ -87,34 +86,34 @@ class BlogArticleCreateRequest extends BaseRequest
     private function addTextBlockRules(array &$rules, int $index): void
     {
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['block.' . $index . '.' . $availableLanguage] = [
+            $rules['block.'.$index.'.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
         }
     }
 
     private function addImageBlockRules(array &$rules, int $index): void
     {
-        $rules['block.' . $index . '.images.*.image_deleted'] = [
-            'nullable'
+        $rules['block.'.$index.'.images.*.image_deleted'] = [
+            'nullable',
         ];
 
         foreach ($this->input('block')[$index]['images'] as $subIndex => $customSubBlock) {
-            $rules['block.' . $index . '.images.' . $subIndex . '.product_id'] = [
+            $rules['block.'.$index.'.images.'.$subIndex.'.product_id'] = [
                 'nullable',
                 'integer',
                 'exists:products,id',
             ];
 
             if ($customSubBlock['product_id']) {
-                $rules['block.' . $index . '.images.' . $subIndex . '.top'] = [
+                $rules['block.'.$index.'.images.'.$subIndex.'.top'] = [
                     'required',
-                    'numeric'
+                    'numeric',
                 ];
-                $rules['block.' . $index . '.images.' . $subIndex . '.left'] = [
+                $rules['block.'.$index.'.images.'.$subIndex.'.left'] = [
                     'required',
-                    'numeric'
+                    'numeric',
                 ];
             }
         }
@@ -142,17 +141,16 @@ class BlogArticleCreateRequest extends BaseRequest
             }
         }
 
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['block.' . $index . '.quote.' . $availableLanguage] = [
+            $rules['block.'.$index.'.quote.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
-            $rules['block.' . $index . '.quote_author.' . $availableLanguage] = [
+            $rules['block.'.$index.'.quote_author.'.$availableLanguage] = [
                 $quoteAuthorIsRequired ? 'required' : 'nullable',
                 'string',
             ];
-            $rules['block.' . $index . '.quote_author_position.' . $availableLanguage] = [
+            $rules['block.'.$index.'.quote_author_position.'.$availableLanguage] = [
                 $quoteAuthorPositionIsRequired ? 'required' : 'nullable',
                 'string',
             ];
@@ -162,12 +160,12 @@ class BlogArticleCreateRequest extends BaseRequest
     private function addSponsorBlockRules(array &$rules, int $index): void
     {
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['block.' . $index . '.sponsor_text.' . $availableLanguage] = [
+            $rules['block.'.$index.'.sponsor_text.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
         }
-        $rules['block.' . $index . '.sponsor_link'] = [
+        $rules['block.'.$index.'.sponsor_link'] = [
             'required',
             'string',
             'url',
@@ -176,7 +174,7 @@ class BlogArticleCreateRequest extends BaseRequest
 
     private function addVideoBlockRules(array &$rules, int $index): void
     {
-        $rules['block.' . $index . '.video_link'] = [
+        $rules['block.'.$index.'.video_link'] = [
             'required',
             'string',
             'url',
@@ -187,11 +185,11 @@ class BlogArticleCreateRequest extends BaseRequest
     private function addQuestionsAndAnswersBlockRules(array &$rules, int $index): void
     {
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['block.' . $index . '.questions.*.question.' . $availableLanguage] = [
+            $rules['block.'.$index.'.questions.*.question.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
-            $rules['block.' . $index . '.questions.*.answer.' . $availableLanguage] = [
+            $rules['block.'.$index.'.questions.*.answer.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
@@ -210,22 +208,22 @@ class BlogArticleCreateRequest extends BaseRequest
         if ($this->input('block')) {
             foreach ($this->input('block') as $index => $customBlock) {
                 if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_IMAGE) {
-                    $rules['block.' . $index . '.images.*.image'] = [
+                    $rules['block.'.$index.'.images.*.image'] = [
                         'required',
                         'mimes:jpeg,png,jpg',
                     ];
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
-                    $rules['block.' . $index . '.quote_author_image'] = [
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
+                    $rules['block.'.$index.'.quote_author_image'] = [
                         'nullable',
                         'mimes:jpeg,png,jpg',
                     ];
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
-                    $rules['block.' . $index . '.sponsor_image'] = [
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
+                    $rules['block.'.$index.'.sponsor_image'] = [
                         'required',
                         'mimes:jpeg,png,jpg',
                     ];
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SLIDER) {
-                    $rules['block.' . $index . '.images.*.image'] = [
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SLIDER) {
+                    $rules['block.'.$index.'.images.*.image'] = [
                         'required',
                         'mimes:jpeg,png,jpg',
                         'dimensions:ratio=2/1,ratio=1/2',
@@ -244,38 +242,38 @@ class BlogArticleCreateRequest extends BaseRequest
         $attributes['hero_image'] = mb_strtolower(trans('admin.blog_article_block_image_title'));
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
-            $attributes['preview_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_preview_text'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['preview_text.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_preview_text'), $availableLanguage);
         }
 
         if ($this->input('block')) {
             foreach ($this->input('block') as $index => $customBlock) {
                 if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_TEXT) {
                     foreach ($this->availableLanguages as $availableLanguage) {
-                        $attributes['block.' . $index . '.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_text'), $availableLanguage);
+                        $attributes['block.'.$index.'.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_text'), $availableLanguage);
                     }
                 } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_IMAGE) {
-                    $attributes['block.' . $index . '.images.*.image'] = mb_strtolower(trans('admin.image'));
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
+                    $attributes['block.'.$index.'.images.*.image'] = mb_strtolower(trans('admin.image'));
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
                     foreach ($this->availableLanguages as $availableLanguage) {
-                        $attributes['block.' . $index . '.quote.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_quote'), $availableLanguage);
-                        $attributes['block.' . $index . '.quote_author.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_quote_author'), $availableLanguage);
-                        $attributes['block.' . $index . '.quote_author_position.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_quote_author_position'), $availableLanguage);
+                        $attributes['block.'.$index.'.quote.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_quote'), $availableLanguage);
+                        $attributes['block.'.$index.'.quote_author.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_quote_author'), $availableLanguage);
+                        $attributes['block.'.$index.'.quote_author_position.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_quote_author_position'), $availableLanguage);
                     }
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
-                    $attributes['block.' . $index . '.sponsor_image'] = mb_strtolower(trans('admin.sponsor_image'));
-                    $attributes['block.' . $index . '.sponsor_link'] = mb_strtolower(trans('admin.sponsor_link'));
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
+                    $attributes['block.'.$index.'.sponsor_image'] = mb_strtolower(trans('admin.sponsor_image'));
+                    $attributes['block.'.$index.'.sponsor_link'] = mb_strtolower(trans('admin.sponsor_link'));
                     foreach ($this->availableLanguages as $availableLanguage) {
-                        $attributes['block.' . $index . '.sponsor_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.sponsor_text'), $availableLanguage);
+                        $attributes['block.'.$index.'.sponsor_text.'.$availableLanguage] = $this->prepareAttribute(trans('admin.sponsor_text'), $availableLanguage);
                     }
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_VIDEO) {
-                    $attributes['block.' . $index . '.video_link'] = mb_strtolower(trans('admin.video_link'));
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SLIDER) {
-                    $attributes['block.' . $index . '.images.*.image'] = mb_strtolower(trans('admin.slide_image'));
-                } else if ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS)  {
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_VIDEO) {
+                    $attributes['block.'.$index.'.video_link'] = mb_strtolower(trans('admin.video_link'));
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_SLIDER) {
+                    $attributes['block.'.$index.'.images.*.image'] = mb_strtolower(trans('admin.slide_image'));
+                } elseif ($customBlock['type_id'] == BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS) {
                     foreach ($this->availableLanguages as $availableLanguage) {
-                        $attributes['block.' . $index . '.questions.*.question.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_question'), $availableLanguage);
-                        $attributes['block.' . $index . '.questions.*.answer.' . $availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_answer'), $availableLanguage);
+                        $attributes['block.'.$index.'.questions.*.question.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_question'), $availableLanguage);
+                        $attributes['block.'.$index.'.questions.*.answer.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_block_answer'), $availableLanguage);
                     }
 
                 }

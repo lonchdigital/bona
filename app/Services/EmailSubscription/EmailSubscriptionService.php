@@ -3,21 +3,21 @@
 namespace App\Services\EmailSubscription;
 
 use App\Mail\EmailSubscriptionConfirmedEmail;
+use App\Mail\EmailSubscriptionEmail;
 use App\Models\EmailSubscription;
 use App\Models\PromoCode;
 use App\Services\Base\BaseService;
-use App\Mail\EmailSubscriptionEmail;
-use Illuminate\Support\Facades\Mail;
 use App\Services\Base\ServiceActionResult;
 use App\Services\EmailSubscription\DTO\SubscribeEmailDTO;
+use Illuminate\Support\Facades\Mail;
 
 class EmailSubscriptionService extends BaseService
 {
     public function subscribe(SubscribeEmailDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request) {
+        return $this->coverWithDBTransaction(function () use ($request) {
 
-            $code = \Str::random(10) . '-' . \Str::random(2);
+            $code = \Str::random(10).'-'.\Str::random(2);
 
             EmailSubscription::create([
                 'email' => $request->email,
@@ -34,23 +34,23 @@ class EmailSubscriptionService extends BaseService
     {
         $emailSubscription = EmailSubscription::where('confirmation_code', $emailSubscriptionCode)->first();
 
-        if (!$emailSubscription || $emailSubscription->confirmed_at != null) {
+        if (! $emailSubscription || $emailSubscription->confirmed_at != null) {
             return ServiceActionResult::make(false, trans('base.email_confirmed_fail_text'));
         }
 
-        return $this->coverWithDBTransaction(function () use($emailSubscription) {
+        return $this->coverWithDBTransaction(function () use ($emailSubscription) {
             $emailSubscription->update([
                 'confirmed_at' => now(),
             ]);
 
             $latestCodeId = PromoCode::latest()->first();
-            if (!$latestCodeId) {
+            if (! $latestCodeId) {
                 $latestCodeId = 1;
             } else {
                 $latestCodeId = $latestCodeId->id;
             }
 
-            $code = \Str::random(8) . '-' . $latestCodeId;
+            $code = \Str::random(8).'-'.$latestCodeId;
 
             PromoCode::create([
                 'code' => $code,
@@ -61,9 +61,6 @@ class EmailSubscriptionService extends BaseService
 
             return ServiceActionResult::make(true, trans('base.email_confirmed_thank_you'));
         });
-
-
-
 
     }
 }

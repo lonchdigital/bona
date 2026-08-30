@@ -6,29 +6,28 @@ use App\DataClasses\ProductStatusDataClass;
 use App\Models\Product;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Brand\BrandService;
-use App\Services\ProductCategory\CategoryService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductService;
+use App\Services\ProductCategory\CategoryService;
 
 class ShowProductEditPageAction
 {
     public function __invoke(
-        int                      $productTypeId,
-        Product                  $product,
-        ProductService           $productsService,
+        int $productTypeId,
+        Product $product,
+        ProductService $productsService,
         ApplicationConfigService $applicationService,
-        CurrencyService          $currencyService,
-        CategoryService          $productCategoryService,
-        BrandService             $brandService,
-        ColorService             $colorService,
-        CountryService           $countryService,
-    )
-    {
+        CurrencyService $currencyService,
+        CategoryService $productCategoryService,
+        BrandService $brandService,
+        ColorService $colorService,
+        CountryService $countryService,
+    ) {
         $productType = $productsService->getProductTypeWithFields($productTypeId);
 
-        if (!$productType) {
+        if (! $productType) {
             abort(404);
         }
 

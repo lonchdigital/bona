@@ -2,8 +2,8 @@
 
 namespace App\Http\Actions\Store\WishList;
 
-use App\Models\Product;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\Product;
 use App\Services\WishList\WishListService;
 use Illuminate\Http\Request;
 

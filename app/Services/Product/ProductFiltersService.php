@@ -11,8 +11,6 @@ use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Country;
 use App\Models\Currency;
-use App\Models\Product;
-use App\Models\ProductField;
 use App\Models\ProductType;
 use App\Services\Base\BaseService;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,10 +49,9 @@ class ProductFiltersService extends BaseService
         array $filterData,
         Currency $baseCurrency,
         Collection $colors,
-//        Collection $countries,
+        //        Collection $countries,
         Collection $brands,
-    ): array
-    {
+    ): array {
         $options = [];
         $fields = $productType->fields;
         $sizeOptions = null;
@@ -66,11 +63,10 @@ class ProductFiltersService extends BaseService
                     $item->slug == str_replace('_to', '', $filterNameSlug);
             })->first();
 
-
             if ($field) {
                 if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
 
-                    if (!is_array($filterValue)) {
+                    if (! is_array($filterValue)) {
                         $filterValue = [$filterValue];
                     }
 
@@ -84,7 +80,7 @@ class ProductFiltersService extends BaseService
                                 'option_slug' => $value,
                             ];
                         } else {
-                            Log::error('CatalogService@getOptionsByFilterData: error: invalid field option slug: ' . $value);
+                            Log::error('CatalogService@getOptionsByFilterData: error: invalid field option slug: '.$value);
                         }
                     }
 
@@ -93,7 +89,7 @@ class ProductFiltersService extends BaseService
                 ) {
 
                     if ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
-                        if (!is_array($filterValue)) {
+                        if (! is_array($filterValue)) {
                             $filterValue = [$filterValue];
                         }
 
@@ -107,21 +103,21 @@ class ProductFiltersService extends BaseService
                                     'option_slug' => $value,
                                 ];
                             } else {
-                                Log::error('CatalogService@getOptionsByFilterData: error: invalid field filter option slug: ' . $value);
+                                Log::error('CatalogService@getOptionsByFilterData: error: invalid field filter option slug: '.$value);
                             }
                         }
                     } elseif ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_FROM_TO_INPUTS_TYPE) {
-                        if ($filterNameSlug == $field->slug . '_from') {
+                        if ($filterNameSlug == $field->slug.'_from') {
                             $options[] = [
-                                'option_name' => trans('base.from') . ': ' . $filterValue . ' ' . $field->field_size_name,
+                                'option_name' => trans('base.from').': '.$filterValue.' '.$field->field_size_name,
                                 'filter_slug' => $filterNameSlug,
                                 'option_slug' => $filterValue,
                             ];
                         }
 
-                        if ($filterNameSlug == $field->slug . '_to') {
+                        if ($filterNameSlug == $field->slug.'_to') {
                             $options[] = [
-                                'option_name' => trans('base.to') . ': ' . $filterValue . ' ' . $field->field_size_name,
+                                'option_name' => trans('base.to').': '.$filterValue.' '.$field->field_size_name,
                                 'filter_slug' => $filterNameSlug,
                                 'option_slug' => $filterValue,
                             ];
@@ -129,9 +125,9 @@ class ProductFiltersService extends BaseService
                     }
                 }
             } else {
-                if($filterNameSlug === 'color') {
+                if ($filterNameSlug === 'color') {
 
-                    if (!is_array($filterValue)) {
+                    if (! is_array($filterValue)) {
                         $filterValue = [$filterValue];
                     }
 
@@ -145,12 +141,12 @@ class ProductFiltersService extends BaseService
                                 'option_slug' => $value,
                             ];
                         } else {
-                            Log::error('CatalogService@getOptionsByFilterData: error: invalid color slug: ' . $value);
+                            Log::error('CatalogService@getOptionsByFilterData: error: invalid color slug: '.$value);
                         }
                     }
                 } elseif ($filterNameSlug === 'country') {
 
-                    if (!is_array($filterValue)) {
+                    if (! is_array($filterValue)) {
                         $filterValue = [$filterValue];
                     }
 
@@ -169,7 +165,7 @@ class ProductFiltersService extends BaseService
                     }*/
                 } elseif ($filterNameSlug === 'brand') {
 
-                    if (!is_array($filterValue)) {
+                    if (! is_array($filterValue)) {
                         $filterValue = [$filterValue];
                     }
 
@@ -183,66 +179,66 @@ class ProductFiltersService extends BaseService
                                 'option_slug' => $value,
                             ];
                         } else {
-                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: ' . $value);
+                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: '.$value);
                         }
                     }
                 } elseif ($filterNameSlug === 'price_from') {
                     $options[] = [
-                        'option_name' => trans('base.from') . ': ' . $filterValue . ' ' . $baseCurrency->name_short,
+                        'option_name' => trans('base.from').': '.$filterValue.' '.$baseCurrency->name_short,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
                 } elseif ($filterNameSlug === 'price_to') {
                     $options[] = [
-                        'option_name' => trans('base.to') . ': ' . $filterValue . ' ' . $baseCurrency->name_short,
+                        'option_name' => trans('base.to').': '.$filterValue.' '.$baseCurrency->name_short,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
 
-                    //SIZE
+                    // SIZE
 
-                    //dynamic size filters
+                    // dynamic size filters
                 } elseif ($filterNameSlug === 'product_length_from') {
                     $options[] = [
-                        'option_name' => trans('base.from') . ': ' . $filterValue . ' ' . $productType->size_points,
+                        'option_name' => trans('base.from').': '.$filterValue.' '.$productType->size_points,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
                 } elseif ($filterNameSlug === 'product_length_to') {
                     $options[] = [
-                        'option_name' => trans('base.to') . ': ' . $filterValue . ' ' . $productType->size_points,
+                        'option_name' => trans('base.to').': '.$filterValue.' '.$productType->size_points,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
                 } elseif ($filterNameSlug === 'product_width_from') {
                     $options[] = [
-                        'option_name' => trans('base.from') . ': ' . $filterValue . ' ' . $productType->size_points,
+                        'option_name' => trans('base.from').': '.$filterValue.' '.$productType->size_points,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
                 } elseif ($filterNameSlug === 'product_width_to') {
                     $options[] = [
-                        'option_name' => trans('base.to') . ': ' . $filterValue . ' ' . $productType->size_points,
+                        'option_name' => trans('base.to').': '.$filterValue.' '.$productType->size_points,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
                 } elseif ($filterNameSlug === 'product_height_from') {
                     $options[] = [
-                        'option_name' => trans('base.from') . ': ' . $filterValue . ' ' . $productType->size_points,
+                        'option_name' => trans('base.from').': '.$filterValue.' '.$productType->size_points,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
                 } elseif ($filterNameSlug === 'product_height_to') {
                     $options[] = [
-                        'option_name' => trans('base.to') . ': ' . $filterValue . ' ' . $productType->size_points,
+                        'option_name' => trans('base.to').': '.$filterValue.' '.$productType->size_points,
                         'filter_slug' => $filterNameSlug,
                         'option_slug' => $filterValue,
                     ];
-                    //fixes size options
+                    // fixes size options
                 } elseif ($filterNameSlug === 'product_length') {
                     $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 
-                    if (!$sizeOptions) {
+                    if (! $sizeOptions) {
                         $sizeOptions = $productType->sizeFilterOptions;
                     }
 
@@ -260,13 +256,13 @@ class ProductFiltersService extends BaseService
                                 'option_slug' => $value,
                             ];
                         } else {
-                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: ' . $value);
+                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: '.$value);
                         }
                     }
                 } elseif ($filterNameSlug === 'product_width') {
                     $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 
-                    if (!$sizeOptions) {
+                    if (! $sizeOptions) {
                         $sizeOptions = $productType->sizeFilterOptions;
                     }
 
@@ -283,13 +279,13 @@ class ProductFiltersService extends BaseService
                                 'option_slug' => $value,
                             ];
                         } else {
-                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: ' . $value);
+                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: '.$value);
                         }
                     }
                 } elseif ($filterNameSlug === 'product_height') {
                     $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 
-                    if (!$sizeOptions) {
+                    if (! $sizeOptions) {
                         $sizeOptions = $productType->sizeFilterOptions;
                     }
 
@@ -306,7 +302,7 @@ class ProductFiltersService extends BaseService
                                 'option_slug' => $value,
                             ];
                         } else {
-                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: ' . $value);
+                            Log::error('CatalogService@getOptionsByFilterData: error: invalid brand slug: '.$value);
                         }
                     }
                 } elseif ($filterNameSlug === 'search') {
@@ -316,8 +312,8 @@ class ProductFiltersService extends BaseService
                         'option_slug' => $filterValue,
                     ];
                 } else {
-                    if (!in_array($filterNameSlug, $this->defaultOptions)) {
-                        Log::error('CatalogService@getOptionsByFilterData: error: invalid filter slug: ' . $filterNameSlug);
+                    if (! in_array($filterNameSlug, $this->defaultOptions)) {
+                        Log::error('CatalogService@getOptionsByFilterData: error: invalid filter slug: '.$filterNameSlug);
                     }
                 }
             }
@@ -326,18 +322,18 @@ class ProductFiltersService extends BaseService
         return $options;
     }
 
-    public function handleAllProductFilters(array $filterData, Builder $query, bool $disableSorting = false, array $allFilters): Builder
+    public function handleAllProductFilters(array $filterData, Builder $query, bool $disableSorting, array $allFilters): Builder
     {
         $sizeOptions = null;
 
         foreach ($filterData as $filterNameSlug => $filterValue) {
             if ($filterNameSlug === 'color') {
 
-                if (!is_array($filterValue)) {
+                if (! is_array($filterValue)) {
                     $filterValue = [$filterValue];
                 }
 
-//                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
+                //                $colors = Color::with(['children'])->whereIn('slug', $filterValue)->get();
                 $colors = Color::whereIn('slug', $filterValue)->get();
 
                 $colorsToFilter = $colors->pluck('id');
@@ -353,59 +349,60 @@ class ProductFiltersService extends BaseService
                 $query->whereHas('colors', function ($query) use ($colorsToFilter) {
                     $query->whereIn('color_id', $colorsToFilter);
                 });
-            } else if ($filterNameSlug === 'country') {
-                if (!is_array($filterValue)) {
+            } elseif ($filterNameSlug === 'country') {
+                if (! is_array($filterValue)) {
                     $filterValue = [$filterValue];
                 }
 
                 $countries = Country::whereIn('code', $filterValue)->get();
-                $query->where(function (Builder $query) use($countries) {
+                $query->where(function (Builder $query) use ($countries) {
                     $query->whereIn('country_id', $countries->pluck('id'));
                 });
-            } else if ($filterNameSlug === 'availability_status') {
-                if( is_array($filterValue) ) {
+            } elseif ($filterNameSlug === 'availability_status') {
+                if (is_array($filterValue)) {
                     $query->whereIn('availability_status_id', $filterValue);
                 } else {
-                    $query->where('availability_status_id', (int)$filterValue);
+                    $query->where('availability_status_id', (int) $filterValue);
                 }
-            } else if ($filterNameSlug === 'brand') {
+            } elseif ($filterNameSlug === 'brand') {
 
-                if (!is_array($filterValue)) {
+                if (! is_array($filterValue)) {
                     $filterValue = [$filterValue];
                 }
 
                 $brands = Brand::whereIn('slug', $filterValue)->get();
 
-                $query->where(function (Builder $query) use($brands) {
+                $query->where(function (Builder $query) use ($brands) {
                     $query->whereIn('brand_id', $brands->pluck('id'));
                 });
-            } else if ($filterNameSlug === 'price_from') {
+            } elseif ($filterNameSlug === 'price_from') {
                 $query->where('price', '>=', floatval($filterValue));
-            } else if ($filterNameSlug === 'price_to') {
+            } elseif ($filterNameSlug === 'price_to') {
                 $query->where('price', '<=', floatval($filterValue));
-            } else if($filterNameSlug === 'search') {
-                $query->where(function (Builder $query) use ($filterValue) {
-                    $query->whereRaw('UPPER(`name`) LIKE \'%' . mb_strtoupper($filterValue) . '%\'')
-                        ->orWhereRaw('UPPER(`sku`) LIKE \'%' . mb_strtoupper($filterValue) . '%\'');
+            } elseif ($filterNameSlug === 'search') {
+                $search = mb_strtoupper(is_array($filterValue) ? implode(' ', $filterValue) : (string) $filterValue);
+                $query->where(function (Builder $query) use ($search) {
+                    $query->whereRaw('UPPER(`name`) LIKE ?', ['%'.$search.'%'])
+                        ->orWhereRaw('UPPER(`sku`) LIKE ?', ['%'.$search.'%']);
                 });
                 // dynamic inputs
-            } else if ($filterNameSlug === 'product_length_from') {
+            } elseif ($filterNameSlug === 'product_length_from') {
                 $query->where('length', '>=', $filterValue);
-            } else if ($filterNameSlug === 'product_length_to') {
+            } elseif ($filterNameSlug === 'product_length_to') {
                 $query->where('length', '<=', $filterValue);
-            } else if ($filterNameSlug === 'product_width_from') {
+            } elseif ($filterNameSlug === 'product_width_from') {
                 $query->where('width', '>=', $filterValue);
-            } else if ($filterNameSlug === 'product_width_to') {
+            } elseif ($filterNameSlug === 'product_width_to') {
                 $query->where('width', '<=', $filterValue);
-            } else if ($filterNameSlug === 'product_height_from') {
+            } elseif ($filterNameSlug === 'product_height_from') {
                 $query->where('height', '>=', $filterValue);
-            } else if ($filterNameSlug === 'product_height_to') {
+            } elseif ($filterNameSlug === 'product_height_to') {
                 $query->where('height', '<=', $filterValue);
-                //fixed inputs
+                // fixed inputs
 
             } else {
 
-                if (!isset($allFilters['main'])) {
+                if (! isset($allFilters['main'])) {
                     $allFilters['main'] = collect();
                 }
 
@@ -415,11 +412,10 @@ class ProductFiltersService extends BaseService
                         $item->slug == str_replace('_to', '', $filterNameSlug);
                 })->first();
 
-
                 if ($field) {
 
                     if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
-                        if (!is_array($filterValue)) {
+                        if (! is_array($filterValue)) {
                             $filterValue = [$filterValue];
                         }
 
@@ -431,11 +427,11 @@ class ProductFiltersService extends BaseService
                         if (count($options)) {
 
                             if ($field->is_multiselectable) {
-                                $query->where(function (Builder $query) use($options, $field) {
+                                $query->where(function (Builder $query) use ($options, $field) {
                                     foreach ($options as $option) {
                                         $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
-                                            ->addBinding('$."' . $field->id . '"')
-                                            ->addBinding((string)$option->id);
+                                            ->addBinding('$."'.$field->id.'"')
+                                            ->addBinding((string) $option->id);
                                     }
                                 });
                             } else {
@@ -454,36 +450,36 @@ class ProductFiltersService extends BaseService
                     ) {
                         if ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_FROM_TO_INPUTS_TYPE) {
 
-                            if ($filterNameSlug == $field->slug . '_from') {
+                            if ($filterNameSlug == $field->slug.'_from') {
                                 $query->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) >= ?')
-                                    ->addBinding('$."' . $field->id . '"')
-                                    ->addBinding(doubleval($filterValue));
+                                    ->addBinding('$."'.$field->id.'"')
+                                    ->addBinding(floatval($filterValue));
 
                             }
 
-                            if ($filterNameSlug == $field->slug . '_to') {
+                            if ($filterNameSlug == $field->slug.'_to') {
                                 $query->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) <= ?')
-                                    ->addBinding('$."' . $field->id . '"')
+                                    ->addBinding('$."'.$field->id.'"')
                                     ->addBinding(intval($filterValue));
                             }
 
                         } elseif ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
 
-                            if (!is_array($filterValue)) {
+                            if (! is_array($filterValue)) {
                                 $filterValue = [$filterValue];
                             }
 
-                            $filterOptions = $field->fieldFilterOptions->filter(fn($filterOption) => in_array($filterOption->slug, $filterValue));
+                            $filterOptions = $field->fieldFilterOptions->filter(fn ($filterOption) => in_array($filterOption->slug, $filterValue));
 
-                            $query->where(function (Builder $query) use($filterOptions, $field) {
+                            $query->where(function (Builder $query) use ($filterOptions, $field) {
                                 foreach ($filterOptions as $filterOption) {
-                                    $query->orWhere(function (Builder $query) use($field, $filterOption) {
+                                    $query->orWhere(function (Builder $query) use ($field, $filterOption) {
                                         $query
                                             ->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) >= ?')
-                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding('$."'.$field->id.'"')
                                             ->addBinding($filterOption->from)
                                             ->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) <= ?')
-                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding('$."'.$field->id.'"')
                                             ->addBinding($filterOption->to);
                                     });
                                 }
@@ -491,19 +487,18 @@ class ProductFiltersService extends BaseService
                         }
                     }
                 } else {
-                    if (!in_array($filterNameSlug, $this->defaultOptions)) {
-                        Log::error('CatalogService@handleProductFilters: error: invalid filter slug: ' . $filterNameSlug);
+                    if (! in_array($filterNameSlug, $this->defaultOptions)) {
+                        Log::error('CatalogService@handleProductFilters: error: invalid filter slug: '.$filterNameSlug);
                     }
                 }
             }
         }
 
-
-        if (!$disableSorting) {
+        if (! $disableSorting) {
             $query = $this->handleSortingFilter($query, $filterData);
         }
 
-        return  $query;
+        return $query;
     }
 
     public function handleProductFilters(ProductType $productType, array $filterData, Builder $query, bool $disableSorting = false): Builder
@@ -514,7 +509,7 @@ class ProductFiltersService extends BaseService
 
             if ($filterNameSlug === 'color') {
 
-                if (!is_array($filterValue)) {
+                if (! is_array($filterValue)) {
                     $filterValue = [$filterValue];
                 }
 
@@ -524,59 +519,60 @@ class ProductFiltersService extends BaseService
                 $query->whereHas('colors', function ($query) use ($colorsToFilter) {
                     $query->whereIn('color_id', $colorsToFilter);
                 });
-            } else if ($filterNameSlug === 'availability_status') {
-                if( is_array($filterValue) ) {
+            } elseif ($filterNameSlug === 'availability_status') {
+                if (is_array($filterValue)) {
                     $query->whereIn('availability_status_id', $filterValue);
                 } else {
-                    $query->where('availability_status_id', (int)$filterValue);
+                    $query->where('availability_status_id', (int) $filterValue);
                 }
-            } else if ($filterNameSlug === 'country') {
-                if (!is_array($filterValue)) {
+            } elseif ($filterNameSlug === 'country') {
+                if (! is_array($filterValue)) {
                     $filterValue = [$filterValue];
                 }
 
                 $countries = Country::whereIn('code', $filterValue)->get();
-                $query->where(function (Builder $query) use($countries) {
+                $query->where(function (Builder $query) use ($countries) {
                     $query->whereIn('country_id', $countries->pluck('id'));
                 });
-            } else if ($filterNameSlug === 'brand') {
+            } elseif ($filterNameSlug === 'brand') {
 
-                if (!is_array($filterValue)) {
+                if (! is_array($filterValue)) {
                     $filterValue = [$filterValue];
                 }
 
                 $brands = Brand::whereIn('slug', $filterValue)->get();
 
-                $query->where(function (Builder $query) use($brands) {
+                $query->where(function (Builder $query) use ($brands) {
                     $query->whereIn('brand_id', $brands->pluck('id'));
                 });
-            } else if ($filterNameSlug === 'price_from') {
+            } elseif ($filterNameSlug === 'price_from') {
                 $query->where('price', '>=', floatval($filterValue));
-            } else if ($filterNameSlug === 'price_to') {
+            } elseif ($filterNameSlug === 'price_to') {
                 $query->where('price', '<=', floatval($filterValue));
-            } else if($filterNameSlug === 'search') {
-                $query->where(function (Builder $query) use ($filterValue) {
-                    $query->whereRaw('UPPER(`name`) LIKE \'%' . mb_strtoupper($filterValue) . '%\'')
-                        ->orWhereRaw('UPPER(`sku`) LIKE \'%' . mb_strtoupper($filterValue) . '%\'');
+            } elseif ($filterNameSlug === 'search') {
+                $search = mb_strtoupper(is_array($filterValue) ? implode(' ', $filterValue) : (string) $filterValue);
+                $query->where(function (Builder $query) use ($search) {
+                    $query->whereRaw('UPPER(`name`) LIKE ?', ['%'.$search.'%'])
+                        ->orWhereRaw('UPPER(`sku`) LIKE ?', ['%'.$search.'%']);
                 });
                 // dynamic inputs
-            } else if ($filterNameSlug === 'product_length_from') {
+            } elseif ($filterNameSlug === 'product_length_from') {
                 $query->where('length', '>=', $filterValue);
-            } else if ($filterNameSlug === 'product_length_to') {
+            } elseif ($filterNameSlug === 'product_length_to') {
                 $query->where('length', '<=', $filterValue);
-            } else if ($filterNameSlug === 'product_width_from') {
+            } elseif ($filterNameSlug === 'product_width_from') {
                 $query->where('width', '>=', $filterValue);
-            } else if ($filterNameSlug === 'product_width_to') {
+            } elseif ($filterNameSlug === 'product_width_to') {
                 $query->where('width', '<=', $filterValue);
-            } else if ($filterNameSlug === 'product_height_from') {
+            } elseif ($filterNameSlug === 'product_height_from') {
                 $query->where('height', '>=', $filterValue);
-            } else if ($filterNameSlug === 'product_height_to') {
+            } elseif ($filterNameSlug === 'product_height_to') {
                 $query->where('height', '<=', $filterValue);
-                //fixed inputs
-            } else if ($filterNameSlug === 'product_length') {
+                // fixed inputs
+            } elseif ($filterNameSlug === 'product_length') {
                 $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 
-                if (!$sizeOptions) {
+                if (! $sizeOptions) {
                     $sizeOptions = $productType->sizeFilterOptions;
                 }
 
@@ -588,19 +584,19 @@ class ProductFiltersService extends BaseService
                             ->first();
 
                         if ($sizeOption) {
-                            $query->orWhere(function (Builder $query) use($sizeOption) {
+                            $query->orWhere(function (Builder $query) use ($sizeOption) {
                                 $query->where('length', '>=', $sizeOption->from)
                                     ->where('length', '<=', $sizeOption->to);
                             });
                         } else {
-                            Log::error('CatalogService@handleProductFilters: error: invalid size slug: ' . $value);
+                            Log::error('CatalogService@handleProductFilters: error: invalid size slug: '.$value);
                         }
                     }
                 });
-            } else if ($filterNameSlug === 'product_width') {
+            } elseif ($filterNameSlug === 'product_width') {
                 $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 
-                if (!$sizeOptions) {
+                if (! $sizeOptions) {
                     $sizeOptions = $productType->sizeFilterOptions;
                 }
 
@@ -612,19 +608,19 @@ class ProductFiltersService extends BaseService
                             ->first();
 
                         if ($sizeOption) {
-                            $query->orWhere(function (Builder $query) use($sizeOption) {
+                            $query->orWhere(function (Builder $query) use ($sizeOption) {
                                 $query->where('width', '>=', $sizeOption->from)
                                     ->where('width', '<=', $sizeOption->to);
                             });
                         } else {
-                            Log::error('CatalogService@handleProductFilters: error: invalid size slug: ' . $value);
+                            Log::error('CatalogService@handleProductFilters: error: invalid size slug: '.$value);
                         }
                     }
                 });
-            } else if ($filterNameSlug === 'product_height') {
+            } elseif ($filterNameSlug === 'product_height') {
                 $filterValue = is_array($filterValue) ? $filterValue : [$filterValue];
 
-                if (!$sizeOptions) {
+                if (! $sizeOptions) {
                     $sizeOptions = $productType->sizeFilterOptions;
                 }
 
@@ -636,12 +632,12 @@ class ProductFiltersService extends BaseService
                             ->first();
 
                         if ($sizeOption) {
-                            $query->orWhere(function (Builder $query) use($sizeOption) {
+                            $query->orWhere(function (Builder $query) use ($sizeOption) {
                                 $query->where('height', '>=', $sizeOption->from)
                                     ->where('height', '<=', $sizeOption->to);
                             });
                         } else {
-                            Log::error('CatalogService@handleProductFilters: error: invalid size slug: ' . $value);
+                            Log::error('CatalogService@handleProductFilters: error: invalid size slug: '.$value);
                         }
                     }
                 });
@@ -653,33 +649,28 @@ class ProductFiltersService extends BaseService
                         $item->slug == str_replace('_to', '', $filterNameSlug);
                 })->first();
 
-
-
                 if ($field) {
-
 
                     if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
 
-                        if (!is_array($filterValue)) {
+                        if (! is_array($filterValue)) {
                             $filterValue = [$filterValue];
                         }
 
-//                        dd($filterValue);
+                        //                        dd($filterValue);
                         $options = $field
                             ->options()
                             ->whereIn('slug', $filterValue)
                             ->get();
 
-
                         if (count($options)) {
 
-
                             if ($field->is_multiselectable) {
-                                $query->where(function (Builder $query) use($options, $field) {
+                                $query->where(function (Builder $query) use ($options, $field) {
                                     foreach ($options as $option) {
                                         $query->orWhereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS UNSIGNED) = CAST(? AS UNSIGNED)')
-                                            ->addBinding('$."' . $field->id . '"')
-                                            ->addBinding((string)$option->id);
+                                            ->addBinding('$."'.$field->id.'"')
+                                            ->addBinding((string) $option->id);
                                     }
                                 });
                             } else {
@@ -693,7 +684,6 @@ class ProductFiltersService extends BaseService
                                     }
                                 });*/
 
-
                                 $query->where(function (Builder $query) use ($options, $field) {
                                     foreach ($options as $option) {
                                         $query->orWhere(function (Builder $query) use ($field, $option) {
@@ -702,7 +692,6 @@ class ProductFiltersService extends BaseService
                                     }
                                 });
 
-
                             }
                         }
                     } elseif ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE ||
@@ -710,36 +699,36 @@ class ProductFiltersService extends BaseService
                     ) {
                         if ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_FROM_TO_INPUTS_TYPE) {
 
-                            if ($filterNameSlug == $field->slug . '_from') {
+                            if ($filterNameSlug == $field->slug.'_from') {
                                 $query->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) >= ?')
-                                    ->addBinding('$."' . $field->id . '"')
-                                    ->addBinding(doubleval($filterValue));
+                                    ->addBinding('$."'.$field->id.'"')
+                                    ->addBinding(floatval($filterValue));
 
                             }
 
-                            if ($filterNameSlug == $field->slug . '_to') {
+                            if ($filterNameSlug == $field->slug.'_to') {
                                 $query->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) <= ?')
-                                    ->addBinding('$."' . $field->id . '"')
+                                    ->addBinding('$."'.$field->id.'"')
                                     ->addBinding(intval($filterValue));
                             }
 
                         } elseif ($field->numeric_field_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
 
-                            if (!is_array($filterValue)) {
+                            if (! is_array($filterValue)) {
                                 $filterValue = [$filterValue];
                             }
 
-                            $filterOptions = $field->fieldFilterOptions->filter(fn($filterOption) => in_array($filterOption->slug, $filterValue));
+                            $filterOptions = $field->fieldFilterOptions->filter(fn ($filterOption) => in_array($filterOption->slug, $filterValue));
 
-                            $query->where(function (Builder $query) use($filterOptions, $field) {
+                            $query->where(function (Builder $query) use ($filterOptions, $field) {
                                 foreach ($filterOptions as $filterOption) {
-                                    $query->orWhere(function (Builder $query) use($field, $filterOption) {
+                                    $query->orWhere(function (Builder $query) use ($field, $filterOption) {
                                         $query
                                             ->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) >= ?')
-                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding('$."'.$field->id.'"')
                                             ->addBinding($filterOption->from)
                                             ->whereRaw('CAST(JSON_EXTRACT(custom_fields, ?) AS DECIMAL(2)) <= ?')
-                                            ->addBinding('$."' . $field->id . '"')
+                                            ->addBinding('$."'.$field->id.'"')
                                             ->addBinding($filterOption->to);
                                     });
                                 }
@@ -747,19 +736,18 @@ class ProductFiltersService extends BaseService
                         }
                     }
                 } else {
-                    if (!in_array($filterNameSlug, $this->defaultOptions)) {
-                        Log::error('CatalogService@handleProductFilters: error: invalid filter slug: ' . $filterNameSlug);
+                    if (! in_array($filterNameSlug, $this->defaultOptions)) {
+                        Log::error('CatalogService@handleProductFilters: error: invalid filter slug: '.$filterNameSlug);
                     }
                 }
             }
         }
 
-
-        if (!$disableSorting) {
+        if (! $disableSorting) {
             $query = $this->handleSortingFilter($query, $filterData);
         }
 
-        return  $query;
+        return $query;
     }
 
     public function handleSortingFilter(Builder $query, array $filterData): Builder
@@ -788,38 +776,37 @@ class ProductFiltersService extends BaseService
         return $query;
     }
 
-
     // TODO:: old getFiltersByProductType
-//    public function getFiltersByProductType(ProductType $productType): array
-//    {
-//        $mainFilters = collect();
-//        $fullFilters = [
-//            'left' => collect(),
-//            'middle' => collect(),
-//            'right' => collect(),
-//        ];
-//
-//        foreach ($productType->fields as $filed) {
-//            if ($filed->pivot->show_as_filter) {
-//                if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_LEFT) {
-//                    $fullFilters['left'][] = $filed;
-//                }
-//                /*if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_MIDDLE) {);
-//                    $fullFilters['middle'][] = $filed;
-//                }*/
-//            }
-//
-//
-//            if ($filed->pivot->show_as_filter && $filed->pivot->show_on_main_filters_list) {
-//                $mainFilters[] = $filed;
-//            }
-//        }
-//
-//        return [
-//            'main' => $mainFilters,
-//            'full' => $fullFilters,
-//        ];
-//    }
+    //    public function getFiltersByProductType(ProductType $productType): array
+    //    {
+    //        $mainFilters = collect();
+    //        $fullFilters = [
+    //            'left' => collect(),
+    //            'middle' => collect(),
+    //            'right' => collect(),
+    //        ];
+    //
+    //        foreach ($productType->fields as $filed) {
+    //            if ($filed->pivot->show_as_filter) {
+    //                if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_LEFT) {
+    //                    $fullFilters['left'][] = $filed;
+    //                }
+    //                /*if ($filed->pivot->filter_full_position_id === ProductFilterFullPositionOptionsDataClass::FILTER_POSITION_MIDDLE) {);
+    //                    $fullFilters['middle'][] = $filed;
+    //                }*/
+    //            }
+    //
+    //
+    //            if ($filed->pivot->show_as_filter && $filed->pivot->show_on_main_filters_list) {
+    //                $mainFilters[] = $filed;
+    //            }
+    //        }
+    //
+    //        return [
+    //            'main' => $mainFilters,
+    //            'full' => $fullFilters,
+    //        ];
+    //    }
 
     public function getFiltersByProductType(ProductType $productType): array
     {
@@ -872,14 +859,14 @@ class ProductFiltersService extends BaseService
         $addedFieldIds = [];
 
         // Жадная загрузка связей 'fields' и 'pivot' сразу для всех типов продуктов
-        $productTypes = ProductType::with(['fields' => function($query) {
+        $productTypes = ProductType::with(['fields' => function ($query) {
             $query->wherePivot('show_as_filter', true)
                 ->wherePivot('show_on_main_filters_list', true);
         }])->get();
 
         foreach ($productTypes as $productType) {
             foreach ($productType->fields as $field) {
-                if (!in_array($field->id, $addedFieldIds)) {
+                if (! in_array($field->id, $addedFieldIds)) {
                     $mainFilters->push($field);
                     $addedFieldIds[] = $field->id;
                 }

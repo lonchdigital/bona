@@ -19,28 +19,27 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 class ProductImportExampleExcelExport implements WithMultipleSheets
 {
     public function __construct(
-        private readonly ProductType              $productType,
+        private readonly ProductType $productType,
         private readonly ApplicationConfigService $applicationService,
-    ) { }
-
+    ) {}
 
     public function sheets(): array
     {
         $sheets = [
             new ProductsSheet($this->productType, $this->applicationService),
-            new AvailabilityStatusesSheet(),
-            new SpecialOffersSheet(),
-            new CurrenciesSheet(),
-            new CountriesSheet(),
-            new ColorsSheet(),
+            new AvailabilityStatusesSheet,
+            new SpecialOffersSheet,
+            new CurrenciesSheet,
+            new CountriesSheet,
+            new ColorsSheet,
         ];
 
         if ($this->productType->has_brand) {
-            $sheets[] = new BrandsSheet();
+            $sheets[] = new BrandsSheet;
         }
 
         if ($this->productType->has_collection) {
-            $sheets[] = new CollectionSheet();
+            $sheets[] = new CollectionSheet;
         }
 
         foreach ($this->productType->fields as $field) {

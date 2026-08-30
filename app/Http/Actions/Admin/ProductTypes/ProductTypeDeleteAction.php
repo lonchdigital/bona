@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\ProductTypes;
 
-use App\Models\ProductType;
-use Illuminate\Http\Request;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\ProductType;
 use App\Services\Admin\ProductType\ProductTypeService;
+use Illuminate\Http\Request;
 
 class ProductTypeDeleteAction extends BaseAction
 {

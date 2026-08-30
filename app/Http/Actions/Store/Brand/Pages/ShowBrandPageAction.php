@@ -2,14 +2,14 @@
 
 namespace App\Http\Actions\Store\Brand\Pages;
 
-use App\Models\Brand;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\Brand;
 use App\Services\Brand\BrandService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductService;
 use App\Services\Seogen\SeogenService;
 use App\Services\WishList\WishListService;
-use Abordage\LastModified\Facades\LastModified;
+use App\Support\LastModified;
 
 class ShowBrandPageAction extends BaseAction
 {
@@ -20,13 +20,11 @@ class ShowBrandPageAction extends BaseAction
         WishListService $wishListService,
         CurrencyService $currencyService,
         SeogenService $seogenService,
-    )
-    {
+    ) {
         $wishList = null;
         if ($this->getAuthUser()) {
             $wishList = $wishListService->getWishListByUser($this->getAuthUser());
         }
-
 
         LastModified::set($brand->updated_at);
 

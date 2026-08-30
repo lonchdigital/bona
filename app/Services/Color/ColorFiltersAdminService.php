@@ -11,14 +11,11 @@ class ColorFiltersAdminService extends BaseService
     public function handleColorFilters(FilterColorAdminDTO $request, Builder $query): Builder
     {
         if ($request->search) {
-            $query->where(function (Builder $query) use($request) {
-                return $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where(function (Builder $query) use ($request) {
+                return $query->where('name', 'like', '%'.$request->search.'%');
             });
         }
 
-
         return $query;
     }
-
-
 }

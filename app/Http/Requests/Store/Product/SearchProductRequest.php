@@ -7,12 +7,15 @@ use App\Services\Product\DTO\SearchProductDTO;
 
 class SearchProductRequest extends BaseRequest
 {
-    public function rules(): array {
+    public function rules(): array
+    {
         return [
             'query' => [
-                'nullable',
-                'string'
-            ]
+                'required',
+                'string',
+                'min:3',
+                'max:120',
+            ],
         ];
     }
 

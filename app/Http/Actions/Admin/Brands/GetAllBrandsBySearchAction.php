@@ -8,7 +8,7 @@ use App\Services\Brand\BrandService;
 
 class GetAllBrandsBySearchAction
 {
-    public function __invoke(BrandSearchRequest $request, BrandService $brandService,)
+    public function __invoke(BrandSearchRequest $request, BrandService $brandService)
     {
         return ProductSearchResource::collection($brandService->searchBrandsByName($request->toDTO()));
     }

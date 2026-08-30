@@ -9,5 +9,5 @@ class UploadProductsImportFileDTO implements BaseDTO
 {
     public function __construct(
         public readonly UploadedFile $file,
-    ){ }
+    ) {}
 }

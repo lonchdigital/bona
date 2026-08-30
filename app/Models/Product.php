@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Spatie\Sitemap\Tags\Url;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Sitemap\Contracts\Sitemapable;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Support\Facades\URL as FacadeURL;
+use Spatie\Sitemap\Contracts\Sitemapable;
+use Spatie\Sitemap\Tags\Url;
+use Spatie\Translatable\HasTranslations;
 
 class Product extends Model implements Sitemapable
 {
@@ -31,7 +32,7 @@ class Product extends Model implements Sitemapable
 
     public function scopeOrderByAvailabilityStatus($query)
     {
-        return $query->orderByRaw("CASE WHEN availability_status_id = 4 THEN 1 ELSE 0 END");
+        return $query->orderByRaw('CASE WHEN availability_status_id = 4 THEN 1 ELSE 0 END');
     }
 
     public function creator()
@@ -69,7 +70,7 @@ class Product extends Model implements Sitemapable
         return $this->belongsTo(ProductType::class);
     }
 
-    public function productTypes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function productTypes(): BelongsToMany
     {
         return $this->belongsToMany(ProductType::class, 'product_type_products');
     }
@@ -79,30 +80,30 @@ class Product extends Model implements Sitemapable
         return $this->belongsTo(Currency::class, 'price_currency_id');
     }
 
-    public function getCustomFieldValue(int $fieldId): array | int | string | null
+    public function getCustomFieldValue(int $fieldId): array|int|string|null
     {
         $field = $this->productType->fields->where('id', $fieldId)->first();
-        $custom_fields = (!is_null($this->custom_fields)) ? $this->custom_fields : [];
+        $custom_fields = (! is_null($this->custom_fields)) ? $this->custom_fields : [];
 
-        if (!array_key_exists($fieldId, $custom_fields)) {
+        if (! array_key_exists($fieldId, $custom_fields)) {
             return null;
         }
 
         if ($field) {
-            if ($field->is_multiselectable && !is_array($this->custom_fields[$fieldId])) {
+            if ($field->is_multiselectable && ! is_array($this->custom_fields[$fieldId])) {
                 return [$this->custom_fields[$fieldId]];
-            } elseif (!$field->is_multiselectable && is_array($this->custom_fields[$fieldId])) {
+            } elseif (! $field->is_multiselectable && is_array($this->custom_fields[$fieldId])) {
                 return $this->custom_fields[$fieldId][0];
             }
         }
 
-//        dd($this->custom_fields);
+        //        dd($this->custom_fields);
         return $this->custom_fields[$fieldId];
     }
 
     public function previewImageUrl(): Attribute
     {
-        if( $this->product_type_id != config('constants.SUB_PRODUCTS_ID') ) {
+        if ($this->product_type_id != config('constants.SUB_PRODUCTS_ID')) {
             return Attribute::make(function () {
                 if ($this->main_image_path) {
                     return Storage::url($this->preview_image_path);
@@ -112,10 +113,12 @@ class Product extends Model implements Sitemapable
             });
         } else {
             return Attribute::make(function () {
+                $categoryImagePath = $this->categories->first()?->image_path;
+
                 if ($this->main_image_path) {
                     return Storage::url($this->preview_image_path);
-                } elseif ($this->categories[0]->image_path) {
-                    return Storage::url($this->categories[0]->image_path);
+                } elseif ($categoryImagePath) {
+                    return Storage::url($categoryImagePath);
                 } else {
                     return '/assets/images/no-image.png';
                 }
@@ -128,30 +131,33 @@ class Product extends Model implements Sitemapable
         return Attribute::make(function () {
             if ($this->main_image_path) {
 
-//                return storage_path('app\public\\' . $this->preview_image_path);
+                //                return storage_path('app\public\\' . $this->preview_image_path);
 
-                return FacadeURL::to('') . Storage::url($this->preview_image_path);
+                return FacadeURL::to('').Storage::url($this->preview_image_path);
             } else {
-                return FacadeURL::to('') . '/assets/images/no-image.png';
+                return FacadeURL::to('').'/assets/images/no-image.png';
             }
         });
     }
 
     public function mainImageUrl(): Attribute
     {
-        if( $this->product_type_id != config('constants.SUB_PRODUCTS_ID') ) {
+        if ($this->product_type_id != config('constants.SUB_PRODUCTS_ID')) {
             return Attribute::make(function () {
                 if ($this->main_image_path) {
                     return Storage::url($this->main_image_path);
                 }
+
                 return null;
             });
         } else {
             return Attribute::make(function () {
+                $categoryImagePath = $this->categories->first()?->image_path;
+
                 if ($this->main_image_path) {
                     return Storage::url($this->preview_image_path);
-                } elseif ($this->categories[0]->image_path) {
-                    return Storage::url($this->categories[0]->image_path);
+                } elseif ($categoryImagePath) {
+                    return Storage::url($categoryImagePath);
                 } else {
                     return '/assets/images/no-image.png';
                 }
@@ -182,11 +188,11 @@ class Product extends Model implements Sitemapable
         return $array;
     }
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         $urls = [];
         $urls[] = route('store.product.page', ['productSlug' => $this->slug]);
-        $urls[] = '/ru' . route('store.product.page', ['productSlug' => $this->slug], false);
+        $urls[] = '/ru'.route('store.product.page', ['productSlug' => $this->slug], false);
 
         return $urls;
     }

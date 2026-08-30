@@ -2,8 +2,8 @@
 
 namespace App\Http\Actions\Store\StaticPage\Pages;
 
-use App\Http\Actions\Admin\BaseAction;
 use App\DataClasses\StaticPageTypesDataClass;
+use App\Http\Actions\Admin\BaseAction;
 use App\Services\StaticPage\StaticPageService;
 
 class ShowStaticPagePageAction extends BaseAction
@@ -12,7 +12,7 @@ class ShowStaticPagePageAction extends BaseAction
     {
         $staticPage = StaticPageTypesDataClass::get()->where('slug', $staticPageSlug)->first();
 
-        if (!$staticPage) {
+        if (! $staticPage) {
             abort(404);
         }
 

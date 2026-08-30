@@ -15,8 +15,8 @@ use Tests\TestCase;
  */
 class OneClickOrderTest extends TestCase
 {
-    use RefreshDatabase;
     use MakesShopData;
+    use RefreshDatabase;
 
     private function buy(string $slug, array $overrides = [])
     {
@@ -72,6 +72,17 @@ class OneClickOrderTest extends TestCase
             User::where('email', 'like', 'one-click-%')->count(),
             'Той самий номер не має плодити нових клієнтів.'
         );
+    }
+
+    public function test_an_anonymous_one_click_order_cannot_be_attached_to_a_real_account_by_phone(): void
+    {
+        $realUser = User::factory()->create(['phone' => '+38(050)111-22-33']);
+        $product = $this->makeProduct();
+
+        $this->buy($product->slug, ['phone' => '+38(050)111-22-33'])->assertOk();
+
+        $this->assertNotSame($realUser->id, Order::first()->user_id);
+        $this->assertSame(1, User::where('email', 'one-click-380501112233@bona-doors.com.ua')->count());
     }
 
     public function test_a_half_typed_number_is_refused(): void

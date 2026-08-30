@@ -40,7 +40,7 @@
 
     <div class="common-page-section-wrapper">
         @foreach( $sections as $section )
-            <section class="art-common-page-section">
+            <section class="art-common-page-section" id="service-{{ $section->id }}">
                 <div class="container">
                     <div class="art-row-block{{ $loop->iteration % 2 == 0 ? ' art-even' : ' art-odd' }}">
                         <div class="col-md-5 image-side">

@@ -124,11 +124,11 @@ class AuthorService extends BaseService
         foreach ($certificates ?? [] as $index => $certificate) {
             $certificateModel = null;
 
-            if (!empty($certificate['id'])) {
+            if (! empty($certificate['id'])) {
                 $certificateModel = $existingCertificates->firstWhere('id', (int) $certificate['id']);
 
-                if (!$certificateModel) {
-                    throw new \Exception('Certificate ' . $certificate['id'] . ' does not belong to this author');
+                if (! $certificateModel) {
+                    throw new \Exception('Certificate '.$certificate['id'].' does not belong to this author');
                 }
             }
 
@@ -156,7 +156,7 @@ class AuthorService extends BaseService
                 continue;
             }
 
-            if (!isset($data['image_path'])) {
+            if (! isset($data['image_path'])) {
                 // A new row without a picture is nothing but an empty slot.
                 continue;
             }
@@ -180,11 +180,11 @@ class AuthorService extends BaseService
      */
     private function storeAuthorImage(UploadedFile $image): string
     {
-        $path = self::AUTHOR_IMAGES_FOLDER . '/' . sha1(microtime(true)) . '_' . Str::random(10);
+        $path = self::AUTHOR_IMAGES_FOLDER.'/'.sha1(microtime(true)).'_'.Str::random(10);
 
         $this->storeImage($path, $image, 'webp');
         $this->storeImage($path, $image, 'jpg');
 
-        return $path . '.webp';
+        return $path.'.webp';
     }
 }

@@ -17,7 +17,7 @@ class MultilanguageInput extends Component
         public readonly ?array $values,
         public readonly ?string $placeholder = null,
         public readonly ?bool $isRequired = false,
-    ) { }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.

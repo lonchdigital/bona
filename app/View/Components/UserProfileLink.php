@@ -14,9 +14,7 @@ class UserProfileLink extends Component
      */
     public function __construct(
         public User $user,
-    )
-    {
-    }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Admin\ProductType;
 
-use App\Http\Requests\BaseRequest;
 use App\DataClasses\NumericFieldFilerTypesDataClass;
 use App\DataClasses\ProductFilterFullPositionOptionsDataClass;
+use App\Http\Requests\BaseRequest;
 use App\Services\Admin\ProductType\DTO\EditProductTypeDTO;
 
 class EditProductTypeRequest extends BaseRequest
@@ -21,7 +21,7 @@ class EditProductTypeRequest extends BaseRequest
             ],
             'slug' => [
                 'required',
-                'unique:product_types,slug' . (!$this->route('productType') ? '' : ',' . $this->route('productType')->id),
+                'unique:product_types,slug'.(! $this->route('productType') ? '' : ','.$this->route('productType')->id),
                 'string',
             ],
             'product_point_name' => [
@@ -89,7 +89,7 @@ class EditProductTypeRequest extends BaseRequest
             ],
             'product_field.*.filter_full_position_id' => [
                 'nullable',
-                'in:' . ProductFilterFullPositionOptionsDataClass::get()->pluck('id')->implode(','),
+                'in:'.ProductFilterFullPositionOptionsDataClass::get()->pluck('id')->implode(','),
             ],
             'product_field.*.filter_name' => [
                 'array',
@@ -104,63 +104,63 @@ class EditProductTypeRequest extends BaseRequest
             ],
             'seo_text' => [
                 'array',
-            ]
+            ],
         ];
 
         foreach ($this->sizeTypes as $sizeType) {
-            $rules['product_has_' . $sizeType] = [
+            $rules['product_has_'.$sizeType] = [
                 'nullable',
             ];
-            $rules['product_filter_by_' . $sizeType] = [
+            $rules['product_filter_by_'.$sizeType] = [
                 'nullable',
             ];
-            $rules['product_size_' . $sizeType . '_filter_name'] = [
-                $this->input('product_filter_by_' . $sizeType) ? 'required' : 'nullable',
+            $rules['product_size_'.$sizeType.'_filter_name'] = [
+                $this->input('product_filter_by_'.$sizeType) ? 'required' : 'nullable',
                 'array',
             ];
-            $rules['product_size_' . $sizeType . '_show_on_main_filter'] = [
+            $rules['product_size_'.$sizeType.'_show_on_main_filter'] = [
                 'nullable',
             ];
-            $rules['product_size_' . $sizeType . '_filter_full_position_id'] = [
+            $rules['product_size_'.$sizeType.'_filter_full_position_id'] = [
                 'nullable',
-                'in:' . ProductFilterFullPositionOptionsDataClass::get()->pluck('id')->implode(','),
+                'in:'.ProductFilterFullPositionOptionsDataClass::get()->pluck('id')->implode(','),
             ];
-            $rules['product_size_' . $sizeType .'_filter_type_id'] = [
-                $this->input('product_filter_by_' . $sizeType) ? 'required' : 'nullable',
+            $rules['product_size_'.$sizeType.'_filter_type_id'] = [
+                $this->input('product_filter_by_'.$sizeType) ? 'required' : 'nullable',
                 'in:'.NumericFieldFilerTypesDataClass::get()->pluck('id')->implode(','),
             ];
-            $rules['product_size_' . $sizeType . '_option'] = [
+            $rules['product_size_'.$sizeType.'_option'] = [
                 'array',
-                $this->input('product_size_' . $sizeType . '_filter_type_id') ==
+                $this->input('product_size_'.$sizeType.'_filter_type_id') ==
                 NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE ? 'required' : 'nullable',
             ];
 
-            if ($this->input('product_size_' . $sizeType .'_filter_type_id') ==
+            if ($this->input('product_size_'.$sizeType.'_filter_type_id') ==
                 NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
 
-                $rules['product_size_' . $sizeType . '_option.*.id'] = [
+                $rules['product_size_'.$sizeType.'_option.*.id'] = [
                     'required',
                     'numeric',
                 ];
-                $rules['product_size_' . $sizeType . '_option.*.name'] = [
+                $rules['product_size_'.$sizeType.'_option.*.name'] = [
                     'required',
                     'array',
                 ];
-                $rules['product_size_' . $sizeType . '_option.*.slug'] = [
+                $rules['product_size_'.$sizeType.'_option.*.slug'] = [
                     'required',
                     'string',
                 ];
-                $rules['product_size_' . $sizeType . '_option.*.from'] = [
+                $rules['product_size_'.$sizeType.'_option.*.from'] = [
                     'required',
                     'numeric',
                 ];
-                $rules['product_size_' . $sizeType . '_option.*.to'] = [
+                $rules['product_size_'.$sizeType.'_option.*.to'] = [
                     'required',
                     'numeric',
                 ];
 
                 foreach ($this->availableLanguages as $availableLanguage) {
-                    $rules['product_size_' . $sizeType . '_option.*.name.' . $availableLanguage] = [
+                    $rules['product_size_'.$sizeType.'_option.*.name.'.$availableLanguage] = [
                         'required',
                         'string',
                     ];
@@ -168,8 +168,8 @@ class EditProductTypeRequest extends BaseRequest
             }
 
             foreach ($this->availableLanguages as $availableLanguage) {
-                $rules['product_size_' . $sizeType . '_filter_name.' . $availableLanguage] = [
-                    $this->input('product_filter_by_' . $sizeType) ? 'required' : 'nullable',
+                $rules['product_size_'.$sizeType.'_filter_name.'.$availableLanguage] = [
+                    $this->input('product_filter_by_'.$sizeType) ? 'required' : 'nullable',
                     'string',
                 ];
             }
@@ -177,60 +177,59 @@ class EditProductTypeRequest extends BaseRequest
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_product_title.' . $availableLanguage] = [
+            $rules['meta_product_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_product_description.' . $availableLanguage] = [
+            $rules['meta_product_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['size_points.' . $availableLanguage] = [
+            $rules['size_points.'.$availableLanguage] = [
                 $this->input('has_size') ? 'required' : 'nullable',
                 'string',
             ];
 
-            $rules['faqs.*.question.' . $availableLanguage] = [
+            $rules['faqs.*.question.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['faqs.*.answer.' . $availableLanguage] = [
+            $rules['faqs.*.answer.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
 
-            $rules['seo_title.' . $availableLanguage] = [
+            $rules['seo_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['seo_text.' . $availableLanguage] = [
+            $rules['seo_text.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
         }
 
-
         if ($this->input('product_field')) {
             foreach ($this->input('product_field') as $index => $productField) {
                 if ($productField['show_as_filter']) {
                     foreach ($this->availableLanguages as $availableLanguage) {
-                        $rules['product_field.' . $index . '.filter_name.' . $availableLanguage] = [
+                        $rules['product_field.'.$index.'.filter_name.'.$availableLanguage] = [
                             'required',
                             'string',
                         ];
@@ -251,31 +250,31 @@ class EditProductTypeRequest extends BaseRequest
 
         foreach ($this->sizeTypes as $sizeType) {
             foreach ($this->availableLanguages as $availableLanguage) {
-                $attributes['product_size_' . $sizeType . '_option.*.name.' . $availableLanguage] =
+                $attributes['product_size_'.$sizeType.'_option.*.name.'.$availableLanguage] =
                     $this->prepareAttribute(trans('admin.numeric_filter_option_name'), $availableLanguage);
-                $attributes['product_size_' . $sizeType . '_filter_name.' . $availableLanguage] =
+                $attributes['product_size_'.$sizeType.'_filter_name.'.$availableLanguage] =
                     $this->prepareAttribute(trans('admin.filter_name'), $availableLanguage);
             }
-            $attributes['product_size_' . $sizeType . '_option.*.slug'] = mb_strtolower(trans('admin.slug'));
-            $attributes['product_size_' . $sizeType . '_option.*.from'] = mb_strtolower(trans('admin.numeric_filter_option_from'));
-            $attributes['product_size_' . $sizeType . '_option.*.to'] = mb_strtolower(trans('admin.numeric_filter_option_to'));
+            $attributes['product_size_'.$sizeType.'_option.*.slug'] = mb_strtolower(trans('admin.slug'));
+            $attributes['product_size_'.$sizeType.'_option.*.from'] = mb_strtolower(trans('admin.numeric_filter_option_from'));
+            $attributes['product_size_'.$sizeType.'_option.*.to'] = mb_strtolower(trans('admin.numeric_filter_option_to'));
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
-            $attributes['meta_product_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_product_title'), $availableLanguage);
-            $attributes['meta_product_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_product_description'), $availableLanguage);
-            $attributes['size_points.' . $availableLanguage] = $this->prepareAttribute(trans('admin.size_points'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['meta_product_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_product_title'), $availableLanguage);
+            $attributes['meta_product_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_product_description'), $availableLanguage);
+            $attributes['size_points.'.$availableLanguage] = $this->prepareAttribute(trans('admin.size_points'), $availableLanguage);
         }
 
         if ($this->input('product_field')) {
             foreach ($this->input('product_field') as $index => $productField) {
                 if ($productField['show_as_filter']) {
                     foreach ($this->availableLanguages as $availableLanguage) {
-                        $attributes['product_field.' . $index . '.filter_name.' . $availableLanguage] =
+                        $attributes['product_field.'.$index.'.filter_name.'.$availableLanguage] =
                             $this->prepareAttribute(trans('admin.filter_name'), $availableLanguage);
                     }
                 }

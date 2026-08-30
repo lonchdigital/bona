@@ -26,5 +26,5 @@ class EditAuthorDTO implements BaseDTO
          * replaced.
          */
         public readonly ?array $certificates,
-    ) { }
+    ) {}
 }

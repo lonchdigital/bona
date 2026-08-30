@@ -2,16 +2,14 @@
 
 namespace App\Http\Actions\Store\Product\Pages;
 
-use App\Models\Product;
 use App\Http\Actions\Admin\BaseAction;
-use App\Models\SeoGenConfig;
+use App\Models\Product;
 use App\Services\Cart\CartService;
+use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductService;
 use App\Services\ProductReview\ProductReviewService;
-use App\Services\Currency\CurrencyService;
-use App\Services\Seogen\SeogenService;
 use App\Services\WishList\WishListService;
-use Abordage\LastModified\Facades\LastModified;
+use App\Support\LastModified;
 
 class ShowProductPageAction extends BaseAction
 {
@@ -22,12 +20,11 @@ class ShowProductPageAction extends BaseAction
         WishListService $wishListService,
         CartService $cartService,
         ProductReviewService $productReviewService,
-    )
-    {
+    ) {
 
         $product->load([
-//            'color',
-//            'children.color',
+            //            'color',
+            //            'children.color',
             'productType',
             'productType.fields',
             'productType.fields.options',
@@ -39,7 +36,7 @@ class ShowProductPageAction extends BaseAction
         }
 
         $cart = $this->getAuthUser() ? $cartService->getCartForAuthUser($this->getAuthUser()) : $cartService->getCartForGuestUser(request()->session()->getId());
-        if( is_null($cart) ) {
+        if (is_null($cart)) {
             $cart = $cartService->createCartByToken(request()->session()->getId());
         }
 
@@ -48,7 +45,7 @@ class ShowProductPageAction extends BaseAction
             $isProductInCart = $cartService->isProductInCart($product, $cart);
         }
 
-        $sub_products = ( !is_null($product->sub_products) ) ? json_decode($product->sub_products): false;
+        $sub_products = (! is_null($product->sub_products)) ? json_decode($product->sub_products) : false;
 
         $product->meta_title = ($product->meta_title) ?
             $productService->replaceTagsWithData($product->meta_title, $product) :
@@ -59,7 +56,7 @@ class ShowProductPageAction extends BaseAction
             $productService->replaceTagsWithData($product->productType->meta_product_description, $product);
 
         $template = 'pages.store.product';
-        if( $product->productType->id == config('constants.ROZSUVNI_DVERI_ID') ) {
+        if ($product->productType->id == config('constants.ROZSUVNI_DVERI_ID')) {
             $template = 'pages.store.product-variety.rozsuvni-dveri-product';
         }
 
@@ -68,7 +65,7 @@ class ShowProductPageAction extends BaseAction
 
         return view($template, [
             'product' => $product,
-//            'categoryProducts' => $categoryProducts,
+            //            'categoryProducts' => $categoryProducts,
             'categoryProducts' => $productService->getSelectedSubItemsWithCategories($sub_products),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'sameTypeProducts' => $productService->getSameTypeProducts($product),

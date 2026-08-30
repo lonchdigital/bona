@@ -11,11 +11,9 @@ class ApplicationConfigEditAction extends BaseAction
     public function __invoke(
         ApplicationConfigsEditRequest $request,
         ApplicationConfigService $applicationConfigService,
-    )
-    {
+    ) {
         $result = $applicationConfigService->editApplicationConfig($request->toDTO());
 
         return $this->handleActionResult(route('admin.application-config.edit.page'), $request, $result);
     }
 }
-

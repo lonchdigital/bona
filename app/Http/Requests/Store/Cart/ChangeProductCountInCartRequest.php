@@ -29,13 +29,12 @@ class ChangeProductCountInCartRequest extends BaseRequest
         ];
     }
 
-
     public function toDTO(): ChangeProductCountInCartDTO
     {
         return new ChangeProductCountInCartDTO(
             $this->input('product_count'),
             $this->input('product_attributes'),
-//            $this->input('product_attributes_price'),
+            //            $this->input('product_attributes_price'),
         );
     }
 }

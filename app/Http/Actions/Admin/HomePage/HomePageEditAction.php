@@ -11,8 +11,7 @@ class HomePageEditAction extends BaseAction
     public function __invoke(
         HomePageEditRequest $request,
         HomePageService $homePageService,
-    )
-    {
+    ) {
         $result = $homePageService->editHomePage($request->toDTO());
 
         return $this->handleActionResult(route('admin.pages.list.page'), $request, $result);

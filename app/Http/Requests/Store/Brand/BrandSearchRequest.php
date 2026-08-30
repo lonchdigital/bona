@@ -13,7 +13,7 @@ class BrandSearchRequest extends BaseRequest
             'search' => [
                 'nullable',
                 'string',
-            ]
+            ],
         ];
     }
 

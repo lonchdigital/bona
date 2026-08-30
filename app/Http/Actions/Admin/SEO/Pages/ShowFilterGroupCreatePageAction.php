@@ -18,8 +18,7 @@ class ShowFilterGroupCreatePageAction extends BaseAction
         BrandService $brandService,
         CountryService $countryService,
         ColorService $colorService,
-    )
-    {
+    ) {
         return view('pages.admin.seo_fields.filter-groups', [
             'brands' => ListResource::collection($brandService->getBrands()),
             'countries' => CollectionResource::collection($countryService->getCountries()),

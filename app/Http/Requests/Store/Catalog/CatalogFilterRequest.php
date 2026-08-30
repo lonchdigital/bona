@@ -7,25 +7,36 @@ use App\Services\Product\DTO\FilterProductDTO;
 
 class CatalogFilterRequest extends BaseRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'catalog_filters' => $this->route('catalogFiltersString'),
+        ]);
+    }
+
     public function rules(): array
     {
-        return [];
+        return [
+            'catalog_filters' => ['nullable', 'string', 'max:2048'],
+        ];
     }
+
     public function toDTO(): FilterProductDTO
     {
         $filersArray = [];
-        $filterString = $this->route('catalogFiltersString');
+        $filterString = (string) ($this->validated('catalog_filters') ?? '');
         $filterPairs = explode(';', $filterString);
 
         foreach ($filterPairs as $filterPair) {
-            $pair = explode('=', $filterPair);
+            $pair = explode('=', $filterPair, 2);
 
-            if ($pair[0] === '') {
+            if ($pair[0] === '' || ! preg_match('/^[a-z0-9_-]{1,64}$/i', $pair[0])) {
                 continue;
             }
 
             if (isset($pair[1])) {
-                $filersArray[$pair[0]] = str_contains($pair[1], ',') ? explode(',', $pair[1]) : $pair[1];
+                $values = array_slice(explode(',', $pair[1]), 0, 50);
+                $filersArray[$pair[0]] = count($values) > 1 ? $values : $values[0];
             } else {
                 $filersArray[$pair[0]] = null;
             }

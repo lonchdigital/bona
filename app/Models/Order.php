@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Pricing\PricingService;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
@@ -35,15 +36,9 @@ class Order extends Model
 
     public function summary(): Attribute
     {
-        return Attribute::make(function () {
-            $summary = 0;
-
-            foreach ($this->products as $product) {
-                $summary += round(($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count);
-            }
-
-            return $summary;
-        });
+        return Attribute::make(
+            get: fn () => app(PricingService::class)->forOrder($this)['total'],
+        );
     }
 
     public function promoCode()

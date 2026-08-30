@@ -2,11 +2,10 @@
 
 namespace App\Http\Actions\Admin\VisitRequests;
 
-use App\Models\VisitRequest;
-use Illuminate\Http\Request;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\VisitRequest;
 use App\Services\VisitRequest\VisitRequestService;
-
+use Illuminate\Http\Request;
 
 class VisitRequestDeleteAction extends BaseAction
 {

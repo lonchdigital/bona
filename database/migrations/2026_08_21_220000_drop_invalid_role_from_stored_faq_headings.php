@@ -23,14 +23,14 @@ return new class extends Migration
         foreach (DB::table('blog_article_blocks')->get() as $row) {
             $content = json_decode($row->content, true);
 
-            if (!is_array($content)) {
+            if (! is_array($content)) {
                 continue;
             }
 
             $changed = false;
 
             foreach ($content as $locale => $html) {
-                if (!is_string($html) || !str_contains($html, 'role="button"')) {
+                if (! is_string($html) || ! str_contains($html, 'role="button"')) {
                     continue;
                 }
 
@@ -57,7 +57,5 @@ return new class extends Migration
     /**
      * Content only, nothing structural to undo.
      */
-    public function down(): void
-    {
-    }
+    public function down(): void {}
 };

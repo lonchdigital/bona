@@ -44,7 +44,5 @@ return new class extends Migration
      * The duplicates carried no information of their own, so there is nothing
      * to restore.
      */
-    public function down(): void
-    {
-    }
+    public function down(): void {}
 };

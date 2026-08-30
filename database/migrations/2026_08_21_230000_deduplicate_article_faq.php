@@ -23,26 +23,26 @@ return new class extends Migration
         foreach (DB::table('blog_article_blocks')->get() as $row) {
             $content = json_decode($row->content, true);
 
-            if (!is_array($content)) {
+            if (! is_array($content)) {
                 continue;
             }
 
             $changed = false;
 
             foreach ($content as $locale => $html) {
-                if (!is_string($html) || !str_contains($html, 'Часті запитання') && !str_contains($html, 'Частые вопросы')) {
+                if (! is_string($html) || ! str_contains($html, 'Часті запитання') && ! str_contains($html, 'Частые вопросы')) {
                     continue;
                 }
 
                 // Only bodies carrying both copies need touching.
-                if (!str_contains($html, 'article-faq')) {
+                if (! str_contains($html, 'article-faq')) {
                     continue;
                 }
 
                 $stripped = $this->removeGeneratedFaqSections($html);
                 [$rebuilt, $converted] = $htmlService->convertInlineFaq($stripped, is_string($locale) ? $locale : 'uk');
 
-                if (!$converted) {
+                if (! $converted) {
                     // No FAQ was written into the body, so the appended block
                     // was the only one there is. Leave the article alone.
                     continue;
@@ -65,13 +65,11 @@ return new class extends Migration
     /**
      * Content only, nothing structural to undo.
      */
-    public function down(): void
-    {
-    }
+    public function down(): void {}
 
     private function removeGeneratedFaqSections(string $html): string
     {
-        if (!class_exists(DOMDocument::class)) {
+        if (! class_exists(DOMDocument::class)) {
             return $html;
         }
 
@@ -79,21 +77,21 @@ return new class extends Migration
         $previousUseErrors = libxml_use_internal_errors(true);
 
         $loaded = $document->loadHTML(
-            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
 
         libxml_clear_errors();
         libxml_use_internal_errors($previousUseErrors);
 
-        if (!$loaded) {
+        if (! $loaded) {
             return $html;
         }
 
         $xpath = new DOMXPath($document);
         $root = $xpath->query('//div[@data-faq-root]')->item(0);
 
-        if (!$root instanceof DOMElement) {
+        if (! $root instanceof DOMElement) {
             return $html;
         }
 

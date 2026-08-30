@@ -61,7 +61,6 @@ class ImportedProduct extends Model
         return $this->belongsTo(Country::class);
     }
 
-
     public function children()
     {
         return $this->hasMany(ImportedProduct::class, 'parent_product_id');
@@ -77,7 +76,7 @@ class ImportedProduct extends Model
         return $this->belongsTo(Currency::class, 'price_currency_id');
     }
 
-    public function getCustomFieldValue(int $fieldId): array | int | string
+    public function getCustomFieldValue(int $fieldId): array|int|string
     {
         return $this->custom_fields[$fieldId];
     }
@@ -88,6 +87,7 @@ class ImportedProduct extends Model
             if ($this->main_image_path) {
                 return Storage::url($this->main_image_path);
             }
+
             return null;
         });
     }
@@ -98,17 +98,19 @@ class ImportedProduct extends Model
             if ($this->pattern_image_path) {
                 return Storage::url($this->pattern_image_path);
             }
+
             return null;
         });
     }
 
-    //gallery_image_1_url
+    // gallery_image_1_url
     public function galleryImage1Url(): Attribute
     {
         return Attribute::make(function () {
             if (isset($this->gallery_images['image_1'])) {
                 return Storage::url($this->gallery_images['image_1']);
             }
+
             return null;
         });
     }
@@ -119,6 +121,7 @@ class ImportedProduct extends Model
             if (isset($this->gallery_images['image_2'])) {
                 return Storage::url($this->gallery_images['image_2']);
             }
+
             return null;
         });
     }
@@ -129,6 +132,7 @@ class ImportedProduct extends Model
             if (isset($this->gallery_images['image_3'])) {
                 return Storage::url($this->gallery_images['image_3']);
             }
+
             return null;
         });
     }
@@ -139,6 +143,7 @@ class ImportedProduct extends Model
             if (isset($this->gallery_images['image_4'])) {
                 return Storage::url($this->gallery_images['image_4']);
             }
+
             return null;
         });
     }
@@ -149,6 +154,7 @@ class ImportedProduct extends Model
             if (isset($this->gallery_images['image_5'])) {
                 return Storage::url($this->gallery_images['image_5']);
             }
+
             return null;
         });
     }

@@ -24,7 +24,6 @@
 {{--        <link rel="preload" href="{{ $slide->slide_image_url }}" as="image">--}}
 {{--    @endforeach--}}
 
-    <link rel="preload" href="{{ asset('storage/bg-images/home-slider-mob-bg.jpg') }}" as="image">
 @endsection
 
 {{-- Without this the layout falls back to the 32x32 favicon, which is what
@@ -51,117 +50,12 @@
 @endphp
 
 
-    <!-- ========================  Header content ======================== -->
-
-    <section class="art-home-slider header-content">
-
-        <div class="swiper owl-slider art-slider-pc">
-            <div class="swiper-wrapper">
-                {{-- Each slide carries its own darkening, set on the slide in the
-                     admin panel; zero means the image is shown untouched. --}}
-                @foreach($slides as $slide)
-                    @if($slide->slide_url)
-                        <a href="{{ $slide->slide_url }}" class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }}); --slide-overlay: {{ ($slide->overlay_opacity ?? 0) / 100 }}" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
-                    @else
-                        <div class="swiper-slide home-page-slide-itself" style="background-image:url({{ $slide->slide_image_url }}); --slide-overlay: {{ ($slide->overlay_opacity ?? 0) / 100 }}" data-pc="{{ $slide->slide_image_url }}" data-mob="{{ $slide->slide_image_mobile_url }}">
-                    @endif
-
-                        <div class="box">
-                            <div class="container">
-                                {{-- The slide titles are empty, which left the home page
-                                     with three empty headings and no h1 at all. The first
-                                     slide carries the page heading, falling back to the
-                                     site's own wording, and an empty heading is simply
-                                     not printed.
-
-                                     A title has to hold a letter or a digit to count. A
-                                     lone full stop left in the field once became the whole
-                                     h1 — it is not empty, so it won the fallback. --}}
-                                @php
-                                    $slideHeading = preg_match('/[\p{L}\p{N}]/u', (string) $slide->title)
-                                        ? $slide->title
-                                        : null;
-                                @endphp
-                                @if($loop->first)
-                                    <h1 class="title animated h1" data-animation="fadeInDown">{{ $slideHeading ?: trans('base.home_h1') }}</h1>
-                                @elseif($slideHeading)
-                                    <h2 class="title animated h1" data-animation="fadeInDown">{{ $slideHeading }}</h2>
-                                @endif
-                                <div class="slider-description animated font-two" data-animation="fadeInUp">{!! $slide->description !!}</div>
-                                @if($slide->display_button && !$slide->slide_url)
-                                    <div class="animated text-center" data-animation="fadeInUp">
-                                        @if($slide->button_url == '#')
-                                            <a href="#" class="btn btn-empty" data-fancybox data-src="#dialog-call-consultation">{{ $slide->button_text }}</a>
-                                        @else
-                                            <a href="{{ $slide->button_url }}" class="btn btn-empty">{{ $slide->button_text }}</a>
-                                        @endif
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-
-                    @if($slide->slide_url)
-                        </a>
-                    @else
-                        </div>
-                    @endif
-
-                @endforeach
-            </div>
-            <div class="swiper-pagination"></div>
-        </div>
-
-
-        <div id="dialog-call-consultation" class="art-popup-call-measurer">
-            <div class="art-measurer-form-wrapper">
-                <div class="container">
-
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <form action="" id="user-call-master" method="post" class="art-contact-form">
-                                @csrf
-                                <header class="art-light">
-                                    <div class="text-center">
-                                        @if(array_key_exists('formTitle', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formTitle']))
-                                            <h2 class="title h2">{{ $applicationGlobalOptions['formTitle'][app()->getLocale()] }}</h2>
-                                        @endif
-                                        <div class="subtitle font-two">
-                                            @if(array_key_exists('formText', $applicationGlobalOptions) && !is_null($applicationGlobalOptions['formText']))
-                                                <p class="art-form-description">{{ $applicationGlobalOptions['formText'][app()->getLocale()] }}</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </header>
-
-                                <div class="art-fields-row">
-                                    <div>
-                                        <input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}">
-                                    </div>
-                                    <div>
-                                        <input type="text" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}">
-                                    </div>
-                                </div>
-                                <div class="art-fields-row">
-                                    <div class="art-solid-field">
-                                        <textarea class="art-light-field" name="description" placeholder="{{ trans('base.your_message') }}"></textarea>
-                                    </div>
-                                </div>
-                                <div class="checkbox checkbox-white agreement-line agree-field">
-                                    <input type="checkbox" name="agree" value="1">
-                                    <label>{{ trans('base.agreement_line_start') . ' ' }}<a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}" class="color-white">{{ trans('base.agreement_line_end') }}</a></label>
-                                </div>
-                                <input type="hidden" name="event" value="submit_form_home_slider">
-                                <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <x-store.home-hero :slides="$slides" />
+    <x-store.call-consultation-modal :options="$applicationGlobalOptions" />
 
     <!-- ========================  Icons slider ======================== -->
 
+    @if($fallbackTypeSlug)
     <section class="owl-icons-wrapper owl-icons-frontpage" style="background-color: #d0d0d0">
 
         <div class="container">
@@ -380,6 +274,7 @@
 
         </div> <!--/container-->
     </section>
+    @endif
 
 
 
@@ -725,6 +620,7 @@
         </section>
     @endif
 
+    @if($seoText)
     <!-- ======================== SEO ======================== -->
     <section class="seo-section pt-none11">
         <div class="container">
@@ -746,6 +642,7 @@
 
         </div>
     </section>
+    @endif
 @stop
 
 @push('head')

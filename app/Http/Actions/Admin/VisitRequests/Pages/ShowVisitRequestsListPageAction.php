@@ -11,8 +11,7 @@ class ShowVisitRequestsListPageAction extends BaseAction
     public function __invoke(
         VisitRequestFilterRequest $request,
         VisitRequestService $visitRequestService
-    )
-    {
+    ) {
         $dto = $request->toDTO();
 
         return view('pages.admin.visit-requests.list', [

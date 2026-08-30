@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Translation\PotentiallyTranslatedString;
 
 class PrivatPartialPaymentSignatureCheck implements DataAwareRule, ValidationRule
 {
@@ -14,21 +14,33 @@ class PrivatPartialPaymentSignatureCheck implements DataAwareRule, ValidationRul
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param  Closure(string): PotentiallyTranslatedString  $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $store_id = config('payment.privatbank.store_id');
-        $store_password = config('payment.privatbank.password');
-        $sign = base64_encode( sha1(
-            $store_password .
-            $store_id .
-            $this->data['orderId'].
-            $this->data['paymentState'] .
-            $this->data['message'].
+        $store_id = (string) config('payment.privatbank.store_id');
+        $store_password = (string) config('payment.privatbank.password');
+        if ($store_id === '' || $store_password === '') {
+            $fail('validation.signature_check')->translate();
+
+            return;
+        }
+
+        if (! hash_equals($store_id, (string) ($this->data['storeId'] ?? ''))) {
+            $fail('validation.signature_check')->translate();
+
+            return;
+        }
+
+        $sign = base64_encode(sha1(
+            $store_password.
+            $store_id.
+            ($this->data['orderId'] ?? '').
+            ($this->data['paymentState'] ?? '').
+            ($this->data['message'] ?? '').
             $store_password, 1
         ));
-        if ($sign !== $value) {
+        if (! is_string($value) || ! hash_equals($sign, $value)) {
             $fail('validation.signature_check')->translate();
         }
     }

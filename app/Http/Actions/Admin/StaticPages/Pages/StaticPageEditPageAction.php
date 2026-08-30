@@ -10,7 +10,7 @@ class StaticPageEditPageAction extends BaseAction
 {
     public function __invoke(int $staticPageID, StaticPageService $staticPageService)
     {
-        if (!StaticPageTypesDataClass::get($staticPageID)) {
+        if (! StaticPageTypesDataClass::get($staticPageID)) {
             abort(404);
         }
 

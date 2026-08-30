@@ -2,17 +2,16 @@
 
 namespace App\Services\BlogPage;
 
-use App\Services\BlogPage\DTO\EditBlogPageDTO;
 use App\Models\BlogPageConfig;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
+use App\Services\BlogPage\DTO\EditBlogPageDTO;
 
 class BlogPageService extends BaseService
 {
-
     public function editBlogPage(EditBlogPageDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request) {
+        return $this->coverWithDBTransaction(function () use ($request) {
 
             $existingConfig = $this->getConfigData();
             $dataToUpdate = [
@@ -23,7 +22,7 @@ class BlogPageService extends BaseService
                 'title' => $request->title,
             ];
 
-            if( !is_null($existingConfig)){
+            if (! is_null($existingConfig)) {
                 $existingConfig->update($dataToUpdate);
             } else {
                 BlogPageConfig::create($dataToUpdate);
@@ -37,5 +36,4 @@ class BlogPageService extends BaseService
     {
         return BlogPageConfig::first();
     }
-
 }

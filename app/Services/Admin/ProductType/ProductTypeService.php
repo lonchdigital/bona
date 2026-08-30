@@ -4,21 +4,18 @@ namespace App\Services\Admin\ProductType;
 
 use App\DataClasses\NumericFieldFilerTypesDataClass;
 use App\DataClasses\ProductSizeTypesDataClass;
-use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Color;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\ProductTypeSizeOption;
 use App\Models\SeoText;
-use App\Services\Base\BaseService;
-use Illuminate\Support\Collection;
-use App\Services\Base\ServiceActionResult;
 use App\Services\Admin\ProductType\DTO\EditProductTypeDTO;
-use Illuminate\Support\Facades\Storage;
+use App\Services\Base\BaseService;
+use App\Services\Base\ServiceActionResult;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use Illuminate\Http\UploadedFile;
-use Intervention\Image\Facades\Image;
 
 class ProductTypeService extends BaseService
 {
@@ -40,23 +37,24 @@ class ProductTypeService extends BaseService
 
         $productTypeSizeOptions = ProductTypeSizeOption::get();
 
-        $productTypes->map(function (ProductType $productType) use($productTypeSizeOptions) {
+        $productTypes->map(function (ProductType $productType) use ($productTypeSizeOptions) {
             $productType->categories = Category::select()->where('product_type_id', $productType->id)->get();
             $productType->length_options = $productTypeSizeOptions->where('type', 'LENGTH')->where('product_type_id', $productType->id) ?? null;
             $productType->width_options = $productTypeSizeOptions->where('type', 'WIDTH')->where('product_type_id', $productType->id) ?? null;
             $productType->height_options = $productTypeSizeOptions->where('type', 'HEIGHT')->where('product_type_id', $productType->id) ?? null;
+
             return $productType;
         });
 
         return $productTypes;
     }
 
-    public function getProductTypesPaginated(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductTypesPaginated(): LengthAwarePaginator
     {
         return ProductType::with('creator')->paginate(config('domain.items_per_page'));
     }
 
-    public function getProductTypesWithCategoriesPaginated(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductTypesWithCategoriesPaginated(): LengthAwarePaginator
     {
         return ProductType::with('creator')
             ->where('has_category', true)
@@ -67,11 +65,11 @@ class ProductTypeService extends BaseService
     {
         $creator = $this->getAuthUser();
 
-        return $this->coverWithDBTransaction(function () use($request, $creator) {
+        return $this->coverWithDBTransaction(function () use ($request, $creator) {
 
-            $path = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+            $path = self::PRODUCT_TYPE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
 
-            if( !is_null($request->image) ) {
+            if (! is_null($request->image)) {
                 $this->storeImage($path, $request->image, 'webp');
                 $this->storeImage($path, $request->image, 'jpg');
             }
@@ -81,7 +79,7 @@ class ProductTypeService extends BaseService
                 'name' => $request->productTypeName,
                 'slug' => $request->slug,
                 'product_point_name' => $request->pointName,
-                'image_path' => $path . '.webp',
+                'image_path' => $path.'.webp',
 
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
@@ -129,11 +127,13 @@ class ProductTypeService extends BaseService
                 $productType->fields()->sync([]);
             }
 
-            if( !is_null($request->faqs) ) {
+            if (! is_null($request->faqs)) {
                 $this->syncFaqs($productType->slug, $request->faqs);
             }
 
             SeoText::updateSeoText($productType->slug, $request->seoTitle, $request->seoText);
+
+            $this->forgetNavigationCache();
 
             return ServiceActionResult::make(true, trans('admin.product_type_create_success'));
         });
@@ -141,7 +141,7 @@ class ProductTypeService extends BaseService
 
     public function updateProductType(ProductType $productType, EditProductTypeDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($productType, $request) {
+        return $this->coverWithDBTransaction(function () use ($productType, $request) {
 
             $dataToUpdate = [
                 'name' => $request->productTypeName,
@@ -186,24 +186,22 @@ class ProductTypeService extends BaseService
                 'size_points' => $request->productSizePoints,
             ];
 
-
             $imagesToDelete = [];
             $postTypeImage = null;
-            if( !is_null($request->image) ) {
+            if (! is_null($request->image)) {
                 $imagesToDelete[] = $productType->image_path;
 
-                $newImagePath = self::PRODUCT_TYPE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
-                $dataToUpdate['image_path'] = $newImagePath . '.webp';
+                $newImagePath = self::PRODUCT_TYPE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
+                $dataToUpdate['image_path'] = $newImagePath.'.webp';
 
                 $postTypeImage['image'] = $request->image;
                 $postTypeImage['path'] = $newImagePath;
             }
 
-
             $productType->update($dataToUpdate);
 
-            if(!is_null($request->additionalProducts)) {
-                $articleIds = explode(",", $request->additionalProducts);
+            if (! is_null($request->additionalProducts)) {
+                $articleIds = explode(',', $request->additionalProducts);
                 $productType->products()->sync($articleIds);
             } else {
                 $productType->products()->sync([]);
@@ -225,7 +223,7 @@ class ProductTypeService extends BaseService
                 $productType->attributes()->sync([]);
             }
 
-            if( !is_null( $postTypeImage ) ) {
+            if (! is_null($postTypeImage)) {
                 $this->storeImage($postTypeImage['path'], $postTypeImage['image'], 'webp');
                 $this->storeImage($postTypeImage['path'], $postTypeImage['image'], 'jpg');
             }
@@ -238,17 +236,19 @@ class ProductTypeService extends BaseService
 
             SeoText::updateSeoText($productType->slug, $request->seoTitle, $request->seoText);
 
+            $this->forgetNavigationCache();
+
             return ServiceActionResult::make(true, trans('admin.product_type_edit_success'));
         });
     }
 
     public function deleteProductType(ProductType $productType): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($productType) {
+        return $this->coverWithDBTransaction(function () use ($productType) {
             if (Product::where('product_type_id', $productType->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.product_type_in_use'));
             } else {
-                 $productType->fields()->sync([]);
+                $productType->fields()->sync([]);
 
                 $productType->sizeFilterOptions()->delete();
 
@@ -261,23 +261,31 @@ class ProductTypeService extends BaseService
                 $productType->attributes()->detach();
                 $productType->delete();
 
+                $this->forgetNavigationCache();
+
                 return ServiceActionResult::make(true, trans('admin.product_type_delete_success'));
             }
         });
+    }
+
+    private function forgetNavigationCache(): void
+    {
+        Cache::forget('mainProductTypes');
+        Cache::forget('sortedProductTypes');
     }
 
     public function searchAdditionalProducts($productType, array $request)
     {
         $query = Product::query();
 
-        if (!is_null($request['excludePostIds'])) {
-//            $excludePostIds = explode(",", $request['excludePostIds']);
-            $excludePostIds = array_map('intval', explode(",", $request['excludePostIds']));
+        if (! is_null($request['excludePostIds'])) {
+            //            $excludePostIds = explode(",", $request['excludePostIds']);
+            $excludePostIds = array_map('intval', explode(',', $request['excludePostIds']));
             $query->whereNotIn('id', $excludePostIds);
         }
 
-        if ( !is_null($request['search']) ) {
-            $searchTerm = '%' . $request['search'] . '%';
+        if (! is_null($request['search'])) {
+            $searchTerm = '%'.$request['search'].'%';
             $query->where(function ($q) use ($searchTerm) {
                 $q->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm])
                     ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk"))) LIKE ?', [$searchTerm, $searchTerm]);
@@ -285,7 +293,7 @@ class ProductTypeService extends BaseService
         }
 
         return [
-            'documents' => $query->select(['id', 'name'])->limit(6)->get()
+            'documents' => $query->select(['id', 'name'])->limit(6)->get(),
         ];
     }
 
@@ -351,9 +359,7 @@ class ProductTypeService extends BaseService
                 $optionsPrepared[$key]['type'] = ProductSizeTypesDataClass::WIDTH;
             }
 
-
             $productType->sizeFilterOptions()->createMany($optionsPrepared);
         }
     }
-
 }

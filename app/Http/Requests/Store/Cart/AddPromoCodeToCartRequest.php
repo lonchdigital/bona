@@ -13,7 +13,7 @@ class AddPromoCodeToCartRequest extends BaseRequest
             'code' => [
                 'required',
                 'exists:promo_codes,code',
-            ]
+            ],
         ];
     }
 

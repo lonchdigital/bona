@@ -10,6 +10,5 @@ class PasswordEditDTO implements BaseDTO
         public readonly string $currentPassword,
         public readonly string $newPassword,
         public readonly string $passwordConfirmation
-    )
-    { }
+    ) {}
 }

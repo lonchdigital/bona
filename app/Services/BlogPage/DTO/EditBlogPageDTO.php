@@ -3,7 +3,6 @@
 namespace App\Services\BlogPage\DTO;
 
 use App\Services\Base\DTO\BaseDTO;
-use Illuminate\Http\UploadedFile;
 
 class EditBlogPageDTO implements BaseDTO
 {
@@ -13,5 +12,5 @@ class EditBlogPageDTO implements BaseDTO
         public readonly ?array $metaKeywords,
         public readonly ?string $metaTags,
         public readonly ?array $title,
-    ){ }
+    ) {}
 }

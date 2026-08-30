@@ -16,12 +16,11 @@ class ShowImportedProductsListPageAction extends BaseAction
         ProductType $productType,
         ProductImportFilterRequest $request,
         ProductImportService $productImportService,
-        BrandService         $brandService,
-        ColorService         $colorService,
-        CountryService       $countryService,
-    )
-    {
-        if (!$productImportService->importedProductsExists($productType)) {
+        BrandService $brandService,
+        ColorService $colorService,
+        CountryService $countryService,
+    ) {
+        if (! $productImportService->importedProductsExists($productType)) {
             return redirect()->route('admin.products-import.page', [
                 'productType' => $productType->id,
             ]);

@@ -44,8 +44,10 @@ return [
     'forgot_password' => 'Забыли пароль?',
     'go_to_sign_up' => 'Зарегистрироваться',
     'reset_password_title' => 'Восстановление пароля',
-    'reset_password_text' => 'Укажите ваш Email и мы отправим вам новый пароль.',
+    'reset_password_text' => 'Укажите Email, и мы отправим одноразовую ссылку для смены пароля.',
     'reset_password_call_to_action' => 'Сбросить пароль',
-    'reset_password_success_title' => 'Пароль успешно сброшен',
-    'reset_password_success_text' => 'Мы отправили вам новый пароль на электронную почту.',
+    'reset_password_success_title' => 'Проверьте электронную почту',
+    'reset_password_success_text' => 'Если учетная запись существует, мы отправили ссылку для смены пароля.',
+    'set_new_password' => 'Новый пароль',
+    'save_new_password' => 'Сохранить новый пароль',
 ];

@@ -18,10 +18,8 @@ class ShowWishListPageAction extends BaseAction
         WishListService $wishListService,
         CurrencyService $currencyService,
         CartService $cartService,
-    )
-    {
+    ) {
         $wishList = $this->getWishList($wishListService);
-
 
         return view('pages.store.wish-list', [
             'isPublic' => false,

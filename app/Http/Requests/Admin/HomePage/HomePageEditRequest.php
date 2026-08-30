@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin\HomePage;
 
 use App\Http\Requests\BaseRequest;
-use App\Models\HomePageConfig;
-use App\Rules\RequiredImageDeletedRule;
 use App\Services\HomePage\DTO\HomePageEditDTO;
 
 class HomePageEditRequest extends BaseRequest
@@ -29,22 +27,22 @@ class HomePageEditRequest extends BaseRequest
                 'string',
             ],
             'slides.*.id' => [
-                'nullable'
+                'nullable',
             ],
             'testimonials.*.id' => [
-                'nullable'
+                'nullable',
             ],
             'testimonials.*.rating' => [
                 'integer',
-                'required'
+                'required',
             ],
             'testimonials.*.date' => [
                 'string',
-                'nullable'
+                'nullable',
             ],
             'testimonials.*.url' => [
                 'string',
-                'nullable'
+                'nullable',
             ],
             'selected_product_types' => [
                 'nullable',
@@ -74,99 +72,97 @@ class HomePageEditRequest extends BaseRequest
 
         if ($this->input('slides')) {
             foreach ($this->input('slides') as $index => $slide) {
-                $rules['slides.' . $index . '.image'] = [
+                $rules['slides.'.$index.'.image'] = [
                     (isset($slide['id']) && $slide['id']) ? 'nullable' : 'required',
                     'image',
                 ];
-                $rules['slides.' . $index . '.image_mobile'] = [
+                $rules['slides.'.$index.'.image_mobile'] = [
                     (isset($slide['id']) && $slide['id']) ? 'nullable' : 'required',
                     'image',
                 ];
-                $rules['slides.' . $index . '.overlay_opacity'] = [
+                $rules['slides.'.$index.'.overlay_opacity'] = [
                     'nullable',
                     'integer',
                     'between:0,100',
                 ];
-                $rules['slides.' . $index . '.button_url'] = [
+                $rules['slides.'.$index.'.button_url'] = [
                     'required',
-                    'string'
+                    'string',
                 ];
-                $rules['slides.' . $index . '.slide_url'] = [
+                $rules['slides.'.$index.'.slide_url'] = [
                     'nullable',
-                    'string'
+                    'string',
                 ];
-                $rules['slides.' . $index . '.display_button'] = [
+                $rules['slides.'.$index.'.display_button'] = [
                     'nullable',
-                    'boolean'
+                    'boolean',
                 ];
             }
         }
 
         if ($this->input('testimonials')) {
             foreach ($this->input('testimonials') as $index => $testimonial) {
-                $rules['testimonials.' . $index . '.image'] = [
+                $rules['testimonials.'.$index.'.image'] = [
                     (isset($testimonial['id']) && $testimonial['id']) ? 'nullable' : 'required',
                     'image',
                 ];
             }
         }
 
-
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['slides.*.title.' . $availableLanguage] = [
+            $rules['slides.*.title.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['slides.*.description.' . $availableLanguage] = [
+            $rules['slides.*.description.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['slides.*.button_text.' . $availableLanguage] = [
+            $rules['slides.*.button_text.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
 
-            $rules['testimonials.*.name.' . $availableLanguage] = [
+            $rules['testimonials.*.name.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['testimonials.*.review.' . $availableLanguage] = [
+            $rules['testimonials.*.review.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
 
-            $rules['faqs.*.question.' . $availableLanguage] = [
+            $rules['faqs.*.question.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['faqs.*.answer.' . $availableLanguage] = [
+            $rules['faqs.*.answer.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['seo_title.' . $availableLanguage] = [
+            $rules['seo_title.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['seo_text.' . $availableLanguage] = [
+            $rules['seo_text.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
         }
 
-        return  $rules;
+        return $rules;
     }
 
     public function attributes(): array
@@ -179,25 +175,25 @@ class HomePageEditRequest extends BaseRequest
             'slides.*.image' => mb_strtolower(trans('admin.slide_image')),
             'slides.*.image_mobile' => mb_strtolower(trans('admin.slide_image')),
             'selected_field_id' => mb_strtolower(trans('admin.field')),
-//            'selected_field_options_id' => mb_strtolower(trans('admin.field_options')),
+            //            'selected_field_options_id' => mb_strtolower(trans('admin.field_options')),
         ];
 
         if ($this->input('slides')) {
             foreach ($this->input('slides') as $index => $slide) {
-                $attributes['slides.' . $index . '.image'] = mb_strtolower(trans('admin.slide_image'));
-                $attributes['slides.' . $index . '.image_mobile'] = mb_strtolower(trans('admin.slide_image_mobile'));
+                $attributes['slides.'.$index.'.image'] = mb_strtolower(trans('admin.slide_image'));
+                $attributes['slides.'.$index.'.image_mobile'] = mb_strtolower(trans('admin.slide_image_mobile'));
 
-                $attributes['slides.' . $index . '.button_url'] = mb_strtolower(trans('admin.slide_text_link'));
+                $attributes['slides.'.$index.'.button_url'] = mb_strtolower(trans('admin.slide_text_link'));
             }
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
-            $attributes['slides.*.title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_title'), $availableLanguage);
-            $attributes['slides.*.description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_description'), $availableLanguage);
-            $attributes['slides.*.button_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.slide_text_button'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['slides.*.title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.slide_title'), $availableLanguage);
+            $attributes['slides.*.description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.slide_description'), $availableLanguage);
+            $attributes['slides.*.button_text.'.$availableLanguage] = $this->prepareAttribute(trans('admin.slide_text_button'), $availableLanguage);
         }
 
         return $attributes;

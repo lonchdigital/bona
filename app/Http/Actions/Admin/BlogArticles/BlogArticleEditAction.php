@@ -3,9 +3,9 @@
 namespace App\Http\Actions\Admin\BlogArticles;
 
 use App\Http\Actions\Admin\BaseAction;
+use App\Http\Requests\Admin\BlogArticle\BlogArticleEditRequest;
 use App\Models\BlogArticle;
 use App\Services\BlogArticle\BlogArticleService;
-use App\Http\Requests\Admin\BlogArticle\BlogArticleEditRequest;
 
 class BlogArticleEditAction extends BaseAction
 {

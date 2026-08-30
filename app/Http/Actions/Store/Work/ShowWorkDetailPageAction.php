@@ -2,9 +2,9 @@
 
 namespace App\Http\Actions\Store\Work;
 
-use Abordage\LastModified\Facades\LastModified;
 use App\Models\Work;
 use App\Services\Work\WorkService;
+use App\Support\LastModified;
 
 class ShowWorkDetailPageAction
 {

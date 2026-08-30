@@ -19,5 +19,5 @@ class ProductImportFilterDTO extends FilterProductAdminDTO
         public readonly ?int $galleryImage5StatusId,
         public readonly bool $showNew,
         public readonly bool $showExisting,
-    ) { }
+    ) {}
 }

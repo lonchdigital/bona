@@ -8,13 +8,14 @@ use App\Services\VisitRequest\DTO\VisitRequestEditDTO;
 
 class VisitRequestEditRequest extends BaseRequest
 {
-    public function rules(): array {
+    public function rules(): array
+    {
         return [
             'status_id' => [
                 'required',
                 'integer',
-                'in:' . VisitRequestStatusesDataClass::get()->pluck('id')->implode(','),
-            ]
+                'in:'.VisitRequestStatusesDataClass::get()->pluck('id')->implode(','),
+            ],
         ];
     }
 

@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Sitemap\Contracts\Sitemapable;
 use Spatie\Sitemap\Tags\Url;
 use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Brand extends Model implements Sitemapable
 {
@@ -22,14 +22,12 @@ class Brand extends Model implements Sitemapable
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-
     public function logoImageUrl(): Attribute
     {
         return Attribute::make(function () {
             return Storage::url($this->logo_image_path);
         });
     }
-
 
     public function toArray()
     {
@@ -40,14 +38,12 @@ class Brand extends Model implements Sitemapable
         return $array;
     }
 
-
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         $urls = [];
         $urls[] = route('store.brand.page', ['brandSlug' => $this->slug]);
-        $urls[] = '/ru' . route('store.brand.page', ['brandSlug' => $this->slug], false);
+        $urls[] = '/ru'.route('store.brand.page', ['brandSlug' => $this->slug], false);
 
         return $urls;
     }
-
 }

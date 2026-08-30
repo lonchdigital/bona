@@ -2,11 +2,11 @@
 
 namespace App\Http\Actions\Admin\ProductCategories;
 
+use App\Http\Actions\Admin\BaseAction;
 use App\Models\Category;
 use App\Models\ProductType;
-use Illuminate\Http\Request;
-use App\Http\Actions\Admin\BaseAction;
 use App\Services\ProductCategory\CategoryService;
+use Illuminate\Http\Request;
 
 class CategoryDeleteAction extends BaseAction
 {

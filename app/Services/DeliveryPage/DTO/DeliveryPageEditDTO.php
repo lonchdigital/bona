@@ -19,5 +19,5 @@ class DeliveryPageEditDTO implements BaseDTO
         public readonly ?UploadedFile $image,
         public readonly bool $imageDeleted,
         public readonly ?string $iframe,
-    ){ }
+    ) {}
 }

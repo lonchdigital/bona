@@ -6,12 +6,12 @@ use App\Models\AboutUsConfig;
 use App\Models\AboutUsFact;
 use App\Models\AboutUsStep;
 use App\Models\AboutUsTeamMember;
-use Illuminate\Http\UploadedFile;
+use App\Services\AboutUsPage\DTO\AboutUsPageEditDTO;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
-use App\Services\AboutUsPage\DTO\AboutUsPageEditDTO;
-use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class AboutUsPageService extends BaseService
 {
@@ -19,7 +19,7 @@ class AboutUsPageService extends BaseService
 
     public function editAboutUsPage(AboutUsPageEditDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request) {
+        return $this->coverWithDBTransaction(function () use ($request) {
 
             $existingConfig = AboutUsConfig::first();
             $dataToUpdate = [
@@ -46,33 +46,33 @@ class AboutUsPageService extends BaseService
 
             $imagesToDelete = [];
             $deliveryImage = null;
-            if( !is_null($request->image) ) {
+            if (! is_null($request->image)) {
                 $imagesToDelete[] = $existingConfig->image;
 
-                $newImagePath = self::DELIVERY_PAGE_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
-                $dataToUpdate['image'] = $newImagePath . '.webp';
+                $newImagePath = self::DELIVERY_PAGE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
+                $dataToUpdate['image'] = $newImagePath.'.webp';
 
                 $deliveryImage['image'] = $request->image;
                 $deliveryImage['path'] = $newImagePath;
             }
 
-            if( !is_null( $deliveryImage ) ) {
+            if (! is_null($deliveryImage)) {
                 $this->storeImage($deliveryImage['path'], $deliveryImage['image'], 'webp');
                 $this->storeImage($deliveryImage['path'], $deliveryImage['image'], 'jpg');
             }
 
             foreach ($imagesToDelete as $imageToDelete) {
-                if(!is_null($imageToDelete)) {
+                if (! is_null($imageToDelete)) {
                     $this->deleteImage($imageToDelete);
                 }
             }
 
-            if( $request->imageDeleted ) {
+            if ($request->imageDeleted) {
                 $this->deleteImage($existingConfig->image);
                 $dataToUpdate['image'] = null;
             }
 
-            if( !is_null($existingConfig)){
+            if (! is_null($existingConfig)) {
                 $existingConfig->update($dataToUpdate);
             } else {
                 AboutUsConfig::create($dataToUpdate);
@@ -82,10 +82,9 @@ class AboutUsPageService extends BaseService
             $this->syncSteps($request->steps);
             $this->syncTeamMembers($request->teamMembers);
 
-             return ServiceActionResult::make(true, trans('admin.about_us_edit_success'));
+            return ServiceActionResult::make(true, trans('admin.about_us_edit_success'));
         });
     }
-
 
     public function getAboutUsConfig(): ?AboutUsConfig
     {
@@ -148,7 +147,7 @@ class AboutUsPageService extends BaseService
         $keptIds = [];
 
         foreach ($steps as $index => $step) {
-            if (!$this->hasTranslation($step['title'] ?? null)) {
+            if (! $this->hasTranslation($step['title'] ?? null)) {
                 continue;
             }
 
@@ -175,7 +174,7 @@ class AboutUsPageService extends BaseService
         $imagesToDelete = [];
 
         foreach ($members as $index => $member) {
-            if (!$this->hasTranslation($member['name'] ?? null)) {
+            if (! $this->hasTranslation($member['name'] ?? null)) {
                 continue;
             }
 
@@ -190,10 +189,10 @@ class AboutUsPageService extends BaseService
             $photo = $member['photo'] ?? null;
 
             if ($photo instanceof UploadedFile) {
-                $path = self::DELIVERY_PAGE_IMAGES_FOLDER . '/' . sha1(microtime(true)) . '_' . Str::random(10);
+                $path = self::DELIVERY_PAGE_IMAGES_FOLDER.'/'.sha1(microtime(true)).'_'.Str::random(10);
                 $this->storeAuthorAvatar($path, $photo, 'webp');
                 $this->storeAuthorAvatar($path, $photo, 'jpg');
-                $data['photo_path'] = $path . '.webp';
+                $data['photo_path'] = $path.'.webp';
 
                 $previous = $existing->firstWhere('id', (int) ($member['id'] ?? 0))?->photo_path;
 
@@ -235,7 +234,7 @@ class AboutUsPageService extends BaseService
      */
     private function hasTranslation(mixed $value): bool
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 

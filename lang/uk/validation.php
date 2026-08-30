@@ -151,7 +151,7 @@ return [
     'ulid' => 'Поле :attribute має бути коректним ULID.',
     'uuid' => 'Поле :attribute має бути коректним UUID ідентифікатором.',
     'phone_number' => [
-        'size' => 'Поле :attribute повинен містити :size символів.'
+        'size' => 'Поле :attribute повинен містити :size символів.',
     ],
 
     /*

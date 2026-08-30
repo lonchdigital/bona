@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
-use App\Models\User;
-use App\Models\ProductType;
-use Illuminate\Database\Seeder;
-use App\DataClasses\ProductSizeTypesDataClass;
 use App\DataClasses\NumericFieldFilerTypesDataClass;
 use App\DataClasses\ProductFilterFullPositionOptionsDataClass;
-
+use App\DataClasses\ProductSizeTypesDataClass;
+use App\Models\ProductType;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class ProductTypesSeeder extends Seeder
 {
@@ -20,7 +19,7 @@ class ProductTypesSeeder extends Seeder
     {
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
 
@@ -109,8 +108,8 @@ class ProductTypesSeeder extends Seeder
             [
                 'type' => ProductSizeTypesDataClass::WIDTH,
                 'name' => [
-                   'uk' => '0.47 - 0.53 м.',
-                   'ru' => '0.47 - 0.53 м.',
+                    'uk' => '0.47 - 0.53 м.',
+                    'ru' => '0.47 - 0.53 м.',
                 ],
                 'slug' => '0_47-0_53',
                 'from' => 0.47,

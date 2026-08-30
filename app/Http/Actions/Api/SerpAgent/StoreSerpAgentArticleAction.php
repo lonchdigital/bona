@@ -20,7 +20,7 @@ class StoreSerpAgentArticleAction
         // Checked before the connectivity test: a translations_updated
         // delivery carries no article, and would otherwise be mistaken for a
         // bare ping and dropped.
-        if (!$dto->isTranslationsUpdate && $dto->isConnectivityCheck()) {
+        if (! $dto->isTranslationsUpdate && $dto->isConnectivityCheck()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Webhook is reachable and the secret is valid.',
@@ -43,7 +43,7 @@ class StoreSerpAgentArticleAction
         try {
             $result = $serpAgentArticleService->storeArticle($dto);
         } catch (SerpAgentException $exception) {
-            Log::warning('SerpAgent: article rejected. ' . $exception->getMessage(), [
+            Log::warning('SerpAgent: article rejected. '.$exception->getMessage(), [
                 'slug' => $dto->slug,
                 'external_id' => $dto->externalId,
             ]);
@@ -53,7 +53,7 @@ class StoreSerpAgentArticleAction
                 'message' => $exception->getMessage(),
             ], $exception->status());
         } catch (Throwable $throwable) {
-            Log::error('SerpAgent: article could not be stored. ' . $throwable->getMessage(), [
+            Log::error('SerpAgent: article could not be stored. '.$throwable->getMessage(), [
                 'slug' => $dto->slug,
                 'external_id' => $dto->externalId,
             ]);
@@ -64,11 +64,11 @@ class StoreSerpAgentArticleAction
             ], 500);
         }
 
-        Log::info('SerpAgent: article ' . $result['action'] . '.', $result);
+        Log::info('SerpAgent: article '.$result['action'].'.', $result);
 
         return response()->json([
             'success' => true,
-            'message' => 'Article ' . $result['action'] . '.',
+            'message' => 'Article '.$result['action'].'.',
             'data' => $result,
         ], $result['action'] === 'created' ? 201 : 200);
     }

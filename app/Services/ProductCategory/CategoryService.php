@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\ProductCategory\DTO\CreateCategoryDTO;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -24,14 +25,15 @@ class CategoryService extends BaseService
     {
         return Category::where('product_type_id', $productType->id)->get();
     }
-    public function getProductCategoryPaginated(ProductType $productType): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+
+    public function getProductCategoryPaginated(ProductType $productType): LengthAwarePaginator
     {
         return Category::where('product_type_id', $productType->id)->with('creator')->paginate(config('domain.items_per_page'));
     }
 
     public function createCategory(ProductType $productType, User $creator, CreateCategoryDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request, $creator, $productType) {
+        return $this->coverWithDBTransaction(function () use ($request, $creator, $productType) {
 
             $dataToAdd = [
                 'meta_title' => $request->metaTitle,
@@ -43,15 +45,14 @@ class CategoryService extends BaseService
                 'slug' => $request->slug,
             ];
 
-            if(!is_null($request->image)) {
-                $path = self::CATEGORY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+            if (! is_null($request->image)) {
+                $path = self::CATEGORY_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
 
                 $this->storeImage($path, $request->image, 'webp');
                 $this->storeImage($path, $request->image, 'jpg');
 
-                $dataToAdd['image_path'] = $path . '.webp';
+                $dataToAdd['image_path'] = $path.'.webp';
             }
-
 
             $productCategory = Category::create($dataToAdd);
 
@@ -63,10 +64,10 @@ class CategoryService extends BaseService
 
     public function editCategory(Category $productCategory, CreateCategoryDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request, $productCategory) {
+        return $this->coverWithDBTransaction(function () use ($request, $productCategory) {
 
-            if(!is_null($request->image)) {
-                $newImagePath = self::CATEGORY_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+            if (! is_null($request->image)) {
+                $newImagePath = self::CATEGORY_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
                 $oldImagePath = $productCategory->image_path;
 
                 $this->storeImage($newImagePath, $request->image, 'webp');
@@ -78,11 +79,11 @@ class CategoryService extends BaseService
                     'meta_keywords' => $request->metaKeyWords,
                     'name' => $request->name,
                     'slug' => $request->slug,
-                    'image_path' => $newImagePath . '.webp',
+                    'image_path' => $newImagePath.'.webp',
                 ]);
 
-                //delete image as a last step
-                if (!is_null($oldImagePath)) {
+                // delete image as a last step
+                if (! is_null($oldImagePath)) {
                     $this->deleteImage($oldImagePath);
                 }
             } else {
@@ -97,7 +98,6 @@ class CategoryService extends BaseService
 
             }
 
-
             SeoText::updateSeoText($productCategory->slug, $request->seoTitle, $request->seoText); // put $productCategory->slug instead of $productType->slug
 
             return ServiceActionResult::make(true, trans('admin.product_category_edit_success'));
@@ -106,8 +106,8 @@ class CategoryService extends BaseService
 
     public function deleteCategory(Category $productCategory): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function() use($productCategory) {
-            if (Product::whereHas('categories', function (Builder $query) use($productCategory) {
+        return $this->coverWithDBTransaction(function () use ($productCategory) {
+            if (Product::whereHas('categories', function (Builder $query) use ($productCategory) {
                 $query->where('category_id', $productCategory->id);
             })->exists()) {
                 return ServiceActionResult::make(false, trans('admin.product_category_in_use'));
@@ -115,7 +115,7 @@ class CategoryService extends BaseService
 
             $productCategory->delete();
 
-            if(!is_null($productCategory->image_path)) {
+            if (! is_null($productCategory->image_path)) {
                 if (Storage::disk(config('app.images_disk_default'))->exists($productCategory->image_path)) {
                     Storage::disk(config('app.images_disk_default'))->delete($productCategory->image_path);
                 }
@@ -127,20 +127,20 @@ class CategoryService extends BaseService
 
     public function updateCountOfProductsByCategory(Collection $categories): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($categories) {
+        return $this->coverWithDBTransaction(function () use ($categories) {
             foreach ($categories as $category) {
-                if (!$category instanceof Category) {
+                if (! $category instanceof Category) {
                     throw new \Exception('CategoryService@updateCountOfProductsByCategory: invalid entry. Category expected.');
                 }
 
-                $countOfProducts = Product::whereHas('categories', function (Builder $query) use($category) {
+                $countOfProducts = Product::whereHas('categories', function (Builder $query) use ($category) {
                     return $query->where('category_id', $category->id);
                 })
 //                    ->whereNull('parent_product_id')
                     ->count();
 
                 $category->update([
-                    'count_of_products' => $countOfProducts
+                    'count_of_products' => $countOfProducts,
                 ]);
             }
 

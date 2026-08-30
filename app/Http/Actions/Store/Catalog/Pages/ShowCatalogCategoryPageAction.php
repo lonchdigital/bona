@@ -8,15 +8,15 @@ use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Category;
 use App\Models\ProductType;
 use App\Services\Brand\BrandService;
-use App\Services\ProductCategory\CategoryService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
-//use App\Services\Seogen\SeogenService;
-//use App\Services\WishList\WishListService;
-use Abordage\LastModified\Facades\LastModified;
+use App\Services\ProductCategory\CategoryService;
+// use App\Services\Seogen\SeogenService;
+// use App\Services\WishList\WishListService;
+use App\Support\LastModified;
 
 class ShowCatalogCategoryPageAction extends BaseAction
 {
@@ -24,12 +24,11 @@ class ShowCatalogCategoryPageAction extends BaseAction
         ProductType $productType,
         Category $category,
         CatalogFilterRequest $request
-    )
-    {
+    ) {
         $productType->load(['fields', 'fields.options']);
 
-        //get services from service container
-//        $categoryService = app()->make(CategoryService::class);
+        // get services from service container
+        //        $categoryService = app()->make(CategoryService::class);
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
         $countryService = app()->make(CountryService::class);
@@ -64,15 +63,14 @@ class ShowCatalogCategoryPageAction extends BaseAction
             $page,
         );
 
-
         LastModified::set($category->updated_at);
 
         $allFields = $productType->fields;
         $allFields->map(function ($field) use ($productType, $category) {
             $field->options = $field->optionsWithProductsInCategory($productType, $category);
+
             return $field;
         });
-
 
         return view('pages.store.catalog-category', [
             'filters' => $catalogService->getFiltersByProductType($productType),
@@ -80,7 +78,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
             'productStatuses' => ProductStatusDataClass::getForWeb(),
             'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
-//            'categories' => $categoryService->getProductCategories($productType),
+            //            'categories' => $categoryService->getProductCategories($productType),
             'colors' => $colors,
             'countries' => $countries,
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
@@ -89,7 +87,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getProductsMaxPriceByCategory($productType, $category),
             'faqs' => $productService->getProductTypeFaqs($productType->slug),
-            'seoText' => $productService->getProductTypeSeoTextByLanguage($category->slug, app()->getLocale())
+            'seoText' => $productService->getProductTypeSeoTextByLanguage($category->slug, app()->getLocale()),
         ]);
     }
 }

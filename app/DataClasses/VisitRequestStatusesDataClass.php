@@ -5,6 +5,7 @@ namespace App\DataClasses;
 class VisitRequestStatusesDataClass implements BaseDataClass
 {
     const STATUS_NEW = 1;
+
     const STATUS_HANDLED = 2;
 
     public static function get(?int $item = null): mixed

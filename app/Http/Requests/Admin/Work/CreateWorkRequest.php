@@ -7,14 +7,13 @@ use App\Services\Work\DTO\EditWorkDTO;
 
 class CreateWorkRequest extends BaseRequest
 {
-
     public function baseRules(): array
     {
         $rules = [
             'name' => [
                 'required',
                 'array',
-                'min:1'
+                'min:1',
             ],
             'slug' => [
                 'required',
@@ -26,17 +25,17 @@ class CreateWorkRequest extends BaseRequest
             'meta_title' => [
                 'nullable',
                 'array',
-                'min:1'
+                'min:1',
             ],
             'meta_description' => [
                 'nullable',
                 'array',
-                'min:1'
+                'min:1',
             ],
             'meta_keywords' => [
                 'nullable',
                 'array',
-                'min:1'
+                'min:1',
             ],
             'main_image' => [
                 'nullable',
@@ -64,29 +63,29 @@ class CreateWorkRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['intro.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
-            $rules['description.' . $availableLanguage] = ['nullable', 'string'];
-            $rules['client_quote.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
-            $rules['work_image.*.caption.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
-            $rules['service_title.' . $availableLanguage] = ['nullable', 'string', 'max:255'];
-            $rules['service_description.' . $availableLanguage] = ['nullable', 'string', 'max:1000'];
-            $rules['price_note.' . $availableLanguage] = ['nullable', 'string', 'max:120'];
+            $rules['intro.'.$availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['description.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['client_quote.'.$availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['work_image.*.caption.'.$availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['service_title.'.$availableLanguage] = ['nullable', 'string', 'max:255'];
+            $rules['service_description.'.$availableLanguage] = ['nullable', 'string', 'max:1000'];
+            $rules['price_note.'.$availableLanguage] = ['nullable', 'string', 'max:120'];
         }
 
         return $rules;
@@ -107,7 +106,7 @@ class CreateWorkRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
         }
 
         return $attributes;
@@ -147,12 +146,12 @@ class CreateWorkRequest extends BaseRequest
     {
         $images = $this->input('work_image');
 
-        if (!is_array($images)) {
+        if (! is_array($images)) {
             return null;
         }
 
         foreach ($images as $index => $image) {
-            $uploaded = $this->file('work_image.' . $index . '.image');
+            $uploaded = $this->file('work_image.'.$index.'.image');
 
             if ($uploaded) {
                 $images[$index]['image'] = $uploaded;

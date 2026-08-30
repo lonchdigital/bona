@@ -15,11 +15,10 @@ class ProductEditRequest extends ProductCreateRequest
             new RequiredImageDeletedRule(mb_strtolower(trans('admin.product_main_image'))),
         ];*/
 
-
         $rules['sku'] = [
             'nullable',
             'string',
-            'unique:products,sku,' . $this->route('product')->id,
+            'unique:products,sku,'.$this->route('product')->id,
         ];
 
         $rules['created_at'] = [
@@ -30,16 +29,15 @@ class ProductEditRequest extends ProductCreateRequest
 
         $rules['slug'] = [
             'required',
-            'unique:products,slug,' . $this->route('product')->id,
+            'unique:products,slug,'.$this->route('product')->id,
             'string',
         ];
 
-        $rules['main_image' ] = [
+        $rules['main_image'] = [
             'nullable',
             'image',
             'mimes:jpeg,png,jpg',
         ];
-
 
         return $rules;
     }

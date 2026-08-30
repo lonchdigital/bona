@@ -11,6 +11,5 @@ class EditCountryDTO implements BaseDTO
         public readonly array $name,
         public readonly string $code,
         public readonly ?UploadedFile $image,
-    )
-    { }
+    ) {}
 }

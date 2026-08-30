@@ -18,14 +18,14 @@ return new class extends Migration
         foreach (DB::table('blog_article_blocks')->get() as $row) {
             $content = json_decode($row->content, true);
 
-            if (!is_array($content)) {
+            if (! is_array($content)) {
                 continue;
             }
 
             $changed = false;
 
             foreach ($content as $locale => $html) {
-                if (!is_string($html)) {
+                if (! is_string($html)) {
                     continue;
                 }
 
@@ -48,13 +48,11 @@ return new class extends Migration
     /**
      * Content only, nothing structural to undo.
      */
-    public function down(): void
-    {
-    }
+    public function down(): void {}
 
     private function rebuildFaq(string $html): string
     {
-        if (!str_contains($html, 'article-faq__item') || !class_exists(DOMDocument::class)) {
+        if (! str_contains($html, 'article-faq__item') || ! class_exists(DOMDocument::class)) {
             return $html;
         }
 
@@ -62,21 +60,21 @@ return new class extends Migration
         $previousUseErrors = libxml_use_internal_errors(true);
 
         $loaded = $document->loadHTML(
-            '<?xml encoding="UTF-8"?><div data-faq-root="1">' . $html . '</div>',
+            '<?xml encoding="UTF-8"?><div data-faq-root="1">'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
 
         libxml_clear_errors();
         libxml_use_internal_errors($previousUseErrors);
 
-        if (!$loaded) {
+        if (! $loaded) {
             return $html;
         }
 
         $xpath = new DOMXPath($document);
         $root = $xpath->query('//div[@data-faq-root]')->item(0);
 
-        if (!$root instanceof DOMElement) {
+        if (! $root instanceof DOMElement) {
             return $html;
         }
 
@@ -84,7 +82,7 @@ return new class extends Migration
             '//div[contains(concat(" ", normalize-space(@class), " "), " article-faq__item ")]'
         ));
 
-        if (!$items) {
+        if (! $items) {
             return $html;
         }
 
@@ -94,7 +92,7 @@ return new class extends Migration
             $question = $xpath->query($this->byClass('article-faq__question'), $item)->item(0);
             $answer = $xpath->query($this->byClass('article-faq__answer'), $item)->item(0);
 
-            if (!$question || !$answer) {
+            if (! $question || ! $answer) {
                 continue;
             }
 
@@ -102,7 +100,7 @@ return new class extends Migration
             $wrapper->setAttribute('class', 'accordion-item-wrapper');
 
             $heading = $document->createElement('h3');
-            $heading->setAttribute('class', 'accordion' . ($isFirst ? ' active' : ''));
+            $heading->setAttribute('class', 'accordion'.($isFirst ? ' active' : ''));
             $heading->setAttribute('role', 'button');
             $heading->setAttribute('tabindex', '0');
 
@@ -147,6 +145,6 @@ return new class extends Migration
 
     private function byClass(string $class): string
     {
-        return './/*[contains(concat(" ", normalize-space(@class), " "), " ' . $class . ' ")]';
+        return './/*[contains(concat(" ", normalize-space(@class), " "), " '.$class.' ")]';
     }
 };

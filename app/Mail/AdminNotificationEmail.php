@@ -5,11 +5,12 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class AdminNotificationEmail extends Mailable
+class AdminNotificationEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -20,8 +21,7 @@ class AdminNotificationEmail extends Mailable
         public $subject,
         public readonly string $viewRoute,
         private $order
-    )
-    { }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -47,7 +47,7 @@ class AdminNotificationEmail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

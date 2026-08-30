@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Sitemap\Contracts\Sitemapable;
 use Spatie\Sitemap\Tags\Url;
@@ -35,7 +36,7 @@ class ProductType extends Model implements Sitemapable
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function fields(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function fields(): BelongsToMany
     {
         return $this->belongsToMany(ProductField::class)
             ->withPivot(['show_as_filter', 'filter_name', 'show_on_main_filters_list', 'filter_full_position_id'])
@@ -52,22 +53,22 @@ class ProductType extends Model implements Sitemapable
             });
     }*/
 
-    public function attributes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function attributes(): BelongsToMany
     {
         return $this->belongsToMany(ProductAttribute::class);
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'product_type_products');
     }
 
-    public function sizeFilterOptions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function sizeFilterOptions(): HasMany
     {
         return $this->hasMany(ProductTypeSizeOption::class);
     }
 
-    public function categories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function categories(): HasMany
     {
         return $this->hasMany(Category::class);
     }
@@ -78,6 +79,7 @@ class ProductType extends Model implements Sitemapable
             if ($this->image_path) {
                 return Storage::url($this->image_path);
             }
+
             return null;
         });
     }
@@ -91,11 +93,11 @@ class ProductType extends Model implements Sitemapable
         return $array;
     }
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         $urls = [];
         $urls[] = route('store.catalog.page', ['productTypeSlug' => $this->slug]);
-        $urls[] = '/ru' . route('store.catalog.page', ['productTypeSlug' => $this->slug], false);
+        $urls[] = '/ru'.route('store.catalog.page', ['productTypeSlug' => $this->slug], false);
 
         return $urls;
     }

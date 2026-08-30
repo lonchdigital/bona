@@ -14,5 +14,5 @@ class EditSeogenDTO implements BaseDTO
         public readonly array $brandMetaTitleTag,
         public readonly array $brandMetaDescriptionTag,
         public readonly array $brandMetaKeywordsTag,
-    ) { }
+    ) {}
 }

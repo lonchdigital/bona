@@ -22,8 +22,8 @@ class CheckoutConfirmOrderDTO implements BaseDTO
         public readonly ?string $buildingNumber,
         public readonly ?string $apartmentNumber,
         public readonly ?string $floorNumber,
-//        public readonly bool $hasElevator,
-//        public readonly bool $saveDeliveryAddress,
+        //        public readonly bool $hasElevator,
+        //        public readonly bool $saveDeliveryAddress,
         public readonly ?string $deliveryDate,
         public readonly ?int $deliveryTimeId,
         public readonly int $recipientTypeId,
@@ -37,5 +37,5 @@ class CheckoutConfirmOrderDTO implements BaseDTO
         public readonly ?string $meestCity,
         public readonly ?string $meestDepartment,
         public readonly ?int $paymentPeriod
-    ) { }
+    ) {}
 }

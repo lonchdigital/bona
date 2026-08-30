@@ -58,8 +58,9 @@ class FilterGroupService extends BaseService
                     'height_from' => $request->heightFrom,
                     'height_to' => $request->heightTo,
                     'height_options' => $request->heightOptions,
-                ]
+                ],
             ]);
+
             return ServiceActionResult::make(true, trans('admin.filter_groups_create_success'));
         });
     }
@@ -98,7 +99,7 @@ class FilterGroupService extends BaseService
                     'height_from' => $request->heightFrom,
                     'height_to' => $request->heightTo,
                     'height_options' => $request->heightOptions,
-                ]
+                ],
             ]);
 
             return ServiceActionResult::make(true, trans('admin.filter_groups_edit_success'));
@@ -107,8 +108,9 @@ class FilterGroupService extends BaseService
 
     public function deleteFilterGroup(FilterGroup $filterGroup): ServiceActionResult
     {
-        return $this->coverWithTryCatch(function () use($filterGroup) {
+        return $this->coverWithTryCatch(function () use ($filterGroup) {
             $filterGroup->delete();
+
             return ServiceActionResult::make(true, trans('admin.filter_group_delete_success'));
         });
     }
@@ -143,17 +145,17 @@ class FilterGroupService extends BaseService
         }
 
         if ($filterGroup->filters['color_ids']) {
-            $colors = Color::select(['id','slug'])->whereIn('id', $filterGroup->filters['color_ids'])->get()->pluck('slug')->toArray();
+            $colors = Color::select(['id', 'slug'])->whereIn('id', $filterGroup->filters['color_ids'])->get()->pluck('slug')->toArray();
             $filtersList['color'] = $colors;
         }
 
         if ($filterGroup->filters['brand_ids']) {
-            $colors = Brand::select(['id','slug'])->whereIn('id', $filterGroup->filters['brand_ids'])->get()->pluck('slug')->toArray();
+            $colors = Brand::select(['id', 'slug'])->whereIn('id', $filterGroup->filters['brand_ids'])->get()->pluck('slug')->toArray();
             $filtersList['brand'] = $colors;
         }
 
         if ($filterGroup->filters['country_ids']) {
-            $colors = Country::select(['id','code'])->whereIn('id', $filterGroup->filters['country_ids'])->get()->pluck('code')->toArray();
+            $colors = Country::select(['id', 'code'])->whereIn('id', $filterGroup->filters['country_ids'])->get()->pluck('code')->toArray();
             $filtersList['country'] = $colors;
         }
 
@@ -195,7 +197,6 @@ class FilterGroupService extends BaseService
             $sizeOptions = ProductTypeSizeOption::select(['id', 'slug'])->whereIn('id', $filterGroup->filters['height_options'])->get()->pluck('slug')->toArray();
             $filtersList['product_height'] = $sizeOptions;
         }
-
 
         return $filtersList;
     }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Actions\Store\Brand\Pages;
 
-use App\Services\Brand\BrandService;
 use App\Http\Actions\Admin\BaseAction;
+use App\Services\Brand\BrandService;
 
 class ShowBrandsListPageAction extends BaseAction
 {
@@ -11,6 +11,7 @@ class ShowBrandsListPageAction extends BaseAction
     {
         $brandService = app()->make(BrandService::class);
         $brandLetters = $brandService->sortBrandsByFirstLetterByProductType($brandService->getBrands());
+
         return view('pages.store.brands', [
             'brandLetters' => $brandService->sortBrandsByFirstLetterByProductType($brandService->getBrands()),
             'selectedBrandLetter' => $letter,

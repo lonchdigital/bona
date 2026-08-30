@@ -2,58 +2,50 @@
 
 namespace App\Services\Product;
 
+use App\Models\CartProducts;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Currency;
+use App\Models\Faqs;
 use App\Models\HomePageBestSalesProducts;
 use App\Models\HomePageNewProducts;
 use App\Models\OrderProduct;
 use App\Models\Product;
-use App\Models\Faqs;
-use App\Models\ProductFaqs;
 use App\Models\ProductField;
-use App\Models\ProductFieldOption;
-use App\Models\SeoText;
-use App\Models\ProductText;
 use App\Models\ProductSeoText;
-use App\Models\ProductGalleries;
+use App\Models\ProductText;
 use App\Models\ProductType;
+use App\Models\SeoText;
 use App\Models\User;
-use App\Models\CartProducts;
-use App\Models\ProductCharacteristics;
-use App\Models\ProductSubItems;
-use App\Models\ProductVideos;
-use App\Models\ProductAttributeOptions;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
-use App\Services\Currency\CurrencyService;
 use App\Services\Product\DTO\EditProductDTO;
-use App\Services\Product\DTO\FilterProductDTO;
 use App\Services\Product\DTO\FilterProductAdminDTO;
+use App\Services\Product\DTO\FilterProductDTO;
 use App\Services\Product\DTO\SearchProductDTO;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 class ProductService extends BaseService
 {
     public function __construct(
         private readonly ProductFiltersAdminService $filtersAdminService,
-        private readonly ProductFiltersService      $filterService,
-//        private readonly CurrencyService            $currencyService,
-    ) { }
+        private readonly ProductFiltersService $filterService,
+        private readonly ProductRelationsService $relationsService,
+        private readonly ProductMediaService $mediaService,
+    ) {}
 
-    const PRODUCT_IMAGES_FOLDER = 'product-images';
+    const PRODUCT_IMAGES_FOLDER = ProductMediaService::PRODUCT_IMAGES_FOLDER;
 
     public function getParentProductData(Product $product): Product
     {
         return $product;
     }
 
-    public function getProductsByTypePaginatedAdmin(int $productTypeId, FilterProductAdminDTO $request, ?int $perPage = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByTypePaginatedAdmin(int $productTypeId, FilterProductAdminDTO $request, ?int $perPage = null): LengthAwarePaginator
     {
         $query = Product::query();
 
@@ -85,8 +77,7 @@ class ProductService extends BaseService
             ->paginate($perPage, '*', null, $page);
     }*/
 
-
-    public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::query()
             ->orderByAvailabilityStatus()
@@ -94,15 +85,15 @@ class ProductService extends BaseService
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
-        return $query->where(function($query) use ($productType) {
+        return $query->where(function ($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
+                ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
         })->paginate($perPage, '*', null, $page);
     }
 
-    public function getAllProductsPaginated(FilterProductDTO $request,int $perPage, int $page, array $allFilters): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getAllProductsPaginated(FilterProductDTO $request, int $perPage, int $page, array $allFilters): LengthAwarePaginator
     {
         $query = Product::query()
             ->orderByAvailabilityStatus()
@@ -125,89 +116,89 @@ class ProductService extends BaseService
     public function getAllProductsMaxPrice(FilterProductDTO $request): int
     {
         $query = Product::query();
-//        $maxPrice = $this->filterService->handleAllProductFilters($request->filters, $query, false, [])->max('price');
+        //        $maxPrice = $this->filterService->handleAllProductFilters($request->filters, $query, false, [])->max('price');
 
         $maxPrice = $query->max('price');
 
-        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+        return (! is_null($maxPrice)) ? $maxPrice : 0;
     }
 
     public function getProductsMaxPrice(ProductType $productType): int
     {
         // TODO:: this function was improved
-//        $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
+        //        $maxPrice = Product::where('product_type_id', $productType->id)->max('price');
 
         $query = Product::query();
-        $maxPrice = $query->where(function($query) use ($productType) {
+        $maxPrice = $query->where(function ($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
+                ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
         })->max('price');
 
-        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+        return (! is_null($maxPrice)) ? $maxPrice : 0;
     }
 
     public function getProductsMaxPriceByCategory(ProductType $productType, Category $category): int
     {
         $query = Product::query();
 
-        $query->whereHas('categories', function (Builder $query) use($category) {
+        $query->whereHas('categories', function (Builder $query) use ($category) {
             $query->where('category_id', $category->id);
         });
 
-        $maxPrice = $query->where(function($query) use ($productType) {
+        $maxPrice = $query->where(function ($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
+                ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
         })->max('price');
 
-        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+        return (! is_null($maxPrice)) ? $maxPrice : 0;
     }
 
     public function getProductsMaxPriceByAvailability(ProductType $productType): int
     {
         $query = Product::query();
-        $maxPrice = $query->where('availability_status_id', 2)->where(function($query) use ($productType) {
+        $maxPrice = $query->where('availability_status_id', 2)->where(function ($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
+                ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
         })->max('price');
 
-        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+        return (! is_null($maxPrice)) ? $maxPrice : 0;
     }
 
     public function getProductsMaxPriceByAvailabilityWithCategory(ProductType $productType, Category $category): int
     {
         $query = Product::query();
 
-        $query->whereHas('categories', function (Builder $query) use($category) {
+        $query->whereHas('categories', function (Builder $query) use ($category) {
             $query->where('category_id', $category->id);
         });
 
-        $maxPrice = $query->where('availability_status_id', 2)->where(function($query) use ($productType) {
+        $maxPrice = $query->where('availability_status_id', 2)->where(function ($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
+                ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
         })->max('price');
 
-        return ( !is_null($maxPrice) ) ? $maxPrice : 0;
+        return (! is_null($maxPrice)) ? $maxPrice : 0;
     }
 
-    public function getProductsByColorPaginated(int $perPage, int $page, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByColorPaginated(int $perPage, int $page, Color $color): LengthAwarePaginator
     {
         return Product::orderByAvailabilityStatus()
             ->orderBy('created_at', 'desc')
-            ->whereHas('colors', function($query) use ($color) {
-            $query->where('colors.id', $color->id);
-        })
+            ->whereHas('colors', function ($query) use ($color) {
+                $query->where('colors.id', $color->id);
+            })
             ->paginate($perPage, ['*'], null, $page);
     }
 
-    public function getProductTypeByColorPaginated(int $perPage, int $page, ProductType $productType, Color $color): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductTypeByColorPaginated(int $perPage, int $page, ProductType $productType, Color $color): LengthAwarePaginator
     {
         // TODO:: old request without main_color_id
         /*return Product::where('product_type_id', $productType->id)->whereHas('colors', function($query) use ($color) {
@@ -218,13 +209,13 @@ class ProductService extends BaseService
         return Product::orderByAvailabilityStatus()
             ->orderBy('created_at', 'desc')
             ->where('product_type_id', $productType->id)
-            ->where(function($query) use ($color) {
+            ->where(function ($query) use ($color) {
                 $query->where('main_color_id', $color->id)
-                    ->orWhereHas('colors', function($query) use ($color) {
+                    ->orWhereHas('colors', function ($query) use ($color) {
 
                         // $query->where('colors.id', $color->id);
                         // We need to show more white colors...
-                        if($color->id == 7) {
+                        if ($color->id == 7) {
                             $query->whereIn('colors.id', [$color->id, 166, 40, 52, 177, 189]);
                         } else {
                             $query->where('colors.id', $color->id);
@@ -242,20 +233,20 @@ class ProductService extends BaseService
             ->paginate($perPage, ['*'], null, $page);
     }
 
-    public function getProductsByDiscountPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByDiscountPaginated(int $perPage, int $page): LengthAwarePaginator
     {
         return Product::orderByAvailabilityStatus()->where('old_price', '>', 0)
             ->whereNotNull('old_price')
             ->paginate($perPage, ['*'], null, $page);
     }
 
-    public function getProductsByAvailabilityPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByAvailabilityPaginated(int $perPage, int $page): LengthAwarePaginator
     {
         return Product::where('availability_status_id', 2)
             ->paginate($perPage, ['*'], null, $page);
     }
 
-    public function getProductsDoorsByAvailabilityPaginated(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsDoorsByAvailabilityPaginated(int $perPage, int $page): LengthAwarePaginator
     {
         $targetTypeIds = [1, 2, 3, 4, 5, 19, 20, 21];
 
@@ -266,7 +257,7 @@ class ProductService extends BaseService
             ->paginate($perPage, ['*'], null, $page);
     }
 
-    public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): LengthAwarePaginator
     {
         $query = Product::query()
             ->orderByAvailabilityStatus()
@@ -279,7 +270,7 @@ class ProductService extends BaseService
             ->paginate($perPage);
     }
 
-    public function getProductsByCollectionAndTypePaginated(\App\Models\Collection $collection, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByCollectionAndTypePaginated(\App\Models\Collection $collection, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::with(['children']);
 
@@ -290,7 +281,7 @@ class ProductService extends BaseService
         return $query->paginate($perPage, '*', null, $page);
     }
 
-    public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::query()
             ->orderByAvailabilityStatus()
@@ -298,7 +289,7 @@ class ProductService extends BaseService
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
-        $query->whereHas('categories', function (Builder $query) use($category) {
+        $query->whereHas('categories', function (Builder $query) use ($category) {
             $query->where('category_id', $category->id);
         });
 
@@ -306,13 +297,13 @@ class ProductService extends BaseService
             ->paginate($perPage, '*', null, $page);
     }
 
-    public function getProductsCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getProductsCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::query();
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
-        $query->where('availability_status_id', 2)->whereHas('categories', function (Builder $query) use($category) {
+        $query->where('availability_status_id', 2)->whereHas('categories', function (Builder $query) use ($category) {
             $query->where('category_id', $category->id);
         });
 
@@ -326,7 +317,7 @@ class ProductService extends BaseService
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
-        $query->where('availability_status_id', 2)->whereHas('categories', function (Builder $query) use($category) {
+        $query->where('availability_status_id', 2)->whereHas('categories', function (Builder $query) use ($category) {
             $query->where('category_id', $category->id);
         });
 
@@ -340,9 +331,9 @@ class ProductService extends BaseService
         $query = Product::query();
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query, true);
 
-        $productsCount = $query->where(function($query) use ($productType) {
+        $productsCount = $query->where(function ($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
+                ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
         })->count();
@@ -355,20 +346,19 @@ class ProductService extends BaseService
         $query = Product::query();
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query, true);
 
-        $query->whereHas('categories', function (Builder $query) use($category) {
+        $query->whereHas('categories', function (Builder $query) use ($category) {
             $query->where('category_id', $category->id);
         });
 
-        $productsCount = $query->where(function($query) use ($productType) {
+        $productsCount = $query->where(function ($query) use ($productType) {
             $query->where('product_type_id', $productType->id)
-                ->orWhereHas('productTypes', function($query) use ($productType) {
+                ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
         })->count();
 
         return ['count' => $productsCount];
     }
-
 
     public function getProductShortText(int $id): array
     {
@@ -402,6 +392,7 @@ class ProductService extends BaseService
         if ($productTextData) {
             $data['short_content'] = $productTextData->where('language', $language)->first()->short_content;
             $data['content'] = $productTextData->where('language', $language)->first()->content;
+
             return $data;
         }
 
@@ -413,8 +404,8 @@ class ProductService extends BaseService
         $query = Product::query()->orderByAvailabilityStatus();
 
         if ($request->search) {
-            $query->orWhere(function (Builder $query) use($request) {
-                return $query->where('name', 'like', '%' . $request->search . '%');
+            $query->orWhere(function (Builder $query) use ($request) {
+                return $query->where('name', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -426,30 +417,15 @@ class ProductService extends BaseService
         return ProductType::with('fields')->where('id', $productTypeId)->first();
     }
 
-    public function searchProducts(SearchProductDTO $request)
-    {
-        $query = Product::query()->orderByAvailabilityStatus();
-
-        if ($request->query) {
-            $searchTerm = '%' . $request->query . '%';
-            $query->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) LIKE ?', [$searchTerm, $searchTerm])
-                ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk")) LIKE ? OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.uk"))) LIKE ?', [$searchTerm, $searchTerm]);
-
-            return $query->limit(5)->get();
-        }else {
-            return collect([]);
-        }
-    }
-
     public function searchAllProducts(SearchProductDTO $request): Collection
     {
         $query = Product::select(['id', 'name', 'sku'])->limit(10);
 
         if ($request->query) {
-            $query->where(function ($query) use($request) {
-                return $query->where('name', 'like', '%' . $request->query . '%')
-                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request->query) . '%'])
-                    ->orWhere('sku', 'like', '%' . $request->query . '%');
+            $query->where(function ($query) use ($request) {
+                return $query->where('name', 'like', '%'.$request->query.'%')
+                    ->orWhereRaw('LOWER(name) LIKE ?', ['%'.strtolower($request->query).'%'])
+                    ->orWhere('sku', 'like', '%'.$request->query.'%');
             });
         }
 
@@ -466,10 +442,10 @@ class ProductService extends BaseService
         $query = Product::where('product_type_id', $subProductsTypeId)->select(['id', 'name', 'sku'])->limit(10);
 
         if ($request->query) {
-            $query->where(function ($query) use($request) {
-                return $query->where('name', 'like', '%' . $request->query . '%')
-                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request->query) . '%'])
-                    ->orWhere('sku', 'like', '%' . $request->query . '%');
+            $query->where(function ($query) use ($request) {
+                return $query->where('name', 'like', '%'.$request->query.'%')
+                    ->orWhereRaw('LOWER(name) LIKE ?', ['%'.strtolower($request->query).'%'])
+                    ->orWhere('sku', 'like', '%'.$request->query.'%');
             });
         }
 
@@ -478,18 +454,18 @@ class ProductService extends BaseService
 
     public function createProduct(User $creator, ProductType $productType, EditProductDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($productType, $request, $creator) {
+        return $this->coverWithDBTransaction(function () use ($productType, $request, $creator) {
             $productData = [
                 'is_active' => 0,
                 'creator_id' => $creator->id,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
-                'sub_products' => ( !is_null($request->selectedSubProductsId) ) ? json_encode($request->selectedSubProductsId) : null,
+                'sub_products' => (! is_null($request->selectedSubProductsId)) ? json_encode($request->selectedSubProductsId) : null,
                 'name' => $request->name,
                 'slug' => $request->slug,
                 'old_price' => $request->oldPrice,
                 'price' => $request->price,
-//                'price_in_currency' => $request->priceInCurrency,
+                //                'price_in_currency' => $request->priceInCurrency,
                 'price_currency_id' => $request->currencyId,
                 'availability_status_id' => $request->availabilityStatusId,
                 'country_id' => $request->countryId,
@@ -511,14 +487,14 @@ class ProductService extends BaseService
                 $productData['brand_id'] = $request->brandId;
             }
 
-            //handle images
-            if( !is_null($request->mainImage) ) {
-                $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
-                $previewImagePath = sha1(time()) . '_' . Str::random(10) . '_preview';
-                $mainImagePath = sha1(time()) . '_' . Str::random(10) . '_main';
+            // handle images
+            if (! is_null($request->mainImage)) {
+                $storagePath = self::PRODUCT_IMAGES_FOLDER.'/'.date('m.Y');
+                $previewImagePath = sha1(time()).'_'.Str::random(10).'_preview';
+                $mainImagePath = sha1(time()).'_'.Str::random(10).'_main';
 
-                $productData['preview_image_path'] = $storagePath .'/'. $previewImagePath . '.webp';
-                $productData['main_image_path'] = $storagePath .'/'. $mainImagePath . '.webp';
+                $productData['preview_image_path'] = $storagePath.'/'.$previewImagePath.'.webp';
+                $productData['main_image_path'] = $storagePath.'/'.$mainImagePath.'.webp';
             }
 
             if ($request->customFields && count($productType->fields)) {
@@ -527,39 +503,38 @@ class ProductService extends BaseService
 
             $product = Product::create($productData);
 
-
-            if( !is_null($request->gallery) ) {
-                $this->syncGallery($product->id, $request->gallery, $request->galleryColorIds);
+            if (! is_null($request->gallery)) {
+                $this->mediaService->syncGallery($product->id, $request->gallery, $request->galleryColorIds);
             }
-            if( !is_null($request->characteristics) ) {
-                $this->syncCharacteristics($product->id, $request->characteristics);
+            if (! is_null($request->characteristics)) {
+                $this->relationsService->syncCharacteristics($product->id, $request->characteristics);
             }
-            if( !is_null($request->videos) ) {
-                $this->syncVideos($product->id, $request->videos);
+            if (! is_null($request->videos)) {
+                $this->relationsService->syncVideos($product->id, $request->videos);
             }
-            if( !is_null($request->attributes) ) {
-                $this->syncAttributes($product->id, $request->attributes);
+            if (! is_null($request->attributes)) {
+                $this->relationsService->syncAttributes($product->id, $request->attributes);
             }
 
             ProductText::updateProductShortText($product->id, $request->productShortText);
             ProductText::updateProductText($product->id, $request->productText);
 
-            if( !is_null($request->faqs) ) {
-                $this->syncProductFaqs($product->id, $request->faqs);
+            if (! is_null($request->faqs)) {
+                $this->relationsService->syncFaqs($product->id, $request->faqs);
             }
             ProductSeoText::updateProductSeoText($product->id, $request->seoTitle, $request->seoText);
 
-            //all colors
+            // all colors
             if ($productType->has_color) {
-                $this->syncColors($request->allColorIds, $product);
+                $this->relationsService->syncColors($request->allColorIds, $product);
             }
 
-            //all categories
+            // all categories
             if ($productType->has_category) {
                 $product->categories()->sync($request->categoryIds);
             }
 
-            if( !is_null($request->mainImage) ) {
+            if (! is_null($request->mainImage)) {
                 $this->storePreviewImage($previewImagePath, $request->mainImage, 'webp');
                 $this->storePreviewImage($previewImagePath, $request->mainImage, 'jpg');
 
@@ -573,18 +548,18 @@ class ProductService extends BaseService
 
     public function productEdit(ProductType $productType, Product $product, EditProductDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($productType, $product, $request) {
-            $this->syncGallery($product->id, $request->gallery, $request->galleryColorIds);
-            $this->syncCharacteristics($product->id, $request->characteristics);
-            $this->syncVideos($product->id, $request->videos);
-            $this->syncAttributes($product->id, $request->attributes);
+        return $this->coverWithDBTransaction(function () use ($productType, $product, $request) {
+            $this->mediaService->syncGallery($product->id, $request->gallery, $request->galleryColorIds);
+            $this->relationsService->syncCharacteristics($product->id, $request->characteristics);
+            $this->relationsService->syncVideos($product->id, $request->videos);
+            $this->relationsService->syncAttributes($product->id, $request->attributes);
             ProductText::updateProductShortText($product->id, $request->productShortText);
             ProductText::updateProductText($product->id, $request->productText);
-            $this->syncProductFaqs($product->id, $request->faqs);
+            $this->relationsService->syncFaqs($product->id, $request->faqs);
             ProductSeoText::updateProductSeoText($product->id, $request->seoTitle, $request->seoText);
 
             $dataToUpdate = [
-//                'is_active' => $request->isActive,
+                //                'is_active' => $request->isActive,
                 'is_active' => 0,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
@@ -594,7 +569,7 @@ class ProductService extends BaseService
                 'created_at' => $request->createdAt,
                 'old_price' => $request->oldPrice,
                 'price' => $request->price,
-//                'price_in_currency' => $request->priceInCurrency,
+                //                'price_in_currency' => $request->priceInCurrency,
                 'price_currency_id' => $request->currencyId,
                 'availability_status_id' => $request->availabilityStatusId,
                 'meta_title' => $request->metaTitle,
@@ -615,20 +590,19 @@ class ProductService extends BaseService
                 $dataToUpdate['brand_id'] = $request->brandId;
             }
 
-
             $imagesToDelete = [];
             $mainImage = null;
             $previewImage = null;
             if ($request->mainImage) {
                 $imagesToDelete[] = $product->main_image_path;
                 $imagesToDelete[] = $product->preview_image_path;
-                $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
+                $storagePath = self::PRODUCT_IMAGES_FOLDER.'/'.date('m.Y');
 
-                $previewImagePath = sha1(time()) . '_' . Str::random(10) . '_preview';
-                $mainImagePath = sha1(time()) . '_' . Str::random(10) . '_main';
+                $previewImagePath = sha1(time()).'_'.Str::random(10).'_preview';
+                $mainImagePath = sha1(time()).'_'.Str::random(10).'_main';
 
-                $dataToUpdate['preview_image_path'] = $storagePath .'/'. $previewImagePath . '.webp';
-                $dataToUpdate['main_image_path'] = $storagePath .'/'. $mainImagePath . '.webp';
+                $dataToUpdate['preview_image_path'] = $storagePath.'/'.$previewImagePath.'.webp';
+                $dataToUpdate['main_image_path'] = $storagePath.'/'.$mainImagePath.'.webp';
 
                 $mainImage['image'] = $request->mainImage;
                 $mainImage['path'] = $mainImagePath;
@@ -638,13 +612,12 @@ class ProductService extends BaseService
             }
 
             // Remove product image
-            if( !$request->mainImage && $request->mainImageDeleted ) {
+            if (! $request->mainImage && $request->mainImageDeleted) {
                 $imagesToDelete[] = $product->main_image_path;
                 $imagesToDelete[] = $product->preview_image_path;
                 $product->main_image_path = null;
                 $product->preview_image_path = null;
             }
-
 
             if ($request->customFields && count($productType->fields)) {
                 $dataToUpdate['custom_fields'] = $this->prepareCustomFieldsToSync($request->customFields);
@@ -652,20 +625,18 @@ class ProductService extends BaseService
 
             $product->update($dataToUpdate);
 
-
-            //all colors
+            // all colors
             if ($productType->has_color) {
-                $this->syncColors($request->allColorIds, $product);
+                $this->relationsService->syncColors($request->allColorIds, $product);
             }
 
-            //all categories
+            // all categories
             if ($productType->has_category) {
                 $product->categories()->sync($request->categoryIds);
-//                $product->categories()->sync([19]);
+                //                $product->categories()->sync([19]);
             }
 
-
-            //store images
+            // store images
             if ($mainImage) {
                 $this->storeProductImage($mainImage['path'], $mainImage['image'], 'webp');
                 $this->storeProductImage($mainImage['path'], $mainImage['image'], 'jpg');
@@ -675,10 +646,10 @@ class ProductService extends BaseService
                 $this->storePreviewImage($previewImage['path'], $previewImage['image'], 'jpg');
             }
 
-            //delete images
+            // delete images
             foreach ($imagesToDelete as $imageToDelete) {
-                if( !is_null($imageToDelete) ) {
-                    $this->deleteImage($imageToDelete);
+                if (! is_null($imageToDelete)) {
+                    $this->mediaService->delete($imageToDelete);
                 }
             }
 
@@ -688,43 +659,7 @@ class ProductService extends BaseService
 
     public function getProductCharacteristics(int $id): Collection
     {
-        return ProductCharacteristics::where('product_id', $id)->get();
-    }
-
-    private function syncCharacteristics(int $product_id, ?array $characteristics): void
-    {
-        $existingCharacteristics = ProductCharacteristics::where('product_id', $product_id)->get();
-        if ($characteristics) {
-            foreach ($characteristics as $characteristic) {
-                $dataToUpdate = [
-                    'product_id' => $product_id,
-                    'name' => $characteristic['name'],
-                    'value' => $characteristic['value'],
-                ];
-
-                if (isset($characteristic['id']) && $characteristic['id']) {
-                    $existingCharacteristic = $existingCharacteristics->where('id', $characteristic['id'])->first();
-                    if (!$existingCharacteristic) {
-                        throw new \Exception('Incorrect faq id: ' . $characteristic['id']);
-                    }
-
-                    $existingCharacteristic->update($dataToUpdate);
-                } else {
-                    ProductCharacteristics::create($dataToUpdate);
-                }
-            }
-        }
-
-        $existingCharacteristicsInRequest = $characteristics ? array_filter(array_column($characteristics, 'id'), function ($item) {
-            return $item !== null;
-        }): [];
-
-        $faqsToDelete = $existingCharacteristics->whereNotIn('id', $existingCharacteristicsInRequest);
-
-        foreach ($faqsToDelete as $faqToDelete) {
-            $faqToDelete->delete();
-        }
-
+        return $this->relationsService->getCharacteristics($id);
     }
 
     public function replaceTagsWithData(string $text, Product $product): string
@@ -734,27 +669,29 @@ class ProductService extends BaseService
             '%price%' => $product->price,
             '%product_type%' => $product->productType->name,
         ];
+
         return str_replace(array_keys($allTags), array_values($allTags), $text);
     }
 
     public function getSelectedSubItems(?array $sub_products): Collection|array
     {
-        if(!empty($sub_products)) {
+        if (! empty($sub_products)) {
             return Product::whereIn('id', $sub_products)->get();
         } else {
             return [];
         }
     }
+
     public function getSelectedSubItemsWithCategories(array|bool $sub_products): array
     {
-        if( $sub_products ) {
+        if ($sub_products) {
             $subProducts = Product::whereIn('id', $sub_products)->get();
 
             $categoryProducts = [];
             foreach ($subProducts as $item) {
-                $categoryName = $item->categories[0]->name;
+                $categoryName = $item->categories->first()?->name ?? '—';
 
-                if (!isset($categoryProducts[$categoryName])) {
+                if (! isset($categoryProducts[$categoryName])) {
                     $categoryProducts[$categoryName] = [];
                 }
 
@@ -767,49 +704,14 @@ class ProductService extends BaseService
         return [];
     }
 
-    private function syncSubProducts(int $product_id, ?array $subItems): void
-    {
-        $existingSubItems = ProductSubItems::where('product_id', $product_id)->get();
-        if ($subItems) {
-            foreach ($subItems as $subItem) {
-                $dataToUpdate = [
-                    'product_id' => $product_id,
-                    'sub_sub_item_id' => $subItem,
-                ];
-
-                if (isset($subItem['id']) && $subItem['id']) {
-                    $existingVideo = $existingSubItems->where('id', $subItem['id'])->first();
-                    if (!$existingVideo) {
-                        throw new \Exception('Incorrect faq id: ' . $subItem['id']);
-                    }
-
-                    $existingVideo->update($dataToUpdate);
-                } else {
-                    ProductSubItems::create($dataToUpdate);
-                }
-            }
-        }
-
-        $existingSubItemsInRequest = $subItems ? array_filter(array_column($subItems, 'id'), function ($item) {
-            return $item !== null;
-        }): [];
-
-        $subItemsToDelete = $existingSubItems->whereNotIn('id', $existingSubItemsInRequest);
-
-        foreach ($subItemsToDelete as $subItemToDelete) {
-            $subItemToDelete->delete();
-        }
-
-    }
-
     public function getProductVideos(int $id): Collection
     {
-        return ProductVideos::where('product_id', $id)->get();
+        return $this->relationsService->getVideos($id);
     }
 
     public function getProductFaqs(int $id): Collection
     {
-        return ProductFaqs::where('product_id', $id)->get();
+        return $this->relationsService->getFaqs($id);
     }
 
     public function getProductSeoText(int $id): array
@@ -838,7 +740,7 @@ class ProductService extends BaseService
         foreach ($currentAttributeOptions as $key => $attribute) {
 
             $atr_options = [];
-            foreach ($attribute->productAttributeOptions as $attributeOption){
+            foreach ($attribute->productAttributeOptions as $attributeOption) {
                 $atr_options[] = $attributeOption;
             }
 
@@ -858,10 +760,10 @@ class ProductService extends BaseService
             }])
             ->get();
 
-        if(count($currentAttributeOptions)) {
+        if (count($currentAttributeOptions)) {
             foreach ($currentAttributeOptions as $key => $attribute) {
                 $atr_options = [];
-                foreach ($attribute->productAttributeOptions as $attributeOption){
+                foreach ($attribute->productAttributeOptions as $attributeOption) {
                     $atr_options[] = $attributeOption;
                 }
                 $attributeOptions[$attribute->id][$attribute->attribute_name] = $atr_options;
@@ -870,174 +772,18 @@ class ProductService extends BaseService
 
         return $attributeOptions;
     }
-    private function syncVideos(int $product_id, ?array $videos): void
-    {
-        $existingVideos = ProductVideos::where('product_id', $product_id)->get();
-        if ($videos) {
-            foreach ($videos as $video) {
-
-                $dataToUpdate = [
-                    'product_id' => $product_id,
-                    'tab' => $video['tab'],
-                    'iframe' => $video['iframe'],
-                ];
-
-                if (isset($video['id']) && $video['id']) {
-                    $existingVideo = $existingVideos->where('id', $video['id'])->first();
-                    if (!$existingVideo) {
-                        throw new \Exception('Incorrect faq id: ' . $video['id']);
-                    }
-
-                    $existingVideo->update($dataToUpdate);
-                } else {
-                    ProductVideos::create($dataToUpdate);
-                }
-            }
-        }
-
-        $existingVideosInRequest = $videos ? array_filter(array_column($videos, 'id'), function ($item) {
-            return $item !== null;
-        }): [];
-
-        $videosToDelete = $existingVideos->whereNotIn('id', $existingVideosInRequest);
-
-        foreach ($videosToDelete as $videoToDelete) {
-            $videoToDelete->delete();
-        }
-
-    }
-
-    private function syncAttributes(int $product_id, ?array $attributes): void
-    {
-
-        $allExistingAttributeOptions = ProductAttributeOptions::where('product_id', $product_id)->get();
-
-        if ($attributes) {
-            foreach ($attributes as $attribute_id => $attribute) :
-
-//                $existingAttributeOptions = ProductAttributeOptions::where('product_id', $product_id)->where('product_attribute_id', $attribute_id)->get();
-
-                foreach($attribute as $item):
-
-                    $dataToUpdate = [
-                        'product_id' => $product_id,
-                        'product_attribute_id' => $attribute_id,
-                        'name' => $item['name'],
-                        'price' => $item['price'],
-                    ];
-
-                    if (isset($attribute['id']) && $attribute['id']) {
-
-                        dd($attribute['id']);
-
-                        /*$existingAttributeOption = $existingAttributeOptions->where('id', $item['id'])->first();
-                        if (!$existingAttributeOption) {
-                            throw new \Exception('Incorrect faq id: ' . $item['id']);
-                        }
-
-                        $existingAttributeOption->update($dataToUpdate);*/
-                    } else {
-                        ProductAttributeOptions::create($dataToUpdate);
-                    }
-
-                endforeach;
-            endforeach;
-        }
-
-
-        $existingAttributeOptionsInRequest = $attributes ? array_filter(array_column($attributes, 'id'), function ($item) {
-            return $item !== null;
-        }): [];
-
-        $attributeOptionsToDelete = $allExistingAttributeOptions->whereNotIn('id', $existingAttributeOptionsInRequest);
-
-        foreach ($attributeOptionsToDelete as $attributeOptionToDelete) {
-            $attributeOptionToDelete->delete();
-        }
-
-    }
-
-    private function syncColors($allColors, $product)
-    {
-        if (!is_null($allColors) && count($allColors)) {
-            $colorsToUpdate = [];
-            foreach ( $allColors as $color ) {
-                $colorsToUpdate[$color['color_id']] = ['price' => $color['price']];
-            }
-            $product->colors()->sync($colorsToUpdate);
-        } else {
-            $product->colors()->sync([]);
-        }
-    }
-
 
     public function getProductGallery(int $id): Collection
     {
-        return ProductGalleries::where('product_id', $id)->get();
+        return $this->mediaService->getGallery($id);
     }
-    private function syncGallery(int $product_id, ?array $gallery_images, ?array $gallery_color_ids): void
-    {
-        $imagesToDelete = [];
-
-        $existingGalleryImages = ProductGalleries::where('product_id', $product_id)->get();
-
-        if ($gallery_images) {
-            foreach ($gallery_images as $key => $gallery_image) {
-                $dataToUpdate = [
-                    'product_id' => $product_id,
-                    'color_id' => $gallery_color_ids[$key]['color_id']
-                ];
-
-                if (isset($gallery_image['image'])) {
-                    $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
-                    $galleryImagePath = sha1(time()) . '_' . Str::random(10);
-
-                    $this->storeProductImage($galleryImagePath, $gallery_image['image'], 'webp');
-                    $this->storeProductImage($galleryImagePath, $gallery_image['image'], 'jpg');
-
-                    $dataToUpdate['image_path'] = $storagePath .'/'. $galleryImagePath . '.webp';
-                }
-
-                if (isset($gallery_image['id']) && $gallery_image['id']) {
-                    $existingGalleryImage = $existingGalleryImages->where('id', $gallery_image['id'])->first();
-                    if (!$existingGalleryImage) {
-                        throw new \Exception('Incorrect testimonial id: ' . $gallery_image['id']);
-                    }
-
-                    if (isset($gallery_image['image'])) {
-                        $imagesToDelete[] = $existingGalleryImage->image_path;
-                    }
-
-                    $existingGalleryImage->update($dataToUpdate);
-                } else {
-                    ProductGalleries::create($dataToUpdate);
-                }
-            }
-        }
-
-        $existingGalleryImagesInRequest = $gallery_images ? array_filter(array_column($gallery_images, 'id'), function ($item) {
-            return $item !== null;
-        }): [];
-
-        $galleryImagesToDelete = $existingGalleryImages->whereNotIn('id', $existingGalleryImagesInRequest);
-
-        foreach ($galleryImagesToDelete as $galleryImageToDelete) {
-            $imagesToDelete[] = $galleryImageToDelete->image_path;
-            $galleryImageToDelete->delete();
-        }
-        foreach ($imagesToDelete as $imageToDelete) {
-            $this->deleteImage($imageToDelete);
-        }
-
-    }
-
 
     public function handleProductPriceInCurrency(Currency $currency, Currency $baseCurrency, float $priceInCurrency, ?float $oldPriceInCurrency): array
     {
         $baseCurrencyId = $baseCurrency->id;
 
         $oldPrice = null;
-        if ($baseCurrencyId == $currency->id || ($baseCurrencyId != $currency->id && !$currency->rate)) {
+        if ($baseCurrencyId == $currency->id || ($baseCurrencyId != $currency->id && ! $currency->rate)) {
             $price = $priceInCurrency;
 
             if ($oldPriceInCurrency) {
@@ -1053,40 +799,40 @@ class ProductService extends BaseService
 
         return [
             'price' => $price,
-            'old_price' => $oldPrice
+            'old_price' => $oldPrice,
         ];
     }
 
     public function productDelete(Product $product): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($product) {
+        return $this->coverWithDBTransaction(function () use ($product) {
 
             if (HomePageNewProducts::where('product_id', $product->id)->exists() || HomePageBestSalesProducts::where('product_id', $product->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.product_in_use_on_homepage'));
             }
 
-            if(OrderProduct::where('product_id', $product->id)->exists()) {
+            if (OrderProduct::where('product_id', $product->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.product_in_use_in_orders'));
             }
 
-            if( count($product->productTypes) > 0 ) {
+            if (count($product->productTypes) > 0) {
                 $productTypesInUse = '';
 
-                foreach ( $product->productTypes as $productType ) {
-                    $productTypesInUse .= ' ' . $productType->name . ',';
+                foreach ($product->productTypes as $productType) {
+                    $productTypesInUse .= ' '.$productType->name.',';
                 }
 
                 $productTypesInUse = substr($productTypesInUse, 0, -1);
-                return ServiceActionResult::make(false, trans('admin.product_in_use_as_additional_product_in') . $productTypesInUse);
+
+                return ServiceActionResult::make(false, trans('admin.product_in_use_as_additional_product_in').$productTypesInUse);
             }
 
             $cartProducts = CartProducts::where('product_id', $product->id)->get();
-            if( count($cartProducts) >= 1 ) {
+            if (count($cartProducts) >= 1) {
                 foreach ($cartProducts as $cartProduct) {
                     $cartProduct->delete();
                 }
             }
-
 
             $imagesToDelete = [];
             if ($product->main_image_path) {
@@ -1097,19 +843,19 @@ class ProductService extends BaseService
             $product->colors()->sync([]);
             $product->categories()->sync([]);
 
-            $this->syncGallery($product->id, [], []);
-            $this->syncCharacteristics($product->id, []);
-            $this->syncVideos($product->id, []);
-            $this->syncAttributes($product->id, []);
+            $this->mediaService->syncGallery($product->id, [], []);
+            $this->relationsService->syncCharacteristics($product->id, []);
+            $this->relationsService->syncVideos($product->id, []);
+            $this->relationsService->syncAttributes($product->id, []);
             ProductText::deleteProductText($product->id);
-            $this->syncProductFaqs($product->id, []);
+            $this->relationsService->syncFaqs($product->id, []);
             ProductSeoText::where('product_id', $product->id)->delete();
 
             $product->delete();
 
             foreach ($imagesToDelete as $imageToDelete) {
-                if( !is_null($imageToDelete) ) {
-                    $this->deleteImage($imageToDelete);
+                if (! is_null($imageToDelete)) {
+                    $this->mediaService->delete($imageToDelete);
                 }
             }
 
@@ -1126,56 +872,34 @@ class ProductService extends BaseService
     public function updateProductsPriceByCurrencyRate(int $currencyId): void
     {
         $currency = Currency::find($currencyId);
-            $this->coverWithDBTransactionWithoutResponse(function () use($currency) {
-                Product::where('price_currency_id', $currency->id)->chunk(500, function ($products) use($currency) {
-                    if ($currency->rate) {
-                        Product::whereIn('id', $products->pluck('id'))->update([
-                            'price' => \DB::raw('price_in_currency * ' . $currency->rate),
-                        ]);
-                    } else {
-                        Product::whereIn('id', $products->pluck('id'))->update([
-                            'price' => \DB::raw('price_in_currency'),
-                        ]);
-                    }
-                });
+        $this->coverWithDBTransactionWithoutResponse(function () use ($currency) {
+            Product::where('price_currency_id', $currency->id)->chunk(500, function ($products) use ($currency) {
+                if ($currency->rate) {
+                    Product::whereIn('id', $products->pluck('id'))->update([
+                        'price' => \DB::raw('price_in_currency * '.$currency->rate),
+                    ]);
+                } else {
+                    Product::whereIn('id', $products->pluck('id'))->update([
+                        'price' => \DB::raw('price_in_currency'),
+                    ]);
+                }
             });
+        });
     }
 
-    public function storePreviewImage(string $path, UploadedFile $image, string $format, $quality = 70): void
+    public function storePreviewImage(string $path, UploadedFile $image, string $format = 'webp', int $quality = 70): void
     {
-        $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
-        if (!Storage::disk(config('app.images_disk_default'))->exists($storagePath)) {
-            Storage::disk(config('app.images_disk_default'))->makeDirectory($storagePath);
-        }
-
-        $image = Image::make($image);
-
-        $imageWidth = intval(round($image->width() / 2, 0));
-        $imageHeight = intval(round($image->height() / 2, 0));
-
-        if($imageWidth > 400) {
-            $image = $image->fit($imageWidth, $imageHeight)->encode($format, $quality);
-        } else {
-            $image = $image->encode($format, $quality);
-        }
-
-        Storage::disk(config('app.images_disk_default'))->put($storagePath . '/' . $path . '.'.$format, $image);
+        $this->mediaService->storePreviewImage($path, $image, $format, $quality);
     }
 
-    protected function storeProductImage(string $path, UploadedFile $image, string $format, $quality = 70): void
+    public function storeProductImage(string $path, UploadedFile $image, string $format = 'webp', int $quality = 70): void
     {
-        $storagePath = self::PRODUCT_IMAGES_FOLDER .'/'. date('m.Y');
-        if (!Storage::disk(config('app.images_disk_default'))->exists($storagePath)) {
-            Storage::disk(config('app.images_disk_default'))->makeDirectory($storagePath);
-        }
-
-        $image = Image::make($image)->encode($format, $quality);
-        Storage::disk(config('app.images_disk_default'))->put($storagePath . '/' . $path . '.' . $format, $image);
+        $this->mediaService->storeProductImage($path, $image, $format, $quality);
     }
 
     private function prepareCustomFieldsToSync(array $rawCustomFieldsArray): array
     {
-        //result should be '$fieldId' => ['value' => ['$value']]
+        // result should be '$fieldId' => ['value' => ['$value']]
         $result = [];
         foreach (array_column($rawCustomFieldsArray, 'field_id') as $customField) {
             $result[$customField] = $rawCustomFieldsArray[$customField]['value'];
@@ -1194,54 +918,18 @@ class ProductService extends BaseService
         return Faqs::where('page_type', $productTypeSlug)->get();
     }
 
-
     public function getProductTypeSeoTextByLanguage(string $productTypeSlug, string $language)
     {
         $seoTextData = SeoText::where('page_type', $productTypeSlug)->get();
         $data = [];
 
-        if ( count($seoTextData) ) {
+        if (count($seoTextData)) {
             $data['title'] = $seoTextData->where('language', $language)->first()->title;
             $data['content'] = $seoTextData->where('language', $language)->first()->content;
+
             return $data;
         }
+
         return null;
     }
-
-    private function syncProductFaqs(int $product_id, ?array $faqs): void
-    {
-        $existingFaqs = ProductFaqs::where('product_id', $product_id)->get();
-        if ($faqs) {
-            foreach ($faqs as $faq) {
-                $dataToUpdate = [
-                    'product_id' => $product_id,
-                    'question' => $faq['question'],
-                    'answer' => $faq['answer'],
-                ];
-
-                if (isset($faq['id']) && $faq['id']) {
-                    $existingFaq = $existingFaqs->where('id', $faq['id'])->first();
-                    if (!$existingFaq) {
-                        throw new \Exception('Incorrect faq id: ' . $faq['id']);
-                    }
-
-                    $existingFaq->update($dataToUpdate);
-                } else {
-                    ProductFaqs::create($dataToUpdate);
-                }
-            }
-        }
-
-        $existingFaqsInRequest = $faqs ? array_filter(array_column($faqs, 'id'), function ($item) {
-            return $item !== null;
-        }): [];
-
-        $faqsToDelete = $existingFaqs->whereNotIn('id', $existingFaqsInRequest);
-
-        foreach ($faqsToDelete as $faqToDelete) {
-            $faqToDelete->delete();
-        }
-
-    }
-
 }

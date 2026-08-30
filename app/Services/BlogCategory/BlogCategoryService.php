@@ -30,7 +30,6 @@ class BlogCategoryService extends BaseService
                 'slug' => $request->slug,
             ]);
 
-
             return ServiceActionResult::make(true, trans('admin.blog_category_create_success'));
         });
     }
@@ -42,7 +41,6 @@ class BlogCategoryService extends BaseService
                 'name' => $request->name,
                 'slug' => $request->slug,
             ]);
-
 
             return ServiceActionResult::make(true, trans('admin.blog_category_edit_success'));
         });

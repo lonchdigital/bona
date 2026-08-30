@@ -17,12 +17,12 @@ class CurrencyEditRequest extends BaseRequest
                 function ($attribute, $value, $fail) {
                     $baseCurrency = Currency::where('is_base', true)->first();
                     if ($value) {
-                        if (!(($baseCurrency && $this->route('currency') && $this->route('currency')->id === $baseCurrency->id) ||
-                        !$baseCurrency)) {
+                        if (! (($baseCurrency && $this->route('currency') && $this->route('currency')->id === $baseCurrency->id) ||
+                        ! $baseCurrency)) {
                             $fail(trans('admin.base_currency_already_exists'));
                         }
                     }
-                }
+                },
             ],
             'rate' => [
                 $this->input('is_base') ? 'nullable' : 'required',
@@ -32,16 +32,16 @@ class CurrencyEditRequest extends BaseRequest
             'code' => [
                 'required',
                 'string',
-            ]
+            ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
 
-            $rules['name_short.' . $availableLanguage] = [
+            $rules['name_short.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
@@ -58,9 +58,10 @@ class CurrencyEditRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.currency_name'), $availableLanguage);
-            $attributes['name_short.' . $availableLanguage] = $this->prepareAttribute(trans('admin.currency_name_short'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.currency_name'), $availableLanguage);
+            $attributes['name_short.'.$availableLanguage] = $this->prepareAttribute(trans('admin.currency_name_short'), $availableLanguage);
         }
+
         return $attributes;
     }
 

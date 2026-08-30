@@ -25,6 +25,7 @@ class BlogArticleBlock extends Model
             if ($this->content->image_path) {
                 return Storage::url($this->content->image_path);
             }
+
             return null;
         });
     }
@@ -46,14 +47,14 @@ class BlogArticleBlock extends Model
                     }
 
                     return $value;
-                } else if($this->type_id === BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
+                } elseif ($this->type_id === BlogArticleBlockTypesDataClass::TYPE_QUOTE) {
 
                     if (isset($value['quote_author_image_path'])) {
                         $value['quote_author_image_url'] = Storage::url($value['quote_author_image_path']);
                     }
 
                     return $value;
-                } else if($this->type_id === BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
+                } elseif ($this->type_id === BlogArticleBlockTypesDataClass::TYPE_SPONSOR) {
 
                     if (isset($value['sponsor_image_path'])) {
                         $value['sponsor_image_url'] = Storage::url($value['sponsor_image_path']);

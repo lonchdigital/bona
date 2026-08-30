@@ -6,11 +6,10 @@ use App\DataClasses\DeliveryTypesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
 use App\Http\Requests\BaseRequest;
-use Illuminate\Validation\Rule;
 use App\Rules\PhoneNumberLengthRule;
 use App\Services\Order\DTO\CheckoutConfirmOrderDTO;
 use Illuminate\Support\Facades\Auth;
-use function Symfony\Component\Translation\t;
+use Illuminate\Validation\Rule;
 
 class CheckoutConfirmOrderRequest extends BaseRequest
 {
@@ -22,17 +21,17 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             'delivery_type_id' => [
                 'required',
                 'int',
-                'in:' . DeliveryTypesDataClass::get()->pluck('id')->implode(','),
+                'in:'.DeliveryTypesDataClass::get()->pluck('id')->implode(','),
             ],
             'payment_type_id' => [
                 'required',
                 'int',
-                'in:' . PaymentTypesDataClass::get()->pluck('id')->implode(','),
+                'in:'.PaymentTypesDataClass::get()->pluck('id')->implode(','),
             ],
             'recipient_type_id' => [
                 'required',
                 'int',
-                'in:' . RecipientTypesDataClass::get()->pluck('id')->implode(','),
+                'in:'.RecipientTypesDataClass::get()->pluck('id')->implode(','),
             ],
             'comment' => [
                 'nullable',
@@ -42,24 +41,24 @@ class CheckoutConfirmOrderRequest extends BaseRequest
                 'bool',
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (!$value) {
+                    if (! $value) {
                         $fail(trans('base.you_have_to_agree_with_policy'));
                     }
                 },
-            ]
+            ],
         ];
 
-        if (!$isAuthUser) {
+        if (! $isAuthUser) {
             $rules['first_name'] = [
                 'required',
                 'string',
-                'alpha'
+                'alpha',
             ];
 
             $rules['last_name'] = [
                 'required',
                 'string',
-                'alpha'
+                'alpha',
             ];
 
             $rules['phone'] = [
@@ -70,54 +69,55 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $rules['email'] = [
                 'required',
                 'email',
-//                'unique:users,email'
+                'max:255',
+                'unique:users,email',
             ];
         }
 
         if ($this->input('delivery_type_id') == DeliveryTypesDataClass::ADDRESS_DELIVERY) {
-             $rules['region_id'] = [
-                 'required',
-                 'integer',
-                 'exists:regions,id'
-             ];
+            $rules['region_id'] = [
+                'required',
+                'integer',
+                'exists:regions,id',
+            ];
 
-             $rules['city'] = [
-                 'required',
-                 'string'
-             ];
+            $rules['city'] = [
+                'required',
+                'string',
+            ];
 
-             $rules['district'] = [
-                 'required',
-                 'string',
-                 'alpha'
-             ];
+            $rules['district'] = [
+                'required',
+                'string',
+                'alpha',
+            ];
 
-             $rules['street'] = [
-                 'required',
-                 'string',
-                 'alpha'
-             ];
+            $rules['street'] = [
+                'required',
+                'string',
+                'alpha',
+            ];
 
             $rules['building_number'] = [
                 'required',
                 'string',
-                'numeric'
+                'numeric',
             ];
 
             $rules['apartment_number'] = [
                 'nullable',
                 'string',
-                'numeric'
+                'numeric',
             ];
 
             $rules['floor_number'] = [
                 'nullable',
                 'string',
-                'numeric'
+                'numeric',
             ];
 
             $rules['has_elevator'] = [
-                'nullable'
+                'nullable',
             ];
 
             $rules['save_delivery_address'] = [
@@ -158,12 +158,12 @@ class CheckoutConfirmOrderRequest extends BaseRequest
         if ($this->input('recipient_type_id') == RecipientTypesDataClass::RECIPIENT_CUSTOM) {
             $rules['custom_first_name'] = [
                 'required',
-                'string'
+                'string',
             ];
 
             $rules['custom_last_name'] = [
                 'required',
-                'string'
+                'string',
             ];
 
             $rules['custom_phone'] = [
@@ -181,8 +181,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             in_array(
                 $this->input('payment_type_id'),
                 [PaymentTypesDataClass::CARD_PAYMENT_PAYPART]
-            ))
-        {
+            )) {
             $rules['payment_period'] = [
                 'required',
                 'integer',
@@ -197,8 +196,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             in_array(
                 $this->input('payment_type_id'),
                 [PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK]
-            ))
-        {
+            )) {
             $rules['mono_payment_period'] = [
                 'required',
                 'integer',
@@ -208,7 +206,6 @@ class CheckoutConfirmOrderRequest extends BaseRequest
 
         return $rules;
     }
-
 
     public function attributes(): array
     {
@@ -257,8 +254,8 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $this->input('building_number'),
             $this->input('apartment_number'),
             $this->input('floor_number'),
-//            $this->input('has_elevator'),
-//            $this->input('save_delivery_address'),
+            //            $this->input('has_elevator'),
+            //            $this->input('save_delivery_address'),
             $this->input('delivery_date'),
             $this->input('delivery_time_id'),
             $this->input('recipient_type_id'),

@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin\ServicesPage;
 
 use App\Http\Requests\BaseRequest;
-use App\Models\HomePageConfig;
-use App\Rules\RequiredImageDeletedRule;
 use App\Services\ServicesPage\DTO\ServicesPageEditDTO;
 
 class ServicesPageEditRequest extends BaseRequest
@@ -13,7 +11,7 @@ class ServicesPageEditRequest extends BaseRequest
     {
         $rules = [
             'sections.*.id' => [
-                'nullable'
+                'nullable',
             ],
             'meta_title' => [
                 'nullable',
@@ -35,47 +33,46 @@ class ServicesPageEditRequest extends BaseRequest
 
         if ($this->input('sections')) {
             foreach ($this->input('sections') as $index => $section) {
-                $rules['sections.' . $index . '.image'] = [
+                $rules['sections.'.$index.'.image'] = [
                     (isset($section['id']) && $section['id']) ? 'nullable' : 'required',
                     'image',
                 ];
-                $rules['sections.' . $index . '.button_url'] = [
+                $rules['sections.'.$index.'.button_url'] = [
                     'required',
-                    'string'
+                    'string',
                 ];
             }
         }
 
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['sections.*.title.' . $availableLanguage] = [
+            $rules['sections.*.title.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['sections.*.description.' . $availableLanguage] = [
+            $rules['sections.*.description.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['sections.*.button_text.' . $availableLanguage] = [
+            $rules['sections.*.button_text.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
 
         }
 
-        return  $rules;
+        return $rules;
     }
 
     public function attributes(): array
@@ -89,19 +86,19 @@ class ServicesPageEditRequest extends BaseRequest
 
         if ($this->input('sections')) {
             foreach ($this->input('sections') as $index => $slide) {
-                $attributes['sections.' . $index . '.image'] = mb_strtolower(trans('admin.slide_image'));
+                $attributes['sections.'.$index.'.image'] = mb_strtolower(trans('admin.slide_image'));
 
-                $attributes['sections.' . $index . '.button_url'] = mb_strtolower(trans('admin.slide_text_link'));
+                $attributes['sections.'.$index.'.button_url'] = mb_strtolower(trans('admin.slide_text_link'));
             }
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
-            $attributes['sections.*.title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_title'), $availableLanguage);
-            $attributes['sections.*.description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_description'), $availableLanguage);
-            $attributes['sections.*.button_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.section_text_button'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['sections.*.title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.section_title'), $availableLanguage);
+            $attributes['sections.*.description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.section_description'), $availableLanguage);
+            $attributes['sections.*.button_text.'.$availableLanguage] = $this->prepareAttribute(trans('admin.section_text_button'), $availableLanguage);
         }
 
         return $attributes;

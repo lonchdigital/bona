@@ -2,12 +2,12 @@
 
 namespace App\Http\Actions\Store\Cart;
 
+use App\Http\Actions\Admin\BaseAction;
+use App\Http\Requests\Store\Cart\ChangeProductCountInCartRequest;
+use App\Http\Resources\Store\Cart\CartResource;
 use App\Models\Product;
 use App\Services\Cart\CartService;
-use App\Http\Actions\Admin\BaseAction;
 use App\Services\WishList\WishListService;
-use App\Http\Resources\Store\Cart\CartResource;
-use App\Http\Requests\Store\Cart\ChangeProductCountInCartRequest;
 
 class AddProductToCartAction extends BaseAction
 {
@@ -18,11 +18,10 @@ class AddProductToCartAction extends BaseAction
         ChangeProductCountInCartRequest $request,
         CartService $cartService,
         WishListService $wishListService,
-    )
-    {
+    ) {
 
         $cart = $this->getCart($cartService);
-//        $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
+        //        $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
         $wishList = null;
 
         $cartService->addProductToCart($cart, $product, $request->toDTO());

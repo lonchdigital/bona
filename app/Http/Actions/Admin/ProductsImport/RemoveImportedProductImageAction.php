@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\ProductsImport;
 
-use App\Models\ImportedProduct;
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\Product\ProductImportService;
 use App\Http\Requests\Admin\ProductsImport\RemoveProductImportImageRequest;
+use App\Models\ImportedProduct;
+use App\Services\Product\ProductImportService;
 
 class RemoveImportedProductImageAction extends BaseAction
 {

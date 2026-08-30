@@ -2,16 +2,16 @@
 
 namespace App\Services\Base;
 
-use Closure;
-use App\Models\User;
 use App\Models\Faqs;
+use App\Models\User;
+use Closure;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Throwable;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Throwable;
 
 class BaseService
 {
@@ -21,23 +21,16 @@ class BaseService
     protected function coverWithDBTransaction(Closure $closure): ServiceActionResult
     {
         try {
-            DB::beginTransaction();
-
-            $result = $closure();
-
-            DB::commit();
-        } catch (\Throwable $throwable) {
-            DB::rollback();
+            return DB::transaction($closure);
+        } catch (Throwable $throwable) {
             $this->logCaughtException($throwable);
 
             if (config('app.debug')) {
                 throw $throwable;
-            } else {
-                return ServiceActionResult::make(false, trans('common.action_unexpected_error'));
             }
-        }
 
-        return $result;
+            return ServiceActionResult::make(false, trans('common.action_unexpected_error'));
+        }
     }
 
     /**
@@ -45,19 +38,7 @@ class BaseService
      */
     protected function coverWithDBTransactionWithoutResponse(Closure $closure): mixed
     {
-        try {
-            DB::beginTransaction();
-
-            $result = $closure();
-
-            DB::commit();
-        } catch (\Throwable $throwable) {
-            DB::rollback();
-            $this->logCaughtException($throwable);
-            throw $throwable;
-        }
-
-        return $result;
+        return DB::transaction($closure);
     }
 
     /**
@@ -67,7 +48,7 @@ class BaseService
     {
         try {
             $result = $closure();
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             $this->logCaughtException($throwable);
 
             if (config('app.debug')) {
@@ -84,7 +65,7 @@ class BaseService
     {
         $callerFunctionName = debug_backtrace()[1]['function'];
         Log::error(
-            get_class() . '@' . $callerFunctionName . ' ' . $throwable->getMessage() . PHP_EOL . $throwable->getTraceAsString()
+            get_class().'@'.$callerFunctionName.' '.$throwable->getMessage().PHP_EOL.$throwable->getTraceAsString()
         );
     }
 
@@ -93,16 +74,15 @@ class BaseService
         return Auth::user();
     }
 
-
     protected function storeImage(string $path, UploadedFile $image, string $format, $quality = 70): void
     {
         $image = Image::make($image)->encode($format, $quality);
-        Storage::disk(config('app.images_disk_default'))->put($path . '.'.$format, $image);
+        Storage::disk(config('app.images_disk_default'))->put($path.'.'.$format, $image);
     }
 
-    protected function deleteImage(string|null $path): void
+    protected function deleteImage(?string $path): void
     {
-        if(is_null($path)) {
+        if (is_null($path)) {
             return;
         }
 
@@ -112,13 +92,13 @@ class BaseService
         }
 
         // remove jpg
-        $jpgPath = pathinfo($path, PATHINFO_DIRNAME) . '/' . pathinfo($path, PATHINFO_FILENAME)  . '.jpg';
+        $jpgPath = pathinfo($path, PATHINFO_DIRNAME).'/'.pathinfo($path, PATHINFO_FILENAME).'.jpg';
         if (Storage::disk(config('app.images_disk_default'))->exists($jpgPath)) {
             Storage::disk(config('app.images_disk_default'))->delete($jpgPath);
         }
 
         // remove png
-        $jpgPath = pathinfo($path, PATHINFO_DIRNAME) . '/' . pathinfo($path, PATHINFO_FILENAME)  . '.png';
+        $jpgPath = pathinfo($path, PATHINFO_DIRNAME).'/'.pathinfo($path, PATHINFO_FILENAME).'.png';
         if (Storage::disk(config('app.images_disk_default'))->exists($jpgPath)) {
             Storage::disk(config('app.images_disk_default'))->delete($jpgPath);
         }
@@ -127,7 +107,7 @@ class BaseService
     protected function storeAuthorAvatar(string $path, UploadedFile $image, string $format, $quality = 100): void
     {
         $image = Image::make($image)->fit(300, 300)->encode($format, $quality);
-        Storage::disk(config('app.images_disk_default'))->put($path . '.'.$format, $image);
+        Storage::disk(config('app.images_disk_default'))->put($path.'.'.$format, $image);
     }
 
     protected function syncFaqs(string $pageType, ?array $faqs): void
@@ -143,8 +123,8 @@ class BaseService
 
                 if (isset($faq['id']) && $faq['id']) {
                     $existingFaq = $existingFaqs->where('id', $faq['id'])->first();
-                    if (!$existingFaq) {
-                        throw new \Exception('Incorrect faq id: ' . $faq['id']);
+                    if (! $existingFaq) {
+                        throw new \Exception('Incorrect faq id: '.$faq['id']);
                     }
 
                     $existingFaq->update($dataToUpdate);
@@ -156,7 +136,7 @@ class BaseService
 
         $existingFaqsInRequest = $faqs ? array_filter(array_column($faqs, 'id'), function ($item) {
             return $item !== null;
-        }): [];
+        }) : [];
 
         $faqsToDelete = $existingFaqs->whereNotIn('id', $existingFaqsInRequest);
 
@@ -166,7 +146,8 @@ class BaseService
 
     }
 
-    protected function arraysAreEqual($arrayOne, $arrayTwo) {
+    protected function arraysAreEqual($arrayOne, $arrayTwo)
+    {
         if (count($arrayOne) !== count($arrayTwo)) {
             return false;
         }

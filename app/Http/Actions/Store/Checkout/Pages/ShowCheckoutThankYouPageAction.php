@@ -2,15 +2,13 @@
 
 namespace App\Http\Actions\Store\Checkout\Pages;
 
-use App\DataClasses\PaymentTypesDataClass;
-use App\Models\Order;
+use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\Currency\CurrencyService;
+use App\Http\Actions\Store\Cart\NeedCart;
+use App\Models\Order;
 use App\Models\ProductType;
 use App\Services\Cart\CartService;
-use App\DataClasses\OrderPaymentStatusesDataClass;
-use App\Http\Actions\Store\Cart\NeedCart;
-use Illuminate\Support\Facades\Log;
+use App\Services\Currency\CurrencyService;
 
 class ShowCheckoutThankYouPageAction extends BaseAction
 {
@@ -20,8 +18,7 @@ class ShowCheckoutThankYouPageAction extends BaseAction
         Order $order,
         CartService $cartService,
         CurrencyService $currencyService,
-    )
-    {
+    ) {
 
         if ($order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_UNPAID) {
             return view('pages.store.payment-failure');

@@ -6,63 +6,66 @@ use App\Http\Actions\Auth\ForgotPasswordAction;
 use App\Http\Actions\Auth\LogoutAction;
 use App\Http\Actions\Auth\Pages\ShowConfirmationEmailResendPageAction;
 use App\Http\Actions\Auth\Pages\ShowForgotPasswordPageAction;
+use App\Http\Actions\Auth\Pages\ShowResetPasswordPageAction;
 use App\Http\Actions\Auth\Pages\ShowSignInPageAction;
 use App\Http\Actions\Auth\Pages\ShowSignUpPageAction;
+use App\Http\Actions\Auth\ResetPasswordAction;
 use App\Http\Actions\Auth\SignInAction;
 use App\Http\Actions\Auth\SignUpAction;
-use App\Http\Actions\Store\Author\ShowAuthorPageAction;
-use App\Http\Actions\Store\Faq\ShowFaqPageAction;
 use App\Http\Actions\Blog\Pages\RedirectLegacyBlogArticleUrlAction;
 use App\Http\Actions\Blog\Pages\ShowBlogArticlePageAction;
 use App\Http\Actions\Blog\Pages\ShowBlogMainPageAction;
-use App\Http\Actions\Store\Work\ShowWorkDetailPageAction;
-use App\Http\Actions\Store\Work\ShowWorkPageAction;
 use App\Http\Actions\EmailSubscription\ConfirmSubscriptionAction;
 use App\Http\Actions\EmailSubscription\SubscribeEmailAction;
 use App\Http\Actions\Locale\ChangeLocaleAction;
 use App\Http\Actions\StaticData\GetStaticDataScript;
+use App\Http\Actions\Store\AboutUsPage\Pages\ShowAboutUsPageAction;
+use App\Http\Actions\Store\Author\ShowAuthorPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandSearchPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandsListPageAction;
 use App\Http\Actions\Store\Cart\AddProductToCartAction;
-use App\Http\Actions\Store\Cart\AddSubProductToCartAction;
 use App\Http\Actions\Store\Cart\AddPromoCodeToCartAction;
+use App\Http\Actions\Store\Cart\AddSubProductToCartAction;
 use App\Http\Actions\Store\Cart\ChangeProductCountInCartAction;
 use App\Http\Actions\Store\Cart\DeleteProductFromCartAction;
 use App\Http\Actions\Store\Cart\GetProductsInCartWithSummaryAction;
 use App\Http\Actions\Store\Cart\GetProductsSummaryWithDelivery;
 use App\Http\Actions\Store\Cart\Pages\ShowCartPageAction;
+use App\Http\Actions\Store\Catalog\GetAllProductsCountByFilterAction;
 use App\Http\Actions\Store\Catalog\GetAvailabilityProductsCountByFilterWithCategoryAction;
 use App\Http\Actions\Store\Catalog\GetProductsCountByFilterAction;
-use App\Http\Actions\Store\Catalog\GetAllProductsCountByFilterAction;
 use App\Http\Actions\Store\Catalog\GetProductsCountByFilterWithCategoryAction;
-use App\Http\Actions\Store\Catalog\Pages\ShowCatalogCategoryPageAction;
-use App\Http\Actions\Store\Catalog\Pages\ShowCatalogPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowAllProductsFilterPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowAllProductsPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowCatalogCategoryPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowCatalogPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowCatalogRuckyAvailabilityPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowFilterGroupPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductByAvailabilityPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByBrandPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByColorPageAction;
-use App\Http\Actions\Store\Catalog\Pages\ShowProductTypeByColorPageAction;
-use App\Http\Actions\Store\Catalog\Pages\ShowProductByFieldPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductByDiscountPageAction;
-use App\Http\Actions\Store\Catalog\Pages\ShowProductByAvailabilityPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductByFieldPageAction;
 use App\Http\Actions\Store\Catalog\Pages\ShowProductDoorsByAvailabilityPageAction;
-use App\Http\Actions\Store\Catalog\Pages\ShowCatalogRuckyAvailabilityPageAction;
+use App\Http\Actions\Store\Catalog\Pages\ShowProductTypeByColorPageAction;
 use App\Http\Actions\Store\Checkout\CheckoutConfirmOrderAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutPage;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouMonoBankPageAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
-//use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
-//use App\Http\Actions\Store\Delivery\GetMeestDepartmentsAction;
+use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
 use App\Http\Actions\Store\Delivery\GetNPCitiesAction;
+// use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
+// use App\Http\Actions\Store\Delivery\GetMeestDepartmentsAction;
 use App\Http\Actions\Store\Delivery\GetNpDepartmentsAction;
 use App\Http\Actions\Store\Delivery\GetSATCitiesAction;
 use App\Http\Actions\Store\Delivery\GetSATDepartmentsAction;
 use App\Http\Actions\Store\DeliveryPage\Pages\ShowDeliveryPageAction;
-use App\Http\Actions\Store\AboutUsPage\Pages\ShowAboutUsPageAction;
-use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
+use App\Http\Actions\Store\Faq\ShowFaqPageAction;
 use App\Http\Actions\Store\Home\Pages\ShowHomePageAction;
+use App\Http\Actions\Store\Mail\OrderCountDoorsAction;
+use App\Http\Actions\Store\Mail\UserChooseDoorsAction;
+use App\Http\Actions\Store\Order\CreateOneClickOrderAction;
 use App\Http\Actions\Store\Payment\ConfirmMonoBankPartialPaymentAction;
 use App\Http\Actions\Store\Payment\ConfirmPartialPaymentAction;
 use App\Http\Actions\Store\Payment\Pages\ShowGoToPaymentPageAction;
@@ -70,7 +73,6 @@ use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentOrdinaryPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentPaypartPageAction;
 use App\Http\Actions\Store\Payment\UpdateOrderPaymentStatusAction;
 use App\Http\Actions\Store\Product\Pages\ShowProductPageAction;
-use App\Http\Actions\Store\Order\CreateOneClickOrderAction;
 use App\Http\Actions\Store\Product\SearchProductAction;
 use App\Http\Actions\Store\ProductReview\SubmitProductReviewAction;
 use App\Http\Actions\Store\Seo\ShowLlmsTxtFileContent;
@@ -82,6 +84,8 @@ use App\Http\Actions\Store\WishList\Pages\ShowWishListByTokenPageAction;
 use App\Http\Actions\Store\WishList\Pages\ShowWishListPageAction;
 use App\Http\Actions\Store\WishList\ProductAddToWishListAction;
 use App\Http\Actions\Store\WishList\ProductRemoveFromWishListAction;
+use App\Http\Actions\Store\Work\ShowWorkDetailPageAction;
+use App\Http\Actions\Store\Work\ShowWorkPageAction;
 use App\Http\Actions\UserProfile\Pages\ShowPasswordEditPageAction;
 use App\Http\Actions\UserProfile\Pages\ShowProfileEditPageAction;
 use App\Http\Actions\UserProfile\Pages\ShowUserProfilePageAction;
@@ -89,14 +93,10 @@ use App\Http\Actions\UserProfile\Pages\UserOrdersPageAction;
 use App\Http\Actions\UserProfile\PasswordEditAction;
 use App\Http\Actions\UserProfile\ProfileEditAction;
 use App\Http\Middleware\AuthenticatedOnly;
+use App\Http\Middleware\EnsureOrderAccess;
 use App\Http\Middleware\NotAuthenticatedOnly;
 use App\Services\Application\ApplicationConfigService;
 use Illuminate\Support\Facades\Route;
-use App\Http\Actions\Store\Mail\UserChooseDoorsAction;
-use App\Http\Actions\Store\Mail\OrderCountDoorsAction;
-use App\Models\ApplicationConfig;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,142 +109,40 @@ use Illuminate\Support\Facades\Log;
 |
 */
 
-// Route::get('/update-token', function() {
-//     $client = new Client();
-//     $url = 'https://graph.facebook.com/v19.0/refresh_access_token';
-
-//     try {
-//         $response = $client->request('GET', $url, [
-//             'query' => [
-//                 'grant_type' => 'ig_refresh_token',
-//                 'access_token' => 'EAAGlXZBo595EBOy5glMX46go6fZAg5sKZBePyLmtXlwiHpsH9WVytAFW9DoExuOxKW7hUL0T9qe7MdXchgwExprLvVOtALc5IgWf93pW8knfHYDflKDB0VDRh9qgp9n1JoGGTBTZBJKwiVl52e5eq03aOfEd3izU2KpMRIEqoZCg8bG6GBfj7Edorfn5q83Ua033ozG8n'
-//             ]
-//         ]);
-
-//         if ($response->getStatusCode() === 200) {
-//             $data = json_decode($response->getBody(), true);
-
-//             // Save new token to DB
-//             ApplicationConfig::updateOrCreate(
-//                 ['config_name' => 'instagramAccessToken'],
-//                 ['config_data' => $data['access_token']]
-//             );
-
-//             return $data['access_token'];
-//         }
-//     } catch (Exception $e) {
-//         Log::error('Instagram Token Refresh Error', [
-//             'error' => $e->getMessage(),
-//         ]);
-//         return null;
-//     }
-
-//     return 133;
-// });
-// STEP 1 — Redirect user to Facebook OAuth
-Route::get('/instagram-auth', function () {
-    $appId = config('services.facebook.client_id');
-
-    $redirect = route('instagram.callback');
-
-    $url = "https://www.facebook.com/v19.0/dialog/oauth?" . http_build_query([
-        'client_id' => $appId,
-        'redirect_uri' => $redirect,
-        'scope' => 'instagram_basic,instagram_manage_insights,pages_show_list',
-        'response_type' => 'code'
-    ]);
-
-    return redirect()->away($url);
-});
-
-// STEP 2 — CALLBACK: exchange CODE → SHORT TOKEN → LONG TOKEN
-Route::get('/instagram-callback', function () {
-    $code = request('code');
-
-    if (!$code) {
-        return 'Error: no code received';
-    }
-
-    $appId = config('services.facebook.client_id');
-    $appSecret = config('services.facebook.client_secret');
-    $redirectUri = route('instagram.callback');
-
-    $client = new Client();
-
-    try {
-        // 1) CODE → SHORT-LIVED TOKEN
-        $shortResp = $client->get('https://graph.facebook.com/v19.0/oauth/access_token', [
-            'query' => [
-                'client_id' => $appId,
-                'redirect_uri' => $redirectUri,
-                'client_secret' => $appSecret,
-                'code' => $code,
-            ]
-        ]);
-
-        $short = json_decode($shortResp->getBody(), true);
-        $shortToken = $short['access_token'];
-
-        // 2) SHORT → LONG-LIVED TOKEN
-        $longResp = $client->get('https://graph.facebook.com/v19.0/oauth/access_token', [
-            'query' => [
-                'grant_type' => 'fb_exchange_token',
-                'client_id' => $appId,
-                'client_secret' => $appSecret,
-                'fb_exchange_token' => $shortToken,
-            ]
-        ]);
-
-        $long = json_decode($longResp->getBody(), true);
-        $longToken = $long['access_token'];
-
-        // SAVE TOKEN
-        ApplicationConfig::updateOrCreate(
-            ['config_name' => 'instagramAccessToken'],
-            ['config_data' => $longToken]
-        );
-
-        return "✔️ Instagram long-lived token saved:<br><br><code>{$longToken}</code>";
-
-    } catch (\Exception $e) {
-        \Log::error('Instagram OAuth error', ['error' => $e->getMessage()]);
-        return "Error: " . $e->getMessage();
-    }
-})->name('instagram.callback');
-
 $optionalLanguageRoutes = function () {
     /**
      * Auth routes
      */
     Route::prefix('auth')->group(function () {
-        //not authed only
+        // not authed only
         Route::middleware([
             NotAuthenticatedOnly::class,
         ])->group(function () {
-            //sign in
+            // sign in
             Route::name('auth.sign-in.page')->get('sign-in', ShowSignInPageAction::class);
             Route::name('auth.sign-in')->post('sign-in', SignInAction::class);
 
-            //sign up
+            // sign up
             Route::name('auth.sign-up.page')->get('sign-up', ShowSignUpPageAction::class);
             Route::name('auth.sign-up')->post('sign-up', SignUpAction::class);
 
-            //forgot password
+            // forgot password
             Route::name('auth.forgot-password.page')->get('forgot-password', ShowForgotPasswordPageAction::class);
-            Route::name('auth.forgot-password')->post('forgot-password', ForgotPasswordAction::class);
+            Route::name('auth.forgot-password')->middleware('throttle:5,10')->post('forgot-password', ForgotPasswordAction::class);
+            Route::name('password.reset')->get('reset-password/{token}', ShowResetPasswordPageAction::class);
+            Route::name('auth.reset-password')->middleware('throttle:5,10')->post('reset-password', ResetPasswordAction::class);
 
-            //confirm email
+            // confirm email
             Route::name('auth.confirm-email')->get('confirm-email', ConfirmEmailAction::class);
             Route::name('auth.confirm-email-resend.page')->get('resend-confirm-email', ShowConfirmationEmailResendPageAction::class);
             Route::name('auth.confirm-email-resend')->post('resend-confirm-email', ConfirmEmailResendAction::class);
         });
 
-
         Route::middleware([
             AuthenticatedOnly::class,
         ])->group(function () {
 
-            //logout
+            // logout
             Route::name('auth.logout')->post('log-out', LogoutAction::class);
         });
 
@@ -258,25 +156,24 @@ $optionalLanguageRoutes = function () {
             AuthenticatedOnly::class,
         ])->group(function () {
 
-            //profile page
-//            Route::name('user.profile.page')->get('/', ShowUserProfilePageAction::class);
+            // profile page
+            //            Route::name('user.profile.page')->get('/', ShowUserProfilePageAction::class);
 
-            //edit profile
+            // edit profile
             Route::name('profile.edit.page')->get('edit', ShowProfileEditPageAction::class);
             Route::name('profile.edit')->post('edit', ProfileEditAction::class);
 
-            //change password
+            // change password
             Route::name('profile.edit-password.page')->get('password', ShowPasswordEditPageAction::class);
             Route::name('profile.edit-password')->post('password', PasswordEditAction::class);
 
-            //user orders
+            // user orders
             Route::name('user.profile.orders.page')->get('/orders', UserOrdersPageAction::class);
         });
 
     /**
      * Shop routes
      */
-
     Route::name('store.home')->get('/', ShowHomePageAction::class);
 
     Route::name('store.services')->get('/services', ShowServicesPageAction::class);
@@ -297,21 +194,19 @@ $optionalLanguageRoutes = function () {
 
     Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
     Route::name('store.order.count.doors')->post('/order-count-doors', OrderCountDoorsAction::class);
-//    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
+    //    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
 
-
-    Route::prefix('/shop')->group(function() {
+    Route::prefix('/shop')->group(function () {
         Route::name('store.all-products.page')->get('/', ShowAllProductsPageAction::class);
         Route::name('store.all-products.filter.page')->get('/filter/{catalogFiltersString?}', ShowAllProductsFilterPageAction::class);
         Route::name('store.all-products.by.filters')->get('/all-filtered-count/{catalogFiltersString?}', GetAllProductsCountByFilterAction::class);
     });
 
     // Product Types
-    Route::prefix('product-category/{productTypeSlug}')->group(function() {
+    Route::prefix('product-category/{productTypeSlug}')->group(function () {
         Route::name('store.catalog.page')->get('/', ShowCatalogPageAction::class);
         Route::name('store.catalog.filter-group.page')->get('/{filterGroupSlug}', ShowFilterGroupPageAction::class);
         Route::name('store.catalog.filter.page')->get('/filter/{catalogFiltersString?}', ShowCatalogPageAction::class);
-
 
         Route::name('store.catalog-category.page')->get('/category/{categorySlug}', ShowCatalogCategoryPageAction::class);
         Route::name('store.catalog-category.filter.page')->get('/category/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogCategoryPageAction::class);
@@ -321,7 +216,7 @@ $optionalLanguageRoutes = function () {
     });
 
     Route::prefix('product')->group(function () {
-        Route::name('store.product.search')->post('/search', SearchProductAction::class);
+        Route::name('store.product.search')->middleware('throttle:30,1')->post('/search', SearchProductAction::class);
         Route::name('store.product.one-click-order')->middleware('throttle:5,1')->post('/{productSlug}/one-click', CreateOneClickOrderAction::class);
         Route::name('store.product.page')->get('/{productSlug}', ShowProductPageAction::class);
     });
@@ -344,12 +239,11 @@ $optionalLanguageRoutes = function () {
         Route::name('store.cart.add-sub-product')->post('sub-product/{productSlug}/add', AddSubProductToCartAction::class);
         Route::name('store.cart.change-product-count')->post('product{productSlug}/update', ChangeProductCountInCartAction::class);
         Route::name('store.cart.delete-product')->post('product/{productSlug}/delete', DeleteProductFromCartAction::class);
-        Route::name('store.cart.products-with-summary')->get('product',GetProductsInCartWithSummaryAction::class);
-        Route::name('store.cart.add-promo-code')->post('promo',AddPromoCodeToCartAction::class);
+        Route::name('store.cart.products-with-summary')->get('product', GetProductsInCartWithSummaryAction::class);
+        Route::name('store.cart.add-promo-code')->post('promo', AddPromoCodeToCartAction::class);
     });
 
     Route::name('static-data.script')->get('static-data.js', GetStaticDataScript::class);
-
 
     // TODO: Product adding to cart was broken when I deleted these
     Route::prefix('emailSubscription')->group(function () {
@@ -359,16 +253,12 @@ $optionalLanguageRoutes = function () {
 
     Route::prefix('checkout')->group(function () {
         Route::name('store.checkout.page')->get('/', ShowCheckoutPage::class);
-        Route::name('store.checkout.confirm')->post('/confirm', CheckoutConfirmOrderAction::class);
-        Route::name('store.checkout.thank-you')->get('{order}/thank', ShowCheckoutThankYouPageAction::class);
-        Route::name('store.checkout.thank-you.mono-bank')->get('{order}/thank-you', ShowCheckoutThankYouMonoBankPageAction::class);
+        Route::name('store.checkout.confirm')->middleware('throttle:5,10')->post('/confirm', CheckoutConfirmOrderAction::class);
+        Route::name('store.checkout.thank-you')->middleware(EnsureOrderAccess::class)->get('{order}/thank', ShowCheckoutThankYouPageAction::class);
+        Route::name('store.checkout.thank-you.mono-bank')->middleware(EnsureOrderAccess::class)->get('{order}/thank-you', ShowCheckoutThankYouMonoBankPageAction::class);
 
-        Route::name('store.checkout.partial.payment')->post('/partial', ConfirmPartialPaymentAction::class);
-        Route::name('store.checkout.partial.mono.bank.payment')->post('/partial-mono-bank', ConfirmMonoBankPartialPaymentAction::class);
-    });
-
-    Route::get('/test-json', function () {
-        return response()->json([]);
+        Route::name('store.checkout.partial.payment')->middleware('throttle:60,1')->post('/partial', ConfirmPartialPaymentAction::class);
+        Route::name('store.checkout.partial.mono.bank.payment')->middleware('throttle:60,1')->post('/partial-mono-bank', ConfirmMonoBankPartialPaymentAction::class);
     });
 
     // TODO:: Do we need brands pages?
@@ -377,7 +267,6 @@ $optionalLanguageRoutes = function () {
         Route::name('store.brand.search.page')->get('/search', ShowBrandSearchPageAction::class);
         Route::name('store.brand.page')->get('/{brandSlug}', ShowBrandPageAction::class);
     });
-
 
     Route::prefix('page')->group(function () {
         Route::name('store.static-page.page')->get('/{staticPageSlug}', ShowStaticPagePageAction::class);
@@ -399,7 +288,7 @@ $optionalLanguageRoutes = function () {
 
         // Registered before the article route so the old two segment URL is
         // never swallowed by the one segment one.
-        Route::get('/article/{legacyBlogArticleSlug}', RedirectLegacyBlogArticleUrlAction::class);
+        Route::name('blog.article.legacy')->get('/article/{legacyBlogArticleSlug}', RedirectLegacyBlogArticleUrlAction::class);
 
         Route::name('blog.article.page')->get('/{blogArticleSlug}', ShowBlogArticlePageAction::class);
     });
@@ -409,12 +298,11 @@ $optionalLanguageRoutes = function () {
         Route::name('store.work.page')->get('/{workSlug}', ShowWorkDetailPageAction::class);
     });
 
-
     Route::prefix('payment')->group(function () {
-//       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class); // button
-       Route::name('store.payment.liq-pay.ordinary')->get('/{order}', ShowLiqPayPaymentOrdinaryPageAction::class);
-//       Route::name('store.payment.liq-pay.paypart')->get('/{order}', ShowLiqPayPaymentPaypartPageAction::class);
-//        Route::name('store.checkout.partial-payment')->post('/partial-payment', ConfirmPartialPaymentAction::class);
+        //       Route::name('store.payment.page')->get('/{order}', ShowGoToPaymentPageAction::class); // button
+        Route::name('store.payment.liq-pay.ordinary')->middleware(EnsureOrderAccess::class)->get('/{order}', ShowLiqPayPaymentOrdinaryPageAction::class);
+        //       Route::name('store.payment.liq-pay.paypart')->get('/{order}', ShowLiqPayPaymentPaypartPageAction::class);
+        //        Route::name('store.checkout.partial-payment')->post('/partial-payment', ConfirmPartialPaymentAction::class);
     });
 
     Route::prefix('delivery')->group(function () {
@@ -438,6 +326,7 @@ $optionalLanguageRoutes = function () {
 };
 
 Route::prefix('/{lang}/')
+    ->name('localized.')
     ->whereIn('lang', app()->make(ApplicationConfigService::class)->getAvailableLanguages())
     ->middleware(['set.locale', 'check.locale'])
     ->group($optionalLanguageRoutes);
@@ -453,7 +342,7 @@ Route::prefix('cart')->group(function () {
 });
 
 Route::prefix('payment')->group(function () {
-    Route::name('payment.update-payment-status')->get('/update/{order}', UpdateOrderPaymentStatusAction::class);
+    Route::name('payment.liqpay.callback')->post('/callback/liqpay', UpdateOrderPaymentStatusAction::class);
 });
 
 Route::name('robots.txt.content')->get('robots.txt', ShowRobotsTxtFileContent::class);

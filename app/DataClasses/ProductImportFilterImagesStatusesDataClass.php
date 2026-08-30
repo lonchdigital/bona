@@ -5,6 +5,7 @@ namespace App\DataClasses;
 class ProductImportFilterImagesStatusesDataClass implements BaseDataClass
 {
     const STATUS_EXISTS = 1;
+
     const STATUS_NOT_EXISTS = 2;
 
     public static function get(?int $item = null): mixed

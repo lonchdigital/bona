@@ -11,11 +11,9 @@ class ContactsEditAction extends BaseAction
     public function __invoke(
         ContactsEditRequest $request,
         ContactsPageService $contactsService,
-    )
-    {
+    ) {
         $result = $contactsService->editContactsPage($request->toDTO());
 
         return $this->handleActionResult(route('admin.pages.list.page'), $request, $result);
     }
 }
-

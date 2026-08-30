@@ -3,9 +3,9 @@
 namespace App\Http\Requests\UserProfile;
 
 use App\Http\Requests\BaseRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Rules\PhoneNumberLengthRule;
 use App\Services\UserProfile\DTO\UserProfileUpdateDTO;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileEditRequest extends BaseRequest
 {
@@ -36,7 +36,7 @@ class ProfileEditRequest extends BaseRequest
     public function attributes(): array
     {
         return [
-//            'email' => trans('auth.email'),
+            //            'email' => trans('auth.email'),
             'first_name' => trans('auth.first_name'),
             'last_name' => trans('auth.last_name'),
             'phone' => trans('auth.phone'),
@@ -48,7 +48,7 @@ class ProfileEditRequest extends BaseRequest
         return new UserProfileUpdateDTO(
             $this->input('first_name'),
             $this->input('last_name'),
-//            $this->input('email'),
+            //            $this->input('email'),
             $this->input('phone'),
         );
     }

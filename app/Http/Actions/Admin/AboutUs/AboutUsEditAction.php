@@ -11,11 +11,9 @@ class AboutUsEditAction extends BaseAction
     public function __invoke(
         AboutUsPageEditRequest $request,
         AboutUsPageService $aboutUsPageService,
-    )
-    {
+    ) {
         $result = $aboutUsPageService->editAboutUsPage($request->toDTO());
 
         return $this->handleActionResult(route('admin.pages.list.page'), $request, $result);
     }
 }
-

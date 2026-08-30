@@ -6,15 +6,8 @@ use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Color;
 use App\Models\ProductType;
-use App\Models\Brand;
-use App\Services\Brand\BrandService;
-use App\Services\ProductCategory\CategoryService;
-use App\Services\Color\ColorService;
-use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
-use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
-use App\Services\WishList\WishListService;
 
 class ShowProductByColorPageAction extends BaseAction
 {
@@ -22,11 +15,10 @@ class ShowProductByColorPageAction extends BaseAction
         ProductType $productType,
         CatalogFilterRequest $request,
         Color $color
-    )
-    {
+    ) {
         $productType->load(['fields', 'fields.options']);
 
-        //get services from service container
+        // get services from service container
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
 
@@ -41,8 +33,8 @@ class ShowProductByColorPageAction extends BaseAction
             $color
         );
 
-        $pageTitle = trans('base.color') . ' ' . $color->name;
-        if($color->id == 7) {
+        $pageTitle = trans('base.color').' '.$color->name;
+        if ($color->id == 7) {
             $pageTitle = trans('base.white_doors');
         }
 

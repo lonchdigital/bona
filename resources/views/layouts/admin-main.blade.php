@@ -255,10 +255,13 @@
         </ul>
     </li>
     <li class="nav-item w-100 mt-5 mb-3">
-        <a class="nav-link pl-3" href="{{ route('admin.log-out') }}">
-            <i class="fe fe-corner-up-left fe-16"></i>
-            <span class="ml-1 item-text">{{ trans('auth.logout') }}</span>
-        </a>
+        <form method="POST" action="{{ route('admin.log-out') }}">
+            @csrf
+            <button type="submit" class="nav-link pl-3 border-0 bg-transparent">
+                <i class="fe fe-corner-up-left fe-16"></i>
+                <span class="ml-1 item-text">{{ trans('auth.logout') }}</span>
+            </button>
+        </form>
     </li>
 </ul>
 </nav>

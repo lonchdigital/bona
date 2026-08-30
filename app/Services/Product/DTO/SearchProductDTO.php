@@ -8,5 +8,5 @@ class SearchProductDTO implements BaseDTO
 {
     public function __construct(
         public readonly ?string $query
-    ){ }
+    ) {}
 }

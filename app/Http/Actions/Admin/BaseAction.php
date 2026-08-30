@@ -2,12 +2,12 @@
 
 namespace App\Http\Actions\Admin;
 
+use App\Http\Resources\BaseActionResource;
 use App\Models\User;
+use App\Services\Base\ServiceActionResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use App\Services\Base\ServiceActionResult;
-use App\Http\Resources\BaseActionResource;
 
 class BaseAction
 {
@@ -46,7 +46,7 @@ class BaseAction
      */
     private function staysOnPage(Request $request, ServiceActionResult $result): bool
     {
-        if (!$result->isSuccess()) {
+        if (! $result->isSuccess()) {
             return true;
         }
 
@@ -60,15 +60,15 @@ class BaseAction
         return Auth::user();
     }
 
-
-    public function handleFollowTag(string|null $meta_tags): string
+    public function handleFollowTag(?string $meta_tags): string
     {
-        if( !is_null($meta_tags) ) {
+        if (! is_null($meta_tags)) {
             if (str_contains($meta_tags, '%nofollow%')) {
                 $meta_tags = str_replace('%nofollow%', '<meta name="robots" content="noindex, nofollow">', $meta_tags);
             } else {
                 $meta_tags .= '<meta name="robots" content="index, follow">';
             }
+
             return $meta_tags;
         } else {
             return '<meta name="robots" content="index, follow">';
