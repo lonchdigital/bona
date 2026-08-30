@@ -22,6 +22,28 @@ class CatalogMenuService
             ->get();
     }
 
+    public function getStorefrontProductTypes(): Collection
+    {
+        return Cache::remember(self::CACHE_KEY, 43200, function () {
+            if (! CatalogMenuConfiguration::query()->exists()) {
+                return ProductType::query()
+                    ->with(['catalogMenuConfiguration', 'categories'])
+                    ->where('sort_order', '>', 0)
+                    ->orderBy('sort_order')
+                    ->get();
+            }
+
+            return ProductType::query()
+                ->with(['catalogMenuConfiguration', 'categories'])
+                ->whereHas('catalogMenuConfiguration', function ($query) {
+                    $query->where('is_visible', true)
+                        ->orWhere('show_in_header', true);
+                })
+                ->orderBy('id')
+                ->get();
+        });
+    }
+
     public function updateOverview(array $configurations): void
     {
         $productTypeIds = ProductType::query()->pluck('id')->map(fn ($id) => (int) $id)->all();

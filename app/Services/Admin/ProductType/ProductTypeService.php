@@ -12,6 +12,7 @@ use App\Models\SeoText;
 use App\Services\Admin\ProductType\DTO\EditProductTypeDTO;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
+use App\Services\CatalogMenu\CatalogMenuService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -272,6 +273,7 @@ class ProductTypeService extends BaseService
     {
         Cache::forget('mainProductTypes');
         Cache::forget('sortedProductTypes');
+        Cache::forget(CatalogMenuService::CACHE_KEY);
     }
 
     public function searchAdditionalProducts($productType, array $request)

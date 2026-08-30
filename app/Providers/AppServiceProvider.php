@@ -6,6 +6,7 @@ use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Cart\CartService;
 use App\Services\Cart\GuestCartToken;
+use App\Services\CatalogMenu\CatalogMenuService;
 use App\Services\Contacts\ContactsPageService;
 use App\Services\Locale\LocaleService;
 // use App\Services\WishList\WishListService;
@@ -33,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(
         ProductTypeService $productTypeService,
+        CatalogMenuService $catalogMenuService,
         ApplicationConfigService $applicationService,
         CartService $cartService,
         ContactsPageService $contactsService
@@ -69,11 +71,8 @@ class AppServiceProvider extends ServiceProvider
             [
                 'layouts.store-main',
             ],
-            function ($view) use ($productTypeService, $contactsService) {
-                $productTypes = Cache::remember('sortedProductTypes', 43200, function () use ($productTypeService) {
-                    return $productTypeService->getSortedProductTypes();
-                });
-                $productTypes->loadMissing(['categories', 'catalogMenuConfiguration']);
+            function ($view) use ($catalogMenuService, $contactsService) {
+                $productTypes = $catalogMenuService->getStorefrontProductTypes();
 
                 $view->with('productTypes', $productTypes);
                 $view->with('locationService', app()->make(LocaleService::class));

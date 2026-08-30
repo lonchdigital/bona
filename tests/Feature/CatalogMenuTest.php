@@ -67,7 +67,9 @@ class CatalogMenuTest extends TestCase
 
     public function test_storefront_renders_only_visible_configured_menu_types(): void
     {
-        $visibleType = $this->productType(['slug' => 'visible-doors', 'name' => 'Видимі двері', 'sort_order' => 1]);
+        // A mega-menu entry is controlled by its own configuration. Its old
+        // product-type sort order must not silently remove it from the header.
+        $visibleType = $this->productType(['slug' => 'visible-doors', 'name' => 'Видимі двері', 'sort_order' => 0]);
         $hiddenType = $this->productType(['slug' => 'hidden-doors', 'name' => 'Прихований пункт', 'sort_order' => 2]);
         $category = $this->category($visibleType->id, 'modern-doors', 'Сучасні двері');
 
