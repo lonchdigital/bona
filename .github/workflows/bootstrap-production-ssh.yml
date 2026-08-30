@@ -47,6 +47,7 @@ jobs:
           sshpass -e ssh \
             -o PreferredAuthentications=password \
             -o PubkeyAuthentication=no \
+            -o HostKeyAlias=es1326.mirohost.net \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
             'printf "Legacy production SSH access is active.\n"'
@@ -74,6 +75,7 @@ jobs:
           sshpass -e ssh-copy-id \
             -f \
             -i "$RUNNER_TEMP/bona-production.pub" \
+            -o HostKeyAlias=es1326.mirohost.net \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST"
           unset SSHPASS
@@ -84,6 +86,7 @@ jobs:
             -i "$RUNNER_TEMP/bona-production" \
             -o BatchMode=yes \
             -o IdentitiesOnly=yes \
+            -o HostKeyAlias=es1326.mirohost.net \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
             'printf "Dedicated production deploy key is active.\n"'
