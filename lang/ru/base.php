@@ -370,6 +370,7 @@ return [
     'something_went_wrong' => 'Что-то пошло не так',
     'cart_is_empty' => 'Корзина пуста. Добавьте товар перед оформлением заказа.',
     'storefront_catalog' => 'Каталог дверей',
+    'storefront_catalog_kicker' => 'Каталог',
     'storefront_catalog_empty' => 'Каталог еще наполняется',
     'storefront_collection' => 'Коллекция',
     'storefront_view_all' => 'Смотреть все',

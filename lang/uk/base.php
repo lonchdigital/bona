@@ -372,6 +372,7 @@ return [
     'something_went_wrong' => 'Щось пішло не так',
     'cart_is_empty' => 'Кошик порожній. Додайте товар перед оформленням замовлення.',
     'storefront_catalog' => 'Каталог дверей',
+    'storefront_catalog_kicker' => 'Каталог',
     'storefront_catalog_empty' => 'Каталог ще наповнюється',
     'storefront_collection' => 'Колекція',
     'storefront_view_all' => 'Дивитися всі',

@@ -42,36 +42,31 @@
     <x-store.call-consultation-modal :options="$applicationGlobalOptions" />
 
     @if( count($productTypes) > 0 )
-        <section class="art-home-page art-products-category">
-            <div class="container">
-
-                <header>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <h2 class="title h2">{{trans('base.products_by_type')}}</h2>
-                            <div class="subtitle font-two">
-                                <p>{{trans('base.doors_category')}}</p>
-                            </div>
-                        </div>
-                    </div>
+        <section class="bona-categories" aria-labelledby="products-by-type-title">
+            <div class="bona-shell">
+                <header class="bona-section-heading">
+                    <p class="bona-kicker">{{ trans('base.storefront_catalog_kicker') }}</p>
+                    <h2 id="products-by-type-title">{{ trans('base.products_by_type') }}</h2>
                 </header>
 
-                <div class="art-category-list">
+                <div class="bona-categories__grid">
                     @foreach($productTypes as $productType)
-                        <div class="art-category-item">
-                            <article>
-                                <div class="figure-grid">
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
-                                        <div class="image">
-                                            <img src="{{ $productType->image_url }}" alt="Product Type Image" loading="lazy">
-                                        </div>
-                                        <div class="text">
-                                            <span class="title h4">{{ $productType->name }}</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </article>
-                        </div>
+                        <a
+                            class="bona-category-card"
+                            href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}"
+                        >
+                            <span class="bona-category-card__image">
+                                @if($productType->image_url)
+                                    <img src="{{ $productType->image_url }}" alt="{{ $productType->name }}" loading="lazy">
+                                @else
+                                    <span class="bona-category-card__placeholder" aria-hidden="true">BONA</span>
+                                @endif
+                            </span>
+                            <span class="bona-category-card__row">
+                                <span class="bona-category-card__name">{{ $productType->name }}</span>
+                                <span class="bona-category-card__arrow" aria-hidden="true">→</span>
+                            </span>
+                        </a>
                     @endforeach
                 </div>
             </div>
