@@ -64,6 +64,10 @@ previous_release="$(readlink -f "$CURRENT_LINK")"
 mkdir "$RELEASE_PATH"
 tar -xzf "$ARCHIVE_PATH" -C "$RELEASE_PATH"
 
+# Keep deployments created from older artifacts safe as well: the release root
+# must be traversable by the web-server process.
+chmod 0755 "$RELEASE_PATH"
+
 for required_path in artisan composer.lock public/build/manifest.json vendor/autoload.php REVISION; do
     if [[ ! -e "$RELEASE_PATH/$required_path" ]]; then
         echo "Extracted release is missing required path: $required_path" >&2

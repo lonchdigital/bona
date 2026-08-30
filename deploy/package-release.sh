@@ -30,6 +30,11 @@ rsync -a "$ROOT_PATH/public/build/" "$STAGE_PATH/public/build/"
 
 printf '%s\n' "$(git -C "$ROOT_PATH" rev-parse HEAD)" > "$STAGE_PATH/REVISION"
 
+# mktemp creates the staging directory with mode 0700. The archive records that
+# mode for its root entry, which would prevent the web-server user from
+# traversing an extracted release directory.
+chmod 0755 "$STAGE_PATH"
+
 for required_path in artisan composer.lock public/build/manifest.json vendor/autoload.php; do
     if [[ ! -e "$STAGE_PATH/$required_path" ]]; then
         echo "Release is missing required path: $required_path" >&2
