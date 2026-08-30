@@ -9,7 +9,25 @@
         ? ($options['logoLight'] ?? $options['logoDark'] ?? null)
         : ($options['logoDark'] ?? $options['logoLight'] ?? null);
     $phone = $options['phoneOne'] ?? null;
-    $directTypes = $productTypes->take(3);
+    $hasMenuConfiguration = $productTypes->contains(fn ($productType) => $productType->catalogMenuConfiguration !== null);
+    $navigationTypes = $hasMenuConfiguration
+        ? $productTypes
+            ->filter(fn ($productType) => $productType->catalogMenuConfiguration?->is_visible)
+            ->sortBy(fn ($productType) => [
+                $productType->catalogMenuConfiguration->sort_order,
+                $productType->id,
+            ])
+            ->values()
+        : $productTypes->values();
+    $directTypes = $hasMenuConfiguration
+        ? $productTypes
+            ->filter(fn ($productType) => $productType->catalogMenuConfiguration?->show_in_header)
+            ->sortBy(fn ($productType) => [
+                $productType->catalogMenuConfiguration->header_order,
+                $productType->id,
+            ])
+            ->values()
+        : $productTypes->take(3);
 @endphp
 
 <div class="bona-site-header {{ $overlay ? 'bona-site-header--overlay' : 'bona-site-header--solid' }}" data-site-header>
@@ -55,7 +73,7 @@
                         <span>{{ trans('base.storefront_catalog') }}</span>
                         <svg width="11" height="7" viewBox="0 0 11 7" fill="none" aria-hidden="true"><path d="M1 1.5 5.5 5.6 10 1.5"></path></svg>
                     </button>
-                    <x-store.mega-menu :product-types="$productTypes" />
+                    <x-store.mega-menu :product-types="$navigationTypes" />
                 </div>
 
                 @foreach($directTypes as $productType)
@@ -67,7 +85,7 @@
                 <div class="bona-mobile-nav" data-mobile-navigation>
                     <div class="bona-mobile-nav__catalog">
                         <span>{{ trans('base.storefront_catalog') }}</span>
-                        @forelse($productTypes as $productType)
+                        @forelse($navigationTypes as $productType)
                             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
                                 {{ $productType->name }} <span aria-hidden="true">→</span>
                             </a>

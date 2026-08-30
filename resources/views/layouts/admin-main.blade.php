@@ -131,6 +131,12 @@
                     </a>
                 </li>
                 <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.catalog-menu.page') }}">
+                        <i class="fe fe-menu fe-16"></i>
+                        <span class="ml-1 item-text">{{ trans('admin.catalog_menu') }}</span>
+                    </a>
+                </li>
+                <li class="nav-item w-100">
                     <a class="nav-link pl-3" href="{{ route('admin.product-field.list.page') }}">
                         <i class="fe fe-codepen fe-16"></i>
                         <span class="ml-1 item-text">{{ trans('admin.product_fields') }}</span>

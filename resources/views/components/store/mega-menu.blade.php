@@ -4,6 +4,22 @@
 
 @php
     $menuTypes = $productTypes->values();
+    $locale = app()->getLocale();
+    $translatedValue = static function ($values) use ($locale) {
+        if (!is_array($values)) {
+            return trim((string) $values);
+        }
+
+        $localized = trim((string) ($values[$locale] ?? ''));
+
+        if ($localized !== '') {
+            return $localized;
+        }
+
+        return collect($values)
+            ->map(fn ($value) => trim((string) $value))
+            ->first(fn ($value) => $value !== '') ?? '';
+    };
 @endphp
 
 <div class="bona-mega" id="bona-catalog-menu" data-mega-menu>
@@ -36,6 +52,24 @@
             @foreach($menuTypes as $productType)
                 @php
                     $categories = $productType->categories->values();
+                    $categoryLookup = $categories->keyBy('id');
+                    $configuration = $productType->catalogMenuConfiguration;
+                    $configuredCardIds = $configuration?->cards;
+                    $cardCategories = is_array($configuredCardIds)
+                        ? collect($configuredCardIds)->map(fn ($id) => $categoryLookup->get((int) $id))->filter()->values()
+                        : $categories->take(5);
+                    $menuColumns = $configuration?->columns;
+
+                    if (!is_array($menuColumns)) {
+                        $remainingCategories = $categories->skip(5)->values();
+                        $menuColumns = $remainingCategories->isEmpty() ? [] : [[
+                            'title' => ['uk' => 'Інші категорії', 'ru' => 'Другие категории'],
+                            'items' => $remainingCategories->map(fn ($category) => [
+                                'category_id' => $category->id,
+                            ])->all(),
+                        ]];
+                    }
+
                     $typeUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
                         'productTypeSlug' => $productType->slug,
                     ]);
@@ -56,9 +90,10 @@
                         <a href="{{ $typeUrl }}">{{ trans('base.storefront_view_all') }} <span aria-hidden="true">→</span></a>
                     </div>
 
-                    @if($categories->isNotEmpty())
+                    @if($cardCategories->isNotEmpty() || count($menuColumns) > 0)
+                        @if($cardCategories->isNotEmpty())
                         <div class="bona-mega__cards">
-                            @foreach($categories->take(5) as $category)
+                            @foreach($cardCategories as $category)
                                 <a class="bona-mega-card" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
                                     'productTypeSlug' => $productType->slug,
                                     'categorySlug' => $category->slug,
@@ -74,14 +109,36 @@
                                 </a>
                             @endforeach
                         </div>
+                        @endif
 
-                        @if($categories->count() > 5)
-                            <div class="bona-mega__links" aria-label="{{ trans('base.storefront_more_categories') }}">
-                                @foreach($categories->skip(5)->take(12) as $category)
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
-                                        'productTypeSlug' => $productType->slug,
-                                        'categorySlug' => $category->slug,
-                                    ]) }}">{{ $category->name }}</a>
+                        @if(count($menuColumns) > 0)
+                            <div class="bona-mega__columns" aria-label="{{ trans('base.storefront_more_categories') }}">
+                                @foreach(collect($menuColumns)->sortBy('sort_order') as $column)
+                                    @php $columnTitle = $translatedValue($column['title'] ?? []); @endphp
+                                    <div class="bona-mega__column">
+                                        @if($columnTitle !== '')
+                                            <h3>{{ $columnTitle }}</h3>
+                                        @endif
+                                        <div class="bona-mega__column-links">
+                                            @foreach(collect($column['items'] ?? [])->sortBy('sort_order') as $item)
+                                                @php
+                                                    $category = !empty($item['category_id'])
+                                                        ? $categoryLookup->get((int) $item['category_id'])
+                                                        : null;
+                                                    $itemLabel = $category?->name ?? $translatedValue($item['label'] ?? []);
+                                                    $itemUrl = $category
+                                                        ? App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
+                                                            'productTypeSlug' => $productType->slug,
+                                                            'categorySlug' => $category->slug,
+                                                        ])
+                                                        : $translatedValue($item['url'] ?? []);
+                                                @endphp
+                                                @if($itemLabel !== '' && $itemUrl !== '')
+                                                    <a href="{{ $itemUrl }}">{{ $itemLabel }}</a>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 @endforeach
                             </div>
                         @endif

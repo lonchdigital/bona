@@ -484,17 +484,37 @@
         gap: 18px;
     }
 
-    &__links {
+    &__columns {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px 24px;
+        gap: 28px;
         margin-top: 26px;
         padding-top: 24px;
         border-top: 1px solid var(--bona-line);
+    }
+
+    &__column {
+        min-width: 0;
+
+        h3 {
+            margin: 0 0 12px;
+            color: var(--bona-ink);
+            font: 700 12px/1.3 var(--bona-ui);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+    }
+
+    &__column-links {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
 
         a {
+            max-width: 100%;
             overflow: hidden;
-            color: var(--bona-ink);
+            color: var(--bona-muted);
             font-size: 13px;
             text-overflow: ellipsis;
             white-space: nowrap;

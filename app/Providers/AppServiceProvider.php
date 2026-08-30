@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
                 $productTypes = Cache::remember('sortedProductTypes', 43200, function () use ($productTypeService) {
                     return $productTypeService->getSortedProductTypes();
                 });
-                $productTypes->loadMissing('categories');
+                $productTypes->loadMissing(['categories', 'catalogMenuConfiguration']);
 
                 $view->with('productTypes', $productTypes);
                 $view->with('locationService', app()->make(LocaleService::class));

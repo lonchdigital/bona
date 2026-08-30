@@ -33,6 +33,10 @@ use App\Http\Actions\Admin\Brands\GetAllBrandsBySearchAction;
 use App\Http\Actions\Admin\Brands\Pages\ShowBrandCreatePageAction;
 use App\Http\Actions\Admin\Brands\Pages\ShowBrandEditPageAction;
 use App\Http\Actions\Admin\Brands\Pages\ShowBrandsListPageAction;
+use App\Http\Actions\Admin\CatalogMenu\Pages\ShowCatalogMenuEditPageAction;
+use App\Http\Actions\Admin\CatalogMenu\Pages\ShowCatalogMenuPageAction;
+use App\Http\Actions\Admin\CatalogMenu\UpdateCatalogMenuContentAction;
+use App\Http\Actions\Admin\CatalogMenu\UpdateCatalogMenuOverviewAction;
 use App\Http\Actions\Admin\Colors\ColorCreateAction;
 use App\Http\Actions\Admin\Colors\ColorDeleteAction;
 use App\Http\Actions\Admin\Colors\ColorEditAction;
@@ -164,6 +168,13 @@ Route::prefix('admin')->middleware([
     //    Route::name('admin.dashboard.page')->get('dashboard', ShowDashboardPageAction::class);
     Route::name('admin.dashboard.page')->get('/', ShowDashboardPageAction::class);
     Route::name('admin.log-out')->post('/log-out', LogoutAction::class);
+
+    Route::prefix('catalog-menu')->group(function () {
+        Route::name('admin.catalog-menu.page')->get('/', ShowCatalogMenuPageAction::class);
+        Route::name('admin.catalog-menu.update')->post('/', UpdateCatalogMenuOverviewAction::class);
+        Route::name('admin.catalog-menu.edit.page')->get('/{productType}', ShowCatalogMenuEditPageAction::class);
+        Route::name('admin.catalog-menu.edit')->post('/{productType}', UpdateCatalogMenuContentAction::class);
+    });
 
     // Product fields
     Route::prefix('product-field')->group(function () {
