@@ -41,6 +41,7 @@ jobs:
 
           export SSHPASS="$SSH_PASSWORD"
           sshpass -e ssh-copy-id \
+            -f \
             -i "$RUNNER_TEMP/bona-production.pub" \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST"
