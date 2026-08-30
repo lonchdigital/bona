@@ -39,11 +39,14 @@ done
 
 ARCHIVE_PATH="$OUTPUT_PATH/bona-$RELEASE_ID.tar.gz"
 tar -czf "$ARCHIVE_PATH" -C "$STAGE_PATH" .
+ARCHIVE_NAME="$(basename "$ARCHIVE_PATH")"
 
 if command -v sha256sum >/dev/null 2>&1; then
-    sha256sum "$ARCHIVE_PATH" > "$ARCHIVE_PATH.sha256"
+    ARCHIVE_CHECKSUM="$(sha256sum "$ARCHIVE_PATH" | awk '{ print $1 }')"
 else
-    shasum -a 256 "$ARCHIVE_PATH" > "$ARCHIVE_PATH.sha256"
+    ARCHIVE_CHECKSUM="$(shasum -a 256 "$ARCHIVE_PATH" | awk '{ print $1 }')"
 fi
+
+printf '%s  %s\n' "$ARCHIVE_CHECKSUM" "$ARCHIVE_NAME" > "$ARCHIVE_PATH.sha256"
 
 echo "$ARCHIVE_PATH"
