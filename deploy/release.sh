@@ -76,6 +76,19 @@ for required_path in artisan composer.lock public/build/manifest.json vendor/aut
 done
 
 ln -s "$SHARED_PATH/.env" "$RELEASE_PATH/.env"
+
+if [[ -e "$RELEASE_PATH/storage" || -L "$RELEASE_PATH/storage" ]]; then
+    unexpected_storage_file="$(find "$RELEASE_PATH/storage" -mindepth 1 -type f ! -name '.gitignore' -print -quit)"
+    unexpected_storage_link="$(find "$RELEASE_PATH/storage" -mindepth 1 -type l -print -quit)"
+
+    if [[ -n "$unexpected_storage_file" || -n "$unexpected_storage_link" ]]; then
+        echo "Release artifact contains unexpected runtime storage content." >&2
+        exit 1
+    fi
+
+    rm -rf -- "$RELEASE_PATH/storage"
+fi
+
 ln -s "$SHARED_PATH/storage" "$RELEASE_PATH/storage"
 mkdir -p "$SHARED_PATH/storage/app/public" \
     "$SHARED_PATH/storage/framework/cache/data" \
@@ -96,7 +109,6 @@ recover_on_error() {
         rollback_link="$DEPLOY_PATH/.rollback-$RELEASE_ID"
         ln -s "$previous_release" "$rollback_link"
         mv -Tf "$rollback_link" "$CURRENT_LINK"
-        "$PHP_BIN" "$previous_release/artisan" reload || true
     fi
 
     if (( maintenance_started == 1 )) && [[ -L "$CURRENT_LINK" ]]; then

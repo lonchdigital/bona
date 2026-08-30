@@ -28,6 +28,10 @@ git -C "$ROOT_PATH" archive --format=tar HEAD | tar -xf - -C "$STAGE_PATH"
 rsync -a "$ROOT_PATH/vendor/" "$STAGE_PATH/vendor/"
 rsync -a "$ROOT_PATH/public/build/" "$STAGE_PATH/public/build/"
 
+# Runtime storage is shared between releases and must never be packaged as a
+# release-local directory, even when Git tracks its .gitignore skeleton.
+rm -rf -- "$STAGE_PATH/storage"
+
 printf '%s\n' "$(git -C "$ROOT_PATH" rev-parse HEAD)" > "$STAGE_PATH/REVISION"
 
 # mktemp creates the staging directory with mode 0700. The archive records that
