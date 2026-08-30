@@ -1,0 +1,57 @@
+name: Bootstrap production SSH key
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Install SSH client helper
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes sshpass
+
+      - name: Install and verify the dedicated deploy key
+        env:
+          SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
+          SSH_USER: ${{ secrets.PRODUCTION_SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_PUBLIC_KEY: ${{ secrets.PRODUCTION_SSH_PUBLIC_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.PRODUCTION_SSH_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_HOST"
+          test -n "$SSH_USER"
+          test -n "$SSH_PASSWORD"
+          test -n "$SSH_PUBLIC_KEY"
+          test -n "$SSH_PRIVATE_KEY"
+          test -n "$SSH_KNOWN_HOSTS"
+
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          printf '%s\n' "$SSH_PUBLIC_KEY" > "$RUNNER_TEMP/bona-production.pub"
+          chmod 600 "$RUNNER_TEMP/bona-production.pub"
+
+          export SSHPASS="$SSH_PASSWORD"
+          sshpass -e ssh-copy-id \
+            -i "$RUNNER_TEMP/bona-production.pub" \
+            -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST"
+          unset SSHPASS
+
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$RUNNER_TEMP/bona-production"
+          chmod 600 "$RUNNER_TEMP/bona-production"
+          ssh \
+            -i "$RUNNER_TEMP/bona-production" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            'printf "Dedicated production deploy key is active.\n"'
