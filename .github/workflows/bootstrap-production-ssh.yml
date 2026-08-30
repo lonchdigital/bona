@@ -33,6 +33,19 @@ jobs:
           printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
 
+      - name: Diagnose the legacy endpoint
+        env:
+          LEGACY_SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          test -n "$LEGACY_SSH_HOST"
+
+          legacy_ip="$(getent ahostsv4 "$LEGACY_SSH_HOST" | awk 'NR == 1 { print $1 }')"
+          legacy_ptr="$(getent hosts "$legacy_ip" | awk 'NR == 1 { print $2 }')"
+          printf 'Legacy endpoint IP: %s\n' "$legacy_ip"
+          printf 'Legacy endpoint PTR: %s\n' "${legacy_ptr:-unavailable}"
+          ssh-keyscan -T 5 -t rsa,ed25519 "$LEGACY_SSH_HOST" 2>/dev/null \
+            | ssh-keygen -lf - || true
+
       - name: Verify legacy password access
         env:
           SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
