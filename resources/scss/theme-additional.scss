@@ -54,7 +54,6 @@
     41. Text blocks
     42. Quotes
     43. Team
-    44. Owl-icons
     45. Footer
     46. Info icons
     47. Cards
@@ -5344,121 +5343,6 @@ section.instagram {
 
 /*
     ----------------------------------
-    44. Owl-icons
-    ----------------------------------
-*/
-.owl-icons-wrapper {
-    padding: 0;
-    position: relative;
-    background: #fff;
-}
-
-.owl-icons-wrapper .owl-icons {
-    position: relative;
-    padding: 5px 0;
-}
-
-.owl-icons-wrapper .owl-icons a:hover,
-.owl-icons-wrapper .owl-icons figure:hover {
-    color: black;
-}
-
-.owl-icons-wrapper .owl-icons figure {
-    text-align: center;
-    padding: 10px 0 0 0;
-}
-
-.owl-icons-wrapper .owl-icons figure:hover .f-icon {
-    -moz-transform: scale(1.3);
-    -ms-transform: scale(1.3);
-    -o-transform: scale(1.3);
-    -webkit-transform: scale(1.3);
-    transform: scale(1.3);
-}
-
-.owl-icons-wrapper .owl-icons figure .f-icon {
-    font-size: 70px;
-    -moz-transition: all 0.5s;
-    -o-transition: all 0.5s;
-    -webkit-transition: all 0.5s;
-    transition: all 0.5s;
-}
-.owl-icons-wrapper .owl-icons figure .icon-wrapper {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.owl-icons-wrapper .owl-icons figcaption {
-    font-family: "Montserrat", sans-serif;
-    text-transform: uppercase;
-    font-size: 12px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 100%;
-}
-
-.owl-icons-wrapper .owl-icons.owl-theme .owl-controls .owl-buttons div span {
-    color: #3a3d45;
-}
-
-.owl-icons-wrapper .owl-icons.owl-theme .owl-controls .owl-buttons .owl-next {
-    right: -50px;
-}
-
-.owl-icons-wrapper .owl-icons.owl-theme .owl-controls .owl-buttons .owl-prev {
-    left: -50px;
-}
-
-.owl-icons-wrapper .owl-icons-boxed {
-    padding: 50px 0;
-}
-
-.owl-icons-wrapper .owl-icons-boxed figure {
-    background-color: #fafafa;
-    border-radius: 4px;
-    color: black;
-    margin: 0 5px;
-}
-
-.owl-icons-wrapper .owl-icons-boxed figure:hover {
-    color: #D59958;
-}
-
-.owl-icons-wrapper.owl-icons-frontpage {
-    margin-top: -125px;
-    background: transparent;
-}
-
-.owl-icons-wrapper.owl-icons-frontpage a, .owl-icons-wrapper.owl-icons-frontpage a:focus, .owl-icons-wrapper.owl-icons-frontpage a:active, .owl-icons-wrapper.owl-icons-frontpage a:hover {
-    color: white;
-}
-
-.owl-icons-wrapper.owl-icons-frontpage figure:hover,
-.owl-icons-wrapper.owl-icons-frontpage .owl-icons.owl-theme .owl-controls .owl-buttons div span {
-    color: white;
-}
-
-@media (min-width: 992px) {
-    .owl-icons-wrapper.owl-icons-frontpage {
-        margin-top: -160px;
-        background: transparent;
-    }
-    .owl-icons-wrapper .owl-icons figcaption {
-        font-size: 14px;
-    }
-    .owl-icons-wrapper .owl-icons figure .f-icon {
-        font-size: 100px;
-    }
-}
-
-/*
-    ----------------------------------
     45. Footer
     ----------------------------------
 */
@@ -8979,25 +8863,6 @@ section.art-contacts-page-section {
 }
 
 
-
-.owl-icons-wrapper {
-
-    .swiper.owl-icons {
-
-        .swiper-button-prev,
-        .swiper-button-next {
-            color: #c5c5c5;
-            /*width: calc(30px / 44* 27);*/
-            width: 60px;
-            height: 70px; // 30
-            margin-top: -40px; // calc(0px - 30px / 2)
-
-            &:after {
-                font-size: 30px;
-            }
-        }
-    }
-}
 
 .swiper-pagination-bullet-active {
     background: $accent;
