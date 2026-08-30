@@ -7136,13 +7136,13 @@
             "dist": {
                 "type": "path",
                 "url": "./vendor_local/lis-dev/nova-poshta-api-2",
-                "reference": "40130e73b9212bb3b9ae3f0563d6c71926614bd1"
+                "reference": "8a06c564231d90462b44ad8cb4e90447cac6f692"
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": "^8.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.4"
+                "phpunit/phpunit": "^12.5.34"
             },
             "type": "library",
             "autoload": {
