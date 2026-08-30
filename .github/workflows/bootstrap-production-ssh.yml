@@ -35,7 +35,7 @@ jobs:
 
       - name: Verify legacy password access
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
@@ -47,7 +47,7 @@ jobs:
           sshpass -e ssh \
             -o PreferredAuthentications=password \
             -o PubkeyAuthentication=no \
-            -o HostKeyAlias=es1326.mirohost.net \
+            -o HostKeyAlias=vs243.mirohost.net \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
             'printf "Legacy production SSH access is active.\n"'
@@ -56,7 +56,7 @@ jobs:
       - name: Install and verify the dedicated deploy key
         if: ${{ inputs.install_key }}
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           SSH_PUBLIC_KEY: ${{ secrets.PRODUCTION_SSH_PUBLIC_KEY }}
@@ -75,7 +75,7 @@ jobs:
           sshpass -e ssh-copy-id \
             -f \
             -i "$RUNNER_TEMP/bona-production.pub" \
-            -o HostKeyAlias=es1326.mirohost.net \
+            -o HostKeyAlias=vs243.mirohost.net \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST"
           unset SSHPASS
@@ -86,7 +86,7 @@ jobs:
             -i "$RUNNER_TEMP/bona-production" \
             -o BatchMode=yes \
             -o IdentitiesOnly=yes \
-            -o HostKeyAlias=es1326.mirohost.net \
+            -o HostKeyAlias=vs243.mirohost.net \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
             'printf "Dedicated production deploy key is active.\n"'
