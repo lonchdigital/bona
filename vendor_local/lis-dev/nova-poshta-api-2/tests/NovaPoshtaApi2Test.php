@@ -3,51 +3,58 @@
 namespace LisDev\Tests;
 
 use LisDev\Delivery\NovaPoshtaApi2;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 
 /**
  * phpUnit test class.
  *
  * @author lis-dev
  */
-class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
+#[Group('external')]
+class NovaPoshtaApi2Test extends TestCase
 {
     /**
      * Key for connection.
      *
      * @see https://my.novaposhta.ua/settings/index#apikeys
      */
-    private static $key = '';
+    private static string $key = '';
 
     /**
      * Test tracking number.
      * TODO: Track number doesn't persists for a long time, so tests can fail due this parameter.
-     *
-     * @var string
      */
-    private $testTrackNumber = '20600009559994';
+    private string $testTrackNumber = '20600009559994';
 
     /**
      * Instace of tested class.
-     *
-     * @var NovaPoshtaApi2
      */
-    private $np;
+    private NovaPoshtaApi2 $np;
 
     /**
      * Set up before class.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // Disable notices
         error_reporting(E_ALL ^ E_NOTICE);
-        ! self::$key and self::$key = getenv('NOVA_POSHTA_API2_KEY');
+        self::$key = (string) getenv('NOVA_POSHTA_API2_KEY');
     }
 
     /**
      * Set up before each test.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
+        if (self::$key === '') {
+            $this->markTestSkipped('NOVA_POSHTA_API2_KEY is required for external API tests.');
+        }
+
         // Create new instance
         $this->np = new NovaPoshtaApi2(self::$key);
     }
@@ -134,6 +141,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider getCitiesData
      */
+    #[DataProvider('getCitiesData')]
     public function test_get_cities($cityPage, $cityRef, $cityName)
     {
         $result = $this->np->getCities($cityPage, $cityRef, $cityName);
@@ -143,7 +151,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for testGetCities.
      */
-    public function getCitiesData()
+    public static function getCitiesData(): array
     {
         return [
             [0, 'Киев', ''],
@@ -185,6 +193,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider getAreaData
      */
+    #[DataProvider('getAreaData')]
     public function test_get_area($areaName, $areaRef)
     {
         $result = $this->np->getArea($areaName, $areaRef);
@@ -194,7 +203,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for testGetArea.
      */
-    public function getAreaData()
+    public static function getAreaData(): array
     {
         return [
             ['Киев', ''],
@@ -232,6 +241,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider getCityData
      */
+    #[DataProvider('getCityData')]
     public function test_get_city($cityName, $regionName)
     {
         $result = $this->np->getCity($cityName, $regionName);
@@ -241,7 +251,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for testGetCity.
      */
-    public function getCityData()
+    public static function getCityData(): array
     {
         return [
             ['Андреевка', 'Запорожье'],
@@ -265,6 +275,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider getCommonData
      */
+    #[DataProvider('getCommonData')]
     public function test_get_common($method)
     {
         $result = $this->np->$method();
@@ -274,7 +285,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for testGetCommon, returns list of method.
      */
-    public function getCommonData()
+    public static function getCommonData(): array
     {
         return [
             ['getTypesOfCounterparties'],
@@ -358,6 +369,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_counterparty_save
      */
+    #[Depends('test_counterparty_save')]
     public function test_counterparty_update($ref)
     {
         $result = $this->np->model('Counterparty')->update([
@@ -380,6 +392,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_counterparty_save
      */
+    #[Depends('test_counterparty_save')]
     public function test_contact_person_save($ref)
     {
         $result = $this->np->model('ContactPerson')->save([
@@ -400,6 +413,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_counterparty_save
      */
+    #[Depends('test_counterparty_save')]
     public function test_contact_person_update($counterpartyRef)
     {
         $existedContactPerson = $this->np->getCounterpartyContactPersons($counterpartyRef);
@@ -420,6 +434,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_contact_person_save
      */
+    #[Depends('test_contact_person_save')]
     public function test_contact_person_delete($ref)
     {
         $result = $this->np->model('ContactPerson')->delete(['Ref' => $ref]);
@@ -432,6 +447,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider getCounterpartiesData
      */
+    #[DataProvider('getCounterpartiesData')]
     public function test_get_counterparties($counterpartyProperty, $page, $findByString, $cityRef)
     {
         $result = $this->np->getCounterparties($counterpartyProperty, $page, $findByString, $cityRef);
@@ -441,7 +457,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
     /**
      * Data for testGetCounterparties().
      */
-    public function getCounterpartiesData()
+    public static function getCounterpartiesData(): array
     {
         return [
             ['Sender', '', '', ''],
@@ -456,6 +472,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_counterparty_save
      */
+    #[Depends('test_counterparty_save')]
     public function test_get_counterparty_contact_persons($ref)
     {
         $result = $this->np->getCounterpartyContactPersons($ref);
@@ -467,6 +484,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_counterparty_save
      */
+    #[Depends('test_counterparty_save')]
     public function test_get_counterparty_options($ref)
     {
         $result = $this->np->getCounterpartyOptions($ref);
@@ -478,6 +496,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_counterparty_save
      */
+    #[Depends('test_counterparty_save')]
     public function test_get_counterparty_addresses($ref)
     {
         $result = $this->np->getCounterpartyAddresses($ref);
@@ -515,6 +534,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_counterparty_save
      */
+    #[Depends('test_counterparty_save')]
     public function test_counterparty_delete($ref)
     {
         $result = $this->np->model('Counterparty')->delete(['Ref' => $ref]);
@@ -624,6 +644,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_new_internet_document_get_sender
      */
+    #[Depends('test_new_internet_document_get_sender')]
     public function test_new_internet_document($sender)
     {
         $result = $this->np->newInternetDocument(
@@ -668,6 +689,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_new_internet_document
      */
+    #[Depends('test_new_internet_document')]
     public function test_get_document($ref)
     {
         $result = $this->np->getDocument($ref);
@@ -679,6 +701,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_new_internet_document
      */
+    #[Depends('test_new_internet_document')]
     public function test_print_document($ref)
     {
         /*
@@ -696,6 +719,7 @@ class NovaPoshtaApi2Test extends \PHPUnit_Framework_TestCase
      *
      * @depends test_new_internet_document
      */
+    #[Depends('test_new_internet_document')]
     public function test_print_document_get_link($ref)
     {
         /*
