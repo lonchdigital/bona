@@ -27,7 +27,7 @@
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb mb-0" id="breadcrumblist" itemscope itemtype="https://schema.org/BreadcrumbList">
                                         <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">Malina Design Studio</a>
+                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">{{ trans('base.home') }}</a>
                                             <meta itemprop="position" content="1"/>
                                         </li>
                                         <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
@@ -160,7 +160,7 @@
                                 <div class="brand-other-list d-flex flex-wrap justify-content-center mb-6 mb-xl-0">
                                     @foreach($discoverBrands as $brand)
                                         <div class="brand-other-item">
-                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brand.page', ['brandSlug' => $brand->slug]) }}">
+                                            <a href="{{ app(App\Services\Brand\BrandCatalogUrlService::class)->storefrontUrl($brand) }}">
                                                 <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}">
                                             </a>
                                         </div>

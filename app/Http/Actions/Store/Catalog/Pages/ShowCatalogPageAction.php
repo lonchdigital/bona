@@ -5,6 +5,7 @@ namespace App\Http\Actions\Store\Catalog\Pages;
 use App\DataClasses\ProductStatusDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
+use App\Models\Brand;
 use App\Models\ProductType;
 use App\Services\Brand\BrandService;
 use App\Services\Color\ColorService;
@@ -41,6 +42,11 @@ class ShowCatalogPageAction extends BaseAction
         $colors = $colorService->getAvailableColorsByProductType($productType);
         $brands = $brandService->getAvailableBrandsByProductType($productType);
         $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
+        $selectedBrand = $request->route('brandSlug');
+
+        if (! $selectedBrand instanceof Brand) {
+            $selectedBrand = null;
+        }
 
         $page = $filtersData->filters['page'] ?? 1;
 
@@ -74,6 +80,7 @@ class ShowCatalogPageAction extends BaseAction
             'productType' => $productType,
             'colors' => $colors,
             'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
+            'selectedBrand' => $selectedBrand,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getProductsMaxPrice($productType),

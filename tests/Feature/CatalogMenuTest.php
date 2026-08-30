@@ -63,6 +63,14 @@ class CatalogMenuTest extends TestCase
         $this->assertSame([$category->id], $configuration->cards);
         $this->assertSame('Виробник', $configuration->columns[0]['title']['uk']);
         $this->assertSame('Barausse', $configuration->columns[0]['items'][0]['label']['uk']);
+        $this->assertSame(
+            '/product-category/'.$productType->slug.'/manufacturer/barausse',
+            $configuration->columns[0]['items'][0]['url']['uk'],
+        );
+        $this->assertSame(
+            '/ru/product-category/'.$productType->slug.'/manufacturer/barausse',
+            $configuration->columns[0]['items'][0]['url']['ru'],
+        );
     }
 
     public function test_storefront_renders_only_visible_configured_menu_types(): void
@@ -111,6 +119,7 @@ class CatalogMenuTest extends TestCase
             ->assertSee('Сучасні двері')
             ->assertSee('Виробник')
             ->assertSee('Barausse')
+            ->assertSee('/product-category/visible-doors/manufacturer/barausse', false)
             ->assertSee('class="bona-mainnav__direct"', false);
     }
 

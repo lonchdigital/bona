@@ -1,28 +1,49 @@
 @extends('layouts.store-main')
 
+@php
+    $selectedBrand = $selectedBrand ?? null;
+    $catalogPageTitle = $selectedBrand
+        ? trans('base.catalog_by_manufacturer_heading', [
+            'product_type' => $productType->name,
+            'brand' => $selectedBrand->name,
+        ])
+        : $productType->name;
+@endphp
+
 @section('title')
-    @if($productType->meta_title)
+    @if($selectedBrand)
+        <title>{{ trans('base.catalog_by_manufacturer_meta_title', ['product_type' => $productType->name, 'brand' => $selectedBrand->name]) }}</title>
+        <meta name="title" content="{{ trans('base.catalog_by_manufacturer_meta_title', ['product_type' => $productType->name, 'brand' => $selectedBrand->name]) }}">
+        <meta name="description" content="{{ trans('base.catalog_by_manufacturer_meta_description', ['product_type' => $productType->name, 'brand' => $selectedBrand->name]) }}">
+        <link rel="canonical" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.manufacturer.page', ['productTypeSlug' => $productType->slug, 'brandSlug' => $selectedBrand->slug])) }}">
+    @elseif($productType->meta_title)
         <title>{{ $productType->meta_title }}</title>
         <meta name="title" content="{{ $productType->meta_title }}">
     @endif
 
-    @if($productType->meta_description)
+    @if(!$selectedBrand && $productType->meta_description)
         <meta name="description" content="{{ $productType->meta_description }}">
     @endif
-    @if($productType->meta_keywords)
+    @if(!$selectedBrand && $productType->meta_keywords)
         <meta name="keywords" content="{{ $productType->meta_keywords }}">
     @endif
 
-    @if($productType->meta_tags)
+    @if(!$selectedBrand && $productType->meta_tags)
         {!! $productType->meta_tags !!}
     @endif
 
-    <meta property="og:title" content="{{ $productType->name . ' - ' . trans('base.site_title') }}">
+    <meta property="og:title" content="{{ $catalogPageTitle . ' - ' . trans('base.site_title') }}">
 @endsection
 
 @section('content')
 
-    @include('pages.store.partials.page_header', ['links' => [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) => $productType->name]])
+    @include('pages.store.partials.page_header', ['links' => $selectedBrand
+        ? [
+            App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) => $productType->name,
+            'own' => $selectedBrand->name,
+        ]
+        : [App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) => $productType->name]
+    ])
 
     <!-- ======================== Products ======================== -->
     <section class="products art-products-catalog">
@@ -49,6 +70,45 @@
 {{--                            @dd($filters)--}}
 
                             @include('pages.store.partials.sidebar_filters', ['filters' => $filters, 'filtersData' => $filtersData, 'productsMaxPrice' => $productsMaxPrice, 'productStatuses' => $productStatuses])
+
+                            @if($productType->has_brand && $brandsSortedByFirstLetter->isNotEmpty())
+                                <div class="archive-catalog-filter-left filter-box active">
+                                    <div class="title font-title">{{ trans('base.manufacturer') }}</div>
+                                    <div class="filter-content">
+                                        <div class="filter-item filter-item--brands position-relative checkbox-preview-wrap">
+                                            <input
+                                                class="search-input art-form-light-control mb-3"
+                                                type="search"
+                                                placeholder="{{ trans('base.search_by_brand') }}"
+                                                aria-label="{{ trans('base.search_by_brand') }}"
+                                            >
+                                            <div class="brands">
+                                                @foreach($brandsSortedByFirstLetter as $letter => $brandGroup)
+                                                    <div class="option-letter">{{ $letter }}</div>
+                                                    @foreach($brandGroup as $brand)
+                                                        @php
+                                                            $brandIsSelected = \App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, 'brand', $brand->slug);
+                                                        @endphp
+                                                        <div class="checkbox checkbox-preview" data-toggle="tooltip">
+                                                            <div class="custom-control custom-checkbox position-relative {{ $brandIsSelected ? 'checked' : '' }}">
+                                                                <input
+                                                                    class="custom-control-input sync-input"
+                                                                    id="brand-{{ $brand->id }}-main"
+                                                                    type="checkbox"
+                                                                    name="brand"
+                                                                    value="{{ $brand->slug }}"
+                                                                    @checked($brandIsSelected)
+                                                                >
+                                                                <label class="custom-control-label" for="brand-{{ $brand->id }}-main">{{ $brand->name }}</label>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
 
                             @if($productType->has_color)
                                 <div class="archive-catalog-filter-left filter-box active"> {{-- archive-catalog-filter-left--}}
@@ -88,7 +148,7 @@
                 <!--product items-->
                 <div class="col-lg-9 col-xs-12">
                     <div class="products-catalog-wrapper">
-                        <h1 class="h2 title">{{ $productType->name }}</h1>
+                        <h1 class="h2 title">{{ $catalogPageTitle }}</h1>
 
                         <div class="art-catalog-top">
 

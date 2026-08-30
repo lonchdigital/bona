@@ -16,7 +16,7 @@
                                     <nav aria-label="breadcrumb">
                                         <ul class="breadcrumb mb-0" id="breadcrumblist" itemscope itemtype="http://schema.org/BreadcrumbList">
                                             <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">Malina Design Studio</a>
+                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">{{ trans('base.home') }}</a>
                                                 <meta itemprop="position" content="1"/>
                                             </li>
                                             <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
@@ -24,7 +24,7 @@
                                                 <meta itemprop="position" content="2"/>
                                             </li>
                                             <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brand.page', ['brandSlug' => $collection->brand->slug]) }}">{{ $collection->brand->name }}</a>
+                                                <a href="{{ app(App\Services\Brand\BrandCatalogUrlService::class)->storefrontUrl($collection->brand) }}">{{ $collection->brand->name }}</a>
                                                 <meta itemprop="position" content="3"/>
                                             </li>
                                             <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" aria-current="page">
@@ -268,7 +268,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brand.page', ['brandSlug' => $collection->brand->slug]) }}" class="btn btn-outline-black-custom d-block mx-auto">{{ trans('base.all_collections_of_brand') }}</a>
+                        <a href="{{ app(App\Services\Brand\BrandCatalogUrlService::class)->storefrontUrl($collection->brand) }}" class="btn btn-outline-black-custom d-block mx-auto">{{ trans('base.all_collections_of_brand') }}</a>
                     </div>
                 </section>
             </div>

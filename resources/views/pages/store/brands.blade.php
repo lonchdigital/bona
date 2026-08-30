@@ -16,7 +16,7 @@
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb mb-0" id="breadcrumblist" itemscope itemtype="https://schema.org/BreadcrumbList">
                                         <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">Malina Design Studio</a>
+                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">{{ trans('base.home') }}</a>
                                             <meta itemprop="position" content="1"/>
                                         </li>
                                         <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
@@ -55,7 +55,7 @@
                                         <div class="all-brands-item text-center">
                                             <div class="all-brands-item-inner">
                                                 <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}">
-                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brand.page', ['brandSlug' => $brand->slug]) }}" class="btn btn-outline-black-custom py-1 px-1 px-xl-5">{{ trans('base.all_collections_of_brand') }}</a>
+                                                <a href="{{ app(App\Services\Brand\BrandCatalogUrlService::class)->storefrontUrl($brand) }}" class="btn btn-outline-black-custom py-1 px-1 px-xl-5">{{ trans('base.all_collections_of_brand') }}</a>
                                             </div>
                                         </div>
                                     @endforeach

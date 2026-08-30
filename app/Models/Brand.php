@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Brand\BrandCatalogUrlService;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -40,10 +41,20 @@ class Brand extends Model implements Sitemapable
 
     public function toSitemapTag(): Url|string|array
     {
-        $urls = [];
-        $urls[] = route('store.brand.page', ['brandSlug' => $this->slug]);
-        $urls[] = '/ru'.route('store.brand.page', ['brandSlug' => $this->slug], false);
+        $productType = app(BrandCatalogUrlService::class)->preferredProductType($this);
 
-        return $urls;
+        if (! $productType) {
+            return [];
+        }
+
+        $routeParameters = [
+            'productTypeSlug' => $productType->slug,
+            'brandSlug' => $this->slug,
+        ];
+
+        return [
+            route('store.catalog.manufacturer.page', $routeParameters),
+            '/ru'.route('store.catalog.manufacturer.page', $routeParameters, false),
+        ];
     }
 }

@@ -88,9 +88,9 @@ class CatalogMenuService
             ->all();
 
         $normalizedColumns = collect($columns)
-            ->map(function (array $column, int $columnIndex) use ($categoryIds) {
+            ->map(function (array $column, int $columnIndex) use ($categoryIds, $productType) {
                 $items = collect($column['items'] ?? [])
-                    ->map(function (array $item, int $itemIndex) use ($categoryIds) {
+                    ->map(function (array $item, int $itemIndex) use ($categoryIds, $productType) {
                         $categoryId = isset($item['category_id']) && $item['category_id'] !== ''
                             ? (int) $item['category_id']
                             : null;
@@ -99,10 +99,20 @@ class CatalogMenuService
                             $categoryId = null;
                         }
 
+                        $urls = $this->normalizeTranslations($item['url'] ?? []);
+
+                        foreach (['uk', 'ru'] as $locale) {
+                            $urls[$locale] = $this->resolveStorefrontUrl(
+                                $urls[$locale],
+                                $productType->slug,
+                                $locale,
+                            );
+                        }
+
                         return [
                             'category_id' => $categoryId,
                             'label' => $this->normalizeTranslations($item['label'] ?? []),
-                            'url' => $this->normalizeTranslations($item['url'] ?? []),
+                            'url' => $urls,
                             'sort_order' => max(0, (int) ($item['sort_order'] ?? $itemIndex)),
                         ];
                     })
@@ -149,5 +159,18 @@ class CatalogMenuService
     private function hasTranslation(array $translations): bool
     {
         return collect($translations)->contains(fn ($value) => trim((string) $value) !== '');
+    }
+
+    public function resolveStorefrontUrl(string $url, string $productTypeSlug, string $locale): string
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if (! is_string($path) || ! preg_match('#^/(?:ru/)?brands/([a-z0-9-]+)/?$#i', $path, $matches)) {
+            return $url;
+        }
+
+        $prefix = $locale === 'ru' ? '/ru' : '';
+
+        return $prefix.'/product-category/'.$productTypeSlug.'/manufacturer/'.mb_strtolower($matches[1]);
     }
 }

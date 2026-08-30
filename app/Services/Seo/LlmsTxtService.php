@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\ProductType;
 use App\Models\StaticPage;
+use App\Services\Brand\BrandCatalogUrlService;
 
 /**
  * Builds /llms.txt: a plain map telling answer engines which pages matter.
@@ -15,6 +16,8 @@ use App\Models\StaticPage;
  */
 class LlmsTxtService
 {
+    public function __construct(private readonly BrandCatalogUrlService $brandCatalogUrlService) {}
+
     public function build(): string
     {
         $lines = [];
@@ -64,7 +67,16 @@ class LlmsTxtService
             $lines[] = '';
 
             foreach ($brands as $brand) {
-                $lines[] = '- ['.$this->clean((string) $brand->name).']('.route('store.brand.page', ['brandSlug' => $brand->slug]).')';
+                $productType = $this->brandCatalogUrlService->preferredProductType($brand);
+
+                if (! $productType) {
+                    continue;
+                }
+
+                $lines[] = '- ['.$this->clean((string) $brand->name).']('.route('store.catalog.manufacturer.page', [
+                    'productTypeSlug' => $productType->slug,
+                    'brandSlug' => $brand->slug,
+                ]).')';
             }
         }
 

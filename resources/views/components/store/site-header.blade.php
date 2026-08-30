@@ -5,9 +5,9 @@
 ])
 
 @php
-    $logoPath = $overlay
-        ? ($options['logoLight'] ?? $options['logoDark'] ?? null)
-        : ($options['logoDark'] ?? $options['logoLight'] ?? null);
+    // Both the hero overlay and the solid inner-page header are dark in the
+    // approved storefront design, so they use the light logo consistently.
+    $logoPath = $options['logoLight'] ?? $options['logoDark'] ?? null;
     $phone = $options['phoneOne'] ?? null;
     $hasMenuConfiguration = $productTypes->contains(fn ($productType) => $productType->catalogMenuConfiguration !== null);
     $navigationTypes = $hasMenuConfiguration

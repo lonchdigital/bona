@@ -131,7 +131,11 @@
                                                             'productTypeSlug' => $productType->slug,
                                                             'categorySlug' => $category->slug,
                                                         ])
-                                                        : $translatedValue($item['url'] ?? []);
+                                                        : app(App\Services\CatalogMenu\CatalogMenuService::class)->resolveStorefrontUrl(
+                                                            $translatedValue($item['url'] ?? []),
+                                                            $productType->slug,
+                                                            $locale,
+                                                        );
                                                 @endphp
                                                 @if($itemLabel !== '' && $itemUrl !== '')
                                                     <a href="{{ $itemUrl }}">{{ $itemLabel }}</a>

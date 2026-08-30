@@ -77,9 +77,9 @@
 
     &--solid {
         position: relative;
-        border-bottom: 1px solid var(--bona-line);
-        background: #fff;
-        color: var(--bona-ink);
+        border-bottom: 1px solid rgba(247, 244, 238, .1);
+        background: var(--bona-dark);
+        color: var(--bona-cream);
     }
 }
 

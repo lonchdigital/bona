@@ -3,14 +3,24 @@
 namespace App\Http\Requests\Store\Catalog;
 
 use App\Http\Requests\BaseRequest;
+use App\Models\Brand;
 use App\Services\Product\DTO\FilterProductDTO;
 
 class CatalogFilterRequest extends BaseRequest
 {
     protected function prepareForValidation(): void
     {
+        $catalogFilters = $this->route('catalogFiltersString');
+        $manufacturer = $this->route('brandSlug');
+
+        if ($manufacturer instanceof Brand) {
+            $catalogFilters = 'brand='.$manufacturer->slug;
+        } elseif (is_string($manufacturer) && $manufacturer !== '') {
+            $catalogFilters = 'brand='.$manufacturer;
+        }
+
         $this->merge([
-            'catalog_filters' => $this->route('catalogFiltersString'),
+            'catalog_filters' => $catalogFilters,
         ]);
     }
 
