@@ -21,7 +21,7 @@ class UpdateCountOfProductsByCategoryJob implements ShouldQueue
      */
     public function __construct(
         public readonly ?int $productId = null,
-    ) { }
+    ) {}
 
     /**
      * Execute the job.
@@ -35,6 +35,6 @@ class UpdateCountOfProductsByCategoryJob implements ShouldQueue
         }
 
         $result = $categoryService->updateCountOfProductsByCategory($categories);
-        Log::info(($result->isSuccess() ? '[SUCCESS] ' : '[FAIL] ') . $result->getMessage());
+        Log::info(($result->isSuccess() ? '[SUCCESS] ' : '[FAIL] ').$result->getMessage());
     }
 }

@@ -17,8 +17,7 @@ class ShowBlogArticlesByCategoryActionPage extends BaseAction
         BlogCategoryService $blogCategoryService,
         ApplicationConfigService $applicationConfigService,
         BlogSlidesService $blogSlidesService,
-    )
-    {
+    ) {
         return view('pages.blog.main', [
             'categories' => $blogCategoryService->getBlogCategoriesCollection(),
             'articles' => $blogArticleService->getBlogArticlesByCategoryListPaginated($blogCategory),

@@ -5,28 +5,27 @@ namespace App\Http\Actions\Admin\Products\Pages;
 use App\DataClasses\ProductStatusDataClass;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Brand\BrandService;
-use App\Services\ProductCategory\CategoryService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductService;
+use App\Services\ProductCategory\CategoryService;
 
 class ShowProductCreatePageAction
 {
     public function __invoke(
-        int                      $productTypeId,
-        ProductService           $productsService,
+        int $productTypeId,
+        ProductService $productsService,
         ApplicationConfigService $applicationService,
-        CurrencyService          $currencyService,
-        CategoryService          $productCategoryService,
-        BrandService             $brandService,
-        ColorService             $colorService,
-        CountryService           $countryService,
-    )
-    {
+        CurrencyService $currencyService,
+        CategoryService $productCategoryService,
+        BrandService $brandService,
+        ColorService $colorService,
+        CountryService $countryService,
+    ) {
         $productType = $productsService->getProductTypeWithFields($productTypeId);
 
-        if (!$productType) {
+        if (! $productType) {
             abort(404);
         }
 

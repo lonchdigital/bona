@@ -2,7 +2,6 @@
 
 namespace App\Http\Actions\Admin\Colors\Pages;
 
-
 use App\Services\Color\ColorService;
 
 class ShowColorCreatePageAction

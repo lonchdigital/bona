@@ -4,17 +4,17 @@ namespace App\Services\StaticPage;
 
 use App\Models\StaticPage;
 use App\Models\StaticPageContent;
+use App\Services\Application\ApplicationConfigService;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\StaticPage\DTO\StaticPageEditDTO;
 use Illuminate\Support\Collection;
-use App\Services\Application\ApplicationConfigService;
 
 class StaticPageService extends BaseService
 {
     public function __construct(
         private readonly ApplicationConfigService $applicationService,
-    ){ }
+    ) {}
 
     public function getContent(int $staticPageTypeId): Collection
     {
@@ -23,6 +23,7 @@ class StaticPageService extends BaseService
         if ($staticPage) {
             return $staticPage->content;
         }
+
         return collect();
     }
 
@@ -49,7 +50,7 @@ class StaticPageService extends BaseService
                 'meta_description' => $allData->where('language', $language)->first()?->meta_description,
                 'meta_keywords' => $allData->where('language', $language)->first()?->meta_keywords,
                 'meta_tags' => $allData->where('language', $language)->first()?->meta_tags,
-                'content' => $allData->where('language', $language)->first()?->content
+                'content' => $allData->where('language', $language)->first()?->content,
             ];
         }
 
@@ -58,10 +59,10 @@ class StaticPageService extends BaseService
 
     public function update(int $staticPageTypeId, StaticPageEditDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($staticPageTypeId, $request) {
+        return $this->coverWithDBTransaction(function () use ($staticPageTypeId, $request) {
             $staticPage = StaticPage::where('type_id', $staticPageTypeId)->first();
 
-            if (!$staticPage) {
+            if (! $staticPage) {
                 $staticPage = StaticPage::create([
                     'type_id' => $staticPageTypeId,
                 ]);
@@ -70,7 +71,7 @@ class StaticPageService extends BaseService
             $data = [];
             $request->meta_tags = [
                 'uk' => $request->meta_tags,
-                'ru' => $request->meta_tags
+                'ru' => $request->meta_tags,
             ];
             foreach ($request as $key => $value) {
                 $data[$key] = $value;

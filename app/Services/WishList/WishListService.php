@@ -3,8 +3,8 @@
 namespace App\Services\WishList;
 
 use App\Jobs\PruneGuestWishListsJob;
-use App\Models\User;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\WishList;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
@@ -47,7 +47,7 @@ class WishListService extends BaseService
 
     public function getWishListByUser(?User $user): ?WishList
     {
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 
@@ -114,13 +114,14 @@ class WishListService extends BaseService
         if ($wishList) {
             return $wishList->products;
         }
+
         return collect();
     }
 
     public function addProductToWishList(WishList $wishList, Product $product): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use ($wishList, $product) {
-            if (!$wishList->products()->where('product_id', $product->id)->exists()) {
+            if (! $wishList->products()->where('product_id', $product->id)->exists()) {
                 $wishList->products()->attach($product->id);
             }
 
@@ -149,14 +150,14 @@ class WishListService extends BaseService
     {
         $guestWishList = $this->getWishListByToken($guestToken);
 
-        if (!$guestWishList) {
+        if (! $guestWishList) {
             return;
         }
 
         $this->coverWithDBTransaction(function () use ($user, $guestWishList) {
             $userWishList = $this->getWishListByUser($user);
 
-            if (!$userWishList) {
+            if (! $userWishList) {
                 $guestWishList->owner_id = $user->id;
                 $guestWishList->token = null;
                 $guestWishList->save();

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
 class ProductAttribute extends Model
@@ -13,18 +15,17 @@ class ProductAttribute extends Model
 
     protected $guarded = [];
 
-
     /*public function options(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ProductFieldOption::class);
     }*/
 
-    public function productAttributeOptions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function productAttributeOptions(): HasMany
     {
         return $this->hasMany(ProductAttributeOptions::class);
     }
 
-    public function types(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function types(): BelongsToMany
     {
         return $this->belongsToMany(ProductType::class);
     }

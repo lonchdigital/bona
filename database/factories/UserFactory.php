@@ -2,11 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -22,13 +25,13 @@ class UserFactory extends Factory
      */
     private static function ensureUserRole(): int
     {
-        \Illuminate\Support\Facades\DB::table('roles')->insertOrIgnore([
-            'id' => \App\Models\Role::USER_ROLE_ID,
+        DB::table('roles')->insertOrIgnore([
+            'id' => Role::USER_ROLE_ID,
             'role' => 'User',
             'role_slug' => 'user',
         ]);
 
-        return \App\Models\Role::USER_ROLE_ID;
+        return Role::USER_ROLE_ID;
     }
 
     public function definition(): array

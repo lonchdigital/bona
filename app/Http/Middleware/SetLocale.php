@@ -18,7 +18,7 @@ class SetLocale
 
         if (auth()->user()) {
             auth()->user()->update([
-                'language' => $request->segment(1)
+                'language' => $request->segment(1),
             ]);
         }
 

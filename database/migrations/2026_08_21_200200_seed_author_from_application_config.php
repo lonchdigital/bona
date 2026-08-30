@@ -25,7 +25,7 @@ return new class extends Migration
 
         $name = $this->decode($config['authorName'] ?? null);
 
-        if (!$name) {
+        if (! $name) {
             // Nothing worth carrying over; the admin panel can create the
             // author from scratch.
             return;

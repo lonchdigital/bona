@@ -21,13 +21,13 @@ class MergeGuestWishListOnLogin
     public function __construct(
         private readonly WishListService $wishListService,
         private readonly GuestWishListToken $guestWishListToken,
-    ) { }
+    ) {}
 
     public function handle(Login $event): void
     {
         $guestToken = $this->guestWishListToken->existing();
 
-        if (!$guestToken) {
+        if (! $guestToken) {
             return;
         }
 

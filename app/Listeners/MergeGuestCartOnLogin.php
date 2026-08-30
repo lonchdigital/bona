@@ -20,13 +20,13 @@ class MergeGuestCartOnLogin
     public function __construct(
         private readonly CartService $cartService,
         private readonly GuestCartToken $guestCartToken,
-    ) { }
+    ) {}
 
     public function handle(Login $event): void
     {
         $guestToken = $this->guestCartToken->existing();
 
-        if (!$guestToken) {
+        if (! $guestToken) {
             return;
         }
 

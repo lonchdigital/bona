@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\WishList;
+use App\Services\WishList\WishListService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
@@ -16,8 +17,8 @@ use Tests\TestCase;
  */
 class WishListTest extends TestCase
 {
-    use RefreshDatabase;
     use MakesShopData;
+    use RefreshDatabase;
 
     private function save(string $slug)
     {
@@ -129,7 +130,7 @@ class WishListTest extends TestCase
 
         $this->save($product->slug)->assertOk();
 
-        $ids = app(\App\Services\WishList\WishListService::class)
+        $ids = app(WishListService::class)
             ->getWishListProductsId(WishList::first());
 
         $this->assertSame(

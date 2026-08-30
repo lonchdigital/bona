@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\ProductTypes;
 
-use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\Admin\ProductType\ProductTypeService;
 use App\Http\Requests\Admin\ProductType\EditProductTypeRequest;
+use App\Models\ProductType;
+use App\Services\Admin\ProductType\ProductTypeService;
 
 class ProductTypeEditAction extends BaseAction
 {

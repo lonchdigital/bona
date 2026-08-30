@@ -30,84 +30,84 @@ class ContactsEditRequest extends BaseRequest
 
         $rules['iframe_address_one'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['iframe_address_two'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['iframe_address_three'] = [
             'nullable',
-            'string'
+            'string',
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
 
-            $rules['city_one.' . $availableLanguage] = [
+            $rules['city_one.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['address_one.' . $availableLanguage] = [
+            $rules['address_one.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['phone_one.' . $availableLanguage] = [
+            $rules['phone_one.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['email_one.' . $availableLanguage] = [
+            $rules['email_one.'.$availableLanguage] = [
                 'nullable',
-                'string'
-            ];
-
-            $rules['city_two.' . $availableLanguage] = [
-                'nullable',
-                'string'
-            ];
-            $rules['address_two.' . $availableLanguage] = [
-                'nullable',
-                'string'
-            ];
-            $rules['phone_two.' . $availableLanguage] = [
-                'nullable',
-                'string'
-            ];
-            $rules['email_two.' . $availableLanguage] = [
-                'nullable',
-                'string'
+                'string',
             ];
 
-            $rules['city_three.' . $availableLanguage] = [
+            $rules['city_two.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['address_three.' . $availableLanguage] = [
+            $rules['address_two.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['phone_three.' . $availableLanguage] = [
+            $rules['phone_two.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['email_three.' . $availableLanguage] = [
+            $rules['email_two.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
+            ];
+
+            $rules['city_three.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['address_three.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['phone_three.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['email_three.'.$availableLanguage] = [
+                'nullable',
+                'string',
             ];
         }
 
-        return  $rules;
+        return $rules;
     }
 
     public function attributes(): array
@@ -119,9 +119,9 @@ class ContactsEditRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
         }
 
         return $attributes;

@@ -11,7 +11,7 @@ return [
     'email_footer_text_2' => 'команда :SITE_NAME',
     'email_footer_address' => 'Вул. Михайла Максимовича 24, Київ, Україна',
 
-    //user-email-confirmation-email
+    // user-email-confirmation-email
     'user-email-confirmation-email' => [
         'subject' => 'Підтвердження електронної пошти',
         'main_text' => 'Для завершення реєстрації, буль ласка підтвердіть ваш email',
@@ -19,7 +19,7 @@ return [
         'support_text' => 'Потрібне посилання?',
     ],
 
-    //user-forgot-password-email
+    // user-forgot-password-email
     'user-forgot-password-email' => [
         'subject' => 'Відновлення паролю',
         'main_text' => 'Ваш пароль успішно відновлено.',

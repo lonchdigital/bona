@@ -16,12 +16,12 @@ class BrandsSeeder extends Seeder
      */
     public function run(BrandService $brandService): void
     {
-        $fakeBrandLogoImagePath = base_path() . '/resources/seed/brands/fake-brand-logo-image.png';
-        $fakeBrandHeadImagePath = base_path() . '/resources/seed/brands/fake-brand-head-image.jpg';
+        $fakeBrandLogoImagePath = base_path().'/resources/seed/brands/fake-brand-logo-image.png';
+        $fakeBrandHeadImagePath = base_path().'/resources/seed/brands/fake-brand-head-image.jpg';
 
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
 
@@ -337,8 +337,8 @@ class BrandsSeeder extends Seeder
                     'ru' => 'Вдохновение',
                 ],
                 [
-                    'uk' => 'Перегляньте нашу добірку фото та відео колекцій шпалер ' . $brand['name']['uk'] . '.',
-                    'ru' => 'Просмотрите нашу подборку фото и видео коллекций обоев ' . $brand['name']['ru'] . '.',
+                    'uk' => 'Перегляньте нашу добірку фото та відео колекцій шпалер '.$brand['name']['uk'].'.',
+                    'ru' => 'Просмотрите нашу подборку фото и видео коллекций обоев '.$brand['name']['ru'].'.',
                 ],
                 [
                     [

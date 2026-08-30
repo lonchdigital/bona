@@ -22,7 +22,7 @@ class BlogSlidesService extends BaseService
 
     public function blogSlidesEdit(BlogSlidesEditDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request) {
+        return $this->coverWithDBTransaction(function () use ($request) {
             $imagesToDelete = [];
             $existingSlides = BlogSlide::get();
 
@@ -31,8 +31,8 @@ class BlogSlidesService extends BaseService
                     if (isset($slide['id'])) {
                         $existingSlide = $existingSlides->where('id', $slide['id'])->first();
 
-                        if (!$existingSlide) {
-                            throw new \Exception('Can\'t find the block slide with such id: ' . $slide['id']);
+                        if (! $existingSlide) {
+                            throw new \Exception('Can\'t find the block slide with such id: '.$slide['id']);
                         }
 
                         $dataToUpdate = [
@@ -41,14 +41,14 @@ class BlogSlidesService extends BaseService
                         ];
 
                         if (isset($slide['image_1'])) {
-                            $image1Path = self::BLOG_SLIDES_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                            $image1Path = self::BLOG_SLIDES_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
                             $this->storeSlideImage($image1Path, $slide['image_1']);
                             $dataToUpdate['slide_image_1_path'] = $image1Path;
                             $imagesToDelete[] = $existingSlide->slide_image_1_path;
                         }
 
                         if (isset($slide['image_2'])) {
-                            $image2Path = self::BLOG_SLIDES_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                            $image2Path = self::BLOG_SLIDES_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
                             $this->storeSlideImage($image2Path, $slide['image_1']);
                             $dataToUpdate['slide_image_2_path'] = $image2Path;
                             $imagesToDelete[] = $existingSlide->slide_image_2_path;
@@ -56,10 +56,10 @@ class BlogSlidesService extends BaseService
 
                         $existingSlide->update($dataToUpdate);
                     } else {
-                        $image1Path = self::BLOG_SLIDES_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                        $image1Path = self::BLOG_SLIDES_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
                         $this->storeSlideImage($image1Path, $slide['image_1']);
 
-                        $image2Path = self::BLOG_SLIDES_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                        $image2Path = self::BLOG_SLIDES_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
                         $this->storeSlideImage($image2Path, $slide['image_2']);
 
                         BlogSlide::create([
@@ -72,10 +72,9 @@ class BlogSlidesService extends BaseService
                 }
             }
 
-
             $existingSlidesInRequest = $request->slides ? array_filter(array_column($request->slides, 'id'), function ($item) {
                 return $item !== null;
-            }): [];
+            }) : [];
 
             $slidesToDelete = $existingSlides->whereNotIn('id', $existingSlidesInRequest);
 

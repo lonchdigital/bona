@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\PreviewImage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -52,7 +53,7 @@ class Author extends Model implements Sitemapable
      */
     public function ogImageUrl(): Attribute
     {
-        return Attribute::make(fn () => \App\Helpers\PreviewImage::url($this->photo_path));
+        return Attribute::make(fn () => PreviewImage::url($this->photo_path));
     }
 
     /**
@@ -78,11 +79,11 @@ class Author extends Model implements Sitemapable
         return $array;
     }
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         return [
             route('store.author.page', ['authorSlug' => $this->slug]),
-            '/ru' . route('store.author.page', ['authorSlug' => $this->slug], false),
+            '/ru'.route('store.author.page', ['authorSlug' => $this->slug], false),
         ];
     }
 }

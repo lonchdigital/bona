@@ -8,7 +8,7 @@ class SeoText extends Model
 {
     protected $guarded = [];
 
-    static function updateSeoText(string $pageType, array $title, array $content)
+    public static function updateSeoText(string $pageType, array $title, array $content)
     {
         $data = [];
         foreach ($title as $lang => $value) {
@@ -23,12 +23,11 @@ class SeoText extends Model
             SeoText::updateOrCreate(
                 [
                     'page_type' => $pageType,
-                    'language' => $lang
+                    'language' => $lang,
                 ],
                 $values
             );
         }
 
     }
-
 }

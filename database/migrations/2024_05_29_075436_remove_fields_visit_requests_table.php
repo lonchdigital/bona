@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('form_title')->nullable();
         });
 
-
     }
 
     /**

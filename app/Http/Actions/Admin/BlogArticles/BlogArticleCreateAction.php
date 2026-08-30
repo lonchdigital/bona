@@ -3,8 +3,8 @@
 namespace App\Http\Actions\Admin\BlogArticles;
 
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\BlogArticle\BlogArticleService;
 use App\Http\Requests\Admin\BlogArticle\BlogArticleCreateRequest;
+use App\Services\BlogArticle\BlogArticleService;
 
 class BlogArticleCreateAction extends BaseAction
 {

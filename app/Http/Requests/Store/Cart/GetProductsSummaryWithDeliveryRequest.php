@@ -14,7 +14,7 @@ class GetProductsSummaryWithDeliveryRequest extends BaseRequest
             'delivery_type_id' => [
                 'required',
                 'int',
-                'in:' . DeliveryTypesDataClass::get()->pluck('id')->implode(','),
+                'in:'.DeliveryTypesDataClass::get()->pluck('id')->implode(','),
             ],
         ];
     }

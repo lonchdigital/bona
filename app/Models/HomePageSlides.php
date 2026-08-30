@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
@@ -22,6 +21,7 @@ class HomePageSlides extends Model
             return Storage::url($this->slide_image_path);
         });
     }
+
     public function slideImageMobileUrl(): Attribute
     {
         return Attribute::make(function () {
@@ -34,7 +34,7 @@ class HomePageSlides extends Model
         $array = parent::toArray();
         $array['slide_image_url'] = $this->slide_image_url;
         $array['slide_image_mobile_url'] = $this->slide_image_mobile_url;
+
         return $array;
     }
-
 }

@@ -3,7 +3,6 @@
 namespace App\Services\Contacts\DTO;
 
 use App\Services\Base\DTO\BaseDTO;
-use Illuminate\Http\UploadedFile;
 
 class ContactsPageEditDTO implements BaseDTO
 {
@@ -30,5 +29,5 @@ class ContactsPageEditDTO implements BaseDTO
         public readonly ?array $phoneThree,
         public readonly ?array $emailThree,
         public readonly ?string $iframeAddressThree,
-    ){ }
+    ) {}
 }

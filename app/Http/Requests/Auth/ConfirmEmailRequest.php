@@ -13,10 +13,9 @@ class ConfirmEmailRequest extends BaseRequest
             'code' => [
                 'nullable',
                 'string',
-            ]
+            ],
         ];
     }
-
 
     public function toDTO(): ConfirmEmailDTO
     {

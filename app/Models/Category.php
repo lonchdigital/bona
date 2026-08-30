@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Sitemap\Contracts\Sitemapable;
 use Spatie\Sitemap\Tags\Url;
 use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Category extends Model implements Sitemapable
 {
@@ -33,6 +33,7 @@ class Category extends Model implements Sitemapable
             if ($this->image_path) {
                 return Storage::url($this->image_path);
             }
+
             return null;
         });
     }
@@ -46,11 +47,11 @@ class Category extends Model implements Sitemapable
         return $array;
     }
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         $urls = [];
         $urls[] = route('store.catalog-category.page', ['categorySlug' => $this->slug, 'productTypeSlug' => $this->productType->slug]);
-        $urls[] = '/ru' . route('store.catalog-category.page', ['categorySlug' => $this->slug, 'productTypeSlug' => $this->productType->slug], false);
+        $urls[] = '/ru'.route('store.catalog-category.page', ['categorySlug' => $this->slug, 'productTypeSlug' => $this->productType->slug], false);
 
         return $urls;
     }

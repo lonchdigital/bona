@@ -4,19 +4,24 @@ namespace App\Services\Payment;
 
 use App\DataClasses\MonoBankOrderStateStatusesDataClass;
 use App\DataClasses\OrderPaymentStatusesDataClass;
+use App\Models\Order;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
+use App\Services\Pricing\PricingService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use App\Models\Order;
 use GuzzleHttp\Client;
 
 class PaymentMonoBankService extends BaseService
 {
     protected string $response_url;
+
     protected string $mono_bank_api_url;
+
     protected string $mono_bank_client_secret;
+
     protected string $mono_bank_client_store_id;
+
+    protected string $mono_bank_point_id;
 
     /*
      * These were assigned straight from env() into typed string properties, so
@@ -25,12 +30,14 @@ class PaymentMonoBankService extends BaseService
      * was chosen. One missing line in .env took the whole checkout down rather
      * than just instalments through Monobank.
      */
-    public function __construct()
-    {
+    public function __construct(
+        private readonly PricingService $pricingService,
+    ) {
         $this->response_url = route('store.checkout.partial.mono.bank.payment');
         $this->mono_bank_api_url = (string) config('payment.monobank.api_url');
         $this->mono_bank_client_secret = (string) config('payment.monobank.client_secret');
         $this->mono_bank_client_store_id = (string) config('payment.monobank.store_id');
+        $this->mono_bank_point_id = (string) config('payment.monobank.point_id');
     }
 
     /**
@@ -40,7 +47,8 @@ class PaymentMonoBankService extends BaseService
     {
         return $this->mono_bank_api_url !== ''
             && $this->mono_bank_client_secret !== ''
-            && $this->mono_bank_client_store_id !== '';
+            && $this->mono_bank_client_store_id !== ''
+            && $this->mono_bank_point_id !== '';
     }
 
     /**
@@ -55,7 +63,7 @@ class PaymentMonoBankService extends BaseService
      */
     public function isCallbackAuthentic(string $rawBody, ?string $signature): bool
     {
-        if (!$this->isConfigured() || !is_string($signature) || $signature === '') {
+        if (! $this->isConfigured() || ! is_string($signature) || $signature === '') {
             return false;
         }
 
@@ -68,36 +76,20 @@ class PaymentMonoBankService extends BaseService
 
     public function createMonoBankPartialPaymentOrder(Order $order, string $phone, string $period)
     {
-        $client = new Client();
+        if (! $this->isConfigured()) {
+            \Log::error('Monobank instalments are not configured.');
 
-        $data = $this->collectAllProductsFromOrder($order);
-        $data['amount'] = number_format($data['amount'], 2, '.', '');
-        $currentDate = Carbon::now()->format('Y-m-d');
+            return null;
+        }
 
-        $request_array = [
-            "store_order_id" => (string) $order->id,
-            "client_phone" => $phone,
-            "total_sum" => (integer) $data['amount'],
-            "invoice" => [
-                "date" => $currentDate,
-                "number" => "1234-1234",
-                "point_id" => 1234,
-                "source" => "INTERNET",
-            ],
-            "available_programs" => [
-                [
-                    "available_parts_count" => [$period],
-                    "type" => "payment_installments",
-                ]
-            ],
-            "products" => $data['products'],
-            "result_callback" => $this->response_url
-        ];
+        $client = new Client;
+
+        $request_array = $this->createOrderPayload($order, $phone, $period);
         $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
 
         try {
             // Send request to Monobank
-            $response = $client->post($this->mono_bank_api_url . '/api/order/create', [
+            $response = $client->post($this->mono_bank_api_url.'/api/order/create', [
                 'headers' => [
                     'store-id' => $this->mono_bank_client_store_id,
                     'signature' => $signature,
@@ -122,6 +114,7 @@ class PaymentMonoBankService extends BaseService
                 'response' => $response->getBody()->getContents(),
                 'headers' => $response->getHeaders(),
             ]);
+
             return null;
 
         } catch (\Exception $e) {
@@ -129,23 +122,53 @@ class PaymentMonoBankService extends BaseService
             \Log::error('Monobank API Exception', [
                 'message' => $e->getMessage(),
             ]);
+
             return null;
         }
 
     }
 
+    public function createOrderPayload(Order $order, string $phone, string|int $period): array
+    {
+        $data = $this->collectAllProductsFromOrder($order);
+
+        return [
+            'store_order_id' => (string) $order->id,
+            'client_phone' => $phone,
+            'total_sum' => $data['amount'],
+            'invoice' => [
+                'date' => Carbon::now()->format('Y-m-d'),
+                'number' => 'INV-'.$order->id,
+                'point_id' => $this->mono_bank_point_id,
+                'source' => 'INTERNET',
+            ],
+            'available_programs' => [
+                [
+                    'available_parts_count' => [(int) $period],
+                    'type' => 'payment_installments',
+                ],
+            ],
+            'products' => $data['products'],
+            'result_callback' => $this->response_url,
+        ];
+    }
+
     public function validateClientMonoBankPhone(string $phone): bool
     {
-        $client = new Client();
+        if (! $this->isConfigured()) {
+            return false;
+        }
+
+        $client = new Client;
 
         $request_array = [
-            "phone" => $phone,
+            'phone' => $phone,
         ];
 
         $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
 
         try {
-            $response = $client->post($this->mono_bank_api_url . '/api/client/validate', [
+            $response = $client->post($this->mono_bank_api_url.'/api/v2/client/validate', [
                 'headers' => [
                     'store-id' => $this->mono_bank_client_store_id,
                     'signature' => $signature,
@@ -170,12 +193,12 @@ class PaymentMonoBankService extends BaseService
 
     }
 
-    public function rejectOrderMonoBank(Order $order) : ServiceActionResult
+    public function rejectOrderMonoBank(Order $order): ServiceActionResult
     {
-        $client = new Client();
+        $client = new Client;
 
         $request_array = [
-            "order_id" => $order->mono_order_id,
+            'order_id' => $order->mono_order_id,
         ];
         /*$request_array = [
             "order_id" => "123e4567-e89b-12d3-a456-426614174000"
@@ -184,7 +207,7 @@ class PaymentMonoBankService extends BaseService
         $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
 
         try {
-            $response = $client->post($this->mono_bank_api_url . '/api/order/reject', [
+            $response = $client->post($this->mono_bank_api_url.'/api/order/reject', [
                 'headers' => [
                     'store-id' => $this->mono_bank_client_store_id,
                     'signature' => $signature,
@@ -197,14 +220,14 @@ class PaymentMonoBankService extends BaseService
             if (in_array($response->getStatusCode(), [200, 201])) {
                 $data = json_decode($response->getBody()->getContents(), true);
 
-                if( isset($data['order_sub_state']) && $data['order_sub_state'] == 'REJECTED_BY_STORE' ) {
+                if (isset($data['order_sub_state']) && $data['order_sub_state'] == 'REJECTED_BY_STORE') {
                     $order->mono_order_state = MonoBankOrderStateStatusesDataClass::STATUS_REJECTED;
                     $order->save();
 
                     return ServiceActionResult::make(true, trans('admin.order_rejected'));
                 } else {
 
-                    if(isset($data['message'])) {
+                    if (isset($data['message'])) {
                         return ServiceActionResult::make(false, $data['message']);
                     }
 
@@ -222,15 +245,14 @@ class PaymentMonoBankService extends BaseService
             return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
         }
 
-
     }
 
-    public function confirmOrderMonoBank(Order $order) : ServiceActionResult
+    public function confirmOrderMonoBank(Order $order): ServiceActionResult
     {
-        $client = new Client();
+        $client = new Client;
 
         $request_array = [
-            "order_id" => $order->mono_order_id,
+            'order_id' => $order->mono_order_id,
         ];
         /*$request_array = [
             "order_id" => "123e4567-e89b-12d3-a456-426614174000"
@@ -239,7 +261,7 @@ class PaymentMonoBankService extends BaseService
         $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
 
         try {
-            $response = $client->post($this->mono_bank_api_url . '/api/order/confirm', [
+            $response = $client->post($this->mono_bank_api_url.'/api/order/confirm', [
                 'headers' => [
                     'store-id' => $this->mono_bank_client_store_id,
                     'signature' => $signature,
@@ -252,14 +274,14 @@ class PaymentMonoBankService extends BaseService
             if (in_array($response->getStatusCode(), [200, 201])) {
                 $data = json_decode($response->getBody()->getContents(), true);
 
-                if( isset($data['state']) && $data['state'] == 'SUCCESS' ) {
+                if (isset($data['state']) && $data['state'] == 'SUCCESS') {
                     $order->mono_order_state = MonoBankOrderStateStatusesDataClass::STATUS_CONFIRMED;
                     $order->save();
 
                     return ServiceActionResult::make(true, trans('admin.order_confirmed_by_store'));
                 } else {
 
-                    if(isset($data['message'])) {
+                    if (isset($data['message'])) {
                         return ServiceActionResult::make(false, $data['message']);
                     }
 
@@ -279,26 +301,27 @@ class PaymentMonoBankService extends BaseService
 
     }
 
-    public function returnOrderMonoBank(Order $order) : ServiceActionResult
+    public function returnOrderMonoBank(Order $order): ServiceActionResult
     {
-        $client = new Client();
+        if (! $this->isConfigured()) {
+            return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
+        }
 
-        $data = $this->getTotalSumOrder($order);
-//        $data['amount'] = (integer) number_format($data['amount'], 2, '.', '');
-        $data['amount'] = number_format($data['amount'], 2, '.', '');
-//        $totalSum = $this->convertToCents($data['amount']);
+        $client = new Client;
+
+        $amount = $this->pricingService->forOrder($order)['total'];
 
         $request_array = [
-            "order_id" => $order->mono_order_id,
-            "return_money_to_card" => true,
-            "store_return_id" => $order->id,
-            "sum" => (integer) $data['amount']
+            'order_id' => $order->mono_order_id,
+            'return_money_to_card' => true,
+            'store_return_id' => $order->id,
+            'sum' => round($amount, 2),
         ];
 
         $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
 
         try {
-            $response = $client->post($this->mono_bank_api_url . '/api/order/return', [
+            $response = $client->post($this->mono_bank_api_url.'/api/order/return', [
                 'headers' => [
                     'store-id' => $this->mono_bank_client_store_id,
                     'signature' => $signature,
@@ -308,11 +331,10 @@ class PaymentMonoBankService extends BaseService
                 'body' => json_encode($request_array, JSON_UNESCAPED_UNICODE),
             ]);
 
-
             if (in_array($response->getStatusCode(), [200])) {
                 $data = json_decode($response->getBody()->getContents(), true);
 
-                if( isset($data['status']) && $data['status'] == 'OK' ) {
+                if (isset($data['status']) && $data['status'] == 'OK') {
                     $order->mono_order_state = MonoBankOrderStateStatusesDataClass::STATUS_RETURNED;
                     $order->save();
 
@@ -333,48 +355,28 @@ class PaymentMonoBankService extends BaseService
 
     }
 
-
     private function makeMonoBankPartialPaymentSignature(array $request_array, string $mono_bank_client_secret): string
     {
         $request_string = json_encode($request_array, JSON_UNESCAPED_UNICODE);
-        return base64_encode(hash_hmac("sha256", $request_string, $mono_bank_client_secret, true));
+
+        return base64_encode(hash_hmac('sha256', $request_string, $mono_bank_client_secret, true));
     }
 
-    private function collectAllProductsFromOrder(Order $order) : array
+    private function collectAllProductsFromOrder(Order $order): array
     {
-        $data['amount'] = 0;
         $data['products'] = [];
 
         foreach ($order->products as $product) {
             $count = $product->pivot->count;
-            $product_price = round( $count * ($product->pivot->price + $product->pivot->attributes_price), 2, PHP_ROUND_HALF_DOWN);
-            $data['amount'] += $product_price;
             $data['products'][] = [
-                "name" => $product->name,
-                "count" => (integer) $count,
-                'sum' => (integer) number_format(round($product->pivot->price + $product->pivot->attributes_price, 2, PHP_ROUND_HALF_DOWN), 2, '.', '')
+                'name' => $product->name,
+                'count' => (int) $count,
+                'sum' => round((float) $product->pivot->price + (float) $product->pivot->attributes_price, 2),
             ];
         }
 
-        return $data;
-    }
-
-    private function getTotalSumOrder(Order $order) : array
-    {
-        $data['amount'] = 0;
-
-        foreach ($order->products as $product) {
-            $count = $product->pivot->count;
-            $product_price = round( $count * ($product->pivot->price + $product->pivot->attributes_price), 2, PHP_ROUND_HALF_DOWN);
-            $data['amount'] += $product_price;
-        }
+        $data['amount'] = round($this->pricingService->forOrder($order)['total'], 2);
 
         return $data;
     }
-
-    private function convertToCents(float $amount): int
-    {
-        return (int)round($amount * 100);
-    }
-
 }

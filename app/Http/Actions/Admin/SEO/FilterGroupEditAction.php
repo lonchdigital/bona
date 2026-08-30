@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\SEO;
 
-use App\Models\FilterGroup;
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\FilterGroups\FilterGroupService;
 use App\Http\Requests\Admin\Seo\EditFilterGroupRequest;
+use App\Models\FilterGroup;
+use App\Services\FilterGroups\FilterGroupService;
 
 class FilterGroupEditAction extends BaseAction
 {

@@ -11,8 +11,7 @@ class ServiceEditAction extends BaseAction
     public function __invoke(
         ServicesPageEditRequest $request,
         ServicesPageService $servicesPageService,
-    )
-    {
+    ) {
         $result = $servicesPageService->editServicesPage($request->toDTO());
 
         return $this->handleActionResult(route('admin.pages.list.page'), $request, $result);

@@ -29,5 +29,5 @@ class ApplicationConfigEditDTO implements BaseDTO
         public readonly ?array $authorDescription,
         public readonly ?UploadedFile $authorAvatar,
         public readonly bool $authorAvatarDeleted,
-    ){ }
+    ) {}
 }

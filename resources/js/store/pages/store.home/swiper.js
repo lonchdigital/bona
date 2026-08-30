@@ -1,50 +1,9 @@
-import $ from "jquery";
-
 import 'swiper/css';
 import Swiper from 'swiper/bundle';
+import $ from 'jquery';
 
 
 export function init () {
-
-    // home slider
-    const SwiperSingleWallpaper = new Swiper('.swiper.owl-slider', {
-        loop: true,
-        autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: false
-        },
-        slidesPerView: 1,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        }
-    });
-
-
-    $(document).ready(function () {
-
-        function updateBackgroundImages() {
-            $('.home-page-slide-itself').each(function () {
-                let windowWidth = $(window).width();
-
-                let pcImage = $(this).data('pc');
-                let mobImage = $(this).data('mob');
-
-                let selectedImage = windowWidth > 767 ? pcImage : mobImage;
-
-                $(this).css('background-image', `url(${selectedImage})`);
-            });
-        }
-
-        updateBackgroundImages();
-
-        $(window).resize(function () {
-            updateBackgroundImages();
-        });
-    });
-
-
     // home slider icons
     let HomeSliderIcons= new Swiper(".swiper.owl-icons", {
         loop: true,

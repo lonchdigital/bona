@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\Product;
-use App\Observers\ProductObserver;
 use App\Listeners\MergeGuestCartOnLogin;
 use App\Listeners\MergeGuestWishListOnLogin;
+use App\Models\Product;
+use App\Observers\ProductObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;

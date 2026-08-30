@@ -5,7 +5,9 @@ namespace App\DataClasses;
 class DeliveryTimesDataClass implements BaseDataClass
 {
     const MORNING = 1;
+
     const AFTERNOON = 2;
+
     const EVENING = 3;
 
     public static function get(?int $item = null): mixed
@@ -17,11 +19,11 @@ class DeliveryTimesDataClass implements BaseDataClass
             ],
             [
                 'id' => self::AFTERNOON,
-                'name' => '13:00 - 17:00'
+                'name' => '13:00 - 17:00',
             ],
             [
                 'id' => self::EVENING,
-                'name' => '18:00 - 20:00'
+                'name' => '18:00 - 20:00',
             ],
         ]);
 

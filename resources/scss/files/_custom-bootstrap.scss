@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:map";
+
 //colors
 $white: #ffffff !default;
 $black: #000000 !default;
@@ -41,7 +44,7 @@ $white-light-color: #f3f3f3 !default;
 $orange-light-color: #fbe9db !default;
 
 $colors: () !default;
-$colors: map-merge(
+$colors: map.merge(
 	(
 		"white": $white,
 		"black": $black,
@@ -86,7 +89,7 @@ $colors: map-merge(
 );
 
 $theme-colors: () !default;
-$theme-colors: map-merge(
+$theme-colors: map.merge(
 	(
 		"white": $white,
 		"black": $black,
@@ -157,7 +160,7 @@ $grid-gutter-widths: (
 	lg: 32px,
 ) !default;
 
-$grid-gutter-width: map-get($grid-gutter-widths, lg);
+$grid-gutter-width: map.get($grid-gutter-widths, lg);
 
 //typography
 $font-family-sans-serif: "TTNorms", sans-serif !default;
@@ -174,7 +177,7 @@ $input-btn-padding-x-sm: 26px !default;
 //spacer
 $spacer: 10px;
 $spacers: ();
-$spacers: map-merge(
+$spacers: map.merge(
 	(
 		0: 0,
 		1: (
@@ -253,7 +256,7 @@ $spacers: map-merge(
 
 //link
 $link-color: $black-custom !default;
-$link-hover-color: darken($silver-custom, 15%) !default;
+$link-hover-color: color.adjust($silver-custom, $lightness: -15%) !default;
 
 //list
 $list-inline-padding: 36px !default;

@@ -3,8 +3,8 @@
 namespace App\Http\Actions\Admin\BlogPage;
 
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\BlogPage\BlogPageService;
 use App\Http\Requests\Admin\Blog\BlogPageEditRequest;
+use App\Services\BlogPage\BlogPageService;
 
 class BlogPageEditAction extends BaseAction
 {

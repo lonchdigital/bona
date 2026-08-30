@@ -67,7 +67,7 @@ class SeogenService extends BaseService
     {
         $seogenData = SeoGenConfig::where('page_type', SeoGenConfig::PAGE_TYPE_PRODUCT_CATEGORY)->where('product_type_id', $productType->id)->first();
 
-        if($seogenData) {
+        if ($seogenData) {
             $seogenData->html_title_tag = $this->replaceDataOnCategoryString($seogenData->html_title_tag, $category);
             $seogenData->html_h1_tag = $this->replaceDataOnCategoryString($seogenData->html_h1_tag, $category);
             $seogenData->meta_title_tag = $this->replaceDataOnCategoryString($seogenData->meta_title_tag, $category);
@@ -91,7 +91,7 @@ class SeogenService extends BaseService
     {
         $seogenData = SeoGenConfig::where('page_type', SeoGenConfig::PAGE_TYPE_PRODUCT)->where('product_type_id', $productType->id)->first();
 
-        if($seogenData) {
+        if ($seogenData) {
             $seogenData->html_title_tag = $this->replaceDataOnProductString($seogenData->html_title_tag, $product);
             $seogenData->html_h1_tag = $this->replaceDataOnProductString($seogenData->html_h1_tag, $product);
             $seogenData->meta_title_tag = $this->replaceDataOnProductString($seogenData->meta_title_tag, $product);
@@ -117,7 +117,7 @@ class SeogenService extends BaseService
     {
         $seogenData = SeoGenConfig::where('page_type', SeoGenConfig::PAGE_TYPE_BRAND)->first();
 
-        if($seogenData) {
+        if ($seogenData) {
             $seogenData->html_title_tag = $this->replaceDataOnBrandString($seogenData->html_title_tag, $brand);
             $seogenData->html_h1_tag = $this->replaceDataOnBrandString($seogenData->html_h1_tag, $brand);
             $seogenData->meta_title_tag = $this->replaceDataOnBrandString($seogenData->meta_title_tag, $brand);

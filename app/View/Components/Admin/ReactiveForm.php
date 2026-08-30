@@ -15,8 +15,7 @@ class ReactiveForm extends Component
         public readonly string $action,
         public readonly string $method,
         public readonly ?string $enctype = null,
-    )
-    { }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.

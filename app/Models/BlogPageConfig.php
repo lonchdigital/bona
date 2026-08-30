@@ -15,7 +15,7 @@ class BlogPageConfig extends Model implements Sitemapable
 
     protected $guarded = [];
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         return route('blog.article.page', ['blogArticleSlug' => $this->slug]);
     }

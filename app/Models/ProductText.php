@@ -8,7 +8,7 @@ class ProductText extends Model
 {
     protected $guarded = [];
 
-    static function updateProductShortText(int $id, array $content)
+    public static function updateProductShortText(int $id, array $content)
     {
         $data = [];
 
@@ -20,7 +20,7 @@ class ProductText extends Model
             ProductText::updateOrCreate(
                 [
                     'product_id' => $id,
-                    'language' => $lang
+                    'language' => $lang,
                 ],
                 $values
             );
@@ -28,7 +28,7 @@ class ProductText extends Model
 
     }
 
-    static function updateProductText(int $id, array $content)
+    public static function updateProductText(int $id, array $content)
     {
         $data = [];
 
@@ -40,7 +40,7 @@ class ProductText extends Model
             ProductText::updateOrCreate(
                 [
                     'product_id' => $id,
-                    'language' => $lang
+                    'language' => $lang,
                 ],
                 $values
             );
@@ -48,11 +48,11 @@ class ProductText extends Model
 
     }
 
-    static function deleteProductText(int $product_id)
+    public static function deleteProductText(int $product_id)
     {
         $existingTexts = ProductText::where('product_id', $product_id)->get();
 
-        if(count($existingTexts)) {
+        if (count($existingTexts)) {
             foreach ($existingTexts as $existingText) {
                 $existingText->delete();
             }

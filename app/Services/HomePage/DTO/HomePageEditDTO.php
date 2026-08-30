@@ -3,7 +3,6 @@
 namespace App\Services\HomePage\DTO;
 
 use App\Services\Base\DTO\BaseDTO;
-use Illuminate\Http\UploadedFile;
 
 class HomePageEditDTO implements BaseDTO
 {
@@ -21,5 +20,5 @@ class HomePageEditDTO implements BaseDTO
         public readonly ?array $faqs,
         public readonly ?array $seoTitle,
         public readonly ?array $seoText,
-    ){ }
+    ) {}
 }

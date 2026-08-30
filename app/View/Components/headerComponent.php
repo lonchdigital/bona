@@ -8,14 +8,12 @@ use Illuminate\View\Component;
 
 class headerComponent extends Component
 {
-
     /**
      * Create a new component instance.
      */
     public function __construct(
         public readonly array $data,
-    )
-    {}
+    ) {}
 
     /**
      * Get the view / contents that represent the component.
@@ -23,7 +21,7 @@ class headerComponent extends Component
     public function render(): View|Closure|string
     {
         return view('components.header-component', [
-            'data' => $this->data
+            'data' => $this->data,
         ]);
     }
 }

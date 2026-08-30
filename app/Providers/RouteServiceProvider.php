@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Actions\HealthCheckAction;
 use App\Models\Author;
 use App\Models\BlogArticle;
 use App\Models\BlogCategory;
@@ -38,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
+
+            Route::get('/up', HealthCheckAction::class)->name('health');
 
             Route::bind('productTypeSlug', function (string $slug) {
                 return ProductType::where('slug', $slug)->firstOrFail();
@@ -86,8 +89,6 @@ class RouteServiceProvider extends ServiceProvider
             Route::bind('lang', function (string $lang) {
                 return $lang;
             });
-
-
 
             Route::middleware('api')
                 ->prefix('api')

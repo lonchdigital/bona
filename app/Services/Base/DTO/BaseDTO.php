@@ -2,6 +2,4 @@
 
 namespace App\Services\Base\DTO;
 
-interface BaseDTO
-{
-}
+interface BaseDTO {}

@@ -8,12 +8,12 @@ use App\DataClasses\OrderStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
 use App\Mail\AdminNotificationEmail;
-use App\Mail\EmailSubscriptionEmail;
 use App\Mail\OrderStatusEmail;
-use App\Mail\UserCredentialsEmail;
+use App\Mail\SuccessOrder;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\PromoCode;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Base\BaseService;
@@ -22,17 +22,16 @@ use App\Services\Delivery\DeliveryService;
 use App\Services\Order\DTO\CheckoutConfirmOrderDTO;
 use App\Services\Order\DTO\OrderFilterDTO;
 use App\Services\Order\DTO\UpdateOrderDTO;
+use App\Services\Pricing\PricingService;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\SuccessOrder;
+use Illuminate\Validation\ValidationException;
 
 class OrderService extends BaseService
 {
     public function __construct(
-       private readonly DeliveryService $deliveryService,
-    )
-    {
-
-    }
+        private readonly DeliveryService $deliveryService,
+        private readonly PricingService $pricingService,
+    ) {}
 
     public function getOrdersPaginated(OrderFilterDTO $request)
     {
@@ -44,42 +43,31 @@ class OrderService extends BaseService
 
         return $query->orderByDesc('id')->paginate(config('domain.items_per_page'));
     }
+
     public function createOrderByCart(Cart $cart, CheckoutConfirmOrderDTO $request, ?User $user): Order
     {
 
-        return $this->coverWithDBTransactionWithoutResponse(function () use($cart, $request, $user) {
-            $newUserCreated = false;
-            $newUserPassword = '';
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($cart, $request, $user) {
+            if ($cart->promo_code_id) {
+                $promoCode = PromoCode::query()->lockForUpdate()->find($cart->promo_code_id);
 
-            if(is_null($user)) {
-
-                $isUserExists = User::where('email', $request->email)->exists();
-                if (!$isUserExists) {
-                    $newUserPassword = \Str::random(16);
-                    $user = User::create([
-                        'email' => $request->email,
-                        'first_name' => $request->firstName,
-                        'last_name' => $request->lastName,
-                        'phone' => $request->phone,
-                        'role_id' => Role::USER_ROLE_ID,
-                        'language' => app()->getLocale(),
-                        'password' => \Hash::make($newUserPassword),
+                if (! $promoCode || $promoCode->is_used) {
+                    throw ValidationException::withMessages([
+                        'promo_code' => trans('base.promo_code_already_used'),
                     ]);
-                    $newUserCreated = true;
-                } else {
-                    $user = User::where('email', $request->email)->first();
-
-                    $user->setAttribute('first_name', $request->firstName);
-                    $user->setAttribute('last_name', $request->lastName);
-                    $user->setAttribute('phone', $request->phone);
-                    $user->save();
                 }
 
+                $promoCode->update(['is_used' => true]);
             }
 
-            // TODO:: old version
-            /*if (!$user) {
-                $newUserPassword = \Str::random(16);
+            $newUserCreated = false;
+            if (is_null($user)) {
+                if (User::where('email', $request->email)->exists()) {
+                    throw ValidationException::withMessages([
+                        'email' => trans('validation.unique', ['attribute' => 'email']),
+                    ]);
+                }
+
                 $user = User::create([
                     'email' => $request->email,
                     'first_name' => $request->firstName,
@@ -87,11 +75,10 @@ class OrderService extends BaseService
                     'phone' => $request->phone,
                     'role_id' => Role::USER_ROLE_ID,
                     'language' => app()->getLocale(),
-                    'password' => \Hash::make($newUserPassword),
+                    'password' => \Hash::make(\Str::random(32)),
                 ]);
                 $newUserCreated = true;
-            }*/
-
+            }
 
             if ($request->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT) {
                 $paymentStatus = OrderPaymentStatusesDataClass::STATUS_IN_PROGRESS;
@@ -107,10 +94,10 @@ class OrderService extends BaseService
             $npDepartment = null;
             if ($request->deliveryTypeId === DeliveryTypesDataClass::NP_DELIVERY) {
                 $npCity = $this->deliveryService->getNpCityByRef($request->npCity);
-                $npCity = ['uk' => $npCity['Description'] . ' ' . $npCity['AreaDescription'] . ' ' . mb_strtolower(trans('base.region')), 'ru' => $npCity['DescriptionRu'] . ' ' . $npCity['AreaDescriptionRu'] . ' ' . mb_strtolower(trans('base.region'))];
+                $npCity = ['uk' => $npCity['Description'].' '.$npCity['AreaDescription'].' '.mb_strtolower(trans('base.region')), 'ru' => $npCity['DescriptionRu'].' '.$npCity['AreaDescriptionRu'].' '.mb_strtolower(trans('base.region'))];
 
                 $npDepartment = $this->deliveryService->getNpDepartmentByRef($request->npCity, $request->npDepartment);
-                if( isset($npDepartment['Description']) && isset($npDepartment['DescriptionRu']) ) {
+                if (isset($npDepartment['Description']) && isset($npDepartment['DescriptionRu'])) {
                     $npDepartment = ['uk' => $npDepartment['Description'], 'ru' => $npDepartment['DescriptionRu']];
                 } else {
                     $npDepartment = ['uk' => 'Уточнити у покупця', 'ru' => 'Уточнить у покупателя'];
@@ -127,19 +114,6 @@ class OrderService extends BaseService
                 $satDepartment = ['uk' => $satDepartment, 'ru' => $satDepartment];
             }
 
-
-
-            // TODO:: remove as FINISH
-            /*$meestCity = null;
-            $meestDepartment = null;
-            if ($request->deliveryTypeId === DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY) {
-                $meestCity = $this->deliveryService->getMeestCityByRef($request->meestCity);
-                $meestCity = ['uk' => $meestCity['text_uk'], 'ru' => $meestCity['text_ru']];
-
-                $meestDepartment = $this->deliveryService->getMeestDepartmentByRef($request->meestDepartment);
-                $meestDepartment = ['uk' => $meestDepartment['text_uk'], 'ru' => $meestDepartment['text_ru']];
-            }*/
-
             $order = Order::create([
                 'status_id' => OrderStatusesDataClass::STATUS_NEW,
                 'user_id' => $user->id,
@@ -147,16 +121,12 @@ class OrderService extends BaseService
                 'payment_type_id' => $request->paymentTypeId,
                 'promo_code_id' => $cart->promo_code_id,
                 'region_id' => $request->regionId,
-//                'sat_region_id' => $request->satRegionId,
                 'district' => $request->district,
-//                'sat_district' => $request->satDistrict,
                 'city' => $request->city,
-//                'sat_city' => $request->satCity,
                 'street' => $request->street,
                 'building_number' => $request->buildingNumber,
                 'apartment_number' => $request->apartmentNumber,
                 'floor_number' => $request->floorNumber,
-//                'has_elevator' => $request->hasElevator,
                 'delivery_date' => $request->deliveryDate,
                 'delivery_time_id' => $request->deliveryTimeId,
                 'recipient_type_id' => $request->recipientTypeId,
@@ -169,20 +139,10 @@ class OrderService extends BaseService
                 'np_department' => $npDepartment,
                 'sat_city' => $satCity,
                 'sat_department' => $satDepartment,
-//                'meest_city' => $meestCity,
-//                'meest_department' => $meestDepartment,
                 'payment_status_id' => $paymentStatus,
             ]);
 
             $productsToSync = [];
-
-            // TODO: Remove when finish
-            /*foreach ($cart->products as $product) {
-                $productsToSync[$product->id] = [
-                    'count' => $product->pivot->count,
-                    'price' => $product->pivot->price,
-                ];
-            }*/
 
             foreach ($cart->products as $product) {
                 $productsToSync[] = [
@@ -194,17 +154,15 @@ class OrderService extends BaseService
                 ];
             }
 
-//            dd($productsToSync);
             $order->products()->sync($productsToSync);
 
             $cart->products()->sync([]);
             $cart->delete();
 
             if ($newUserCreated) {
-//                Mail::to($request->email)->send(new UserCredentialsEmail($request->email, $newUserPassword));
                 Mail::to($request->email)->send(new SuccessOrder($order));
             } else {
-                Mail::to($user->email)->send( new SuccessOrder($order) );
+                Mail::to($user->email)->send(new SuccessOrder($order));
             }
 
             if (config('domain.admin_notification_emails')) {
@@ -265,23 +223,23 @@ class OrderService extends BaseService
     }
 
     /**
-     * The customer behind a one click order: their account if the phone is
-     * already known, otherwise a new one. The address is only there because
-     * the column demands something unique — nobody signs in with it, and a
-     * repeat customer on the same number lands on the same record.
+     * Anonymous one-click orders never attach themselves to a real account
+     * merely because somebody entered that account's phone number. Only the
+     * synthetic customer created for this exact number may be reused.
      */
     private function resolveOneClickCustomer(string $name, string $phone): User
     {
         $digits = preg_replace('/\D/', '', $phone);
 
-        $existing = User::whereRaw("REGEXP_REPLACE(phone, '[^0-9]', '') = ?", [$digits])->first();
+        $syntheticEmail = 'one-click-'.$digits.'@bona-doors.com.ua';
+        $existing = User::where('email', $syntheticEmail)->first();
 
         if ($existing) {
             return $existing;
         }
 
         return User::create([
-            'email' => 'one-click-' . $digits . '@bona-doors.com.ua',
+            'email' => $syntheticEmail,
             'first_name' => $name,
             'last_name' => '',
             'phone' => $phone,
@@ -293,9 +251,13 @@ class OrderService extends BaseService
 
     public function updateOrderPaymentStatusId(Order $order, int $newStatusId): ServiceActionResult
     {
-        return $this->coverWithDBTransactionWithoutResponse(function () use($order, $newStatusId) {
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($order, $newStatusId) {
+            if ((int) $order->payment_status_id === $newStatusId) {
+                return ServiceActionResult::make(true, 'Already updated');
+            }
+
             $order->update([
-               'payment_status_id' => $newStatusId,
+                'payment_status_id' => $newStatusId,
             ]);
 
             if (config('domain.admin_notification_emails')) {
@@ -315,55 +277,31 @@ class OrderService extends BaseService
 
     public function updateOrderPaymentStatusIdWithoutEmail(Order $order, int $newStatusId): ServiceActionResult
     {
-        return $this->coverWithDBTransactionWithoutResponse(function () use($order, $newStatusId) {
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($order, $newStatusId) {
+            if ((int) $order->payment_status_id === $newStatusId) {
+                return ServiceActionResult::make(true, 'Already updated');
+            }
+
             $order->update([
                 'payment_status_id' => $newStatusId,
             ]);
 
-            return ServiceActionResult::make(false, 'Fail');
+            return ServiceActionResult::make(true, 'Success');
         });
     }
 
     public function getOrderSummary(Order $order): array
     {
-        $totalPrice = 0;
-        foreach ($order->products as $product) {
-            $totalPrice += $product->pivot->price * $product->pivot->count;
-        }
-
-        $deliveryPrice = config('domain.delivery_price');
-        $deliveryPriceOld = $deliveryPrice;
-
-        if ($totalPrice >= config('domain.free_delivery_from_price')) {
-            $deliveryPrice = 0;
-        }
-
-//        $total = round($totalPrice + $deliveryPrice, 2);
-        $total = round($totalPrice, 2);
-        $discount = 0;
-
-        if ($order->promoCode) {
-            $discount = $total / 100 * $order->promoCode->discount;
-            $total = $total - $discount;
-        }
-
-        return [
-            'products' =>  round($totalPrice, 2),
-            'delivery' => round($deliveryPrice, 2),
-            'delivery_old' => round($deliveryPriceOld, 2),
-            'total' => round($total, 2),
-            'discount' => round($discount, 2),
-        ];
+        return $this->pricingService->forOrder($order);
     }
 
     public function updateOrder(Order $order, UpdateOrderDTO $request): ServiceActionResult
     {
-        return $this->coverWithTryCatch(function () use($order, $request) {
+        return $this->coverWithTryCatch(function () use ($order, $request) {
             $order->update([
                 'status_id' => $request->statusId,
                 'payment_status_id' => $request->orderPaymentStatusId,
             ]);
-
 
             return ServiceActionResult::make(true, trans('admin.order_update_success'));
         });

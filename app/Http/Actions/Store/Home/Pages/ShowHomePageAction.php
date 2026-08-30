@@ -2,15 +2,14 @@
 
 namespace App\Http\Actions\Store\Home\Pages;
 
-use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
 use App\Models\HomePageConfig;
+use App\Models\ProductType;
 use App\Services\BlogArticle\BlogArticleService;
+use App\Services\Brand\BrandService;
 use App\Services\Currency\CurrencyService;
 use App\Services\HomePage\HomePageService;
-use App\Services\Brand\BrandService;
-use Abordage\LastModified\Facades\LastModified;
-use Illuminate\Support\Facades\Log;
+use App\Support\LastModified;
 
 class ShowHomePageAction extends BaseAction
 {
@@ -20,37 +19,21 @@ class ShowHomePageAction extends BaseAction
         CurrencyService $currencyService,
         BrandService $brandService,
         BlogArticleService $blogArticleService,
-    )
-    {
-//        $productType->load(['fields', 'fields.options']);
-//        $categoryService = app()->make(CategoryService::class);
-
-
-        /*$profile = \Dymantic\InstagramFeed\Profile::for('bonadoors');
-        $instagramFeed = $profile?->refreshFeed();
-        $instagramFeed = $profile?->feed();
-
-        if( $profile !== null ) {
-            $profile->refreshFeed();
-            $instagramFeed = $profile?->feed();
-        } else {
-            $instagramFeed = [];
-        }*/
-
-
+    ) {
         /*
          * Absent on a fresh install, and the page read straight through it —
          * so the front page answered 500 rather than showing itself with
          * nothing filled in yet.
          */
-        $config = $homePageService->getHomePageConfig() ?? new HomePageConfig();
+        $config = $homePageService->getHomePageConfig() ?? new HomePageConfig;
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);
 
         LastModified::set($config->updated_at);
+
         return view('pages.store.home', [
             'config' => $config,
             'slides' => $homePageService->getHomePageSlides(),
-//            'brands' => $brandService->getBrands(), // get all brands
+            //            'brands' => $brandService->getBrands(), // get all brands
             'brands' => $homePageService->getHomePageBrands(), // get selected brands for homepage
             'productTypes' => $homePageService->getHomePageProductTypes(json_decode($config->product_types)),
             'specificProductTypes' => $homePageService->getSpecificProductTypes(),
@@ -61,7 +44,7 @@ class ShowHomePageAction extends BaseAction
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'articles' => $blogArticleService->getLatestArticles(3),
-            'instagramFeed' => $homePageService->getInstagramFeed()
+            'instagramFeed' => $homePageService->getInstagramFeed(),
         ]);
     }
 }

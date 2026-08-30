@@ -5,7 +5,9 @@ namespace App\DataClasses;
 class ProductSizeTypesDataClass implements BaseDataClass
 {
     const LENGTH = 'LENGTH';
+
     const WIDTH = 'WIDTH';
+
     const HEIGHT = 'HEIGHT';
 
     public static function get(?int $item = null): mixed

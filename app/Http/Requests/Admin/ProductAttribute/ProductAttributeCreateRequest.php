@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Admin\ProductAttribute;
 
-use Illuminate\Validation\Rule;
 use App\Http\Requests\BaseRequest;
-use App\DataClasses\ProductFieldTypeOptionsDataClass;
-use App\DataClasses\NumericFieldFilerTypesDataClass;
 use App\Services\Admin\ProductAttribute\DTO\EditProductAttributeDTO;
 
 class ProductAttributeCreateRequest extends BaseRequest
@@ -21,17 +18,16 @@ class ProductAttributeCreateRequest extends BaseRequest
             'slug' => [
                 'required',
                 'string',
-                'unique:product_attributes,slug' . ($this->route('productAttribute') ? ',' . $this->route('productAttribute')->id : ''),
+                'unique:product_attributes,slug'.($this->route('productAttribute') ? ','.$this->route('productAttribute')->id : ''),
             ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['product_attribute_name.' . $availableLanguage] = [
+            $rules['product_attribute_name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
         }
-
 
         return $rules;
     }
@@ -51,7 +47,7 @@ class ProductAttributeCreateRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $language) {
-            $attributes['product_attribute_name.' . $language] = $this->prepareAttribute(trans('admin.name'), $language);
+            $attributes['product_attribute_name.'.$language] = $this->prepareAttribute(trans('admin.name'), $language);
         }
 
         return $attributes;
@@ -64,5 +60,4 @@ class ProductAttributeCreateRequest extends BaseRequest
             $this->input('slug'),
         );
     }
-
 }

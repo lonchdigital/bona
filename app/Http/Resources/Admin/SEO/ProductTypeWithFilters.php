@@ -2,11 +2,8 @@
 
 namespace App\Http\Resources\Admin\SEO;
 
-use App\Http\Resources\Admin\Collection\CollectionResource;
-use App\Http\Resources\Admin\Color\ColorResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Admin\Brand\BrandResource;
 
 class ProductTypeWithFilters extends JsonResource
 {

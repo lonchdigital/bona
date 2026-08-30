@@ -21,6 +21,7 @@ class BlogSlide extends Model
             if ($this->slide_image_1_path) {
                 return Storage::url($this->slide_image_1_path);
             }
+
             return null;
         });
     }
@@ -31,6 +32,7 @@ class BlogSlide extends Model
             if ($this->slide_image_2_path) {
                 return Storage::url($this->slide_image_2_path);
             }
+
             return null;
         });
     }

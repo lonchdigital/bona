@@ -10,7 +10,6 @@ use App\Models\Category;
 use App\Models\Country;
 use App\Models\ProductType;
 use App\Services\Application\ApplicationConfigService;
-use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -20,13 +19,12 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
-class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEvents, FromArray
+class ProductsSheet implements FromArray, ShouldAutoSize, WithEvents, WithHeadings, WithTitle
 {
-
     public function __construct(
-        private readonly ProductType              $productType,
+        private readonly ProductType $productType,
         private readonly ApplicationConfigService $applicationService,
-    ){ }
+    ) {}
 
     public function headings(): array
     {
@@ -36,19 +34,19 @@ class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEven
         ];
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $headings[] = trans('admin.name') . ' ' . mb_strtoupper($languageCode);
+            $headings[] = trans('admin.name').' '.mb_strtoupper($languageCode);
         }
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $headings[] = trans('admin.meta_title') . ' ' . mb_strtoupper($languageCode);
+            $headings[] = trans('admin.meta_title').' '.mb_strtoupper($languageCode);
         }
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $headings[] = trans('admin.meta_description') . ' ' . mb_strtoupper($languageCode);
+            $headings[] = trans('admin.meta_description').' '.mb_strtoupper($languageCode);
         }
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $headings[] =  trans('admin.meta_keywords') . ' ' . mb_strtoupper($languageCode);
+            $headings[] = trans('admin.meta_keywords').' '.mb_strtoupper($languageCode);
         }
 
         $headings[] = trans('admin.availability_status');
@@ -78,8 +76,8 @@ class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEven
 
         if ($this->productType->has_size) {
             if ($this->productType->has_length) {
-                if (!$this->productType->has_height) {
-                    $headings[] = trans('admin.length') . ' / ' . trans('admin.height');
+                if (! $this->productType->has_height) {
+                    $headings[] = trans('admin.length').' / '.trans('admin.height');
                 } else {
                     $headings[] = trans('admin.length');
                 }
@@ -103,13 +101,13 @@ class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEven
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $event->sheet->getDelegate()->getParent()->getDefaultStyle()->getFont()->setSize(14);
                 $event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(40);
 
                 $event->sheet->getStyle(1)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                 $event->sheet->getStyle(1)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $event->sheet->getStyle(1)->getFill()->applyFromArray(['fillType' => 'solid','rotation' => 0, 'color' => ['rgb' => 'FF000000'],]);
+                $event->sheet->getStyle(1)->getFill()->applyFromArray(['fillType' => 'solid', 'rotation' => 0, 'color' => ['rgb' => 'FF000000']]);
                 $event->sheet->getStyle(1)->getFont()->setSize(16);
                 $event->sheet->getStyle(1)->getFont()->getColor()->setRGB(Color::COLOR_WHITE);
             },
@@ -132,6 +130,7 @@ class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEven
         $row1 = $this->generateFakeRow(1, $brand, $country, $collection, $colors, $categories);
         $row2 = $this->generateFakeRow(2, $brand, $country, $collection, $colors, $categories);
         $row2[0] = $row1[1];
+
         return [$row1, $row2];
     }
 
@@ -141,27 +140,27 @@ class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEven
 
         $fakeData = [
             '',
-            'ART000000F' . $skuIterator,
+            'ART000000F'.$skuIterator,
         ];
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $fakeData[] =  trans('admin.name') . ' ' . $this->productType->name . ' ' . mb_strtoupper($languageCode);
+            $fakeData[] = trans('admin.name').' '.$this->productType->name.' '.mb_strtoupper($languageCode);
         }
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $fakeData[] =  trans('admin.buy_wallpapers') . ' ' . mb_strtoupper($languageCode);
+            $fakeData[] = trans('admin.buy_wallpapers').' '.mb_strtoupper($languageCode);
         }
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $fakeData[] =  trans('admin.buy_wallpapers') . ' ' . mb_strtoupper($languageCode);
+            $fakeData[] = trans('admin.buy_wallpapers').' '.mb_strtoupper($languageCode);
         }
 
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $fakeData[] =  trans('admin.buy_wallpapers') . ' ' . $this->productType->name . ' ' . mb_strtoupper($languageCode);
+            $fakeData[] = trans('admin.buy_wallpapers').' '.$this->productType->name.' '.mb_strtoupper($languageCode);
         }
 
         $fakeData[] = ProductStatusDataClass::get(ProductStatusDataClass::PRODUCT_STATUS_STOCK)['name'];
-        $fakeData[] = ProductSpecialOfferOptionsDataClass::get(ProductSpecialOfferOptionsDataClass::EXCLUSIVE)['name'] . ', ' .  ProductSpecialOfferOptionsDataClass::get(ProductSpecialOfferOptionsDataClass::NEW)['name'];
+        $fakeData[] = ProductSpecialOfferOptionsDataClass::get(ProductSpecialOfferOptionsDataClass::EXCLUSIVE)['name'].', '.ProductSpecialOfferOptionsDataClass::get(ProductSpecialOfferOptionsDataClass::NEW)['name'];
         $fakeData[] = 8.43;
         $fakeData[] = 5.12;
         $fakeData[] = 10.43;
@@ -177,12 +176,12 @@ class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEven
         }
 
         if ($this->productType->has_category) {
-            $fakeData[] = count($categories) ? $categories->pluck('name')->implode(', ') : trans('admin.category') . ', ' . trans('admin.category');
+            $fakeData[] = count($categories) ? $categories->pluck('name')->implode(', ') : trans('admin.category').', '.trans('admin.category');
         }
 
         if ($this->productType->has_color) {
             $fakeData[] = count($colors) ? $colors[0]->name : trans('admin.color');
-            $fakeData[] = count($colors) ? $colors->pluck('name')->implode(', ') : trans('admin.color') . ', ' . trans('admin.color');
+            $fakeData[] = count($colors) ? $colors->pluck('name')->implode(', ') : trans('admin.color').', '.trans('admin.color');
         }
 
         if ($this->productType->has_size) {
@@ -200,16 +199,16 @@ class ProductsSheet implements WithHeadings, WithTitle, ShouldAutoSize, WithEven
         foreach ($this->productType->fields as $field) {
             if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING) {
                 $fakeData = trans('admin.text');
-            } else if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER) {
+            } elseif ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER) {
                 $fakeData[] = rand(1, 99);
-            } else if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE) {
+            } elseif ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE) {
                 $fakeData[] = rand(1, 99);
-            } else if ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
+            } elseif ($field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
                 $options = $field->options;
 
                 if ($field->is_multiselectable) {
-                    $fakeData[] = count($options) >= 2 ? $options[0]->name . ', ' . $options[1]->name :
-                        trans('admin.option') . ', ' . trans('admin.option');
+                    $fakeData[] = count($options) >= 2 ? $options[0]->name.', '.$options[1]->name :
+                        trans('admin.option').', '.trans('admin.option');
                 } else {
                     $fakeData[] = count($options) ? $options[0]->name : trans('admin.option');
                 }

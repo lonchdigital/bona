@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Store\Checkout;
 
 use App\Rules\PrivatPartialPaymentSignatureCheck;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ConfirmPartialOrderRequest extends FormRequest
@@ -18,7 +19,7 @@ class ConfirmPartialOrderRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -27,7 +28,7 @@ class ConfirmPartialOrderRequest extends FormRequest
             'orderId' => ['required', 'string'],
             'paymentState' => ['required', 'string'],
             'signature' => ['required', 'string', new PrivatPartialPaymentSignatureCheck],
-            'message' => ['required ', 'string'],
+            'message' => ['required', 'string'],
         ];
     }
 }

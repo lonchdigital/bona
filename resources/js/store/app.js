@@ -1,6 +1,10 @@
 // import 'bootstrap';
 import $ from 'jquery';
-import.meta.glob(['../../img/**']);
+import.meta.glob(['../../img/**'], {
+    eager: true,
+    import: 'default',
+    query: '?url',
+});
 // import { Fancybox } from "@fancyapps/ui/dist/fancybox/fancybox.esm.js";
 
 import ShowMenu from "./common/show-menu";
@@ -10,9 +14,11 @@ import Cart from './common/cart';
 import WishList from './common/wish-list';
 import CommonEmails from './common/common-emails';
 import PopUps from './common/pop-ups';
-import AjaxSearchProducts from './common/ajax-search-products';
 import ShowRoomVisitModal from "./common/show-room-visit-modal";
 import CommonCode from './common/common-code';
+import SiteHeader from './common/site-header';
+import StorefrontSearch from './common/storefront-search';
+import HomeHero from './common/home-hero';
 
 // console.log('1111');
 
@@ -73,9 +79,11 @@ async function init()
         WishList.init(),
         CommonEmails.init(),
         PopUps.init(),
-        AjaxSearchProducts.init(),
         ShowRoomVisitModal.init(),
-        CommonCode.init()
+        CommonCode.init(),
+        SiteHeader.init(),
+        StorefrontSearch.init(),
+        HomeHero.init()
     ]);
 }
 

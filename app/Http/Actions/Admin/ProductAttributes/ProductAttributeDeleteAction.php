@@ -2,11 +2,10 @@
 
 namespace App\Http\Actions\Admin\ProductAttributes;
 
+use App\Http\Actions\Admin\BaseAction;
 use App\Models\ProductAttribute;
 use App\Services\Admin\ProductAttribute\ProductAttributeService;
 use Illuminate\Http\Request;
-use App\Http\Actions\Admin\BaseAction;
-
 
 class ProductAttributeDeleteAction extends BaseAction
 {

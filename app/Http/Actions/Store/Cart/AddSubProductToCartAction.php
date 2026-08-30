@@ -2,12 +2,12 @@
 
 namespace App\Http\Actions\Store\Cart;
 
+use App\Http\Actions\Admin\BaseAction;
+use App\Http\Requests\Store\Cart\ChangeProductCountInCartRequest;
+use App\Http\Resources\Store\Cart\CartResource;
 use App\Models\Product;
 use App\Services\Cart\CartService;
-use App\Http\Actions\Admin\BaseAction;
 use App\Services\WishList\WishListService;
-use App\Http\Resources\Store\Cart\CartResource;
-use App\Http\Requests\Store\Cart\ChangeProductCountInCartRequest;
 
 class AddSubProductToCartAction extends BaseAction
 {
@@ -18,8 +18,7 @@ class AddSubProductToCartAction extends BaseAction
         ChangeProductCountInCartRequest $request,
         CartService $cartService,
         WishListService $wishListService,
-    )
-    {
+    ) {
         /*
          "_token" => "on5Mk3uQnom8HJcPPKY2YT8h9c88mUDnhwUOu59l"
          "product_count" => "1"

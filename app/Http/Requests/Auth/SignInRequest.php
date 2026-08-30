@@ -14,11 +14,11 @@ class SignInRequest extends BaseRequest
                 'required',
             ],
             'password' => [
-                'required'
+                'required',
             ],
             'remember_me' => [
                 'nullable',
-            ]
+            ],
         ];
     }
 

@@ -15,7 +15,6 @@ class AboutUsConfig extends Model
 
     protected $guarded = [];
 
-
     public function imageUrl(): Attribute
     {
         return Attribute::make(function () {

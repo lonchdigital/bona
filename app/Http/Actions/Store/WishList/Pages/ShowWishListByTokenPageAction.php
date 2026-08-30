@@ -13,8 +13,7 @@ class ShowWishListByTokenPageAction extends BaseAction
         WishList $wishList,
         WishListService $wishListService,
         CurrencyService $currencyService,
-    )
-    {
+    ) {
         return view('pages.store.wish-list', [
             'isPublic' => true,
             'wishList' => $wishList,

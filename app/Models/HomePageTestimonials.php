@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
@@ -17,7 +16,7 @@ class HomePageTestimonials extends Model
     public $translatable = ['name', 'review'];
 
     protected $casts = [
-//        'date' => 'datetime'
+        //        'date' => 'datetime'
     ];
 
     public function testimonialImageUrl(): Attribute
@@ -31,6 +30,7 @@ class HomePageTestimonials extends Model
     {
         $array = parent::toArray();
         $array['testimonial_image_url'] = $this->testimonial_image_url;
+
         return $array;
     }
 }

@@ -27,23 +27,23 @@ class ApplicationConfigsEditRequest extends BaseRequest
 
         $rules['instagram'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['telegram'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['viber'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['facebook'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['phone_one'] = [
             'nullable',
-            'string'
+            'string',
         ];
 
         $rules['form_image'] = [
@@ -57,31 +57,31 @@ class ApplicationConfigsEditRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['footer_text.' . $availableLanguage] = [
+            $rules['footer_text.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
 
-            $rules['form_title.' . $availableLanguage] = [
+            $rules['form_title.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['form_text.' . $availableLanguage] = [
+            $rules['form_text.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
 
-            $rules['author_name.' . $availableLanguage] = [
+            $rules['author_name.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['author_description.' . $availableLanguage] = [
+            $rules['author_description.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
         }
 
-        return  $rules;
+        return $rules;
     }
 
     public function attributes(): array

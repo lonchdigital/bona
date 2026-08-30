@@ -2,41 +2,39 @@
 
 namespace App\Services\Product;
 
+use App\DataClasses\ImportedProductImageTypesDataClass;
 use App\Jobs\RegenerateSitemapJob;
 use App\Jobs\UpdateCountOfProductsByCategoryJob;
 use App\Models\Currency;
+use App\Models\ImportedProduct;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\User;
+use App\Services\Base\BaseService;
+use App\Services\Base\ServiceActionResult;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\DTO\ProductImportFilterDTO;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use App\Models\ImportedProduct;
-use Illuminate\Http\UploadedFile;
-use App\Services\Base\BaseService;
-use Illuminate\Support\Facades\Storage;
-use App\Services\Base\ServiceActionResult;
-use App\DataClasses\ImportedProductImageTypesDataClass;
 use App\Services\Product\DTO\RemoveProductImportImageDTO;
 use App\Services\Product\DTO\UploadImportedProductImageDTO;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Laravel\Telescope\Telescope;
 
 class ProductImportService extends BaseService
 {
     public function __construct(
-        private readonly ProductService             $productService,
-        private readonly CurrencyService            $currencyService,
+        private readonly ProductService $productService,
+        private readonly CurrencyService $currencyService,
         private readonly ProductFiltersAdminService $productFiltersAdminService,
-    ) { }
+    ) {}
 
     public function importedProductsExists(ProductType $productType): bool
     {
         return ImportedProduct::where('product_type_id', $productType->id)->exists();
     }
 
-    public function getImportedProductsByProductTypePaginated(ProductType $productType, ProductImportFilterDTO $request): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getImportedProductsByProductTypePaginated(ProductType $productType, ProductImportFilterDTO $request): LengthAwarePaginator
     {
         $paginatedListQuery = ImportedProduct::where('product_type_id', $productType->id);
 
@@ -61,14 +59,14 @@ class ProductImportService extends BaseService
 
     public function uploadProductImportImage(ImportedProduct $importedProduct, UploadImportedProductImageDTO $request): ServiceActionResult
     {
-        return $this->coverWithTryCatch(function () use($importedProduct, $request) {
+        return $this->coverWithTryCatch(function () use ($importedProduct, $request) {
             switch ($request->typeId) {
                 case ImportedProductImageTypesDataClass::TYPE_MAIN_IMAGE:
 
-                    $mainImagePath = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_main.jpg';
+                    $mainImagePath = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_main.jpg';
                     $this->productService->storeProductImage($mainImagePath, $request->image);
 
-                    $previewImagePath = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_preview.jpg';
+                    $previewImagePath = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_preview.jpg';
                     $this->productService->storePreviewImage($previewImagePath, $request->image);
 
                     $importedProduct->update([
@@ -76,17 +74,16 @@ class ProductImportService extends BaseService
                         'preview_image_path' => $previewImagePath,
                     ]);
 
-
                     break;
                 case ImportedProductImageTypesDataClass::TYPE_PATTERN_IMAGE:
-                    $patternImagePath = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_pattern.jpg';
+                    $patternImagePath = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_pattern.jpg';
                     $this->productService->storeProductImage($patternImagePath, $request->image);
                     $importedProduct->update([
                         'pattern_image_path' => $patternImagePath,
                     ]);
                     break;
                 case ImportedProductImageTypesDataClass::TYPE_GALLERY_IMAGE_1:
-                    $galleryImage1Path = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_1.jpg';
+                    $galleryImage1Path = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_gallery_image_1.jpg';
                     $this->productService->storeProductImage($galleryImage1Path, $request->image);
 
                     $galleryImages = $importedProduct->gallery_images;
@@ -97,7 +94,7 @@ class ProductImportService extends BaseService
                     ]);
                     break;
                 case ImportedProductImageTypesDataClass::TYPE_GALLERY_IMAGE_2:
-                    $galleryImage2Path = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_2.jpg';
+                    $galleryImage2Path = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_gallery_image_2.jpg';
                     $this->productService->storeProductImage($galleryImage2Path, $request->image);
 
                     $galleryImages = $importedProduct->gallery_images;
@@ -109,7 +106,7 @@ class ProductImportService extends BaseService
 
                     break;
                 case ImportedProductImageTypesDataClass::TYPE_GALLERY_IMAGE_3:
-                    $galleryImage3Path = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_3.jpg';
+                    $galleryImage3Path = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_gallery_image_3.jpg';
                     $this->productService->storeProductImage($galleryImage3Path, $request->image);
 
                     $galleryImages = $importedProduct->gallery_images;
@@ -121,7 +118,7 @@ class ProductImportService extends BaseService
 
                     break;
                 case ImportedProductImageTypesDataClass::TYPE_GALLERY_IMAGE_4:
-                    $galleryImage4Path = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_4.jpg';
+                    $galleryImage4Path = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_gallery_image_4.jpg';
                     $this->productService->storeProductImage($galleryImage4Path, $request->image);
 
                     $galleryImages = $importedProduct->gallery_images;
@@ -133,7 +130,7 @@ class ProductImportService extends BaseService
 
                     break;
                 case ImportedProductImageTypesDataClass::TYPE_GALLERY_IMAGE_5:
-                    $galleryImage5Path = ProductService::PRODUCT_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '_gallery_image_5.jpg';
+                    $galleryImage5Path = ProductService::PRODUCT_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'_gallery_image_5.jpg';
                     $this->productService->storeProductImage($galleryImage5Path, $request->image);
 
                     $galleryImages = $importedProduct->gallery_images;
@@ -153,7 +150,7 @@ class ProductImportService extends BaseService
 
     public function removeProductImportImage(ImportedProduct $importedProduct, RemoveProductImportImageDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($importedProduct, $request) {
+        return $this->coverWithDBTransaction(function () use ($importedProduct, $request) {
 
             switch ($request->typeId) {
                 case ImportedProductImageTypesDataClass::TYPE_MAIN_IMAGE:
@@ -203,8 +200,8 @@ class ProductImportService extends BaseService
 
     public function deleteImportedProducts(ProductType $productType, bool $deleteImages): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($productType, $deleteImages) {
-            ImportedProduct::where('product_type_id', $productType->id)->chunk(100, function ($chunk) use($deleteImages) {
+        return $this->coverWithDBTransaction(function () use ($productType, $deleteImages) {
+            ImportedProduct::where('product_type_id', $productType->id)->chunk(100, function ($chunk) use ($deleteImages) {
                 if ($deleteImages) {
                     foreach ($chunk as $importedProduct) {
                         if ($importedProduct->main_image_path) {
@@ -240,18 +237,18 @@ class ProductImportService extends BaseService
 
     public function saveImportedProducts(ProductType $productType, User $creator): ServiceActionResult
     {
-        if (!$this->validateNewProductImages($productType)) {
+        if (! $this->validateNewProductImages($productType)) {
             return ServiceActionResult::make(false, trans('admin.products_import_new_products_images_required'));
         }
 
         $baseCurrency = $this->currencyService->getBaseCurrency();
 
-        return $this->coverWithDBTransaction(function () use($productType, $creator, $baseCurrency) {
+        return $this->coverWithDBTransaction(function () use ($productType, $creator, $baseCurrency) {
             Telescope::stopRecording();
             ImportedProduct::with(['colors', 'categories', 'currency'])
                 ->where('product_type_id', $productType->id)
                 ->whereNull('parent_product_id')
-                ->chunk(100, function ($chunk) use($creator, $baseCurrency) {
+                ->chunk(100, function ($chunk) use ($creator, $baseCurrency) {
 
                     $existingProducts = Product::with(['colors', 'categories', 'currency'])->whereIn('sku', $chunk->pluck('sku'))->get();
 
@@ -280,7 +277,7 @@ class ProductImportService extends BaseService
 
     public function deleteImportedProduct(ImportedProduct $importedProduct): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($importedProduct) {
+        return $this->coverWithDBTransaction(function () use ($importedProduct) {
             if (count($importedProduct->children)) {
                 return ServiceActionResult::make(false, trans('admin.cant_delete_imported_product_have_child_products'));
             }
@@ -330,17 +327,17 @@ class ProductImportService extends BaseService
     private function validateNewProductImages(ProductType $productType): bool
     {
         $result = true;
-        ImportedProduct::where('product_type_id', $productType->id)->chunk(100, function (Collection $chunk) use(&$result) {
+        ImportedProduct::where('product_type_id', $productType->id)->chunk(100, function (Collection $chunk) use (&$result) {
             if ($result) {
                 $existingProducts = Product::with(['colors', 'categories'])->whereIn('sku', $chunk->pluck('sku'))->get();
 
                 foreach ($chunk as $importedProduct) {
-                    if (!$existingProducts->contains('sku', $importedProduct->sku) &&
-                        !$importedProduct->main_image_path && !$importedProduct->pattern_image_path) {
+                    if (! $existingProducts->contains('sku', $importedProduct->sku) &&
+                        ! $importedProduct->main_image_path && ! $importedProduct->pattern_image_path) {
                         $result = false;
                     }
 
-                    if (!$result) {
+                    if (! $result) {
                         break;
                     }
                 }
@@ -388,7 +385,7 @@ class ProductImportService extends BaseService
             'custom_fields' => $importedProduct->custom_fields,
         ];
 
-        //handle images
+        // handle images
         if ($importedProduct->main_image_path) {
             $dataToUpdate['main_image_path'] = $importedProduct->main_image_path;
             $this->productService->deleteProductImage($existingProduct->main_image_path);
@@ -500,7 +497,7 @@ class ProductImportService extends BaseService
             $data['parent_product_id'] = $parentProduct->id;
         }
 
-        return Product::withoutEvents(function () use ($data, $importedProduct){
+        return Product::withoutEvents(function () use ($data, $importedProduct) {
             $product = Product::create($data);
             $product->colors()->attach($importedProduct->colors->pluck('id'));
             $product->categories()->attach($importedProduct->categories->pluck('id'));

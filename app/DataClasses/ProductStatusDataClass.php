@@ -5,10 +5,15 @@ namespace App\DataClasses;
 class ProductStatusDataClass implements BaseDataClass
 {
     const PRODUCT_STATUS_NONE = 1;
+
     const PRODUCT_STATUS_STOCK = 2;
+
     const PRODUCT_STATUS_ORDER = 3;
+
     const PRODUCT_STATUS_OUT_OF_STOCK = 4;
+
     const PRODUCT_STATUS_OUT_ASK_MANAGER = 5;
+
     public static function get(?int $item = null): mixed
     {
         $collection = collect([
@@ -36,7 +41,7 @@ class ProductStatusDataClass implements BaseDataClass
                 'id' => self::PRODUCT_STATUS_OUT_ASK_MANAGER,
                 'name' => trans('shop.product_status_ask_manager'),
                 'trans_key' => 'shop.product_status_ask_manager',
-            ]
+            ],
         ]);
 
         if ($item) {
@@ -68,7 +73,7 @@ class ProductStatusDataClass implements BaseDataClass
                 'id' => self::PRODUCT_STATUS_OUT_ASK_MANAGER,
                 'name' => trans('shop.product_status_ask_manager'),
                 'trans_key' => 'shop.product_status_ask_manager',
-            ]
+            ],
         ]);
     }
 }

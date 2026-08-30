@@ -43,7 +43,7 @@ class FaqService extends BaseService
         // Then one group per product type, in the order the catalogue uses,
         // each linking back to the category it answers questions about.
         foreach (ProductType::orderBy('id')->get() as $productType) {
-            if (!$faqs->has($productType->slug)) {
+            if (! $faqs->has($productType->slug)) {
                 continue;
             }
 

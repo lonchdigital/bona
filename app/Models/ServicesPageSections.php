@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
@@ -27,7 +26,7 @@ class ServicesPageSections extends Model
     {
         $array = parent::toArray();
         $array['section_image_url'] = $this->section_image_url;
+
         return $array;
     }
-
 }

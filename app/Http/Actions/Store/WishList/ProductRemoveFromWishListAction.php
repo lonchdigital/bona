@@ -2,11 +2,11 @@
 
 namespace App\Http\Actions\Store\WishList;
 
-use App\Models\Product;
-use Illuminate\Http\Request;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\Product;
 use App\Services\Base\ServiceActionResult;
 use App\Services\WishList\WishListService;
+use Illuminate\Http\Request;
 
 class ProductRemoveFromWishListAction extends BaseAction
 {
@@ -17,7 +17,7 @@ class ProductRemoveFromWishListAction extends BaseAction
         $wishList = $this->getWishList($wishListService);
 
         // Nothing to remove from is the state the caller wanted anyway.
-        if (!$wishList) {
+        if (! $wishList) {
             return $this->handleActionResult(
                 route('store.wishlist.private.page'),
                 $request,

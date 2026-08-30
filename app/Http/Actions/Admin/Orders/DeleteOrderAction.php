@@ -3,9 +3,9 @@
 namespace App\Http\Actions\Admin\Orders;
 
 use App\Http\Actions\Admin\BaseAction;
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Services\Order\OrderService;
+use Illuminate\Http\Request;
 
 class DeleteOrderAction extends BaseAction
 {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Actions\UserProfile;
 
-use App\Services\UserProfile\UserProfileService;
 use App\Http\Requests\UserProfile\ProfileEditRequest;
+use App\Services\UserProfile\UserProfileService;
 
 class ProfileEditAction
 {

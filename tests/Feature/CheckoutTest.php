@@ -8,6 +8,7 @@ use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\PromoCode;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
@@ -22,8 +23,8 @@ use Tests\TestCase;
  */
 class CheckoutTest extends TestCase
 {
-    use RefreshDatabase;
     use MakesShopData;
+    use RefreshDatabase;
 
     private function addToCart(string $slug, int $count = 1)
     {
@@ -103,6 +104,20 @@ class CheckoutTest extends TestCase
         $this->assertSame(0, Cart::count(), 'Кошик мав зникнути разом з оформленням.');
     }
 
+    public function test_a_promo_code_is_consumed_atomically_when_the_order_is_created(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct();
+        $promoCode = PromoCode::create(['code' => 'ONE-TIME', 'discount' => 15]);
+
+        $this->addToCart($product->slug)->assertOk();
+        Cart::first()->update(['promo_code_id' => $promoCode->id]);
+        $this->confirm()->assertSessionHasNoErrors();
+
+        $this->assertTrue((bool) $promoCode->fresh()->is_used);
+        $this->assertSame($promoCode->id, (int) Order::first()->promo_code_id);
+    }
+
     public function test_an_order_is_refused_without_agreement(): void
     {
         $this->seedCurrency();
@@ -111,6 +126,37 @@ class CheckoutTest extends TestCase
         $this->addToCart($product->slug)->assertOk();
         $this->confirm(['agreement' => 0])->assertSessionHasErrors('agreement');
 
+        $this->assertSame(0, Order::count());
+    }
+
+    public function test_an_order_is_refused_when_the_cart_is_empty(): void
+    {
+        $this->seedCurrency();
+
+        $this->confirm()->assertSessionHasErrors('cart');
+
+        $this->assertSame(0, Order::count());
+        $this->assertSame(0, Cart::count());
+    }
+
+    public function test_a_guest_cannot_overwrite_an_existing_accounts_details_during_checkout(): void
+    {
+        $this->seedCurrency();
+        $existingUser = User::factory()->create([
+            'email' => 'oleh@example.com',
+            'first_name' => 'Справжнє імʼя',
+            'phone' => '+38(050)000-00-00',
+        ]);
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+        $this->confirm([
+            'first_name' => 'Зловмисник',
+            'phone' => '+38(067)111-22-33',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertSame('Справжнє імʼя', $existingUser->fresh()->first_name);
+        $this->assertSame('+38(050)000-00-00', $existingUser->fresh()->phone);
         $this->assertSame(0, Order::count());
     }
 

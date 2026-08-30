@@ -2,7 +2,4 @@
 
 namespace App\Exceptions;
 
-class ApplicationDomainException extends \RuntimeException
-{
-
-}
+class ApplicationDomainException extends \RuntimeException {}

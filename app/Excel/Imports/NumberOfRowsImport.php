@@ -12,13 +12,12 @@ class NumberOfRowsImport implements WithEvents
 
     private int $numberOfRows;
 
-
     public function registerEvents(): array
     {
         return [
             BeforeImport::class => function (BeforeImport $event) {
                 $this->numberOfRows = $event->getReader()->getActiveSheet()->getHighestDataRow();
-            }
+            },
         ];
     }
 

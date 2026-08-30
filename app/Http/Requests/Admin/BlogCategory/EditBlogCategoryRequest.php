@@ -11,18 +11,18 @@ class EditBlogCategoryRequest extends BaseRequest
     {
         $rules = [
             'name' => [
-                'array'
+                'array',
             ],
             'slug' => [
                 'required',
                 'string',
-            ]
+            ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
         }
 
@@ -36,7 +36,7 @@ class EditBlogCategoryRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
         }
 
         return $attributes;

@@ -2,12 +2,8 @@
 
 namespace App\Console\Commands;
 
-
 use App\Models\Order;
-use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class AddFakeOrdersCommand extends Command
 {
@@ -24,7 +20,6 @@ class AddFakeOrdersCommand extends Command
      * @var string
      */
     protected $description = 'Command description';
-
 
     /**
      * Execute the console command.
@@ -51,7 +46,5 @@ class AddFakeOrdersCommand extends Command
             $i++;
         }
 
-
     }
-
 }

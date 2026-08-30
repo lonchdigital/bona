@@ -4,10 +4,10 @@ namespace App\Services\UserProfile;
 
 use App\Models\User;
 use App\Services\Base\BaseService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Services\UserProfile\DTO\PasswordEditDTO;
 use App\Services\UserProfile\DTO\UserProfileUpdateDTO;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserProfileService extends BaseService
 {
@@ -21,10 +21,10 @@ class UserProfileService extends BaseService
         $user = Auth::user();
 
         $user->update([
-//           'email' => $request->email,
-           'phone' => $request->phone,
-           'first_name' => $request->firstName,
-           'last_name' => $request->lastName,
+            //           'email' => $request->email,
+            'phone' => $request->phone,
+            'first_name' => $request->firstName,
+            'last_name' => $request->lastName,
         ]);
     }
 
@@ -35,7 +35,7 @@ class UserProfileService extends BaseService
     {
         $user = Auth::user();
 
-        if (!Hash::check($request->currentPassword, $user->password)) {
+        if (! Hash::check($request->currentPassword, $user->password)) {
             return false;
         }
 

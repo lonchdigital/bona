@@ -17,11 +17,11 @@ class CollectionsSeeder extends Seeder
      */
     public function run(CollectionService $collectionService): void
     {
-        $fakeCollectionSlideImagePath = base_path() . '/resources/seed/collections/fake-collection-slide-image.jpg';
+        $fakeCollectionSlideImagePath = base_path().'/resources/seed/collections/fake-collection-slide-image.jpg';
 
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
 
@@ -30,15 +30,15 @@ class CollectionsSeeder extends Seeder
         foreach ($brands as $brand) {
             $brandNames = $brand->getTranslations('name');
 
-            for($i = 1; $i < rand(2, 3); $i++) {
+            for ($i = 1; $i < rand(2, 3); $i++) {
                 $collectionService->createCollection(
                     $creator,
                     new EditCollectionDTO(
                         [
-                            'uk' => $brandNames['uk'] . ' collection ' . $i,
-                            'ru' => $brandNames['ru'] . ' collection ' . $i,
+                            'uk' => $brandNames['uk'].' collection '.$i,
+                            'ru' => $brandNames['ru'].' collection '.$i,
                         ],
-                        \Str::slug($brandNames['uk'] . ' collection ' . $i),
+                        \Str::slug($brandNames['uk'].' collection '.$i),
                         $brand->id,
                         [
                             [
@@ -53,7 +53,6 @@ class CollectionsSeeder extends Seeder
                     )
                 );
             }
-
 
         }
     }

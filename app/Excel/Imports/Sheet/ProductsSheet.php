@@ -13,27 +13,26 @@ use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToArray;
-use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmptyRows, SkipsOnFailure
+class ProductsSheet implements SkipsEmptyRows, SkipsOnFailure, ToArray, WithStartRow, WithValidation
 {
     use Importable, SkipsFailures;
 
     protected array $rowsToSave = [];
 
     public function __construct(
-        private readonly ProductType              $productType,
+        private readonly ProductType $productType,
         private readonly ApplicationConfigService $applicationService,
-        private readonly Collection               $countries,
-        private readonly Collection               $categories,
-        private readonly Collection               $brands,
-        private readonly Collection               $currencies,
-        private readonly Collection               $collections,
-        private readonly Collection               $colors,
-        private readonly Collection               $productFieldOptions,
-    ) { }
+        private readonly Collection $countries,
+        private readonly Collection $categories,
+        private readonly Collection $brands,
+        private readonly Collection $currencies,
+        private readonly Collection $collections,
+        private readonly Collection $colors,
+        private readonly Collection $productFieldOptions,
+    ) {}
 
     public function array(array $array)
     {
@@ -55,21 +54,21 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
     public function rules(): array
     {
         $rules = [
-            //parent_article
+            // parent_article
             0 => [
                 'nullable',
-                //'string'
+                // 'string'
             ],
 
-            //article
+            // article
             1 => [
                 'required',
-                //'string',
+                // 'string',
             ],
 
         ];
 
-        //name
+        // name
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
             $rules[] = [
                 'required',
@@ -77,7 +76,7 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
             ];
         }
 
-        //meta title
+        // meta title
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
             $rules[] = [
                 'nullable',
@@ -85,7 +84,7 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
             ];
         }
 
-        //meta description
+        // meta description
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
             $rules[] = [
                 'nullable',
@@ -93,7 +92,7 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
             ];
         }
 
-        //meta keywords
+        // meta keywords
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
             $rules[] = [
                 'nullable',
@@ -101,7 +100,7 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
             ];
         }
 
-        //availability status
+        // availability status
         $rules[] = [
             'required',
             'string',
@@ -116,13 +115,13 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                     }
                 }
 
-                if (!$statusesInAllLanguages->contains($value)) {
+                if (! $statusesInAllLanguages->contains($value)) {
                     $failure(trans('admin.products_import_field_incorrect', ['ATTRIBUTE' => $attribute, 'VALUE' => $value]));
                 }
-            }
+            },
         ];
 
-        //special offer
+        // special offer
         $rules[] = [
             'nullable',
             function ($attribute, $value, $failure) {
@@ -132,43 +131,41 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                     $value = str_replace(', ', ',', $value);
                     $values = explode(',', $value);
 
-
                     foreach ($values as $parsedValue) {
-                        if (!ProductSpecialOfferOptionsDataClass::get()->pluck('name')->contains($parsedValue)) {
+                        if (! ProductSpecialOfferOptionsDataClass::get()->pluck('name')->contains($parsedValue)) {
                             $failure(trans('admin.products_import_field_incorrect', ['ATTRIBUTE' => $attribute, 'VALUE' => $parsedValue]));
                         }
                     }
 
                 }
-            }
+            },
         ];
 
-        //price in currency
+        // price in currency
         $rules[] = [
             'required',
             'numeric',
         ];
 
-        //purchase price in currency
+        // purchase price in currency
         $rules[] = [
             'required',
             'numeric',
         ];
 
-
-        //old price in currency
+        // old price in currency
         $rules[] = [
             'nullable',
             'numeric',
         ];
 
-        //currency
+        // currency
         $rules[] = [
             'required',
-            'in:' .$this->currencies->pluck('code')->implode(','),
+            'in:'.$this->currencies->pluck('code')->implode(','),
         ];
 
-        //country
+        // country
         $rules[] = [
             'required',
             function ($attribute, $value, $failure) {
@@ -181,13 +178,13 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                     }
                 }
 
-                if (!$found) {
+                if (! $found) {
                     $failure(trans('validation.exists', ['attribute' => $attribute]));
                 }
-            }
+            },
         ];
 
-        //brand
+        // brand
         $rules[] = [
             'required',
             function ($attribute, $value, $failure) {
@@ -200,13 +197,13 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                     }
                 }
 
-                if (!$found) {
+                if (! $found) {
                     $failure(trans('validation.exists', ['attribute' => $attribute]));
                 }
-            }
+            },
         ];
 
-        //collection
+        // collection
         $rules[] = [
             'required',
             function ($attribute, $value, $failure) {
@@ -219,13 +216,13 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                     }
                 }
 
-                if (!$found) {
+                if (! $found) {
                     $failure(trans('validation.exists', ['attribute' => $attribute]));
                 }
-            }
+            },
         ];
 
-        //categories
+        // categories
         $rules[] = [
             'nullable',
             function ($attribute, $value, $failure) {
@@ -244,15 +241,15 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                             }
                         }
 
-                        if (!$found) {
+                        if (! $found) {
                             $failure(trans('admin.products_import_field_incorrect', ['ATTRIBUTE' => $attribute, 'VALUE' => $parsedValue]));
                         }
                     }
                 }
-            }
+            },
         ];
 
-        //color
+        // color
         $rules[] = [
             'required',
             function ($attribute, $value, $failure) {
@@ -265,13 +262,13 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                     }
                 }
 
-                if (!$found) {
+                if (! $found) {
                     $failure(trans('validation.exists', ['attribute' => $attribute]));
                 }
-            }
+            },
         ];
 
-        //all colors
+        // all colors
         $rules[] = [
             'nullable',
             function ($attribute, $value, $failure) {
@@ -290,12 +287,12 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                             }
                         }
 
-                        if (!$found) {
+                        if (! $found) {
                             $failure(trans('admin.products_import_field_incorrect', ['ATTRIBUTE' => $attribute, 'VALUE' => $parsedValue]));
                         }
                     }
                 }
-            }
+            },
         ];
 
         if ($this->productType->has_size) {
@@ -327,13 +324,13 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                     'required',
                     'string',
                 ];
-            } else if ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER ||
+            } elseif ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER ||
                 $customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE) {
                 $rules[] = [
                     'required',
-                    'numeric'
+                    'numeric',
                 ];
-            } else if ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
+            } elseif ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
                 if ($customField->is_multiselectable) {
                     $rules[] = [
                         'nullable',
@@ -353,12 +350,12 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                                         }
                                     }
 
-                                    if (!$found) {
+                                    if (! $found) {
                                         $failure(trans('admin.products_import_field_incorrect', ['ATTRIBUTE' => $attribute, 'VALUE' => $parsedValue]));
                                     }
                                 }
                             }
-                        }
+                        },
                     ];
                 } else {
                     $rules[] = [
@@ -373,10 +370,10 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
                                 }
                             }
 
-                            if (!$found) {
+                            if (! $found) {
                                 $failure(trans('validation.exists', ['attribute' => $attribute]));
                             }
-                        }
+                        },
                     ];
                 }
             }
@@ -385,7 +382,6 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
         return $rules;
     }
 
-
     public function customValidationAttributes(): array
     {
         $attributes = [
@@ -393,60 +389,60 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
             1 => mb_strtolower(trans('admin.sku')),
         ];
 
-        //name
+        // name
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $attributes[] = mb_strtolower(trans('admin.name')) . ' ' . mb_strtoupper($languageCode);
+            $attributes[] = mb_strtolower(trans('admin.name')).' '.mb_strtoupper($languageCode);
         }
 
-        //meta title
+        // meta title
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $attributes[] = mb_strtolower(trans('admin.meta_title')) . ' ' . mb_strtoupper($languageCode);
+            $attributes[] = mb_strtolower(trans('admin.meta_title')).' '.mb_strtoupper($languageCode);
         }
 
-        //meta description
+        // meta description
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $attributes[] = mb_strtolower(trans('admin.meta_description')) . ' ' . mb_strtoupper($languageCode);
+            $attributes[] = mb_strtolower(trans('admin.meta_description')).' '.mb_strtoupper($languageCode);
         }
 
-        //meta keywords
+        // meta keywords
         foreach ($this->applicationService->getAvailableLanguages() as $languageCode) {
-            $attributes[] = mb_strtolower(trans('admin.meta_keywords')) . ' ' . mb_strtoupper($languageCode);
+            $attributes[] = mb_strtolower(trans('admin.meta_keywords')).' '.mb_strtoupper($languageCode);
         }
 
-        //availability status
+        // availability status
         $attributes[] = mb_strtolower(trans('admin.availability_status'));
 
-        //special offers
+        // special offers
         $attributes[] = mb_strtolower(trans('admin.special_offer'));
 
-        //price in currency
+        // price in currency
         $attributes[] = mb_strtolower(trans('admin.price_in_currency'));
 
-        //purchase price in currency
+        // purchase price in currency
         $attributes[] = mb_strtolower(trans('admin.purchase_price_in_currency'));
 
-        //old price in currency
+        // old price in currency
         $attributes[] = mb_strtolower(trans('admin.old_price_in_currency'));
 
-        //price currency
+        // price currency
         $attributes[] = mb_strtolower(trans('admin.price_currency'));
 
-        //country
+        // country
         $attributes[] = mb_strtolower(trans('admin.country'));
 
-        //brand
+        // brand
         $attributes[] = mb_strtolower(trans('admin.brand'));
 
-        //collection
+        // collection
         $attributes[] = mb_strtolower(trans('admin.collection'));
 
-        //categories
+        // categories
         $attributes[] = mb_strtolower(trans('admin.product_categories'));
 
-        //color
+        // color
         $attributes[] = mb_strtolower(trans('admin.color'));
 
-        //all colors
+        // all colors
         $attributes[] = mb_strtolower(trans('admin.all_colors'));
 
         if ($this->productType->has_size) {
@@ -469,7 +465,7 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
 
         $attributesMapped = [];
         foreach (array_keys($attributes) as $key) {
-            $attributesMapped['*.' . $key] = $attributes[$key];
+            $attributesMapped['*.'.$key] = $attributes[$key];
         }
 
         return $attributesMapped;
@@ -484,5 +480,4 @@ class ProductsSheet implements ToArray, WithValidation, WithStartRow, SkipsEmpty
     {
         return $this->rowsToSave;
     }
-
 }

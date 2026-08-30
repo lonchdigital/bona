@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Http\Requests\Admin\Category\CategoryEditRequest;
 use App\Models\ProductType;
 use App\Models\Role;
 use App\Models\User;
@@ -18,20 +17,19 @@ class CategoriesSeeder extends Seeder
      */
     public function run(CategoryService $categoryService): void
     {
-        $fakeImagePath = base_path() . '/resources/seed/categories/fake-category-image.jpeg';
+        $fakeImagePath = base_path().'/resources/seed/categories/fake-category-image.jpeg';
 
         $productType = ProductType::first();
 
-        if (!$productType) {
+        if (! $productType) {
             throw new \Exception('Default product type is not exists!');
         }
 
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
-
 
         $categories = [
             [

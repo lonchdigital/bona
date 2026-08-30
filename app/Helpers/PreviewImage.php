@@ -23,7 +23,7 @@ class PreviewImage
         }
 
         $jpgPath = pathinfo($path, PATHINFO_DIRNAME)
-            . '/' . pathinfo($path, PATHINFO_FILENAME) . '.jpg';
+            .'/'.pathinfo($path, PATHINFO_FILENAME).'.jpg';
 
         if (Storage::disk(config('app.images_disk_default'))->exists($jpgPath)) {
             $path = $jpgPath;

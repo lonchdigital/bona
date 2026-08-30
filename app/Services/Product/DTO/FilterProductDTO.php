@@ -8,5 +8,5 @@ class FilterProductDTO implements BaseDTO
 {
     public function __construct(
         public readonly ?array $filters,
-    ) { }
+    ) {}
 }

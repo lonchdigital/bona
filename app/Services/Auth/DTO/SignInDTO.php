@@ -10,6 +10,5 @@ class SignInDTO implements BaseDTO
         public readonly string $email,
         public readonly string $password,
         public readonly bool $rememberMe,
-    )
-    { }
+    ) {}
 }

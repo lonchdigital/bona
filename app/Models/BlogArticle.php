@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\PreviewImage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +34,7 @@ class BlogArticle extends Model implements Sitemapable
             if ($this->hero_image_path) {
                 return Storage::url($this->hero_image_path);
             }
+
             return null;
         });
     }
@@ -44,7 +46,7 @@ class BlogArticle extends Model implements Sitemapable
      */
     public function ogImageUrl(): Attribute
     {
-        return Attribute::make(fn () => \App\Helpers\PreviewImage::url($this->hero_image_path));
+        return Attribute::make(fn () => PreviewImage::url($this->hero_image_path));
     }
 
     public function toArray(): array
@@ -56,11 +58,11 @@ class BlogArticle extends Model implements Sitemapable
         return $array;
     }
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         $urls = [];
         $urls[] = route('blog.article.page', ['blogArticleSlug' => $this->slug]);
-        $urls[] = '/ru' . route('blog.article.page', ['blogArticleSlug' => $this->slug], false);
+        $urls[] = '/ru'.route('blog.article.page', ['blogArticleSlug' => $this->slug], false);
 
         return $urls;
     }

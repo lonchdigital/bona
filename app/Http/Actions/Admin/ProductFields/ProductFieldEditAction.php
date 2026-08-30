@@ -3,9 +3,9 @@
 namespace App\Http\Actions\Admin\ProductFields;
 
 use App\Http\Actions\Admin\BaseAction;
+use App\Http\Requests\Admin\ProductField\ProductFieldEditRequest;
 use App\Models\ProductField;
 use App\Services\Admin\ProductField\ProductFieldService;
-use App\Http\Requests\Admin\ProductField\ProductFieldEditRequest;
 
 class ProductFieldEditAction extends BaseAction
 {

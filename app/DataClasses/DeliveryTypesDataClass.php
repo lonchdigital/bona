@@ -5,9 +5,13 @@ namespace App\DataClasses;
 class DeliveryTypesDataClass implements BaseDataClass
 {
     const ADDRESS_DELIVERY = 1;
+
     const NP_DELIVERY = 2;
+
     const MIST_EXPRESS_DELIVERY = 3;
+
     const PICK_UP_DELIVERY = 4;
+
     const SAT_DELIVERY = 5;
 
     public static function get(?int $item = null): mixed
@@ -32,7 +36,7 @@ class DeliveryTypesDataClass implements BaseDataClass
             [
                 'id' => self::SAT_DELIVERY,
                 'name' => trans('base.checkout_sat_delivery'),
-            ]
+            ],
         ]);
 
         if ($item) {

@@ -17,5 +17,5 @@ class EditBlogArticleDTO implements BaseDTO
         public readonly ?string $metaTags,
         public readonly ?UploadedFile $heroImage,
         public readonly ?array $blocks,
-    ){ }
+    ) {}
 }

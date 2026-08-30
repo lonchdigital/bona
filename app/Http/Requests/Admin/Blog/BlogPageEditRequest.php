@@ -7,7 +7,6 @@ use App\Services\BlogPage\DTO\EditBlogPageDTO;
 
 class BlogPageEditRequest extends BaseRequest
 {
-
     public function rules(): array
     {
         $rules = [
@@ -33,28 +32,27 @@ class BlogPageEditRequest extends BaseRequest
             ],
         ];
 
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['title.' . $availableLanguage] = [
+            $rules['title.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
 
         }
 
-        return  $rules;
+        return $rules;
     }
 
     public function attributes(): array
@@ -66,9 +64,9 @@ class BlogPageEditRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
         }
 
         return $attributes;
@@ -84,5 +82,4 @@ class BlogPageEditRequest extends BaseRequest
             $this->input('title'),
         );
     }
-
 }

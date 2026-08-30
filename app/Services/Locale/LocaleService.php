@@ -11,7 +11,7 @@ class LocaleService extends BaseService
     public function setLocale(string $newLocale, ?User $user = null): void
     {
         $user?->update([
-            'language' => $newLocale
+            'language' => $newLocale,
         ]);
 
         session()->put('language', $newLocale);
@@ -21,31 +21,31 @@ class LocaleService extends BaseService
     {
         $urlParsed = parse_url($currentLink);
 
-        if ($urlParsed === false || !isset($urlParsed['scheme'], $urlParsed['host'])) {
+        if ($urlParsed === false || ! isset($urlParsed['scheme'], $urlParsed['host'])) {
             return $currentLink;
         }
 
-        $port = isset($urlParsed['port']) ? ':' . $urlParsed['port'] : '';
-        $newUrl = $urlParsed['scheme'] . '://' . $urlParsed['host'] . $port;
+        $port = isset($urlParsed['port']) ? ':'.$urlParsed['port'] : '';
+        $newUrl = $urlParsed['scheme'].'://'.$urlParsed['host'].$port;
         $currentPath = isset($urlParsed['path']) ? $urlParsed['path'] : '';
         $path = '';
 
         if ($currentLocale === config('app.fallback_locale')) {
-            $path = '/' . $newLocale . $currentPath;
+            $path = '/'.$newLocale.$currentPath;
         } else {
-            //has lang prefix
+            // has lang prefix
             if (Route::currentRouteName() == 'store.home') {
-                $path = str_replace('/' . $currentLocale , '/', $currentPath);
+                $path = str_replace('/'.$currentLocale, '/', $currentPath);
             } else {
-                $path = str_replace('/' . $currentLocale . '/', '/', $currentPath);
+                $path = str_replace('/'.$currentLocale.'/', '/', $currentPath);
             }
 
             if ($newLocale !== config('app.fallback_locale')) {
-                $path = '/' . $newLocale . $path;
+                $path = '/'.$newLocale.$path;
             }
 
         }
 
-        return $newUrl . $path;
+        return $newUrl.$path;
     }
 }

@@ -9,6 +9,7 @@ class LogoutAction
     public function __invoke(AuthService $service)
     {
         $service->logOut();
+
         return redirect()->route('store.home');
     }
 }

@@ -5,11 +5,12 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserChooseDoors extends Mailable
+class UserChooseDoors extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -20,9 +21,8 @@ class UserChooseDoors extends Mailable
         private readonly string $title,
         private readonly string $name,
         private readonly string $phone,
-        private readonly string|null $description
-    )
-    {}
+        private readonly ?string $description
+    ) {}
 
     /**
      * Get the message envelope.
@@ -45,7 +45,7 @@ class UserChooseDoors extends Mailable
                 'title' => $this->title,
                 'name' => $this->name,
                 'phone' => $this->phone,
-                'description' => $this->description
+                'description' => $this->description,
             ],
         );
     }
@@ -53,7 +53,7 @@ class UserChooseDoors extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

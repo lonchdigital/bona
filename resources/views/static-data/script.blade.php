@@ -24,9 +24,6 @@ const routes = {
     emailSubscription: {
         email_subscription_subscribe: '{{ route('email-subscription.subscribe') }}',
     },
-    product: {
-        product_search_route: '{{ route('store.product.search') }}',
-    },
     delivery: {
         np: {
             cities: '{{ route('delivery.np.cities') }}',
@@ -73,12 +70,18 @@ const translations = {
     product_add_to_cart_success: '@lang('base.product_add_to_cart_success')',
     in_cart: '@lang('base.in_cart')',
     nothing_found: '@lang('base.nothing_found')',
+    storefront_search_loading: '@lang('base.storefront_search_loading')',
+    storefront_search_products: '@lang('base.storefront_search_products')',
+    storefront_search_services: '@lang('base.storefront_search_services')',
+    storefront_search_hint: '@lang('base.storefront_search_hint')',
+    storefront_search_error: '@lang('base.storefront_search_error')',
+    storefront_search_retry: '@lang('base.storefront_search_retry')',
     checkout_search_np_department: '@lang('base.checkout_search_np_department')',
     checkout_search_np_department_not_found: '@lang('base.checkout_search_np_department_not_found')',
 };
 
 const store = {
-    base_currency_name_short: '{{ $baseCurrency->name_short }}',
+    base_currency_name_short: '{{ $baseCurrency?->name_short ?? trans('base.uah') }}',
 }
 
 @if(false)

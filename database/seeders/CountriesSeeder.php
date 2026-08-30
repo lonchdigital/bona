@@ -11,17 +11,16 @@ use Illuminate\Http\UploadedFile;
 
 class CountriesSeeder extends Seeder
 {
-
     public function __construct(
         public CountryService $countryService,
-    ) { }
+    ) {}
 
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $basePath = base_path() . '/resources/seed/countries';
+        $basePath = base_path().'/resources/seed/countries';
 
         $countries = [
             [
@@ -228,7 +227,7 @@ class CountriesSeeder extends Seeder
 
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
 
@@ -236,7 +235,7 @@ class CountriesSeeder extends Seeder
             $this->countryService->createCountry($creator, new EditCountryDTO(
                 ['uk' => $country['name']['uk'], 'ru' => $country['name']['ru']],
                 $country['code'],
-                UploadedFile::fake()->createWithContent($country['fake_image_name'], file_get_contents($basePath . '/' . $country['fake_image_name']))
+                UploadedFile::fake()->createWithContent($country['fake_image_name'], file_get_contents($basePath.'/'.$country['fake_image_name']))
             ));
         }
     }

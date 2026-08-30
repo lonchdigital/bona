@@ -67,7 +67,7 @@ class StoreSerpAgentArticleRequest extends BaseRequest
             'external_id' => ['nullable', 'string', 'max:191'],
             'translation_group_id' => ['nullable', 'string', 'max:191'],
             'serp_event' => ['nullable', 'string', 'max:64'],
-            'locale' => ['nullable', 'string', 'in:' . implode(',', $this->availableLanguages)],
+            'locale' => ['nullable', 'string', 'in:'.implode(',', $this->availableLanguages)],
             'title' => ['nullable', 'string', 'max:255'],
             'h1' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:191'],
@@ -223,14 +223,14 @@ class StoreSerpAgentArticleRequest extends BaseRequest
      */
     private function normalizePairs(mixed $items, array $firstKeys, array $secondKeys): array
     {
-        if (!is_array($items)) {
+        if (! is_array($items)) {
             return [];
         }
 
         $normalized = [];
 
         foreach ($items as $item) {
-            if (!is_array($item)) {
+            if (! is_array($item)) {
                 continue;
             }
 
@@ -264,14 +264,14 @@ class StoreSerpAgentArticleRequest extends BaseRequest
      */
     private function pairsToList(mixed $pairs, string $firstKey, string $secondKey): array
     {
-        if (!is_array($pairs)) {
+        if (! is_array($pairs)) {
             return [];
         }
 
         $list = [];
 
         foreach ($pairs as $pair) {
-            if (!is_array($pair) || !isset($pair['question'], $pair['answer'])) {
+            if (! is_array($pair) || ! isset($pair['question'], $pair['answer'])) {
                 continue;
             }
 

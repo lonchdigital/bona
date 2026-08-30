@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\ProductFields;
 
-use App\Models\ProductField;
-use Illuminate\Http\Request;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\ProductField;
 use App\Services\Admin\ProductField\ProductFieldService;
+use Illuminate\Http\Request;
 
 class ProductFieldDeleteAction extends BaseAction
 {

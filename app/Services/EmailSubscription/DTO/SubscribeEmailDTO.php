@@ -8,5 +8,5 @@ class SubscribeEmailDTO implements BaseDTO
 {
     public function __construct(
         public readonly string $email,
-    ){ }
+    ) {}
 }

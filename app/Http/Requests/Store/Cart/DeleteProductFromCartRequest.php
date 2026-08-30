@@ -13,10 +13,9 @@ class DeleteProductFromCartRequest extends BaseRequest
             'product_attributes' => [
                 'nullable',
                 'array',
-            ]
+            ],
         ];
     }
-
 
     public function toDTO(): DeleteProductFromCartDTO
     {

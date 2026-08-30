@@ -13,8 +13,8 @@ class ForgotPasswordRequest extends BaseRequest
             'email' => [
                 'required',
                 'email',
-                'exists:users,email',
-            ]
+                'max:255',
+            ],
         ];
     }
 
@@ -22,13 +22,6 @@ class ForgotPasswordRequest extends BaseRequest
     {
         return [
             'email' => trans('auth.email'),
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'email.exists' => trans('auth.user_with_such_email_not_found'),
         ];
     }
 

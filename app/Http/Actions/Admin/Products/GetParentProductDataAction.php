@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\Products;
 
+use App\Http\Resources\Admin\Product\ProductResource;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Services\Product\ProductService;
-use App\Http\Resources\Admin\Product\ProductResource;
 
 class GetParentProductDataAction
 {

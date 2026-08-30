@@ -40,37 +40,37 @@ class ProductImportFilterRequest extends BaseRequest
             'main_image' => [
                 'nullable',
                 'integer',
-                'in:' . $imagesFiltersString,
+                'in:'.$imagesFiltersString,
             ],
             'patter_image' => [
                 'nullable',
                 'integer',
-                'in:' . $imagesFiltersString,
+                'in:'.$imagesFiltersString,
             ],
             'gallery_image_1' => [
                 'nullable',
                 'integer',
-                'in:' . $imagesFiltersString,
+                'in:'.$imagesFiltersString,
             ],
             'gallery_image_2' => [
                 'nullable',
                 'integer',
-                'in:' . $imagesFiltersString,
+                'in:'.$imagesFiltersString,
             ],
             'gallery_image_3' => [
                 'nullable',
                 'integer',
-                'in:' . $imagesFiltersString,
+                'in:'.$imagesFiltersString,
             ],
             'gallery_image_4' => [
                 'nullable',
                 'integer',
-                'in:' . $imagesFiltersString,
+                'in:'.$imagesFiltersString,
             ],
             'gallery_image_5' => [
                 'nullable',
                 'integer',
-                'in:' . $imagesFiltersString,
+                'in:'.$imagesFiltersString,
             ],
             'show_new' => [
                 'nullable',
@@ -79,7 +79,7 @@ class ProductImportFilterRequest extends BaseRequest
             'show_existing' => [
                 'nullable',
                 'bool',
-            ]
+            ],
         ];
     }
 

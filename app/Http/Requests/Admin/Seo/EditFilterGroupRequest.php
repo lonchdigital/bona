@@ -14,12 +14,12 @@ class EditFilterGroupRequest extends BaseRequest
         $rules = [
             'product_type_id' => [
                 'required',
-                'exists:product_types,id'
+                'exists:product_types,id',
             ],
             'slug' => [
                 'required',
                 'string',
-                $this->route('filterGroup') ? 'unique:filter_groups,slug,' . $this->route('filterGroup')->id : 'unique:filter_groups,slug',
+                $this->route('filterGroup') ? 'unique:filter_groups,slug,'.$this->route('filterGroup')->id : 'unique:filter_groups,slug',
             ],
             'price_from' => [
                 'nullable',
@@ -42,31 +42,31 @@ class EditFilterGroupRequest extends BaseRequest
             ],
             'custom_field.*.value' => [
                 'nullable',
-            ]
+            ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
 
-            $rules['title_tag.' . $availableLanguage] = [
+            $rules['title_tag.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
 
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
 
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
 
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
@@ -91,11 +91,11 @@ class EditFilterGroupRequest extends BaseRequest
                 if ($selectedProductType->product_size_length_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_FROM_TO_INPUTS_TYPE) {
                     $rules['length_from'] = [
                         'nullable',
-                        'numeric'
+                        'numeric',
                     ];
                     $rules['length_to'] = [
                         'nullable',
-                        'numeric'
+                        'numeric',
                     ];
                 } elseif ($selectedProductType->product_size_length_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
                     $rules['length_options'] = [
@@ -108,11 +108,11 @@ class EditFilterGroupRequest extends BaseRequest
                 if ($selectedProductType->product_size_width_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_FROM_TO_INPUTS_TYPE) {
                     $rules['width_from'] = [
                         'nullable',
-                        'numeric'
+                        'numeric',
                     ];
                     $rules['width_to'] = [
                         'nullable',
-                        'numeric'
+                        'numeric',
                     ];
                 } elseif ($selectedProductType->product_size_width_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
                     $rules['width_options'] = [
@@ -125,11 +125,11 @@ class EditFilterGroupRequest extends BaseRequest
                 if ($selectedProductType->product_size_height_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_FROM_TO_INPUTS_TYPE) {
                     $rules['height_from'] = [
                         'nullable',
-                        'numeric'
+                        'numeric',
                     ];
                     $rules['height_to'] = [
                         'nullable',
-                        'numeric'
+                        'numeric',
                     ];
                 } elseif ($selectedProductType->product_size_height_filter_type_id === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
                     $rules['height_options'] = [
@@ -150,11 +150,11 @@ class EditFilterGroupRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
-            $attributes['title_tag.' . $availableLanguage] = $this->prepareAttribute(trans('admin.title_tag'), $availableLanguage);
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['title_tag.'.$availableLanguage] = $this->prepareAttribute(trans('admin.title_tag'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
         }
 
         return $attributes;

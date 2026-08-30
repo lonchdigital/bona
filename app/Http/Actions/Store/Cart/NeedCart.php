@@ -16,7 +16,7 @@ trait NeedCart
             $cart = $cartService->getCartForGuestUser($this->guestCartToken()->existing() ?? '');
         }
 
-        if (!$cart) {
+        if (! $cart) {
             $cart = $this->getAuthUser()
                 ? $cartService->createCartByUser($this->getAuthUser())
                 : $cartService->createCartByToken($this->guestCartToken()->ensure());

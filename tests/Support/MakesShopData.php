@@ -6,6 +6,8 @@ use App\Models\Country;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\User;
+use App\Services\Cart\GuestCartToken;
+use App\Services\WishList\GuestWishListToken;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -54,7 +56,7 @@ trait MakesShopData
     protected function makeProduct(array $attributes = []): Product
     {
         return Product::create(array_merge([
-            'slug' => 'test-door-' . uniqid(),
+            'slug' => 'test-door-'.uniqid(),
             'creator_id' => $this->author()->id,
             'product_type_id' => $this->productType()->id,
             'country_id' => $this->country()->id,
@@ -101,8 +103,8 @@ trait MakesShopData
          * production every request gets a fresh container; in a test the same
          * one is reused, so a new visitor has to be given fresh instances.
          */
-        $this->app->forgetInstance(\App\Services\WishList\GuestWishListToken::class);
-        $this->app->forgetInstance(\App\Services\Cart\GuestCartToken::class);
+        $this->app->forgetInstance(GuestWishListToken::class);
+        $this->app->forgetInstance(GuestCartToken::class);
 
         return $this;
     }

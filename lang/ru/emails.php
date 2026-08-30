@@ -16,7 +16,7 @@ return [
     'email_footer_text_2' => 'команда :SITE_NAME',
     'email_footer_address' => 'ул. Михаила Максимовича 24, Киев, Украина',
 
-    //user-email-confirmation-email
+    // user-email-confirmation-email
     'user-email-confirmation-email' => [
         'subject' => 'Подтверждение электронной почты',
         'main_text' => 'Для завершения регистрации, пожалуйста, подтвердите ваш email',
@@ -24,7 +24,7 @@ return [
         'support_text' => 'Нужна помощь?',
     ],
 
-    //user-forgot-password-email
+    // user-forgot-password-email
     'user-forgot-password-email' => [
         'subject' => 'Восстановление пароля',
         'main_text' => 'Ваш пароль успешно восстановлен.',

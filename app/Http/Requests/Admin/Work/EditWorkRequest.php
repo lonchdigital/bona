@@ -4,18 +4,17 @@ namespace App\Http\Requests\Admin\Work;
 
 class EditWorkRequest extends CreateWorkRequest
 {
-
     public function rules(): array
     {
         $rules = $this->baseRules();
 
         $rules['slug'] = [
             'required',
-            'unique:works,slug,' . $this->route('work')->id,
+            'unique:works,slug,'.$this->route('work')->id,
             'string',
         ];
 
-        $rules['main_image' ] = [
+        $rules['main_image'] = [
             'nullable',
             'image',
             'mimes:jpeg,png,jpg',
@@ -32,7 +31,7 @@ class EditWorkRequest extends CreateWorkRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
         }
 
         return $attributes;

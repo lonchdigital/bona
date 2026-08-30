@@ -3,19 +3,16 @@
 namespace App\Services\Admin\ProductField;
 
 use App\DataClasses\NumericFieldFilerTypesDataClass;
-use App\Models\Product;
-use App\Models\Faqs;
-use App\Models\SeoText;
-use App\Models\ProductCustomField;
-use App\Services\Base\ServiceActionResult;
-use Carbon\Carbon;
-use App\Models\ProductField;
-use App\Models\ProductFieldOption;
-use App\Services\Base\BaseService;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use App\DataClasses\ProductFieldTypeOptionsDataClass;
+use App\Models\Faqs;
+use App\Models\Product;
+use App\Models\ProductField;
+use App\Models\SeoText;
 use App\Services\Admin\ProductField\DTO\EditProductFieldDTO;
+use App\Services\Base\BaseService;
+use App\Services\Base\ServiceActionResult;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -28,7 +25,8 @@ class ProductFieldService extends BaseService
     {
         return ProductField::get();
     }
-    public function getProductFieldsPaginated(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+
+    public function getProductFieldsPaginated(): LengthAwarePaginator
     {
         return ProductField::with('creator')
             ->paginate(config('domain.items_per_page'));
@@ -41,13 +39,14 @@ class ProductFieldService extends BaseService
         })->all();
     }
 
-    public function getDocsIds($docs): string|null
+    public function getDocsIds($docs): ?string
     {
-        if( count($docs) ) {
+        if (count($docs)) {
             $docIds = null;
             foreach ($docs as $doc) {
-                $docIds .= $doc['id'] . ',';
+                $docIds .= $doc['id'].',';
             }
+
             return rtrim($docIds, ',');
         }
 
@@ -58,7 +57,7 @@ class ProductFieldService extends BaseService
     {
         $creator = $this->getAuthUser();
 
-        return $this->coverWithDBTransaction(function () use($request, $creator) {
+        return $this->coverWithDBTransaction(function () use ($request, $creator) {
             $productField = ProductField::create([
                 'creator_id' => $creator->id,
                 'field_name' => $request->productFieldName,
@@ -112,7 +111,7 @@ class ProductFieldService extends BaseService
 
     public function updateProductField(ProductField $productField, EditProductFieldDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($productField, $request) {
+        return $this->coverWithDBTransaction(function () use ($productField, $request) {
             $productField->update([
                 'field_name' => $request->productFieldName,
                 'slug' => $request->slug,
@@ -125,10 +124,10 @@ class ProductFieldService extends BaseService
             ]);
 
             if ($request->productFieldType === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
-                //we have to delete all images at last step, to avoid cases when transaction will be rolled back, but images will be deleted
+                // we have to delete all images at last step, to avoid cases when transaction will be rolled back, but images will be deleted
                 $replacedImages = [];
 
-                //options
+                // options
                 $existingOptions = $productField->options;
 
                 $productFieldsIdsToUpdateOrCreate = [];
@@ -142,16 +141,16 @@ class ProductFieldService extends BaseService
                         'slug' => $fieldOption['slug'],
                     ];
 
-                    //store image if image was provided
+                    // store image if image was provided
                     if ($request->asImage && isset($fieldOption['image'])) {
 
                         $optionData['image_path'] = $this->storeOptionImage($fieldOption['image']);
                     }
 
-                    //handle existing options
+                    // handle existing options
                     if ($existingOption) {
-                        //replace images is new images were provided and old record has image
-                        if($request->asImage && isset($fieldOption['image']) && $existingOption['image_path']) {
+                        // replace images is new images were provided and old record has image
+                        if ($request->asImage && isset($fieldOption['image']) && $existingOption['image_path']) {
                             $oldImagePath = Storage::disk(config('app.images_disk_default'))->path($existingOption['image_path']);
                             $replacedImages[] = $oldImagePath;
                         }
@@ -160,35 +159,35 @@ class ProductFieldService extends BaseService
                             ->where('id', $id)
                             ->first()
                             ->update($optionData);
-                    //handle new options
+                        // handle new options
                     } else {
                         $productFieldsToCreate[] = $optionData;
                     }
                 }
 
-                //delete existing options
+                // delete existing options
                 $itemsToDelete = $existingOptions->whereNotIn('id', $productFieldsIdsToUpdateOrCreate);
 
                 if (count($itemsToDelete)) {
                     $productField->options()->whereIn('id', $itemsToDelete->pluck('id'))->delete();
                 }
 
-                //update existing options
+                // update existing options
                 $productField->options()->saveMany($existingOptions);
 
-                //create new options
+                // create new options
                 if (count($productFieldsToCreate)) {
                     $productField->options()->createMany($productFieldsToCreate);
                 }
 
-                //delete images that were replaces by new images
+                // delete images that were replaces by new images
                 foreach ($replacedImages as $replacedImage) {
                     if (Storage::disk(config('app.images_disk_default'))->exists($replacedImage)) {
                         Storage::disk(config('app.images_disk_default'))->delete($replacedImage);
                     }
                 }
 
-                //delete images of deleted options
+                // delete images of deleted options
                 foreach ($itemsToDelete as $itemToDelete) {
                     if ($itemToDelete['image_path'] && Storage::disk(config('app.images_disk_default'))->exists($itemToDelete['image_path'])) {
                         Storage::disk(config('app.images_disk_default'))->delete($itemToDelete['image_path']);
@@ -199,7 +198,7 @@ class ProductFieldService extends BaseService
             if (($request->productFieldType === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE ||
                     $request->productFieldType === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER) &&
                 $request->numericFieldFilterType === NumericFieldFilerTypesDataClass::NUMERIC_FILTER_AS_OPTIONS_TYPE) {
-                //numeric fields
+                // numeric fields
                 $existingNumericFieldOptions = $productField->fieldFilterOptions;
                 $numericFieldsOptionIdsToUpdateOrCreate = [];
                 $numericFieldsOptionToCreate = [];
@@ -214,27 +213,27 @@ class ProductFieldService extends BaseService
                         'to' => $numericFiledFilterOption['to'],
                     ];
 
-                    //handle existing options
+                    // handle existing options
                     if ($existingNumericFieldOption) {
                         $existingNumericFieldOptions
                             ->where('id', $id)
                             ->first()
                             ->update($numericFiledFilterOptionData);
-                        //handle new options
+                        // handle new options
                     } else {
                         $numericFieldsOptionToCreate[] = $numericFiledFilterOptionData;
                     }
                 }
 
-                //create new options
+                // create new options
                 if (count($numericFieldsOptionToCreate)) {
                     $productField->fieldFilterOptions()->createMany($numericFieldsOptionToCreate);
                 }
 
-                //update existing options
+                // update existing options
                 $productField->fieldFilterOptions()->saveMany($existingNumericFieldOptions);
 
-                //delete existing options
+                // delete existing options
                 $numericFieldsOptionToDelete = $existingNumericFieldOptions->whereNotIn('id', $numericFieldsOptionIdsToUpdateOrCreate);
 
                 if (count($numericFieldsOptionToDelete)) {
@@ -248,7 +247,7 @@ class ProductFieldService extends BaseService
 
     private function storeOptionImage($uploadedImage): string
     {
-        $newImagePath = self::OPTION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+        $newImagePath = self::OPTION_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
 
         $image = Image::make($uploadedImage)
             ->resize(150, 150)
@@ -281,7 +280,7 @@ class ProductFieldService extends BaseService
 
             $productField->delete();
 
-            if(count($imagesToDelete)) {
+            if (count($imagesToDelete)) {
                 foreach ($imagesToDelete as $imageToDelete) {
                     if (Storage::disk(config('app.images_disk_default'))->exists($imageToDelete)) {
                         Storage::disk(config('app.images_disk_default'))->delete($imageToDelete);
@@ -301,7 +300,7 @@ class ProductFieldService extends BaseService
             $existingOptions = [];
 
             foreach ($allOptions as $option) {
-                if (Product::whereRaw('JSON_EXTRACT(custom_fields, ?) is not null')->addBinding('$."' . $option .'"')->exists()) {
+                if (Product::whereRaw('JSON_EXTRACT(custom_fields, ?) is not null')->addBinding('$."'.$option.'"')->exists()) {
                     $existingOptions[] = $option;
                 }
             }
@@ -329,6 +328,4 @@ class ProductFieldService extends BaseService
 
         return $data;
     }
-
-
 }

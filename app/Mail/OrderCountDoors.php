@@ -5,11 +5,12 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class OrderCountDoors extends Mailable
+class OrderCountDoors extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -22,8 +23,7 @@ class OrderCountDoors extends Mailable
         private readonly string $phone,
         private readonly string $currentProductTitle,
         private readonly string $currentProductUrl
-    )
-    {}
+    ) {}
 
     /**
      * Get the message envelope.
@@ -47,7 +47,7 @@ class OrderCountDoors extends Mailable
                 'name' => $this->name,
                 'phone' => $this->phone,
                 'current_product_title' => $this->currentProductTitle,
-                'current_product_url' => $this->currentProductUrl
+                'current_product_url' => $this->currentProductUrl,
             ],
         );
     }
@@ -55,7 +55,7 @@ class OrderCountDoors extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

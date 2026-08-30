@@ -45,8 +45,10 @@ return [
     'forgot_password' => 'Забули пароль?',
     'go_to_sign_up' => 'Зареєструватись',
     'reset_password_title' => 'Відновлення паролю',
-    'reset_password_text' => 'Вкажіть ваш Email і ми відправимо вам новий пароль.',
+    'reset_password_text' => 'Вкажіть Email, і ми відправимо одноразове посилання для зміни пароля.',
     'reset_password_call_to_action' => 'Скинути пароль',
-    'reset_password_success_title' => 'Пароль успішно скинуто',
-    'reset_password_success_text' => 'Ми віправили вам новий пароль на електронну пошту.',
+    'reset_password_success_title' => 'Перевірте електронну пошту',
+    'reset_password_success_text' => 'Якщо обліковий запис існує, ми відправили посилання для зміни пароля.',
+    'set_new_password' => 'Новий пароль',
+    'save_new_password' => 'Зберегти новий пароль',
 ];

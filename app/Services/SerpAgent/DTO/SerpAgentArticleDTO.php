@@ -29,7 +29,7 @@ class SerpAgentArticleDTO implements BaseDTO
         public readonly array $relatedArticles,
         /** @var array<int, array{title: string, url: string}> */
         public readonly array $recommendedResources,
-    ) { }
+    ) {}
 
     /**
      * The heading used for the article itself. Serp Agent sends both "title"
@@ -55,7 +55,7 @@ class SerpAgentArticleDTO implements BaseDTO
      * recognised by its fixed slug so the test can succeed without a throwaway
      * article appearing on the live blog.
      *
-     * @param array<int, string> $testSlugs
+     * @param  array<int, string>  $testSlugs
      */
     public function isTestDelivery(array $testSlugs): bool
     {

@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin\DeliveryPage;
 
 use App\Http\Requests\BaseRequest;
-use App\Models\HomePageConfig;
-use App\Rules\RequiredImageDeletedRule;
 use App\Services\DeliveryPage\DTO\DeliveryPageEditDTO;
 
 class DeliveryPageEditRequest extends BaseRequest
@@ -31,7 +29,6 @@ class DeliveryPageEditRequest extends BaseRequest
             ],
         ];
 
-
         $rules['image'] = [
             'nullable',
             'image',
@@ -41,45 +38,43 @@ class DeliveryPageEditRequest extends BaseRequest
         ];
         $rules['button_url'] = [
             'nullable',
-            'string'
+            'string',
         ];
         $rules['iframe'] = [
             'nullable',
-            'string'
+            'string',
         ];
 
-
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
 
-            $rules['title.' . $availableLanguage] = [
+            $rules['title.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['description.' . $availableLanguage] = [
+            $rules['description.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
-            $rules['button_text.' . $availableLanguage] = [
+            $rules['button_text.'.$availableLanguage] = [
                 'nullable',
-                'string'
+                'string',
             ];
 
         }
 
-        return  $rules;
+        return $rules;
     }
 
     public function attributes(): array
@@ -91,9 +86,9 @@ class DeliveryPageEditRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
         }
 
         return $attributes;

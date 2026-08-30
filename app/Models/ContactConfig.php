@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 
@@ -25,10 +24,8 @@ class ContactConfig extends Model
         'email_three',
         'meta_title',
         'meta_description',
-        'meta_keywords'
+        'meta_keywords',
     ];
 
     protected $guarded = [];
-
-
 }

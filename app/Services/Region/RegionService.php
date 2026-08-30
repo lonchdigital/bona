@@ -10,6 +10,6 @@ class RegionService extends BaseService
 {
     public function getRegions(): Collection
     {
-        return Region::orderBy('name->' . app()->getLocale())->get();
+        return Region::orderBy('name->'.app()->getLocale())->get();
     }
 }

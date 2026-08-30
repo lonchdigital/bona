@@ -6,14 +6,13 @@ use App\Models\ContactConfig;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Contacts\DTO\ContactsPageEditDTO;
+use Illuminate\Support\Facades\Cache;
 
 class ContactsPageService extends BaseService
 {
-
     public function editContactsPage(ContactsPageEditDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($request) {
-
+        return $this->coverWithDBTransaction(function () use ($request) {
 
             $existingConfig = ContactConfig::first();
 
@@ -42,17 +41,17 @@ class ContactsPageService extends BaseService
                 'iframe_address_three' => $request->iframeAddressThree,
             ];
 
-
-            if( !is_null($existingConfig)){
+            if (! is_null($existingConfig)) {
                 $existingConfig->update($dataToUpdate);
             } else {
                 ContactConfig::create($dataToUpdate);
             }
 
-             return ServiceActionResult::make(true, trans('admin.contacts_edit_success'));
+            Cache::forget('contactsFooter');
+
+            return ServiceActionResult::make(true, trans('admin.contacts_edit_success'));
         });
     }
-
 
     public function getContactsConfig(): ?ContactConfig
     {

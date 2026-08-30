@@ -2,17 +2,18 @@
 
 namespace App\Http\Actions\Store\Checkout;
 
-use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
-use App\Services\Base\ServiceActionResult;
-use App\Services\Cart\CartService;
-use App\Services\Order\OrderService;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
 use App\Http\Requests\Store\Checkout\CheckoutConfirmOrderRequest;
+use App\Services\Base\ServiceActionResult;
+use App\Services\Cart\CartService;
+use App\Services\Order\OrderAccessUrlService;
+use App\Services\Order\OrderService;
 use App\Services\Payment\PaymentMonoBankService;
 use App\Services\Payment\PaymentService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class CheckoutConfirmOrderAction extends BaseAction
 {
@@ -24,12 +25,12 @@ class CheckoutConfirmOrderAction extends BaseAction
         CartService $cartService,
         PaymentService $paymentService,
         PaymentMonoBankService $paymentMonoBankService,
-    )
-    {
+        OrderAccessUrlService $orderAccessUrlService,
+    ) {
         $authUser = $this->getAuthUser();
 
-        if( $request->all()['payment_type_id'] == PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ) {
-            if(is_null($authUser)) {
+        if ($request->all()['payment_type_id'] == PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) {
+            if (is_null($authUser)) {
                 $phone = $request->toDTO()->phone;
             } else {
                 $phone = $authUser->getAttribute('phone');
@@ -37,7 +38,7 @@ class CheckoutConfirmOrderAction extends BaseAction
             $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
 
             $isValid = $paymentMonoBankService->validateClientMonoBankPhone($phone);
-            if (!$isValid) {
+            if (! $isValid) {
                 return redirect()
                     ->back()
                     ->withErrors(['phone' => trans('base.checkout_payment_paypart_mono_bank_unavailable')])
@@ -45,13 +46,18 @@ class CheckoutConfirmOrderAction extends BaseAction
             }
         }
 
-        $cart = $this->getCart($cartService);
+        $cart = $this->getExistingCart($cartService);
+        if (! $cart || ! $cart->products()->exists()) {
+            throw ValidationException::withMessages([
+                'cart' => trans('base.cart_is_empty'),
+            ]);
+        }
+
         $order = $orderService->createOrderByCart($cart, $request->toDTO(), $authUser);
 
-
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
-            return response()->redirectToRoute('store.payment.liq-pay.ordinary', ['order' => $order]);
-        } elseif ( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART ) {
+            return redirect()->to($orderAccessUrlService->liqPay($order));
+        } elseif ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART) {
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
             $response = $paymentService->createPrivateBankPartialPaymentOrder($order, $request->payment_period, $merchant_type);
@@ -62,17 +68,17 @@ class CheckoutConfirmOrderAction extends BaseAction
                 } else {
                     $message = $response['message'] ?? ($response['errorMessage'] ?? 'Unknown error');
                     Log::error('Error during creating partial payment order: '.$message);
-                    $route = route('store.checkout.thank-you', ['order' => $order->id]);
+                    $route = $orderAccessUrlService->thankYou($order);
                 }
             } else {
-                $route = route('store.checkout.thank-you', ['order' => $order->id]);
+                $route = $orderAccessUrlService->thankYou($order);
             }
 
-        } elseif( $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ) {
+        } elseif ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) {
 
             $response = $paymentMonoBankService->createMonoBankPartialPaymentOrder($order, $phone, $request->get('mono_payment_period'));
-            if (!is_null($response)) {
-                return response()->redirectToRoute('store.checkout.thank-you.mono-bank', ['order' => $order]);
+            if (! is_null($response)) {
+                return redirect()->to($orderAccessUrlService->monoBankThankYou($order));
             } else {
                 return redirect()
                     ->back()
@@ -81,7 +87,7 @@ class CheckoutConfirmOrderAction extends BaseAction
             }
 
         } else {
-            return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
+            return redirect()->to($orderAccessUrlService->thankYou($order));
         }
 
         return $this->handleActionResult($route, $request, ServiceActionResult::make(true, 'success'));

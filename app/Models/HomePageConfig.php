@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Sitemap\Tags\Url;
 use Spatie\Translatable\HasTranslations;
 
 class HomePageConfig extends Model
@@ -15,7 +14,6 @@ class HomePageConfig extends Model
     public $translatable = ['slider_title', 'meta_title', 'meta_description', 'meta_keywords'];
 
     protected $guarded = [];
-
 
     public function productField()
     {

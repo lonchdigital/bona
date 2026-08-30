@@ -12,5 +12,4 @@ class ProductTypeSizeOption extends Model
     public $translatable = ['name'];
 
     protected $guarded = [];
-
 }

@@ -33,31 +33,31 @@ class CategoryCreateRequest extends BaseRequest
             ],
             'seo_text' => [
                 'array',
-            ]
+            ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['seo_title.' . $availableLanguage] = [
+            $rules['seo_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['seo_text.' . $availableLanguage] = [
+            $rules['seo_text.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
@@ -73,7 +73,7 @@ class CategoryCreateRequest extends BaseRequest
         $rules['category_image'] = [
             'nullable',
             'mimes:jpeg,png,jpg',
-            'dimensions:min_width=150,min_height=150'
+            'dimensions:min_width=150,min_height=150',
         ];
 
         return $rules;
@@ -90,10 +90,10 @@ class CategoryCreateRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
         }
 
         return $attributes;

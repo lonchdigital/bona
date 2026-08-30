@@ -57,11 +57,11 @@ return new class extends Migration
     }
 
     /**
-     * @param array<string, string>|null $expected null replaces whatever is there
+     * @param  array<string, string>|null  $expected  null replaces whatever is there
      */
     private function replaceTranslations(?object $model, string $attribute, ?array $expected, array $values): void
     {
-        if (!$model) {
+        if (! $model) {
             return;
         }
 

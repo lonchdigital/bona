@@ -2,12 +2,12 @@
 
 namespace App\Http\Actions\Blog\Pages;
 
-use App\Models\BlogArticle;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\BlogArticle;
 use App\Services\Author\AuthorService;
 use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Currency\CurrencyService;
-use Abordage\LastModified\Facades\LastModified;
+use App\Support\LastModified;
 
 class ShowBlogArticlePageAction extends BaseAction
 {
@@ -16,8 +16,7 @@ class ShowBlogArticlePageAction extends BaseAction
         CurrencyService $currencyService,
         BlogArticleService $blogArticleService,
         AuthorService $authorService,
-    )
-    {
+    ) {
         $blogArticle->meta_tags = $this->handleFollowTag($blogArticle->meta_tags);
         LastModified::set($blogArticle->updated_at);
 

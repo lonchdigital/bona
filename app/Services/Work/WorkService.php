@@ -4,12 +4,14 @@ namespace App\Services\Work;
 
 use App\Models\Work;
 use App\Models\WorkImage;
-use Illuminate\Http\UploadedFile;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Work\DTO\EditWorkDTO;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+
 use function config;
 use function trans;
 
@@ -24,7 +26,7 @@ class WorkService extends BaseService
         return Work::get();
     }
 
-    public function getWorksWithCreatorPaginated(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getWorksWithCreatorPaginated(): LengthAwarePaginator
     {
         return Work::with('creator')->paginate(config('domain.items_per_page'));
     }
@@ -52,11 +54,11 @@ class WorkService extends BaseService
     {
         $creator = $this->getAuthUser();
 
-        return $this->coverWithDBTransaction(function () use($request, $creator) {
+        return $this->coverWithDBTransaction(function () use ($request, $creator) {
 
             $workData = $this->buildWorkData($request) + ['creator_id' => $creator->id];
 
-            $imagePath = self::WORK_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+            $imagePath = self::WORK_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
             $workData['image_path'] = $imagePath;
             $this->storeImage($imagePath, $request->mainImage);
 
@@ -70,12 +72,12 @@ class WorkService extends BaseService
 
     public function updateWork(Work $work, EditWorkDTO $request): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($work, $request) {
+        return $this->coverWithDBTransaction(function () use ($work, $request) {
 
             $workData = $this->buildWorkData($request);
 
             if ($request->mainImage) {
-                $imagePath = self::WORK_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
+                $imagePath = self::WORK_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
                 $workData['image_path'] = $imagePath;
                 $this->storeImage($imagePath, $request->mainImage);
                 $this->deleteImage($work->image_path);
@@ -126,11 +128,11 @@ class WorkService extends BaseService
         foreach ($images ?? [] as $index => $image) {
             $imageModel = null;
 
-            if (!empty($image['id'])) {
+            if (! empty($image['id'])) {
                 $imageModel = $existingImages->firstWhere('id', (int) $image['id']);
 
-                if (!$imageModel) {
-                    throw new \Exception('Image ' . $image['id'] . ' does not belong to this work');
+                if (! $imageModel) {
+                    throw new \Exception('Image '.$image['id'].' does not belong to this work');
                 }
             }
 
@@ -142,7 +144,7 @@ class WorkService extends BaseService
             $uploaded = $image['image'] ?? null;
 
             if ($uploaded instanceof UploadedFile) {
-                $imagePath = self::WORK_IMAGES_FOLDER . '/' . sha1(microtime(true)) . '_' . Str::random(10) . '.jpg';
+                $imagePath = self::WORK_IMAGES_FOLDER.'/'.sha1(microtime(true)).'_'.Str::random(10).'.jpg';
                 $this->storeImage($imagePath, $uploaded);
                 $data['image_path'] = $imagePath;
 
@@ -158,7 +160,7 @@ class WorkService extends BaseService
                 continue;
             }
 
-            if (!isset($data['image_path'])) {
+            if (! isset($data['image_path'])) {
                 continue;
             }
 
@@ -177,7 +179,7 @@ class WorkService extends BaseService
 
     public function deleteWork(Work $work): ServiceActionResult
     {
-        return $this->coverWithDBTransaction(function () use($work) {
+        return $this->coverWithDBTransaction(function () use ($work) {
 
             $imagesToDelete = $work->images->pluck('image_path')->all();
             $imagesToDelete[] = $work->image_path;
@@ -192,5 +194,4 @@ class WorkService extends BaseService
             return ServiceActionResult::make(true, trans('admin.work_delete_success'));
         });
     }
-
 }

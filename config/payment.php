@@ -40,6 +40,7 @@ return [
         'api_url' => env('MONOBANK_API_URL', ''),
         'client_secret' => env('MONOBANK_CLIENT_SECRET', ''),
         'store_id' => env('MONOBANK_CLIENT_STORE_ID', ''),
+        'point_id' => env('MONOBANK_POINT_ID', ''),
 
         // The bank itself takes 3 to 25.
         'periods' => [3, 4, 5],

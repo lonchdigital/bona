@@ -2,8 +2,8 @@
 
 namespace App\Http\Actions\Admin\ProductsImport\Pages;
 
-use App\Models\ProductType;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\ProductType;
 use App\Services\Product\ProductImportService;
 
 class ShowProductImportPageAction extends BaseAction

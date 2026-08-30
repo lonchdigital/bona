@@ -4,7 +4,6 @@ namespace App\Services\Color;
 
 use App\Models\Color;
 use App\Models\Product;
-use App\Models\ProductType;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Color\DTO\EditColorDTO;
@@ -20,7 +19,7 @@ class ColorService extends BaseService
 
     public function __construct(
         private readonly ColorFiltersAdminService $filtersAdminService,
-    ) { }
+    ) {}
 
     public function getColors(): Collection
     {
@@ -72,7 +71,7 @@ class ColorService extends BaseService
     {
         $creator = $this->getAuthUser();
 
-        return $this->coverWithTryCatch(function () use($request, $creator) {
+        return $this->coverWithTryCatch(function () use ($request, $creator) {
 
             $dataToUpdate = [
                 'creator_id' => $creator->id,
@@ -83,14 +82,14 @@ class ColorService extends BaseService
             ];
 
             $colorImage = null;
-            if( !is_null($request->mainImage) ) {
-                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+            if (! is_null($request->mainImage)) {
+                $newImagePath = self::COLOR_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
                 $colorImage['image'] = $request->mainImage;
 
                 $this->storeImage($newImagePath, $colorImage['image'], 'webp');
                 $this->storeImage($newImagePath, $colorImage['image'], 'jpg');
 
-                $dataToUpdate['main_image'] = $newImagePath . '.webp';
+                $dataToUpdate['main_image'] = $newImagePath.'.webp';
             }
 
             Color::create($dataToUpdate);
@@ -111,19 +110,19 @@ class ColorService extends BaseService
             ];
 
             $imageToDelete = null;
-            if( !is_null($request->mainImage) ) {
+            if (! is_null($request->mainImage)) {
                 $imageToDelete = $color->main_image;
 
-                $newImagePath = self::COLOR_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10);
+                $newImagePath = self::COLOR_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
                 $colorImage['image'] = $request->mainImage;
 
                 $this->storeImage($newImagePath, $colorImage['image'], 'webp');
                 $this->storeImage($newImagePath, $colorImage['image'], 'jpg');
 
-                $dataToUpdate['main_image'] = $newImagePath . '.webp';
+                $dataToUpdate['main_image'] = $newImagePath.'.webp';
             }
 
-            if(!is_null($imageToDelete)) {
+            if (! is_null($imageToDelete)) {
                 $this->deleteImage($imageToDelete);
             }
 
@@ -135,9 +134,9 @@ class ColorService extends BaseService
 
     public function deleteColor(Color $color): ServiceActionResult
     {
-        return $this->coverWithTryCatch(function () use($color) {
+        return $this->coverWithTryCatch(function () use ($color) {
             $productWithColorExists = Product::where('main_color_id', $color->id)
-                ->orWhereHas('colors', function (Builder $query) use($color) {
+                ->orWhereHas('colors', function (Builder $query) use ($color) {
                     $query->where('color_id', $color->id);
                 })->exists();
 
@@ -145,7 +144,7 @@ class ColorService extends BaseService
                 return ServiceActionResult::make(false, trans('admin.color_in_use'));
             }
 
-            if(!is_null($color->main_image)) {
+            if (! is_null($color->main_image)) {
                 $this->deleteImage($color->main_image);
             }
 

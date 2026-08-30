@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Region;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RegionsSeeder extends Seeder
@@ -86,12 +85,12 @@ class RegionsSeeder extends Seeder
                     'ru' => 'Винницкая',
                 ],
             ],
-//            [
-//                'name' => [
-//                    'uk' => 'Автономна Республіка Крим',
-//                    'ru' => 'Автономная Республика Крым',
-//                ],
-//            ],
+            //            [
+            //                'name' => [
+            //                    'uk' => 'Автономна Республіка Крим',
+            //                    'ru' => 'Автономная Республика Крым',
+            //                ],
+            //            ],
             [
                 'name' => [
                     'uk' => 'Миколаївська',
@@ -170,12 +169,12 @@ class RegionsSeeder extends Seeder
                     'ru' => 'г. Киев',
                 ],
             ],
-//            [
-//                'name' => [
-//                    'uk' => 'м. Севастополь',
-//                    'ru' => 'г. Севастополь',
-//                ],
-//            ],
+            //            [
+            //                'name' => [
+            //                    'uk' => 'м. Севастополь',
+            //                    'ru' => 'г. Севастополь',
+            //                ],
+            //            ],
         ];
 
         foreach ($regions as $region) {

@@ -11,7 +11,7 @@ class VerifySerpAgentWebhook
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!config('serp-agent.enabled')) {
+        if (! config('serp-agent.enabled')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Serp Agent integration is disabled.',
@@ -31,7 +31,7 @@ class VerifySerpAgentWebhook
 
         $providedSecret = $this->extractSecret($request);
 
-        if ($providedSecret === null || !hash_equals($secret, $providedSecret)) {
+        if ($providedSecret === null || ! hash_equals($secret, $providedSecret)) {
             Log::warning('SerpAgent: request rejected, invalid or missing secret.', [
                 'ip' => $request->ip(),
             ]);

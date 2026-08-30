@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\PreviewImage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -33,7 +34,6 @@ class Work extends Model implements Sitemapable
 
     protected $guarded = [];
 
-
     public function creator()
     {
         return $this->belongsTo(User::class, 'creator_id');
@@ -45,6 +45,7 @@ class Work extends Model implements Sitemapable
             if ($this->image_path) {
                 return Storage::url($this->image_path);
             }
+
             return null;
         });
     }
@@ -59,7 +60,7 @@ class Work extends Model implements Sitemapable
      */
     public function ogImageUrl(): Attribute
     {
-        return Attribute::make(fn () => \App\Helpers\PreviewImage::url($this->image_path));
+        return Attribute::make(fn () => PreviewImage::url($this->image_path));
     }
 
     public function scopePublished($query)
@@ -67,11 +68,11 @@ class Work extends Model implements Sitemapable
         return $query->where('is_published', true);
     }
 
-    public function toSitemapTag(): Url | string | array
+    public function toSitemapTag(): Url|string|array
     {
         return [
             route('store.work.page', ['workSlug' => $this->slug]),
-            '/ru' . route('store.work.page', ['workSlug' => $this->slug], false),
+            '/ru'.route('store.work.page', ['workSlug' => $this->slug], false),
         ];
     }
 

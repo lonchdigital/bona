@@ -19,17 +19,17 @@ class LlmsTxtService
     {
         $lines = [];
 
-        $lines[] = '# ' . trans('base.organization');
+        $lines[] = '# '.trans('base.organization');
         $lines[] = '';
-        $lines[] = '> ' . trans('base.llms_description');
+        $lines[] = '> '.trans('base.llms_description');
         $lines[] = '';
 
-        $lines[] = '## ' . trans('base.llms_catalogue');
+        $lines[] = '## '.trans('base.llms_catalogue');
         $lines[] = '';
 
         foreach (ProductType::orderBy('id')->get() as $productType) {
             $url = route('store.catalog.page', ['productTypeSlug' => $productType->slug]);
-            $lines[] = '- [' . $this->clean((string) $productType->name) . '](' . $url . ')';
+            $lines[] = '- ['.$this->clean((string) $productType->name).']('.$url.')';
         }
 
         // Subcategories and brands are real landing pages people search for.
@@ -39,11 +39,11 @@ class LlmsTxtService
 
         if ($categories->isNotEmpty()) {
             $lines[] = '';
-            $lines[] = '## ' . trans('base.llms_categories');
+            $lines[] = '## '.trans('base.llms_categories');
             $lines[] = '';
 
             foreach ($categories as $category) {
-                if (!$category->productType) {
+                if (! $category->productType) {
                     continue;
                 }
 
@@ -52,7 +52,7 @@ class LlmsTxtService
                     'categorySlug' => $category->slug,
                 ]);
 
-                $lines[] = '- [' . $this->clean((string) $category->name) . '](' . $url . ')';
+                $lines[] = '- ['.$this->clean((string) $category->name).']('.$url.')';
             }
         }
 
@@ -60,16 +60,16 @@ class LlmsTxtService
 
         if ($brands->isNotEmpty()) {
             $lines[] = '';
-            $lines[] = '## ' . trans('base.llms_brands');
+            $lines[] = '## '.trans('base.llms_brands');
             $lines[] = '';
 
             foreach ($brands as $brand) {
-                $lines[] = '- [' . $this->clean((string) $brand->name) . '](' . route('store.brand.page', ['brandSlug' => $brand->slug]) . ')';
+                $lines[] = '- ['.$this->clean((string) $brand->name).']('.route('store.brand.page', ['brandSlug' => $brand->slug]).')';
             }
         }
 
         $lines[] = '';
-        $lines[] = '## ' . trans('base.llms_pages');
+        $lines[] = '## '.trans('base.llms_pages');
         $lines[] = '';
 
         foreach ([
@@ -80,25 +80,25 @@ class LlmsTxtService
             'store.works.page' => trans('base.our_works'),
             'store.contacts' => trans('base.contacts'),
         ] as $routeName => $label) {
-            if (!app('router')->has($routeName)) {
+            if (! app('router')->has($routeName)) {
                 continue;
             }
 
-            $lines[] = '- [' . $this->clean($label) . '](' . route($routeName) . ')';
+            $lines[] = '- ['.$this->clean($label).']('.route($routeName).')';
         }
 
         foreach (StaticPage::all() as $staticPage) {
             $slug = $staticPage->slug ?? null;
 
-            if (!$slug) {
+            if (! $slug) {
                 continue;
             }
 
-            $lines[] = '- [' . $this->clean((string) $staticPage->name) . '](' . route('store.static-page.page', ['staticPageSlug' => $slug]) . ')';
+            $lines[] = '- ['.$this->clean((string) $staticPage->name).']('.route('store.static-page.page', ['staticPageSlug' => $slug]).')';
         }
 
         $lines[] = '';
-        $lines[] = 'Sitemap: ' . url('/sitemap.xml');
+        $lines[] = 'Sitemap: '.url('/sitemap.xml');
         $lines[] = '';
 
         return implode("\n", $lines);

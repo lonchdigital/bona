@@ -38,27 +38,27 @@ class BrandCreateRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
 
-            $rules['description.' . $availableLanguage] = [
+            $rules['description.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
 
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
         }
 
@@ -71,7 +71,7 @@ class BrandCreateRequest extends BaseRequest
 
         $rules['logo'] = [
             'nullable',
-            'mimes:jpeg,png,jpg'
+            'mimes:jpeg,png,jpg',
         ];
 
         return $rules;
@@ -89,11 +89,11 @@ class BrandCreateRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.brand_description'), $availableLanguage);
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.brand_name'), $availableLanguage);
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.brand_description'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.brand_name'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
         }
 
         return $attributes;
@@ -102,7 +102,8 @@ class BrandCreateRequest extends BaseRequest
     public function messages(): array
     {
         $messages = parent::messages();
-//        $messages['slide.*.image.required_if'] = trans('validation.required');
+
+        //        $messages['slide.*.image.required_if'] = trans('validation.required');
         return $messages;
     }
 

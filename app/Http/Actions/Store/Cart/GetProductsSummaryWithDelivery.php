@@ -17,10 +17,9 @@ class GetProductsSummaryWithDelivery extends BaseAction
         GetProductsSummaryWithDeliveryRequest $request,
         CartService $cartService,
         WishListService $wishListService,
-    )
-    {
+    ) {
         // Reading a summary must not bring a cart into being.
-        $cart = $this->getExistingCart($cartService) ?? new Cart();
+        $cart = $this->getExistingCart($cartService) ?? new Cart;
         $wishList = $this->getAuthUser() ? $wishListService->getWishListByUser($this->getAuthUser()) : null;
 
         return CartSummaryWithDelivery::make($cartService->getCartSummaryWithDelivery($request->toDTO(), $cart, $wishList));

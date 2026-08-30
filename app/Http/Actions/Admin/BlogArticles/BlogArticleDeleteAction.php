@@ -2,10 +2,10 @@
 
 namespace App\Http\Actions\Admin\BlogArticles;
 
-use App\Models\BlogArticle;
-use Illuminate\Http\Request;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\BlogArticle;
 use App\Services\BlogArticle\BlogArticleService;
+use Illuminate\Http\Request;
 
 class BlogArticleDeleteAction extends BaseAction
 {

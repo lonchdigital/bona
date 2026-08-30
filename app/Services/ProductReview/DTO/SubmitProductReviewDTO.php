@@ -13,5 +13,5 @@ class SubmitProductReviewDTO implements BaseDTO
         public readonly int $rating,
         public readonly string $review,
         public readonly ?string $ipAddress,
-    ) { }
+    ) {}
 }

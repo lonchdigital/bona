@@ -3,14 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPasswordContract
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use CanResetPassword, HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -51,12 +55,12 @@ class User extends Authenticatable
         return $this->role_id === Role::ADMIN_ROLE_ID;
     }
 
-    public function role(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function role(): HasOne
     {
         return $this->hasOne(Role::class);
     }
 
-    public function emailActivationCode(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function emailActivationCode(): BelongsTo
     {
         return $this->belongsTo(UserEmailActivationCode::class);
     }

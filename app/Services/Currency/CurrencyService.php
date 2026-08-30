@@ -5,7 +5,6 @@ namespace App\Services\Currency;
 use App\Jobs\UpdateProductsPriceByCurrencyRateJob;
 use App\Models\Currency;
 use App\Models\Product;
-use App\Services\Application\ApplicationConfigService;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Currency\DTO\EditCurrencyDTO;
@@ -28,8 +27,24 @@ class CurrencyService extends BaseService
     {
         $baseCurrency = Currency::where('is_base', true)->first();
 
-        if (!$baseCurrency) {
-            return Currency::first();
+        if (! $baseCurrency) {
+            $baseCurrency = Currency::first();
+        }
+
+        if (! $baseCurrency) {
+            $baseCurrency = new Currency([
+                'code' => 'UAH',
+                'is_base' => true,
+                'rate' => 1,
+            ]);
+            $baseCurrency->setTranslations('name', [
+                'uk' => 'Гривня',
+                'ru' => 'Гривна',
+            ]);
+            $baseCurrency->setTranslations('name_short', [
+                'uk' => 'грн',
+                'ru' => 'грн',
+            ]);
         }
 
         return $baseCurrency;
@@ -39,7 +54,7 @@ class CurrencyService extends BaseService
     {
         $creator = $this->getAuthUser();
 
-        return $this->coverWithTryCatch(function () use($request, $creator) {
+        return $this->coverWithTryCatch(function () use ($request, $creator) {
             Currency::create([
                 'creator_id' => $creator->id,
                 'name' => $request->name,
@@ -55,7 +70,7 @@ class CurrencyService extends BaseService
 
     public function editCurrency(Currency $currency, EditCurrencyDTO $request): ServiceActionResult
     {
-        return $this->coverWithTryCatch(function () use($currency, $request) {
+        return $this->coverWithTryCatch(function () use ($currency, $request) {
             $currency->update([
                 'name' => $request->name,
                 'name_short' => $request->nameShort,
@@ -72,7 +87,7 @@ class CurrencyService extends BaseService
 
     public function deleteCurrency(Currency $currency): ServiceActionResult
     {
-        return $this->coverWithTryCatch(function () use($currency) {
+        return $this->coverWithTryCatch(function () use ($currency) {
             if (Product::where('price_currency_id', $currency->id)->exists()) {
                 return ServiceActionResult::make(false, trans('admin.currency_in_use'));
             }

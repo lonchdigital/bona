@@ -32,7 +32,7 @@ class SerpAgentArticleService extends BaseService
     public function __construct(
         private readonly SerpAgentHtmlService $htmlService,
         private readonly ApplicationConfigService $applicationConfigService,
-    ) { }
+    ) {}
 
     /**
      * @return array{action: string, id: int, slug: string, url: string}
@@ -69,7 +69,7 @@ class SerpAgentArticleService extends BaseService
          * questions as structured data, that flat copy is dropped so the
          * article does not answer everything twice.
          */
-        if (!$hasInlineFaq && $dto->faq) {
+        if (! $hasInlineFaq && $dto->faq) {
             $body = $this->htmlService->removeInlineFaq($body, $locale);
         }
 
@@ -139,7 +139,7 @@ class SerpAgentArticleService extends BaseService
         $slug = $dto->slug ? Str::slug($dto->slug) : '';
         $article = $this->findManagedArticle($dto, $slug);
 
-        if (!$article) {
+        if (! $article) {
             throw new SerpAgentException(
                 'No article matches this translation group, so there is nothing to update. Send the article itself first.',
                 404
@@ -258,7 +258,7 @@ class SerpAgentArticleService extends BaseService
                     continue;
                 }
 
-                if (!isset($content[$language]) || trim((string) $content[$language]) === '') {
+                if (! isset($content[$language]) || trim((string) $content[$language]) === '') {
                     $content[$language] = $body;
                 }
             }
@@ -281,7 +281,7 @@ class SerpAgentArticleService extends BaseService
     {
         $appendix = '';
 
-        if (config('serp-agent.append_faq') && !$hasInlineFaq) {
+        if (config('serp-agent.append_faq') && ! $hasInlineFaq) {
             $appendix .= $this->htmlService->buildFaqSection($dto->faq, $locale);
         }
 
@@ -346,7 +346,7 @@ class SerpAgentArticleService extends BaseService
 
         if ($occupied) {
             throw new SerpAgentException(
-                'The slug "' . $slug . '" already belongs to another article on the site. Change the slug in Serp Agent and send the article again.',
+                'The slug "'.$slug.'" already belongs to another article on the site. Change the slug in Serp Agent and send the article again.',
                 409
             );
         }
@@ -398,7 +398,7 @@ class SerpAgentArticleService extends BaseService
                     continue;
                 }
 
-                if (!isset($translations[$language]) || trim($translations[$language]) === '') {
+                if (! isset($translations[$language]) || trim($translations[$language]) === '') {
                     $translations[$language] = $value;
                 }
             }
@@ -425,7 +425,7 @@ class SerpAgentArticleService extends BaseService
 
         $admin = User::where('role_id', Role::ADMIN_ROLE_ID)->orderBy('id')->first();
 
-        if (!$admin) {
+        if (! $admin) {
             throw new SerpAgentException('There is no admin user the article could be attributed to.', 500);
         }
 
@@ -477,7 +477,7 @@ class SerpAgentArticleService extends BaseService
     {
         $disk = Storage::disk(config('app.images_disk_default'));
 
-        if (!$disk->exists($defaultHeroImage)) {
+        if (! $disk->exists($defaultHeroImage)) {
             Log::error('SerpAgent: SERP_AGENT_DEFAULT_HERO_IMAGE points at a file that does not exist.', [
                 'path' => $defaultHeroImage,
             ]);
@@ -487,19 +487,19 @@ class SerpAgentArticleService extends BaseService
 
         try {
             $extension = pathinfo($defaultHeroImage, PATHINFO_EXTENSION) ?: 'webp';
-            $target = self::ARTICLE_IMAGES_FOLDER . '/' . sha1(microtime(true) . $defaultHeroImage) . '_' . Str::random(10);
+            $target = self::ARTICLE_IMAGES_FOLDER.'/'.sha1(microtime(true).$defaultHeroImage).'_'.Str::random(10);
 
-            $disk->put($target . '.' . $extension, $disk->get($defaultHeroImage));
+            $disk->put($target.'.'.$extension, $disk->get($defaultHeroImage));
 
             // The rest of the project stores a jpg next to every webp cover.
             $jpgCompanion = pathinfo($defaultHeroImage, PATHINFO_DIRNAME)
-                . '/' . pathinfo($defaultHeroImage, PATHINFO_FILENAME) . '.jpg';
+                .'/'.pathinfo($defaultHeroImage, PATHINFO_FILENAME).'.jpg';
 
             if ($extension !== 'jpg' && $disk->exists($jpgCompanion)) {
-                $disk->put($target . '.jpg', $disk->get($jpgCompanion));
+                $disk->put($target.'.jpg', $disk->get($jpgCompanion));
             }
 
-            return $target . '.' . $extension;
+            return $target.'.'.$extension;
         } catch (Throwable $throwable) {
             Log::error('SerpAgent: the fallback cover image could not be copied.', [
                 'path' => $defaultHeroImage,
@@ -512,7 +512,7 @@ class SerpAgentArticleService extends BaseService
 
     private function downloadHeroImage(string $url): ?string
     {
-        if (!$this->isDownloadableUrl($url)) {
+        if (! $this->isDownloadableUrl($url)) {
             Log::warning('SerpAgent: refused to download the cover image.', ['url' => $url]);
 
             return null;
@@ -523,7 +523,7 @@ class SerpAgentArticleService extends BaseService
                 ->withOptions(['allow_redirects' => ['max' => 3]])
                 ->get($url);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::warning('SerpAgent: cover image download failed.', [
                     'url' => $url,
                     'status' => $response->status(),
@@ -544,13 +544,13 @@ class SerpAgentArticleService extends BaseService
                 return null;
             }
 
-            $path = self::ARTICLE_IMAGES_FOLDER . '/' . sha1(microtime(true) . $url) . '_' . Str::random(10);
+            $path = self::ARTICLE_IMAGES_FOLDER.'/'.sha1(microtime(true).$url).'_'.Str::random(10);
             $disk = Storage::disk(config('app.images_disk_default'));
 
-            $disk->put($path . '.webp', Image::make($contents)->encode('webp', 70));
-            $disk->put($path . '.jpg', Image::make($contents)->encode('jpg', 70));
+            $disk->put($path.'.webp', Image::make($contents)->encode('webp', 70));
+            $disk->put($path.'.jpg', Image::make($contents)->encode('jpg', 70));
 
-            return $path . '.webp';
+            return $path.'.webp';
         } catch (Throwable $throwable) {
             Log::warning('SerpAgent: cover image could not be processed.', [
                 'url' => $url,
@@ -565,11 +565,11 @@ class SerpAgentArticleService extends BaseService
     {
         $parts = parse_url($url);
 
-        if (!is_array($parts) || !isset($parts['scheme'], $parts['host'])) {
+        if (! is_array($parts) || ! isset($parts['scheme'], $parts['host'])) {
             return false;
         }
 
-        if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
+        if (! in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
             return false;
         }
 
@@ -577,7 +577,7 @@ class SerpAgentArticleService extends BaseService
         $ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
 
         // gethostbyname returns the hostname itself when it cannot resolve it.
-        if ($ip === $host && !filter_var($host, FILTER_VALIDATE_IP)) {
+        if ($ip === $host && ! filter_var($host, FILTER_VALIDATE_IP)) {
             return false;
         }
 

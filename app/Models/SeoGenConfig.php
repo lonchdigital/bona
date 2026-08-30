@@ -8,7 +8,9 @@ use Spatie\Translatable\HasTranslations;
 class SeoGenConfig extends Model
 {
     const PAGE_TYPE_PRODUCT_CATEGORY = 'PRODUCT_CATEGORY';
+
     const PAGE_TYPE_PRODUCT = 'PRODUCT';
+
     const PAGE_TYPE_BRAND = 'BRAND';
 
     use HasTranslations;

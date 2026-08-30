@@ -2,13 +2,14 @@
 
 namespace App\DataClasses;
 
-use Illuminate\Support\Collection;
-
 class ProductFieldTypeOptionsDataClass implements BaseDataClass
 {
     const FIELD_TYPE_STRING = 1;
+
     const FIELD_TYPE_NUMBER = 2;
+
     const FIELD_TYPE_SIZE = 3;
+
     const FIELD_TYPE_OPTION = 4;
 
     public static function get(?int $item = null): mixed

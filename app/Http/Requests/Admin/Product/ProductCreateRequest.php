@@ -9,15 +9,17 @@ use App\Http\Requests\BaseRequest;
 use App\Models\ProductType;
 use App\Services\Product\DTO\EditProductDTO;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 
 class ProductCreateRequest extends BaseRequest
 {
     protected ProductType $productType;
 
-    public function createDefaultValidator(ValidationFactory $factory): \Illuminate\Contracts\Validation\Validator
+    public function createDefaultValidator(ValidationFactory $factory): Validator
     {
         $this->productType = $this->route('productType');
+
         return parent::createDefaultValidator($factory);
     }
 
@@ -59,22 +61,22 @@ class ProductCreateRequest extends BaseRequest
             ],
             'availability_status_id' => [
                 'required',
-                'in:' . ProductStatusDataClass::get()->pluck('id')->implode(','),
+                'in:'.ProductStatusDataClass::get()->pluck('id')->implode(','),
             ],
             'special_offer_id' => [
                 'nullable',
                 'array',
-                'in:' . ProductSpecialOfferOptionsDataClass::get()->pluck('id')->implode(','),
+                'in:'.ProductSpecialOfferOptionsDataClass::get()->pluck('id')->implode(','),
             ],
             'special_offer_id.*' => [
-                'integer'
+                'integer',
             ],
             'sku' => [
                 'nullable',
                 'string',
-                'unique:products,sku'
+                'unique:products,sku',
             ],
-/*            'old_price_in_currency' => [
+            /*            'old_price_in_currency' => [
                 'nullable',
                 'numeric',
             ],*/
@@ -94,16 +96,16 @@ class ProductCreateRequest extends BaseRequest
                 'nullable',
             ],
             'gallery.*.id' => [
-                'nullable'
+                'nullable',
             ],
             'gallery_color_ids.*.color_id' => [
-                'nullable'
+                'nullable',
             ],
             'videos.*.iframe' => [
-                'nullable'
+                'nullable',
             ],
             'attributes.*.*.price' => [
-                'nullable'
+                'nullable',
             ],
             'all_color_ids.*.color_id' => [
                 'nullable',
@@ -125,7 +127,7 @@ class ProductCreateRequest extends BaseRequest
 
         if ($this->input('gallery')) {
             foreach ($this->input('gallery') as $index => $gallery_item) {
-                $rules['gallery.' . $index . '.image'] = [
+                $rules['gallery.'.$index.'.image'] = [
                     (isset($gallery_item['id']) && $gallery_item['id']) ? 'nullable' : 'required',
                     'image',
                 ];
@@ -149,7 +151,7 @@ class ProductCreateRequest extends BaseRequest
         if ($this->productType->has_category) {
             $rules['category_ids.*'] = [
                 'required',
-//                'array',
+                //                'array',
                 'exists:categories,id',
             ];
         }
@@ -185,26 +187,26 @@ class ProductCreateRequest extends BaseRequest
 
             switch ($customField->field_type_id) {
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING:
-                    $rules['custom_field.' . $customField->id . '.value'] = [
+                    $rules['custom_field.'.$customField->id.'.value'] = [
                         'required',
                         'string',
                     ];
                     break;
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE:
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER:
-                    $rules['custom_field.' . $customField->id . '.value'] = [
+                    $rules['custom_field.'.$customField->id.'.value'] = [
                         'required',
                         'numeric',
                     ];
                     break;
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION:
                     if ($customField->is_multiselectable) {
-                        $rules['custom_field.' . $customField->id . '.value'] = [
+                        $rules['custom_field.'.$customField->id.'.value'] = [
                             'required',
                             'array',
                         ];
                     } else {
-                        $rules['custom_field.' . $customField->id . '.value'] = [
+                        $rules['custom_field.'.$customField->id.'.value'] = [
                             'required',
                             'exists:product_field_options,id',
                         ];
@@ -214,64 +216,64 @@ class ProductCreateRequest extends BaseRequest
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
-            $rules['meta_title.' . $availableLanguage] = [
+            $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_description.' . $availableLanguage] = [
+            $rules['meta_description.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['meta_keywords.' . $availableLanguage] = [
-                'nullable',
-                'string',
-            ];
-
-            $rules['product_short_text.' . $availableLanguage] = [
+            $rules['meta_keywords.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
 
-            $rules['product_text.' . $availableLanguage] = [
+            $rules['product_short_text.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
 
-            $rules['characteristics.*.name.' . $availableLanguage] = [
+            $rules['product_text.'.$availableLanguage] = [
                 'nullable',
-                'string'
-            ];
-            $rules['characteristics.*.value.' . $availableLanguage] = [
-                'nullable',
-                'string'
-            ];
-            $rules['videos.*.tab.' . $availableLanguage] = [
-                'nullable',
-                'string'
-            ];
-            $rules['attributes.*.*.name.' . $availableLanguage] = [
-                'nullable',
-                'string'
+                'string',
             ];
 
-            $rules['faqs.*.question.' . $availableLanguage] = [
+            $rules['characteristics.*.name.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['characteristics.*.value.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['videos.*.tab.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['attributes.*.*.name.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+
+            $rules['faqs.*.question.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
-            $rules['faqs.*.answer.' . $availableLanguage] = [
+            $rules['faqs.*.answer.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
 
-            $rules['seo_title.' . $availableLanguage] = [
+            $rules['seo_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
-            $rules['seo_text.' . $availableLanguage] = [
+            $rules['seo_text.'.$availableLanguage] = [
                 'nullable',
                 'string',
             ];
@@ -296,7 +298,7 @@ class ProductCreateRequest extends BaseRequest
     public function attributes(): array
     {
         $attributes = [
-//            'is_active' => mb_strtolower(trans('admin.product_is_active')),
+            //            'is_active' => mb_strtolower(trans('admin.product_is_active')),
             'slug' => mb_strtolower(trans('admin.slug')),
             'meta_title' => mb_strtolower(trans('admin.meta_title')),
             'meta_description' => mb_strtolower(trans('admin.meta_description')),
@@ -319,26 +321,25 @@ class ProductCreateRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
-            $attributes['meta_title.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
-            $attributes['meta_description.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
-            $attributes['meta_keywords.' . $availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
-            $attributes['product_short_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.product_short_text'), $availableLanguage);
-            $attributes['product_text.' . $availableLanguage] = $this->prepareAttribute(trans('admin.product_text'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['meta_title.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_title'), $availableLanguage);
+            $attributes['meta_description.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_description'), $availableLanguage);
+            $attributes['meta_keywords.'.$availableLanguage] = $this->prepareAttribute(trans('admin.meta_keywords'), $availableLanguage);
+            $attributes['product_short_text.'.$availableLanguage] = $this->prepareAttribute(trans('admin.product_short_text'), $availableLanguage);
+            $attributes['product_text.'.$availableLanguage] = $this->prepareAttribute(trans('admin.product_text'), $availableLanguage);
         }
 
         foreach ($this->productType->fields as $customField) {
-            $attributes['custom_field.' . $customField->id . '.value'] = mb_strtolower($customField->field_name);
+            $attributes['custom_field.'.$customField->id.'.value'] = mb_strtolower($customField->field_name);
         }
 
         return $attributes;
     }
 
-
     public function toDTO(): EditProductDTO
     {
         return new EditProductDTO(
-//            (bool) $this->input('is_active'),
+            //            (bool) $this->input('is_active'),
             $this->input('name'),
             $this->input('slug'),
             $this->input('created_at'),
@@ -368,7 +369,7 @@ class ProductCreateRequest extends BaseRequest
             $this->input('category_ids'),
             $this->input('color_id'),
             $this->input('all_color_ids'),
-    //            explode(',', $this->input('all_color_ids')),
+            //            explode(',', $this->input('all_color_ids')),
             $this->input('custom_field'),
             $this->input('length'),
             $this->input('width'),

@@ -17,13 +17,13 @@ class PasswordEditRequest extends BaseRequest
                 'required',
                 'min:6',
                 'max:50',
-                'same:password_confirmation'
+                'same:password_confirmation',
             ],
             'password_confirmation' => [
                 'required',
                 'min:6',
                 'max:50',
-            ]
+            ],
         ];
     }
 
@@ -39,9 +39,9 @@ class PasswordEditRequest extends BaseRequest
     public function toDTO(): PasswordEditDTO
     {
         return new PasswordEditDTO(
-            $this->input( 'current_password'),
-            $this->input( 'new_password'),
-            $this->input( 'password_confirmation'),
+            $this->input('current_password'),
+            $this->input('new_password'),
+            $this->input('password_confirmation'),
         );
     }
 }

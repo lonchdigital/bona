@@ -41,5 +41,4 @@ class Color extends Model
             return Storage::url($this->main_image);
         });
     }
-
 }

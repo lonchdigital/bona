@@ -5,7 +5,6 @@ namespace App\Services\Product;
 use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\DataClasses\ProductSpecialOfferOptionsDataClass;
 use App\DataClasses\ProductStatusDataClass;
-use App\Excel\Exports\ProductImportExampleExcelExport;
 use App\Excel\Imports\NumberOfRowsImport;
 use App\Excel\Imports\ProductImportImport;
 use App\Models\Brand;
@@ -21,30 +20,34 @@ use App\Services\Base\BaseService;
 use App\Services\Product\DTO\UploadProductsImportFileDTO;
 use Illuminate\Support\Collection;
 use Laravel\Telescope\Telescope;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ProductImportUploadService extends BaseService
 {
     private ?Collection $currencies;
+
     private ?Collection $countries;
+
     private ?Collection $brands;
+
     private ?Collection $collections;
+
     private ?Collection $categories;
+
     private ?Collection $colors;
+
     private ?Collection $productFieldOptions = null;
 
     public function __construct(
         private readonly ApplicationConfigService $applicationService
-    ) {
-    }
+    ) {}
 
     public function importProductsFromFile(ProductType $productType, UploadProductsImportFileDTO $request): array
     {
-        return $this->coverWithDBTransactionWithoutResponse(function () use($productType, $request) {
-            $linesReader = new NumberOfRowsImport();
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($productType, $request) {
+            $linesReader = new NumberOfRowsImport;
             $linesReader->import($request->file);
 
-            //header line + 5000 lines
+            // header line + 5000 lines
             if ($linesReader->getNumberOfRows() > 2001) {
                 return [
                     'isSuccess' => false,
@@ -62,14 +65,14 @@ class ProductImportUploadService extends BaseService
             $this->colors = Color::select(['name', 'id'])->get();
             $this->collections = \App\Models\Collection::select(['name', 'brand_id', 'id'])->get();
 
-            //load custom fields options
+            // load custom fields options
             $productFieldsId = $productType->fields->pluck('id');
 
             $this->productFieldOptions = ProductFieldOption::select(['name', 'id'])
                 ->whereIn('product_field_id', $productFieldsId)
                 ->get();
 
-            //cover with transaction
+            // cover with transaction
             $import = new ProductImportImport(
                 $productType,
                 $this->applicationService,
@@ -92,14 +95,14 @@ class ProductImportUploadService extends BaseService
                     break;
                 }
 
-                if (!(isset($errorsByRow[$failure->row()]) && is_array($errorsByRow[$failure->row()]))) {
+                if (! (isset($errorsByRow[$failure->row()]) && is_array($errorsByRow[$failure->row()]))) {
                     $errorsByRow[$failure->row()] = $failure->errors();
                 } else {
                     $errorsByRow[$failure->row()] = array_merge($errorsByRow[$failure->row()], $failure->errors());
                 }
             }
 
-            if (!count($import->failures())) {
+            if (! count($import->failures())) {
                 $rowsToSave = $import->getRowsToSave();
 
                 $duplicatedSkuErrorsList = $this->checkSkuDuplicatesInList($rowsToSave);
@@ -129,7 +132,7 @@ class ProductImportUploadService extends BaseService
             Telescope::startRecording();
 
             return [
-                'isSuccess' => !count($import->failures()) > 0,
+                'isSuccess' => ! count($import->failures()) > 0,
                 'singleError' => null,
                 'errorsByRow' => $errorsByRow,
                 'allErrorsShowed' => $allErrorsShowed,
@@ -143,13 +146,13 @@ class ProductImportUploadService extends BaseService
         $allErrorsShowed = true;
         $skuList = (array_column($rowsToSave, 1));
         foreach ($skuList as $index => $sku) {
-            if(count($errors) > 50) {
+            if (count($errors) > 50) {
                 $allErrorsShowed = false;
                 break;
             }
 
             if (count(array_keys($skuList, $sku)) > 1) {
-                $errors[$index+2] = [trans('admin.products_import_duplicated_sku', ['SKU' => $sku])];
+                $errors[$index + 2] = [trans('admin.products_import_duplicated_sku', ['SKU' => $sku])];
             }
         }
 
@@ -166,13 +169,13 @@ class ProductImportUploadService extends BaseService
         $skuList = (array_column($rowsToSave, 1));
         $parentSkuList = (array_column($rowsToSave, 0));
         foreach ($parentSkuList as $index => $parentSku) {
-            if(count($errors) > 50) {
+            if (count($errors) > 50) {
                 $allErrorsShowed = false;
                 break;
             }
 
-            if ($parentSku !== null && $parentSku !== '' && !in_array($parentSku, $skuList)) {
-                $errors[$index+2] = [trans('admin.products_import_parent_sku_incorrect', ['SKU' => $parentSku])];
+            if ($parentSku !== null && $parentSku !== '' && ! in_array($parentSku, $skuList)) {
+                $errors[$index + 2] = [trans('admin.products_import_parent_sku_incorrect', ['SKU' => $parentSku])];
             }
         }
 
@@ -184,24 +187,24 @@ class ProductImportUploadService extends BaseService
 
     private function saveImportedProducts(ProductType $productType, array $rows): void
     {
-            $parentProductsSKUMapping = [];
-            //parent products
-            foreach (array_filter($rows, fn($element) => $element[0] === null || $element[0] === '') as $row) {
-                $parentRow = $this->parseProductRow($productType, $row);
-                $importedProduct = ImportedProduct::create($this->prepareProductDataByRow($productType, $parentRow));
-                $this->syncCategories($importedProduct->id, $parentRow['categories']);
-                $this->syncColors($importedProduct->id, $parentRow['all_color_ids']);
-                $parentProductsSKUMapping[$importedProduct->sku] = $importedProduct->id;
+        $parentProductsSKUMapping = [];
+        // parent products
+        foreach (array_filter($rows, fn ($element) => $element[0] === null || $element[0] === '') as $row) {
+            $parentRow = $this->parseProductRow($productType, $row);
+            $importedProduct = ImportedProduct::create($this->prepareProductDataByRow($productType, $parentRow));
+            $this->syncCategories($importedProduct->id, $parentRow['categories']);
+            $this->syncColors($importedProduct->id, $parentRow['all_color_ids']);
+            $parentProductsSKUMapping[$importedProduct->sku] = $importedProduct->id;
 
-                foreach (array_filter($rows, fn($element) => $element[0] == $importedProduct->sku) as $chRow) {
-                    $childRow = $this->parseProductRow($productType, $chRow);
-                    $preparedChildRow = $this->prepareProductDataByRow($productType, $childRow);
-                    $preparedChildRow['parent_product_id'] = $parentProductsSKUMapping[$childRow['parent_sku']];
-                    $importedProduct = ImportedProduct::create($preparedChildRow);
-                    $this->syncCategories($importedProduct->id, $childRow['categories']);
-                    $this->syncColors($importedProduct->id, $childRow['all_color_ids']);
-                }
+            foreach (array_filter($rows, fn ($element) => $element[0] == $importedProduct->sku) as $chRow) {
+                $childRow = $this->parseProductRow($productType, $chRow);
+                $preparedChildRow = $this->prepareProductDataByRow($productType, $childRow);
+                $preparedChildRow['parent_product_id'] = $parentProductsSKUMapping[$childRow['parent_sku']];
+                $importedProduct = ImportedProduct::create($preparedChildRow);
+                $this->syncCategories($importedProduct->id, $childRow['categories']);
+                $this->syncColors($importedProduct->id, $childRow['all_color_ids']);
             }
+        }
     }
 
     private function syncCategories(int $importedProductId, array $categories): void
@@ -234,7 +237,7 @@ class ProductImportUploadService extends BaseService
     {
         return [
             'product_type_id' => $productType->id,
-            'slug' => \Str::slug($row['name'][config('app.locale')] . ' ' .  $row['sku']),
+            'slug' => \Str::slug($row['name'][config('app.locale')].' '.$row['sku']),
             'sku' => $row['sku'],
             'name' => $row['name'],
             'meta_title' => $row['meta_title'],
@@ -266,7 +269,7 @@ class ProductImportUploadService extends BaseService
             if (isset($parsers[$position])) {
                 $result = $parsers[$position]($value);
                 if (isset($parsedRow[array_keys($result)[0]]) && is_array($parsedRow[array_keys($result)[0]])) {
-                    //array_merger changes keys here :(
+                    // array_merger changes keys here :(
                     $mergedArray = [];
                     foreach ($parsedRow[array_keys($result)[0]] as $rowKey => $rowValue) {
                         $mergedArray[$rowKey] = $rowValue;
@@ -295,7 +298,7 @@ class ProductImportUploadService extends BaseService
         };
 
         $parsers[] = function ($data) {
-             return ['sku' => $data];
+            return ['sku' => $data];
         };
 
         foreach ($this->applicationService->getAvailableLanguages() as $availableLanguage) {
@@ -366,7 +369,7 @@ class ProductImportUploadService extends BaseService
         };
 
         $parsers[] = function ($data) {
-            $country = $this->countries->filter(function ($country) use($data) {
+            $country = $this->countries->filter(function ($country) use ($data) {
                 return in_array($data, $country->getTranslations('name'));
             })->first();
 
@@ -375,7 +378,7 @@ class ProductImportUploadService extends BaseService
 
         if ($productType->has_brand) {
             $parsers[] = function ($data) {
-                $brand = $this->brands->filter(function ($brand) use($data) {
+                $brand = $this->brands->filter(function ($brand) use ($data) {
                     return in_array($data, $brand->getTranslations('name'));
                 })->first();
 
@@ -387,8 +390,8 @@ class ProductImportUploadService extends BaseService
             $brandPosition = count($parsers) - 1;
             $brandId = $parsers[$brandPosition]($row[$brandPosition])['brand_id'];
 
-            $parsers[] = function ($data) use($brandId) {
-                $collection = $this->collections->filter(function ($collection) use($data, $brandId) {
+            $parsers[] = function ($data) use ($brandId) {
+                $collection = $this->collections->filter(function ($collection) use ($data, $brandId) {
                     return in_array($data, $collection->getTranslations('name')) &&
                         $collection->brand_id === $brandId;
                 })->first();
@@ -405,7 +408,7 @@ class ProductImportUploadService extends BaseService
                     $values = explode(',', $value);
 
                     foreach ($values as $parsedValue) {
-                        $parsedData[] = $this->categories->filter(function ($category) use($parsedValue) {
+                        $parsedData[] = $this->categories->filter(function ($category) use ($parsedValue) {
                             return in_array($parsedValue, $category->getTranslations('name'));
                         })->first()['id'];
                     }
@@ -417,7 +420,7 @@ class ProductImportUploadService extends BaseService
 
         if ($productType->has_color) {
             $parsers[] = function ($data) {
-                $color = $this->colors->filter(function ($color) use($data) {
+                $color = $this->colors->filter(function ($color) use ($data) {
                     return in_array($data, $color->getTranslations('name'));
                 })->first();
 
@@ -431,7 +434,7 @@ class ProductImportUploadService extends BaseService
                     $values = explode(',', $value);
 
                     foreach ($values as $parsedValue) {
-                        $parsedData[] = $this->colors->filter(function ($color) use($parsedValue) {
+                        $parsedData[] = $this->colors->filter(function ($color) use ($parsedValue) {
                             return in_array($parsedValue, $color->getTranslations('name'));
                         })->first()['id'];
                     }
@@ -461,30 +464,30 @@ class ProductImportUploadService extends BaseService
 
         foreach ($productType->fields as $customField) {
             if ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING) {
-                $parsers[] = function ($data) use($customField) {
+                $parsers[] = function ($data) use ($customField) {
                     return ['custom_fields' => [
-                        (string) $customField->id => $data
+                        (string) $customField->id => $data,
                     ]];
                 };
-            } else if ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER ||
+            } elseif ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER ||
                 $customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE) {
-                $parsers[] = function ($data) use($customField) {
+                $parsers[] = function ($data) use ($customField) {
                     return ['custom_fields' => [
                         (string) $customField->id => floatval($data),
                     ]];
                 };
 
-            } else if ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
+            } elseif ($customField->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
                 if ($customField->is_multiselectable) {
 
-                    $parsers[] = function ($data) use($customField) {
+                    $parsers[] = function ($data) use ($customField) {
                         $parsedData = [];
                         if ($data) {
                             $value = str_replace(', ', ',', $data);
                             $values = explode(',', $value);
 
                             foreach ($values as $parsedValue) {
-                                $parsedData[] = $this->productFieldOptions->filter(function ($option) use($parsedValue) {
+                                $parsedData[] = $this->productFieldOptions->filter(function ($option) use ($parsedValue) {
                                     return in_array($parsedValue, $option->getTranslations('name'));
                                 })->first()['id'];
                             }
@@ -495,9 +498,9 @@ class ProductImportUploadService extends BaseService
                         ]];
                     };
                 } else {
-                    $parsers[] = function ($data) use($customField) {
+                    $parsers[] = function ($data) use ($customField) {
                         return ['custom_fields' => [
-                            (string) $customField->id => $this->productFieldOptions->filter(function ($option) use($data) {
+                            (string) $customField->id => $this->productFieldOptions->filter(function ($option) use ($data) {
                                 return in_array($data, $option->getTranslations('name'));
                             })->first()['id'],
                         ]];

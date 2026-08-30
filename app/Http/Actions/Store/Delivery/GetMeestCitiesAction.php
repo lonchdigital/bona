@@ -12,6 +12,7 @@ class GetMeestCitiesAction extends BaseAction
     public function __invoke(Request $request, DeliveryService $deliveryService)
     {
         BaseListResource::withoutWrapping();
+
         return BaseListResource::collection($deliveryService->getMeestCities($request->input('query') ?? ''));
     }
 }

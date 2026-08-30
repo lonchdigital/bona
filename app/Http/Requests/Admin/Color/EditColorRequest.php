@@ -29,14 +29,13 @@ class EditColorRequest extends BaseRequest
                 'nullable',
                 'image',
                 'mimes:jpeg,png,jpg',
-            ]
+            ],
         ];
 
-
         foreach ($this->availableLanguages as $availableLanguage) {
-            $rules['name.' . $availableLanguage] = [
+            $rules['name.'.$availableLanguage] = [
                 'required',
-                'string'
+                'string',
             ];
         }
 
@@ -50,7 +49,7 @@ class EditColorRequest extends BaseRequest
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
-            $attributes['name.' . $availableLanguage] = $this->prepareAttribute(trans('admin.color_name'), $availableLanguage);
+            $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.color_name'), $availableLanguage);
         }
 
         return $attributes;

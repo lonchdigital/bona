@@ -11,22 +11,22 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class ProductImportImport implements WithMultipleSheets, SkipsOnFailure
+class ProductImportImport implements SkipsOnFailure, WithMultipleSheets
 {
     use Importable, SkipsFailures;
 
     protected array $schema = [];
 
     public function __construct(
-        private readonly ProductType              $productType,
+        private readonly ProductType $productType,
         private readonly ApplicationConfigService $applicationService,
-        private readonly Collection               $countries,
-        private readonly Collection               $categories,
-        private readonly Collection               $brands,
-        private readonly Collection               $currencies,
-        private readonly Collection               $collections,
-        private readonly Collection               $colors,
-        private readonly Collection               $productFieldOptions,
+        private readonly Collection $countries,
+        private readonly Collection $categories,
+        private readonly Collection $brands,
+        private readonly Collection $currencies,
+        private readonly Collection $collections,
+        private readonly Collection $colors,
+        private readonly Collection $productFieldOptions,
     ) {
         $this->schema[0] = new ProductsSheet(
             $this->productType,
@@ -40,7 +40,6 @@ class ProductImportImport implements WithMultipleSheets, SkipsOnFailure
             $this->productFieldOptions,
         );
     }
-
 
     public function sheets(): array
     {

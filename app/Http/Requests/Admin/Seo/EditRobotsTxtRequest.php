@@ -12,8 +12,8 @@ class EditRobotsTxtRequest extends BaseRequest
         return [
             'content' => [
                 'required',
-                'string'
-            ]
+                'string',
+            ],
         ];
     }
 

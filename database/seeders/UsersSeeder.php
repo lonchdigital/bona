@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UsersSeeder extends Seeder
 {
-
     public function run(): void
     {
         User::create([

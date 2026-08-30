@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ProductFieldOption extends Model
 {
@@ -15,7 +16,7 @@ class ProductFieldOption extends Model
 
     protected $guarded = [];
 
-    public function field(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function field(): BelongsTo
     {
         return $this->belongsTo(ProductField::class);
     }
@@ -26,6 +27,7 @@ class ProductFieldOption extends Model
             if ($this->image_path) {
                 return Storage::url($this->image_path);
             }
+
             return null;
         });
     }

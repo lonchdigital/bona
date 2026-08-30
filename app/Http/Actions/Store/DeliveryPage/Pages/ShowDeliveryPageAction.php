@@ -4,16 +4,14 @@ namespace App\Http\Actions\Store\DeliveryPage\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Services\DeliveryPage\DeliveryPageService;
-use Abordage\LastModified\Facades\LastModified;
+use App\Support\LastModified;
 use Illuminate\Support\Facades\Cache;
-
 
 class ShowDeliveryPageAction extends BaseAction
 {
     public function __invoke(
-        DeliveryPageService      $deliveryPageService,
-    )
-    {
+        DeliveryPageService $deliveryPageService,
+    ) {
         /*if( Cache::has('posts') ) {
             $posts = Cache::get('posts');
         } else {

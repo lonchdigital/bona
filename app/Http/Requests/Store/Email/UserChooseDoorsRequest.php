@@ -17,7 +17,7 @@ class UserChooseDoorsRequest extends BaseRequest
                 'regex:/^[^_]*$/',
                 'min:16'],
             'description' => ['nullable', 'string'],
-            'agree' => ['accepted']
+            'agree' => ['accepted'],
         ];
     }
 

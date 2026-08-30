@@ -38,7 +38,7 @@ class SignUpRequest extends BaseRequest
                 'required',
                 'min:6',
                 'max:50',
-            ]
+            ],
         ];
     }
 

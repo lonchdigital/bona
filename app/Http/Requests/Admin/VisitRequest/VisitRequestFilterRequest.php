@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin\VisitRequest;
 
-use App\Http\Requests\BaseRequest;
 use App\DataClasses\VisitRequestStatusesDataClass;
+use App\Http\Requests\BaseRequest;
 use App\Services\VisitRequest\DTO\VisitRequestFilterDTO;
 
 class VisitRequestFilterRequest extends BaseRequest
@@ -13,7 +13,7 @@ class VisitRequestFilterRequest extends BaseRequest
         return [
             'status_id' => [
                 'nullable',
-                'in:'. VisitRequestStatusesDataClass::get()->pluck('id')->implode(',')
+                'in:'.VisitRequestStatusesDataClass::get()->pluck('id')->implode(','),
             ],
         ];
     }

@@ -3,8 +3,8 @@
 namespace App\Http\Actions\Admin\BlogSlides;
 
 use App\Http\Actions\Admin\BaseAction;
-use App\Services\BlogSlides\BlogSlidesService;
 use App\Http\Requests\Admin\BlogSlides\BlogSlidesEditRequest;
+use App\Services\BlogSlides\BlogSlidesService;
 
 class BlogSlidesEditAction extends BaseAction
 {

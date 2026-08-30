@@ -3,9 +3,10 @@
 namespace App\Http\Actions\Store\Payment\Pages;
 
 use App\DataClasses\OrderPaymentStatusesDataClass;
-use App\Models\Order;
-use App\Services\Order\OrderService;
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\Order;
+use App\Services\Order\OrderAccessUrlService;
+use App\Services\Order\OrderService;
 use App\Services\Payment\PaymentService;
 
 class ShowLiqPayPaymentOrdinaryPageAction extends BaseAction
@@ -13,15 +14,14 @@ class ShowLiqPayPaymentOrdinaryPageAction extends BaseAction
     public function __invoke(
         Order $order,
         PaymentService $paymentService,
-        OrderService $orderService
-    )
-    {
+        OrderService $orderService,
+        OrderAccessUrlService $orderAccessUrlService,
+    ) {
         if ($order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_PAID) {
-            return response()->redirectToRoute('store.checkout.thank-you', ['order' => $order->id]);
+            return redirect()->to($orderAccessUrlService->thankYou($order));
         }
 
-//        $data = $paymentService->payByCardForm($orderService->getOrderSummary($order)['total'], $order->id);
-        $data = $paymentService->payByCardForm($order->summary, $order->id);
+        $data = $paymentService->payByCardForm($orderService->getOrderSummary($order)['total'], $order->id);
 
         return view('pages.store.payment', [
             'data' => $data['data'],

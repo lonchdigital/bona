@@ -8,16 +8,13 @@ use App\Services\DeliveryPage\DeliveryPageService;
 
 class ShowDeliveryEditPageAction extends BaseAction
 {
-
     public function __invoke(
         ApplicationConfigService $applicationService,
         DeliveryPageService $deliveryService,
-    )
-    {
+    ) {
         return view('pages.admin.delivery.edit', [
             'availableLanguages' => $applicationService->getAvailableLanguages(),
             'deliveryConfig' => $deliveryService->getDeliveryConfig(),
         ]);
     }
-
 }

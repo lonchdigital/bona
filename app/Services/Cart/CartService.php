@@ -2,14 +2,13 @@
 
 namespace App\Services\Cart;
 
-use App\DataClasses\DeliveryTypesDataClass;
 use App\Models\Cart;
 use App\Models\CartProducts;
+use App\Models\Color;
+use App\Models\Product;
 use App\Models\ProductGalleries;
 use App\Models\PromoCode;
 use App\Models\User;
-use App\Models\Product;
-use App\Models\Color;
 use App\Models\WishList;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
@@ -17,17 +16,18 @@ use App\Services\Cart\DTO\AddPromoCodeToCartDTO;
 use App\Services\Cart\DTO\ChangeProductCountInCartDTO;
 use App\Services\Cart\DTO\DeleteProductFromCartDTO;
 use App\Services\Cart\DTO\GetProductsSummaryWithDeliveryDTO;
+use App\Services\Pricing\PricingService;
 use App\Services\WishList\WishListService;
 use Illuminate\Support\Collection;
 
 class CartService extends BaseService
 {
-
     public function __construct(
         private readonly WishListService $wishListService,
-    ) { }
+        private readonly PricingService $pricingService,
+    ) {}
 
-    public function getCartForGuestUser(string $token):? Cart
+    public function getCartForGuestUser(string $token): ?Cart
     {
         return Cart::where('token', $token)->first();
     }
@@ -63,14 +63,14 @@ class CartService extends BaseService
     {
         $guestCart = $this->getCartForGuestUser($guestToken);
 
-        if (!$guestCart) {
+        if (! $guestCart) {
             return;
         }
 
         $this->coverWithDBTransactionWithoutResponse(function () use ($user, $guestCart) {
             $userCart = $this->getCartForAuthUser($user);
 
-            if (!$userCart) {
+            if (! $userCart) {
                 $guestCart->user_id = $user->id;
                 $guestCart->token = null;
                 $guestCart->save();
@@ -132,10 +132,10 @@ class CartService extends BaseService
             }])
             ->get();
 
-        if(count($currentAttributeOptions)) {
+        if (count($currentAttributeOptions)) {
             foreach ($currentAttributeOptions as $attribute) {
                 $atr_options = [];
-                foreach ($attribute->productAttributeOptions as $attributeOption){
+                foreach ($attribute->productAttributeOptions as $attributeOption) {
                     $atr_options[] = $attributeOption;
                 }
                 $attributeOptions[$attribute->id] = $atr_options;
@@ -148,17 +148,17 @@ class CartService extends BaseService
     private function prepareRequestProductAttributes(array $requestProductAttributes): array
     {
         $dataToReturn = [];
-        if( isset($requestProductAttributes['color_id']) ) {
+        if (isset($requestProductAttributes['color_id'])) {
             $dataToReturn['color_name'] = $requestProductAttributes['color_id'];
             unset($requestProductAttributes['color_id']);
             unset($requestProductAttributes['color_name']);
         }
 
-        foreach ( $requestProductAttributes as $key => $attributeValue ) {
-            if( is_null($attributeValue) ) {
+        foreach ($requestProductAttributes as $key => $attributeValue) {
+            if (is_null($attributeValue)) {
                 continue;
             }
-            $dataToReturn[$key] = (string)json_decode($attributeValue, true)['id'];
+            $dataToReturn[$key] = (string) json_decode($attributeValue, true)['id'];
         }
 
         return $dataToReturn;
@@ -170,12 +170,12 @@ class CartService extends BaseService
         $requestProductAttributes = $request->productAttributes;
         $isProductInCart = false;
 
-        $requestProductAttributesAlt = (!is_null($requestProductAttributes)) ? $this->prepareRequestProductAttributes($requestProductAttributes) : null;
+        $requestProductAttributesAlt = (! is_null($requestProductAttributes)) ? $this->prepareRequestProductAttributes($requestProductAttributes) : null;
 
         foreach ($allProductVariations as $allProductVariation) {
             $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributesAlt);
 
-            if($isRequestedProduct) {
+            if ($isRequestedProduct) {
                 $count = $allProductVariation->count + 1;
                 $allProductVariation->update(['count' => $count]);
 
@@ -184,24 +184,22 @@ class CartService extends BaseService
             }
         }
 
-        if( !$isProductInCart ) {
+        if (! $isProductInCart) {
             $attributeOptions = $this->getAttributesWithOptions($product->id, $product->productType);
-
 
             $productAttributesSum[] = 0;
             $productAttributeColor['color_id'] = null;
 
+            if (! is_null($requestProductAttributes)) {
 
-            if( !is_null($requestProductAttributes) ) {
-
-                if( isset($requestProductAttributes['color_id']) ) {
+                if (isset($requestProductAttributes['color_id'])) {
                     $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
                     unset($requestProductAttributes['color_id']);
                     unset($requestProductAttributes['color_name']);
                 }
 
-                foreach ($requestProductAttributes as $attributeKey => $productAttr ) {
-                    if( !is_null($productAttr) ) {
+                foreach ($requestProductAttributes as $attributeKey => $productAttr) {
+                    if (! is_null($productAttr)) {
                         $productAtrID = preg_replace('/[^0-9]/', '', $attributeKey);
                         $attributeItself = json_decode($productAttr, true);
 
@@ -209,15 +207,14 @@ class CartService extends BaseService
                     }
                 }
 
-                if( !is_null($productAttributeColor['color_id']) ) {
+                if (! is_null($productAttributeColor['color_id'])) {
                     $color_price = $product->colors->firstWhere('id', $productAttributeColor['color_id'])->pivot->price;
-                    if( is_numeric($color_price) || is_float($color_price) )
+                    if (is_numeric($color_price) || is_float($color_price)) {
                         $productAttributesSum[] = $color_price;
+                    }
                 }
 
             }
-
-
 
             $productAttributesSum = array_sum($productAttributesSum);
 
@@ -229,9 +226,9 @@ class CartService extends BaseService
             $color = Color::where('id', $productAttributeColor['color_id'])->first();
 
             $currentImagePath = null;
-            if( $color !== null ) {
+            if ($color !== null) {
                 $productGall = ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first();
-                $currentImagePath = ( !is_null($productGall) ) ? $productGall->image_path: null;
+                $currentImagePath = (! is_null($productGall)) ? $productGall->image_path : null;
             }
 
             $cart->products()->attach([$product->id => [
@@ -239,7 +236,7 @@ class CartService extends BaseService
                 'price' => $product->price,
                 'attributes' => json_encode($request->productAttributes),
                 'attributes_price' => $productAttributesSum,
-                'current_image_path' =>  $currentImagePath
+                'current_image_path' => $currentImagePath,
             ]]);
         }
 
@@ -247,7 +244,7 @@ class CartService extends BaseService
 
     public function addSubProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
-        if (!$cart->products()->where('product_id', $product->id)->exists()) {
+        if (! $cart->products()->where('product_id', $product->id)->exists()) {
             $cart->products()->attach([$product->id => ['count' => $request->productCount, 'price' => $product->price]]);
         } else {
             $productCount = $cart->products()->where('product_id', $product->id)->first()->pivot->count;
@@ -257,7 +254,7 @@ class CartService extends BaseService
 
     public function changeProductCount(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
-        if( !is_null($request->productAttributes) ) { // all sub products have productAttributes as null
+        if (! is_null($request->productAttributes)) { // all sub products have productAttributes as null
 
             $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
             $requestProductAttributes = $request->productAttributes;
@@ -265,9 +262,9 @@ class CartService extends BaseService
             foreach ($allProductVariations as $allProductVariation) {
                 $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
-//                dd('555', $allProductVariation['attributes'], $requestProductAttributes);
+                //                dd('555', $allProductVariation['attributes'], $requestProductAttributes);
 
-                if($isRequestedProduct) {
+                if ($isRequestedProduct) {
                     $allProductVariation->update(['count' => $request->productCount]);
                     break;
                 }
@@ -285,7 +282,7 @@ class CartService extends BaseService
 
     public function deleteProductFromCart(Cart $cart, Product $product, DeleteProductFromCartDTO $request): void
     {
-        if( !is_null($request->productAttributes) ) { // all sub products have productAttributes as null
+        if (! is_null($request->productAttributes)) { // all sub products have productAttributes as null
 
             $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
             $requestProductAttributes = $request->productAttributes;
@@ -293,7 +290,7 @@ class CartService extends BaseService
             foreach ($allProductVariations as $allProductVariation) {
                 $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributes);
 
-                if($isRequestedProduct) {
+                if ($isRequestedProduct) {
                     $allProductVariation->delete();
                     break;
                 }
@@ -318,7 +315,7 @@ class CartService extends BaseService
          * Such a line is the requested one only when the request carries no
          * attributes either.
          */
-        if (!is_array($arr)) {
+        if (! is_array($arr)) {
             return empty($requestProductAttributes);
         }
 
@@ -332,94 +329,54 @@ class CartService extends BaseService
         unset($arr['color_name']);
 
         foreach ($arr as $key => $value) {
-            if(is_null($value)) {
+            if (is_null($value)) {
                 continue;
             }
             $decoded = json_decode($value, true);
 
-            if (!is_array($decoded) || !isset($decoded['id'])) {
+            if (! is_array($decoded) || ! isset($decoded['id'])) {
                 continue;
             }
 
             $preparedArray[$key] = (string) $decoded['id'];
         }
 
-//        dd($preparedArray, $requestProductAttributes);
+        //        dd($preparedArray, $requestProductAttributes);
         return $this->arraysAreEqual($preparedArray, $requestProductAttributes);
     }
 
     public function getSummary(Cart $cart, ?WishList $wishList): array
     {
-        $totalPrice = 0;
-        foreach ($cart->products as $product) {
-            // TODO: we counted products without attributes. Do we need to do it?
-//            $totalPrice += $product->pivot->price * $product->pivot->count;
-            $totalPrice += ( $product->pivot->price + $product->pivot->attributes_price ) * $product->pivot->count;
-        }
-
         $productsInWishList = $this->wishListService->getWishListProductsId($wishList);
 
-        $cart->products->map(function ($product) use($productsInWishList) {
+        $cart->products->map(function ($product) use ($productsInWishList) {
             $product->is_in_wish_list = $productsInWishList->contains($product->id);
         });
 
-        $hasFreeDelivery = false;
-
-        if ($totalPrice >= config('domain.free_delivery_from_price')) {
-            $hasFreeDelivery = true;
-        }
-
-
-        $discount = 0;
-
-        if ($cart->promoCode) {
-            $discount = $totalPrice / 100 * $cart->promoCode->discount;
-            $totalPrice = $totalPrice - $discount;
-        }
+        $totals = $this->pricingService->forCart($cart);
 
         return [
-
             'summary' => [
-                'products' =>  round($totalPrice, 2),
-                'total' => round($totalPrice, 2),
-                'discount' => round($discount, 2),
-//                'products_with_attributes' => round($discount, 2),
+                'products' => $totals['products'],
+                'total' => $totals['total'],
+                'discount' => $totals['discount'],
             ],
-            'has_free_delivery' => $hasFreeDelivery,
+            'has_free_delivery' => $totals['has_free_delivery'],
             'promo_code' => $cart->promoCode,
         ];
     }
 
     public function getCartSummary(Cart $cart): array
     {
-        $totalPrice = 0;
-        $allProductsWithVariations = CartProducts::where('cart_id', $cart->id)->get();
-
-        foreach ($allProductsWithVariations as $productInCart) {
-            $totalPrice += ($productInCart->price + $productInCart->attributes_price) * $productInCart->count;
-        }
-        /*foreach ($cart->products as $product) {
-            $totalPrice += $product->pivot->price * $product->pivot->count;
-        }*/
-
-        $hasFreeDelivery = false;
-        /*if ($totalPrice >= config('domain.free_delivery_from_price')) {
-            $hasFreeDelivery = true;
-        }*/
-
-        $discount = 0;
-        /*if ($cart->promoCode) {
-            $discount = $totalPrice / 100 * $cart->promoCode->discount;
-            $totalPrice = $totalPrice - $discount;
-        }*/
+        $totals = $this->pricingService->forCart($cart);
 
         return [
             'summary' => [
-                'products' =>  round($totalPrice, 2),
-                'total' => round($totalPrice, 2),
-                'discount' => round($discount, 2),
+                'products' => $totals['products'],
+                'total' => $totals['total'],
+                'discount' => $totals['discount'],
             ],
-            'has_free_delivery' => $hasFreeDelivery,
+            'has_free_delivery' => $totals['has_free_delivery'],
             'promo_code' => $cart->promoCode,
         ];
     }
@@ -427,7 +384,7 @@ class CartService extends BaseService
     public function getProductsInCartWithSummary(Cart $cart, ?WishList $wishList): array
     {
         $summary = $this->getCartSummary($cart);
-//        $summary = $this->getSummary($cart, $wishList);
+        //        $summary = $this->getSummary($cart, $wishList);
 
         $cart->products->each(function ($product) {
             $product->name = $product->getRawOriginal('name');
@@ -435,12 +392,10 @@ class CartService extends BaseService
 
         $summary['products'] = $cart->products;
 
-
         /*$response = new \Illuminate\Http\Response(json_encode($summary));
         $response->header('Cache-Control', 'no-cache, no-store, must-revalidate');
         $response->header('Pragma', 'no-cache');
         $response->header('Expires', '0');*/
-
 
         return $summary;
     }
@@ -462,30 +417,12 @@ class CartService extends BaseService
 
     public function getCartSummaryWithDelivery(GetProductsSummaryWithDeliveryDTO $request, Cart $cart, ?WishList $wishList): array
     {
-        $deliveryPrice = 0;
-        $isCarrier = false;
+        $totals = $this->pricingService->forCart($cart, $request->deliveryTypeId);
 
-        if ($request->deliveryTypeId === DeliveryTypesDataClass::ADDRESS_DELIVERY) {
-            $deliveryPrice = config('domain.delivery_price');
-        } else if ($request->deliveryTypeId === DeliveryTypesDataClass::NP_DELIVERY) {
-            $isCarrier = true;
-        } else if ($request->deliveryTypeId === DeliveryTypesDataClass::MIST_EXPRESS_DELIVERY) {
-            $isCarrier = true;
-        }
-
-        $summary = $this->getSummary($cart, $wishList);
-
-        $deliveryOld = 0;
-        if ($deliveryPrice > 0 && $summary['summary']['products'] > config('domain.free_delivery_from_price')) {
-            $deliveryOld = $deliveryPrice;
-            $deliveryPrice = 0;
-        }
-
-        $summary['summary']['is_carrier'] = $isCarrier;
-        $summary['summary']['delivery_old'] = $deliveryOld;
-        $summary['summary']['delivery'] = $deliveryPrice;
-
-        return $summary;
+        return [
+            'summary' => $totals,
+            'has_free_delivery' => $totals['has_free_delivery'],
+            'promo_code' => $cart->promoCode,
+        ];
     }
-
 }

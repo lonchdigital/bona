@@ -8,5 +8,5 @@ class GetProductsSummaryWithDeliveryDTO implements BaseDTO
 {
     public function __construct(
         public readonly int $deliveryTypeId,
-    ) { }
+    ) {}
 }

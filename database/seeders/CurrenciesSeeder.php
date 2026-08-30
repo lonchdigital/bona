@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Currency;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class CurrenciesSeeder extends Seeder
@@ -56,7 +55,7 @@ class CurrenciesSeeder extends Seeder
 
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
 

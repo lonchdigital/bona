@@ -13,4 +13,3 @@ class ProductFieldProductType extends Pivot
 
     protected $table = 'product_field_product_type';
 }
-

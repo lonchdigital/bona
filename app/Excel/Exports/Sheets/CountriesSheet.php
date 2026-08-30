@@ -11,13 +11,14 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
-class CountriesSheet implements FromCollection, WithTitle, WithEvents, ShouldAutoSize, WithHeadings
+class CountriesSheet implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithTitle
 {
     public function collection()
     {
         return Country::select('name')->get()->map(function ($country) {
             $country->name_string = $country->name;
             unset($country->name);
+
             return $country;
         });
     }
@@ -30,10 +31,10 @@ class CountriesSheet implements FromCollection, WithTitle, WithEvents, ShouldAut
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $event->sheet->getDelegate()->getParent()->getDefaultStyle()->getFont()->setSize(14);
 
-                $event->sheet->getStyle(1)->getFill()->applyFromArray(['fillType' => 'solid','rotation' => 0, 'color' => ['rgb' => 'FF000000'],]);
+                $event->sheet->getStyle(1)->getFill()->applyFromArray(['fillType' => 'solid', 'rotation' => 0, 'color' => ['rgb' => 'FF000000']]);
                 $event->sheet->getStyle(1)->getFont()->setSize(16);
                 $event->sheet->getStyle(1)->getFont()->getColor()->setRGB(Color::COLOR_WHITE);
             },

@@ -1,0 +1,198 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'release-*'
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy the verified artifact to production
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: bona_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, curl, dom, fileinfo, gd, intl, mbstring, pdo_mysql, xml, zip
+          coverage: none
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Validate and audit PHP dependencies
+        run: |
+          composer validate --strict --no-check-publish
+          composer audit --locked --no-interaction
+
+      - name: Check PHP style
+        run: ./vendor/bin/pint --test
+
+      - name: Install and audit frontend dependencies
+        run: |
+          npm ci
+          npm audit --audit-level=high
+
+      - name: Build production assets
+        run: npm run build
+
+      - name: Run migrations and tests
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: bona_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan migrate --force
+          APP_ENV=production APP_DEBUG=false php artisan optimize
+          php artisan optimize:clear
+          php artisan test
+
+  package:
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, curl, dom, fileinfo, gd, intl, mbstring, pdo_mysql, xml, zip
+          coverage: none
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install production PHP dependencies
+        run: composer install --no-dev --no-interaction --no-progress --prefer-dist --classmap-authoritative
+
+      - name: Build production assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Package immutable release
+        env:
+          RELEASE_ID: ${{ github.run_number }}-${{ github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/bona-release"
+          deploy/package-release.sh "$RUNNER_TEMP/bona-release" "$RELEASE_ID"
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bona-release-${{ github.sha }}
+          path: ${{ runner.temp }}/bona-release/*
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy
+    needs: package
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download verified release
+        uses: actions/download-artifact@v4
+        with:
+          name: bona-release-${{ github.sha }}
+          path: ${{ runner.temp }}/bona-release
+
+      - name: Configure production SSH access
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.PRODUCTION_SSH_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY"
+          test -n "$SSH_KNOWN_HOSTS"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Upload and activate release
+        env:
+          SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
+          SSH_USER: ${{ secrets.PRODUCTION_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.PRODUCTION_DEPLOY_PATH }}
+          PHP_BIN: ${{ secrets.PRODUCTION_PHP_BIN }}
+          HEALTHCHECK_URL: ${{ secrets.PRODUCTION_HEALTHCHECK_URL }}
+          RELEASE_ID: ${{ github.run_number }}-${{ github.sha }}
+        run: |
+          test -n "$SSH_HOST"
+          test -n "$SSH_USER"
+          test -n "$DEPLOY_PATH"
+          [[ "$DEPLOY_PATH" == /* ]]
+          [[ "$DEPLOY_PATH" != *[[:space:]]* ]]
+          [[ "$DEPLOY_PATH" != "/" ]]
+          PHP_BIN="${PHP_BIN:-/usr/bin/php8.4}"
+
+          archive_path="$(find "$RUNNER_TEMP/bona-release" -maxdepth 1 -type f -name '*.tar.gz' -print -quit)"
+          checksum_path="$archive_path.sha256"
+          test -f "$archive_path"
+          test -f "$checksum_path"
+
+          ssh_target="$SSH_USER@$SSH_HOST"
+          printf -v deploy_path_q '%q' "$DEPLOY_PATH"
+          ssh "$ssh_target" "mkdir -p -- $deploy_path_q/incoming"
+
+          scp "$archive_path" "$checksum_path" deploy/release.sh deploy/preflight.sh \
+            "$ssh_target:$DEPLOY_PATH/incoming/"
+
+          remote_archive="$DEPLOY_PATH/incoming/$(basename "$archive_path")"
+          remote_checksum="$DEPLOY_PATH/incoming/$(basename "$checksum_path")"
+          remote_script="$DEPLOY_PATH/incoming/release.sh"
+
+          printf -v remote_command 'PHP_BIN=%q bash %q %q %q %q %q %q' \
+            "$PHP_BIN" "$remote_script" "$DEPLOY_PATH" "$RELEASE_ID" \
+            "$remote_archive" "$remote_checksum" "$HEALTHCHECK_URL"
+          ssh "$ssh_target" "$remote_command"

@@ -8,7 +8,7 @@ class ProductSeoText extends Model
 {
     protected $guarded = [];
 
-    static function updateProductSeoText(int $id, array $title, array $content)
+    public static function updateProductSeoText(int $id, array $title, array $content)
     {
         $data = [];
         foreach ($title as $lang => $value) {
@@ -23,7 +23,7 @@ class ProductSeoText extends Model
             ProductSeoText::updateOrCreate(
                 [
                     'product_id' => $id,
-                    'language' => $lang
+                    'language' => $lang,
                 ],
                 $values
             );
@@ -31,11 +31,11 @@ class ProductSeoText extends Model
 
     }
 
-    static function deleteProductSeoText(int $product_id)
+    public static function deleteProductSeoText(int $product_id)
     {
         $existingTexts = ProductSeoText::where('product_id', $product_id)->get();
 
-        if(count($existingTexts)) {
+        if (count($existingTexts)) {
             foreach ($existingTexts as $existingText) {
                 $existingText->delete();
             }

@@ -8,5 +8,5 @@ class VisitRequestEditDTO implements BaseDTO
 {
     public function __construct(
         public readonly int $statusId,
-    ) { }
+    ) {}
 }

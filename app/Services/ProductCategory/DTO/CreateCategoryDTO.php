@@ -17,6 +17,5 @@ class CreateCategoryDTO implements BaseDTO
 
         public readonly ?array $seoTitle,
         public readonly ?array $seoText,
-    )
-    { }
+    ) {}
 }

@@ -2,15 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\DataClasses\NumericFieldFilerTypesDataClass;
+use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\Models\ProductField;
-use App\Models\ProductFieldFilterOption;
 use App\Models\ProductFieldOption;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Admin\ProductField\ProductFieldService;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -23,11 +21,11 @@ class ProductFieldsSeeder extends Seeder
      */
     public function run(): void
     {
-        $basePath = base_path() . '/resources/seed/product-field-options';
+        $basePath = base_path().'/resources/seed/product-field-options';
 
         $creator = User::where('role_id', Role::ADMIN_ROLE_ID)->first();
 
-        if (!$creator) {
+        if (! $creator) {
             throw new \Exception('User with admin roles is not exists!');
         }
 
@@ -349,7 +347,6 @@ class ProductFieldsSeeder extends Seeder
                 'product_field_id' => 4,
             ],
 
-
             [
                 'id' => 28,
                 'name' => [
@@ -507,8 +504,8 @@ class ProductFieldsSeeder extends Seeder
 
         foreach ($productFieldOptions as $productFieldOption) {
             if ($productFieldOption['product_field_id'] == 5) {
-                $newImagePath = ProductFieldService::OPTION_IMAGES_FOLDER . '/'  . sha1(time()) . '_' . Str::random(10) . '.jpg';
-                $image = Image::make($basePath . '/' . $productFieldOption['slug'] . '.png')
+                $newImagePath = ProductFieldService::OPTION_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
+                $image = Image::make($basePath.'/'.$productFieldOption['slug'].'.png')
                     ->resize(150, 150)
                     ->encode('jpg', 100);
 
@@ -521,7 +518,6 @@ class ProductFieldsSeeder extends Seeder
             } else {
                 ProductFieldOption::create($productFieldOption);
             }
-
 
         }
     }

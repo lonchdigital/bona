@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Admin\Order;
 
+use App\DataClasses\OrderStatusesDataClass;
 use App\Http\Requests\BaseRequest;
 use App\Services\Order\DTO\OrderFilterDTO;
-use App\DataClasses\OrderStatusesDataClass;
 
 class OrderFilterRequest extends BaseRequest
 {
@@ -13,7 +13,7 @@ class OrderFilterRequest extends BaseRequest
         return [
             'status_id' => [
                 'nullable',
-                'in:'. OrderStatusesDataClass::get()->pluck('id')->implode(',')
+                'in:'.OrderStatusesDataClass::get()->pluck('id')->implode(','),
             ],
         ];
     }

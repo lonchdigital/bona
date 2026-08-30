@@ -8,5 +8,5 @@ class EditRobotsTxtDto implements BaseDTO
 {
     public function __construct(
         public readonly string $content,
-    ) { }
+    ) {}
 }

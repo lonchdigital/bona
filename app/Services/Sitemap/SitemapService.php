@@ -2,15 +2,15 @@
 
 namespace App\Services\Sitemap;
 
-use App\Models\BlogArticle;
 use App\Models\Author;
+use App\Models\BlogArticle;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Faqs;
 use App\Models\HomePageConfig;
 use App\Models\Product;
-use App\Models\ServicesConfig;
 use App\Models\ProductType;
+use App\Models\ServicesConfig;
 use App\Models\StaticPage;
 use App\Models\Work;
 use App\Services\Base\BaseService;
@@ -31,7 +31,7 @@ class SitemapService extends BaseService
      */
     private function withLastModified(Url $url, $changedAt): Url
     {
-        if (!$changedAt) {
+        if (! $changedAt) {
             return $url;
         }
 
@@ -57,7 +57,7 @@ class SitemapService extends BaseService
 
     public function generateSitemap(): void
     {
-        $urls = new Collection();
+        $urls = new Collection;
 
         // Add homepage
         $homePageChangedAt = HomePageConfig::query()->latest('updated_at')->value('updated_at');
@@ -80,7 +80,6 @@ class SitemapService extends BaseService
                 $urls->push($this->withLastModified(Url::create($langUrl), $servicesConfig->updated_at));
             }
         }
-
 
         // Add All Products
         $currentPage = 1;
@@ -119,7 +118,7 @@ class SitemapService extends BaseService
         foreach (ProductType::all() as $ProductType) {
             // A type holding nothing still answers 200, with "nothing found"
             // where the grid should be — a soft 404 to offer a crawler.
-            if (!$this->productTypeHasProducts($ProductType)) {
+            if (! $this->productTypeHasProducts($ProductType)) {
                 continue;
             }
 

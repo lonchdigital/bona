@@ -13,11 +13,10 @@ class SubscribeEmailRequest extends BaseRequest
             'email' => [
                 'required',
                 'email',
-                'unique:email_subscriptions,email'
+                'unique:email_subscriptions,email',
             ],
         ];
     }
-
 
     public function toDTO(): SubscribeEmailDTO
     {

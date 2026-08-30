@@ -2,18 +2,18 @@
 
 namespace App\Providers;
 
-use App\Services\WishList\GuestWishListToken;
-
 use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\Application\ApplicationConfigService;
 use App\Services\Cart\CartService;
-use App\Services\Locale\LocaleService;
-//use App\Services\WishList\WishListService;
-//use App\Services\Brand\BrandService;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\ServiceProvider;
+use App\Services\Cart\GuestCartToken;
 use App\Services\Contacts\ContactsPageService;
+use App\Services\Locale\LocaleService;
+// use App\Services\WishList\WishListService;
+// use App\Services\Brand\BrandService;
+use App\Services\WishList\GuestWishListToken;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,22 +25,22 @@ class AppServiceProvider extends ServiceProvider
         // Shared for the request: a token issued now is not readable back from
         // the cookie until the next one, so the instance has to remember it.
         $this->app->singleton(GuestWishListToken::class);
+        $this->app->singleton(GuestCartToken::class);
     }
 
     /**
      * Bootstrap any application services.
      */
     public function boot(
-        ProductTypeService       $productTypeService,
+        ProductTypeService $productTypeService,
         ApplicationConfigService $applicationService,
-        CartService              $cartService,
-        ContactsPageService      $contactsService
+        CartService $cartService,
+        ContactsPageService $contactsService
 
         // TODO: remove WishListService and BrandService if we do not need them
-        //WishListService          $wishListService,
-        //BrandService             $brandService,
-    ): void
-    {
+        // WishListService          $wishListService,
+        // BrandService             $brandService,
+    ): void {
 
         /*
          * These used to be read here, in boot(), which runs before anything
@@ -70,9 +70,12 @@ class AppServiceProvider extends ServiceProvider
                 'layouts.store-main',
             ],
             function ($view) use ($productTypeService, $contactsService) {
-                $view->with('productTypes', Cache::remember('sortedProductTypes', 43200, function () use ($productTypeService) {
+                $productTypes = Cache::remember('sortedProductTypes', 43200, function () use ($productTypeService) {
                     return $productTypeService->getSortedProductTypes();
-                }));
+                });
+                $productTypes->loadMissing('categories');
+
+                $view->with('productTypes', $productTypes);
                 $view->with('locationService', app()->make(LocaleService::class));
                 $view->with('contactsFooter', Cache::remember('contactsFooter', 43200, function () use ($contactsService) {
                     return $contactsService->getContactsFooter();
@@ -87,11 +90,15 @@ class AppServiceProvider extends ServiceProvider
             ],
             function ($view) use ($cartService) {
                 $countOfProductInCart = 0;
-                if (request()->hasSession() && request()->session()) { // Проверяем доступность и наличие сессии
-                    $cart = Auth::user() ? $cartService->getCartForAuthUser(Auth::user()) : $cartService->getCartForGuestUser(request()->session()->getId());
-                    if ($cart) {
-                        $countOfProductInCart = $cartService->getCountOfProductsInCart($cart);
-                    }
+                if (Auth::user()) {
+                    $cart = $cartService->getCartForAuthUser(Auth::user());
+                } else {
+                    $token = app(GuestCartToken::class)->existing();
+                    $cart = $token ? $cartService->getCartForGuestUser($token) : null;
+                }
+
+                if ($cart) {
+                    $countOfProductInCart = $cartService->getCountOfProductsInCart($cart);
                 }
 
                 $view->with('countOfProductInCart', $countOfProductInCart);

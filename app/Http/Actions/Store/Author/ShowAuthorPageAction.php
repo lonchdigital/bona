@@ -2,9 +2,9 @@
 
 namespace App\Http\Actions\Store\Author;
 
-use Abordage\LastModified\Facades\LastModified;
 use App\Models\Author;
 use App\Services\BlogArticle\BlogArticleService;
+use App\Support\LastModified;
 
 class ShowAuthorPageAction
 {

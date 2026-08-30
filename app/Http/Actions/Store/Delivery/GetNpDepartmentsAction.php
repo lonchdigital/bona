@@ -12,6 +12,7 @@ class GetNpDepartmentsAction extends BaseAction
     public function __invoke(Request $request, DeliveryService $deliveryService)
     {
         BaseListResource::withoutWrapping();
+
         return BaseListResource::collection($deliveryService->getNpDepartments($request->input('cityRef') ?? ''));
     }
 }

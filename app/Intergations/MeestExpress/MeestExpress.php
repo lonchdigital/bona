@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 class MeestExpress
 {
     const TOKEN_CACHE_KEY_NAME = 'meest-express-auth-token';
+
     private Client $client;
 
     private string $username;
@@ -23,7 +24,7 @@ class MeestExpress
         $this->username = $username;
         $this->password = $password;
 
-        $this->client = new Client();
+        $this->client = new Client;
 
         $this->token = $this->getToken();
     }
@@ -39,12 +40,13 @@ class MeestExpress
                 ]),
                 'headers' => [
                     'token' => $this->token,
-                ]
+                ],
             ]);
 
             return collect(json_decode($response->getBody()->getContents(), true)['result']);
         } catch (\Exception $exception) {
-            Log::error('Error during getting meest express cities: ' . $exception->getMessage());
+            Log::error('Error during getting meest express cities: '.$exception->getMessage());
+
             return collect();
         }
     }
@@ -60,12 +62,13 @@ class MeestExpress
                 ]),
                 'headers' => [
                     'token' => $this->token,
-                ]
+                ],
             ]);
 
             return collect(json_decode($response->getBody()->getContents(), true)['result']);
         } catch (\Exception $exception) {
-            Log::error('Error during getting meest express cities: ' . $exception->getMessage());
+            Log::error('Error during getting meest express cities: '.$exception->getMessage());
+
             return collect();
         }
     }
@@ -81,12 +84,13 @@ class MeestExpress
                 ]),
                 'headers' => [
                     'token' => $this->token,
-                ]
+                ],
             ]);
 
             return collect(json_decode($response->getBody()->getContents(), true)['result']);
         } catch (\Exception $exception) {
-            Log::error('Error during getting meest express cities: ' . $exception->getMessage());
+            Log::error('Error during getting meest express cities: '.$exception->getMessage());
+
             return collect();
         }
     }
@@ -102,11 +106,13 @@ class MeestExpress
                 ]),
                 'headers' => [
                     'token' => $this->token,
-                ]
+                ],
             ]);
+
             return collect(json_decode($response->getBody()->getContents(), true)['result']);
         } catch (\Exception $exception) {
-            Log::error('Error during getting meest express cities: ' . $exception->getMessage());
+            Log::error('Error during getting meest express cities: '.$exception->getMessage());
+
             return collect();
         }
     }
@@ -114,14 +120,14 @@ class MeestExpress
     private function storeToken(): ?string
     {
         try {
-            $response = $this->client->post( 'https://api.meest.com/v3.0/openAPI/auth', [
+            $response = $this->client->post('https://api.meest.com/v3.0/openAPI/auth', [
                 'body' => json_encode([
                     'username' => $this->username,
                     'password' => $this->password,
                 ]),
                 'headers' => [
                     'Content-Type' => 'application/json',
-                ]
+                ],
 
             ]);
 
@@ -131,7 +137,7 @@ class MeestExpress
 
             return $token;
         } catch (\Exception $exception) {
-            Log::error('Error during generating meest express auth token: ' . $exception->getMessage());
+            Log::error('Error during generating meest express auth token: '.$exception->getMessage());
         }
 
         return null;
@@ -141,7 +147,7 @@ class MeestExpress
     {
         $tokenFromCache = Cache::get(self::TOKEN_CACHE_KEY_NAME);
 
-        if (!$tokenFromCache) {
+        if (! $tokenFromCache) {
             $tokenFromCache = $this->storeToken();
         }
 

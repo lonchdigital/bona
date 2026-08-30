@@ -5,8 +5,11 @@ namespace App\DataClasses;
 class ProductSortOptionsDataClass implements BaseDataClass
 {
     const SORT_BY_POPULARITY = 'popularity';
+
     const SORT_BY_NEW = 'new';
+
     const SORT_BY_PRICE_FROM_LOW = 'price_low';
+
     const SORT_BY_PRICE_FROM_HIGH = 'price_high';
 
     public static function get(?int $item = null): mixed
