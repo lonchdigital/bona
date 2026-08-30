@@ -29,9 +29,10 @@ fi
 
 required_extensions=(bcmath curl dom fileinfo gd intl mbstring openssl pdo_mysql xml zip)
 missing_extensions=()
+php_modules="$($PHP_BIN -m)"
 
 for extension_name in "${required_extensions[@]}"; do
-    if ! "$PHP_BIN" -m | grep -Fxq "$extension_name"; then
+    if ! grep -Fxq "$extension_name" <<< "$php_modules"; then
         missing_extensions+=("$extension_name")
     fi
 done
