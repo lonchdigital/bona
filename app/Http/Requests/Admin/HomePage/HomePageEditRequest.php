@@ -48,6 +48,49 @@ class HomePageEditRequest extends BaseRequest
                 'nullable',
                 'exists:product_types,id',
             ],
+            'style_section' => [
+                'nullable',
+                'array',
+            ],
+            'style_section.enabled' => [
+                'nullable',
+                'boolean',
+            ],
+            'style_section.cta_url' => [
+                'nullable',
+                'string',
+                'max:500',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if ($value === '' || str_starts_with($value, '/') || str_starts_with($value, '#')) {
+                        return;
+                    }
+
+                    if (filter_var($value, FILTER_VALIDATE_URL) && in_array(parse_url($value, PHP_URL_SCHEME), ['http', 'https'], true)) {
+                        return;
+                    }
+
+                    $fail(trans('validation.url', ['attribute' => $attribute]));
+                },
+            ],
+            'style_section.items' => [
+                'nullable',
+                'array',
+                'max:10',
+            ],
+            'style_section.items.*.existing_image_path' => [
+                'nullable',
+                'string',
+                'max:500',
+            ],
+            'style_section.items.*.image_deleted' => [
+                'nullable',
+                'boolean',
+            ],
+            'style_section.items.*.image' => [
+                'nullable',
+                'image',
+                'max:10240',
+            ],
             'selected_products_id' => [
                 'nullable',
                 'exists:products,id',
@@ -160,6 +203,40 @@ class HomePageEditRequest extends BaseRequest
                 'nullable',
                 'string',
             ];
+            $rules['style_section.kicker.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:100',
+            ];
+            $rules['style_section.title.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:180',
+            ];
+            $rules['style_section.description.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:600',
+            ];
+            $rules['style_section.cta_label.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:160',
+            ];
+            $rules['style_section.items.*.name.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:100',
+            ];
+        }
+
+        foreach ($this->input('style_section.items', []) as $index => $item) {
+            $hasExistingImage = filled($item['existing_image_path'] ?? null)
+                && ! (bool) ($item['image_deleted'] ?? false);
+
+            if (! $hasExistingImage) {
+                $rules['style_section.items.'.$index.'.image'][] = 'required';
+            }
         }
 
         return $rules;
@@ -208,6 +285,7 @@ class HomePageEditRequest extends BaseRequest
             $this->input('meta_tags'),
             $this->validated('slides'),
             explode(',', $this->input('selected_product_types')),
+            $this->validated('style_section'),
             explode(',', $this->input('selected_products_id')),
             explode(',', $this->input('selected_best_sales_products_id')),
             explode(',', $this->input('selected_brands_id')),

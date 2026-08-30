@@ -22,6 +22,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
@@ -29,18 +30,22 @@ class HomePageService extends BaseService
 {
     const HOME_PAGE_IMAGES_FOLDER = 'home-page-images';
 
+    const STYLE_IMAGES_FOLDER = 'home-page-style-images';
+
     public function editHomePage(HomePageEditDTO $request): ServiceActionResult
     {
         //        dd($request->slides);
         return $this->coverWithDBTransaction(function () use ($request) {
 
             $homePageConfig = $this->getHomePageConfig();
+            $styleSection = $this->syncStyleSection($request->styleSection, $homePageConfig?->style_section ?? []);
             $dataToUpdate = [
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
                 'meta_tags' => $request->metaTags,
                 'product_types' => $request->selectedProductTypes,
+                'style_section' => $styleSection,
             ];
 
             if ($homePageConfig) {
@@ -52,7 +57,11 @@ class HomePageService extends BaseService
             $this->syncSlides($request->slides);
             $this->syncTestimonials($request->testimonials);
             $this->syncFaqs(config('constants.HOMEPAGE_TYPE'), $request->faqs);
-            SeoText::updateSeoText(config('constants.HOMEPAGE_TYPE'), $request->seoTitle, $request->seoText);
+            SeoText::updateSeoText(
+                config('constants.HOMEPAGE_TYPE'),
+                $request->seoTitle ?? [],
+                $request->seoText ?? [],
+            );
 
             $this->syncNewProducts($request->selectedProductsId);
             $this->syncBestSalesProducts($request->selectedBestSalesProductsId);
@@ -60,6 +69,72 @@ class HomePageService extends BaseService
 
             return ServiceActionResult::make(true, trans('admin.home_page_edit_success'));
         });
+    }
+
+    private function syncStyleSection(?array $section, array $existingSection): array
+    {
+        $section ??= [];
+        $existingImagePaths = collect($existingSection['items'] ?? [])
+            ->pluck('image_path')
+            ->filter()
+            ->values();
+
+        $items = collect($section['items'] ?? [])->map(function (array $item, int $index) use ($existingImagePaths) {
+            $existingPath = trim((string) ($item['existing_image_path'] ?? ''));
+            $imagePath = $existingImagePaths->contains($existingPath) ? $existingPath : null;
+
+            if ((bool) ($item['image_deleted'] ?? false)) {
+                $imagePath = null;
+            }
+
+            if (isset($item['image'])) {
+                $imageBasePath = self::STYLE_IMAGES_FOLDER.'/'.Str::uuid();
+                $this->storeImage($imageBasePath, $item['image'], 'webp', 82);
+                $this->storeImage($imageBasePath, $item['image'], 'jpg', 86);
+                $imagePath = $imageBasePath.'.webp';
+            }
+
+            return [
+                'name' => $this->normalizeTranslations($item['name'] ?? []),
+                'image_path' => $imagePath,
+                'sort_order' => $index,
+            ];
+        })->filter(fn (array $item) => $item['image_path'] && collect($item['name'])->contains(fn ($name) => filled($name)))
+            ->values();
+
+        $retainedImagePaths = $items->pluck('image_path');
+        $existingImagePaths->diff($retainedImagePaths)->each(fn (string $path) => $this->deleteImage($path));
+
+        return [
+            'enabled' => (bool) ($section['enabled'] ?? false),
+            'kicker' => $this->normalizeTranslations($section['kicker'] ?? []),
+            'title' => $this->normalizeTranslations($section['title'] ?? []),
+            'description' => $this->normalizeTranslations($section['description'] ?? []),
+            'cta_label' => $this->normalizeTranslations($section['cta_label'] ?? []),
+            'cta_url' => trim((string) ($section['cta_url'] ?? '')),
+            'items' => $items->all(),
+        ];
+    }
+
+    private function normalizeTranslations(array $translations): array
+    {
+        return collect(['uk', 'ru'])
+            ->mapWithKeys(fn (string $locale) => [$locale => trim((string) ($translations[$locale] ?? ''))])
+            ->all();
+    }
+
+    public function getHomePageStyleSection(): array
+    {
+        $section = $this->getHomePageConfig()?->style_section ?? [];
+        $section['items'] = collect($section['items'] ?? [])->map(function (array $item) {
+            $item['image_url'] = filled($item['image_path'] ?? null)
+                ? Storage::url($item['image_path'])
+                : null;
+
+            return $item;
+        })->sortBy('sort_order')->values()->all();
+
+        return $section;
     }
 
     private function syncNewProducts(?array $productsId): void
@@ -84,11 +159,11 @@ class HomePageService extends BaseService
         }
     }
 
-    private function syncBrands(array $brandsId): void
+    private function syncBrands(?array $brandsId): void
     {
         HomePageBrands::query()->delete();
 
-        foreach ($brandsId as $brandId) {
+        foreach (array_filter($brandsId ?? []) as $brandId) {
             HomePageBrands::create(['brand_id' => $brandId]);
         }
     }

@@ -15,6 +15,10 @@ class HomePageConfig extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'style_section' => 'array',
+    ];
+
     public function productField()
     {
         return $this->belongsTo(ProductField::class);

@@ -36,6 +36,7 @@ class ShowHomePageAction extends BaseAction
             //            'brands' => $brandService->getBrands(), // get all brands
             'brands' => $homePageService->getHomePageBrands(), // get selected brands for homepage
             'productTypes' => $homePageService->getHomePageProductTypes(json_decode($config->product_types)),
+            'styleSection' => $homePageService->getHomePageStyleSection(),
             'specificProductTypes' => $homePageService->getSpecificProductTypes(),
             'homeNewProducts' => $homePageService->getHomePageNewProducts(),
             'homeBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),

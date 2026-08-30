@@ -19,6 +19,7 @@ import CommonCode from './common/common-code';
 import SiteHeader from './common/site-header';
 import StorefrontSearch from './common/storefront-search';
 import HomeHero from './common/home-hero';
+import HomeStyleSelector from './common/home-style-selector';
 
 // console.log('1111');
 
@@ -83,7 +84,8 @@ async function init()
         CommonCode.init(),
         SiteHeader.init(),
         StorefrontSearch.init(),
-        HomeHero.init()
+        HomeHero.init(),
+        HomeStyleSelector.init()
     ]);
 }
 

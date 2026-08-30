@@ -64,7 +64,12 @@
                             </span>
                             <span class="bona-category-card__row">
                                 <span class="bona-category-card__name">{{ $productType->name }}</span>
-                                <span class="bona-category-card__arrow" aria-hidden="true">→</span>
+                                <span class="bona-category-card__arrow" aria-hidden="true">
+                                    <svg width="34" height="10" viewBox="0 0 34 10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="0" y1="5" x2="32" y2="5"></line>
+                                        <path d="M27 1 L32 5 L27 9"></path>
+                                    </svg>
+                                </span>
                             </span>
                         </a>
                     @endforeach
@@ -72,6 +77,8 @@
             </div>
         </section>
     @endif
+
+    <x-store.home-style-selector :section="$styleSection" />
 
 
     @if(count($homeNewProducts))

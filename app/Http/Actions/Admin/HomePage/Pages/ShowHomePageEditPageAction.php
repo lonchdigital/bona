@@ -62,6 +62,7 @@ class ShowHomePageEditPageAction extends BaseAction
             'fields' => $customFields,
             'allProductTypes' => $productTypeService->getProductTypes(),
             'config' => $homePageService->getHomePageConfig(),
+            'styleSection' => $homePageService->getHomePageStyleSection(),
             'selectedNewProducts' => $homePageService->getHomePageNewProducts(),
             'selectedBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),
             'selectedProductFieldOptions' => $homePageService->getHomePageProductFieldOptions(),

@@ -8,6 +8,7 @@ import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRic
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
 import TextAreaComponent from "../components/TextAreaComponent.vue";
 import SelectComponent from "../components/SelectComponent.vue";
+import HomePageStyleItemComponent from "../components/HomePageStyleItemComponent.vue";
 
 export default {
     components: {MultiLanguageRichTextEditorComponent,
@@ -16,7 +17,8 @@ export default {
         HomePageFaqComponent,
         MultiLanguageInputComponent,
         TextAreaComponent,
-        SelectComponent
+        SelectComponent,
+        HomePageStyleItemComponent,
     },
     props: {
         submitRoute: {
@@ -126,6 +128,10 @@ export default {
         seoText: {
             type: Object,
             default: [],
+        },
+        styleSection: {
+            type: Object,
+            default: () => ({}),
         }
     },
     data() {
@@ -145,6 +151,7 @@ export default {
             selectedBrandsShow: [],
             selectedFieldId: null,
             selectedOptions: [],
+            styleItems: [],
             errors: [],
         }
     },
@@ -161,6 +168,10 @@ export default {
 
         if (this.faqList) {
             this.faqs = this.faqList;
+        }
+
+        if (Array.isArray(this.styleSection.items)) {
+            this.styleItems = this.styleSection.items.map(item => ({ ...item }));
         }
 
         this.loadProducts('');
@@ -248,6 +259,22 @@ export default {
         },
         deleteFaq(index) {
             this.faqs.splice(index, 1);
+        },
+        addStyleItem() {
+            this.styleItems.push({ name: {} });
+        },
+        deleteStyleItem(index) {
+            this.styleItems.splice(index, 1);
+        },
+        moveStyleItem(index, offset) {
+            const targetIndex = index + offset;
+
+            if (targetIndex < 0 || targetIndex >= this.styleItems.length) {
+                return;
+            }
+
+            const [item] = this.styleItems.splice(index, 1);
+            this.styleItems.splice(targetIndex, 0, item);
         },
         changeSelectedLanguage(newSelectedLanguage) {
             this.selectedLanguage = newSelectedLanguage;
@@ -363,6 +390,104 @@ export default {
                     :is-required="false"
                     :errors="errors"
                 />
+
+                <section class="card border-0 bg-light mt-4 mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div>
+                                <h4 class="mb-1">{{ $t('admin.home_style_section') }}</h4>
+                                <p class="text-muted mb-0">{{ $t('admin.home_style_section_help') }}</p>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input type="hidden" name="style_section[enabled]" value="0">
+                                <input
+                                    id="home-style-enabled"
+                                    class="custom-control-input"
+                                    type="checkbox"
+                                    name="style_section[enabled]"
+                                    value="1"
+                                    :checked="Boolean(styleSection.enabled)"
+                                >
+                                <label class="custom-control-label" for="home-style-enabled">{{ $t('admin.display') }}</label>
+                            </div>
+                        </div>
+
+                        <multi-language-input-component
+                            :title="$t('admin.home_style_kicker')"
+                            name="style_section[kicker]"
+                            :selected-language="selectedLanguage"
+                            :available-languages="availableLanguages"
+                            :is-required="false"
+                            :init-data="styleSection.kicker || {}"
+                            :errors="errors"
+                        />
+                        <multi-language-input-component
+                            :title="$t('admin.home_style_title')"
+                            name="style_section[title]"
+                            :selected-language="selectedLanguage"
+                            :available-languages="availableLanguages"
+                            :is-required="false"
+                            :init-data="styleSection.title || {}"
+                            :errors="errors"
+                        />
+                        <multi-language-text-area-component
+                            :title="$t('admin.home_style_description')"
+                            name="style_section[description]"
+                            :selected-language="selectedLanguage"
+                            :available-languages="availableLanguages"
+                            :is-required="false"
+                            :init-data="styleSection.description || {}"
+                            :errors="errors"
+                        />
+
+                        <div class="row">
+                            <div class="col-md-7">
+                                <multi-language-input-component
+                                    :title="$t('admin.home_style_cta_label')"
+                                    name="style_section[cta_label]"
+                                    :selected-language="selectedLanguage"
+                                    :available-languages="availableLanguages"
+                                    :is-required="false"
+                                    :init-data="styleSection.cta_label || {}"
+                                    :errors="errors"
+                                />
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group mb-3">
+                                    <input-component
+                                        :title="$t('admin.home_style_cta_url')"
+                                        name="style_section[cta_url]"
+                                        :model-value="styleSection.cta_url || ''"
+                                        :errors="errors"
+                                        :is-required="false"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between mt-3 mb-3">
+                            <strong>{{ $t('admin.home_style_items') }}</strong>
+                            <button type="button" class="btn btn-sm btn-secondary" @click="addStyleItem">
+                                <span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.home_style_add') }}
+                            </button>
+                        </div>
+
+                        <home-page-style-item-component
+                            v-for="(item, index) in styleItems"
+                            :key="item.image_path || `new-style-${index}`"
+                            :item="item"
+                            :index="index"
+                            :selected-language="selectedLanguage"
+                            :available-languages="availableLanguages"
+                            :errors="errors"
+                            :is-first="index === 0"
+                            :is-last="index === styleItems.length - 1"
+                            @delete="deleteStyleItem(index)"
+                            @move-up="moveStyleItem(index, -1)"
+                            @move-down="moveStyleItem(index, 1)"
+                        />
+                    </div>
+                </section>
 
                 <p class="mt-4"></p>
 

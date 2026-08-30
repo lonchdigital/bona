@@ -16,6 +16,7 @@
                     submit-route="{{ route('admin.home-page.edit') }}"
                     :available-products="{{ json_encode($products) }}"
                     :wallpapers-fields="{{ json_encode($fields) }}"
+                    :style-section="{{ json_encode($styleSection) }}"
 
                     :testimonials-rating-options="{{ json_encode( \App\DataClasses\TestimonialsRatingDataClass::getArray() ) }}"
 
@@ -79,4 +80,3 @@
 @section('vue')
     <vue/>
 @endsection
-
