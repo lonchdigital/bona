@@ -14,13 +14,14 @@ use App\Support\LastModified;
 class ShowProductPageAction extends BaseAction
 {
     public function __invoke(
-        Product $product,
+        Product $productSlug,
         CurrencyService $currencyService,
         ProductService $productService,
         WishListService $wishListService,
         CartService $cartService,
         ProductReviewService $productReviewService,
     ) {
+        $product = $productSlug;
 
         $product->load([
             //            'color',
@@ -29,6 +30,8 @@ class ShowProductPageAction extends BaseAction
             'productType.fields',
             'productType.fields.options',
         ]);
+
+        abort_if($product->productType === null, 404);
 
         $wishList = null;
         if ($this->getAuthUser()) {

@@ -37,58 +37,11 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureRateLimiting();
+        $this->configureRouteBindings();
 
         $this->routes(function () {
 
             Route::get('/up', HealthCheckAction::class)->name('health');
-
-            Route::bind('productTypeSlug', function (string $slug) {
-                return ProductType::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('productSlug', function (string $slug) {
-                return Product::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('wishListAccessToken', function (string $token) {
-                return WishList::where('access_token', $token)->firstOrFail();
-            });
-
-            Route::bind('categorySlug', function (string $slug) {
-                return Category::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('brandSlug', function (string $slug) {
-                return Brand::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('collectionSlug', function (string $slug) {
-                return Collection::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('blogCategorySlug', function (string $slug) {
-                return BlogCategory::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('workSlug', function (string $slug) {
-                return Work::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('authorSlug', function (string $slug) {
-                return Author::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('blogArticleSlug', function (string $slug) {
-                return BlogArticle::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('filterGroupSlug', function (string $slug) {
-                return FilterGroup::where('slug', $slug)->firstOrFail();
-            });
-
-            Route::bind('lang', function (string $lang) {
-                return $lang;
-            });
 
             Route::middleware('api')
                 ->prefix('api')
@@ -98,6 +51,25 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'))
                 ->group(base_path('routes/admin.php'));
         });
+    }
+
+    /**
+     * Register explicit bindings even when Laravel loads cached routes.
+     */
+    protected function configureRouteBindings(): void
+    {
+        Route::bind('productTypeSlug', fn (string $slug) => ProductType::where('slug', $slug)->firstOrFail());
+        Route::bind('productSlug', fn (string $slug) => Product::where('slug', $slug)->firstOrFail());
+        Route::bind('wishListAccessToken', fn (string $token) => WishList::where('access_token', $token)->firstOrFail());
+        Route::bind('categorySlug', fn (string $slug) => Category::where('slug', $slug)->firstOrFail());
+        Route::bind('brandSlug', fn (string $slug) => Brand::where('slug', $slug)->firstOrFail());
+        Route::bind('collectionSlug', fn (string $slug) => Collection::where('slug', $slug)->firstOrFail());
+        Route::bind('blogCategorySlug', fn (string $slug) => BlogCategory::where('slug', $slug)->firstOrFail());
+        Route::bind('workSlug', fn (string $slug) => Work::where('slug', $slug)->firstOrFail());
+        Route::bind('authorSlug', fn (string $slug) => Author::where('slug', $slug)->firstOrFail());
+        Route::bind('blogArticleSlug', fn (string $slug) => BlogArticle::where('slug', $slug)->firstOrFail());
+        Route::bind('filterGroupSlug', fn (string $slug) => FilterGroup::where('slug', $slug)->firstOrFail());
+        Route::bind('lang', fn (string $lang) => $lang);
     }
 
     /**
