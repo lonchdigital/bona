@@ -4,6 +4,39 @@ import $ from 'jquery';
 
 
 export function init () {
+    const instagramSlider = document.querySelector('[data-instagram-slider]');
+
+    if (instagramSlider) {
+        const section = instagramSlider.closest('.bona-instagram');
+
+        new Swiper(instagramSlider, {
+            slidesPerView: 2,
+            spaceBetween: 8,
+            speed: 450,
+            rewind: true,
+            watchOverflow: true,
+            grabCursor: true,
+            navigation: {
+                prevEl: section?.querySelector('.bona-instagram__nav--prev'),
+                nextEl: section?.querySelector('.bona-instagram__nav--next'),
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 3,
+                    spaceBetween: 10,
+                },
+                960: {
+                    slidesPerView: 4,
+                    spaceBetween: 10,
+                },
+                1180: {
+                    slidesPerView: 6,
+                    spaceBetween: 10,
+                },
+            },
+        });
+    }
+
     // testimonials
     if ($('.art-quote-carousel-home.quote-carousel').length > 0) {
         let NewProductsGallery = new Swiper(".art-quote-carousel-home.quote-carousel", {

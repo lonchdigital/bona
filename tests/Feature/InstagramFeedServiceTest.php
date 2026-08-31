@@ -77,4 +77,24 @@ class InstagramFeedServiceTest extends TestCase
 
         $this->assertSame($stale, app(InstagramFeedService::class)->getFeed());
     }
+
+    public function test_it_returns_the_latest_twelve_posts_for_the_slider(): void
+    {
+        Http::fake([
+            'graph.facebook.com/*' => Http::response([
+                'data' => collect(range(1, 14))->map(fn (int $index): array => [
+                    'id' => "image-{$index}",
+                    'media_type' => 'IMAGE',
+                    'media_url' => "https://cdn.example.com/image-{$index}.jpg",
+                    'permalink' => "https://www.instagram.com/p/image-{$index}/",
+                ])->all(),
+            ]),
+        ]);
+
+        $feed = app(InstagramFeedService::class)->getFeed();
+
+        $this->assertCount(12, $feed);
+        $this->assertSame('image-1', $feed[0]['id']);
+        $this->assertSame('image-12', $feed[11]['id']);
+    }
 }

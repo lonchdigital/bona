@@ -49,7 +49,7 @@ class InstagramFeedService
             $feed = collect($response->json('data', []))
                 ->map(fn (array $media): ?array => $this->normalize($media))
                 ->filter()
-                ->take(6)
+                ->take(12)
                 ->values()
                 ->all();
 

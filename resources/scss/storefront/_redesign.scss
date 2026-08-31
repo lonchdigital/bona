@@ -1089,10 +1089,7 @@
     color: var(--bona-ink);
     font-family: var(--bona-ui);
 
-    &__grid {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 10px;
+    &__slider {
         padding-inline: 10px;
     }
 
@@ -1140,8 +1137,43 @@
 
     &__cta {
         display: flex;
+        align-items: center;
         justify-content: center;
+        gap: 12px;
         margin-top: 36px;
+    }
+
+    &__nav {
+        display: grid;
+        width: 50px;
+        height: 50px;
+        flex: 0 0 auto;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(35, 32, 27, .28);
+        border-radius: 50%;
+        background: transparent;
+        color: var(--bona-ink);
+        font: 400 20px/1 var(--bona-ui);
+        cursor: pointer;
+        transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+
+        &:hover,
+        &:focus-visible {
+            border-color: var(--bona-ink);
+            background: var(--bona-ink);
+            color: var(--bona-cream);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--bona-gold);
+            outline-offset: 3px;
+        }
+
+        &.swiper-button-disabled {
+            opacity: .35;
+            cursor: default;
+        }
     }
 
     &__button {
@@ -1182,7 +1214,6 @@
     .bona-search { min-width: 180px; }
     .bona-mega__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .bona-mega-card:nth-child(n + 5) { display: none; }
-    .bona-instagram__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 960px) {
@@ -1371,9 +1402,7 @@
     .bona-instagram {
         padding-block: 64px;
 
-        &__grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
+        &__slider {
             padding-inline: 8px;
         }
 
@@ -1382,6 +1411,15 @@
             padding-inline: 20px;
         }
 
-        &__button { width: 100%; }
+        &__button {
+            min-width: 0;
+            flex: 1 1 auto;
+            padding-inline: 18px;
+        }
+
+        &__nav {
+            width: 46px;
+            height: 46px;
+        }
     }
 }
