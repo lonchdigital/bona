@@ -7,24 +7,35 @@ export default {
         // Display Filters on Products Catalog by Click
         // ----------------------------------------------------------------
         var $productsFilter = $('#art-products-filter');
-        var $filterDisplay = $('#art-filter-display, #art-filter-display *');
+        var $filterDisplay = $('#art-filter-display');
 
         $filterDisplay.on('click', function (e) {
-            var h_this = $(this);
-
-            if(!h_this.hasClass('active')) {
-                $productsFilter.addClass('active');
-            }
+            e.preventDefault();
+            $productsFilter.addClass('active');
+            $filterDisplay.addClass('active').attr('aria-expanded', 'true');
+            $('body').addClass('bona-filter-open');
 
         });
 
-        $('#art-products-filter .filter-top-wrapper svg').on('click', function (e) {
+        $('#art-products-filter .filter-top-wrapper button, #art-products-filter .filter-top-wrapper > svg').on('click', function (e) {
             $productsFilter.removeClass('active');
+            $filterDisplay.removeClass('active').attr('aria-expanded', 'false');
+            $('body').removeClass('bona-filter-open');
         });
 
         $(document).on('click', function(e) {
-            if (!$productsFilter.is(e.target) && $productsFilter.has(e.target).length === 0 && !$filterDisplay.is(e.target)) {
+            if (!$productsFilter.is(e.target) && $productsFilter.has(e.target).length === 0 && !$filterDisplay.is(e.target) && $filterDisplay.has(e.target).length === 0) {
                 $productsFilter.removeClass('active');
+                $filterDisplay.removeClass('active').attr('aria-expanded', 'false');
+                $('body').removeClass('bona-filter-open');
+            }
+        });
+
+        $(document).on('keydown', function (event) {
+            if (event.key === 'Escape' && $productsFilter.hasClass('active')) {
+                $productsFilter.removeClass('active');
+                $filterDisplay.removeClass('active').attr('aria-expanded', 'false').trigger('focus');
+                $('body').removeClass('bona-filter-open');
             }
         });
 

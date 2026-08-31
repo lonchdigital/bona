@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL as FacadeURL;
 use Spatie\Sitemap\Contracts\Sitemapable;
@@ -48,6 +49,11 @@ class Product extends Model implements Sitemapable
     public function colors()
     {
         return $this->belongsToMany(Color::class, 'product_colors')->withPivot(['price']);
+    }
+
+    public function galleries(): HasMany
+    {
+        return $this->hasMany(ProductGalleries::class, 'product_id');
     }
 
     public function categories()

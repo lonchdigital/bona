@@ -20,6 +20,7 @@ import SiteHeader from './common/site-header';
 import StorefrontSearch from './common/storefront-search';
 import HomeHero from './common/home-hero';
 import HomeStyleSelector from './common/home-style-selector';
+import ProductCardColors from './common/product-card-colors';
 
 // console.log('1111');
 
@@ -59,11 +60,6 @@ async function loadJsByPage()
     }
 
     if (pages['./pages/' + pageToLoad + '.js']) {
-
-        console.log('===');
-        console.log('./pages/' + pageToLoad + '.js');
-        console.log('===');
-
         pages['./pages/' + pageToLoad + '.js']();
     }
 
@@ -85,7 +81,8 @@ async function init()
         SiteHeader.init(),
         StorefrontSearch.init(),
         HomeHero.init(),
-        HomeStyleSelector.init()
+        HomeStyleSelector.init(),
+        ProductCardColors.init()
     ]);
 }
 

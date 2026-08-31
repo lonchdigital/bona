@@ -817,7 +817,7 @@ class HomePageService extends BaseService
      */
     public function getHomePagePopularProducts(int $limit = 12): Collection
     {
-        $relations = ['product.brand', 'product.productType', 'product.colors'];
+        $relations = ['product.brand', 'product.productType', 'product.colors', 'product.galleries'];
 
         $products = HomePageBestSalesProducts::with($relations)
             ->get()
@@ -836,7 +836,7 @@ class HomePageService extends BaseService
         }
 
         return Product::query()
-            ->with(['brand', 'productType', 'colors'])
+            ->with(['brand', 'productType', 'colors', 'galleries'])
             ->whereNotNull('main_image_path')
             ->whereNotNull('price')
             ->where('price', '>', 0)

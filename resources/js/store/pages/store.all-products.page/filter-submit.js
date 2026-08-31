@@ -46,8 +46,6 @@ export function init () {
     $('.filter-submit-main').click(function (event) {
         event.preventDefault();
 
-        console.log('1111');
-
         filterSubmit(mainFilterForm);
     });
 

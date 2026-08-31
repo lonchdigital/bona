@@ -80,6 +80,7 @@ class ProductService extends BaseService
     public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::query()
+            ->with(['brand', 'productType', 'colors', 'galleries'])
             ->orderByAvailabilityStatus()
             ->orderBy('created_at', 'desc');
 
@@ -96,6 +97,7 @@ class ProductService extends BaseService
     public function getAllProductsPaginated(FilterProductDTO $request, int $perPage, int $page, array $allFilters): LengthAwarePaginator
     {
         $query = Product::query()
+            ->with(['brand', 'productType', 'colors', 'galleries'])
             ->orderByAvailabilityStatus()
             ->orderBy('created_at', 'desc');
 
@@ -260,6 +262,7 @@ class ProductService extends BaseService
     public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): LengthAwarePaginator
     {
         $query = Product::query()
+            ->with(['brand', 'productType', 'colors', 'galleries'])
             ->orderByAvailabilityStatus()
             ->orderBy('created_at', 'desc');
 
@@ -284,6 +287,7 @@ class ProductService extends BaseService
     public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::query()
+            ->with(['brand', 'productType', 'colors', 'galleries'])
             ->orderByAvailabilityStatus()
             ->orderBy('created_at', 'desc');
 
