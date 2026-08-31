@@ -1317,7 +1317,7 @@
 .bona-review-card {
     display: flex;
     height: auto;
-    min-height: 270px;
+    min-height: 310px;
     flex-direction: column;
     gap: 16px;
     padding: 32px;
@@ -1433,6 +1433,8 @@
         h3 {
             margin: 0;
             font: 400 23px/1.35 var(--bona-display);
+            letter-spacing: normal;
+            text-transform: none;
 
             a {
                 color: var(--bona-ink);

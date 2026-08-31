@@ -44,7 +44,7 @@
                                 <span>{{ str_repeat('★', $rating) }}</span><span class="bona-review-card__stars-muted">{{ str_repeat('★', 5 - $rating) }}</span>
                             </div>
                             <p class="bona-review-card__text">{{ $testimonial->review }}</p>
-                            <footer class="bona-review-card__meta">
+                            <div class="bona-review-card__meta">
                                 @if(filled($testimonial->url))
                                     <a class="bona-review-card__author" href="{{ $testimonial->url }}" target="_blank" rel="noopener noreferrer nofollow">
                                         {{ $testimonial->name }}
@@ -58,7 +58,7 @@
                                         {{ \Illuminate\Support\Carbon::parse($testimonial->date)->format('d.m.Y') }}
                                     </time>
                                 @endif
-                            </footer>
+                            </div>
                         </article>
                     @endforeach
                 </div>
