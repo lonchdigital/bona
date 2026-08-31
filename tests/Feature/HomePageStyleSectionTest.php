@@ -6,6 +6,7 @@ use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\Models\HomePageConfig;
 use App\Models\ProductField;
 use App\Models\Role;
+use App\Models\SeoText;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -84,6 +85,38 @@ class HomePageStyleSectionTest extends TestCase
             ])
             ->assertRedirect(route('admin.home-page.edit.page'))
             ->assertSessionHasErrors('style_section.cta_url');
+    }
+
+    public function test_empty_editor_payload_does_not_erase_existing_homepage_seo_text(): void
+    {
+        $this->homePageConfig();
+        SeoText::query()->create([
+            'page_type' => config('constants.HOMEPAGE_TYPE'),
+            'language' => 'uk',
+            'title' => 'Важливий заголовок',
+            'content' => '<p>Важливий текст головної сторінки.</p>',
+        ]);
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.home-page.edit'), [
+                'selected_product_types' => '',
+                'selected_products_id' => '',
+                'selected_best_sales_products_id' => '',
+                'selected_brands_id' => '',
+                'seo_title' => ['uk' => '', 'ru' => ''],
+                'seo_text' => ['uk' => '<p><br></p>', 'ru' => ''],
+                'style_section' => ['enabled' => 0],
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.success', true);
+
+        $seoText = SeoText::query()
+            ->where('page_type', config('constants.HOMEPAGE_TYPE'))
+            ->where('language', 'uk')
+            ->firstOrFail();
+
+        $this->assertSame('Важливий заголовок', $seoText->title);
+        $this->assertSame('<p>Важливий текст головної сторінки.</p>', $seoText->content);
     }
 
     private function homePageConfig(): HomePageConfig

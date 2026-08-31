@@ -57,10 +57,15 @@ class HomePageService extends BaseService
             $this->syncSlides($request->slides);
             $this->syncTestimonials($request->testimonials);
             $this->syncFaqs(config('constants.HOMEPAGE_TYPE'), $request->faqs);
+            [$seoTitle, $seoText] = $this->preserveExistingSeoText(
+                $request->seoTitle,
+                $request->seoText,
+            );
+
             SeoText::updateSeoText(
                 config('constants.HOMEPAGE_TYPE'),
-                $request->seoTitle ?? [],
-                $request->seoText ?? [],
+                $seoTitle,
+                $seoText,
             );
 
             $this->syncNewProducts($request->selectedProductsId);
@@ -69,6 +74,49 @@ class HomePageService extends BaseService
 
             return ServiceActionResult::make(true, trans('admin.home_page_edit_success'));
         });
+    }
+
+    /**
+     * The home form contains several independent editable sections. A rich
+     * text editor that has not mounted yet can submit an empty value while an
+     * administrator is only changing another section. The homepage SEO copy
+     * is business content, so an empty editor payload must not silently erase
+     * an existing value.
+     */
+    private function preserveExistingSeoText(?array $titles, ?array $contents): array
+    {
+        $existing = $this->getHomePageSeoText();
+        $titles ??= [];
+        $contents ??= [];
+
+        $languages = collect([
+            ...array_keys($existing['title'] ?? []),
+            ...array_keys($existing['content'] ?? []),
+            ...array_keys($titles),
+            ...array_keys($contents),
+        ])->unique();
+
+        foreach ($languages as $language) {
+            if (! $this->hasVisibleText($titles[$language] ?? null)
+                && $this->hasVisibleText($existing['title'][$language] ?? null)) {
+                $titles[$language] = $existing['title'][$language];
+            }
+
+            if (! $this->hasVisibleText($contents[$language] ?? null)
+                && $this->hasVisibleText($existing['content'][$language] ?? null)) {
+                $contents[$language] = $existing['content'][$language];
+            }
+        }
+
+        return [$titles, $contents];
+    }
+
+    private function hasVisibleText(?string $value): bool
+    {
+        $text = html_entity_decode(strip_tags((string) $value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = preg_replace('/[\s\x{00A0}]+/u', '', $text);
+
+        return $text !== '';
     }
 
     private function syncStyleSection(?array $section, array $existingSection): array
