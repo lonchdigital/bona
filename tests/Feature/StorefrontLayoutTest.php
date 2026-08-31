@@ -15,7 +15,10 @@ class StorefrontLayoutTest extends TestCase
             ->assertOk()
             ->assertSee('data-site-header', false)
             ->assertSee('bona-site-header--overlay', false)
-            ->assertSee('data-home-hero', false);
+            ->assertSee('data-home-hero', false)
+            ->assertDontSee('art-contact-form-section', false)
+            ->assertDontSee('art-quote-carousel-home', false)
+            ->assertDontSee('art-brands-owl-items', false);
     }
 
     public function test_internal_page_renders_the_solid_header_without_seed_data(): void

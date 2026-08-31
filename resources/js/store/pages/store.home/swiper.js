@@ -37,68 +37,32 @@ export function init () {
         });
     }
 
-    // testimonials
-    if ($('.art-quote-carousel-home.quote-carousel').length > 0) {
-        let NewProductsGallery = new Swiper(".art-quote-carousel-home.quote-carousel", {
-            slidesPerView: 3,
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            breakpoints: {
-                100: {
-                    slidesPerView: 1
-                },
-                500: {
-                    slidesPerView: 2
-                },
-                1200: {
-                    slidesPerView: 3
-                }
-            },
-            on: {
-                init: function () {
-                    this.update();
-                },
-                resize: function () {
-                    this.update();
-                }
-            }
-        });
-    }
+    const reviewsSlider = document.querySelector('[data-reviews-slider]');
 
-    // Our partners
-    if ($('.swiper.art-brands-owl-items').length > 0) {
-        let NewProductsGallery = new Swiper(".swiper.art-brands-owl-items", {
-            slidesPerView: 5,
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
+    if (reviewsSlider) {
+        const section = reviewsSlider.closest('.bona-reviews');
+
+        new Swiper(reviewsSlider, {
+            slidesPerView: 1,
+            spaceBetween: 16,
+            speed: 450,
+            rewind: true,
+            watchOverflow: true,
+            grabCursor: true,
+            navigation: {
+                prevEl: section?.querySelector('.bona-reviews__nav--prev'),
+                nextEl: section?.querySelector('.bona-reviews__nav--next'),
             },
             breakpoints: {
-                100: {
-                    slidesPerView: 2
+                700: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
                 },
-                500: {
-                    slidesPerView: 5
+                1100: {
+                    slidesPerView: 3,
+                    spaceBetween: 24,
                 },
-                768: {
-                    slidesPerView: 4
-                },
-                1200: {
-                    slidesPerView: 5
-                }
             },
-            on: {
-                init: function () {
-                    this.update();
-                },
-                resize: function () {
-                    this.update();
-                }
-            }
         });
     }
 
