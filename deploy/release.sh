@@ -144,5 +144,9 @@ if [[ -n "$HEALTHCHECK_URL" ]]; then
     curl --fail --silent --show-error --retry 5 --retry-delay 2 "$HEALTHCHECK_URL" >/dev/null
 fi
 
+# The extracted release is self-contained. Keeping its uploaded archive and
+# checksum after a successful health check only wastes disk space.
+rm -f -- "$ARCHIVE_PATH" "$CHECKSUM_PATH"
+
 trap - ERR
 echo "Release $RELEASE_ID is active."

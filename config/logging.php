@@ -7,6 +7,8 @@ use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
 
+    'retention_days' => (int) env('LOG_RETENTION_DAYS', 30),
+
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -69,7 +71,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'days' => (int) env('LOG_RETENTION_DAYS', 30),
             'replace_placeholders' => true,
         ],
 

@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         // Needs a cron calling `php artisan schedule:run` every minute;
         // without one this simply never fires and nothing else breaks.
         $schedule->command('wishlist:prune-guests')->dailyAt('04:15');
+        $schedule->command('logs:prune')->dailyAt('04:30')->withoutOverlapping();
     }
 
     /**
