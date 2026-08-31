@@ -36,26 +36,27 @@ async function loadJsByPage()
         throw new Error('[pages-loader]: page value is undefined.');
     }
 
-    let pageToLoad = page;
+    let pageToLoad = page.startsWith('localized.')
+        ? page.slice('localized.'.length)
+        : page;
 
-    // console.log(page);
-    if (page === 'store.catalog.filter.page') {
+    if (pageToLoad === 'store.catalog.filter.page') {
         pageToLoad = 'store.catalog.page';
     }
 
-    if (page === 'store.all-products.filter.page') {
+    if (pageToLoad === 'store.all-products.filter.page') {
         pageToLoad = 'store.all-products.page';
     }
 
-    if (page === 'store.catalog.filter-group.page') {
+    if (pageToLoad === 'store.catalog.filter-group.page') {
         pageToLoad = 'store.catalog.page';
     }
 
-    if (page === 'store.catalog-category.filter.page') {
+    if (pageToLoad === 'store.catalog-category.filter.page') {
         pageToLoad = 'store.catalog.page';
     }
 
-    if (page === 'store.products-rucky-by-availability.page' || page === 'store.products-rucky-by-availability.filter.page') {
+    if (pageToLoad === 'store.products-rucky-by-availability.page' || pageToLoad === 'store.products-rucky-by-availability.filter.page') {
         pageToLoad = 'store.catalog.page';
     }
 

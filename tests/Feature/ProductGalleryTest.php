@@ -13,4 +13,13 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString('appendSlide(this.cloneNode(true))', $script);
         $this->assertStringNotContainsString('appendSlide($(this).clone())', $script);
     }
+
+    public function test_localized_product_routes_load_the_same_gallery_script(): void
+    {
+        $script = file_get_contents(resource_path('js/store/app.js'));
+
+        $this->assertStringContainsString("page.startsWith('localized.')", $script);
+        $this->assertStringContainsString("page.slice('localized.'.length)", $script);
+        $this->assertStringContainsString("pages['./pages/' + pageToLoad + '.js']", $script);
+    }
 }
