@@ -39,7 +39,7 @@ printf '%s\n' "$(git -C "$ROOT_PATH" rev-parse HEAD)" > "$STAGE_PATH/REVISION"
 # traversing an extracted release directory.
 chmod 0755 "$STAGE_PATH"
 
-for required_path in artisan composer.lock public/build/manifest.json vendor/autoload.php; do
+for required_path in .htaccess artisan composer.lock public/build/manifest.json vendor/autoload.php; do
     if [[ ! -e "$STAGE_PATH/$required_path" ]]; then
         echo "Release is missing required path: $required_path" >&2
         exit 1

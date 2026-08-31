@@ -24,6 +24,7 @@ yarn-error.log
 /resources/img/icon.svg
 lang/php_*.json
 .htaccess
+!/.htaccess
 
 # macOS folder metadata, never useful in the repository
 .DS_Store
