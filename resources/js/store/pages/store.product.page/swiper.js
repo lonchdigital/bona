@@ -108,12 +108,22 @@ export function init () {
         let addedThumbsSrcs = new Set();
 
         function appendUniqueSlides($slides, swiperInstance, addedSet) {
+            if (!swiperInstance || typeof swiperInstance.appendSlide !== 'function') {
+                return;
+            }
+
             $slides.each(function() {
                 const imgSrc = $(this).find('img').attr('src');
-                if (!addedSet.has(imgSrc)) {
-                    addedSet.add(imgSrc);
-                    swiperInstance.appendSlide($(this).clone());
+
+                if (!imgSrc || addedSet.has(imgSrc)) {
+                    return;
                 }
+
+                addedSet.add(imgSrc);
+
+                // Swiper expects a DOM node or an HTML string. Passing a jQuery
+                // object is rendered as "[object Object]" in Swiper 14.
+                swiperInstance.appendSlide(this.cloneNode(true));
             });
         }
 
