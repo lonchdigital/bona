@@ -35,6 +35,7 @@ return [
         'app_id' => env('INSTAGRAM_APP_ID'),
         'app_secret' => env('INSTAGRAM_APP_SECRET'),
         'business_account_id' => env('INSTAGRAM_BUSINESS_ACCOUNT_ID'),
+        'graph_version' => env('INSTAGRAM_GRAPH_VERSION', 'v26.0'),
     ],
 
     'facebook' => [

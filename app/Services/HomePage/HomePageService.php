@@ -4,7 +4,6 @@ namespace App\Services\HomePage;
 
 use App\DataClasses\ProductSpecialOfferOptionsDataClass;
 use App\Helpers\MultiLangRoute;
-use App\Models\ApplicationConfig;
 use App\Models\Category;
 use App\Models\Faqs;
 use App\Models\HomePageBestSalesProducts;
@@ -20,10 +19,8 @@ use App\Models\SeoText;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\HomePage\DTO\HomePageEditDTO;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use App\Services\Instagram\InstagramFeedService;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -593,97 +590,6 @@ class HomePageService extends BaseService
 
     public function getInstagramFeed(): ?array
     {
-        $cacheKey = 'instagram_feed';
-
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
-
-        $accessToken = ApplicationConfig::where('config_name', 'instagramAccessToken')->value('config_data');
-
-        if (! $accessToken) {
-            return null;
-        }
-
-        $instagramBusinessAccountId = config('services.instagram.business_account_id');
-        if (! $instagramBusinessAccountId) {
-            return null;
-        }
-        $client = new Client;
-        $url = "https://graph.facebook.com/v19.0/{$instagramBusinessAccountId}/media";
-
-        try {
-            $response = $client->request('GET', $url, [
-                'query' => [
-                    'fields' => 'id,media_type,media_url,permalink',
-                    'access_token' => $accessToken,
-                ],
-            ]);
-
-            if ($response->getStatusCode() !== 200) {
-                return null;
-            }
-
-            $result = json_decode($response->getBody(), true);
-
-            if (empty($result['data'])) {
-                return null;
-            }
-
-            Cache::put($cacheKey, $result['data'], now()->addMinutes(1440));
-
-            return $result['data'];
-
-        } catch (RequestException $e) {
-
-            // token is expired
-            if ($e->getCode() === 400 || $e->getCode() === 401) {
-                $newToken = $this->refreshInstagramToken($accessToken);
-
-                if ($newToken) {
-                    // make request with new token
-                    return $this->getInstagramFeed();
-                }
-            }
-
-            return null;
-        }
-    }
-
-    private function refreshInstagramToken(string $oldToken): ?string
-    {
-        $client = new Client;
-        $appId = config('services.instagram.app_id');
-        $appSecret = config('services.instagram.app_secret');
-
-        try {
-            $response = $client->request('GET', 'https://graph.facebook.com/v19.0/oauth/access_token', [
-                'query' => [
-                    'grant_type' => 'fb_exchange_token',
-                    'client_id' => $appId,
-                    'client_secret' => $appSecret,
-                    'fb_exchange_token' => $oldToken,
-                ],
-            ]);
-
-            if ($response->getStatusCode() !== 200) {
-                return null;
-            }
-
-            $data = json_decode($response->getBody(), true);
-            $newToken = $data['access_token'] ?? null;
-
-            if ($newToken) {
-                ApplicationConfig::updateOrCreate(
-                    ['config_name' => 'instagramAccessToken'],
-                    ['config_data' => $newToken]
-                );
-            }
-
-            return $newToken;
-
-        } catch (RequestException $e) {
-            return null;
-        }
+        return app(InstagramFeedService::class)->getFeed();
     }
 }

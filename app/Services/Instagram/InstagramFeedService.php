@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Services\Instagram;
+
+use App\Models\ApplicationConfig;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
+
+class InstagramFeedService
+{
+    public const CACHE_KEY = 'instagram_feed';
+
+    public const STALE_CACHE_KEY = 'instagram_feed_stale';
+
+    public function getFeed(): ?array
+    {
+        $cached = Cache::get(self::CACHE_KEY);
+
+        if (is_array($cached)) {
+            return $cached;
+        }
+
+        $accessToken = $this->configValue('instagramAccessToken');
+        $accountId = $this->configValue('instagramBusinessAccountId')
+            ?: (string) config('services.instagram.business_account_id', '');
+
+        if ($accessToken === '' || $accountId === '') {
+            return $this->staleFeed();
+        }
+
+        try {
+            $response = Http::acceptJson()
+                ->timeout(10)
+                ->get($this->mediaUrl($accountId), [
+                    'fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{media_type,media_url,thumbnail_url}',
+                    'limit' => 12,
+                    'access_token' => $accessToken,
+                ]);
+
+            if (! $response->successful()) {
+                $this->logFailure($response);
+
+                return $this->staleFeed();
+            }
+
+            $feed = collect($response->json('data', []))
+                ->map(fn (array $media): ?array => $this->normalize($media))
+                ->filter()
+                ->take(6)
+                ->values()
+                ->all();
+
+            if ($feed === []) {
+                Log::warning('Instagram feed returned no displayable media.');
+
+                return $this->staleFeed();
+            }
+
+            Cache::put(self::CACHE_KEY, $feed, now()->addMinutes(30));
+            Cache::put(self::STALE_CACHE_KEY, $feed, now()->addDays(7));
+
+            return $feed;
+        } catch (Throwable $exception) {
+            Log::warning('Instagram feed request failed.', [
+                'exception' => $exception::class,
+                'code' => $exception->getCode(),
+            ]);
+
+            return $this->staleFeed();
+        }
+    }
+
+    private function normalize(array $media): ?array
+    {
+        $imageUrl = $media['media_type'] === 'VIDEO'
+            ? ($media['thumbnail_url'] ?? null)
+            : ($media['media_url'] ?? null);
+
+        if (! is_string($imageUrl) || $imageUrl === '' || empty($media['permalink'])) {
+            return null;
+        }
+
+        return [
+            'id' => (string) ($media['id'] ?? ''),
+            'media_type' => (string) ($media['media_type'] ?? 'IMAGE'),
+            'image_url' => $imageUrl,
+            'permalink' => (string) $media['permalink'],
+            'caption' => trim((string) ($media['caption'] ?? '')),
+            'timestamp' => $media['timestamp'] ?? null,
+        ];
+    }
+
+    private function configValue(string $name): string
+    {
+        return trim((string) ApplicationConfig::where('config_name', $name)->value('config_data'));
+    }
+
+    private function mediaUrl(string $accountId): string
+    {
+        $version = (string) config('services.instagram.graph_version', 'v26.0');
+
+        return "https://graph.facebook.com/{$version}/{$accountId}/media";
+    }
+
+    private function staleFeed(): ?array
+    {
+        $feed = Cache::get(self::STALE_CACHE_KEY);
+
+        return is_array($feed) && $feed !== [] ? $feed : null;
+    }
+
+    private function logFailure(Response $response): void
+    {
+        Log::warning('Instagram feed API rejected the request.', [
+            'status' => $response->status(),
+            'error_code' => $response->json('error.code'),
+            'error_subcode' => $response->json('error.error_subcode'),
+            'error_type' => $response->json('error.type'),
+        ]);
+    }
+}

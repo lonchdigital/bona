@@ -138,52 +138,7 @@
         </section>
     @endif
 
-    @if(!is_null($instagramFeed) && count($instagramFeed))
-        <!-- ========================  Instagram ======================== -->
-        <section class="instagram">
-            <header>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <h2 class="title h2">{{ trans('base.we_are_in_instagram') }}</h2>
-                    </div>
-                </div>
-            </header>
-            <div class="gallery clearfix mt-10">
-                <div class="swiper art-instagram-owl-items art-instagram art-big-wrapper art-swiper-common" id="art-instagram-owl-items">
-                    <div class="swiper-wrapper">
-                        @foreach($instagramFeed as $instagramItem)
-                            @if(isset($instagramItem['media_url']) && $instagramItem['media_type'] != 'VIDEO')
-                                <a href="{{ $instagramItem['permalink'] }}" target="_blank" class="swiper-slide">
-                                    <img src="{{ $instagramItem['media_url'] }}" alt="Alternate Text" loading="lazy">
-                                </a>
-                            @endif
-                        @endforeach
-                    </div>
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
-                </div>
-            </div>
-
-            <div class="wrapper-more">
-                <a href="https://www.instagram.com/bona_doors/" class="btn btn-empty color-dark" target="_blank">{{trans('base.subscribe')}}</a>
-            </div>
-
-        </section>
-    @endif
-
-    <section class="instagram">
-        <header>
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2 class="title h2">{{ trans('base.we_are_in_instagram') }}</h2>
-                </div>
-            </div>
-        </header>
-        <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
-        <script src="https://elfsightcdn.com/platform.js" async></script>
-        <div class="elfsight-app-f85feb4c-b53a-43eb-a103-554c0704ae89" data-elfsight-app-lazy></div>
-    </section>
+    <x-store.home-instagram :feed="$instagramFeed" />
 
     <!-- ========================  Blog ======================== -->
 
@@ -448,27 +403,4 @@
             }
         }
     </style>
-@endpush
-
-@push('dynamic_scripts')
-{{--    @vite('resources/js/store/pages/store.home.js')--}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const observer = new MutationObserver(function () {
-                const elfsightLink = document.querySelector(
-                    'a[href*="elfsight.com/instagram-feed-instashow"]'
-                );
-
-                if (elfsightLink) {
-                    elfsightLink.remove();
-                    observer.disconnect();
-                }
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        });
-    </script>
 @endpush

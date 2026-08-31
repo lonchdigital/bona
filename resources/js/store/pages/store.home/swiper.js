@@ -4,44 +4,6 @@ import $ from 'jquery';
 
 
 export function init () {
-    // instagram
-    if ($('#art-instagram-owl-items.art-instagram').length > 0) {
-        let NewProductsGallery = new Swiper("#art-instagram-owl-items.art-instagram", {
-            slidesPerView: 4,
-            spaceBetween: 30,
-            loop: true,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-                dynamicBullets: true,
-                dynamicMainBullets: 6
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev"
-            },
-            breakpoints: {
-                100: {
-                    slidesPerView: 3
-                },
-                500: {
-                    slidesPerView: 4
-                },
-                768: {
-                    slidesPerView: 5
-                }
-            },
-            on: {
-                init: function () {
-                    this.update();
-                },
-                resize: function () {
-                    this.update();
-                }
-            }
-        });
-    }
-
     // testimonials
     if ($('.art-quote-carousel-home.quote-carousel').length > 0) {
         let NewProductsGallery = new Swiper(".art-quote-carousel-home.quote-carousel", {

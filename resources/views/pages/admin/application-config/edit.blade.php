@@ -25,6 +25,36 @@
                     </div>
                 @endif
 
+                @if($errors->has('instagram'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ $errors->first('instagram') }}
+                    </div>
+                @endif
+
+                @php
+                    $instagramConnected = filled($applicationConfig['instagramAccessToken'] ?? null)
+                        && filled($applicationConfig['instagramBusinessAccountId'] ?? null);
+                    $instagramUsername = $applicationConfig['instagramUsername'] ?? null;
+                @endphp
+
+                <div class="card mb-4">
+                    <div class="card-body d-flex flex-wrap align-items-center justify-content-between" style="gap: 16px">
+                        <div>
+                            <h5 class="mb-1">Instagram-стрічка</h5>
+                            <p class="mb-0 text-muted">
+                                @if($instagramConnected)
+                                    Підключено{{ $instagramUsername ? ': @'.$instagramUsername : '' }}. Публікації оновлюються автоматично.
+                                @else
+                                    Потрібно один раз підключити професійний Instagram-профіль через Facebook.
+                                @endif
+                            </p>
+                        </div>
+                        <a href="{{ route('admin.instagram.auth') }}" class="btn btn-primary">
+                            {{ $instagramConnected ? 'Перепідключити Instagram' : 'Підключити Instagram' }}
+                        </a>
+                    </div>
+                </div>
+
                 <application-configs-page-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
