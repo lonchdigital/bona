@@ -7,7 +7,6 @@ use App\Models\HomePageConfig;
 use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Currency\CurrencyService;
 use App\Services\HomePage\HomePageService;
-use App\Services\Work\WorkService;
 use App\Support\LastModified;
 
 class ShowHomePageAction extends BaseAction
@@ -16,7 +15,6 @@ class ShowHomePageAction extends BaseAction
         HomePageService $homePageService,
         CurrencyService $currencyService,
         BlogArticleService $blogArticleService,
-        WorkService $workService,
     ) {
         /*
          * Absent on a fresh install, and the page read straight through it —
@@ -35,9 +33,9 @@ class ShowHomePageAction extends BaseAction
             'brands' => $homePageService->getHomePageBrands(), // get selected brands for homepage
             'catalogCards' => $homePageService->getHomePageCatalogCards(json_decode($config->product_types ?? '[]', true)),
             'styleSection' => $homePageService->getHomePageStyleSection(),
+            'homeSections' => $homePageService->getHomePageContentSections(),
             'specificProductTypes' => $homePageService->getSpecificProductTypes(),
             'homePopularProducts' => $homePageService->getHomePagePopularProducts(),
-            'homeWorks' => $workService->getFeaturedWorks(),
             'homeTestimonials' => $homePageService->getHomePageTestimonials(),
             'faqs' => $homePageService->getHomePageFaqs(),
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),

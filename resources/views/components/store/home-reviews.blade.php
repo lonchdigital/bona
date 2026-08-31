@@ -1,21 +1,29 @@
-@props(['testimonials'])
+@props(['testimonials', 'section' => []])
 
-@if(count($testimonials) > 0)
-    @php
-        $googleReviewsUrl = config('organization.map_url');
-    @endphp
+@php
+    $localized = static function ($value) {
+        if (! is_array($value)) {
+            return trim((string) $value);
+        }
 
+        return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+    };
+    $googleReviewsUrl = trim((string) ($section['link_url'] ?? ''));
+    $sectionTitle = $localized($section['title'] ?? []) ?: trans('base.client_testimonials');
+@endphp
+
+@if(($section['enabled'] ?? true) && count($testimonials) > 0)
     <section class="bona-reviews" aria-labelledby="home-reviews-title">
         <div class="bona-shell">
             <header class="bona-section-heading bona-section-heading--split">
                 <div>
-                    <p class="bona-kicker">Google Maps</p>
-                    <h2 id="home-reviews-title">{{ trans('base.client_testimonials') }}</h2>
+                    <p class="bona-kicker">{{ $localized($section['kicker'] ?? []) }}</p>
+                    <h2 id="home-reviews-title">{{ $sectionTitle }}</h2>
                 </div>
 
                 <div class="bona-section-heading__actions">
                     @if(count($testimonials) > 1)
-                        <div class="bona-slider-nav" aria-label="{{ trans('base.client_testimonials') }}">
+                        <div class="bona-slider-nav" aria-label="{{ $sectionTitle }}">
                             <button class="bona-slider-nav__button bona-reviews__nav--prev" type="button" aria-label="{{ trans('base.previous_reviews') }}">
                                 <span aria-hidden="true">&#8592;</span>
                             </button>
@@ -25,9 +33,9 @@
                         </div>
                     @endif
 
-                    @if($googleReviewsUrl)
+                    @if($googleReviewsUrl && $localized($section['link_label'] ?? []))
                         <a class="bona-outline-link" href="{{ $googleReviewsUrl }}" target="_blank" rel="noopener noreferrer nofollow">
-                            {{ trans('base.google_reviews') }}
+                            {{ $localized($section['link_label']) }}
                         </a>
                     @endif
                 </div>

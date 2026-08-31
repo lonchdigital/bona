@@ -17,6 +17,7 @@ class HomePageConfig extends Model
 
     protected $casts = [
         'style_section' => 'array',
+        'content_sections' => 'array',
     ];
 
     public function productField()

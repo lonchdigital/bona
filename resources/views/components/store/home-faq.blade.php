@@ -1,6 +1,16 @@
-@props(['faqs'])
+@props(['faqs', 'section' => []])
 
-@if(count($faqs) > 0)
+@php
+    $localized = static function ($value) {
+        if (! is_array($value)) {
+            return trim((string) $value);
+        }
+
+        return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+    };
+@endphp
+
+@if(($section['enabled'] ?? true) && count($faqs) > 0)
     @php
         $homeFaqSchema = [
             '@context' => 'https://schema.org',
@@ -21,8 +31,8 @@
     <section class="bona-faq-section" aria-labelledby="home-faq-title">
         <div class="bona-shell">
             <header class="bona-section-heading">
-                <p class="bona-kicker">{{ trans('base.faqs_subtitle') }}</p>
-                <h2 id="home-faq-title">{{ trans('base.faqs') }}</h2>
+                <p class="bona-kicker">{{ $localized($section['kicker'] ?? []) }}</p>
+                <h2 id="home-faq-title">{{ $localized($section['title'] ?? []) }}</h2>
             </header>
 
             <div class="bona-faq">

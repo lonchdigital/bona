@@ -1,17 +1,17 @@
 
-// Get the header
-var header = document.getElementById("form-header");
-var sticky = 131;
+const sticky = 131;
 
 function stickyHeaderFunction() {
-    if (window.pageYOffset > sticky) {
-        header.classList.add("sticky");
-    } else {
-        header.classList.remove("sticky");
+    const header = document.getElementById("form-header");
+
+    if (!header) {
+        return;
     }
+
+    header.classList.toggle("sticky", window.pageYOffset > sticky);
 }
 
-window.onscroll = function() {stickyHeaderFunction()};
+window.addEventListener("scroll", stickyHeaderFunction, {passive: true});
 
 
 // handle sidebar menu
@@ -61,4 +61,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-

@@ -1,9 +1,22 @@
-@props(['feed' => null])
+@props(['feed' => null, 'section' => []])
 
+@php
+    $localized = static function ($value) {
+        if (! is_array($value)) {
+            return trim((string) $value);
+        }
+
+        return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+    };
+    $sectionTitle = $localized($section['title'] ?? []) ?: trans('base.we_are_in_instagram');
+    $instagramUrl = trim((string) ($section['link_url'] ?? '')) ?: 'https://www.instagram.com/bona_doors/';
+@endphp
+
+@if($section['enabled'] ?? true)
 <section class="bona-instagram" aria-labelledby="instagram-title">
     <header class="bona-section-heading">
-        <p class="bona-kicker">@bona_doors</p>
-        <h2 id="instagram-title">{{ trans('base.we_are_in_instagram') }}</h2>
+        <p class="bona-kicker">{{ $localized($section['kicker'] ?? []) }}</p>
+        <h2 id="instagram-title">{{ $sectionTitle }}</h2>
     </header>
 
     @if(is_array($feed) && count($feed) > 0)
@@ -15,7 +28,7 @@
                         href="{{ $instagramItem['permalink'] }}"
                         target="_blank"
                         rel="noopener noreferrer nofollow"
-                        aria-label="{{ trans('base.we_are_in_instagram') }}: {{ \Illuminate\Support\Str::limit($instagramItem['caption'] ?: '@bona_doors', 90) }}"
+                        aria-label="{{ $sectionTitle }}: {{ \Illuminate\Support\Str::limit($instagramItem['caption'] ?: '@bona_doors', 90) }}"
                     >
                         <img
                             src="{{ $instagramItem['image_url'] }}"
@@ -42,14 +55,16 @@
                 <span aria-hidden="true">←</span>
             </button>
         @endif
-        <a
-            href="https://www.instagram.com/bona_doors/"
-            class="bona-instagram__button"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-        >
-            {{ trans('base.subscribe') }} на @bona_doors
-        </a>
+        @if($localized($section['link_label'] ?? []))
+            <a
+                href="{{ $instagramUrl }}"
+                class="bona-instagram__button"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                {{ $localized($section['link_label']) }}
+            </a>
+        @endif
         @if(is_array($feed) && count($feed) > 1)
             <button class="bona-instagram__nav bona-instagram__nav--next" type="button" aria-label="Наступні публікації">
                 <span aria-hidden="true">→</span>
@@ -57,3 +72,4 @@
         @endif
     </div>
 </section>
+@endif

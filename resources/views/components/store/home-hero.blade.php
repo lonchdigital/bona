@@ -1,12 +1,25 @@
 @props([
     'slides',
+    'section' => [],
 ])
 
 @php
     $heroSlides = $slides->values();
     $slideCount = max(1, $heroSlides->count());
+    $localized = static function ($value) {
+        if (! is_array($value)) {
+            return trim((string) $value);
+        }
+
+        return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+    };
+    $eyebrow = $localized($section['eyebrow'] ?? []) ?: trans('base.storefront_showroom');
+    $secondaryLabel = $localized($section['secondary_label'] ?? []) ?: trans('base.services');
+    $secondaryUrl = trim((string) ($section['secondary_url'] ?? ''))
+        ?: App\Helpers\MultiLangRoute::getMultiLangRoute('store.services');
 @endphp
 
+@if($section['enabled'] ?? true)
 <section class="bona-hero" aria-roledescription="carousel" aria-label="{{ trans('base.storefront_hero') }}" data-home-hero>
     @forelse($heroSlides as $slide)
         @php
@@ -28,7 +41,7 @@
             </picture>
             <div class="bona-shell bona-hero__content">
                 <div class="bona-hero__copy">
-                    <div class="bona-hero__eyebrow"><span></span>{{ trans('base.storefront_showroom') }}</div>
+                    <div class="bona-hero__eyebrow"><span></span>{{ $eyebrow }}</div>
                     @if($loop->first)
                         <h1>{{ $heading ?: trans('base.home_h1') }}</h1>
                     @elseif($heading)
@@ -44,7 +57,9 @@
                             @else
                                 <a class="bona-button bona-button--light" href="{{ $targetUrl }}">{{ $buttonText }}</a>
                             @endif
-                            <a class="bona-button bona-button--ghost" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{ trans('base.services') }}</a>
+                            @if($secondaryLabel)
+                                <a class="bona-button bona-button--ghost" href="{{ $secondaryUrl }}">{{ $secondaryLabel }}</a>
+                            @endif
                         </div>
                     @endif
                 </div>
@@ -54,12 +69,14 @@
         <article class="bona-hero__slide bona-hero__slide--empty is-active" aria-hidden="false" data-hero-slide>
             <div class="bona-shell bona-hero__content">
                 <div class="bona-hero__copy">
-                    <div class="bona-hero__eyebrow"><span></span>{{ trans('base.storefront_showroom') }}</div>
+                    <div class="bona-hero__eyebrow"><span></span>{{ $eyebrow }}</div>
                     <h1>{{ trans('base.home_h1') }}</h1>
                     <p class="bona-hero__description">{{ trans('base.storefront_hero_fallback') }}</p>
                     <div class="bona-hero__actions">
                         <a class="bona-button bona-button--light" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}">{{ trans('base.storefront_choose_doors') }}</a>
-                        <a class="bona-button bona-button--ghost" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{ trans('base.services') }}</a>
+                        @if($secondaryLabel)
+                            <a class="bona-button bona-button--ghost" href="{{ $secondaryUrl }}">{{ $secondaryLabel }}</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -89,3 +106,4 @@
         </div>
     @endif
 </section>
+@endif

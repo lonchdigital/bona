@@ -38,15 +38,26 @@
 
 @section('content')
 
-    <x-store.home-hero :slides="$slides" />
+    @php
+        $homeSectionText = static function ($value) {
+            if (! is_array($value)) {
+                return trim((string) $value);
+            }
+
+            return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+        };
+        $catalogSection = $homeSections['catalog'] ?? [];
+    @endphp
+
+    <x-store.home-hero :slides="$slides" :section="$homeSections['hero'] ?? []" />
     <x-store.call-consultation-modal :options="$applicationGlobalOptions" />
 
-    @if( count($catalogCards) > 0 )
+    @if(($catalogSection['enabled'] ?? true) && count($catalogCards) > 0)
         <section class="bona-categories" aria-labelledby="products-by-type-title">
             <div class="bona-shell">
                 <header class="bona-section-heading">
-                    <p class="bona-kicker">{{ trans('base.storefront_catalog_kicker') }}</p>
-                    <h2 id="products-by-type-title">{{ trans('base.products_by_type') }}</h2>
+                    <p class="bona-kicker">{{ $homeSectionText($catalogSection['kicker'] ?? []) }}</p>
+                    <h2 id="products-by-type-title">{{ $homeSectionText($catalogSection['title'] ?? []) }}</h2>
                 </header>
 
                 <div class="bona-categories__grid">
@@ -80,19 +91,19 @@
 
     <x-store.home-style-selector :section="$styleSection" />
 
-    <x-store.home-popular-products :products="$homePopularProducts" :base-currency="$baseCurrency" />
-    <x-store.home-numbers />
-    <x-store.home-ideas />
-    <x-store.home-steps />
-    <x-store.home-works :works="$homeWorks" />
+    <x-store.home-popular-products :products="$homePopularProducts" :base-currency="$baseCurrency" :section="$homeSections['popular'] ?? []" />
+    <x-store.home-numbers :section="$homeSections['numbers'] ?? []" />
+    <x-store.home-ideas :section="$homeSections['ideas'] ?? []" />
+    <x-store.home-steps :section="$homeSections['steps'] ?? []" />
+    <x-store.home-works :section="$homeSections['works'] ?? []" />
 
-    <x-store.home-reviews :testimonials="$homeTestimonials" />
-    <x-store.home-instagram :feed="$instagramFeed" />
-    <x-store.home-blog :articles="$articles" />
-    <x-store.home-faq :faqs="$faqs" />
-    <x-store.home-partners :brands="$brands" />
+    <x-store.home-reviews :testimonials="$homeTestimonials" :section="$homeSections['reviews'] ?? []" />
+    <x-store.home-instagram :feed="$instagramFeed" :section="$homeSections['instagram'] ?? []" />
+    <x-store.home-blog :articles="$articles" :section="$homeSections['blog'] ?? []" />
+    <x-store.home-faq :faqs="$faqs" :section="$homeSections['faq'] ?? []" />
+    <x-store.home-partners :brands="$brands" :section="$homeSections['partners'] ?? []" />
 
-    @if($seoText)
+    @if(($homeSections['seo']['enabled'] ?? true) && $seoText)
     <!-- ======================== SEO ======================== -->
     <section class="seo-section pt-none11">
         <div class="container">

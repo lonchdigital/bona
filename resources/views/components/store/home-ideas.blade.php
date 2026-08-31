@@ -1,29 +1,34 @@
+@props(['section' => []])
+
 @php
-    $ideas = [
-        ['image' => 'bedroom', 'title' => trans('base.home_idea_bedroom_title'), 'text' => trans('base.home_idea_bedroom_text')],
-        ['image' => 'living', 'title' => trans('base.home_idea_living_title'), 'text' => trans('base.home_idea_living_text')],
-        ['image' => 'hall', 'title' => trans('base.home_idea_hall_title'), 'text' => trans('base.home_idea_hall_text')],
-    ];
+    $localized = static function ($value) {
+        if (! is_array($value)) {
+            return trim((string) $value);
+        }
+
+        return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+    };
+    $ideas = collect($section['items'] ?? [])->filter(fn ($item) => filled($item['image_url'] ?? null))->sortBy('sort_order')->values();
 @endphp
 
-<section class="bona-ideas" aria-labelledby="home-ideas-title">
-    <div class="bona-shell">
-        <header class="bona-section-heading">
-            <p class="bona-kicker">{{ trans('base.home_ideas_kicker') }}</p>
-            <h2 id="home-ideas-title">{{ trans('base.home_ideas_title') }}</h2>
-        </header>
-        <div class="bona-ideas__grid">
-            @foreach($ideas as $idea)
-                <article class="bona-idea-card">
-                    <span
-                        class="bona-idea-card__image bona-idea-card__image--{{ $idea['image'] }}"
-                        role="img"
-                        aria-label="{{ $idea['title'] }}"
-                    ></span>
-                    <h3>{{ $idea['title'] }}</h3>
-                    <p>{{ $idea['text'] }}</p>
-                </article>
-            @endforeach
+@if(($section['enabled'] ?? true) && $ideas->isNotEmpty())
+    <section class="bona-ideas" aria-labelledby="home-ideas-title">
+        <div class="bona-shell">
+            <header class="bona-section-heading">
+                <p class="bona-kicker">{{ $localized($section['kicker'] ?? []) }}</p>
+                <h2 id="home-ideas-title">{{ $localized($section['title'] ?? []) }}</h2>
+            </header>
+            <div class="bona-ideas__grid">
+                @foreach($ideas as $idea)
+                    <article class="bona-idea-card">
+                        <span class="bona-idea-card__image">
+                            <img src="{{ $idea['image_url'] }}" alt="{{ $localized($idea['title'] ?? []) }}" loading="lazy" decoding="async">
+                        </span>
+                        <h3>{{ $localized($idea['title'] ?? []) }}</h3>
+                        <p>{{ $localized($idea['text'] ?? []) }}</p>
+                    </article>
+                @endforeach
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+@endif

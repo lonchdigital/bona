@@ -1,16 +1,30 @@
-@props(['articles'])
+@props(['articles', 'section' => []])
 
-@if(count($articles) > 0)
+@php
+    $localized = static function ($value) {
+        if (! is_array($value)) {
+            return trim((string) $value);
+        }
+
+        return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+    };
+    $blogUrl = trim((string) ($section['link_url'] ?? ''))
+        ?: App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page');
+@endphp
+
+@if(($section['enabled'] ?? true) && count($articles) > 0)
     <section class="bona-blog" aria-labelledby="home-blog-title">
         <div class="bona-shell">
             <header class="bona-section-heading bona-section-heading--split">
                 <div>
-                    <p class="bona-kicker">{{ trans('base.blog_latest') }}</p>
-                    <h2 id="home-blog-title">{{ trans('base.blog') }}</h2>
+                    <p class="bona-kicker">{{ $localized($section['kicker'] ?? []) }}</p>
+                    <h2 id="home-blog-title">{{ $localized($section['title'] ?? []) }}</h2>
                 </div>
-                <a class="bona-text-link" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">
-                    {{ trans('base.blog_all') }} <span aria-hidden="true">&#8594;</span>
-                </a>
+                @if($localized($section['link_label'] ?? []))
+                    <a class="bona-text-link" href="{{ $blogUrl }}">
+                        {{ $localized($section['link_label']) }} <span aria-hidden="true">&#8594;</span>
+                    </a>
+                @endif
             </header>
 
             <div class="bona-blog__grid">

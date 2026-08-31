@@ -1,15 +1,22 @@
-@props(['brands'])
+@props(['brands', 'section' => []])
 
 @php
     $partnerBrands = $brands->pluck('brand')->filter();
+    $localized = static function ($value) {
+        if (! is_array($value)) {
+            return trim((string) $value);
+        }
+
+        return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
+    };
 @endphp
 
-@if($partnerBrands->isNotEmpty())
+@if(($section['enabled'] ?? true) && $partnerBrands->isNotEmpty())
     <section class="bona-partners" aria-labelledby="home-partners-title">
         <div class="bona-shell">
             <header class="bona-section-heading">
-                <p class="bona-kicker">{{ trans('base.partners_kicker') }}</p>
-                <h2 id="home-partners-title">{{ trans('base.our_partners') }}</h2>
+                <p class="bona-kicker">{{ $localized($section['kicker'] ?? []) }}</p>
+                <h2 id="home-partners-title">{{ $localized($section['title'] ?? []) }}</h2>
             </header>
 
             <div class="bona-partners__grid">

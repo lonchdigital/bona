@@ -15,8 +15,6 @@ use Illuminate\Support\Str;
 use function config;
 use function trans;
 
-// remove
-
 class WorkService extends BaseService
 {
     public const WORK_IMAGES_FOLDER = 'work-images';
@@ -38,15 +36,6 @@ class WorkService extends BaseService
             ->orderBy('sort_order')
             ->orderByDesc('id')
             ->paginate(config('domain.works_per_page'));
-    }
-
-    public function getFeaturedWorks(int $count = 3): Collection
-    {
-        return Work::published()
-            ->orderBy('sort_order')
-            ->orderByDesc('id')
-            ->limit($count)
-            ->get();
     }
 
     public function getOtherWorks(Work $work, int $count = 3)

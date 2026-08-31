@@ -23,6 +23,7 @@ use App\Services\HomePage\DTO\HomePageEditDTO;
 use App\Services\Instagram\InstagramFeedService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
@@ -32,6 +33,17 @@ class HomePageService extends BaseService
 
     const STYLE_IMAGES_FOLDER = 'home-page-style-images';
 
+    const CONTENT_IMAGES_FOLDER = 'home-page-content-images';
+
+    private const CONTENT_IMAGE_ASSETS = [
+        'bedroom' => 'bona-html/img/interior-bedroom.jpg',
+        'living' => 'bona-html/img/interior-living.jpg',
+        'hall' => 'bona-html/img/interior-hall.jpg',
+        'apartment' => 'bona-html/img/interior-apartment.jpg',
+        'house' => 'bona-html/img/interior-house.jpg',
+        'office' => 'bona-html/img/interior-office.jpg',
+    ];
+
     public function editHomePage(HomePageEditDTO $request): ServiceActionResult
     {
         //        dd($request->slides);
@@ -39,6 +51,10 @@ class HomePageService extends BaseService
 
             $homePageConfig = $this->getHomePageConfig();
             $styleSection = $this->syncStyleSection($request->styleSection, $homePageConfig?->style_section ?? []);
+            $contentSections = $this->syncContentSections(
+                $request->contentSections,
+                $homePageConfig?->content_sections ?? [],
+            );
             $dataToUpdate = [
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
@@ -46,6 +62,7 @@ class HomePageService extends BaseService
                 'meta_tags' => $request->metaTags,
                 'product_types' => json_encode($request->selectedProductTypes ?? []),
                 'style_section' => $styleSection,
+                'content_sections' => $contentSections,
             ];
 
             if ($homePageConfig) {
@@ -183,6 +200,321 @@ class HomePageService extends BaseService
         })->sortBy('sort_order')->values()->all();
 
         return $section;
+    }
+
+    /**
+     * Existing installations receive the reference copy as a non-destructive
+     * default. Once the homepage editor is saved, this JSON configuration is
+     * the source of truth for every redesigned content section.
+     */
+    public function getHomePageContentSections(): array
+    {
+        $defaults = $this->defaultContentSections();
+        $stored = $this->getHomePageConfig()?->content_sections ?? [];
+
+        return collect($defaults)->mapWithKeys(function (array $defaultSection, string $sectionKey) use ($stored) {
+            $storedSection = is_array($stored[$sectionKey] ?? null) ? $stored[$sectionKey] : [];
+            $defaultItems = $defaultSection['items'] ?? null;
+            $storedHasItems = array_key_exists('items', $storedSection);
+
+            unset($defaultSection['items'], $storedSection['items']);
+            $section = array_replace_recursive($defaultSection, $storedSection);
+
+            if ($defaultItems !== null) {
+                $section['items'] = $storedHasItems
+                    ? (is_array($stored[$sectionKey]['items']) ? $stored[$sectionKey]['items'] : [])
+                    : $defaultItems;
+            }
+
+            if (in_array($sectionKey, ['ideas', 'works'], true)) {
+                $section['items'] = collect($section['items'] ?? [])->map(function (array $item) {
+                    $item['image_url'] = $this->contentImageUrl($item);
+
+                    return $item;
+                })->sortBy('sort_order')->values()->all();
+            }
+
+            return [$sectionKey => $section];
+        })->all();
+    }
+
+    private function syncContentSections(?array $submittedSections, array $existingSections): array
+    {
+        if ($submittedSections === null) {
+            return $existingSections;
+        }
+
+        $result = [];
+
+        foreach ($this->defaultContentSections() as $sectionKey => $defaultSection) {
+            $submitted = is_array($submittedSections[$sectionKey] ?? null)
+                ? $submittedSections[$sectionKey]
+                : null;
+
+            if ($submitted === null) {
+                $result[$sectionKey] = $existingSections[$sectionKey] ?? $defaultSection;
+
+                continue;
+            }
+
+            $section = [
+                'enabled' => (bool) ($submitted['enabled'] ?? false),
+            ];
+
+            foreach ($this->contentSectionTranslationFields($sectionKey) as $field) {
+                $section[$field] = $this->normalizeTranslations($submitted[$field] ?? []);
+            }
+
+            foreach ($this->contentSectionScalarFields($sectionKey) as $field) {
+                $section[$field] = trim((string) ($submitted[$field] ?? ''));
+            }
+
+            $section['items'] = match ($sectionKey) {
+                'numbers' => $this->normalizeNumberItems($submitted['items'] ?? []),
+                'steps' => $this->normalizeStepItems($submitted['items'] ?? []),
+                'ideas', 'works' => $this->syncVisualItems(
+                    $sectionKey,
+                    $submitted['items'] ?? [],
+                    $existingSections[$sectionKey]['items'] ?? [],
+                ),
+                default => null,
+            };
+
+            if ($section['items'] === null) {
+                unset($section['items']);
+            }
+
+            $result[$sectionKey] = $section;
+        }
+
+        return $result;
+    }
+
+    private function normalizeNumberItems(array $items): array
+    {
+        return collect($items)->map(fn (array $item, int $index) => [
+            'value' => trim((string) ($item['value'] ?? '')),
+            'label' => $this->normalizeTranslations($item['label'] ?? []),
+            'sort_order' => $index,
+        ])->filter(fn (array $item) => $item['value'] !== ''
+            || collect($item['label'])->contains(fn ($label) => filled($label)))
+            ->values()
+            ->all();
+    }
+
+    private function normalizeStepItems(array $items): array
+    {
+        return collect($items)->map(fn (array $item, int $index) => [
+            'number' => trim((string) ($item['number'] ?? str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT))),
+            'title' => $this->normalizeTranslations($item['title'] ?? []),
+            'text' => $this->normalizeTranslations($item['text'] ?? []),
+            'sort_order' => $index,
+        ])->filter(fn (array $item) => collect($item['title'])->contains(fn ($title) => filled($title)))
+            ->values()
+            ->all();
+    }
+
+    private function syncVisualItems(string $sectionKey, array $items, array $existingItems): array
+    {
+        $existingImagePaths = collect($existingItems)->pluck('image_path')->filter()->values();
+        $allowedDefaults = $sectionKey === 'ideas'
+            ? collect(['bedroom', 'living', 'hall'])
+            : collect(['apartment', 'house', 'office']);
+
+        $normalized = collect($items)->map(function (array $item, int $index) use ($existingImagePaths, $allowedDefaults) {
+            $existingPath = trim((string) ($item['existing_image_path'] ?? ''));
+            $imagePath = $existingImagePaths->contains($existingPath) ? $existingPath : null;
+            $defaultImage = $allowedDefaults->contains($item['default_image'] ?? null)
+                ? $item['default_image']
+                : null;
+
+            if ((bool) ($item['image_deleted'] ?? false)) {
+                $imagePath = null;
+                $defaultImage = null;
+            }
+
+            if (isset($item['image'])) {
+                $imageBasePath = self::CONTENT_IMAGES_FOLDER.'/'.Str::uuid();
+                $this->storeImage($imageBasePath, $item['image'], 'webp', 82);
+                $this->storeImage($imageBasePath, $item['image'], 'jpg', 86);
+                $imagePath = $imageBasePath.'.webp';
+                $defaultImage = null;
+            }
+
+            return [
+                'title' => $this->normalizeTranslations($item['title'] ?? []),
+                'text' => $this->normalizeTranslations($item['text'] ?? []),
+                'url' => trim((string) ($item['url'] ?? '')),
+                'image_path' => $imagePath,
+                'default_image' => $defaultImage,
+                'sort_order' => $index,
+            ];
+        })->filter(fn (array $item) => ($item['image_path'] || $item['default_image'])
+            && collect($item['title'])->contains(fn ($title) => filled($title)))
+            ->values();
+
+        $retainedImagePaths = $normalized->pluck('image_path')->filter();
+        $existingImagePaths->diff($retainedImagePaths)->each(fn (string $path) => $this->deleteImage($path));
+
+        return $normalized->all();
+    }
+
+    private function contentImageUrl(array $item): ?string
+    {
+        if (filled($item['image_path'] ?? null)) {
+            return Storage::url($item['image_path']);
+        }
+
+        $asset = self::CONTENT_IMAGE_ASSETS[$item['default_image'] ?? ''] ?? null;
+
+        return $asset ? Vite::asset($asset) : null;
+    }
+
+    private function contentSectionTranslationFields(string $sectionKey): array
+    {
+        return match ($sectionKey) {
+            'hero' => ['eyebrow', 'secondary_label'],
+            'catalog', 'numbers', 'ideas', 'faq', 'partners' => ['kicker', 'title'],
+            'popular', 'works', 'reviews', 'instagram', 'blog' => ['kicker', 'title', 'link_label'],
+            'steps' => ['kicker', 'title', 'cta_label'],
+            default => [],
+        };
+    }
+
+    private function contentSectionScalarFields(string $sectionKey): array
+    {
+        return match ($sectionKey) {
+            'hero' => ['secondary_url'],
+            'popular', 'works', 'reviews', 'instagram', 'blog' => ['link_url'],
+            'steps' => ['cta_url'],
+            default => [],
+        };
+    }
+
+    private function defaultContentSections(): array
+    {
+        return [
+            'hero' => [
+                'enabled' => true,
+                'eyebrow' => $this->translations('base.storefront_showroom'),
+                'secondary_label' => $this->translations('base.services'),
+                'secondary_url' => '',
+            ],
+            'catalog' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.storefront_catalog_kicker'),
+                'title' => $this->translations('base.products_by_type'),
+            ],
+            'popular' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.home_popular_kicker'),
+                'title' => $this->translations('base.home_popular_title'),
+                'link_label' => $this->translations('base.home_all_models'),
+                'link_url' => '',
+            ],
+            'numbers' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.home_numbers_kicker'),
+                'title' => $this->translations('base.home_numbers_title'),
+                'items' => [
+                    ['value' => '15', 'label' => $this->translations('base.home_numbers_years'), 'sort_order' => 0],
+                    ['value' => '2', 'label' => $this->translations('base.home_numbers_showrooms'), 'sort_order' => 1],
+                    ['value' => '3 500+', 'label' => $this->translations('base.home_numbers_installed'), 'sort_order' => 2],
+                ],
+            ],
+            'ideas' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.home_ideas_kicker'),
+                'title' => $this->translations('base.home_ideas_title'),
+                'items' => [
+                    $this->defaultVisualItem('bedroom', 'base.home_idea_bedroom_title', 'base.home_idea_bedroom_text', 0),
+                    $this->defaultVisualItem('living', 'base.home_idea_living_title', 'base.home_idea_living_text', 1),
+                    $this->defaultVisualItem('hall', 'base.home_idea_hall_title', 'base.home_idea_hall_text', 2),
+                ],
+            ],
+            'steps' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.home_steps_kicker'),
+                'title' => $this->translations('base.home_steps_title'),
+                'cta_label' => $this->translations('base.call_measurer'),
+                'cta_url' => '#dialog-call-measurer',
+                'items' => collect(range(1, 6))->map(fn (int $number) => [
+                    'number' => str_pad((string) $number, 2, '0', STR_PAD_LEFT),
+                    'title' => $this->translations("base.home_step_{$number}_title"),
+                    'text' => $this->translations("base.home_step_{$number}_text"),
+                    'sort_order' => $number - 1,
+                ])->all(),
+            ],
+            'works' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.home_works_kicker'),
+                'title' => $this->translations('base.our_works'),
+                'link_label' => $this->translations('base.home_all_projects'),
+                'link_url' => '',
+                'items' => [
+                    $this->defaultVisualItem('apartment', 'base.home_work_apartment_title', 'base.home_work_apartment_text', 0),
+                    $this->defaultVisualItem('house', 'base.home_work_house_title', 'base.home_work_house_text', 1),
+                    $this->defaultVisualItem('office', 'base.home_work_office_title', 'base.home_work_office_text', 2),
+                ],
+            ],
+            'reviews' => [
+                'enabled' => true,
+                'kicker' => ['uk' => 'Google Maps', 'ru' => 'Google Maps'],
+                'title' => $this->translations('base.client_testimonials'),
+                'link_label' => $this->translations('base.google_reviews'),
+                'link_url' => (string) config('organization.map_url', ''),
+            ],
+            'instagram' => [
+                'enabled' => true,
+                'kicker' => ['uk' => '@bona_doors', 'ru' => '@bona_doors'],
+                'title' => $this->translations('base.we_are_in_instagram'),
+                'link_label' => [
+                    'uk' => trans('base.subscribe', [], 'uk').' на @bona_doors',
+                    'ru' => trans('base.subscribe', [], 'ru').' на @bona_doors',
+                ],
+                'link_url' => 'https://www.instagram.com/bona_doors/',
+            ],
+            'blog' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.blog_latest'),
+                'title' => $this->translations('base.blog'),
+                'link_label' => $this->translations('base.blog_all'),
+                'link_url' => '',
+            ],
+            'faq' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.faqs_subtitle'),
+                'title' => $this->translations('base.faqs'),
+            ],
+            'partners' => [
+                'enabled' => true,
+                'kicker' => $this->translations('base.partners_kicker'),
+                'title' => $this->translations('base.our_partners'),
+            ],
+            'seo' => [
+                'enabled' => true,
+            ],
+        ];
+    }
+
+    private function defaultVisualItem(string $image, string $titleKey, string $textKey, int $sortOrder): array
+    {
+        return [
+            'title' => $this->translations($titleKey),
+            'text' => $this->translations($textKey),
+            'url' => '',
+            'image_path' => null,
+            'default_image' => $image,
+            'sort_order' => $sortOrder,
+        ];
+    }
+
+    private function translations(string $key): array
+    {
+        return [
+            'uk' => trans($key, [], 'uk'),
+            'ru' => trans($key, [], 'ru'),
+        ];
     }
 
     private function syncNewProducts(?array $productsId): void

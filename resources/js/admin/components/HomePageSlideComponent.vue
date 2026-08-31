@@ -1,5 +1,4 @@
 <script>
-import axios from "axios";
 import MultiLanguageInputComponent from "./MultiLanguageInputComponent.vue";
 // import CheckBoxComponent from "./CheckBoxComponent";
 

@@ -14,6 +14,7 @@ class HomePageEditDTO implements BaseDTO
         public readonly ?array $slides,
         public readonly ?array $selectedProductTypes,
         public readonly ?array $styleSection,
+        public readonly ?array $contentSections,
         public readonly ?array $selectedProductsId,
         public readonly ?array $selectedBestSalesProductsId,
         public readonly ?array $selectedBrandsId,
