@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Brand;
+use App\Models\Product;
+use App\Models\ProductType;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
@@ -61,5 +64,66 @@ class HomePageRedesignSectionsTest extends TestCase
         $this->assertStringContainsString('FAQPage', $html);
         $this->assertStringContainsString('Тестове запитання?', $html);
         $this->assertStringNotContainsString('accordion-faqs', $html);
+    }
+
+    public function test_popular_products_render_real_catalog_data_in_the_new_slider(): void
+    {
+        $product = new Product([
+            'name' => ['uk' => 'Тестові двері', 'ru' => 'Тестовые двери'],
+            'slug' => 'test-door',
+            'price' => 12500,
+            'main_image_path' => 'products/test.webp',
+            'availability_status_id' => 2,
+        ]);
+        $product->setRelation('brand', new Brand(['name' => ['uk' => 'Bona', 'ru' => 'Bona']]));
+        $product->setRelation('productType', new ProductType([
+            'name' => ['uk' => 'Вхідні двері', 'ru' => 'Входные двери'],
+        ]));
+        $product->setRelation('colors', collect());
+
+        $html = view('components.store.home-popular-products', [
+            'products' => collect([$product]),
+            'baseCurrency' => (object) ['name_short' => 'грн'],
+        ])->render();
+
+        $this->assertStringContainsString('data-popular-slider', $html);
+        $this->assertStringContainsString('bona-product-card', $html);
+        $this->assertStringContainsString('Тестові двері', $html);
+        $this->assertStringContainsString('12 500', $html);
+    }
+
+    public function test_reference_sections_are_composed_in_the_expected_order(): void
+    {
+        $source = file_get_contents(resource_path('views/pages/store/home.blade.php'));
+        $components = [
+            'home-hero',
+            'bona-categories',
+            'home-style-selector',
+            'home-popular-products',
+            'home-numbers',
+            'home-ideas',
+            'home-steps',
+            'home-works',
+            'home-reviews',
+            'home-instagram',
+            'home-blog',
+            'home-faq',
+            'home-partners',
+            'seo-section',
+        ];
+
+        $positions = collect($components)->map(fn (string $component) => strpos($source, $component));
+
+        $this->assertNotContains(false, $positions->all());
+        $this->assertSame($positions->sort()->values()->all(), $positions->values()->all());
+    }
+
+    public function test_layout_uses_only_the_redesigned_footer_markup(): void
+    {
+        $source = file_get_contents(resource_path('views/layouts/store-main.blade.php'));
+
+        $this->assertStringContainsString('x-store.site-footer', $source);
+        $this->assertStringNotContainsString('art-site-footer', $source);
+        $this->assertStringNotContainsString('footer-content-left', $source);
     }
 }

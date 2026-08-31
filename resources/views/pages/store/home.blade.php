@@ -80,60 +80,11 @@
 
     <x-store.home-style-selector :section="$styleSection" />
 
-
-    @if(count($homeNewProducts))
-        <!-- ======================== New Products  ======================== -->
-        <section class="products">
-            <div class="container">
-
-                <div class="art-products-slider-wrapper art-carousel">
-                    <div class="swiper art-products-owl-items art-new-products art-big-wrapper art-swiper-common">
-                        <div class="swiper-wrapper">
-                        @foreach($homeNewProducts as $product)
-                            <div class="swiper-slide">
-                                @include('pages.store.partials.product_item', ['product' => $product->product, 'baseCurrency' => $baseCurrency])
-                            </div>
-                        @endforeach
-                        </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
-                </div> <!--/row-->
-
-            </div> <!--/container-->
-        </section>
-    @endif
-
-    @if(count($homeBestSalesProducts))
-        <!-- ======================== Best Sales Products  ======================== -->
-        <section class="products">
-            <div class="container">
-                <header>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <h2 class="title h2">{{trans('base.best_sales')}}</h2>
-                            <div class="subtitle font-two">
-                                <p>Check out our latest collections</p>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                <div class="art-products-slider-wrapper art-carousel">
-                    <div class="swiper art-products-owl-items art-best-products art-big-wrapper art-swiper-common">
-                        <div class="swiper-wrapper">
-                            @foreach($homeBestSalesProducts as $product)
-                                <div class="swiper-slide">
-                                    @include('pages.store.partials.product_item', ['product' => $product->product, 'baseCurrency' => $baseCurrency])
-                                </div>
-                            @endforeach
-                        </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
-                </div> <!--/row-->
-
-            </div> <!--/container-->
-        </section>
-    @endif
+    <x-store.home-popular-products :products="$homePopularProducts" :base-currency="$baseCurrency" />
+    <x-store.home-numbers />
+    <x-store.home-ideas />
+    <x-store.home-steps />
+    <x-store.home-works :works="$homeWorks" />
 
     <x-store.home-reviews :testimonials="$homeTestimonials" />
     <x-store.home-instagram :feed="$instagramFeed" />

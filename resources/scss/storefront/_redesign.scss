@@ -49,6 +49,17 @@
             color: var(--bona-cream);
         }
     }
+
+    &--dark {
+        background: var(--bona-ink);
+        color: var(--bona-cream);
+
+        &:hover,
+        &:focus-visible {
+            background: var(--bona-gold);
+            color: var(--bona-ink);
+        }
+    }
 }
 
 .bona-site-header {
@@ -1084,6 +1095,586 @@
     }
 }
 
+.bona-popular,
+.bona-ideas,
+.bona-works {
+    padding-top: 110px;
+    color: var(--bona-ink);
+    font-family: var(--bona-ui);
+}
+
+.bona-popular {
+    &__slider {
+        overflow: hidden;
+        padding: 18px 4px 0;
+        margin: -18px -4px 0;
+
+        .swiper-wrapper { align-items: stretch; }
+    }
+
+    &__pagination {
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 26px;
+
+        .swiper-pagination-bullet {
+            width: 34px;
+            height: 2px;
+            margin: 0 !important;
+            border-radius: 0;
+            background: #d8d3c9;
+            opacity: 1;
+            transition: background-color .2s ease, transform .2s ease;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--bona-gold);
+            transform: scaleX(1.08);
+        }
+    }
+}
+
+.bona-product-card {
+    display: flex;
+    height: auto;
+    min-width: 0;
+    flex-direction: column;
+    color: var(--bona-ink);
+
+    &__media {
+        position: relative;
+        height: 360px;
+        overflow: hidden;
+        border-radius: 18px;
+        background: var(--bona-paper);
+
+        > a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform .35s ease;
+        }
+
+        &:hover img { transform: scale(1.025); }
+    }
+
+    &__badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: var(--bona-gold-light);
+        color: var(--bona-ink);
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        pointer-events: none;
+    }
+
+    &__wish {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(35, 32, 27, .12);
+        border-radius: 50%;
+        background: rgba(251, 250, 247, .92);
+        color: var(--bona-ink);
+        cursor: pointer;
+
+        svg { width: 19px; height: 19px; }
+
+        &:hover,
+        &:focus-visible { border-color: var(--bona-gold); color: var(--bona-gold); }
+
+        &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 3px; }
+    }
+
+    &__swatches {
+        display: flex;
+        min-height: 22px;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 6px 0;
+    }
+
+    &__swatch {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fbfaf7;
+        border-radius: 50%;
+        background: var(--bona-swatch);
+        box-shadow: 0 0 0 1px #d9d4ca;
+    }
+
+    &__more { color: var(--bona-muted); font-size: 11px; }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 13px 6px 0;
+
+        h3 {
+            margin: 0;
+            font: 400 23px/1.25 var(--bona-display);
+            letter-spacing: normal;
+            text-transform: none;
+
+            a {
+                color: var(--bona-ink);
+                text-decoration: none;
+
+                &:hover,
+                &:focus-visible { color: var(--bona-gold); text-decoration: none; }
+            }
+        }
+    }
+
+    &__meta {
+        min-height: 15px;
+        margin: 0;
+        color: var(--bona-muted);
+        font-size: 11px;
+        line-height: 1.35;
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: auto;
+        padding: 13px 6px 0;
+    }
+
+    &__price { font-size: 16px; font-weight: 800; }
+
+    &__open {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid var(--bona-ink);
+        border-radius: 50%;
+        color: var(--bona-ink);
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible { background: var(--bona-ink); color: var(--bona-cream); text-decoration: none; }
+
+        &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 3px; }
+        .icon-cart { margin: 0; }
+    }
+}
+
+.bona-numbers {
+    padding-top: 110px;
+    color: var(--bona-cream);
+    font-family: var(--bona-ui);
+
+    &__card {
+        display: grid;
+        grid-template-columns: 1.1fr repeat(3, minmax(0, 1fr));
+        align-items: center;
+        gap: 44px;
+        padding: 64px 60px;
+        border-radius: 24px;
+        background: var(--bona-dark);
+    }
+
+    .bona-kicker { color: var(--bona-gold-light); }
+
+    &__intro h2 {
+        margin: 0;
+        color: var(--bona-cream);
+        font: 400 32px/1.25 var(--bona-display);
+        letter-spacing: normal;
+        text-transform: none;
+    }
+
+    &__item {
+        min-width: 0;
+        padding-left: 36px;
+        border-left: 1px solid rgba(247, 244, 238, .18);
+
+        strong {
+            display: block;
+            color: var(--bona-gold-light);
+            font: 400 56px/1 var(--bona-display);
+        }
+
+        span {
+            display: block;
+            margin-top: 10px;
+            color: rgba(247, 244, 238, .72);
+            font-size: 14px;
+            line-height: 1.45;
+        }
+    }
+}
+
+.bona-ideas__grid,
+.bona-works__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+}
+
+.bona-idea-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    &__image {
+        display: block;
+        width: 100%;
+        height: 420px;
+        overflow: hidden;
+        border-radius: 200px 200px 18px 18px;
+        background-position: center;
+        background-size: cover;
+
+        &--bedroom { background-image: url('../../../bona-html/img/interior-bedroom.jpg'); }
+        &--living { background-image: url('../../../bona-html/img/interior-living.jpg'); }
+        &--hall { background-image: url('../../../bona-html/img/interior-hall.jpg'); }
+    }
+
+    h3 {
+        margin: 18px 0 0;
+        font: 400 24px/1.3 var(--bona-display);
+        letter-spacing: normal;
+        text-transform: none;
+    }
+
+    p {
+        max-width: 320px;
+        margin: 10px auto 0;
+        color: var(--bona-muted);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+}
+
+.bona-steps {
+    margin-top: 110px;
+    padding-block: 96px;
+    background: var(--bona-paper);
+    color: var(--bona-ink);
+    font-family: var(--bona-ui);
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    &__action {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
+}
+
+.bona-step-card {
+    min-width: 0;
+    padding: 30px 30px 34px;
+    border-radius: 18px;
+    background: #fbfaf7;
+
+    &__number {
+        color: #cfc5b0;
+        font: 400 40px/1 var(--bona-display);
+    }
+
+    h3 {
+        margin: 16px 0 8px;
+        color: var(--bona-ink);
+        font: 700 17px/1.35 var(--bona-ui);
+        letter-spacing: normal;
+        text-transform: none;
+    }
+
+    p {
+        margin: 0;
+        color: var(--bona-muted);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+}
+
+.bona-work-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+
+    &__image {
+        display: block;
+        width: 100%;
+        height: 340px;
+        overflow: hidden;
+        border-radius: 18px;
+        background-position: center;
+        background-size: cover;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .35s ease;
+        }
+
+        &:hover img,
+        &:focus-visible img { transform: scale(1.025); }
+
+        &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 4px; }
+
+        &--apartment { background-image: url('../../../bona-html/img/interior-apartment.jpg'); }
+        &--house { background-image: url('../../../bona-html/img/interior-house.jpg'); }
+        &--office { background-image: url('../../../bona-html/img/interior-office.jpg'); }
+    }
+
+    h3 {
+        margin: 16px 0 0;
+        font: 400 22px/1.35 var(--bona-display);
+        letter-spacing: normal;
+        text-transform: none;
+
+        a {
+            color: var(--bona-ink);
+            text-decoration: none;
+
+            &:hover,
+            &:focus-visible { color: var(--bona-gold); text-decoration: none; }
+        }
+    }
+
+    p {
+        margin: 8px 0 0;
+        color: var(--bona-muted);
+        font-size: 14px;
+        line-height: 1.55;
+    }
+}
+
+.bona-footer {
+    margin-top: 110px;
+    background: var(--bona-dark);
+    color: rgba(247, 244, 238, .72);
+    font-family: var(--bona-ui);
+
+    a { text-decoration: none; }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1.1fr .72fr .82fr 1.65fr;
+        gap: 46px;
+        padding-block: 72px 56px;
+    }
+
+    &__brand {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+
+        p { margin: 0; font-size: 13px; line-height: 1.7; }
+    }
+
+    &__logo {
+        width: auto;
+        max-width: 180px;
+        height: 44px;
+        object-fit: contain;
+    }
+
+    &__socials {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+
+        a {
+            display: grid;
+            width: 40px;
+            height: 40px;
+            place-items: center;
+            border: 1px solid rgba(247, 244, 238, .25);
+            border-radius: 50%;
+            color: var(--bona-gold-light);
+            transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+
+            &:hover,
+            &:focus-visible {
+                border-color: var(--bona-gold-light);
+                background: rgba(200, 166, 114, .1);
+                color: var(--bona-gold-light);
+                transform: translateY(-2px);
+            }
+
+            &:focus-visible { outline: 2px solid var(--bona-gold-light); outline-offset: 3px; }
+        }
+    }
+
+    &__social-icon {
+        display: block;
+        width: 18px;
+        height: 18px;
+        background: currentColor;
+        -webkit-mask-position: center;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-size: contain;
+        mask-position: center;
+        mask-repeat: no-repeat;
+        mask-size: contain;
+
+        &--instagram { -webkit-mask-image: url('/assets/icons/i-instagram.svg'); mask-image: url('/assets/icons/i-instagram.svg'); }
+        &--telegram { -webkit-mask-image: url('/assets/icons/i-telegram.svg'); mask-image: url('/assets/icons/i-telegram.svg'); }
+        &--viber { -webkit-mask-image: url('/assets/icons/i-viber.svg'); mask-image: url('/assets/icons/i-viber.svg'); }
+        &--facebook { -webkit-mask-image: url('/assets/icons/i-facebook.svg'); mask-image: url('/assets/icons/i-facebook.svg'); }
+    }
+
+    &__heading {
+        margin: 0 0 18px;
+        color: var(--bona-gold-light);
+        font: 700 12px/1.4 var(--bona-ui);
+        letter-spacing: .18em;
+        text-transform: uppercase;
+    }
+
+    &__links {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        flex-direction: column;
+        gap: 11px;
+        list-style: none;
+
+        a {
+            color: rgba(247, 244, 238, .72);
+            font-size: 14px;
+            line-height: 1.4;
+
+            &:hover,
+            &:focus-visible { color: var(--bona-cream); text-decoration: none; }
+        }
+    }
+
+    &__addresses {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    &__address {
+        display: flex;
+        margin: 0;
+        padding-top: 19px;
+        border-top: 1px solid rgba(247, 244, 238, .14);
+        flex-direction: column;
+        gap: 8px;
+        font-size: 13px;
+        font-style: normal;
+        line-height: 1.5;
+
+        &:first-child { padding-top: 0; border-top: 0; }
+
+        > strong { margin-bottom: 3px; color: var(--bona-cream); font-size: 13px; }
+    }
+
+    &__address-row {
+        display: grid;
+        grid-template-columns: 58px minmax(0, 1fr);
+        align-items: start;
+        gap: 11px;
+
+        > span {
+            padding-top: 1px;
+            color: rgba(247, 244, 238, .42);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        p { margin: 0; color: rgba(247, 244, 238, .72); }
+
+        a {
+            color: var(--bona-cream);
+            font-weight: 600;
+            overflow-wrap: anywhere;
+
+            &:hover,
+            &:focus-visible { color: var(--bona-gold-light); text-decoration: none; }
+        }
+    }
+
+    &__bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-block: 22px 26px;
+        border-top: 1px solid rgba(247, 244, 238, .15);
+        font-size: 12px;
+
+        p { margin: 0; }
+    }
+
+    &__legal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 9px 22px;
+
+        a {
+            color: rgba(247, 244, 238, .72);
+
+            &:hover,
+            &:focus-visible { color: var(--bona-cream); text-decoration: none; }
+        }
+    }
+
+    &__payments {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 8px;
+
+        > span {
+            display: grid;
+            width: 52px;
+            height: 30px;
+            place-items: center;
+            padding: 5px 9px;
+            border-radius: 7px;
+            background: #fbfaf7;
+        }
+
+        img { width: 100%; height: 100%; object-fit: contain; }
+    }
+}
+
 .bona-instagram {
     padding: 110px 0;
     color: var(--bona-ink);
@@ -1570,6 +2161,9 @@
     .bona-mega__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .bona-mega-card:nth-child(n + 5) { display: none; }
     .bona-partners__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .bona-numbers__card { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+    .bona-numbers__intro { grid-column: 1 / -1; }
+    .bona-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 960px) {
@@ -1702,6 +2296,16 @@
     .bona-hero__content { padding-top: 76px; }
     .bona-instagram { padding-block: 80px; }
     .bona-reviews { margin-top: 90px; padding-block: 72px; }
+    .bona-popular,
+    .bona-ideas,
+    .bona-works { padding-top: 80px; }
+    .bona-numbers { padding-top: 90px; }
+    .bona-steps { margin-top: 90px; padding-block: 72px; }
+    .bona-ideas__grid,
+    .bona-steps__grid,
+    .bona-works__grid { grid-template-columns: 1fr; }
+    .bona-idea-card__image { height: 460px; }
+    .bona-footer { margin-top: 90px; }
     .bona-blog,
     .bona-faq-section,
     .bona-partners { padding-top: 80px; }
@@ -1749,11 +2353,23 @@
     .bona-section-heading__actions { width: 100%; justify-content: space-between; }
     .bona-post-card { display: flex; }
     .bona-post-card__image { height: 220px; }
+    .bona-product-card__media { height: 330px; }
+    .bona-numbers__card { grid-template-columns: 1fr; padding: 40px 28px; }
+    .bona-numbers__intro { grid-column: auto; }
+    .bona-numbers__item { padding: 24px 0 0; border-top: 1px solid rgba(247, 244, 238, .18); border-left: 0; }
+    .bona-numbers__item strong { font-size: 50px; }
+    .bona-idea-card__image { height: 390px; }
+    .bona-step-card { padding: 28px 24px 30px; }
+    .bona-work-card__image { height: 310px; }
     .bona-faq__item { padding: 19px 20px; }
     .bona-faq__item summary { font-size: 15px; }
     .bona-partners { padding-bottom: 80px; }
     .bona-partners__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .bona-partner-card { min-height: 78px; padding: 18px 16px; }
+    .bona-footer__grid { grid-template-columns: 1fr; padding-block: 56px 42px; }
+    .bona-footer__bottom { align-items: center; flex-direction: column; text-align: center; }
+    .bona-footer__legal { gap: 9px 16px; }
+    .bona-footer__payments { margin-top: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1762,6 +2378,9 @@
     .bona-header__burger span,
     .bona-category-card__image img,
     .bona-category-card__arrow,
+    .bona-product-card__media img,
+    .bona-work-card__image img,
+    .bona-footer__socials a,
     .bona-style-pane,
     .bona-style-list__item span,
     .bona-instagram__item img,

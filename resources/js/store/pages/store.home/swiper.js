@@ -1,9 +1,38 @@
 import 'swiper/css';
 import Swiper from 'swiper/bundle';
-import $ from 'jquery';
 
 
 export function init () {
+    const popularSlider = document.querySelector('[data-popular-slider]');
+
+    if (popularSlider) {
+        new Swiper(popularSlider, {
+            slidesPerView: 1.12,
+            spaceBetween: 16,
+            speed: 450,
+            watchOverflow: true,
+            grabCursor: true,
+            pagination: {
+                el: popularSlider.querySelector('.bona-popular__pagination'),
+                clickable: true,
+            },
+            breakpoints: {
+                560: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                900: {
+                    slidesPerView: 3,
+                    spaceBetween: 24,
+                },
+                1180: {
+                    slidesPerView: 4,
+                    spaceBetween: 24,
+                },
+            },
+        });
+    }
+
     const instagramSlider = document.querySelector('[data-instagram-slider]');
 
     if (instagramSlider) {
@@ -66,73 +95,5 @@ export function init () {
         });
     }
 
-
-    // new products
-    if ($('.art-products-owl-items.art-new-products').length > 0) {
-        let NewProductsGallery = new Swiper(".art-products-owl-items.art-new-products", {
-            slidesPerView: 4,
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            breakpoints: {
-                100: {
-                    slidesPerView: 1
-                },
-                500: {
-                    slidesPerView: 2
-                },
-                768: {
-                    slidesPerView: 3
-                },
-                1200: {
-                    slidesPerView: 4
-                }
-            },
-            on: {
-                init: function () {
-                    this.update();
-                },
-                resize: function () {
-                    this.update();
-                }
-            }
-        });
-    }
-
-    // best sail products
-    if ($('.art-products-owl-items.art-best-products').length > 0) {
-        let BestProductsGallery = new Swiper(".art-products-owl-items.art-best-products", {
-            slidesPerView: 4,
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            breakpoints: {
-                100: {
-                    slidesPerView: 1
-                },
-                500: {
-                    slidesPerView: 2
-                },
-                768: {
-                    slidesPerView: 3
-                },
-                1200: {
-                    slidesPerView: 4
-                }
-            },
-            on: {
-                init: function () {
-                    this.update();
-                },
-                resize: function () {
-                    this.update();
-                }
-            }
-        });
-    }
 
 }

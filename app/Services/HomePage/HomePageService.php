@@ -3,6 +3,7 @@
 namespace App\Services\HomePage;
 
 use App\DataClasses\ProductSpecialOfferOptionsDataClass;
+use App\DataClasses\ProductStatusDataClass;
 use App\Helpers\MultiLangRoute;
 use App\Models\Category;
 use App\Models\Faqs;
@@ -474,6 +475,45 @@ class HomePageService extends BaseService
     public function getHomePageBestSalesProducts(): Collection
     {
         return HomePageBestSalesProducts::with(['product'])->get();
+    }
+
+    /**
+     * Products selected as best sellers in the homepage editor are the source
+     * of truth for the redesigned "Popular models" block. Older installations
+     * often have that list empty, so keep the section useful with recent,
+     * available door products until an editor makes a manual selection.
+     */
+    public function getHomePagePopularProducts(int $limit = 12): Collection
+    {
+        $relations = ['product.brand', 'product.productType', 'product.colors'];
+
+        $products = HomePageBestSalesProducts::with($relations)
+            ->get()
+            ->pluck('product')
+            ->filter();
+
+        if ($products->isEmpty()) {
+            $products = HomePageNewProducts::with($relations)
+                ->get()
+                ->pluck('product')
+                ->filter();
+        }
+
+        if ($products->isNotEmpty()) {
+            return $products->take($limit)->values();
+        }
+
+        return Product::query()
+            ->with(['brand', 'productType', 'colors'])
+            ->whereNotNull('main_image_path')
+            ->whereNotNull('price')
+            ->where('price', '>', 0)
+            ->where('availability_status_id', ProductStatusDataClass::PRODUCT_STATUS_STOCK)
+            ->whereHas('productType', fn ($query) => $query->where('has_size', true))
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get();
     }
 
     public function getHomePageBrands(): Collection

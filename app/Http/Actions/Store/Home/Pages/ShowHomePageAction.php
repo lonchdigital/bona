@@ -4,21 +4,19 @@ namespace App\Http\Actions\Store\Home\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Models\HomePageConfig;
-use App\Models\ProductType;
 use App\Services\BlogArticle\BlogArticleService;
-use App\Services\Brand\BrandService;
 use App\Services\Currency\CurrencyService;
 use App\Services\HomePage\HomePageService;
+use App\Services\Work\WorkService;
 use App\Support\LastModified;
 
 class ShowHomePageAction extends BaseAction
 {
     public function __invoke(
-        ProductType $productType,
         HomePageService $homePageService,
         CurrencyService $currencyService,
-        BrandService $brandService,
         BlogArticleService $blogArticleService,
+        WorkService $workService,
     ) {
         /*
          * Absent on a fresh install, and the page read straight through it —
@@ -38,8 +36,8 @@ class ShowHomePageAction extends BaseAction
             'catalogCards' => $homePageService->getHomePageCatalogCards(json_decode($config->product_types ?? '[]', true)),
             'styleSection' => $homePageService->getHomePageStyleSection(),
             'specificProductTypes' => $homePageService->getSpecificProductTypes(),
-            'homeNewProducts' => $homePageService->getHomePageNewProducts(),
-            'homeBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),
+            'homePopularProducts' => $homePageService->getHomePagePopularProducts(),
+            'homeWorks' => $workService->getFeaturedWorks(),
             'homeTestimonials' => $homePageService->getHomePageTestimonials(),
             'faqs' => $homePageService->getHomePageFaqs(),
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),

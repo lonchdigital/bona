@@ -40,6 +40,15 @@ class WorkService extends BaseService
             ->paginate(config('domain.works_per_page'));
     }
 
+    public function getFeaturedWorks(int $count = 3): Collection
+    {
+        return Work::published()
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->limit($count)
+            ->get();
+    }
+
     public function getOtherWorks(Work $work, int $count = 3)
     {
         return Work::published()
