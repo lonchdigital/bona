@@ -158,6 +158,38 @@ class HomePageStyleSectionTest extends TestCase
         $this->assertSame('<p>Важливий текст головної сторінки.</p>', $seoText->content);
     }
 
+    public function test_homepage_editor_receives_existing_seo_copy_for_each_language(): void
+    {
+        $this->homePageConfig();
+
+        SeoText::query()->insert([
+            [
+                'page_type' => config('constants.HOMEPAGE_TYPE'),
+                'language' => 'uk',
+                'title' => 'SEO-заголовок українською',
+                'content' => '<p>SEO-текст українською для редактора.</p>',
+            ],
+            [
+                'page_type' => config('constants.HOMEPAGE_TYPE'),
+                'language' => 'ru',
+                'title' => 'SEO-заголовок російською',
+                'content' => '<p>SEO-текст російською для редактора.</p>',
+            ],
+        ]);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.home-page.edit.page'))
+            ->assertOk()
+            ->assertViewHas('seoText', function (array $seoText): bool {
+                return $seoText['title']['uk'] === 'SEO-заголовок українською'
+                    && $seoText['title']['ru'] === 'SEO-заголовок російською'
+                    && $seoText['content']['uk'] === '<p>SEO-текст українською для редактора.</p>'
+                    && $seoText['content']['ru'] === '<p>SEO-текст російською для редактора.</p>';
+            })
+            ->assertSee(':seo-title=', false)
+            ->assertSee(':seo-text=', false);
+    }
+
     public function test_admin_can_edit_all_redesigned_homepage_content_sections(): void
     {
         Storage::fake(config('app.images_disk_default'));
