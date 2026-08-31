@@ -1,7 +1,9 @@
 @props(['testimonials'])
 
 @if(count($testimonials) > 0)
-    @php($googleReviewsUrl = config('organization.map_url'))
+    @php
+        $googleReviewsUrl = config('organization.map_url');
+    @endphp
 
     <section class="bona-reviews" aria-labelledby="home-reviews-title">
         <div class="bona-shell">
