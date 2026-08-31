@@ -144,6 +144,16 @@ if [[ -n "$HEALTHCHECK_URL" ]]; then
     curl --fail --silent --show-error --retry 5 --retry-delay 2 "$HEALTHCHECK_URL" >/dev/null
 fi
 
+# Keep the previous release available until the new one passes its health
+# check. After that, production keeps only the active version.
+if [[ "$previous_release" != "$RELEASE_PATH" && -d "$previous_release" ]]; then
+    rm -rf -- "$previous_release"
+fi
+
+if [[ -L "$PREVIOUS_LINK" ]]; then
+    rm -- "$PREVIOUS_LINK"
+fi
+
 # The extracted release is self-contained. Keeping its uploaded archive and
 # checksum after a successful health check only wastes disk space.
 rm -f -- "$ARCHIVE_PATH" "$CHECKSUM_PATH"
