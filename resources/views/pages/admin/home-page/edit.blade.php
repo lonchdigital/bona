@@ -30,11 +30,11 @@
                         :slider-title="{{ json_encode($config->getTranslations('slider_title')) }}"
                     @endif
 
-                    @if(count($allProductTypes))
-                        :all-product-types="{{ json_encode($allProductTypes) }}"
+                    @if(count($allCatalogOptions))
+                        :all-catalog-options="{{ json_encode($allCatalogOptions) }}"
                     @endif
-                    @if( !is_null($config->product_types) )
-                        :selected-product-types="{{ $config->product_types }}"
+                    @if(count($selectedCatalogItems))
+                        :selected-product-types="{{ json_encode($selectedCatalogItems) }}"
                     @endif
 
                     @if(count($selectedNewProducts))

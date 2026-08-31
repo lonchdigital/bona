@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Admin\HomePage;
 
 use App\Http\Requests\BaseRequest;
+use App\Models\Category;
+use App\Models\ProductType;
 use App\Services\HomePage\DTO\HomePageEditDTO;
 
 class HomePageEditRequest extends BaseRequest
@@ -46,7 +48,35 @@ class HomePageEditRequest extends BaseRequest
             ],
             'selected_product_types' => [
                 'nullable',
-                'exists:product_types,id',
+                'string',
+                'max:1000',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    $selections = collect(explode(',', (string) $value))
+                        ->map(fn (string $selection) => trim($selection))
+                        ->filter()
+                        ->unique();
+
+                    if ($selections->count() > 20) {
+                        $fail(trans('validation.max.array', ['attribute' => $attribute, 'max' => 20]));
+
+                        return;
+                    }
+
+                    foreach ($selections as $selection) {
+                        if (ctype_digit($selection) && ProductType::query()->whereKey($selection)->exists()) {
+                            continue;
+                        }
+
+                        if (preg_match('/^category:(\d+)$/', $selection, $matches)
+                            && Category::query()->whereKey($matches[1])->exists()) {
+                            continue;
+                        }
+
+                        $fail(trans('validation.exists', ['attribute' => $attribute]));
+
+                        return;
+                    }
+                },
             ],
             'style_section' => [
                 'nullable',
@@ -284,7 +314,12 @@ class HomePageEditRequest extends BaseRequest
             $this->input('meta_keywords'),
             $this->input('meta_tags'),
             $this->validated('slides'),
-            explode(',', $this->input('selected_product_types')),
+            collect(explode(',', (string) $this->input('selected_product_types')))
+                ->map(fn (string $selection) => trim($selection))
+                ->filter()
+                ->unique()
+                ->values()
+                ->all(),
             $this->validated('style_section'),
             explode(',', $this->input('selected_products_id')),
             explode(',', $this->input('selected_best_sales_products_id')),

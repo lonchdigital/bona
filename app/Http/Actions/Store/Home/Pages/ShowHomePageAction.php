@@ -35,7 +35,7 @@ class ShowHomePageAction extends BaseAction
             'slides' => $homePageService->getHomePageSlides(),
             //            'brands' => $brandService->getBrands(), // get all brands
             'brands' => $homePageService->getHomePageBrands(), // get selected brands for homepage
-            'productTypes' => $homePageService->getHomePageProductTypes(json_decode($config->product_types)),
+            'catalogCards' => $homePageService->getHomePageCatalogCards(json_decode($config->product_types ?? '[]', true)),
             'styleSection' => $homePageService->getHomePageStyleSection(),
             'specificProductTypes' => $homePageService->getSpecificProductTypes(),
             'homeNewProducts' => $homePageService->getHomePageNewProducts(),

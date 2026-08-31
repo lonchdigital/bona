@@ -85,7 +85,7 @@ export default {
             type: Array,
             default: [],
         },
-        allProductTypes: {
+        allCatalogOptions: {
             type: Array,
             default: [],
         },
@@ -143,7 +143,7 @@ export default {
             test: [],
             selectedLanguage: '',
             collections: [],
-            productTypes: [],
+            catalogOptions: [],
             products: [],
             brands: [],
             selectedNewProductsShow: [],
@@ -182,10 +182,10 @@ export default {
         }
 
 
-        if( Array.isArray(this.allProductTypes) ) {
-            this.allProductTypes.forEach((item, i) => {
+        if( Array.isArray(this.allCatalogOptions) ) {
+            this.allCatalogOptions.forEach((item, i) => {
                 if (item && item.hasOwnProperty('id') && item.hasOwnProperty('name')) {
-                    this.productTypes.push({id: item.id, text: item.name[this.selectedLanguage]});
+                    this.catalogOptions.push({id: item.id, text: item.name[this.selectedLanguage]});
                 }
             });
         }
@@ -381,8 +381,8 @@ export default {
                 <select-component
                     :is-multi-select="true"
                     :model-value="selectedProductTypes"
-                    :title="$t('admin.product_types')"
-                    :options="productTypes"
+                    :title="$t('admin.home_catalog_cards')"
+                    :options="catalogOptions"
                     label="text"
                     value-prop="id"
                     name="selected_product_types"

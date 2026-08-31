@@ -37,7 +37,6 @@ class StorefrontSearchService
     {
         return Product::query()
             ->with(['brand', 'productType'])
-            ->where('is_active', true)
             ->where(function (Builder $builder) use ($query) {
                 $this->whereTranslatedLike($builder, 'name', $query);
                 $builder->orWhere('sku', 'like', '%'.$query.'%');

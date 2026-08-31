@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\DataClasses\ProductFieldTypeOptionsDataClass;
+use App\Models\Category;
 use App\Models\HomePageConfig;
 use App\Models\ProductField;
 use App\Models\Role;
@@ -12,11 +13,47 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Tests\Support\MakesShopData;
 use Tests\TestCase;
 
 class HomePageStyleSectionTest extends TestCase
 {
+    use MakesShopData;
     use RefreshDatabase;
+
+    public function test_admin_can_save_product_types_and_nested_categories_for_homepage_cards(): void
+    {
+        $config = $this->homePageConfig();
+        $productType = $this->productType([
+            'slug' => 'accessories',
+            'name' => ['uk' => 'Аксесуари', 'ru' => 'Аксессуары'],
+        ]);
+        $category = Category::query()->create([
+            'creator_id' => $this->author()->id,
+            'product_type_id' => $productType->id,
+            'name' => ['uk' => 'Дверні ручки', 'ru' => 'Дверные ручки'],
+            'slug' => 'door-handles',
+            'image_path' => null,
+        ]);
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.home-page.edit'), [
+                'selected_product_types' => $productType->id.',category:'.$category->id,
+                'selected_products_id' => '',
+                'selected_best_sales_products_id' => '',
+                'selected_brands_id' => '',
+                'seo_title' => ['uk' => '', 'ru' => ''],
+                'seo_text' => ['uk' => '', 'ru' => ''],
+                'style_section' => ['enabled' => 0],
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.success', true);
+
+        $this->assertSame(
+            [(string) $productType->id, 'category:'.$category->id],
+            json_decode($config->fresh()->product_types, true),
+        );
+    }
 
     public function test_admin_can_manage_style_section_inside_home_page_form(): void
     {

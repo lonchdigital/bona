@@ -41,7 +41,7 @@
     <x-store.home-hero :slides="$slides" />
     <x-store.call-consultation-modal :options="$applicationGlobalOptions" />
 
-    @if( count($productTypes) > 0 )
+    @if( count($catalogCards) > 0 )
         <section class="bona-categories" aria-labelledby="products-by-type-title">
             <div class="bona-shell">
                 <header class="bona-section-heading">
@@ -50,20 +50,20 @@
                 </header>
 
                 <div class="bona-categories__grid">
-                    @foreach($productTypes as $productType)
+                    @foreach($catalogCards as $catalogCard)
                         <a
                             class="bona-category-card"
-                            href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}"
+                            href="{{ $catalogCard['url'] }}"
                         >
                             <span class="bona-category-card__image">
-                                @if($productType->image_url)
-                                    <img src="{{ $productType->image_url }}" alt="{{ $productType->name }}" loading="lazy">
+                                @if($catalogCard['image_url'])
+                                    <img src="{{ $catalogCard['image_url'] }}" alt="{{ $catalogCard['name'] }}" loading="lazy">
                                 @else
                                     <span class="bona-category-card__placeholder" aria-hidden="true">BONA</span>
                                 @endif
                             </span>
                             <span class="bona-category-card__row">
-                                <span class="bona-category-card__name">{{ $productType->name }}</span>
+                                <span class="bona-category-card__name">{{ $catalogCard['name'] }}</span>
                                 <span class="bona-category-card__arrow" aria-hidden="true">
                                     <svg width="34" height="10" viewBox="0 0 34 10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
                                         <line x1="0" y1="5" x2="32" y2="5"></line>

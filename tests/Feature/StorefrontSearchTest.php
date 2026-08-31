@@ -21,12 +21,6 @@ class StorefrontSearchTest extends TestCase
             ]);
         }
 
-        $this->makeProduct([
-            'name' => ['uk' => 'Тест приховані двері', 'ru' => 'Тест скрытая дверь'],
-            'sku' => 'SEARCH-HIDDEN',
-            'is_active' => false,
-        ]);
-
         foreach (range(1, 3) as $number) {
             ServicesPageSections::create([
                 'title' => ['uk' => 'Тест послуга '.$number, 'ru' => 'Тест услуга '.$number],
@@ -43,8 +37,20 @@ class StorefrontSearchTest extends TestCase
             ->assertOk()
             ->assertJsonCount(3, 'data.products')
             ->assertJsonCount(2, 'data.services')
-            ->assertJsonMissing(['sku' => 'SEARCH-HIDDEN'])
             ->assertJsonPath('data.services.0.link', '/services#service-1');
+    }
+
+    public function test_it_searches_the_same_legacy_products_that_the_catalog_displays(): void
+    {
+        $this->makeProduct([
+            'name' => ['uk' => 'LegacyVisible двері', 'ru' => 'LegacyVisible дверь'],
+            'sku' => 'LEGACY-VISIBLE',
+            'is_active' => false,
+        ]);
+
+        $this->postJson(route('store.product.search'), ['query' => 'LegacyVisible'])
+            ->assertOk()
+            ->assertJsonPath('data.products.0.sku', 'LEGACY-VISIBLE');
     }
 
     public function test_it_rejects_queries_shorter_than_three_characters(): void

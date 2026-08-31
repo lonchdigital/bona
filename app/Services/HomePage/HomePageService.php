@@ -3,7 +3,9 @@
 namespace App\Services\HomePage;
 
 use App\DataClasses\ProductSpecialOfferOptionsDataClass;
+use App\Helpers\MultiLangRoute;
 use App\Models\ApplicationConfig;
+use App\Models\Category;
 use App\Models\Faqs;
 use App\Models\HomePageBestSalesProducts;
 use App\Models\HomePageBrands;
@@ -44,7 +46,7 @@ class HomePageService extends BaseService
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
                 'meta_tags' => $request->metaTags,
-                'product_types' => $request->selectedProductTypes,
+                'product_types' => json_encode($request->selectedProductTypes ?? []),
                 'style_section' => $styleSection,
             ];
 
@@ -374,13 +376,97 @@ class HomePageService extends BaseService
         return ProductType::get();
     }
 
-    public function getHomePageProductTypes(?array $productTypesIds): Collection
+    public function getHomePageCatalogOptions(): Collection
     {
-        if (! is_null($productTypesIds)) {
-            return ProductType::whereIn('id', $productTypesIds)->get();
-        } else {
-            return collect([]);
-        }
+        $productTypes = ProductType::query()
+            ->orderBy('id')
+            ->get()
+            ->map(fn (ProductType $productType) => [
+                'id' => (string) $productType->id,
+                'name' => $productType->getTranslations('name'),
+            ]);
+
+        $categories = Category::query()
+            ->with('productType')
+            ->orderBy('product_type_id')
+            ->orderBy('id')
+            ->get()
+            ->map(function (Category $category) {
+                $names = collect(['uk', 'ru'])->mapWithKeys(function (string $locale) use ($category) {
+                    $name = $category->getTranslation('name', $locale, false);
+                    $parentName = $category->productType?->getTranslation('name', $locale, false);
+
+                    return [$locale => $parentName ? $name.' — '.$parentName : $name];
+                })->all();
+
+                return [
+                    'id' => 'category:'.$category->id,
+                    'name' => $names,
+                ];
+            });
+
+        return $productTypes->concat($categories)->values();
+    }
+
+    /**
+     * Resolve the ordered homepage catalog selection. Numeric values remain
+     * backward-compatible product type references; `category:{id}` values let
+     * the same admin field link a card to a nested catalog category.
+     */
+    public function getHomePageCatalogCards(?array $selections): Collection
+    {
+        $selections = collect($selections ?? [])
+            ->map(fn (mixed $selection) => trim((string) $selection))
+            ->filter()
+            ->unique()
+            ->values();
+
+        $productTypeIds = $selections
+            ->filter(fn (string $selection) => ctype_digit($selection))
+            ->map(fn (string $selection) => (int) $selection);
+        $categoryIds = $selections
+            ->map(fn (string $selection) => preg_match('/^category:(\d+)$/', $selection, $matches) ? (int) $matches[1] : null)
+            ->filter();
+
+        $productTypes = ProductType::query()
+            ->whereIn('id', $productTypeIds)
+            ->get()
+            ->keyBy(fn (ProductType $productType) => (string) $productType->id);
+        $categories = Category::query()
+            ->with('productType')
+            ->whereIn('id', $categoryIds)
+            ->get()
+            ->keyBy(fn (Category $category) => (string) $category->id);
+
+        return $selections->map(function (string $selection) use ($productTypes, $categories) {
+            if (ctype_digit($selection)) {
+                $productType = $productTypes->get($selection);
+
+                return $productType ? [
+                    'name' => $productType->name,
+                    'url' => MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+                        'productTypeSlug' => $productType->slug,
+                    ]),
+                    'image_url' => $productType->image_url,
+                ] : null;
+            }
+
+            preg_match('/^category:(\d+)$/', $selection, $matches);
+            $category = isset($matches[1]) ? $categories->get($matches[1]) : null;
+
+            if (! $category?->productType) {
+                return null;
+            }
+
+            return [
+                'name' => $category->name,
+                'url' => MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
+                    'productTypeSlug' => $category->productType->slug,
+                    'categorySlug' => $category->slug,
+                ]),
+                'image_url' => $category->image_url ?: $category->productType->image_url,
+            ];
+        })->filter()->values();
     }
 
     public function getSpecificProductTypes(): Collection

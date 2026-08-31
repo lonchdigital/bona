@@ -9,7 +9,6 @@ use App\Models\ProductField;
 use App\Models\ProductFieldOption;
 use App\Models\ProductType;
 use App\Services\Admin\ProductField\ProductFieldService;
-use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\HomePage\HomePageService;
 use App\Services\Product\ProductService;
 
@@ -19,7 +18,6 @@ class ShowHomePageEditPageAction extends BaseAction
         ProductFieldService $productFieldService,
         HomePageService $homePageService,
         ProductService $productService,
-        ProductTypeService $productTypeService,
     ) {
 
         $products = $productService->getLimitedProducts(4)->map(function (Product $product) {
@@ -57,11 +55,17 @@ class ShowHomePageEditPageAction extends BaseAction
 
         //        dd($homePageService->getHomePageConfig());
 
+        $config = $homePageService->getHomePageConfig();
+        $selectedCatalogItems = collect(json_decode($config?->product_types ?? '[]', true) ?: [])
+            ->map(fn (mixed $selection) => (string) $selection)
+            ->values();
+
         return view('pages.admin.home-page.edit', [
             'products' => $products,
             'fields' => $customFields,
-            'allProductTypes' => $productTypeService->getProductTypes(),
-            'config' => $homePageService->getHomePageConfig(),
+            'allCatalogOptions' => $homePageService->getHomePageCatalogOptions(),
+            'selectedCatalogItems' => $selectedCatalogItems,
+            'config' => $config,
             'styleSection' => $homePageService->getHomePageStyleSection(),
             'selectedNewProducts' => $homePageService->getHomePageNewProducts(),
             'selectedBestSalesProducts' => $homePageService->getHomePageBestSalesProducts(),
