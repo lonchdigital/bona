@@ -80,6 +80,7 @@ class CatalogRedesignTest extends TestCase
         $content = file_get_contents(resource_path('views/pages/store/partials/catalog-content.blade.php'));
         $filters = file_get_contents(resource_path('views/pages/store/partials/catalog-filters.blade.php'));
         $toolbar = file_get_contents(resource_path('views/pages/store/partials/catalog-toolbar.blade.php'));
+        $catalogStyles = file_get_contents(resource_path('scss/storefront/_catalog.scss'));
 
         $this->assertStringContainsString('bona-catalog__grid', $content);
         $this->assertStringContainsString('catalog-consultant-card', $content);
@@ -93,6 +94,10 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('$loop->iteration % 9 === 0', $content);
         $this->assertStringNotContainsString('catalog-count-menu', $toolbar);
         $this->assertStringNotContainsString('per_page', $toolbar);
+        $this->assertMatchesRegularExpression(
+            '/\.filter-submit-main\s*\{[^}]*border:\s*1px solid var\(--bona-ink\);[^}]*background:\s*#fff;[^}]*color:\s*var\(--bona-ink\);/s',
+            $catalogStyles
+        );
     }
 
     public function test_catalog_always_renders_eighteen_products_and_two_consultation_cards(): void

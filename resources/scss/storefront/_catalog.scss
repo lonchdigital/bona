@@ -847,7 +847,27 @@
     .filter-find { padding: 15px !important; background: #fff !important; }
     .filter-find-info { margin-bottom: 12px !important; color: var(--bona-muted); font: 500 12px/1.45 var(--bona-ui); }
     #products-count { color: var(--bona-ink); }
-    .filter-submit-main { min-height: 38px; padding: 10px 16px; border: 0; border-radius: 999px; background: var(--bona-ink); color: #fff; font: 700 11px/1.2 var(--bona-ui); }
+    .filter-submit-main {
+        min-height: 38px;
+        padding: 10px 16px;
+        border: 1px solid var(--bona-ink);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--bona-ink);
+        font: 700 11px/1.2 var(--bona-ui);
+
+        &:hover,
+        &:focus-visible {
+            border-color: var(--bona-ink);
+            background: #fff;
+            color: var(--bona-ink);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--bona-gold);
+            outline-offset: 2px;
+        }
+    }
 }
 
 .bona-catalog-faq {
