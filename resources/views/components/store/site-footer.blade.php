@@ -89,7 +89,6 @@
                                         href="{{ $store['map_url'] }}"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        aria-label="{{ trans('base.contact_route_to', ['store' => $store['name']]) }}"
                                     >
                                         {{ $store['address'] }}<span aria-hidden="true">↗</span>
                                     </a>

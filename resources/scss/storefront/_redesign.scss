@@ -1958,14 +1958,14 @@
         gap: 11px;
         margin: 0;
         padding: 0;
-        color: #8b8578;
+        color: #6f6a60;
         font-size: 12px;
         line-height: 1.4;
         list-style: none;
     }
 
     a {
-        color: #8b8578;
+        color: #6f6a60;
 
         &:hover,
         &:focus-visible { color: var(--bona-ink); }
@@ -2116,7 +2116,7 @@
             &:focus-visible { color: var(--bona-gold-text); }
         }
 
-        span { color: #8b8578; }
+        span { color: #6f6a60; }
     }
 
     &__meta {
