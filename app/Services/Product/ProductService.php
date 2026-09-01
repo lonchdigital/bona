@@ -91,7 +91,7 @@ class ProductService extends BaseService
                 ->orWhereHas('productTypes', function ($query) use ($productType) {
                     $query->where('product_types.id', $productType->id);
                 });
-        })->paginate($perPage, '*', null, $page);
+        })->paginate($perPage, '*', 'page', $page);
     }
 
     public function getAllProductsPaginated(FilterProductDTO $request, int $perPage, int $page, array $allFilters): LengthAwarePaginator
@@ -103,7 +103,7 @@ class ProductService extends BaseService
 
         $query = $this->filterService->handleAllProductFilters($request->filters, $query, false, $allFilters);
 
-        return $query->paginate($perPage, '*', null, $page);
+        return $query->paginate($perPage, '*', 'page', $page);
     }
 
     public function getAllProductsCountByFilters(FilterProductDTO $request, array $allFilters): array
@@ -197,7 +197,7 @@ class ProductService extends BaseService
             ->whereHas('colors', function ($query) use ($color) {
                 $query->where('colors.id', $color->id);
             })
-            ->paginate($perPage, ['*'], null, $page);
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getProductTypeByColorPaginated(int $perPage, int $page, ProductType $productType, Color $color): LengthAwarePaginator
@@ -232,20 +232,20 @@ class ProductService extends BaseService
         return Product::orderByAvailabilityStatus()
             ->orderBy('created_at', 'desc')
             ->whereJsonContains('custom_fields', [$productField->id => $productOptionID])
-            ->paginate($perPage, ['*'], null, $page);
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getProductsByDiscountPaginated(int $perPage, int $page): LengthAwarePaginator
     {
         return Product::orderByAvailabilityStatus()->where('old_price', '>', 0)
             ->whereNotNull('old_price')
-            ->paginate($perPage, ['*'], null, $page);
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getProductsByAvailabilityPaginated(int $perPage, int $page): LengthAwarePaginator
     {
         return Product::where('availability_status_id', 2)
-            ->paginate($perPage, ['*'], null, $page);
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getProductsDoorsByAvailabilityPaginated(int $perPage, int $page): LengthAwarePaginator
@@ -256,7 +256,7 @@ class ProductService extends BaseService
             ->whereHas('productType', function ($query) use ($targetTypeIds) {
                 $query->whereIn('id', $targetTypeIds);
             })
-            ->paginate($perPage, ['*'], null, $page);
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getProductsByBrandPaginated(int $perPage, int $page, int $brandId): LengthAwarePaginator
@@ -281,7 +281,7 @@ class ProductService extends BaseService
 
         $query = $this->filterService->handleSortingFilter($query, $request->filters);
 
-        return $query->paginate($perPage, '*', null, $page);
+        return $query->paginate($perPage, '*', 'page', $page);
     }
 
     public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
@@ -298,7 +298,7 @@ class ProductService extends BaseService
         });
 
         return $query->where('product_type_id', $productType->id)
-            ->paginate($perPage, '*', null, $page);
+            ->paginate($perPage, '*', 'page', $page);
     }
 
     public function getProductsCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
@@ -312,7 +312,7 @@ class ProductService extends BaseService
         });
 
         return $query->where('product_type_id', $productType->id)
-            ->paginate($perPage, '*', null, $page);
+            ->paginate($perPage, '*', 'page', $page);
     }
 
     public function getProductsCountWithCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request): array

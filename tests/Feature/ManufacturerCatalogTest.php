@@ -92,6 +92,16 @@ class ManufacturerCatalogTest extends TestCase
         }
 
         $catalogPath = route('store.catalog.page', ['productTypeSlug' => $productType->slug], false);
+        $firstPageResponse = $this->get($catalogPath);
+
+        $this->assertSame(1, preg_match(
+            '~<a\s+[^>]*href="([^"]+)"[^>]*data-catalog-load-more~',
+            $firstPageResponse->getContent(),
+            $loadMoreMatch,
+        ));
+        parse_str((string) parse_url($loadMoreMatch[1], PHP_URL_QUERY), $loadMoreQuery);
+        $this->assertSame(['page' => '2'], $loadMoreQuery);
+
         $response = $this->get($catalogPath.'?page=2');
 
         $response
