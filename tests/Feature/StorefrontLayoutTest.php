@@ -77,4 +77,15 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('menuToggle.click()', $source);
         $this->assertStringContainsString("window.addEventListener('scroll', scheduleUpdate, { passive: true })", $source);
     }
+
+    public function test_mobile_footer_places_navigation_and_categories_side_by_side(): void
+    {
+        $footer = file_get_contents(resource_path('views/components/store/site-footer.blade.php'));
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertSame(2, substr_count($footer, 'class="bona-footer__nav"'));
+        $this->assertStringContainsString('class="bona-footer__stores"', $footer);
+        $this->assertStringContainsString(".bona-footer__grid {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n        gap: 42px 20px;", $stylesheet);
+        $this->assertStringContainsString(".bona-footer__brand,\n    .bona-footer__stores { grid-column: 1 / -1; }", $stylesheet);
+    }
 }

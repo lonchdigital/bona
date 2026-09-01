@@ -64,7 +64,7 @@
                 @endif
             </div>
 
-            <nav aria-labelledby="footer-navigation-title">
+            <nav class="bona-footer__nav" aria-labelledby="footer-navigation-title">
                 <h2 class="bona-footer__heading" id="footer-navigation-title">{{ trans('base.navigation') }}</h2>
                 <ul class="bona-footer__links">
                     <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{ trans('base.about_us') }}</a></li>
@@ -77,7 +77,7 @@
                 </ul>
             </nav>
 
-            <nav aria-labelledby="footer-categories-title">
+            <nav class="bona-footer__nav" aria-labelledby="footer-categories-title">
                 <h2 class="bona-footer__heading" id="footer-categories-title">{{ trans('base.footer_cat') }}</h2>
                 <ul class="bona-footer__links">
                     @foreach($productTypes as $productType)
@@ -96,7 +96,7 @@
             </nav>
 
             @if($stores->isNotEmpty())
-                <section aria-labelledby="footer-addresses-title">
+                <section class="bona-footer__stores" aria-labelledby="footer-addresses-title">
                     <h2 class="bona-footer__heading" id="footer-addresses-title">{{ trans('base.footer_address') }}</h2>
                     <div class="bona-footer__addresses">
                         @foreach($stores as $store)

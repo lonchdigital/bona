@@ -2933,7 +2933,14 @@ body.bona-lead-modal-open {
     .bona-partners { padding-bottom: 80px; }
     .bona-partners__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .bona-partner-card { min-height: 78px; padding: 18px 16px; }
-    .bona-footer__grid { grid-template-columns: 1fr; padding-block: 56px 42px; }
+    .bona-footer__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 42px 20px;
+        padding-block: 56px 42px;
+    }
+    .bona-footer__brand,
+    .bona-footer__stores { grid-column: 1 / -1; }
+    .bona-footer__nav { min-width: 0; }
     .bona-footer__bottom { align-items: center; flex-direction: column; text-align: center; }
     .bona-footer__legal { gap: 9px 16px; }
     .bona-footer__payments { margin-top: 4px; }
