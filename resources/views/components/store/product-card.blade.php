@@ -25,6 +25,7 @@
     $specialOfferLabel = $specialOffer
         ? data_get(App\DataClasses\ProductSpecialOfferOptionsDataClass::get((int) $specialOffer), 'name')
         : null;
+    $showsQuickActions = in_array($variant, ['slider', 'catalog'], true);
 @endphp
 
 <article
@@ -64,7 +65,7 @@
             @endif
         </div>
 
-        @if($variant === 'slider')
+        @if($showsQuickActions)
             <div class="bona-product-card__actions">
                 <button
                     class="bona-product-card__action bona-product-card__wish link-heart"

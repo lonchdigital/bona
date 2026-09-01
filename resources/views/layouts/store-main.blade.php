@@ -33,7 +33,11 @@
         $currentUrl = preg_replace('/\/filter\/.*/', '', $currentUrl);
     @endphp
 
-    <link rel="canonical" href="{{ $currentUrl }}">
+    @hasSection('canonical')
+        <link rel="canonical" href="@yield('canonical')">
+    @else
+        <link rel="canonical" href="{{ $currentUrl }}">
+    @endif
 
     @if(Route::currentRouteName() === 'store.home')
         @if(Str::startsWith(request()->path(), 'ru'))

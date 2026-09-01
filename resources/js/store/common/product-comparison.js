@@ -95,5 +95,7 @@ export default {
             syncButtons();
             publishChange();
         });
+
+        window.addEventListener('bona:catalog-appended', syncButtons);
     },
 };

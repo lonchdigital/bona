@@ -1,8 +1,4 @@
 @php
-    $showBrandFilter = isset($productType)
-        && $productType->has_brand
-        && isset($brandsSortedByFirstLetter)
-        && $brandsSortedByFirstLetter->isNotEmpty();
     $showColorFilter = isset($colors)
         && $colors->isNotEmpty()
         && (! isset($productType) || $productType->has_color);
@@ -25,45 +21,6 @@
             'productsMaxPrice' => $productsMaxPrice,
             'productStatuses' => $productStatuses,
         ])
-
-        @if($showBrandFilter)
-            <div class="archive-catalog-filter-left filter-box active">
-                <div class="title font-title">{{ trans('base.manufacturer') }}</div>
-                <div class="filter-content">
-                    <div class="filter-item filter-item--brands position-relative checkbox-preview-wrap">
-                        <input
-                            class="search-input art-form-light-control"
-                            type="search"
-                            placeholder="{{ trans('base.search_by_brand') }}"
-                            aria-label="{{ trans('base.search_by_brand') }}"
-                        >
-                        <div class="brands">
-                            @foreach($brandsSortedByFirstLetter as $letter => $brandGroup)
-                                <div class="option-letter">{{ $letter }}</div>
-                                @foreach($brandGroup as $brand)
-                                    @php
-                                        $brandIsSelected = App\Services\Product\ProductFiltersService::filterOptionChecked($filtersData, 'brand', $brand->slug);
-                                    @endphp
-                                    <div class="checkbox checkbox-preview" data-toggle="tooltip">
-                                        <div class="custom-control custom-checkbox position-relative {{ $brandIsSelected ? 'checked' : '' }}">
-                                            <input
-                                                class="custom-control-input sync-input"
-                                                id="brand-{{ $brand->id }}-main"
-                                                type="checkbox"
-                                                name="brand"
-                                                value="{{ $brand->slug }}"
-                                                @checked($brandIsSelected)
-                                            >
-                                            <label class="custom-control-label" for="brand-{{ $brand->id }}-main">{{ $brand->name }}</label>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
 
         @if($showColorFilter)
             <div class="archive-catalog-filter-left filter-box active">

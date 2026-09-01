@@ -25,6 +25,8 @@ export default {
                 fallbackCopyTextToClipboard(linkToShare);
             }
         });
+
+        window.addEventListener('bona:catalog-appended', markActiveHearts);
     },
 };
 

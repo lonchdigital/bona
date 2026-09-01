@@ -1232,7 +1232,9 @@
     }
 
     &--slider:hover &__actions,
-    &--slider:focus-within &__actions {
+    &--slider:focus-within &__actions,
+    &--catalog:hover &__actions,
+    &--catalog:focus-within &__actions {
         opacity: 1;
         pointer-events: auto;
         transform: none;
@@ -1275,6 +1277,7 @@
     }
 
     &--slider &__wish.link-heart-active,
+    &--catalog &__wish.link-heart-active,
     &__compare.is-active {
         border-color: var(--bona-ink);
         background: var(--bona-ink);
@@ -1384,7 +1387,8 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    .bona-product-card--slider .bona-product-card__actions {
+    .bona-product-card--slider .bona-product-card__actions,
+    .bona-product-card--catalog .bona-product-card__actions {
         opacity: 1;
         pointer-events: auto;
         transform: none;

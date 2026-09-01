@@ -12,7 +12,7 @@ class ManufacturerCatalogTest extends TestCase
     use MakesShopData;
     use RefreshDatabase;
 
-    public function test_manufacturer_url_renders_the_catalog_with_its_brand_filter_selected(): void
+    public function test_manufacturer_url_filters_the_catalog_without_rendering_a_duplicate_brand_filter(): void
     {
         $this->seedCurrency();
         $productType = $this->productType([
@@ -44,9 +44,8 @@ class ManufacturerCatalogTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('Міжкімнатні двері Artporte')
-            ->assertSee('name="brand"', false)
-            ->assertSee('value="artporte"', false)
-            ->assertSee('checked', false)
+            ->assertDontSee('filter-item--brands', false)
+            ->assertDontSee('search_by_brand', false)
             ->assertSee($matchingProduct->name)
             ->assertDontSee($otherProduct->name)
             ->assertDontSee('Mali'.'na', false);
@@ -73,6 +72,40 @@ class ManufacturerCatalogTest extends TestCase
         $this->get(route('store.brand.page', ['brandSlug' => $brand->slug]))
             ->assertStatus(301)
             ->assertRedirect($expectedUrl);
+    }
+
+    public function test_catalog_page_two_has_its_own_canonical_and_previous_page_link(): void
+    {
+        config()->set('constants.ROZSUVNI_DVERI_ID', -1);
+        $this->seedCurrency();
+        $productType = $this->productType([
+            'slug' => 'interior-doors',
+            'name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери'],
+        ]);
+
+        foreach (range(1, 19) as $index) {
+            $this->makeProduct([
+                'slug' => "door-{$index}",
+                'product_type_id' => $productType->id,
+                'name' => ['uk' => "Двері {$index}", 'ru' => "Двери {$index}"],
+            ]);
+        }
+
+        $catalogPath = route('store.catalog.page', ['productTypeSlug' => $productType->slug], false);
+        $response = $this->get($catalogPath.'?page=2');
+
+        $response
+            ->assertOk()
+            ->assertSee('Сторінка 2');
+
+        $this->assertMatchesRegularExpression(
+            '~<link rel="canonical" href="https?://[^"/]+'.preg_quote($catalogPath, '~').'\?page=2">~',
+            $response->getContent(),
+        );
+        $this->assertMatchesRegularExpression(
+            '~<link rel="prev" href="https?://[^"/]+'.preg_quote($catalogPath, '~').'">~',
+            $response->getContent(),
+        );
     }
 
     private function brand(string $slug, string $name): Brand

@@ -28,6 +28,7 @@ class CatalogFilterRequest extends BaseRequest
     {
         return [
             'catalog_filters' => ['nullable', 'string', 'max:2048'],
+            'page' => ['nullable', 'integer', 'min:1', 'max:10000'],
         ];
     }
 
@@ -51,6 +52,10 @@ class CatalogFilterRequest extends BaseRequest
                 $filersArray[$pair[0]] = null;
             }
 
+        }
+
+        if (($page = $this->validated('page')) !== null) {
+            $filersArray['page'] = (int) $page;
         }
 
         return new FilterProductDTO($filersArray);

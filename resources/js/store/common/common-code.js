@@ -62,13 +62,6 @@ export default {
 
         $(document).ready(function() {
 
-            // click on name = click on label
-            $('.color-name').on('click', function() {
-                $(this).prev('label').click();
-            });
-
-
-
             // TODO:: remove old dialog if do not need
 
             //  dialog-language start

@@ -1,20 +1,19 @@
 import $ from 'jquery';
+import CatalogPagination from '../common/catalog-pagination';
 
 export default async function () {
 
     const customLabels = $('.filter-item--type-custom .custom-control-label');
     const countriesLabels = $('.filter-item--countries .custom-control-label');
-    const searchableLabels = $('.filter-item--brands .custom-control-label');
-    const colorLabels = $('.filter-item--colors .link-color');
+    const colorLabels = $('.filter-item--colors .color-option');
 
     handleCheckBoxes(customLabels);
     handleCheckBoxes(countriesLabels);
-    handleCheckBoxes(searchableLabels);
     handleCheckBoxes(colorLabels, function (element, isChecked) {
         if (isChecked) {
-            element.addClass('active');
+            element.find('.link-color').addClass('active');
         } else {
-            element.removeClass('active');
+            element.find('.link-color').removeClass('active');
         }
     });
 
@@ -24,19 +23,15 @@ export default async function () {
         // SvelteRangeSlider,
         Tooltip,
         SyncFilters,
-        SearchableList,
         FilterSubmit,
         Swiper,
-        Pagination,
         FancyBox,
         Email,
     ] = await Promise.all([
         import('./store.catalog.page/tooltip'),
         import('./store.catalog.page/sync-filters'),
-        import('./store.catalog.page/searchable-list'),
         import('./store.catalog.page/filter-submit'),
         import('./store.catalog.page/swiper'),
-        import('./store.catalog.page/pagination'),
         import('./store.product.page/fancybox'),
         import('./store.product.page/email')
     ]);
@@ -45,9 +40,8 @@ export default async function () {
     // SvelteRangeSlider.init();
     Tooltip.init();
     SyncFilters.init();
-    SearchableList.init();
     FilterSubmit.init();
-    Pagination.init();
+    CatalogPagination.init();
     FancyBox.init();
     Email.init();
 }

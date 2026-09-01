@@ -4,7 +4,6 @@ import RangeSliderPips from 'svelte-range-slider-pips';
 
 const tooltipClasses = [
     '.filter-item--type-custom .checkbox-preview',
-    '.filter-item--brands .checkbox-preview',
     '.filter-item--colors .colors-wrapper',
     '.filter-item--countries .custom-control'
 ];
@@ -125,10 +124,6 @@ export function init () {
         });
     });
 
-    $(window).on('changePage', function (event, page) {
-        event.preventDefault();
-        filterAdd('page', page);
-    });
 }
 
 function getExistingFilterParams()
@@ -247,8 +242,6 @@ function filterSubmit(form)
 {
     const paramsNew = filterGenerateArrayWithParams(form);
 
-    console.log('2222');
-
     window.location.href = buildLinkWithParams(paramsNew);
 }
 
@@ -268,8 +261,6 @@ function filtersReset()
         paramsNew['per_page'] = paramsParsed['per_page'];
     }
 
-    console.log('33333');
-
     if (!paramsNew.length) {
         window.location.href = buildLinksWithoutParams();
     } else {
@@ -288,9 +279,6 @@ function filterAdd(key, value)
         delete paramsParsed['page'];
     }
 
-    console.log('44444');
-
-    console.log('buildLinkWithParams ' + buildLinkWithParams(paramsParsed) );
     window.location.href = buildLinkWithParams(paramsParsed);
 }
 
@@ -310,8 +298,6 @@ function filterDelete(key, value)
             }
         }
     });
-
-    console.log('5555');
 
     window.location.href = buildLinkWithParams(paramsParsed);
 }

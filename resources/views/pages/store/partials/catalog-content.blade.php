@@ -47,7 +47,7 @@
 
             <section class="bona-catalog__results" aria-live="polite" aria-label="{{ trans('base.catalog_results') }}">
                 @if($productsPaginated->isNotEmpty())
-                    <div class="bona-catalog__grid art-product-list art-three-column">
+                    <div class="bona-catalog__grid art-product-list art-three-column" data-catalog-grid>
                         @foreach($productsPaginated as $product)
                             @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
 
@@ -57,6 +57,7 @@
                         @endforeach
                     </div>
 
+                    <p class="sr-only" aria-live="polite" data-catalog-load-status></p>
                     {{ $productsPaginated->links('pagination.store') }}
                 @else
                     <div class="bona-catalog__empty">

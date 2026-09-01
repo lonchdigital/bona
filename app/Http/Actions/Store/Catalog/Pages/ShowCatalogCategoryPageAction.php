@@ -42,7 +42,6 @@ class ShowCatalogCategoryPageAction extends BaseAction
         $colors = $colorService->getAvailableColorsByProductTypeAndCategory($productType, $category);
         $countries = $countryService->getAvailableCountriesByProductType($productType);
         $brands = $brandService->getAvailableBrandsByProductType($productType);
-        $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
 
         $selectedFiltersOptions = $catalogService->getOptionsByFilterData(
             $productType,
@@ -81,7 +80,6 @@ class ShowCatalogCategoryPageAction extends BaseAction
             //            'categories' => $categoryService->getProductCategories($productType),
             'colors' => $colors,
             'countries' => $countries,
-            'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'selectedCategory' => $category,
             'productsPaginated' => $productsPaginated,

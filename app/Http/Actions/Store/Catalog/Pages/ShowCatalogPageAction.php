@@ -7,7 +7,6 @@ use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Brand;
 use App\Models\ProductType;
-use App\Services\Brand\BrandService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
@@ -31,7 +30,6 @@ class ShowCatalogPageAction extends BaseAction
         //        $wishListService = app()->make(WishListService::class);
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
-        $brandService = app()->make(BrandService::class);
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
 
@@ -40,8 +38,6 @@ class ShowCatalogPageAction extends BaseAction
         //        $countries = $countryService->getAvailableCountriesByProductType($productType);
         $baseCurrency = $currencyService->getBaseCurrency();
         $colors = $colorService->getAvailableColorsByProductType($productType);
-        $brands = $brandService->getAvailableBrandsByProductType($productType);
-        $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
         $selectedBrand = $request->route('brandSlug');
 
         if (! $selectedBrand instanceof Brand) {
@@ -79,7 +75,6 @@ class ShowCatalogPageAction extends BaseAction
             //            'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
             'colors' => $colors,
-            'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'selectedBrand' => $selectedBrand,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,

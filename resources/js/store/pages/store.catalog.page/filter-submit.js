@@ -4,7 +4,6 @@ import RangeSliderPips from 'svelte-range-slider-pips';
 
 const tooltipClasses = [
     '.filter-item--type-custom .checkbox-preview',
-    '.filter-item--brands .checkbox-preview',
     '.filter-item--colors .colors-wrapper',
     '.filter-item--countries .custom-control'
 ];
@@ -123,10 +122,6 @@ export function init () {
         });
     });
 
-    $(window).on('changePage', function (event, page) {
-        event.preventDefault();
-        filterAdd('page', page);
-    });
 }
 
 function getExistingFilterParams()
@@ -282,9 +277,6 @@ function filterAdd(key, value)
         delete paramsParsed['page'];
     }
 
-    console.log('44444');
-
-    console.log('buildLinkWithParams ' + buildLinkWithParams(paramsParsed) );
     window.location.href = buildLinkWithParams(paramsParsed);
 }
 

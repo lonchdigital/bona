@@ -39,13 +39,19 @@ class ShowFilterGroupPageAction extends BaseAction
         //        $wishListService = app()->make(WishListService::class);
         $filerGroupService = app()->make(FilterGroupService::class);
 
-        $filtersData = new FilterProductDTO($filerGroupService->buildFilterArrayByFilterGroup($filterGroup));
+        $groupFilters = $filerGroupService->buildFilterArrayByFilterGroup($filterGroup);
+        $requestedPage = $request->toDTO()->filters['page'] ?? null;
+
+        if ($requestedPage !== null) {
+            $groupFilters['page'] = $requestedPage;
+        }
+
+        $filtersData = new FilterProductDTO($groupFilters);
 
         $baseCurrency = $currencyService->getBaseCurrency();
         $colors = $colorService->getAvailableColorsByProductType($productType);
         $countries = $countryService->getAvailableCountriesByProductType($productType);
         $brands = $brandService->getAvailableBrandsByProductType($productType);
-        $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
 
         $selectedFiltersOptions = $catalogService->getOptionsByFilterData(
             $productType,
@@ -83,7 +89,6 @@ class ShowFilterGroupPageAction extends BaseAction
             'categories' => $categoryService->getProductCategories($productType),
             'colors' => $colors,
             'countries' => $countries,
-            'brandsSortedByFirstLetter' => $brandsSortedByFirstLetter,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getProductsMaxPrice($productType),

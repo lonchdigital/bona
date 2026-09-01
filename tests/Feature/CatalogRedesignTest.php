@@ -2,12 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Product;
 use App\Models\ProductGalleries;
 use App\Models\ProductType;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Redirector;
+use Illuminate\Routing\Route;
 use Tests\TestCase;
 
 class CatalogRedesignTest extends TestCase
@@ -62,6 +66,8 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('data-price-adjustment="1250"', $html);
         $this->assertStringContainsString('11 250 грн', $html);
         $this->assertStringContainsString('13 250 грн', $html);
+        $this->assertStringContainsString('bona-product-card__actions', $html);
+        $this->assertStringContainsString('data-product-compare', $html);
     }
 
     public function test_catalog_keeps_the_existing_filter_contract_inside_the_new_layout(): void
@@ -75,6 +81,8 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('id="filter-left-form"', $filters);
         $this->assertStringContainsString('filter-submit-main', $filters);
         $this->assertStringContainsString('filter-reset', $filters);
+        $this->assertStringNotContainsString('filter-item--brands', $filters);
+        $this->assertStringNotContainsString('search_by_brand', $filters);
         $this->assertStringContainsString('id="art-filter-display"', $toolbar);
         $this->assertStringContainsString('sort-by-option', $toolbar);
     }
@@ -88,5 +96,49 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('x-store.product-card', $catalog);
         $this->assertStringContainsString('variant="slider"', $home);
         $this->assertStringContainsString('variant="catalog"', $catalog);
+    }
+
+    public function test_catalog_pagination_uses_real_compact_page_urls_and_progressive_load_more(): void
+    {
+        $paginator = new LengthAwarePaginator(
+            range(1, 18),
+            216,
+            18,
+            6,
+            ['path' => 'https://bona.test/product-category/interior-doors/filter/color=white'],
+        );
+
+        $html = view('pagination.store', ['paginator' => $paginator])->render();
+
+        $this->assertStringContainsString('data-catalog-load-more', $html);
+        $this->assertStringContainsString('href="https://bona.test/product-category/interior-doors/filter/color=white?page=7"', $html);
+        $this->assertStringContainsString('aria-current="page"', $html);
+        $this->assertStringContainsString('>…</span>', $html);
+        $this->assertStringNotContainsString('href="#', $html);
+        $this->assertStringNotContainsString('>2</a>', $html);
+    }
+
+    public function test_query_page_overrides_the_legacy_page_filter(): void
+    {
+        $request = CatalogFilterRequest::create(
+            '/product-category/interior-doors/filter/color=white;page=7',
+            'GET',
+            ['page' => 2],
+        );
+        $route = new Route(
+            ['GET'],
+            'product-category/interior-doors/filter/{catalogFiltersString?}',
+            fn () => null,
+        );
+        $route->bind($request);
+        $request->setRouteResolver(fn () => $route);
+        $request->setContainer($this->app);
+        $request->setRedirector($this->app->make(Redirector::class));
+        $request->validateResolved();
+
+        $filters = $request->toDTO()->filters;
+
+        $this->assertSame('white', $filters['color']);
+        $this->assertSame(2, $filters['page']);
     }
 }

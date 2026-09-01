@@ -31,19 +31,11 @@ export function init () {
         '.custom-checkbox'
     );
 
-    //brands
-    addToolTip(
-        '.archive-catalog-filter-left .filter-item--brands',
-        '.checkbox-preview',
-        '.custom-control-label',
-        '.custom-checkbox',
-    );
-
     //colors
     addToolTip(
         '.archive-catalog-filter-left .filter-item--colors',
         '.color-wrapper',
-        '.link-color',
+        '.color-option',
         '.color-wrapper',
     );
 
@@ -143,35 +135,5 @@ function addToolTip(blockClassName, previewClassName, labelClassName, checkboxCl
             }
         });
 
-        const scrollableElement = block.find('.brands');
-        if (scrollableElement.length) {
-            const scrollableElementTopPosition = scrollableElement.position().top;
-            const scrollableElementBottomPosition = scrollableElementTopPosition + scrollableElement.outerHeight(true);
-            let elementIsAlreadyHidden = false;
-            scrollableElement.scroll(function () {
-                const tooltipId = $('div[role="tooltip"]').attr('id');
-                const tooltipElement = $('#' + tooltipId);
-                if (tooltipId) {
-                    const previewElement = $(this).find('div[aria-describedby="' + tooltipId + '"]');
-                    const previewElementTopPosition = previewElement.position().top;
-                    const previewElementBottomPosition = previewElementTopPosition + previewElement.outerHeight(true);
-
-                    if (scrollableElementTopPosition >= previewElementTopPosition ||
-                        scrollableElementBottomPosition <= previewElementBottomPosition) {
-                        //hide
-                        if (!elementIsAlreadyHidden) {
-                            elementIsAlreadyHidden = true;
-                            tooltipElement.attr('style', 'display: none;');
-                        }
-                    } else {
-                        //show
-                        if (elementIsAlreadyHidden) {
-                            tooltipElement.removeAttr('style');
-                            elementIsAlreadyHidden = false;
-                        }
-                    }
-                }
-            });
-        }
     });
 }
