@@ -28,6 +28,28 @@
             ])
             ->values()
         : $productTypes->take(3);
+    $promotedDirectCategorySlugs = ['dverni-rucky', 'door-handles'];
+    $directLinks = $directTypes->map(function ($productType) use ($promotedDirectCategorySlugs) {
+        $promotedCategory = $productType->categories
+            ->first(fn ($category) => in_array($category->slug, $promotedDirectCategorySlugs, true));
+
+        if ($promotedCategory) {
+            return [
+                'label' => $promotedCategory->name,
+                'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
+                    'productTypeSlug' => $productType->slug,
+                    'categorySlug' => $promotedCategory->slug,
+                ]),
+            ];
+        }
+
+        return [
+            'label' => $productType->name,
+            'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+                'productTypeSlug' => $productType->slug,
+            ]),
+        ];
+    });
 @endphp
 
 <div class="bona-site-header {{ $overlay ? 'bona-site-header--overlay' : 'bona-site-header--solid' }}" data-site-header>
@@ -76,9 +98,9 @@
                     <x-store.mega-menu :product-types="$navigationTypes" />
                 </div>
 
-                @foreach($directTypes as $productType)
-                    <a class="bona-mainnav__direct" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
-                        {{ $productType->name }}
+                @foreach($directLinks as $directLink)
+                    <a class="bona-mainnav__direct" href="{{ $directLink['url'] }}">
+                        {{ $directLink['label'] }}
                     </a>
                 @endforeach
 

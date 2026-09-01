@@ -6,6 +6,7 @@ use App\Models\CatalogMenuConfiguration;
 use App\Models\Category;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\CatalogMenu\CatalogMenuService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\Support\MakesShopData;
@@ -123,6 +124,40 @@ class CatalogMenuTest extends TestCase
             ->assertSee('class="bona-mainnav__direct"', false);
     }
 
+    public function test_header_promotes_door_handles_instead_of_the_accessories_type(): void
+    {
+        $accessories = $this->productType([
+            'slug' => 'aksessuar',
+            'name' => ['uk' => 'Аксесуари', 'ru' => 'Аксессуары'],
+            'sort_order' => 1,
+        ]);
+        $doorHandles = $this->category($accessories->id, 'dverni-rucky', 'Дверні ручки');
+        $doorHandles->setTranslations('name', [
+            'uk' => 'Дверні ручки',
+            'ru' => 'Дверные ручки',
+        ])->save();
+
+        CatalogMenuConfiguration::query()->create([
+            'product_type_id' => $accessories->id,
+            'is_visible' => true,
+            'sort_order' => 0,
+            'show_in_header' => true,
+            'header_order' => 0,
+            'cards' => [$doorHandles->id],
+            'columns' => [],
+        ]);
+
+        app(CatalogMenuService::class)->forgetCache();
+
+        $ukrainianLink = $this->directHeaderLinks($this->get(route('store.home'))->assertOk()->getContent())[0];
+        $russianLink = $this->directHeaderLinks($this->get(route('localized.store.home', ['lang' => 'ru']))->assertOk()->getContent())[0];
+
+        $this->assertSame('Дверні ручки', $ukrainianLink['label']);
+        $this->assertSame('/product-category/aksessuar/category/dverni-rucky', $ukrainianLink['url']);
+        $this->assertSame('Дверные ручки', $russianLink['label']);
+        $this->assertSame('/ru/product-category/aksessuar/category/dverni-rucky', $russianLink['url']);
+    }
+
     public function test_custom_menu_item_requires_both_label_and_url(): void
     {
         $productType = $this->productType(['sort_order' => 1]);
@@ -172,5 +207,22 @@ class CatalogMenuTest extends TestCase
             'meta_description' => ['uk' => $name, 'ru' => $name],
             'meta_keywords' => ['uk' => $name, 'ru' => $name],
         ]);
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string}>
+     */
+    private function directHeaderLinks(string $html): array
+    {
+        $document = new \DOMDocument;
+        @$document->loadHTML($html);
+        $xpath = new \DOMXPath($document);
+
+        return collect(iterator_to_array($xpath->query('//a[contains(concat(" ", normalize-space(@class), " "), " bona-mainnav__direct ")]')))
+            ->map(fn (\DOMElement $link) => [
+                'label' => trim(preg_replace('/\s+/u', ' ', $link->textContent)),
+                'url' => $link->getAttribute('href'),
+            ])
+            ->all();
     }
 }
