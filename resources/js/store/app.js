@@ -21,6 +21,7 @@ import StorefrontSearch from './common/storefront-search';
 import HomeHero from './common/home-hero';
 import HomeStyleSelector from './common/home-style-selector';
 import ProductCardColors from './common/product-card-colors';
+import ProductComparison from './common/product-comparison';
 
 // console.log('1111');
 
@@ -83,7 +84,8 @@ async function init()
         StorefrontSearch.init(),
         HomeHero.init(),
         HomeStyleSelector.init(),
-        ProductCardColors.init()
+        ProductCardColors.init(),
+        ProductComparison.init()
     ]);
 }
 

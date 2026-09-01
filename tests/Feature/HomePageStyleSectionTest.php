@@ -11,6 +11,7 @@ use App\Models\ProductField;
 use App\Models\Role;
 use App\Models\SeoText;
 use App\Models\User;
+use App\Services\HomePage\HomePageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -364,6 +365,91 @@ class HomePageStyleSectionTest extends TestCase
 
         $this->assertDatabaseMissing(HomePageNewProducts::class, ['product_id' => $product->id]);
         $this->assertDatabaseHas(HomePageBestSalesProducts::class, ['product_id' => $product->id]);
+    }
+
+    public function test_popular_models_are_filled_with_available_interior_doors_in_popularity_order(): void
+    {
+        $interiorDoors = $this->productType([
+            'slug' => 'interior-doors',
+            'name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери'],
+        ]);
+        $entranceDoors = $this->productType([
+            'slug' => 'entrance-doors',
+            'name' => ['uk' => 'Вхідні двері', 'ru' => 'Входные двери'],
+        ]);
+        $curatedInteriorDoor = $this->makeProduct([
+            'product_type_id' => $interiorDoors->id,
+            'main_image_path' => 'products/curated.webp',
+            'availability_status_id' => 2,
+        ]);
+        $curatedEntranceDoor = $this->makeProduct([
+            'product_type_id' => $entranceDoors->id,
+            'main_image_path' => 'products/entrance.webp',
+            'availability_status_id' => 2,
+        ]);
+        $mostPopularInteriorDoor = $this->makeProduct([
+            'product_type_id' => $interiorDoors->id,
+            'main_image_path' => 'products/popular.webp',
+            'availability_status_id' => 2,
+            'orders_count' => 12,
+        ]);
+        $fallbackInteriorDoor = $this->makeProduct([
+            'product_type_id' => $interiorDoors->id,
+            'main_image_path' => 'products/fallback.webp',
+            'availability_status_id' => 2,
+            'orders_count' => 0,
+        ]);
+        $unavailableInteriorDoor = $this->makeProduct([
+            'product_type_id' => $interiorDoors->id,
+            'main_image_path' => 'products/unavailable.webp',
+            'availability_status_id' => 4,
+            'orders_count' => 100,
+        ]);
+
+        HomePageBestSalesProducts::query()->insert([
+            ['product_id' => $curatedInteriorDoor->id, 'created_at' => now(), 'updated_at' => now()],
+            ['product_id' => $curatedEntranceDoor->id, 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        $products = app(HomePageService::class)->getHomePagePopularProducts(3);
+
+        $this->assertSame([
+            $curatedInteriorDoor->id,
+            $mostPopularInteriorDoor->id,
+            $fallbackInteriorDoor->id,
+        ], $products->pluck('id')->all());
+        $this->assertNotContains($curatedEntranceDoor->id, $products->pluck('id')->all());
+        $this->assertNotContains($unavailableInteriorDoor->id, $products->pluck('id')->all());
+        $this->assertTrue($products->every(
+            fn ($product) => (int) $product->product_type_id === $interiorDoors->id,
+        ));
+    }
+
+    public function test_popular_models_use_random_interior_door_fallback_without_sales_data(): void
+    {
+        $interiorDoors = $this->productType([
+            'slug' => 'interior-doors',
+            'name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери'],
+        ]);
+        $firstDoor = $this->makeProduct([
+            'product_type_id' => $interiorDoors->id,
+            'main_image_path' => 'products/first.webp',
+            'availability_status_id' => 2,
+            'orders_count' => 0,
+        ]);
+        $secondDoor = $this->makeProduct([
+            'product_type_id' => $interiorDoors->id,
+            'main_image_path' => 'products/second.webp',
+            'availability_status_id' => 2,
+            'orders_count' => 0,
+        ]);
+
+        $products = app(HomePageService::class)->getHomePagePopularProducts(2);
+
+        $this->assertEqualsCanonicalizing(
+            [$firstDoor->id, $secondDoor->id],
+            $products->pluck('id')->all(),
+        );
     }
 
     public function test_homepage_editor_receives_every_content_section(): void

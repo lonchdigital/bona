@@ -14,7 +14,9 @@
     };
     $title = $localized($section['title'] ?? []) ?: trans('base.home_popular_title');
     $linkUrl = trim((string) ($section['link_url'] ?? ''))
-        ?: App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page');
+        ?: App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+            'productTypeSlug' => 'interior-doors',
+        ]);
 @endphp
 
 @if(($section['enabled'] ?? true) && $products->isNotEmpty())

@@ -35,6 +35,8 @@ class HomePageService extends BaseService
 
     const CONTENT_IMAGES_FOLDER = 'home-page-content-images';
 
+    private const POPULAR_PRODUCT_TYPE_SLUG = 'interior-doors';
+
     private const CONTENT_IMAGE_ASSETS = [
         'bedroom' => 'bona-html/img/interior-bedroom.jpg',
         'living' => 'bona-html/img/interior-living.jpg',
@@ -810,42 +812,78 @@ class HomePageService extends BaseService
     }
 
     /**
-     * Products selected as best sellers in the homepage editor are the source
-     * of truth for the redesigned "Popular models" block. Older installations
-     * often have that list empty, so keep the section useful with recent,
-     * available door products until an editor makes a manual selection.
+     * Curated interior doors lead the homepage slider. The remaining places
+     * are filled with real, available interior-door products: order history
+     * decides their priority when it exists, otherwise the fallback is random.
      */
     public function getHomePagePopularProducts(int $limit = 12): Collection
     {
+        if ($limit < 1) {
+            return collect();
+        }
+
+        $interiorDoors = ProductType::query()
+            ->where('slug', self::POPULAR_PRODUCT_TYPE_SLUG)
+            ->first();
+
+        if (! $interiorDoors) {
+            return collect();
+        }
+
         $relations = ['product.brand', 'product.productType', 'product.colors', 'product.galleries'];
 
         $products = HomePageBestSalesProducts::with($relations)
             ->get()
             ->pluck('product')
-            ->filter();
+            ->filter(fn (?Product $product) => $this->isEligiblePopularInteriorDoor($product, $interiorDoors->id));
 
         if ($products->isEmpty()) {
             $products = HomePageNewProducts::with($relations)
                 ->get()
                 ->pluck('product')
-                ->filter();
+                ->filter(fn (?Product $product) => $this->isEligiblePopularInteriorDoor($product, $interiorDoors->id));
         }
 
-        if ($products->isNotEmpty()) {
-            return $products->take($limit)->values();
+        $products = $products
+            ->unique('id')
+            ->take($limit)
+            ->values();
+        $remaining = $limit - $products->count();
+
+        if ($remaining < 1) {
+            return $products;
         }
 
-        return Product::query()
+        $fallbackQuery = Product::query()
             ->with(['brand', 'productType', 'colors', 'galleries'])
+            ->where('product_type_id', $interiorDoors->id)
+            ->whereNotIn('id', $products->pluck('id'))
             ->whereNotNull('main_image_path')
             ->whereNotNull('price')
             ->where('price', '>', 0)
-            ->where('availability_status_id', ProductStatusDataClass::PRODUCT_STATUS_STOCK)
-            ->whereHas('productType', fn ($query) => $query->where('has_size', true))
-            ->orderByDesc('updated_at')
-            ->orderByDesc('id')
-            ->limit($limit)
-            ->get();
+            ->where('availability_status_id', ProductStatusDataClass::PRODUCT_STATUS_STOCK);
+
+        if ((clone $fallbackQuery)->where('orders_count', '>', 0)->exists()) {
+            $fallbackQuery
+                ->orderByDesc('orders_count')
+                ->orderByDesc('updated_at')
+                ->orderByDesc('id');
+        } else {
+            $fallbackQuery->inRandomOrder();
+        }
+
+        return $products
+            ->concat($fallbackQuery->limit($remaining)->get())
+            ->values();
+    }
+
+    private function isEligiblePopularInteriorDoor(?Product $product, int $productTypeId): bool
+    {
+        return $product !== null
+            && (int) $product->product_type_id === $productTypeId
+            && filled($product->main_image_path)
+            && (float) $product->price > 0
+            && $product->availability_status_id === ProductStatusDataClass::PRODUCT_STATUS_STOCK;
     }
 
     public function getHomePageBrands(): Collection

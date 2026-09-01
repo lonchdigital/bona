@@ -8,6 +8,7 @@ export function init () {
     if (popularSlider) {
         new Swiper(popularSlider, {
             slidesPerView: 1.12,
+            slidesPerGroup: 1,
             spaceBetween: 16,
             speed: 450,
             watchOverflow: true,
@@ -19,14 +20,17 @@ export function init () {
             breakpoints: {
                 560: {
                     slidesPerView: 2,
+                    slidesPerGroup: 2,
                     spaceBetween: 20,
                 },
                 900: {
                     slidesPerView: 3,
+                    slidesPerGroup: 3,
                     spaceBetween: 24,
                 },
                 1180: {
                     slidesPerView: 4,
+                    slidesPerGroup: 4,
                     spaceBetween: 24,
                 },
             },

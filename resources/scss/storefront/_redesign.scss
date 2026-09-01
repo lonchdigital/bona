@@ -1106,8 +1106,8 @@
 .bona-popular {
     &__slider {
         overflow: hidden;
-        padding: 18px 4px 0;
-        margin: -18px -4px 0;
+        padding: 18px 12px 26px;
+        margin: -18px -12px -26px;
 
         .swiper-wrapper { align-items: stretch; }
     }
@@ -1144,6 +1144,32 @@
     flex-direction: column;
     color: var(--bona-ink);
 
+    &--slider {
+        gap: 14px;
+        padding: 14px 14px 20px;
+        border: 1px solid var(--bona-line);
+        border-radius: 18px;
+        background: #fff;
+        transition: border-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.19, 1, .22, 1);
+
+        &:hover,
+        &:focus-within {
+            border-color: #d8d0c2;
+            box-shadow: 0 18px 46px rgba(35, 32, 27, .1);
+            transform: translateY(-4px);
+        }
+
+        .bona-product-card__media {
+            height: 330px;
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .bona-product-card__swatches { padding: 0 6px; }
+        .bona-product-card__info { padding: 0 6px; }
+        .bona-product-card__footer { padding: 8px 6px 0; }
+    }
+
     &__media {
         position: relative;
         height: 360px;
@@ -1167,10 +1193,19 @@
         &:hover img { transform: scale(1.025); }
     }
 
-    &__badge {
+    &__badges {
         position: absolute;
         top: 16px;
         left: 16px;
+        z-index: 1;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        pointer-events: none;
+    }
+
+    &__badge {
         padding: 7px 11px;
         border-radius: 999px;
         background: var(--bona-gold-light);
@@ -1180,7 +1215,70 @@
         line-height: 1;
         letter-spacing: .08em;
         text-transform: uppercase;
+    }
+
+    &__actions {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        opacity: 0;
         pointer-events: none;
+        transform: translateX(12px);
+        transition: opacity .32s ease, transform .32s cubic-bezier(.19, 1, .22, 1);
+    }
+
+    &--slider:hover &__actions,
+    &--slider:focus-within &__actions {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    &__action {
+        display: grid;
+        width: 46px;
+        height: 46px;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(35, 32, 27, .12);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .96);
+        box-shadow: 0 7px 18px rgba(35, 32, 27, .1);
+        color: var(--bona-ink);
+        cursor: pointer;
+        transition: background-color .25s ease, border-color .25s ease, color .25s ease, transform .25s ease;
+
+        svg { width: 24px; height: 24px; }
+
+        &:hover {
+            border-color: var(--bona-gold);
+            color: var(--bona-gold);
+            transform: scale(1.06);
+        }
+
+        &:focus-visible {
+            border-color: var(--bona-gold);
+            color: var(--bona-gold);
+            outline: 2px solid var(--bona-gold);
+            outline-offset: 2px;
+        }
+    }
+
+    &__actions &__wish {
+        position: static;
+        width: 46px;
+        height: 46px;
+    }
+
+    &--slider &__wish.link-heart-active,
+    &__compare.is-active {
+        border-color: var(--bona-ink);
+        background: var(--bona-ink);
+        color: #fff;
     }
 
     &__wish {
@@ -1282,6 +1380,14 @@
 
         &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 3px; }
         .icon-cart { margin: 0; }
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    .bona-product-card--slider .bona-product-card__actions {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
     }
 }
 
@@ -2372,6 +2478,9 @@
     .bona-header__burger span,
     .bona-category-card__image img,
     .bona-category-card__arrow,
+    .bona-product-card--slider,
+    .bona-product-card__actions,
+    .bona-product-card__action,
     .bona-product-card__media img,
     .bona-work-card__image img,
     .bona-footer__socials a,

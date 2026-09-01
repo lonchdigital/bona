@@ -101,6 +101,8 @@ return [
     'buy_one_click_agreement_start' => 'Нажимая «Купить», вы даете согласие на обработку',
     'add_to_wish_list' => 'В избранное',
     'remove_from_wish_list' => 'Убрать из избранного',
+    'add_to_compare' => 'Добавить к сравнению',
+    'remove_from_compare' => 'Убрать из сравнения',
     'brand' => 'Бренд',
     'collection' => 'Коллекция',
     'size' => 'Размер',

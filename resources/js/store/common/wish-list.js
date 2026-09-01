@@ -34,33 +34,53 @@ function handleHeartClick($heart)
     const isActive = $heart.hasClass(WISH_LIST_ACTIVE_CLASS);
 
     if (!isActive) {
-        $heart.addClass(WISH_LIST_ACTIVE_CLASS);
+        setHeartState($heart, true);
 
         addToWishList(productSlug, function (data) {
             if (!isRequestSuccessful(data)) {
-                $heart.removeClass(WISH_LIST_ACTIVE_CLASS);
+                setHeartState($heart, false);
                 return;
             }
 
             incrementHeaderWishListCount();
         }, function () {
-            $heart.removeClass(WISH_LIST_ACTIVE_CLASS);
+            setHeartState($heart, false);
         });
     } else {
-        $heart.removeClass(WISH_LIST_ACTIVE_CLASS);
+        setHeartState($heart, false);
 
         removeFromWishList(productSlug, function (data) {
             if (!isRequestSuccessful(data)) {
-                $heart.addClass(WISH_LIST_ACTIVE_CLASS);
+                setHeartState($heart, true);
                 return;
             }
 
             decrementHeaderWishListCount();
             dropCardFromOwnWishList($heart);
         }, function () {
-            $heart.addClass(WISH_LIST_ACTIVE_CLASS);
+            setHeartState($heart, true);
         });
     }
+}
+
+function setHeartState($heart, active)
+{
+    $heart.toggleClass(WISH_LIST_ACTIVE_CLASS, active);
+    $heart.attr('aria-pressed', active ? 'true' : 'false');
+
+    const label = active
+        ? ($heart.attr('data-remove-label') || getWishListTranslation('remove_from_wish_list'))
+        : ($heart.attr('data-add-label') || getWishListTranslation('add_to_wish_list'));
+
+    if (label) {
+        $heart.attr('aria-label', label);
+        $heart.attr('title', label);
+    }
+}
+
+function getWishListTranslation(key)
+{
+    return typeof translations !== 'undefined' ? translations[key] : '';
 }
 
 /*
@@ -94,9 +114,8 @@ function markActiveHearts()
 {
     getWishListProductSlugs(function (slugs) {
         $('.link-heart[id], .product-wish-list-button[id]').each(function () {
-            if (slugs.indexOf($(this).attr('id')) !== -1) {
-                $(this).addClass(WISH_LIST_ACTIVE_CLASS);
-            }
+            const $heart = $(this);
+            setHeartState($heart, slugs.indexOf($heart.attr('id')) !== -1);
         });
     });
 }

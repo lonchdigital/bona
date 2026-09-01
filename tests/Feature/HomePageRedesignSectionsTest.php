@@ -84,12 +84,29 @@ class HomePageRedesignSectionsTest extends TestCase
         $html = view('components.store.home-popular-products', [
             'products' => collect([$product]),
             'baseCurrency' => (object) ['name_short' => 'грн'],
+            'section' => [
+                'link_label' => ['uk' => 'Всі моделі', 'ru' => 'Все модели'],
+            ],
         ])->render();
 
         $this->assertStringContainsString('data-popular-slider', $html);
         $this->assertStringContainsString('bona-product-card', $html);
+        $this->assertStringContainsString('bona-product-card__actions', $html);
+        $this->assertStringContainsString('data-product-compare', $html);
+        $this->assertStringContainsString('aria-pressed="false"', $html);
+        $this->assertStringContainsString('/product-category/interior-doors', $html);
         $this->assertStringContainsString('Тестові двері', $html);
         $this->assertStringContainsString('12 500', $html);
+    }
+
+    public function test_product_comparison_state_is_persisted_for_homepage_cards(): void
+    {
+        $source = file_get_contents(resource_path('js/store/common/product-comparison.js'));
+
+        $this->assertStringContainsString('const STORAGE_KEY = \'bona-compared-products\'', $source);
+        $this->assertStringContainsString('window.localStorage.setItem', $source);
+        $this->assertStringContainsString('button.setAttribute(\'aria-pressed\'', $source);
+        $this->assertStringContainsString('bona:comparison-change', $source);
     }
 
     public function test_reference_sections_are_composed_in_the_expected_order(): void
