@@ -750,22 +750,33 @@
 
     &__swatch {
         display: block;
-        width: 16px;
-        height: 16px;
-        flex: 0 0 auto;
+        position: relative;
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
         padding: 0;
-        border: 1px solid rgba(35, 32, 27, .16);
+        border: 0;
         border-radius: 50%;
-        background-color: var(--bona-swatch);
-        background-image: var(--bona-swatch-image, none);
-        background-position: center;
-        background-size: cover;
+        background: transparent;
         box-shadow: none;
         cursor: pointer;
-        transition: box-shadow .2s ease, transform .2s ease;
 
-        &:hover { transform: scale(1.14); }
-        &.is-active { box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--bona-gold); }
+        &::before {
+            position: absolute;
+            inset: 4px;
+            border: 1px solid rgba(35, 32, 27, .16);
+            border-radius: inherit;
+            background-color: var(--bona-swatch);
+            background-image: var(--bona-swatch-image, none);
+            background-position: center;
+            background-size: cover;
+            box-shadow: none;
+            content: '';
+            transition: box-shadow .2s ease, transform .2s ease;
+        }
+
+        &:hover::before { transform: scale(1.14); }
+        &.is-active::before { box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--bona-gold); }
         &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 3px; }
     }
 
@@ -807,7 +818,7 @@
         .bona-product-card__action,
         .bona-product-card__actions .bona-product-card__wish { width: 42px; height: 42px; }
         .bona-product-card__action svg { width: 21px; height: 21px; }
-        .bona-product-card__swatches { min-height: 18px; padding: 0 6px; }
+        .bona-product-card__swatches { min-height: 24px; padding: 0 6px; }
         .bona-product-card__info { padding: 0 6px; }
         .bona-product-card__meta { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
         .bona-product-card__info h3 { font-size: 21px; }
