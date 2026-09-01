@@ -218,6 +218,8 @@
 
 </div>
 
+<x-store.comparison-dock />
+
 {{-- static scripts start --}}
 <script src="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('static-data.script') }}?lang={{ app()->getLocale() }}" defer></script>
 {{-- static scripts end --}}

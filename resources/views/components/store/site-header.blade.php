@@ -125,6 +125,18 @@
                         <x-wish-heart />
                     </a>
                 </li>
+                <li class="bona-header__comparison">
+                    <a
+                        href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.comparison.page') }}"
+                        aria-label="{{ trans('base.comparison') }}"
+                        data-comparison-link
+                    >
+                        <span class="bona-header__comparison-count d-none" data-comparison-count>0</span>
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M5 7h14M16 4l3 3-3 3M19 17H5M8 14l-3 3 3 3"></path>
+                        </svg>
+                    </a>
+                </li>
                 <x-cart-window />
             </ul>
 

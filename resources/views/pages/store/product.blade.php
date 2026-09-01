@@ -206,6 +206,23 @@
                                 <span class="link-heart product-wish-list-button single-product-wish-list{{ collect($wishListProducts ?? [])->contains($product->id) ? ' link-heart-active' : '' }}" id="{{ $product->slug }}" aria-label="{{ trans('base.add_to_wish_list') }}">
                                     <x-wish-heart/>
                                 </span>
+                                <button
+                                    class="bona-pdp-compare"
+                                    type="button"
+                                    aria-label="{{ trans('base.add_to_compare') }}"
+                                    aria-pressed="false"
+                                    data-product-compare
+                                    data-product-slug="{{ $product->slug }}"
+                                    data-add-label="{{ trans('base.add_to_compare') }}"
+                                    data-remove-label="{{ trans('base.remove_from_compare') }}"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M5 7h14"></path>
+                                        <path d="m16 4 3 3-3 3"></path>
+                                        <path d="M19 17H5"></path>
+                                        <path d="m8 14-3 3 3 3"></path>
+                                    </svg>
+                                </button>
                             </div>
                             <div class="clearfix">
 

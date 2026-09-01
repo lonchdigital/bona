@@ -56,6 +56,16 @@ class Product extends Model implements Sitemapable
         return $this->hasMany(ProductGalleries::class, 'product_id');
     }
 
+    public function characteristics(): HasMany
+    {
+        return $this->hasMany(ProductCharacteristics::class, 'product_id');
+    }
+
+    public function attributeOptions(): HasMany
+    {
+        return $this->hasMany(ProductAttributeOptions::class, 'product_id');
+    }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'product_categories');

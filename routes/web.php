@@ -53,6 +53,7 @@ use App\Http\Actions\Store\Checkout\CheckoutConfirmOrderAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutPage;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouMonoBankPageAction;
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
+use App\Http\Actions\Store\Comparison\Pages\ShowComparisonPageAction;
 use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
 use App\Http\Actions\Store\Delivery\GetNPCitiesAction;
 // use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
@@ -175,6 +176,7 @@ $optionalLanguageRoutes = function () {
      * Shop routes
      */
     Route::name('store.home')->get('/', ShowHomePageAction::class);
+    Route::name('store.comparison.page')->get('/compare', ShowComparisonPageAction::class);
 
     Route::name('store.services')->get('/services', ShowServicesPageAction::class);
     Route::name('store.delivery-info')->get('/delivery-info', ShowDeliveryPageAction::class);
