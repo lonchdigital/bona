@@ -1090,7 +1090,7 @@
         align-items: center;
         gap: 7px;
         margin-top: 28px;
-        color: var(--bona-gold);
+        color: #765f43;
         font-size: 14px;
         font-weight: 700;
         text-decoration: none;
@@ -1129,7 +1129,7 @@
         border: 0;
         border-top: 1px solid #e3e0d7;
         background: none;
-        color: #9a9384;
+        color: #877f70;
         font: 400 28px/1.2 var(--bona-display);
         letter-spacing: normal;
         text-align: left;
@@ -1402,17 +1402,35 @@
         display: flex;
         min-height: 22px;
         align-items: center;
-        gap: 8px;
+        gap: 0;
         padding: 14px 6px 0;
     }
 
     &__swatch {
-        width: 16px;
-        height: 16px;
-        border: 2px solid #fbfaf7;
+        position: relative;
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
+        padding: 0;
+        border: 0;
         border-radius: 50%;
-        background: var(--bona-swatch);
-        box-shadow: 0 0 0 1px #d9d4ca;
+        background: transparent;
+        cursor: pointer;
+
+        &::before {
+            position: absolute;
+            inset: 4px;
+            border: 2px solid #fbfaf7;
+            border-radius: inherit;
+            background: var(--bona-swatch);
+            box-shadow: 0 0 0 1px #d9d4ca;
+            content: '';
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--bona-gold);
+            outline-offset: 1px;
+        }
     }
 
     &__more { color: var(--bona-muted); font-size: 11px; }
@@ -1825,7 +1843,7 @@
 
         > span {
             padding-top: 1px;
-            color: rgba(247, 244, 238, .42);
+            color: rgba(247, 244, 238, .68);
             font-size: 9px;
             font-weight: 700;
             letter-spacing: .08em;
@@ -2215,7 +2233,7 @@
 
     &__date {
         flex: 0 0 auto;
-        color: #918a7d;
+        color: #756f65;
         font-size: 12px;
     }
 }
