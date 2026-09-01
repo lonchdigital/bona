@@ -101,6 +101,8 @@ class HomePageSeoTest extends TestCase
 
     public function test_new_asset_build_invalidates_cached_homepage_html(): void
     {
+        $this->ensureAssetManifest();
+
         $config = $this->createHomePageConfig([
             'meta_title' => ['uk' => 'Кешована головна', 'ru' => 'Кешированная главная'],
             'meta_description' => ['uk' => 'Опис', 'ru' => 'Описание'],
@@ -180,5 +182,39 @@ class HomePageSeoTest extends TestCase
         return collect($matches[1] ?? [])
             ->map(fn (string $json) => json_decode($json, true, flags: JSON_THROW_ON_ERROR))
             ->all();
+    }
+
+    /**
+     * The middleware dates the page by the build manifest, so the test has to
+     * make sure one exists. A checkout that has not run `npm run build` has no
+     * public/build at all, and the page then answers 304 quite correctly --
+     * which failed this test on CI while it passed on any machine that had
+     * built the assets at some point.
+     */
+    private function ensureAssetManifest(): void
+    {
+        $path = public_path('build/manifest.json');
+
+        if (file_exists($path)) {
+            return;
+        }
+
+        $directory = dirname($path);
+        $directoryWasMissing = ! is_dir($directory);
+
+        if ($directoryWasMissing) {
+            mkdir($directory, 0755, true);
+        }
+
+        file_put_contents($path, '{}');
+
+        // Leave the working tree as it was found.
+        $this->beforeApplicationDestroyed(function () use ($path, $directory, $directoryWasMissing) {
+            @unlink($path);
+
+            if ($directoryWasMissing) {
+                @rmdir($directory);
+            }
+        });
     }
 }
