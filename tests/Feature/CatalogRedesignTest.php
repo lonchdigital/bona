@@ -211,6 +211,7 @@ class CatalogRedesignTest extends TestCase
             $script = file_get_contents($scriptPath);
 
             $this->assertStringContainsString('PriceSlider.$on(\'stop\'', $script);
+            $this->assertStringContainsString("on('keyup', '[role=\"slider\"]'", $script);
             $this->assertStringContainsString('schedulePriceSubmit()', $script);
             $this->assertStringNotContainsString('show-24-items-per-page', $script);
             $this->assertStringNotContainsString("filterAdd('per_page'", $script);

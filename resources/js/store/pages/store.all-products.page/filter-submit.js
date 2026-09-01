@@ -7,6 +7,7 @@ const tooltipClasses = [
     '.filter-item--colors .colors-wrapper',
     '.filter-item--countries .custom-control'
 ];
+const priceSliderKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'];
 
 export function init () {
 
@@ -70,6 +71,12 @@ export function init () {
             CurrencyLast.trigger('change', [true]);
 
             if (e.detail.startValue !== e.detail.value) {
+                schedulePriceSubmit();
+            }
+        });
+
+        $(priceSliderTarget).on('keyup', '[role="slider"]', function (event) {
+            if (priceSliderKeys.includes(event.key)) {
                 schedulePriceSubmit();
             }
         });
