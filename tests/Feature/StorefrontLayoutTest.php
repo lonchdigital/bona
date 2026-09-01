@@ -38,4 +38,43 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('.icon-cart::before { font-size: 23px; }', $stylesheet);
         $this->assertStringContainsString('.bona-header__actions { gap: 14px; }', $stylesheet);
     }
+
+    public function test_mobile_bottom_navigation_uses_real_storefront_destinations_in_both_languages(): void
+    {
+        $this->get(route('store.services'))
+            ->assertOk()
+            ->assertSee('data-mobile-bottom-navigation', false)
+            ->assertSee('data-mobile-bottom-categories', false)
+            ->assertSee('Категорії')
+            ->assertSee('Кошик')
+            ->assertSee('Обране')
+            ->assertSee('Порівняння')
+            ->assertSee('Кабінет')
+            ->assertSee('href="/shop"', false)
+            ->assertSee('href="/cart"', false)
+            ->assertSee('href="/compare"', false);
+
+        $this->get(route('localized.store.services', ['lang' => 'ru']))
+            ->assertOk()
+            ->assertSee('Категории')
+            ->assertSee('Корзина')
+            ->assertSee('Избранное')
+            ->assertSee('Сравнение')
+            ->assertSee('Кабинет')
+            ->assertSee('href="/ru/shop"', false)
+            ->assertSee('href="/ru/cart"', false)
+            ->assertSee('href="/ru/compare"', false);
+    }
+
+    public function test_mobile_bottom_navigation_has_directional_scroll_and_menu_contracts(): void
+    {
+        $source = file_get_contents(resource_path('js/store/common/mobile-bottom-navigation.js'));
+
+        $this->assertStringContainsString("const MOBILE_BREAKPOINT = '(max-width: 960px)'", $source);
+        $this->assertStringContainsString('const MIN_SCROLL_DELTA = 8', $source);
+        $this->assertStringContainsString('setVisible(delta > 0)', $source);
+        $this->assertStringContainsString("document.body.classList.contains('bona-menu-open')", $source);
+        $this->assertStringContainsString('menuToggle.click()', $source);
+        $this->assertStringContainsString("window.addEventListener('scroll', scheduleUpdate, { passive: true })", $source);
+    }
 }

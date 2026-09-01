@@ -92,6 +92,9 @@ function initMobileMenu(header) {
         document.body.classList.toggle('bona-menu-open', open);
         toggle.setAttribute('aria-expanded', String(open));
         toggle.setAttribute('aria-label', open ? toggle.dataset.closeLabel : toggle.dataset.openLabel);
+        window.dispatchEvent(new CustomEvent('bona:mobile-menu-change', {
+            detail: { open },
+        }));
 
         if (open) {
             navigation.querySelector('a')?.focus({ preventScroll: true });

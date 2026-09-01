@@ -218,6 +218,7 @@
 
 </div>
 
+<x-store.mobile-bottom-navigation />
 <x-store.comparison-dock />
 
 {{-- static scripts start --}}

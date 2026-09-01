@@ -8,18 +8,25 @@ const $basket_without_products = $('.header-main-others .basket-basket-list .bas
 const $main_basket_count = $('.art-main-basket-count.count-of-products-in-basket');
 const $art_cart_checkout_button = $('.art-cart-checkout-button');
 
+function syncCartCount(count)
+{
+    const normalizedCount = Number.parseInt(count, 10) || 0;
+
+    $main_basket_count
+        .text(normalizedCount)
+        .toggleClass('d-none', normalizedCount <= 0);
+}
+
 export default {
     init: async function () {
 
         getProductsInCart(
             function (data) {
+                syncCartCount(data.data.products.length);
 
                 if( data.data.products.length > 0 ) {
-                    $main_basket_count.removeClass('d-none');
-                    $main_basket_count.text(data.data.products.length);
                     $art_cart_checkout_button.removeClass('d-none');
                 } else {
-                    $main_basket_count.addClass('d-none');
                     $art_cart_checkout_button.addClass('d-none');
                 }
 
@@ -71,7 +78,6 @@ export default {
                     productAddedToCartButton.click();
                     // goToCartBody.removeClass('d-none');
 
-                    $main_basket_count.removeClass('d-none');
                     handleBasket(data);
                 },
                 function () {
@@ -841,7 +847,7 @@ function addDeleteProductFromCartHandlers(elements)
             slug,
             productAttributes,
             function (data) {
-                $('.basket-with-products .count-of-products-in-basket').text(data.data.products.length);
+                syncCartCount(data.data.products.length);
 
                 if( data.data.products.length > 0 ) {
                     $art_cart_checkout_button.removeClass('d-none');
@@ -901,9 +907,6 @@ function getAllProductAttributes(art_this)
 
 function handleBasket(data)
 {
-    const basketWithProducts = $('.basket-with-products');
-    const countOfProductsInBasket = basketWithProducts.find('.count-of-products-in-basket');
-
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');
 
@@ -919,7 +922,7 @@ function handleBasket(data)
         $('.sub-menu.basket-sub-menu').removeClass('d-none');
     }
 
-    countOfProductsInBasket.text(data.data.products.length);
+    syncCartCount(data.data.products.length);
     basketSubMenuSuccess.removeClass('d-none');
 
     drawProductsInCartWindowHTML(data);
