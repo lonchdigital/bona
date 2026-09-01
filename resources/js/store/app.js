@@ -23,6 +23,7 @@ import HomeStyleSelector from './common/home-style-selector';
 import ProductCardColors from './common/product-card-colors';
 import ProductComparison from './common/product-comparison';
 import MobileBottomNavigation from './common/mobile-bottom-navigation';
+import LeadModals from './common/lead-modals';
 
 // console.log('1111');
 
@@ -87,7 +88,8 @@ async function init()
         HomeStyleSelector.init(),
         ProductCardColors.init(),
         ProductComparison.init(),
-        MobileBottomNavigation.init()
+        MobileBottomNavigation.init(),
+        LeadModals.init()
     ]);
 }
 

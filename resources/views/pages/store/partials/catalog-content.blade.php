@@ -35,7 +35,7 @@
                 <span>{{ trans('base.catalog_guidance_eyebrow') }}</span>
                 <h2>{{ trans('base.catalog_guidance_title') }}</h2>
                 <p>{{ trans('base.catalog_guidance_text') }}</p>
-                <a href="#dialog-call-consultation" data-fancybox data-src="#dialog-call-consultation">
+                <a href="#dialog-call-consultation" data-lead-modal-open="dialog-call-consultation">
                     {{ trans('base.catalog_guidance_action') }} <span aria-hidden="true">→</span>
                 </a>
             </div>

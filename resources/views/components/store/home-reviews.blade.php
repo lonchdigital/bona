@@ -12,7 +12,7 @@
     $sectionTitle = $localized($section['title'] ?? []) ?: trans('base.client_testimonials');
 @endphp
 
-@if(($section['enabled'] ?? true) && count($testimonials) > 0)
+@if($section['enabled'] ?? true)
     <section class="bona-reviews" aria-labelledby="home-reviews-title">
         <div class="bona-shell">
             <header class="bona-section-heading bona-section-heading--split">
@@ -25,10 +25,10 @@
                     @if(count($testimonials) > 1)
                         <div class="bona-slider-nav" aria-label="{{ $sectionTitle }}">
                             <button class="bona-slider-nav__button bona-reviews__nav--prev" type="button" aria-label="{{ trans('base.previous_reviews') }}">
-                                <span aria-hidden="true">&#8592;</span>
+                                <span aria-hidden="true"><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22.5 6h-21M6.5 1l-5 5 5 5"></path></svg></span>
                             </button>
                             <button class="bona-slider-nav__button bona-reviews__nav--next" type="button" aria-label="{{ trans('base.next_reviews') }}">
-                                <span aria-hidden="true">&#8594;</span>
+                                <span aria-hidden="true"><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 6h21M17.5 1l5 5-5 5"></path></svg></span>
                             </button>
                         </div>
                     @endif
@@ -41,9 +41,10 @@
                 </div>
             </header>
 
-            <div class="swiper bona-reviews__slider" data-reviews-slider>
-                <div class="swiper-wrapper">
-                    @foreach($testimonials as $testimonial)
+            @if(count($testimonials) > 0)
+                <div class="swiper bona-reviews__slider" data-reviews-slider>
+                    <div class="swiper-wrapper">
+                        @foreach($testimonials as $testimonial)
                         @php
                             $rating = max(0, min(5, (int) $testimonial->rating));
                         @endphp
@@ -68,9 +69,18 @@
                                 @endif
                             </div>
                         </article>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
+            @endif
+
+            <div class="bona-reviews__cta">
+                <button class="bona-outline-link" type="button" data-lead-modal-open="dialog-home-review">
+                    {{ trans('base.home_leave_review') }}
+                </button>
             </div>
         </div>
     </section>
+
+    <x-store.home-review-modal />
 @endif

@@ -162,9 +162,9 @@
                     <p>{{ $aboutUsConfig->cta_text }}</p>
                 @endif
                 @if($aboutUsConfig->cta_button_text)
-                    <a href="{{ $aboutUsConfig->cta_button_url ?: '' }}"
+                    <a href="{{ $aboutUsConfig->cta_button_url ?: '#dialog-call-measurer' }}"
                        class="btn btn-main"
-                       @if(!$aboutUsConfig->cta_button_url) data-fancybox data-src="#dialog-call-measurer" @endif>
+                       @if(!$aboutUsConfig->cta_button_url) data-lead-modal-open="dialog-call-measurer" @endif>
                         {{ $aboutUsConfig->cta_button_text }}
                     </a>
                 @endif

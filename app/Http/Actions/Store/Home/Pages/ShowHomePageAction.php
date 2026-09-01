@@ -36,7 +36,7 @@ class ShowHomePageAction extends BaseAction
             'homeSections' => $homePageService->getHomePageContentSections(),
             'specificProductTypes' => $homePageService->getSpecificProductTypes(),
             'homePopularProducts' => $homePageService->getHomePagePopularProducts(),
-            'homeTestimonials' => $homePageService->getHomePageTestimonials(),
+            'homeTestimonials' => $homePageService->getStorefrontTestimonials(),
             'faqs' => $homePageService->getHomePageFaqs(),
             'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
             'baseCurrency' => $currencyService->getBaseCurrency(),

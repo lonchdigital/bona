@@ -55,6 +55,7 @@ use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouMonoBankPageAction
 use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
 use App\Http\Actions\Store\Comparison\Pages\ShowComparisonPageAction;
 use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
+use App\Http\Actions\Store\CustomerReview\SubmitCustomerReviewAction;
 use App\Http\Actions\Store\Delivery\GetNPCitiesAction;
 // use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
 // use App\Http\Actions\Store\Delivery\GetMeestDepartmentsAction;
@@ -194,9 +195,8 @@ $optionalLanguageRoutes = function () {
     Route::name('store.products-rucky-by-availability.filter.page')->get('/product-category/available-rucky/{productTypeSlug}/{categorySlug}/filter/{catalogFiltersString?}', ShowCatalogRuckyAvailabilityPageAction::class);
     Route::name('store.products-rucky-by-availability.filter.count')->get('/product-category/available-rucky/count/{productTypeSlug}/{categorySlug}/filter/{catalogFiltersString?}', GetAvailabilityProductsCountByFilterWithCategoryAction::class);
 
-    Route::name('store.choose.doors')->post('/user-choose-doors', UserChooseDoorsAction::class);
+    Route::name('store.choose.doors')->middleware('throttle:5,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
     Route::name('store.order.count.doors')->post('/order-count-doors', OrderCountDoorsAction::class);
-    //    Route::name('store.choose.doors')->middleware('throttle:3,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
 
     Route::prefix('/shop')->group(function () {
         Route::name('store.all-products.page')->get('/', ShowAllProductsPageAction::class);
@@ -279,6 +279,10 @@ $optionalLanguageRoutes = function () {
     Route::name('store.product-review.submit')
         ->middleware('throttle:5,10')
         ->post('/product-review', SubmitProductReviewAction::class);
+
+    Route::name('store.customer-review.submit')
+        ->middleware('throttle:5,10')
+        ->post('/customer-review', SubmitCustomerReviewAction::class);
 
     Route::name('store.faq.page')->get('/faq', ShowFaqPageAction::class);
 

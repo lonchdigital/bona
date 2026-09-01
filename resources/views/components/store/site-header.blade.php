@@ -46,7 +46,7 @@
                 @if($phone)
                     <a class="bona-topbar__phone" href="tel:{{ preg_replace('/[^+\d]/', '', $phone) }}">{{ $phone }}</a>
                 @endif
-                <a href="#dialog-call-measurer" data-fancybox data-src="#dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
+                <a href="#dialog-call-measurer" data-lead-modal-open="dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
             </div>
         </div>
     </div>

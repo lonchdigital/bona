@@ -10,14 +10,12 @@ class UserChooseDoorsRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'title' => ['nullable', 'string'],
-            'name' => ['required', 'string'],
-            'phone' => ['required',
-                'string',
-                'regex:/^[^_]*$/',
-                'min:16'],
-            'description' => ['nullable', 'string'],
+            'title' => ['nullable', 'string', 'max:191'],
+            'name' => ['required', 'string', 'min:2', 'max:120'],
+            'phone' => ['required', 'string', 'regex:/^\+38 \(0\d{2}\) \d{3} \d{2} \d{2}$/'],
+            'description' => ['nullable', 'string', 'max:2000'],
             'agree' => ['accepted'],
+            'website' => ['nullable', 'size:0'],
         ];
     }
 
@@ -31,13 +29,6 @@ class UserChooseDoorsRequest extends BaseRequest
         ];
 
         return $attributes;
-    }
-
-    public function messages()
-    {
-        return [
-            'phone.digits' => trans('base.phone_validation'),
-        ];
     }
 
     public function toDTO(): UserChooseDoorsDTO

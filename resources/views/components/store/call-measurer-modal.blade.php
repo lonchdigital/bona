@@ -1,41 +1,46 @@
-<div id="dialog-call-measurer" class="art-popup-call-measurer" style="display: none">
-    <div class="art-measurer-form-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <form action="#" id="user-call-measurer" method="post" class="art-contact-form">
-                        @csrf
-                        <header class="art-light">
-                            <div class="text-center">
-                                <h2 class="title h2">{{ trans('base.call_measurer') }}</h2>
-                                <div class="subtitle font-two">
-                                    <p class="art-form-description">{{ trans('base.call_measurer_description') }}</p>
-                                </div>
-                            </div>
-                        </header>
-                        <div class="art-fields-row">
-                            <div><input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}"></div>
-                            <div><input type="text" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}"></div>
-                        </div>
-                        <div class="art-fields-row">
-                            <div class="art-solid-field">
-                                <textarea class="art-light-field" name="description" placeholder="{{ trans('base.your_message') }}"></textarea>
-                            </div>
-                        </div>
-                        <div class="checkbox checkbox-white agreement-line agree-field">
-                            <input type="checkbox" name="agree" value="1">
-                            <label>
-                                {{ trans('base.agreement_line_start').' ' }}
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}" class="color-white">
-                                    {{ trans('base.agreement_line_end') }}
-                                </a>
-                            </label>
-                        </div>
-                        <input type="hidden" name="event" value="submit_form_call_master">
-                        <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
-                    </form>
-                </div>
-            </div>
-        </div>
+<x-store.lead-modal
+    id="dialog-call-measurer"
+    :action="App\Helpers\MultiLangRoute::getMultiLangRoute('store.choose.doors')"
+    form-type="measure"
+    :kicker="trans('base.lead_measurer_kicker')"
+    :title="trans('base.lead_measurer_title')"
+    :time-label="trans('base.lead_measurer_time')"
+    :intro="trans('base.lead_measurer_intro')"
+    :submit-label="trans('base.lead_measurer_submit')"
+    :success-kicker="trans('base.lead_measurer_success_kicker')"
+    :success-title="trans('base.lead_measurer_success_title')"
+    :success-text="trans('base.lead_measurer_success_text')"
+>
+    <input type="hidden" name="title" value="{{ trans('base.call_measurer') }}">
+    <input type="hidden" name="event" value="submit_form_call_master">
+
+    <div class="bona-lead-form__grid">
+        <label class="bona-lead-field bona-lead-field--name">
+            <span>{{ trans('base.name') }}</span>
+            <input type="text" name="name" autocomplete="name" minlength="2" maxlength="120" required placeholder="{{ trans('base.lead_name_placeholder') }}">
+        </label>
+        <label class="bona-lead-field bona-lead-field--phone">
+            <span>{{ trans('base.phone') }}</span>
+            <input class="js-ua-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="+38 (0__) ___ __ __">
+        </label>
+        <label class="bona-lead-field bona-lead-field--wide bona-lead-field--description">
+            <span>{{ trans('base.your_message') }}</span>
+            <textarea name="description" rows="3" maxlength="2000" placeholder="{{ trans('base.lead_measurer_message_placeholder') }}"></textarea>
+        </label>
     </div>
-</div>
+
+    <label class="bona-lead-consent bona-lead-field--agree">
+        <input type="checkbox" name="agree" value="1" required>
+        <span class="bona-lead-consent__box" aria-hidden="true"></span>
+        <span>
+            {{ trans('base.agreement_line_start') }}
+            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">
+                {{ trans('base.agreement_line_end') }}
+            </a>
+        </span>
+    </label>
+
+    <label class="bona-lead-form__trap" aria-hidden="true">
+        Website <input type="text" name="website" tabindex="-1" autocomplete="off">
+    </label>
+</x-store.lead-modal>

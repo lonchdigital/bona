@@ -6,6 +6,7 @@ use App\DataClasses\ProductSpecialOfferOptionsDataClass;
 use App\DataClasses\ProductStatusDataClass;
 use App\Helpers\MultiLangRoute;
 use App\Models\Category;
+use App\Models\CustomerReview;
 use App\Models\Faqs;
 use App\Models\HomePageBestSalesProducts;
 use App\Models\HomePageBrands;
@@ -904,6 +905,19 @@ class HomePageService extends BaseService
     public function getHomePageTestimonials(): Collection
     {
         return HomePageTestimonials::get();
+    }
+
+    /**
+     * Approved reviews submitted by customers lead the slider; editorial
+     * Google reviews managed inside the homepage editor remain available too.
+     */
+    public function getStorefrontTestimonials(): Collection
+    {
+        return CustomerReview::approved()
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->get()
+            ->concat($this->getHomePageTestimonials());
     }
 
     public function getHomePageFaqs(): Collection

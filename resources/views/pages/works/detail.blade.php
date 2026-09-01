@@ -222,7 +222,7 @@
                     @endif
 
                     <div class="art-work-cta">
-                        <a href="" class="btn btn-main" data-fancybox data-src="#dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
+                        <a href="#dialog-call-measurer" class="btn btn-main" data-lead-modal-open="dialog-call-measurer">{{ trans('base.call_measurer') }}</a>
                     </div>
 
                 </div>

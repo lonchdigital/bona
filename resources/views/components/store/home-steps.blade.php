@@ -33,7 +33,7 @@
                     <a
                         class="bona-button bona-button--dark"
                         href="{{ $ctaUrl }}"
-                        @if(str_starts_with($ctaUrl, '#dialog-')) data-fancybox data-src="{{ $ctaUrl }}" @endif
+                        @if(str_starts_with($ctaUrl, '#dialog-')) data-lead-modal-open="{{ ltrim($ctaUrl, '#') }}" @endif
                     >
                         {{ $localized($section['cta_label']) }}
                     </a>

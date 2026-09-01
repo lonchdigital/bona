@@ -17,7 +17,7 @@
         <h2>{{ trans('base.catalog_consultant_title') }}</h2>
         <p>{{ trans('base.catalog_consultant_text') }}</p>
     </div>
-    <a class="bona-catalog__consultant-button" href="#dialog-call-consultation" data-fancybox data-src="#dialog-call-consultation">
+    <a class="bona-catalog__consultant-button" href="#dialog-call-consultation" data-lead-modal-open="dialog-call-consultation">
         {{ trans('base.catalog_get_consultation') }}
         <span aria-hidden="true">→</span>
     </a>

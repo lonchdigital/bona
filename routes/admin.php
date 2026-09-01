@@ -57,6 +57,10 @@ use App\Http\Actions\Admin\Currencies\CurrencyEditAction;
 use App\Http\Actions\Admin\Currencies\Pages\ShowCurrenciesListPageAction;
 use App\Http\Actions\Admin\Currencies\Pages\ShowCurrencyCreatePageAction;
 use App\Http\Actions\Admin\Currencies\Pages\ShowCurrencyEditPageAction;
+use App\Http\Actions\Admin\CustomerReviews\CustomerReviewApproveAction;
+use App\Http\Actions\Admin\CustomerReviews\CustomerReviewDeleteAction;
+use App\Http\Actions\Admin\CustomerReviews\CustomerReviewRejectAction;
+use App\Http\Actions\Admin\CustomerReviews\Pages\ShowCustomerReviewsListPageAction;
 use App\Http\Actions\Admin\Dashboard\Pages\ShowDashboardPageAction;
 use App\Http\Actions\Admin\Delivery\DeliveryEditAction;
 use App\Http\Actions\Admin\Delivery\Pages\ShowDeliveryEditPageAction;
@@ -252,6 +256,15 @@ Route::prefix('admin')->middleware([
         Route::name('admin.product-review.approve')->post('{productReview}/approve', ProductReviewApproveAction::class);
         Route::name('admin.product-review.reject')->post('{productReview}/reject', ProductReviewRejectAction::class);
         Route::name('admin.product-review.delete')->post('{productReview}/delete', ProductReviewDeleteAction::class);
+    });
+
+    // Reviews about the overall Bona experience, submitted from the homepage.
+    Route::prefix('customer-review')->group(function () {
+        Route::name('admin.customer-review.list.page')->get('/', ShowCustomerReviewsListPageAction::class);
+
+        Route::name('admin.customer-review.approve')->post('{customerReview}/approve', CustomerReviewApproveAction::class);
+        Route::name('admin.customer-review.reject')->post('{customerReview}/reject', CustomerReviewRejectAction::class);
+        Route::name('admin.customer-review.delete')->post('{customerReview}/delete', CustomerReviewDeleteAction::class);
     });
 
     // Authors

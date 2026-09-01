@@ -53,7 +53,7 @@
                     @if($targetUrl)
                         <div class="bona-hero__actions">
                             @if($targetUrl === '#')
-                                <a class="bona-button bona-button--light" href="#dialog-call-consultation" data-fancybox data-src="#dialog-call-consultation">{{ $buttonText }}</a>
+                                <a class="bona-button bona-button--light" href="#dialog-call-consultation" data-lead-modal-open="dialog-call-consultation">{{ $buttonText }}</a>
                             @else
                                 <a class="bona-button bona-button--light" href="{{ $targetUrl }}">{{ $buttonText }}</a>
                             @endif

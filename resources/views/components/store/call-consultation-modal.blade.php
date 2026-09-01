@@ -2,44 +2,71 @@
     'options' => [],
 ])
 
-<div id="dialog-call-consultation" class="art-popup-call-measurer" style="display: none">
-    <div class="art-measurer-form-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <form action="#" id="user-call-master" method="post" class="art-contact-form">
-                        @csrf
-                        <header class="art-light">
-                            <div class="text-center">
-                                <h2 class="title h2">{{ data_get($options, 'formTitle.'.app()->getLocale(), trans('base.call_measurer')) }}</h2>
-                                <div class="subtitle font-two">
-                                    <p class="art-form-description">{{ data_get($options, 'formText.'.app()->getLocale(), trans('base.call_measurer_description')) }}</p>
-                                </div>
-                            </div>
-                        </header>
-                        <div class="art-fields-row">
-                            <div><input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}"></div>
-                            <div><input type="text" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}"></div>
-                        </div>
-                        <div class="art-fields-row">
-                            <div class="art-solid-field">
-                                <textarea class="art-light-field" name="description" placeholder="{{ trans('base.your_message') }}"></textarea>
-                            </div>
-                        </div>
-                        <div class="checkbox checkbox-white agreement-line agree-field">
-                            <input type="checkbox" name="agree" value="1">
-                            <label>
-                                {{ trans('base.agreement_line_start').' ' }}
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}" class="color-white">
-                                    {{ trans('base.agreement_line_end') }}
-                                </a>
-                            </label>
-                        </div>
-                        <input type="hidden" name="event" value="submit_form_home_slider">
-                        <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
-                    </form>
-                </div>
-            </div>
-        </div>
+@php
+    $title = data_get($options, 'formTitle.'.app()->getLocale()) ?: trans('base.lead_consultation_title');
+    $intro = data_get($options, 'formText.'.app()->getLocale()) ?: trans('base.lead_consultation_intro');
+@endphp
+
+<x-store.lead-modal
+    id="dialog-call-consultation"
+    :action="App\Helpers\MultiLangRoute::getMultiLangRoute('store.choose.doors')"
+    form-type="selection"
+    :kicker="trans('base.lead_consultation_kicker')"
+    :title="$title"
+    :time-label="trans('base.lead_consultation_time')"
+    :intro="$intro"
+    :submit-label="trans('base.lead_consultation_submit')"
+    :success-kicker="trans('base.lead_consultation_success_kicker')"
+    :success-title="trans('base.lead_consultation_success_title')"
+    :success-text="trans('base.lead_consultation_success_text')"
+    :wide="true"
+>
+    <input type="hidden" name="title" value="{{ $title }}">
+    <input type="hidden" name="description" value="">
+    <input type="hidden" name="event" value="submit_form_home_slider">
+
+    <div class="bona-lead-form__grid">
+        <label class="bona-lead-field bona-lead-field--name">
+            <span>{{ trans('base.name') }}</span>
+            <input type="text" name="name" autocomplete="name" minlength="2" maxlength="120" required placeholder="{{ trans('base.lead_name_placeholder') }}">
+        </label>
+        <label class="bona-lead-field bona-lead-field--phone">
+            <span>{{ trans('base.phone') }}</span>
+            <input class="js-ua-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="+38 (0__) ___ __ __">
+        </label>
     </div>
-</div>
+
+    <fieldset class="bona-lead-fieldset" data-lead-choice-group>
+        <legend>{{ trans('base.lead_consultation_door_type') }}</legend>
+        <div class="bona-lead-choice">
+            <label><input type="radio" name="door_type" value="interior" checked><span>{{ trans('base.lead_door_interior') }}</span></label>
+            <label><input type="radio" name="door_type" value="entrance"><span>{{ trans('base.lead_door_entrance') }}</span></label>
+            <label><input type="radio" name="door_type" value="both"><span>{{ trans('base.lead_door_both') }}</span></label>
+        </div>
+    </fieldset>
+
+    <fieldset class="bona-lead-fieldset" data-lead-choice-group>
+        <legend>{{ trans('base.lead_consultation_style') }}</legend>
+        <div class="bona-lead-choice">
+            <label><input type="radio" name="style" value="minimal" checked><span>{{ trans('base.lead_style_minimal') }}</span></label>
+            <label><input type="radio" name="style" value="modern"><span>{{ trans('base.lead_style_modern') }}</span></label>
+            <label><input type="radio" name="style" value="neoclassic"><span>{{ trans('base.lead_style_neoclassic') }}</span></label>
+            <label><input type="radio" name="style" value="unsure"><span>{{ trans('base.lead_style_unsure') }}</span></label>
+        </div>
+    </fieldset>
+
+    <label class="bona-lead-consent bona-lead-field--agree">
+        <input type="checkbox" name="agree" value="1" required>
+        <span class="bona-lead-consent__box" aria-hidden="true"></span>
+        <span>
+            {{ trans('base.agreement_line_start') }}
+            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">
+                {{ trans('base.agreement_line_end') }}
+            </a>
+        </span>
+    </label>
+
+    <label class="bona-lead-form__trap" aria-hidden="true">
+        Website <input type="text" name="website" tabindex="-1" autocomplete="off">
+    </label>
+</x-store.lead-modal>
