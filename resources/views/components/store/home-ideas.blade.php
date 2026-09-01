@@ -22,7 +22,7 @@
                 @foreach($ideas as $idea)
                     <article class="bona-idea-card">
                         <span class="bona-idea-card__image">
-                            <img src="{{ $idea['image_url'] }}" alt="{{ $localized($idea['title'] ?? []) }}" loading="lazy" decoding="async">
+                            <img src="{{ $idea['image_url'] }}" alt="{{ $localized($idea['title'] ?? []) }}" loading="lazy" decoding="async" width="480" height="560">
                         </span>
                         <h3>{{ $localized($idea['title'] ?? []) }}</h3>
                         <p>{{ $localized($idea['text'] ?? []) }}</p>

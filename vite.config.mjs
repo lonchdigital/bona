@@ -42,6 +42,7 @@ export default defineConfig(({ mode }) => ({
                 'resources/js/admin/scripts.js',
                 'resources/js/admin/date-picker.js',
                 'resources/scss/libs.scss',
+                'resources/scss/storefront.scss',
                 'resources/scss/theme-additional.scss',
                 'resources/js/store/app.js',
                 'bona-html/img/interior-bedroom.jpg',

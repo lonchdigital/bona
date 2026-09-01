@@ -1,5 +1,6 @@
 import 'swiper/css';
-import Swiper from 'swiper/bundle';
+import Swiper from 'swiper';
+import { Navigation, Pagination } from 'swiper/modules';
 
 
 export function init () {
@@ -7,6 +8,7 @@ export function init () {
 
     if (popularSlider) {
         new Swiper(popularSlider, {
+            modules: [Pagination],
             slidesPerView: 1.12,
             slidesPerGroup: 1,
             spaceBetween: 16,
@@ -43,6 +45,7 @@ export function init () {
         const section = instagramSlider.closest('.bona-instagram');
 
         new Swiper(instagramSlider, {
+            modules: [Navigation],
             slidesPerView: 2,
             spaceBetween: 8,
             speed: 450,
@@ -76,6 +79,7 @@ export function init () {
         const section = reviewsSlider.closest('.bona-reviews');
 
         new Swiper(reviewsSlider, {
+            modules: [Navigation],
             slidesPerView: 1,
             spaceBetween: 16,
             speed: 450,

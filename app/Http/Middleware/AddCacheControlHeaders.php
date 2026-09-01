@@ -17,9 +17,18 @@ class AddCacheControlHeaders
     {
         $response = $next($request);
 
-        $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
-        $response->header('Pragma', 'no-cache');
-        $response->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
+        // Dynamic storefront responses remain private and are revalidated,
+        // but `no-store` prevents the browser's back/forward cache and makes
+        // returning from a product page unnecessarily expensive. Preserve
+        // explicit public caching (robots/sitemap) and explicit no-store
+        // responses (checkout/comparison) set by their own actions.
+        if (! $response->headers->hasCacheControlDirective('public')
+            && ! $response->headers->hasCacheControlDirective('no-store')) {
+            $response->headers->set('Cache-Control', 'private, no-cache, must-revalidate');
+        }
+
+        $response->headers->remove('Pragma');
+        $response->headers->remove('Expires');
 
         return $response;
     }

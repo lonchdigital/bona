@@ -35,6 +35,8 @@
                             alt="{{ \Illuminate\Support\Str::limit($instagramItem['caption'] ?: 'Bona Doors в Instagram', 120) }}"
                             loading="lazy"
                             decoding="async"
+                            width="640"
+                            height="640"
                         >
                         @if(($instagramItem['media_type'] ?? null) === 'VIDEO')
                             <span class="bona-instagram__video" aria-hidden="true">

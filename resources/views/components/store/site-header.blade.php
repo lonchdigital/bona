@@ -53,9 +53,9 @@
 
     <header class="bona-header">
         <div class="bona-shell bona-header__inner">
-            <a class="bona-header__logo" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}" aria-label="Bona Doors">
+            <a class="bona-header__logo" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">
                 @if($logoPath)
-                    <img src="{{ '/storage/'.$logoPath }}" alt="Bona Doors">
+                    <img src="{{ '/storage/'.$logoPath }}" alt="Bona Doors" width="185" height="40" decoding="async">
                 @else
                     <span>BONA</span><small>DOORS</small>
                 @endif

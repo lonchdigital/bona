@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 
 class RegenerateSitemapJob implements ShouldBeUnique, ShouldQueue
 {
@@ -17,6 +18,7 @@ class RegenerateSitemapJob implements ShouldBeUnique, ShouldQueue
     public function handle(SitemapService $sitemapService): void
     {
         \Log::info('Generating sitemap.xml start.');
+        Cache::forget('seo.sitemap.xml.v2');
         $sitemapService->generateSitemap();
         \Log::info('Generating sitemap.xml success.');
     }

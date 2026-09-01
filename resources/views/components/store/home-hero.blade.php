@@ -37,7 +37,7 @@
                 @if($slide->slide_image_mobile_url)
                     <source media="(max-width: 767px)" srcset="{{ $slide->slide_image_mobile_url }}">
                 @endif
-                <img src="{{ $slide->slide_image_url }}" alt="" @if(!$loop->first) loading="lazy" @else fetchpriority="high" @endif>
+                <img src="{{ $slide->slide_image_url }}" alt="" width="1920" height="1080" decoding="async" @if(!$loop->first) loading="lazy" @else fetchpriority="high" @endif>
             </picture>
             <div class="bona-shell bona-hero__content">
                 <div class="bona-hero__copy">

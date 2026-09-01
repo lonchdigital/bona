@@ -32,7 +32,7 @@
                     <article class="bona-post-card">
                         <a class="bona-post-card__image" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]) }}">
                             @if($article->hero_image_url)
-                                <img src="{{ $article->hero_image_url }}" alt="{{ $article->name }}" loading="lazy" decoding="async">
+                                <img src="{{ $article->hero_image_url }}" alt="{{ $article->name }}" loading="lazy" decoding="async" width="560" height="320">
                             @endif
                             <time class="bona-post-card__date" datetime="{{ $article->created_at->toDateString() }}">
                                 {{ $article->created_at->translatedFormat('d M Y') }}

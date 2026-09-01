@@ -127,6 +127,7 @@ cd "$RELEASE_PATH"
 "$PHP_BIN" artisan optimize:clear
 "$PHP_BIN" artisan migrate --force
 "$PHP_BIN" artisan optimize
+"$PHP_BIN" artisan generate:sitemap
 
 ln -s "$RELEASE_PATH" "$NEXT_LINK"
 mv -Tf "$NEXT_LINK" "$CURRENT_LINK"

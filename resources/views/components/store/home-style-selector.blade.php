@@ -67,7 +67,7 @@
                         data-style-pane="{{ $loop->index }}"
                         @if(!$loop->first) hidden @endif
                     >
-                        <img src="{{ $item['image_url'] }}" alt="{{ $localized($item['name'] ?? []) }}" loading="lazy">
+                        <img src="{{ $item['image_url'] }}" alt="{{ $localized($item['name'] ?? []) }}" loading="lazy" decoding="async" width="800" height="920">
                     </div>
                 @endforeach
             </div>

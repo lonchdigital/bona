@@ -10,6 +10,7 @@ class ShowLlmsTxtFileContent
     public function __invoke(LlmsTxtService $llmsTxtService): Response
     {
         return response($llmsTxtService->build())
-            ->header('Content-Type', 'text/plain; charset=UTF-8');
+            ->header('Content-Type', 'text/plain; charset=UTF-8')
+            ->header('Cache-Control', 'public, max-age=3600');
     }
 }

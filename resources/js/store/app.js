@@ -13,8 +13,6 @@ import InputCounter from './common/input-counter';
 import Cart from './common/cart';
 import WishList from './common/wish-list';
 import CommonEmails from './common/common-emails';
-import PopUps from './common/pop-ups';
-import ShowRoomVisitModal from "./common/show-room-visit-modal";
 import CommonCode from './common/common-code';
 import SiteHeader from './common/site-header';
 import StorefrontSearch from './common/storefront-search';
@@ -28,7 +26,10 @@ import LeadModals from './common/lead-modals';
 // console.log('1111');
 
 
-const pages = import.meta.glob(['../../js/store/pages/*.js'], { eager: true, import: 'default' });
+// Page-only code (catalog filters, product galleries, checkout masks, video
+// players) used to be bundled into every page. Keep each page behind its own
+// loader so the homepage downloads only what it can actually execute.
+const pages = import.meta.glob(['../../js/store/pages/*.js'], { import: 'default' });
 
 /*
 console.log(window.location);*/
@@ -63,8 +64,11 @@ async function loadJsByPage()
         pageToLoad = 'store.catalog.page';
     }
 
-    if (pages['./pages/' + pageToLoad + '.js']) {
-        pages['./pages/' + pageToLoad + '.js']();
+    const pageLoader = pages['./pages/' + pageToLoad + '.js'];
+
+    if (pageLoader) {
+        const initPage = await pageLoader();
+        await initPage();
     }
 
 
@@ -79,8 +83,6 @@ async function init()
         Cart.init(),
         WishList.init(),
         CommonEmails.init(),
-        PopUps.init(),
-        ShowRoomVisitModal.init(),
         CommonCode.init(),
         SiteHeader.init(),
         StorefrontSearch.init(),
@@ -91,9 +93,30 @@ async function init()
         MobileBottomNavigation.init(),
         LeadModals.init()
     ]);
+
+    // Fancybox and Inputmask are sizeable legacy dependencies. Most pages,
+    // including the homepage, have no controls that use them, so do not make
+    // them part of the critical JavaScript path.
+    const optionalInitializers = [];
+
+    if (document.querySelector('[data-fancybox]:not(#user-choose-doors-success)')
+        || document.querySelector('#user-choose-doors')) {
+        optionalInitializers.push(
+            import('./common/pop-ups').then(({ default: PopUps }) => PopUps.init())
+        );
+    }
+
+    if (document.querySelector('.visit-time')) {
+        optionalInitializers.push(
+            import('./common/show-room-visit-modal').then(({ default: ShowRoomVisitModal }) => ShowRoomVisitModal.init())
+        );
+    }
+
+    await Promise.all(optionalInitializers);
 }
 
 $(function () {
-    init();
-    loadJsByPage();
+    Promise.all([init(), loadJsByPage()]).catch((error) => {
+        console.error('[storefront-init]', error);
+    });
 });

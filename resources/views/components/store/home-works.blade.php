@@ -37,11 +37,11 @@
                 <article class="bona-work-card">
                     @if($workUrl)
                         <a class="bona-work-card__image" href="{{ $workUrl }}">
-                            <img src="{{ $work['image_url'] }}" alt="{{ $workTitle }}" loading="lazy" decoding="async">
+                            <img src="{{ $work['image_url'] }}" alt="{{ $workTitle }}" loading="lazy" decoding="async" width="560" height="400">
                         </a>
                     @else
                         <span class="bona-work-card__image">
-                            <img src="{{ $work['image_url'] }}" alt="{{ $workTitle }}" loading="lazy" decoding="async">
+                            <img src="{{ $work['image_url'] }}" alt="{{ $workTitle }}" loading="lazy" decoding="async" width="560" height="400">
                         </span>
                     @endif
                     <h3>

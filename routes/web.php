@@ -79,6 +79,7 @@ use App\Http\Actions\Store\Product\SearchProductAction;
 use App\Http\Actions\Store\ProductReview\SubmitProductReviewAction;
 use App\Http\Actions\Store\Seo\ShowLlmsTxtFileContent;
 use App\Http\Actions\Store\Seo\ShowRobotsTxtFileContent;
+use App\Http\Actions\Store\Seo\ShowSitemapXml;
 use App\Http\Actions\Store\ServicesPage\Pages\ShowServicesPageAction;
 use App\Http\Actions\Store\StaticPage\Pages\ShowStaticPagePageAction;
 use App\Http\Actions\Store\WishList\GetWishListProductSlugsAction;
@@ -95,10 +96,16 @@ use App\Http\Actions\UserProfile\Pages\UserOrdersPageAction;
 use App\Http\Actions\UserProfile\PasswordEditAction;
 use App\Http\Actions\UserProfile\ProfileEditAction;
 use App\Http\Middleware\AuthenticatedOnly;
+use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\EnsureOrderAccess;
+use App\Http\Middleware\HandleLastModified;
 use App\Http\Middleware\NotAuthenticatedOnly;
+use App\Http\Middleware\PreventRequestForgery;
 use App\Services\Application\ApplicationConfigService;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 /*
 |--------------------------------------------------------------------------
@@ -352,5 +359,21 @@ Route::prefix('payment')->group(function () {
     Route::name('payment.liqpay.callback')->post('/callback/liqpay', UpdateOrderPaymentStatusAction::class);
 });
 
-Route::name('robots.txt.content')->get('robots.txt', ShowRobotsTxtFileContent::class);
-Route::name('llms.txt.content')->get('llms.txt', ShowLlmsTxtFileContent::class);
+$staticSeoMiddleware = [
+    EncryptCookies::class,
+    AddQueuedCookiesToResponse::class,
+    StartSession::class,
+    ShareErrorsFromSession::class,
+    PreventRequestForgery::class,
+    HandleLastModified::class,
+];
+
+Route::name('robots.txt.content')
+    ->get('robots.txt', ShowRobotsTxtFileContent::class)
+    ->withoutMiddleware($staticSeoMiddleware);
+Route::name('llms.txt.content')
+    ->get('llms.txt', ShowLlmsTxtFileContent::class)
+    ->withoutMiddleware($staticSeoMiddleware);
+Route::name('sitemap.xml')
+    ->get('sitemap.xml', ShowSitemapXml::class)
+    ->withoutMiddleware($staticSeoMiddleware);

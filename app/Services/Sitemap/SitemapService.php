@@ -55,7 +55,7 @@ class SitemapService extends BaseService
             ->exists();
     }
 
-    public function generateSitemap(): void
+    public function buildSitemap(): Sitemap
     {
         $urls = new Collection;
 
@@ -192,8 +192,52 @@ class SitemapService extends BaseService
             $url->setUrl(mb_strtolower($url->url));
         });
 
-        Sitemap::create()
-            ->add($urls->toArray())
-            ->writeToFile(public_path('sitemap.xml'));
+        $this->addLocalizedAlternates($urls);
+
+        return Sitemap::create()->add($urls->toArray());
+    }
+
+    public function generateSitemap(): void
+    {
+        $this->buildSitemap()->writeToFile(public_path('sitemap.xml'));
+    }
+
+    /**
+     * Add reciprocal language annotations to every URL for which both the
+     * Ukrainian canonical and the /ru version exist. This lets a crawler
+     * understand the language cluster even when it discovers a page through
+     * the sitemap rather than through the document head.
+     */
+    private function addLocalizedAlternates(Collection $urls): void
+    {
+        $groups = $urls->groupBy(function (Url $url) {
+            $path = parse_url(url($url->url), PHP_URL_PATH) ?: '/';
+            $path = preg_replace('#^/ru(?=/|$)#', '', $path) ?: '/';
+
+            return mb_strtolower(rtrim($path, '/') ?: '/');
+        });
+
+        foreach ($groups as $group) {
+            $uk = $group->first(function (Url $url) {
+                $path = parse_url(url($url->url), PHP_URL_PATH) ?: '/';
+
+                return ! preg_match('#^/ru(?:/|$)#', $path);
+            });
+            $ru = $group->first(function (Url $url) {
+                $path = parse_url(url($url->url), PHP_URL_PATH) ?: '/';
+
+                return (bool) preg_match('#^/ru(?:/|$)#', $path);
+            });
+
+            if (! $uk || ! $ru) {
+                continue;
+            }
+
+            foreach ($group as $url) {
+                $url->addAlternate(url($uk->url), 'uk-UA')
+                    ->addAlternate(url($ru->url), 'ru-UA')
+                    ->addAlternate(url($uk->url), 'x-default');
+            }
+        }
     }
 }

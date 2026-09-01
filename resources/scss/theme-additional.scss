@@ -1,5 +1,3 @@
-@import "files/fonts";
-
 /*!
     ----------------------------------
 
@@ -67,7 +65,7 @@
     ----------------------------------
 */
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Manrope', Arial, sans-serif;
     font-size: 14px;
     font-weight: 300;
     font-style: normal;
@@ -165,17 +163,17 @@ label,
 */
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Forum', Georgia, serif;
     text-transform: uppercase;
     font-weight: 400;
 }
 .font-title {
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Forum', Georgia, serif;
 }
 .btn,
 .font-two {
     //font-family: "Roboto", sans-serif;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Manrope', Arial, sans-serif;
 }
 
 h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child,
@@ -499,7 +497,7 @@ input, textarea, select {
 }
 
 .btn.btn-buy:after {
-    font-family: "Montserrat",sans-serif;
+    font-family: 'Manrope', Arial, sans-serif;
     text-transform: uppercase;
     font-weight: 600;
     content: attr(data-text);
@@ -868,7 +866,7 @@ nav .navigation-main .open-dropdown {
 
 nav .navigation-main .floating-menu > ul > li > a {
     position: relative;
-    font-family: "Montserrat", sans-serif;
+    font-family: 'Manrope', Arial, sans-serif;
     font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
@@ -897,7 +895,7 @@ nav .navigation-main .navbar-dropdown .navbar-box ul > li.label {
     font-weight: normal;
     color: #D59958;
     text-transform: uppercase;
-    font-family: "Montserrat", sans-serif;
+    font-family: 'Manrope', Arial, sans-serif;
     font-weight: 600;
 }
 
@@ -1218,7 +1216,7 @@ nav .search-wrapper .search-results .search-result-items ul li a .id {
 }
 
 nav .search-wrapper .search-results .search-result-items ul li a .name {
-    font-family: "Montserrat", sans-serif;
+    font-family: 'Manrope', Arial, sans-serif;
     font-weight: 500;
 }
 
@@ -9262,8 +9260,3 @@ section.art-contacts-page-section {
         border-color: $accent;
     }
 }
-
-@import "storefront/redesign";
-@import "storefront/catalog";
-@import "storefront/comparison";
-@import "storefront/mobile-bottom-navigation";

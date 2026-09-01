@@ -22,32 +22,32 @@ class OrganizationSchemaService
     public function build(array $applicationGlobalOptions = []): array
     {
         $logo = $this->logoUrl($applicationGlobalOptions);
+        $showrooms = $this->showrooms($logo);
 
-        return array_filter([
-            '@context' => 'https://schema.org',
-            // A door showroom is a shop, and the more precise type is what a
-            // search engine can actually place on a map.
-            '@type' => 'HomeGoodsStore',
+        $organization = array_filter([
+            '@type' => 'Organization',
             '@id' => $this->organizationId(),
             'name' => config('organization.name'),
-            'legalName' => trans('base.organization'),
+            'alternateName' => 'Bona Doors',
             'url' => url('/'),
-            'logo' => $logo,
+            'logo' => $logo ? [
+                '@type' => 'ImageObject',
+                'url' => $logo,
+                'contentUrl' => $logo,
+            ] : null,
             'image' => $logo,
             'foundingDate' => config('organization.founding_date'),
-            'priceRange' => config('organization.price_range'),
-            'currenciesAccepted' => config('organization.currencies_accepted'),
             'telephone' => $this->primaryTelephone(),
             'email' => $this->email(),
-            'address' => $this->address(config('organization.showrooms')[0] ?? []),
             'areaServed' => array_map(
                 fn (string $area) => ['@type' => 'AdministrativeArea', 'name' => $area],
                 (array) config('organization.area_served', [])
             ),
             'sameAs' => (array) config('organization.same_as', []),
-            'hasMap' => config('organization.map_url'),
-            'openingHoursSpecification' => $this->openingHours(),
-            'location' => $this->showrooms(),
+            'subOrganization' => array_map(
+                fn (array $showroom) => ['@id' => $showroom['@id']],
+                $showrooms,
+            ),
             'contactPoint' => array_filter([
                 '@type' => 'ContactPoint',
                 'contactType' => 'sales',
@@ -57,13 +57,18 @@ class OrganizationSchemaService
                 'availableLanguage' => ['uk', 'ru'],
             ]),
         ], fn ($value) => $value !== null && $value !== [] && $value !== '');
+
+        return [
+            '@context' => 'https://schema.org',
+            '@graph' => [$organization, ...$showrooms],
+        ];
     }
 
     /**
      * Each showroom described in its own right, so both can be placed on a map
      * rather than the business having one vague address.
      */
-    private function showrooms(): array
+    private function showrooms(?string $logo): array
     {
         $showrooms = [];
 
@@ -75,6 +80,7 @@ class OrganizationSchemaService
                 'parentOrganization' => ['@id' => $this->organizationId()],
                 'url' => url('/'),
                 'telephone' => $showroom['telephone'] ?? null,
+                'image' => $logo,
                 'address' => $this->address($showroom),
                 'geo' => isset($showroom['latitude'], $showroom['longitude']) ? [
                     '@type' => 'GeoCoordinates',
@@ -84,6 +90,7 @@ class OrganizationSchemaService
                 'hasMap' => config('organization.map_url'),
                 'openingHoursSpecification' => $this->openingHours(),
                 'priceRange' => config('organization.price_range'),
+                'currenciesAccepted' => config('organization.currencies_accepted'),
             ], fn ($value) => $value !== null && $value !== [] && $value !== '');
         }
 

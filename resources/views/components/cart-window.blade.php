@@ -3,7 +3,11 @@
 {{--        <span class="after art-main-basket-count count-of-products-in-basket @if($countOfProductInCart <= 0) d-none @endif">{{ $countOfProductInCart }}</span>--}}
         {{-- TODO:: remove $countOfProductInCart --}}
         <span class="after art-main-basket-count count-of-products-in-basket d-none">{{ $countOfProductInCart }}</span>
-        <i class="icon icon-cart"></i>
+        <svg class="bona-cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 4h2l1.8 10.2a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 1.9-1.4L21 7H6"></path>
+            <circle cx="9" cy="20" r="1"></circle>
+            <circle cx="18" cy="20" r="1"></circle>
+        </svg>
     </div>
     <div class="sub-menu bg-white basket-sub-menu @if(!is_null(request()->route()) && request()->route()->getName() == 'store.checkout.page') d-none @endif">
         <div class="sub-menu-title py-3 text-center font-weight-bold text-uppercase">
@@ -26,7 +30,7 @@
             </span>
             </a>
             <button type="button" class="btn btn-light btn-free-shiping font-weight-bold text-nowrap d-none">
-                <img src="{{ Vite::asset('resources/img/gift-box-delivery.png') }}" alt="{{ trans('base.free_shipment') }}">
+                <img src="{{ Vite::asset('resources/img/gift-box-delivery.png') }}" alt="{{ trans('base.free_shipment') }}" width="64" height="64" loading="lazy">
                 <span class="ml-3">
                     {{ trans('base.free_shipment') }}
                 </span>

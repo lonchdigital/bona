@@ -142,7 +142,7 @@ class HomePageRedesignSectionsTest extends TestCase
             'home-blog',
             'home-faq',
             'home-partners',
-            'seo-section',
+            'bona-seo',
         ];
 
         $positions = collect($components)->map(fn (string $component) => strpos($source, $component));

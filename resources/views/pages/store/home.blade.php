@@ -1,40 +1,45 @@
 @extends('layouts.store-main')
 
-@section('title')
+@php
+    $homeMetaTitle = trim((string) $config->meta_title) ?: trans('base.home_meta_title');
+    $homeMetaDescription = trim((string) $config->meta_description) ?: trans('base.home_meta_description');
+@endphp
 
-    @if(isset($config))
-        @if($config->meta_title)
-            <title>{{ $config->meta_title }}</title>
-            <meta name="title" content="{{ $config->meta_title }}">
-        @endif
-
-        @if($config->meta_description)
-            <meta name="description" content="{{ $config->meta_description }}">
-        @endif
-        @if($config->meta_keywords)
-            <meta name="keywords" content="{{ $config->meta_keywords }}">
-        @endif
-
-        @if($config->meta_tags)
-            {!! $config->meta_tags !!}
-        @endif
-    @endif
-
-{{--    @foreach($slides as $slide)--}}
-{{--        <link rel="preload" href="{{ $slide->slide_image_url }}" as="image">--}}
-{{--    @endforeach--}}
-
-@endsection
+@section('seo_title', $homeMetaTitle)
+@section('meta_description', $homeMetaDescription)
+@section('meta_keywords', (string) $config->meta_keywords)
+@section('og_title', $homeMetaTitle)
+@section('og_description', $homeMetaDescription)
+@section('og_image_alt', $homeMetaTitle)
 
 {{-- Without this the layout falls back to the 32x32 favicon, which is what
      every share of the home page was showing. --}}
 @php
-    $homeOgImage = App\Helpers\PreviewImage::url(optional($slides->first())->slide_image_path);
+    $firstHomeSlide = $slides->first();
+    $homeOgImage = App\Helpers\PreviewImage::url(optional($firstHomeSlide)->slide_image_path);
 @endphp
 
 @if($homeOgImage)
     @section('og_image', $homeOgImage)
 @endif
+
+@if($firstHomeSlide?->slide_image_url)
+    @push('head')
+        @if($firstHomeSlide->slide_image_mobile_url)
+            <link rel="preload" as="image" href="{{ $firstHomeSlide->slide_image_mobile_url }}" media="(max-width: 767px)" fetchpriority="high">
+            <link rel="preload" as="image" href="{{ $firstHomeSlide->slide_image_url }}" media="(min-width: 768px)" fetchpriority="high">
+        @else
+            <link rel="preload" as="image" href="{{ $firstHomeSlide->slide_image_url }}" fetchpriority="high">
+        @endif
+    @endpush
+@endif
+
+@push('structured_data')
+    <script type="application/ld+json">{!! json_encode(
+        app(App\Services\Seo\HomePageSchemaService::class)->build($config, $slides, $homePopularProducts),
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG
+    ) !!}</script>
+@endpush
 
 @section('content')
 
@@ -68,7 +73,7 @@
                         >
                             <span class="bona-category-card__image">
                                 @if($catalogCard['image_url'])
-                                    <img src="{{ $catalogCard['image_url'] }}" alt="{{ $catalogCard['name'] }}" loading="lazy">
+                                    <img src="{{ $catalogCard['image_url'] }}" alt="{{ $catalogCard['name'] }}" loading="lazy" decoding="async" width="720" height="560">
                                 @else
                                     <span class="bona-category-card__placeholder" aria-hidden="true">BONA</span>
                                 @endif
@@ -105,21 +110,16 @@
 
     @if(($homeSections['seo']['enabled'] ?? true) && $seoText)
     <!-- ======================== SEO ======================== -->
-    <section class="seo-section pt-none11">
-        <div class="container">
-
-            <header>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <h2 class="title h2">{{$seoText['title']}}</h2>
-                    </div>
-                </div>
+    <section class="bona-seo">
+        <div class="bona-shell">
+            <header class="bona-section-heading bona-seo__heading">
+                <h2>{{$seoText['title']}}</h2>
             </header>
 
             {{-- Height limited with CSS only. The whole text stays in the
                  markup, which is what a crawler reads; nothing is loaded or
                  revealed by script, so none of it is hidden from search. --}}
-            <div class="seo-content art-seo-scroll" tabindex="0">
+            <div class="bona-seo__content art-seo-scroll" tabindex="0">
                 {!! $seoText['content'] !!}
             </div>
 
@@ -130,7 +130,7 @@
 
 @push('head')
     <style>
-        .seo-section .art-seo-scroll {
+        .bona-seo .art-seo-scroll {
             max-height: 340px;
             overflow-y: auto;
             padding-right: 18px;
@@ -139,29 +139,29 @@
             scrollbar-width: thin;
         }
 
-        .seo-section .art-seo-scroll::-webkit-scrollbar {
+        .bona-seo .art-seo-scroll::-webkit-scrollbar {
             width: 6px;
         }
 
-        .seo-section .art-seo-scroll::-webkit-scrollbar-track {
+        .bona-seo .art-seo-scroll::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
 
-        .seo-section .art-seo-scroll::-webkit-scrollbar-thumb {
+        .bona-seo .art-seo-scroll::-webkit-scrollbar-thumb {
             background: #cccccc;
             border-radius: 3px;
         }
 
-        .seo-section .art-seo-scroll::-webkit-scrollbar-thumb:hover {
+        .bona-seo .art-seo-scroll::-webkit-scrollbar-thumb:hover {
             background: #999999;
         }
 
-        .seo-section .art-seo-scroll > *:last-child {
+        .bona-seo .art-seo-scroll > *:last-child {
             margin-bottom: 0;
         }
 
         @media (max-width: 767px) {
-            .seo-section .art-seo-scroll {
+            .bona-seo .art-seo-scroll {
                 max-height: 60vh;
                 padding-right: 12px;
             }

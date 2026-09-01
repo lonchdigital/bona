@@ -100,7 +100,7 @@
                                 ]) }}">
                                     <span class="bona-mega-card__image">
                                         @if($category->image_url)
-                                            <img src="{{ $category->image_url }}" alt="" loading="lazy">
+                                            <img src="{{ $category->image_url }}" alt="" loading="lazy" decoding="async" width="320" height="240">
                                         @else
                                             <span aria-hidden="true">BONA</span>
                                         @endif
@@ -149,7 +149,7 @@
                     @else
                         <a class="bona-mega__type-card" href="{{ $typeUrl }}">
                             @if($productType->image_url)
-                                <img src="{{ $productType->image_url }}" alt="" loading="lazy">
+                                <img src="{{ $productType->image_url }}" alt="" loading="lazy" decoding="async" width="320" height="240">
                             @endif
                             <span>
                                 <small>{{ trans('base.storefront_open_catalog') }}</small>

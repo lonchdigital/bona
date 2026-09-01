@@ -14,6 +14,7 @@
         ['key' => 'viber', 'label' => 'Viber'],
         ['key' => 'facebook', 'label' => 'Facebook'],
     ])->filter(fn (array $social) => filled(data_get($options, $social['key'])));
+    $languageLinks = App\Services\Locale\LocaleService::alternateLinks(url()->current());
 
     $stores = collect(['one', 'two', 'three'])->map(function (string $suffix) use ($contacts) {
         $city = data_get($contacts, "city_{$suffix}");
@@ -42,9 +43,9 @@
         <div class="bona-footer__grid">
             <div class="bona-footer__brand">
                 @if($logoPath)
-                    <img class="bona-footer__logo" src="{{ '/storage/'.$logoPath }}" alt="Bona Doors">
+                    <img class="bona-footer__logo" src="{{ '/storage/'.$logoPath }}" alt="Bona Doors" width="203" height="44" loading="lazy" decoding="async">
                 @else
-                    <img class="bona-footer__logo" src="{{ asset('assets/images/logo.png') }}" alt="Bona Doors">
+                    <span class="bona-footer__wordmark"><strong>BONA</strong><small>DOORS</small></span>
                 @endif
                 <p>{{ $footerText }}</p>
 
@@ -136,9 +137,13 @@
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'polityka-konfidencinosti']) }}">{{ trans('base.policy') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ trans('base.agreement') }}</a>
             </nav>
+            <nav class="bona-footer__languages" aria-label="{{ trans('base.choose_language') }}">
+                <a href="{{ $languageLinks['uk-UA'] }}" hreflang="uk-UA" lang="uk" @class(['is-active' => $locale === 'uk'])>UA</a>
+                <a href="{{ $languageLinks['ru-UA'] }}" hreflang="ru-UA" lang="ru" @class(['is-active' => $locale === 'ru'])>RU</a>
+            </nav>
             <span class="bona-footer__payments" aria-label="Visa, Mastercard">
-                <span><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa"></span>
-                <span><img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard"></span>
+                <span><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa" width="40" height="20" loading="lazy"></span>
+                <span><img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard" width="40" height="20" loading="lazy"></span>
             </span>
         </div>
     </div>

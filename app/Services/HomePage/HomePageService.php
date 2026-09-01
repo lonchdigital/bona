@@ -23,6 +23,7 @@ use App\Services\Base\ServiceActionResult;
 use App\Services\HomePage\DTO\HomePageEditDTO;
 use App\Services\Instagram\InstagramFeedService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
@@ -37,6 +38,8 @@ class HomePageService extends BaseService
     const CONTENT_IMAGES_FOLDER = 'home-page-content-images';
 
     private const POPULAR_PRODUCT_TYPE_SLUG = 'interior-doors';
+
+    private const STOREFRONT_CACHE_PREFIX = 'store.home.payload.v2.';
 
     private const CONTENT_IMAGE_ASSETS = [
         'bedroom' => 'bona-html/img/interior-bedroom.jpg',
@@ -91,9 +94,22 @@ class HomePageService extends BaseService
             $this->syncNewProducts($request->selectedProductsId);
             $this->syncBestSalesProducts($request->selectedBestSalesProductsId);
             $this->syncBrands($request->selectedBrandsId);
+            self::forgetStorefrontCache();
 
             return ServiceActionResult::make(true, trans('admin.home_page_edit_success'));
         });
+    }
+
+    public static function storefrontCacheKey(string $locale): string
+    {
+        return self::STOREFRONT_CACHE_PREFIX.$locale;
+    }
+
+    public static function forgetStorefrontCache(): void
+    {
+        foreach (['uk', 'ru'] as $locale) {
+            Cache::forget(self::storefrontCacheKey($locale));
+        }
     }
 
     /**

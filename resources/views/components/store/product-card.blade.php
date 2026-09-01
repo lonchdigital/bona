@@ -48,6 +48,9 @@
                 data-default-alt="{{ $product->name }}"
                 alt="{{ $product->name }}"
                 loading="lazy"
+                decoding="async"
+                width="480"
+                height="560"
             >
         </a>
 
@@ -121,7 +124,7 @@
                 <button
                     class="bona-product-card__swatch {{ $isActive ? 'is-active' : '' }}"
                     type="button"
-                    style="--bona-swatch: {{ $color->hex ?: '#d7d1c5' }}; @if($color->display_as_image && $color->image_url) --bona-swatch-image: url('{{ $color->image_url }}'); @endif"
+                    style="--bona-swatch: {{ $color->hex ?: '#d7d1c5' }}; @if($variant === 'catalog' && $color->display_as_image && $color->image_url) --bona-swatch-image: url('{{ $color->image_url }}'); @endif"
                     data-product-card-swatch
                     data-color-id="{{ $color->id }}"
                     data-color-name="{{ $color->name }}"

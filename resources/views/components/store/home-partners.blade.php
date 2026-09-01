@@ -27,7 +27,7 @@
                         aria-label="{{ $brand->name }}"
                     >
                         @if(filled($brand->logo_image_path))
-                            <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}" loading="lazy" decoding="async">
+                            <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}" loading="lazy" decoding="async" width="240" height="80">
                         @else
                             <span>{{ $brand->name }}</span>
                         @endif

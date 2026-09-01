@@ -56,12 +56,31 @@ class ApplicationConfigService extends BaseService
     public function getRobotsTxtContent(): string
     {
         $config = ApplicationConfig::where('config_name', self::ROBOTS_TXT_CONFIG)->first();
+        $content = trim((string) ($config?->config_data ?? ''));
 
-        if ($config) {
-            return $config['config_data'];
+        if ($content === '') {
+            $content = implode("\n", [
+                'User-agent: *',
+                'Disallow: /admin/',
+                'Disallow: /*/admin/',
+                'Disallow: /auth/',
+                'Disallow: /*/auth/',
+                'Disallow: /checkout',
+                'Disallow: /*/checkout',
+                'Disallow: /cart',
+                'Disallow: /*/cart',
+                'Disallow: /profile',
+                'Disallow: /*/profile',
+                'Disallow: /payment/',
+                'Disallow: /*/payment/',
+            ]);
         }
 
-        return '';
+        // The sitemap address is application-owned, not editor-owned. Replace
+        // stale copies rather than serving several conflicting directives.
+        $content = trim((string) preg_replace('/^\s*Sitemap\s*:.*$/mi', '', $content));
+
+        return $content."\n\nSitemap: ".url('/sitemap.xml')."\n";
     }
 
     public function setRobotsTxtContent(EditRobotsTxtDto $request): ServiceActionResult
