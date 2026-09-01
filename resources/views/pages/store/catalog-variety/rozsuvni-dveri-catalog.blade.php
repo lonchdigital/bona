@@ -128,33 +128,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <div class="dropdown dropdown-custom art-sort-count-wrapper">
-                                            <button
-                                                class="btn btn-dropdown d-block dropdown-toggle"
-                                                type="button" id="dropdownMenuButton2" data-toggle="dropdown"
-                                                aria-haspopup="true" aria-expanded="false">
-                                                <span class="text-left">{{ trans('base.show_items_per_page') }}:</span>
-                                                @isset($filtersData['per_page'])
-                                                    <span class="text-right">{{ $filtersData['per_page'] }}</span>
-                                                @else
-                                                    <span class="text-right">24</span>
-                                                @endisset
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right"
-                                                 aria-labelledby="dropdownMenuButton2">
-                                                <a class="dropdown-item @if(!isset($filtersData['per_page']) || (isset($filtersData['per_page']) && $filtersData['per_page'] == 24)) active @endif"
-                                                   href="#"
-                                                   id="show-24-items-per-page">24 {{ trans('base.per_page') }}</a>
-                                                <a class="dropdown-item @if(isset($filtersData['per_page']) && $filtersData['per_page'] == 36) active @endif"
-                                                   href="#"
-                                                   id="show-36-items-per-page">36 {{ trans('base.per_page') }}</a>
-                                                <a class="dropdown-item @if(isset($filtersData['per_page']) && $filtersData['per_page'] == 48) active @endif"
-                                                   href="#"
-                                                   id="show-48-items-per-page">48 {{ trans('base.per_page') }}</a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 

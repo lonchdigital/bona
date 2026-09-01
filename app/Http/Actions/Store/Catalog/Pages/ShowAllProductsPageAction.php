@@ -36,7 +36,7 @@ class ShowAllProductsPageAction extends BaseAction
         $productsPaginated = $productService->getAllProductsPaginated(
             //            $productType,
             $filtersData,
-            $filtersData->filters['per_page'] ?? 18, // 3
+            (int) config('domain.store_catalog_items_per_page'),
             $page,
             $allFilters
         );

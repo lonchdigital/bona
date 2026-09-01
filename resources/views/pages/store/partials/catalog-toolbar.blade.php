@@ -3,7 +3,6 @@
     $selectedSort = $sortOptions->firstWhere('id', $filtersData['sort_by'] ?? null)
         ?? $sortOptions->firstWhere('is_active_by_default', true)
         ?? $sortOptions->first();
-    $perPage = (int) ($filtersData['per_page'] ?? $productsPaginated->perPage());
 @endphp
 
 <div class="bona-catalog__toolbar">
@@ -48,20 +47,5 @@
             </div>
         </div>
 
-        <div class="dropdown dropdown-custom bona-catalog__select bona-catalog__select--count">
-            <button class="btn btn-dropdown dropdown-toggle" type="button" id="catalog-count-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span>{{ trans('base.catalog_show') }}</span>
-                <strong>{{ $perPage }}</strong>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="catalog-count-menu">
-                @foreach([24, 36, 48] as $count)
-                    <a
-                        class="dropdown-item {{ $perPage === $count ? 'active' : '' }}"
-                        href="#"
-                        id="show-{{ $count }}-items-per-page"
-                    >{{ $count }} {{ trans('base.per_page') }}</a>
-                @endforeach
-            </div>
-        </div>
     </div>
 </div>

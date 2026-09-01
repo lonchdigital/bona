@@ -248,7 +248,6 @@
             &.active { background: var(--bona-paper); color: var(--bona-ink); }
         }
 
-        &.bona-catalog__select--count .btn-dropdown { min-width: 96px; }
     }
 
     &__filters {
@@ -333,8 +332,6 @@
         .filter-content { padding: 0 0 18px; }
 
         .filter-item--price > .position-relative { padding-bottom: 22px; }
-        .filter-item--price .filter-submit-main { display: none; }
-
         .currency-wrap {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -914,7 +911,6 @@
         &__program-title { display: none; }
         &__programs > ul { gap: 10px; }
         &__programs li.is-recovery img { width: 105px; }
-        &__select--count { display: none; }
     }
 }
 

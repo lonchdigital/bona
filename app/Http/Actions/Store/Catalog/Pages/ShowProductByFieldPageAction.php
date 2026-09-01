@@ -31,7 +31,7 @@ class ShowProductByFieldPageAction extends BaseAction
         $page = $request->get('page') ?? 1;
 
         $productsPaginated = $productService->getProductsByFieldPaginated(
-            $filtersData->filters['per_page'] ?? 18,
+            (int) config('domain.store_catalog_items_per_page'),
             $page,
             $productField,
             $productOptionID

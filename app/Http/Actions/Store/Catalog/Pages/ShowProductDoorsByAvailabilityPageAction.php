@@ -26,7 +26,7 @@ class ShowProductDoorsByAvailabilityPageAction extends BaseAction
         $page = $request->get('page') ?? 1;
 
         $productsPaginated = $productService->getProductsDoorsByAvailabilityPaginated(
-            $filtersData->filters['per_page'] ?? 24,
+            (int) config('domain.store_catalog_items_per_page'),
             $page,
         );
 

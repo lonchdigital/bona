@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 
 class ProductFiltersService extends BaseService
 {
-    private array $defaultOptions = ['sort_by', 'page', 'per_page'];
+    private array $defaultOptions = ['sort_by', 'page'];
 
     public static function filterOptionChecked(array $filterData, string $filterNameSlug, string $filterOptionSlug): bool
     {

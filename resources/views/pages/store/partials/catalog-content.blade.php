@@ -51,7 +51,7 @@
                         @foreach($productsPaginated as $product)
                             @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
 
-                            @if($loop->iteration === 8)
+                            @if($loop->iteration % 9 === 0)
                                 @include('pages.store.partials.catalog-consultant-card')
                             @endif
                         @endforeach

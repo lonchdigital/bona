@@ -40,6 +40,7 @@ class ShowFilterGroupPageAction extends BaseAction
         $filerGroupService = app()->make(FilterGroupService::class);
 
         $groupFilters = $filerGroupService->buildFilterArrayByFilterGroup($filterGroup);
+        unset($groupFilters['per_page']);
         $requestedPage = $request->toDTO()->filters['page'] ?? null;
 
         if ($requestedPage !== null) {
@@ -67,7 +68,7 @@ class ShowFilterGroupPageAction extends BaseAction
         $productsPaginated = $productService->getProductsByTypePaginated(
             $productType,
             $filtersData,
-            $filtersData->filters['per_page'] ?? 24,
+            (int) config('domain.store_catalog_items_per_page'),
             $page,
         );
 

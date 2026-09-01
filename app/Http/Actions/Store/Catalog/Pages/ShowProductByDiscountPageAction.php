@@ -26,7 +26,7 @@ class ShowProductByDiscountPageAction extends BaseAction
         $page = $filtersData->filters['page'] ?? 1;
 
         $productsPaginated = $productService->getProductsByDiscountPaginated(
-            $filtersData->filters['per_page'] ?? 24,
+            (int) config('domain.store_catalog_items_per_page'),
             $page,
         );
 

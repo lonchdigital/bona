@@ -23,8 +23,6 @@
             </div>
             <div class="rangeBar-full"></div>
         </div>
-        <button type="button"
-                class="btn btn-empty color-dark filter-submit-main">{{ trans('base.apply') }}</button>
     </div>
 </div>
 

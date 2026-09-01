@@ -45,6 +45,10 @@ class CatalogFilterRequest extends BaseRequest
                 continue;
             }
 
+            if ($pair[0] === 'per_page') {
+                continue;
+            }
+
             if (isset($pair[1])) {
                 $values = array_slice(explode(',', $pair[1]), 0, 50);
                 $filersArray[$pair[0]] = count($values) > 1 ? $values : $values[0];

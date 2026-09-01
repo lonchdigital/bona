@@ -58,7 +58,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
             $productType,
             $category,
             $filtersData,
-            $filtersData->filters['per_page'] ?? 24,
+            (int) config('domain.store_catalog_items_per_page'),
             $page,
         );
 

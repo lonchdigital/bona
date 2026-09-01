@@ -10,29 +10,76 @@ const tooltipClasses = [
 
 export function init () {
 
-    const CurrencyFirst = $("#currency-first-main");
-    const CurrencyLast = $("#currency-last-main");
-
-    let PriceSlider = new RangeSliderPips({
-        target: $('#price-slider')[0],
-        props: {
-            min: parseFloat(CurrencyFirst.attr('min')),
-            max: parseFloat(CurrencyLast.attr('max')),
-            values: [CurrencyFirst.val() ? CurrencyFirst.val() : CurrencyFirst.attr('min'), CurrencyLast.val() ? CurrencyLast.val() : CurrencyLast.attr('max')],
-            step: 1,
-            range: true,
-            float: true,
-            suffix: ' ' + store.base_currency_name_short
-        }
-    });
-    PriceSlider.$on('change', function (e) {
-        CurrencyFirst.val(e.detail.values[0]).trigger('change');
-        CurrencyLast.val(e.detail.values[1]).trigger('change');
-    });
-
-
     const mainFilterForm = $('#filter-left-form');
     const fullFilterForm = $('#filter-full-form');
+    const CurrencyFirst = $("#currency-first-main");
+    const CurrencyLast = $("#currency-last-main");
+    let priceSubmitTimer = null;
+
+    const priceRangeIsValid = function () {
+        if (!CurrencyFirst.length || !CurrencyLast.length) {
+            return false;
+        }
+
+        const firstValue = CurrencyFirst.val() === '' ? CurrencyFirst.attr('min') : CurrencyFirst.val();
+        const lastValue = CurrencyLast.val() === '' ? CurrencyLast.attr('max') : CurrencyLast.val();
+
+        return CurrencyFirst[0].checkValidity()
+            && CurrencyLast[0].checkValidity()
+            && Number(firstValue) <= Number(lastValue);
+    };
+
+    const schedulePriceSubmit = function (delay = 180) {
+        window.clearTimeout(priceSubmitTimer);
+
+        priceSubmitTimer = window.setTimeout(function () {
+            if (priceRangeIsValid()) {
+                filterSubmit(mainFilterForm);
+            }
+        }, delay);
+    };
+
+    const syncPriceInputs = function (values) {
+        CurrencyFirst.val(values[0]);
+        CurrencyLast.val(values[1]);
+    };
+
+    const priceSliderTarget = $('#price-slider')[0];
+    const priceMinimum = parseFloat(CurrencyFirst.attr('min'));
+    const priceMaximum = parseFloat(CurrencyLast.attr('max'));
+
+    if (priceSliderTarget && Number.isFinite(priceMinimum) && Number.isFinite(priceMaximum) && priceMaximum > priceMinimum) {
+        const PriceSlider = new RangeSliderPips({
+            target: priceSliderTarget,
+            props: {
+                min: priceMinimum,
+                max: priceMaximum,
+                values: [CurrencyFirst.val() ? CurrencyFirst.val() : priceMinimum, CurrencyLast.val() ? CurrencyLast.val() : priceMaximum],
+                step: 1,
+                range: true,
+                float: true,
+                suffix: ' ' + store.base_currency_name_short
+            }
+        });
+        PriceSlider.$on('change', function (e) {
+            syncPriceInputs(e.detail.values);
+        });
+        PriceSlider.$on('stop', function (e) {
+            syncPriceInputs(e.detail.values);
+            CurrencyFirst.trigger('change', [true]);
+            CurrencyLast.trigger('change', [true]);
+
+            if (e.detail.startValue !== e.detail.value) {
+                schedulePriceSubmit();
+            }
+        });
+    }
+
+    CurrencyFirst.add(CurrencyLast).on('input change', function (event, isSync) {
+        if (!isSync) {
+            schedulePriceSubmit(650);
+        }
+    });
 
     mainFilterForm.submit(function (event) {
         event.preventDefault();
@@ -76,21 +123,6 @@ export function init () {
         const option = $(this).attr('id');
 
         filterAdd('sort_by', option);
-    });
-
-    $('#show-24-items-per-page').click(function (event) {
-        event.preventDefault();
-        filterAdd('per_page', 24);
-    });
-
-    $('#show-36-items-per-page').click(function (event) {
-        event.preventDefault();
-        filterAdd('per_page', 36);
-    });
-
-    $('#show-48-items-per-page').click(function (event) {
-        event.preventDefault();
-        filterAdd('per_page', 48);
     });
 
     $('.input-search').on('keypress',function(event) {
@@ -139,8 +171,14 @@ function getExistingFilterParams()
 
     if (params && params !== '') {
         params.split(';').forEach(function (option) {
-            paramsParsed[option.split('=')[0]] =
-                option.split('=')[1].indexOf(',') !== -1 ? option.split('=')[1].split(',') : option.split('=')[1];
+            const optionParts = option.split('=');
+
+            if (optionParts[0] === 'per_page') {
+                return;
+            }
+
+            paramsParsed[optionParts[0]] =
+                optionParts[1].indexOf(',') !== -1 ? optionParts[1].split(',') : optionParts[1];
         });
     }
 
@@ -209,11 +247,6 @@ function filterGenerateArrayWithParams(form)
         paramsNew['sort_by'] = paramsParsed['sort_by'];
     }
 
-    //show per page
-    if ('per_page' in paramsParsed) {
-        paramsNew['per_page'] = paramsParsed['per_page'];
-    }
-
     return paramsNew;
 }
 
@@ -254,11 +287,6 @@ function filtersReset()
         paramsNew['sort_by'] = paramsParsed['sort_by'];
     }
 
-    //show per page
-    if ('per_page' in paramsParsed) {
-        paramsNew['per_page'] = paramsParsed['per_page'];
-    }
-
     if (!paramsNew.length) {
         window.location.href = buildLinksWithoutParams();
     } else {
@@ -272,10 +300,6 @@ function filterAdd(key, value)
     let paramsParsed = getExistingFilterParams();
 
     paramsParsed[key] = value;
-
-    if (key === 'per_page') {
-        delete paramsParsed['page'];
-    }
 
     window.location.href = buildLinkWithParams(paramsParsed);
 }
