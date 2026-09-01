@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\ContactConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -101,5 +102,72 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('class="bona-footer__stores"', $footer);
         $this->assertStringContainsString(".bona-footer__grid {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n        gap: 42px 20px;", $stylesheet);
         $this->assertStringContainsString(".bona-footer__brand,\n    .bona-footer__stores { grid-column: 1 / -1; }", $stylesheet);
+    }
+
+    public function test_footer_aligns_store_addresses_and_links_them_to_maps_without_language_switcher(): void
+    {
+        $footer = file_get_contents(resource_path('views/components/store/site-footer.blade.php'));
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertStringContainsString('StoreLocations::from($contacts)', $footer);
+        $this->assertStringContainsString('class="bona-footer__address-link"', $footer);
+        $this->assertStringContainsString("href=\"{{ \$store['map_url'] }}\"", $footer);
+        $this->assertStringNotContainsString('bona-footer__languages', $footer);
+        $this->assertStringNotContainsString('LocaleService::alternateLinks', $footer);
+        $this->assertStringContainsString("&__stores {\n        min-width: 0;\n        padding-block: 0;", $stylesheet);
+        $this->assertStringContainsString("padding-top: 0;\n        border-top: 0;", $stylesheet);
+        $this->assertStringNotContainsString('&__languages {', $stylesheet);
+    }
+
+    public function test_contacts_page_uses_the_new_bilingual_layout_and_real_store_data(): void
+    {
+        ContactConfig::create([
+            'city_one' => ['uk' => 'Одеса', 'ru' => 'Одесса'],
+            'address_one' => [
+                'uk' => 'ТЦ "Гіпермаркет Дверей" (Краснова, 12А)',
+                'ru' => 'ТЦ "Гипермаркет Дверей" (Краснова, 12А)',
+            ],
+            'phone_one' => ['uk' => '+380 (67) 953 47 74', 'ru' => '+380 (67) 953 47 74'],
+            'email_one' => ['uk' => 'bona@example.test', 'ru' => 'bona@example.test'],
+            'iframe_address_one' => '<iframe src="about:blank"></iframe>',
+            'city_two' => ['uk' => 'Одеса', 'ru' => 'Одесса'],
+            'address_two' => [
+                'uk' => 'ТЦ "МегаДім" (Георгія Липського, 135)',
+                'ru' => 'ТЦ "МегаДом" (Георгия Липского, 135)',
+            ],
+            'phone_two' => ['uk' => '+380 (67) 953 44 42', 'ru' => '+380 (67) 953 44 42'],
+            'email_two' => ['uk' => 'bona@example.test', 'ru' => 'bona@example.test'],
+            'iframe_address_two' => '<iframe src="about:blank"></iframe>',
+            'meta_title' => ['uk' => 'Контакти Bona Doors', 'ru' => 'Контакты Bona Doors'],
+            'meta_description' => ['uk' => 'Салони в Одесі', 'ru' => 'Салоны в Одессе'],
+            'meta_keywords' => ['uk' => '', 'ru' => ''],
+            'meta_tags' => '',
+        ]);
+
+        $this->get(route('store.contacts'))
+            ->assertOk()
+            ->assertSee('class="bona-contact-page"', false)
+            ->assertSee('Давайте поговоримо про ваші двері')
+            ->assertSee('Побачте матеріали наживо')
+            ->assertSee('data-lead-inline', false)
+            ->assertSee('https://www.google.com/maps/search/?api=1&amp;query=', false)
+            ->assertSee('title="Карта розташування:', false)
+            ->assertDontSee('art-contacts-line', false)
+            ->assertDontSee('class="main-header"', false)
+            ->assertDontSee('bona-footer__languages', false);
+
+        $this->get(route('localized.store.contacts', ['lang' => 'ru']))
+            ->assertOk()
+            ->assertSee('Давайте поговорим о ваших дверях')
+            ->assertSee('Посмотрите материалы вживую')
+            ->assertSee('ТЦ &quot;Гипермаркет Дверей&quot;', false)
+            ->assertSee('Заказать замер');
+
+        $script = file_get_contents(resource_path('js/store/common/lead-modals.js'));
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertStringContainsString("form.closest('[data-lead-modal], [data-lead-inline]')", $script);
+        $this->assertStringContainsString('[data-lead-modal-thanks], [data-lead-inline-thanks]', $script);
+        $this->assertStringContainsString('label.bona-lead-consent > input {', $stylesheet);
     }
 }

@@ -1724,6 +1724,11 @@
         padding-block: 72px 56px;
     }
 
+    &__stores {
+        min-width: 0;
+        padding-block: 0;
+    }
+
     &__brand {
         display: flex;
         min-width: 0;
@@ -1822,15 +1827,13 @@
     &__address {
         display: flex;
         margin: 0;
-        padding-top: 19px;
-        border-top: 1px solid rgba(247, 244, 238, .14);
+        padding-top: 0;
+        border-top: 0;
         flex-direction: column;
         gap: 8px;
         font-size: 13px;
         font-style: normal;
         line-height: 1.5;
-
-        &:first-child { padding-top: 0; border-top: 0; }
 
         > strong { margin-bottom: 3px; color: var(--bona-cream); font-size: 13px; }
     }
@@ -1862,6 +1865,23 @@
         }
     }
 
+    &__address-link {
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 7px;
+
+        > span {
+            flex: 0 0 auto;
+            color: var(--bona-gold-light);
+            font-size: 11px;
+            line-height: 1.7;
+            transition: transform .2s ease;
+        }
+
+        &:hover > span,
+        &:focus-visible > span { transform: translate(2px, -2px); }
+    }
+
     &__bottom {
         display: flex;
         align-items: center;
@@ -1889,32 +1909,6 @@
         }
     }
 
-    &__languages {
-        display: flex;
-        flex: 0 0 auto;
-        gap: 6px;
-
-        a {
-            display: grid;
-            width: 34px;
-            height: 34px;
-            place-items: center;
-            border: 1px solid rgba(247, 244, 238, .22);
-            border-radius: 50%;
-            color: rgba(247, 244, 238, .68);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .06em;
-
-            &.is-active,
-            &:hover,
-            &:focus-visible {
-                border-color: var(--bona-gold-light);
-                color: var(--bona-cream);
-            }
-        }
-    }
-
     &__payments {
         display: flex;
         flex: 0 0 auto;
@@ -1933,6 +1927,459 @@
 
         img { width: 100%; height: 100%; object-fit: contain; }
     }
+}
+
+.bona-contact-body {
+    background: #fcfbf8;
+
+    .bona-footer { margin-top: 0; }
+}
+
+.bona-contact-page {
+    overflow: hidden;
+    background: #fcfbf8;
+    color: var(--bona-ink);
+    font-family: var(--bona-ui);
+
+    section {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    a { text-decoration: none; }
+}
+
+.bona-contact-breadcrumbs {
+    padding-block: 25px;
+
+    ol {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin: 0;
+        padding: 0;
+        color: #8b8578;
+        font-size: 12px;
+        line-height: 1.4;
+        list-style: none;
+    }
+
+    a {
+        color: #8b8578;
+
+        &:hover,
+        &:focus-visible { color: var(--bona-ink); }
+    }
+}
+
+.bona-contact-kicker {
+    margin: 0 0 18px;
+    color: var(--bona-gold-text);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.bona-contact-hero {
+    padding-block: 66px 84px !important;
+    border-bottom: 1px solid var(--bona-line);
+
+    &__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, .7fr);
+        align-items: end;
+        gap: 80px;
+    }
+
+    &__copy { max-width: 820px; }
+
+    h1 {
+        max-width: 940px;
+        margin: 0;
+        color: var(--bona-ink);
+        font: 400 clamp(58px, 6.2vw, 92px)/.96 var(--bona-display);
+        letter-spacing: -.025em;
+        text-transform: none;
+    }
+
+    &__lead {
+        max-width: 590px;
+        margin: 0;
+        color: var(--bona-muted);
+        font-size: 18px;
+        line-height: 1.75;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin-top: 30px;
+    }
+}
+
+.bona-contact-button-secondary {
+    display: inline-flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 30px;
+    border: 1px solid #cfc8bb;
+    border-radius: 999px;
+    color: var(--bona-ink);
+    font: 600 14px/1.2 var(--bona-ui);
+    transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+
+    &:hover,
+    &:focus-visible {
+        border-color: var(--bona-ink);
+        background: var(--bona-ink);
+        color: #fff;
+    }
+}
+
+.bona-contact-showrooms {
+    padding-block: 104px !important;
+}
+
+.bona-contact-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 50px;
+    margin-bottom: 44px;
+
+    > div { max-width: 690px; }
+
+    h2 {
+        margin: 0;
+        color: var(--bona-ink);
+        font: 400 clamp(40px, 4.2vw, 64px)/1.02 var(--bona-display);
+        letter-spacing: normal;
+        text-transform: none;
+    }
+
+    > p {
+        max-width: 570px;
+        margin: 0;
+        color: var(--bona-muted);
+        font-size: 16px;
+        line-height: 1.75;
+    }
+}
+
+.bona-contact-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr);
+    gap: 24px;
+}
+
+.bona-contact-showroom-list {
+    display: grid;
+    align-content: start;
+    gap: 14px;
+}
+
+.bona-contact-showroom-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 25px;
+    padding: 30px;
+    border: 1px solid var(--bona-line);
+    border-radius: 18px;
+    background: #fff;
+
+    h3 {
+        margin: 0;
+        color: var(--bona-ink);
+        font: 400 31px/1.12 var(--bona-display);
+        letter-spacing: normal;
+        text-transform: none;
+    }
+
+    p {
+        display: flex;
+        margin: 11px 0 0;
+        flex-direction: column;
+        gap: 3px;
+        color: var(--bona-muted);
+        font-size: 14px;
+        line-height: 1.65;
+
+        a {
+            color: var(--bona-muted);
+
+            &:hover,
+            &:focus-visible { color: var(--bona-gold-text); }
+        }
+
+        span { color: #8b8578; }
+    }
+
+    &__meta {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-direction: column;
+        gap: 18px;
+        text-align: right;
+
+        > a:first-child {
+            color: var(--bona-ink);
+            font-size: 14px;
+            font-weight: 750;
+
+            &:hover,
+            &:focus-visible { color: var(--bona-gold-text); }
+        }
+    }
+}
+
+.bona-contact-route {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--bona-ink);
+    font-size: 13px;
+    font-weight: 750;
+
+    span {
+        display: inline-flex;
+        width: 38px;
+        height: 38px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ccc5b8;
+        border-radius: 50%;
+        transition: border-color .2s ease, background-color .2s ease, color .2s ease, transform .2s ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+        color: var(--bona-gold-text);
+
+        span {
+            border-color: var(--bona-ink);
+            background: var(--bona-ink);
+            color: #fff;
+            transform: translate(2px, -2px);
+        }
+    }
+}
+
+.bona-contact-maps {
+    display: grid;
+    min-height: 500px;
+    overflow: hidden;
+    border: 1px solid var(--bona-line);
+    border-radius: 20px;
+    background: var(--bona-line);
+    gap: 1px;
+    grid-auto-rows: minmax(245px, 1fr);
+}
+
+.bona-contact-map {
+    position: relative;
+    min-height: 245px;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, rgba(168, 135, 93, .09), transparent 55%),
+        #eae6dd;
+
+    iframe {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 245px;
+        border: 0 !important;
+        filter: saturate(.72) sepia(.08);
+    }
+
+    > a {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        z-index: 2;
+        display: flex;
+        max-width: calc(100% - 32px);
+        padding: 13px 15px;
+        border: 1px solid rgba(247, 244, 238, .16);
+        border-radius: 12px;
+        background: rgba(38, 34, 28, .94);
+        box-shadow: 0 12px 28px rgba(35, 32, 27, .16);
+        color: #fff;
+        flex-direction: column;
+        backdrop-filter: blur(8px);
+
+        strong { font-size: 12px; line-height: 1.35; }
+        span { margin-top: 3px; color: rgba(247, 244, 238, .68); font-size: 9px; line-height: 1.45; }
+
+        &:hover,
+        &:focus-visible { border-color: var(--bona-gold-light); }
+    }
+}
+
+.bona-contact-channels {
+    display: grid;
+    margin-top: 42px;
+    border-top: 1px solid var(--bona-line);
+    border-bottom: 1px solid var(--bona-line);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.bona-contact-channel {
+    min-width: 0;
+    padding: 28px 30px;
+    border-left: 1px solid var(--bona-line);
+
+    &:first-child { padding-left: 0; border-left: 0; }
+
+    small {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--bona-gold-text);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .15em;
+        line-height: 1.4;
+        text-transform: uppercase;
+    }
+
+    a {
+        display: inline-block;
+        max-width: 100%;
+        color: var(--bona-ink);
+        font: 400 26px/1.2 var(--bona-display);
+        overflow-wrap: anywhere;
+
+        &:hover,
+        &:focus-visible { color: var(--bona-gold-text); }
+    }
+}
+
+.bona-contact-measure {
+    padding-block: 104px !important;
+    background: var(--bona-paper);
+}
+
+.bona-contact-form-shell {
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    gap: 86px;
+    padding: 54px;
+    border: 1px solid var(--bona-line);
+    border-radius: 22px;
+    background: #fff;
+
+    &__intro {
+        h2 {
+            margin: 0;
+            color: var(--bona-ink);
+            font: 400 clamp(42px, 4vw, 50px)/1.04 var(--bona-display);
+            letter-spacing: normal;
+            text-transform: none;
+        }
+
+        > p:last-child {
+            margin: 18px 0 0;
+            color: var(--bona-muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+    }
+}
+
+.bona-contact-form-view {
+    align-self: start;
+}
+
+.bona-contact-form-thanks {
+    align-self: center;
+    grid-column: 2;
+    outline: 0;
+
+    > span {
+        display: flex;
+        width: 56px;
+        height: 56px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        border: 1px solid #bdd2c2;
+        border-radius: 50%;
+        background: #edf5ef;
+        color: #4d7a59;
+        font-size: 23px;
+    }
+
+    h2 {
+        margin: 0;
+        color: var(--bona-ink);
+        font: 400 42px/1.04 var(--bona-display);
+    }
+
+    > p:last-child {
+        max-width: 520px;
+        margin: 18px 0 0;
+        color: var(--bona-muted);
+        font-size: 14px;
+        line-height: 1.75;
+    }
+}
+
+@media (max-width: 1180px) {
+    .bona-contact-hero__grid { gap: 48px; }
+    .bona-contact-form-shell { gap: 48px; padding: 42px; }
+    .bona-contact-channel a { font-size: 22px; }
+}
+
+@media (max-width: 960px) {
+    .bona-contact-hero {
+        padding-block: 48px 64px !important;
+
+        &__grid { grid-template-columns: 1fr; gap: 34px; }
+    }
+
+    .bona-contact-section-head { align-items: flex-start; flex-direction: column; gap: 24px; }
+    .bona-contact-layout { grid-template-columns: 1fr; }
+    .bona-contact-maps { min-height: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 360px; }
+    .bona-contact-map { min-height: 360px; }
+    .bona-contact-map iframe { min-height: 360px; }
+    .bona-contact-form-shell { grid-template-columns: 1fr; }
+    .bona-contact-form-thanks { grid-column: 1; }
+}
+
+@media (max-width: 640px) {
+    .bona-contact-breadcrumbs { padding-block: 20px; }
+
+    .bona-contact-hero {
+        padding-block: 36px 50px !important;
+
+        h1 { font-size: 50px; }
+        &__lead { font-size: 16px; line-height: 1.7; }
+        &__actions { align-items: stretch; flex-direction: column; }
+        &__actions .bona-button,
+        &__actions .bona-contact-button-secondary { width: 100%; }
+    }
+
+    .bona-contact-showrooms { padding-block: 72px !important; }
+    .bona-contact-section-head { margin-bottom: 34px; }
+    .bona-contact-section-head h2 { font-size: 42px; }
+    .bona-contact-showroom-card { grid-template-columns: 1fr; padding: 24px; }
+    .bona-contact-showroom-card__meta { align-items: flex-start; flex-direction: row; text-align: left; }
+    .bona-contact-maps { grid-template-columns: 1fr; grid-auto-rows: 310px; }
+    .bona-contact-map,
+    .bona-contact-map iframe { min-height: 310px; }
+    .bona-contact-channels { grid-template-columns: 1fr; }
+    .bona-contact-channel { padding: 24px 0; border-bottom: 1px solid var(--bona-line); border-left: 0; }
+    .bona-contact-channel:last-child { border-bottom: 0; }
+    .bona-contact-measure { padding-block: 72px !important; }
+    .bona-contact-form-shell { gap: 35px; padding: 26px; }
+    .bona-contact-form-shell__intro h2,
+    .bona-contact-form-thanks h2 { font-size: 38px; }
 }
 
 .bona-instagram {
@@ -2569,6 +3016,17 @@ body.bona-lead-modal-open {
         font-size: 12px;
         font-weight: 800;
     }
+}
+
+// Bootstrap's deferred checkbox rule is loaded after the storefront bundle on
+// internal pages. The label element makes this selector specific enough to
+// keep the visually hidden control out of the consent grid.
+label.bona-lead-consent > input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
 }
 
 .bona-lead-rating__stars {

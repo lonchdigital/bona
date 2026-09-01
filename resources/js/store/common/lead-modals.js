@@ -325,9 +325,9 @@ export default {
                         return;
                     }
 
-                    const modal = form.closest('[data-lead-modal]');
-                    const formView = modal?.querySelector('[data-lead-modal-form-view]');
-                    const thanks = modal?.querySelector('[data-lead-modal-thanks]');
+                    const surface = form.closest('[data-lead-modal], [data-lead-inline]');
+                    const formView = surface?.querySelector('[data-lead-modal-form-view], [data-lead-inline-form-view]');
+                    const thanks = surface?.querySelector('[data-lead-modal-thanks], [data-lead-inline-thanks]');
                     if (formView) formView.hidden = true;
                     if (thanks) {
                         thanks.hidden = false;

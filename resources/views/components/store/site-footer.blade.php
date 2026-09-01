@@ -14,28 +14,7 @@
         ['key' => 'viber', 'label' => 'Viber'],
         ['key' => 'facebook', 'label' => 'Facebook'],
     ])->filter(fn (array $social) => filled(data_get($options, $social['key'])));
-    $languageLinks = App\Services\Locale\LocaleService::alternateLinks(url()->current());
-
-    $stores = collect(['one', 'two', 'three'])->map(function (string $suffix) use ($contacts) {
-        $city = data_get($contacts, "city_{$suffix}");
-        $address = data_get($contacts, "address_{$suffix}");
-        $phone = data_get($contacts, "phone_{$suffix}");
-        $email = data_get($contacts, "email_{$suffix}");
-
-        if (! filled($address)) {
-            return null;
-        }
-
-        preg_match('/^(.*?)\s*\((.*?)\)$/u', (string) $address, $matches);
-
-        return [
-            'name' => trim($matches[1] ?? (string) $address),
-            'address' => collect([$city, $matches[2] ?? null])->filter()->join(', '),
-            'phone' => $phone,
-            'phone_href' => filled($phone) ? preg_replace('/[^\d+]/', '', (string) $phone) : null,
-            'email' => $email,
-        ];
-    })->filter();
+    $stores = App\Support\Storefront\StoreLocations::from($contacts);
 @endphp
 
 <footer class="bona-footer">
@@ -105,7 +84,15 @@
                                 <strong>{{ $store['name'] }}</strong>
                                 <div class="bona-footer__address-row">
                                     <span>{{ trans('base.home_footer_address_label') }}</span>
-                                    <p>{{ $store['address'] }}</p>
+                                    <a
+                                        class="bona-footer__address-link"
+                                        href="{{ $store['map_url'] }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label="{{ trans('base.contact_route_to', ['store' => $store['name']]) }}"
+                                    >
+                                        {{ $store['address'] }}<span aria-hidden="true">↗</span>
+                                    </a>
                                 </div>
                                 @if($store['phone'])
                                     <div class="bona-footer__address-row">
@@ -136,10 +123,6 @@
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'exchange-and-return']) }}">{{ trans('base.exchange_and_return') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'polityka-konfidencinosti']) }}">{{ trans('base.policy') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ trans('base.agreement') }}</a>
-            </nav>
-            <nav class="bona-footer__languages" aria-label="{{ trans('base.choose_language') }}">
-                <a href="{{ $languageLinks['uk-UA'] }}" hreflang="uk-UA" lang="uk" @class(['is-active' => $locale === 'uk'])>UA</a>
-                <a href="{{ $languageLinks['ru-UA'] }}" hreflang="ru-UA" lang="ru" @class(['is-active' => $locale === 'ru'])>RU</a>
             </nav>
             <span class="bona-footer__payments" aria-label="Visa, Mastercard">
                 <span><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa" width="40" height="20" loading="lazy"></span>
