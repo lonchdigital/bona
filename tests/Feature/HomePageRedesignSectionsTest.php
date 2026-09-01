@@ -120,7 +120,7 @@ class HomePageRedesignSectionsTest extends TestCase
         );
         $this->assertStringContainsString('box-shadow: 0 12px 30px rgba(35, 32, 27, .075);', $source);
         $this->assertMatchesRegularExpression(
-            '/&__more\s*\{.*?display:\s*inline-flex;.*?padding:\s*0;.*?line-height:\s*1;/s',
+            '/&__more\s*\{.*?display:\s*inline-flex;.*?min-width:\s*24px;.*?min-height:\s*24px;.*?padding:\s*0;.*?line-height:\s*1;/s',
             $catalogSource,
         );
     }

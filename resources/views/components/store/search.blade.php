@@ -23,6 +23,7 @@
         maxlength="120"
         autocomplete="off"
         placeholder="{{ trans('base.storefront_search_placeholder') }}"
+        role="combobox"
         aria-autocomplete="list"
         aria-controls="{{ $id }}-results"
         aria-expanded="false"

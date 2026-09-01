@@ -21,6 +21,20 @@ class StorefrontLayoutTest extends TestCase
             ->assertDontSee('art-brands-owl-items', false);
     }
 
+    public function test_homepage_interactive_controls_use_valid_aria_contracts(): void
+    {
+        $search = file_get_contents(resource_path('views/components/store/search.blade.php'));
+        $hero = file_get_contents(resource_path('views/components/store/home-hero.blade.php'));
+        $heroScript = file_get_contents(resource_path('js/store/common/home-hero.js'));
+
+        $this->assertStringContainsString('role="combobox"', $search);
+        $this->assertStringContainsString('class="bona-hero__dots" role="group"', $hero);
+        $this->assertStringContainsString('aria-current="{{ $loop->first', $hero);
+        $this->assertStringNotContainsString('class="bona-hero__dots" role="tablist"', $hero);
+        $this->assertStringContainsString("dot.setAttribute('aria-current', String(active))", $heroScript);
+        $this->assertStringNotContainsString("dot.setAttribute('aria-selected'", $heroScript);
+    }
+
     public function test_internal_page_renders_the_solid_header_without_seed_data(): void
     {
         $this->get(route('store.services'))

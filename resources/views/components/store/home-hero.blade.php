@@ -86,13 +86,13 @@
     @if($slideCount > 1)
         <div class="bona-hero__controls">
             <div class="bona-shell bona-hero__controls-inner">
-                <div class="bona-hero__dots" role="tablist" aria-label="{{ trans('base.storefront_slides') }}">
+                <div class="bona-hero__dots" role="group" aria-label="{{ trans('base.storefront_slides') }}">
                     @foreach($heroSlides as $slide)
                         <button
                             class="bona-hero__dot{{ $loop->first ? ' is-active' : '' }}"
                             type="button"
                             aria-label="{{ trans('base.storefront_slide_number', ['number' => $loop->iteration]) }}"
-                            aria-selected="{{ $loop->first ? 'true' : 'false' }}"
+                            aria-current="{{ $loop->first ? 'true' : 'false' }}"
                             data-hero-dot="{{ $loop->index }}"
                         ></button>
                     @endforeach

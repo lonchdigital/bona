@@ -20,7 +20,7 @@ function initHero(hero) {
         dots.forEach((dot, dotIndex) => {
             const active = current === dotIndex;
             dot.classList.toggle('is-active', active);
-            dot.setAttribute('aria-selected', String(active));
+            dot.setAttribute('aria-current', String(active));
         });
 
         if (currentLabel) {
