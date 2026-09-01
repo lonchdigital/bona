@@ -773,9 +773,13 @@
     }
 
     &__more {
-        padding: 2px 0;
+        display: inline-flex;
+        min-height: 16px;
+        align-items: center;
+        padding: 0;
         color: var(--bona-muted);
         font-size: 11px;
+        line-height: 1;
         text-decoration: none;
     }
 

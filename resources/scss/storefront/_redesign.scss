@@ -1106,10 +1106,15 @@
 .bona-popular {
     &__slider {
         overflow: hidden;
-        padding: 18px 12px 26px;
+        padding: 0 12px 26px;
         margin: -18px -12px -26px;
 
-        .swiper-wrapper { align-items: stretch; }
+        .swiper-wrapper {
+            align-items: stretch;
+            padding-top: 18px;
+        }
+
+        .swiper-slide { height: auto; }
     }
 
     &__pagination {

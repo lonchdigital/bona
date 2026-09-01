@@ -109,6 +109,21 @@ class HomePageRedesignSectionsTest extends TestCase
         $this->assertStringContainsString('bona:comparison-change', $source);
     }
 
+    public function test_popular_product_slider_keeps_cards_equal_and_hover_outline_visible(): void
+    {
+        $source = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+        $catalogSource = file_get_contents(resource_path('scss/storefront/_catalog.scss'));
+
+        $this->assertMatchesRegularExpression(
+            '/&__slider\s*\{.*?padding:\s*0 12px 26px;.*?\.swiper-wrapper\s*\{.*?align-items:\s*stretch;.*?padding-top:\s*18px;.*?\.swiper-slide\s*\{\s*height:\s*auto;\s*\}/s',
+            $source,
+        );
+        $this->assertMatchesRegularExpression(
+            '/&__more\s*\{.*?display:\s*inline-flex;.*?padding:\s*0;.*?line-height:\s*1;/s',
+            $catalogSource,
+        );
+    }
+
     public function test_reference_sections_are_composed_in_the_expected_order(): void
     {
         $source = file_get_contents(resource_path('views/pages/store/home.blade.php'));
