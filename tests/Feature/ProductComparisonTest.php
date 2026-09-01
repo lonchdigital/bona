@@ -63,7 +63,7 @@ class ProductComparisonTest extends TestCase
         $this->assertStringContainsString('no-store', (string) $response->headers->get('Cache-Control'));
     }
 
-    public function test_comparison_accepts_only_four_unique_valid_active_products(): void
+    public function test_comparison_accepts_only_four_unique_valid_storefront_products(): void
     {
         $products = collect(range(1, 5))->map(fn (int $number) => $this->makeProduct([
             'slug' => 'compare-door-'.$number,
@@ -83,7 +83,7 @@ class ProductComparisonTest extends TestCase
             ->assertOk()
             ->assertSee('Модель порівняння 1')
             ->assertSee('Модель порівняння 2')
-            ->assertDontSee('Модель порівняння 3')
+            ->assertSee('Модель порівняння 3')
             ->assertSee('Модель порівняння 4')
             ->assertDontSee('Модель порівняння 5');
     }

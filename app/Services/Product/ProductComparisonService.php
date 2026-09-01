@@ -36,7 +36,6 @@ class ProductComparisonService
         }
 
         $products = Product::query()
-            ->where('is_active', true)
             ->whereIn('slug', $slugs)
             ->with([
                 'attributeOptions.attribute',
