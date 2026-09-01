@@ -139,6 +139,8 @@
 }
 
 .bona-header {
+    margin-top: 0;
+
     &__inner {
         display: flex;
         min-height: 88px;
@@ -2327,7 +2329,13 @@
     }
 
     .bona-header__logo img { height: 38px; }
-    .bona-header__actions { margin-left: auto; gap: 15px; }
+    .bona-header__actions {
+        margin-left: auto;
+        gap: 17px;
+
+        svg { width: 23px; height: 23px; }
+        .icon-cart::before { font-size: 23px; }
+    }
     .bona-header__profile { display: none !important; }
     .bona-header__burger { display: block; }
 
@@ -2428,7 +2436,7 @@
     .bona-header__inner { gap: 0 12px; }
     .bona-header__logo img { height: 34px; }
     .bona-header__logo span { font-size: 26px; }
-    .bona-header__actions { gap: 12px; }
+    .bona-header__actions { gap: 14px; }
 
     .bona-mobile-nav {
         grid-template-columns: 1fr;

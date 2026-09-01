@@ -27,4 +27,15 @@ class StorefrontLayoutTest extends TestCase
             ->assertOk()
             ->assertSee('bona-site-header--solid', false);
     }
+
+    public function test_mobile_header_overrides_legacy_spacing_and_uses_readable_action_icons(): void
+    {
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertStringContainsString(".bona-header {\n    margin-top: 0;", $stylesheet);
+        $this->assertStringContainsString('gap: 17px;', $stylesheet);
+        $this->assertStringContainsString('svg { width: 23px; height: 23px; }', $stylesheet);
+        $this->assertStringContainsString('.icon-cart::before { font-size: 23px; }', $stylesheet);
+        $this->assertStringContainsString('.bona-header__actions { gap: 14px; }', $stylesheet);
+    }
 }
