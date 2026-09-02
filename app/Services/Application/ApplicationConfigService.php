@@ -216,6 +216,10 @@ class ApplicationConfigService extends BaseService
             $dataArray[$item->config_name] = $item->config_data;
         }
 
+        if (! array_key_exists('tiktok', $dataArray)) {
+            $dataArray['tiktok'] = (string) config('organization.tiktok_url');
+        }
+
         return $dataArray;
     }
 }

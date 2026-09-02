@@ -41,6 +41,12 @@ class ApplicationConfigsEditRequest extends BaseRequest
             'nullable',
             'string',
         ];
+        $rules['tiktok'] = [
+            'nullable',
+            'string',
+            'url',
+            'max:2048',
+        ];
         $rules['phone_one'] = [
             'nullable',
             'string',
@@ -102,6 +108,7 @@ class ApplicationConfigsEditRequest extends BaseRequest
             $this->input('telegram'),
             $this->input('viber'),
             $this->input('facebook'),
+            $this->input('tiktok'),
             $this->input('phone_one'),
 
             $this->input('footer_text'),

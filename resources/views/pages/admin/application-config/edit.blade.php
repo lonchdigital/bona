@@ -86,6 +86,10 @@
                             :facebook="{{ json_encode($applicationConfig['facebook']) }}"
                         @endif
 
+                        @if(array_key_exists('tiktok', $applicationConfig))
+                            :tiktok="{{ json_encode($applicationConfig['tiktok']) }}"
+                        @endif
+
                         @if(array_key_exists('phoneOne', $applicationConfig))
                             :phone-one="{{ json_encode($applicationConfig['phoneOne']) }}"
                         @endif

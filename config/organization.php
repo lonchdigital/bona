@@ -10,7 +10,9 @@
 | out by hand in a template. The contact page still renders from the database;
 | this is the part that markup needs and the database has no field for.
 |
-*/
+ */
+
+$tiktokUrl = 'https://www.tiktok.com/@bonadoors';
 
 return [
 
@@ -18,6 +20,7 @@ return [
     'founding_date' => '2013',
     'price_range' => '₴₴',
     'currencies_accepted' => 'UAH',
+    'tiktok_url' => $tiktokUrl,
 
     'area_served' => [
         'Одеса',
@@ -32,7 +35,7 @@ return [
     'same_as' => array_values(array_filter([
         'https://www.instagram.com/bona_doors/',
         'https://www.facebook.com/Dveriukraine',
-        'https://www.tiktok.com/@bonadoors',
+        $tiktokUrl,
         'https://t.me/salon_dverey_Bona',
         'https://maps.app.goo.gl/hYu3N41k96sStiFD8',
     ])),

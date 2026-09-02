@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Http\Requests\Admin\ApplicationConfigs\ApplicationConfigsEditRequest;
+use App\Models\ApplicationConfig;
 use App\Models\ContactConfig;
+use App\Services\Application\ApplicationConfigService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -117,6 +120,53 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString("&__stores {\n        min-width: 0;\n        padding-block: 0;", $stylesheet);
         $this->assertStringContainsString("padding-top: 0;\n        border-top: 0;", $stylesheet);
         $this->assertStringNotContainsString('&__languages {', $stylesheet);
+    }
+
+    public function test_footer_renders_the_configured_tiktok_profile_with_larger_glyphs(): void
+    {
+        $url = 'https://www.tiktok.com/@bonadoors';
+        $footer = view('components.store.site-footer', [
+            'options' => ['tiktok' => $url],
+            'productTypes' => collect(),
+        ])->render();
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertStringContainsString('href="'.$url.'"', $footer);
+        $this->assertStringContainsString('aria-label="TikTok"', $footer);
+        $this->assertStringContainsString('bona-footer__social-icon--tiktok', $footer);
+        $this->assertStringContainsString("width: 40px;\n            height: 40px;", $stylesheet);
+        $this->assertStringContainsString("width: 24px;\n        height: 24px;", $stylesheet);
+        $this->assertStringContainsString("&--tiktok { -webkit-mask-image: url('/assets/icons/i-tiktok.svg');", $stylesheet);
+        $this->assertFileExists(public_path('assets/icons/i-tiktok.svg'));
+    }
+
+    public function test_tiktok_profile_is_prepopulated_and_saved_through_application_settings(): void
+    {
+        $url = 'https://www.tiktok.com/@bonadoors';
+
+        $this->assertSame(
+            $url,
+            app(ApplicationConfigService::class)->getAllApplicationConfigOptions()['tiktok']
+        );
+
+        $request = ApplicationConfigsEditRequest::create('/', 'POST', ['tiktok' => $url]);
+        $dto = $request->toDTO();
+
+        $this->assertSame($url, $dto->tiktok);
+
+        app(ApplicationConfigService::class)->editApplicationConfig($dto);
+
+        $this->assertSame(
+            $url,
+            ApplicationConfig::query()->where('config_name', 'tiktok')->firstOrFail()->config_data
+        );
+
+        $adminView = file_get_contents(resource_path('views/pages/admin/application-config/edit.blade.php'));
+        $adminForm = file_get_contents(resource_path('js/admin/forms/ApplicationConfigsPageEditForm.vue'));
+
+        $this->assertStringContainsString(':tiktok="{{ json_encode($applicationConfig[\'tiktok\']) }}"', $adminView);
+        $this->assertStringContainsString('name="tiktok"', $adminForm);
+        $this->assertStringContainsString(':model-value="tiktok"', $adminForm);
     }
 
     public function test_contacts_page_uses_the_new_bilingual_layout_and_real_store_data(): void

@@ -61,6 +61,10 @@ export default {
             type: String,
             default: '',
         },
+        tiktok: {
+            type: String,
+            default: '',
+        },
         phoneOne: {
             type: String,
             default: '',
@@ -200,6 +204,16 @@ export default {
                         title="Facebook"
                         name="facebook"
                         :model-value="facebook"
+                        :errors="errors"
+                        :is-required="false"
+                    />
+                </div>
+
+                <div class="form-group mb-3">
+                    <input-component
+                        title="TikTok"
+                        name="tiktok"
+                        :model-value="tiktok"
                         :errors="errors"
                         :is-required="false"
                     />

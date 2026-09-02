@@ -10,6 +10,7 @@
     $logoPath = data_get($options, 'logoLight');
     $socials = collect([
         ['key' => 'instagram', 'label' => 'Instagram'],
+        ['key' => 'tiktok', 'label' => 'TikTok'],
         ['key' => 'telegram', 'label' => 'Telegram'],
         ['key' => 'viber', 'label' => 'Viber'],
         ['key' => 'facebook', 'label' => 'Facebook'],

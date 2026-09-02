@@ -16,6 +16,7 @@ class ApplicationConfigEditDTO implements BaseDTO
         public readonly ?string $telegram,
         public readonly ?string $viber,
         public readonly ?string $facebook,
+        public readonly ?string $tiktok,
         public readonly ?string $phoneOne,
 
         public readonly ?array $footerText,
