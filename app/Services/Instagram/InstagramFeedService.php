@@ -35,7 +35,7 @@ class InstagramFeedService
             $response = Http::acceptJson()
                 ->timeout(10)
                 ->get($this->mediaUrl($accountId), [
-                    'fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{media_type,media_url,thumbnail_url}',
+                    'fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count,children{media_type,media_url,thumbnail_url}',
                     'limit' => 12,
                     'access_token' => $accessToken,
                 ]);
@@ -75,9 +75,11 @@ class InstagramFeedService
 
     private function normalize(array $media): ?array
     {
-        $imageUrl = $media['media_type'] === 'VIDEO'
+        $mediaType = (string) ($media['media_type'] ?? 'IMAGE');
+        $mediaUrl = $media['media_url'] ?? null;
+        $imageUrl = $mediaType === 'VIDEO'
             ? ($media['thumbnail_url'] ?? null)
-            : ($media['media_url'] ?? null);
+            : $mediaUrl;
 
         if (! is_string($imageUrl) || $imageUrl === '' || empty($media['permalink'])) {
             return null;
@@ -85,11 +87,18 @@ class InstagramFeedService
 
         return [
             'id' => (string) ($media['id'] ?? ''),
-            'media_type' => (string) ($media['media_type'] ?? 'IMAGE'),
+            'media_type' => $mediaType,
             'image_url' => $imageUrl,
+            'content_url' => is_string($mediaUrl) ? $mediaUrl : $imageUrl,
             'permalink' => (string) $media['permalink'],
             'caption' => trim((string) ($media['caption'] ?? '')),
             'timestamp' => $media['timestamp'] ?? null,
+            'like_count' => is_numeric($media['like_count'] ?? null)
+                ? (int) $media['like_count']
+                : null,
+            'comments_count' => is_numeric($media['comments_count'] ?? null)
+                ? (int) $media['comments_count']
+                : null,
         ];
     }
 

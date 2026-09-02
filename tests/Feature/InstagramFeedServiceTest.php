@@ -41,6 +41,8 @@ class InstagramFeedServiceTest extends TestCase
                         'media_url' => 'https://cdn.example.com/image.jpg',
                         'permalink' => 'https://www.instagram.com/p/image-1/',
                         'caption' => 'Нові двері Bona',
+                        'like_count' => 42,
+                        'comments_count' => 3,
                     ],
                     [
                         'id' => 'video-1',
@@ -58,8 +60,12 @@ class InstagramFeedServiceTest extends TestCase
         $this->assertCount(2, $feed);
         $this->assertSame('https://cdn.example.com/image.jpg', $feed[0]['image_url']);
         $this->assertSame('https://cdn.example.com/video.jpg', $feed[1]['image_url']);
+        $this->assertSame('https://cdn.example.com/video.mp4', $feed[1]['content_url']);
         $this->assertSame('VIDEO', $feed[1]['media_type']);
-        Http::assertSent(fn ($request): bool => str_contains($request->url(), '/v26.0/instagram-account-id/media'));
+        $this->assertSame(42, $feed[0]['like_count']);
+        $this->assertSame(3, $feed[0]['comments_count']);
+        Http::assertSent(fn ($request): bool => str_contains($request->url(), '/v26.0/instagram-account-id/media')
+            && str_contains((string) $request->data()['fields'], 'like_count,comments_count'));
     }
 
     public function test_it_uses_the_last_successful_feed_when_instagram_is_temporarily_unavailable(): void

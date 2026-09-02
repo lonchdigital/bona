@@ -49,6 +49,37 @@ class HomePageRedesignSectionsTest extends TestCase
         $this->assertStringContainsString('Короткий опис матеріалу.', $html);
     }
 
+    public function test_instagram_posts_open_an_accessible_media_viewer_with_engagement_data(): void
+    {
+        $feed = [[
+            'id' => 'video-1',
+            'media_type' => 'VIDEO',
+            'image_url' => 'https://cdn.example.com/video.jpg',
+            'content_url' => 'https://cdn.example.com/video.mp4',
+            'permalink' => 'https://www.instagram.com/reel/video-1/',
+            'caption' => 'Нові двері Bona',
+            'timestamp' => '2026-08-31T12:00:00+0000',
+            'like_count' => 42,
+            'comments_count' => 3,
+        ]];
+
+        $html = view('components.store.home-instagram', [
+            'feed' => $feed,
+            'section' => [
+                'enabled' => true,
+                'link_url' => 'https://www.instagram.com/bona_doors/',
+            ],
+        ])->render();
+
+        $this->assertStringContainsString('data-instagram-open="0"', $html);
+        $this->assertStringContainsString('aria-haspopup="dialog"', $html);
+        $this->assertStringContainsString('data-instagram-lightbox', $html);
+        $this->assertStringContainsString('data-instagram-modal-video', $html);
+        $this->assertStringContainsString('https://cdn.example.com/video.mp4', $html);
+        $this->assertStringContainsString('"like_count":42', $html);
+        $this->assertStringNotContainsString('class="swiper-slide bona-instagram__item"', $html);
+    }
+
     public function test_faq_uses_details_and_keeps_valid_schema_data(): void
     {
         $faqs = collect([
