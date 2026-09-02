@@ -45,7 +45,7 @@
                                 @if($instagramConnected)
                                     Підключено{{ $instagramUsername ? ': @'.$instagramUsername : '' }}. Публікації оновлюються автоматично.
                                 @else
-                                    Потрібно один раз підключити професійний Instagram-профіль через Facebook.
+                                    Потрібно один раз авторизувати професійний Instagram-профіль.
                                 @endif
                             </p>
                         </div>

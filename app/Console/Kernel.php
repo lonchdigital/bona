@@ -22,6 +22,10 @@ class Kernel extends ConsoleKernel
             ->dailyAt('02:10')
             ->timezone('Europe/Kyiv')
             ->withoutOverlapping();
+        $schedule->command('instagram:refresh-token')
+            ->dailyAt('03:10')
+            ->timezone('Europe/Kyiv')
+            ->withoutOverlapping();
         $schedule->command('wishlist:prune-guests')->dailyAt('04:15');
     }
 

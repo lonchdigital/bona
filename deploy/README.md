@@ -51,9 +51,22 @@ QUEUE_CONNECTION=database
 SESSION_DRIVER=file
 SESSION_SERIALIZATION=json
 SESSION_SECURE_COOKIE=true
+INSTAGRAM_APP_ID=
+INSTAGRAM_APP_SECRET=
+INSTAGRAM_GRAPH_VERSION=v26.0
 ```
 
 `APP_KEY` та назву `SESSION_COOKIE` треба зберегти з чинного production. Не можна копіювати `.env.example` поверх production `.env`. Перехід `SESSION_SERIALIZATION=json` завершить раніше створені PHP-серіалізовані сесії, тому користувачам доведеться увійти знову.
+
+## Instagram-стрічка
+
+Інтеграція використовує **Instagram API with Instagram Login**, а не Facebook Login. У Meta App Dashboard відкрийте `Instagram → API setup with Instagram login → Set up Instagram business login` і додайте точний OAuth Redirect URI:
+
+```text
+https://bona-doors.com.ua/admin/instagram/callback
+```
+
+Для читання власної стрічки достатньо `instagram_business_basic`. Значення `INSTAGRAM_APP_ID` та `INSTAGRAM_APP_SECRET` беруться з Instagram Business Login settings. Токен зберігається в базі зашифрованим; команда `instagram:refresh-token`, яку запускає Laravel Scheduler, автоматично продовжує його до закінчення 60-денного строку.
 
 ## GitHub
 

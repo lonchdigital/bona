@@ -33,7 +33,7 @@ class InstagramFeedServiceTest extends TestCase
     public function test_it_normalizes_images_and_video_thumbnails_for_the_homepage(): void
     {
         Http::fake([
-            'graph.facebook.com/*' => Http::response([
+            'graph.instagram.com/*' => Http::response([
                 'data' => [
                     [
                         'id' => 'image-1',
@@ -73,7 +73,7 @@ class InstagramFeedServiceTest extends TestCase
             'timestamp' => null,
         ]];
         Cache::put(InstagramFeedService::STALE_CACHE_KEY, $stale, now()->addDay());
-        Http::fake(['graph.facebook.com/*' => Http::response(['error' => ['code' => 190]], 401)]);
+        Http::fake(['graph.instagram.com/*' => Http::response(['error' => ['code' => 190]], 401)]);
 
         $this->assertSame($stale, app(InstagramFeedService::class)->getFeed());
     }
@@ -81,7 +81,7 @@ class InstagramFeedServiceTest extends TestCase
     public function test_it_returns_the_latest_twelve_posts_for_the_slider(): void
     {
         Http::fake([
-            'graph.facebook.com/*' => Http::response([
+            'graph.instagram.com/*' => Http::response([
                 'data' => collect(range(1, 14))->map(fn (int $index): array => [
                     'id' => "image-{$index}",
                     'media_type' => 'IMAGE',

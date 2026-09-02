@@ -2,7 +2,6 @@
 
 namespace App\Services\Instagram;
 
-use App\Models\ApplicationConfig;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -15,6 +14,8 @@ class InstagramFeedService
 
     public const STALE_CACHE_KEY = 'instagram_feed_stale';
 
+    public function __construct(private readonly InstagramCredentialStore $credentials) {}
+
     public function getFeed(): ?array
     {
         $cached = Cache::get(self::CACHE_KEY);
@@ -23,9 +24,8 @@ class InstagramFeedService
             return $cached;
         }
 
-        $accessToken = $this->configValue('instagramAccessToken');
-        $accountId = $this->configValue('instagramBusinessAccountId')
-            ?: (string) config('services.instagram.business_account_id', '');
+        $accessToken = $this->credentials->accessToken();
+        $accountId = $this->credentials->accountId();
 
         if ($accessToken === '' || $accountId === '') {
             return $this->staleFeed();
@@ -93,16 +93,11 @@ class InstagramFeedService
         ];
     }
 
-    private function configValue(string $name): string
-    {
-        return trim((string) ApplicationConfig::where('config_name', $name)->value('config_data'));
-    }
-
     private function mediaUrl(string $accountId): string
     {
         $version = (string) config('services.instagram.graph_version', 'v26.0');
 
-        return "https://graph.facebook.com/{$version}/{$accountId}/media";
+        return "https://graph.instagram.com/{$version}/{$accountId}/media";
     }
 
     private function staleFeed(): ?array

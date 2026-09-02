@@ -4,104 +4,113 @@ namespace App\Http\Actions\Admin\Instagram;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Models\ApplicationConfig;
+use App\Services\Instagram\InstagramCredentialStore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CompleteInstagramOAuthAction extends BaseAction
 {
-    public function __invoke(Request $request): RedirectResponse
+    public function __invoke(Request $request, InstagramCredentialStore $credentials): RedirectResponse
     {
+        $expectedState = (string) $request->session()->pull('instagram_oauth_state', '');
+        $state = (string) $request->query('state', '');
+        abort_if($expectedState === '' || strlen($state) !== 64 || ! hash_equals($expectedState, $state), 403);
+
+        if ($request->filled('error')) {
+            return redirect()
+                ->route('admin.application-config.edit.page')
+                ->withErrors(['instagram' => 'Підключення Instagram скасовано. Жодних даних не змінено.']);
+        }
+
         $validated = $request->validate([
             'code' => ['required', 'string', 'max:2048'],
-            'state' => ['required', 'string', 'size:64'],
         ]);
 
-        $expectedState = (string) $request->session()->pull('instagram_oauth_state', '');
-        abort_if($expectedState === '' || ! hash_equals($expectedState, $validated['state']), 403);
-
-        $appId = (string) config('services.facebook.client_id');
-        $appSecret = (string) config('services.facebook.client_secret');
+        $appId = (string) config('services.instagram.app_id');
+        $appSecret = (string) config('services.instagram.app_secret');
         $graphVersion = (string) config('services.instagram.graph_version', 'v26.0');
-        $graphUrl = "https://graph.facebook.com/{$graphVersion}";
         abort_if($appId === '' || $appSecret === '', 503, 'Instagram OAuth is not configured.');
 
         try {
-            $shortToken = Http::acceptJson()
+            $shortTokenResponse = Http::asForm()
+                ->acceptJson()
                 ->timeout(10)
-                ->get("{$graphUrl}/oauth/access_token", [
+                ->post('https://api.instagram.com/oauth/access_token', [
                     'client_id' => $appId,
-                    'redirect_uri' => route('admin.instagram.callback'),
                     'client_secret' => $appSecret,
+                    'grant_type' => 'authorization_code',
+                    'redirect_uri' => route('admin.instagram.callback'),
                     'code' => $validated['code'],
                 ])
-                ->throw()
-                ->json('access_token');
+                ->throw();
+
+            $shortToken = $shortTokenResponse->json('access_token')
+                ?? $shortTokenResponse->json('data.0.access_token');
+            $instagramAccountId = $shortTokenResponse->json('user_id')
+                ?? $shortTokenResponse->json('data.0.user_id');
 
             if (! is_string($shortToken) || $shortToken === '') {
-                throw new \RuntimeException('Facebook did not return an access token.');
+                throw new \RuntimeException('Instagram did not return an access token.');
             }
 
-            $longToken = Http::acceptJson()
+            $longTokenResponse = Http::acceptJson()
                 ->timeout(10)
-                ->get("{$graphUrl}/oauth/access_token", [
-                    'grant_type' => 'fb_exchange_token',
-                    'client_id' => $appId,
+                ->get('https://graph.instagram.com/access_token', [
+                    'grant_type' => 'ig_exchange_token',
                     'client_secret' => $appSecret,
-                    'fb_exchange_token' => $shortToken,
+                    'access_token' => $shortToken,
                 ])
-                ->throw()
-                ->json('access_token');
+                ->throw();
+
+            $longToken = $longTokenResponse->json('access_token');
+            $expiresIn = (int) $longTokenResponse->json('expires_in', 5_184_000);
 
             if (! is_string($longToken) || $longToken === '') {
-                throw new \RuntimeException('Facebook did not return a long-lived token.');
+                throw new \RuntimeException('Instagram did not return a long-lived token.');
             }
 
-            $pages = Http::acceptJson()
+            $profileResponse = Http::acceptJson()
                 ->timeout(10)
-                ->get("{$graphUrl}/me/accounts", [
-                    'fields' => 'id,name,access_token,instagram_business_account{id,username}',
-                    'limit' => 100,
+                ->get("https://graph.instagram.com/{$graphVersion}/me", [
+                    'fields' => 'user_id,username',
                     'access_token' => $longToken,
                 ])
-                ->throw()
-                ->json('data', []);
+                ->throw();
 
-            $instagramPages = collect($pages)->filter(
-                fn (array $item): bool => filled(data_get($item, 'instagram_business_account.id'))
-            );
-            $preferredUsername = $this->preferredUsername();
-            $page = $instagramPages->first(
-                fn (array $item): bool => $preferredUsername !== ''
-                    && strcasecmp((string) data_get($item, 'instagram_business_account.username'), $preferredUsername) === 0
-            ) ?? $instagramPages->first();
+            $instagramAccountId = $profileResponse->json('user_id')
+                ?? $profileResponse->json('data.0.user_id')
+                ?? $instagramAccountId;
+            $instagramUsername = $profileResponse->json('username')
+                ?? $profileResponse->json('data.0.username');
 
-            if (! is_array($page)) {
-                throw new \RuntimeException('No connected Instagram professional account was found.');
+            if (! is_scalar($instagramAccountId) || (string) $instagramAccountId === '') {
+                throw new \RuntimeException('Instagram did not return a professional account ID.');
             }
 
-            $instagramAccountId = (string) data_get($page, 'instagram_business_account.id');
-            $instagramUsername = (string) data_get($page, 'instagram_business_account.username', '');
-            $pageAccessToken = (string) ($page['access_token'] ?? $longToken);
+            if (! is_string($instagramUsername) || $instagramUsername === '') {
+                throw new \RuntimeException('Instagram did not return a username.');
+            }
 
-            DB::transaction(function () use ($instagramAccountId, $instagramUsername, $pageAccessToken): void {
-                $values = [
-                    'instagramAccessToken' => $pageAccessToken,
-                    'instagramBusinessAccountId' => $instagramAccountId,
-                    'instagramUsername' => $instagramUsername,
-                ];
+            $preferredUsername = $this->preferredUsername();
 
-                foreach ($values as $name => $value) {
-                    ApplicationConfig::updateOrCreate(
-                        ['config_name' => $name],
-                        ['config_data' => $value],
-                    );
-                }
-            });
+            if ($preferredUsername !== '' && strcasecmp($instagramUsername, $preferredUsername) !== 0) {
+                return redirect()
+                    ->route('admin.application-config.edit.page')
+                    ->withErrors([
+                        'instagram' => "Ви авторизували @{$instagramUsername}, але в налаштуваннях сайту вказано @{$preferredUsername}. Повторіть підключення з правильним профілем.",
+                    ]);
+            }
+
+            $credentials->store(
+                $longToken,
+                (string) $instagramAccountId,
+                $instagramUsername,
+                max($expiresIn, 1),
+            );
 
             Cache::forget('instagram_feed');
             Cache::forget('instagram_feed_stale');
@@ -117,7 +126,7 @@ class CompleteInstagramOAuthAction extends BaseAction
 
             return redirect()
                 ->route('admin.application-config.edit.page')
-                ->withErrors(['instagram' => 'Не вдалося підключити Instagram. Перевірте, що профіль є професійним і прив’язаний до Facebook-сторінки.']);
+                ->withErrors(['instagram' => 'Не вдалося підключити Instagram. Перевірте, що це професійний профіль і що він доданий до застосунку Meta.']);
         }
     }
 
