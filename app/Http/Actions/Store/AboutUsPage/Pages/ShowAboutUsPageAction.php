@@ -3,6 +3,7 @@
 namespace App\Http\Actions\Store\AboutUsPage\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\AboutUsConfig;
 use App\Services\AboutUsPage\AboutUsPageService;
 use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Brand\BrandService;
@@ -15,7 +16,7 @@ class ShowAboutUsPageAction extends BaseAction
         BrandService $brandService,
         BlogArticleService $blogArticleService,
     ) {
-        $config = $aboutUsPageService->getAboutUsConfig();
+        $config = $aboutUsPageService->getAboutUsConfig() ?? new AboutUsConfig;
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);
 
         LastModified::set($config->updated_at);

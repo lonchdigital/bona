@@ -11,7 +11,22 @@ class AboutUsConfig extends Model
 {
     use HasTranslations;
 
-    public $translatable = ['title', 'description', 'button_text', 'meta_title', 'meta_description', 'meta_keywords'];
+    public $translatable = [
+        'title',
+        'description',
+        'button_text',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'facts_title',
+        'history_title',
+        'history_text',
+        'steps_title',
+        'team_title',
+        'cta_title',
+        'cta_text',
+        'cta_button_text',
+    ];
 
     protected $guarded = [];
 

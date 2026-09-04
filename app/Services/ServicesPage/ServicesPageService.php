@@ -40,7 +40,7 @@ class ServicesPageService extends BaseService
 
     public function getServicesPageSections(): Collection
     {
-        return ServicesPageSections::get();
+        return ServicesPageSections::orderBy('id')->get();
     }
 
     private function syncSections(?array $sections): void

@@ -3,6 +3,7 @@
 namespace App\Http\Actions\Store\DeliveryPage\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
+use App\Models\DeliveryConfig;
 use App\Services\DeliveryPage\DeliveryPageService;
 use App\Support\LastModified;
 use Illuminate\Support\Facades\Cache;
@@ -21,7 +22,7 @@ class ShowDeliveryPageAction extends BaseAction
 
         $config = Cache::remember('deliveryPage', 3600, function () use ($deliveryPageService) {
             return $deliveryPageService->getDeliveryConfig();
-        });
+        }) ?? new DeliveryConfig;
 
         $config->meta_tags = $this->handleFollowTag($config->meta_tags);
 

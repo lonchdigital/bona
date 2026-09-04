@@ -1,106 +1,131 @@
 @extends('layouts.store-main')
 
-@section('title')
+@php
+    $servicesTitle = trans('base.services');
+    $servicesDescriptionSource = $config->meta_description
+        ?: optional($sections->first())->description;
+    $servicesDescription = trim((string) preg_replace(
+        '/\s+/u',
+        ' ',
+        html_entity_decode(strip_tags((string) $servicesDescriptionSource))
+    ));
+    $servicesLead = Illuminate\Support\Str::limit($servicesDescription, 240);
+    $servicesPageTitle = $config->meta_title ?: $servicesTitle.' — '.trans('base.site_title');
+    $homeUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
+    $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+@endphp
 
-    @if(isset($config))
-        @if($config->meta_title)
-            <title>{{ $config->meta_title }}</title>
-            <meta name="title" content="{{ $config->meta_title }}">
-        @endif
+@section('body_class', 'bona-content-body')
+@section('seo_title', $servicesPageTitle)
+@section('meta_description', $servicesDescription)
+@section('meta_keywords', $config->meta_keywords ?: '')
+@section('og_title', $servicesPageTitle)
+@section('og_description', $servicesDescription)
 
-        @if($config->meta_description)
-            <meta name="description" content="{{ $config->meta_description }}">
-        @endif
-        @if($config->meta_keywords)
-            <meta name="keywords" content="{{ $config->meta_keywords }}">
-        @endif
-
-        @if($config->meta_tags)
-            {!! $config->meta_tags !!}
-        @endif
+@push('head')
+    @if($config->meta_tags)
+        {!! $config->meta_tags !!}
     @endif
+@endpush
 
-@endsection
+@push('structured_data')
+    <script type="application/ld+json">{!! json_encode(array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'CollectionPage',
+        '@id' => url()->current().'#services-page',
+        'url' => url()->current(),
+        'name' => $servicesPageTitle,
+        'description' => $servicesDescription ?: null,
+        'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
+        'mainEntity' => $sections->isNotEmpty() ? [
+            '@type' => 'ItemList',
+            'itemListElement' => $sections->values()->map(fn ($section, $index) => [
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'name' => (string) $section->title,
+                'url' => url()->current().'#service-'.$section->id,
+            ])->all(),
+        ] : null,
+    ]), $schemaFlags) !!}</script>
+    <script type="application/ld+json">{!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => $servicesTitle, 'item' => url()->current()],
+        ],
+    ], $schemaFlags) !!}</script>
+@endpush
 
 @section('content')
+    <div class="bona-content-page bona-services-page">
+        <x-store.content-breadcrumbs :items="[['label' => $servicesTitle]]" />
 
-    @include('pages.store.partials.page_header', ['links' => ['#' => 'services']])
+        <section class="bona-content-hero" aria-labelledby="services-page-title">
+            <div class="bona-shell bona-content-hero__grid">
+                <div class="bona-content-hero__copy">
+                    <p class="bona-content-kicker">{{ trans('base.content_services_kicker') }}</p>
+                    <h1 id="services-page-title">{{ $servicesTitle }}</h1>
+                </div>
+                @if($servicesLead)
+                    <p class="bona-content-hero__lead">{{ $servicesLead }}</p>
+                @endif
+            </div>
+        </section>
 
-    <div class="art-section-pd">
-        <div class="container">
-            <div class="row">
-                <header class=" col-12 art-header-left">
+        <section class="bona-services-list" aria-labelledby="services-list-title">
+            <div class="bona-shell">
+                <header class="bona-content-heading">
                     <div>
-                        <h1 class="title">{{ trans('base.services') }}</h1>
+                        <p class="bona-content-kicker">{{ trans('base.content_services_list_kicker') }}</p>
+                        <h2 id="services-list-title">{{ trans('base.content_services_list_title') }}</h2>
                     </div>
                 </header>
-            </div>
-        </div>
-    </div>
 
-    <div class="common-page-section-wrapper">
-        @foreach( $sections as $section )
-            <section class="art-common-page-section" id="service-{{ $section->id }}">
-                <div class="container">
-                    <div class="art-row-block{{ $loop->iteration % 2 == 0 ? ' art-even' : ' art-odd' }}">
-                        <div class="col-md-5 image-side">
-                            <img src="{{ $section->section_image_url }}" alt="block image">
-                        </div>
-                        <div class="col-md-7 desc-side">
-                            <div class="h5 title">{{ $section->title }}</div>
-                            {!! $section->description !!}
-                            @if( !empty($section->button_url) )
-                                <a href="{{ $section->button_url }}" target="_blank" class="btn btn-empty color-dark" data-fancybox data-src="#dialog-call-{{ $loop->index }}">{{ $section->button_text }}</a>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-            <div id="dialog-call-{{ $loop->index }}" class="art-popup-call-measurer">
-                <div class="art-measurer-form-wrapper">
-                    <div class="container">
-
-
-
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <form action="#" id="user-call-dialog-{{ $loop->index }}" method="post" class="art-contact-form">
-                                    @csrf
-
-                                    <header class="art-light">
-                                        <div class="text-center">
-                                            <h2 class="title h2">{{ $section->button_text }}</h2>
-                                            <div class="subtitle font-two">
-                                                <p class="art-form-description">{{ trans('base.call_measurer_description') }}</p>
-                                            </div>
-                                        </div>
-                                    </header>
-
-                                    <div class="art-fields-row">
-                                        <div>
-                                            <input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}">
-                                        </div>
-                                        <div>
-                                            <input type="text" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}">
-                                        </div>
+                @if($sections->isNotEmpty())
+                    <div class="bona-services-list__items">
+                        @foreach($sections as $section)
+                            @php
+                                $hasServiceImage = filled($section->section_image_path);
+                            @endphp
+                            <article class="bona-service-row{{ $hasServiceImage ? '' : ' bona-service-row--text-only' }}" id="service-{{ $section->id }}">
+                                @if($hasServiceImage)
+                                    <div class="bona-service-row__media">
+                                        <img
+                                            src="{{ $section->section_image_url }}"
+                                            alt="{{ $section->title }}"
+                                            width="720"
+                                            height="540"
+                                            loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                            decoding="async"
+                                        >
                                     </div>
-                                    <div class="checkbox checkbox-white agreement-line agree-field">
-                                        <input type="checkbox" name="agree" value="1">
-                                        <label>{{ trans('base.agreement_line_start') . ' ' }}<a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}" class="color-white">{{ trans('base.agreement_line_end') }}</a></label>
-                                    </div>
-                                    <input type="hidden" name="event" value="submit_form_{{ $loop->index }}">
-                                    <p><button type="submit" class="btn btn-empty">{{ trans('base.send') }}</button></p>
-                                </form>
-                            </div>
-                        </div>
+                                @endif
+                                <div class="bona-service-row__copy">
+                                    <span class="bona-service-row__number">{{ trans('base.content_service_number', ['number' => str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT)]) }}</span>
+                                    <h2>{{ $section->title }}</h2>
+                                    @if(filled(strip_tags((string) $section->description)))
+                                        <div class="bona-content-richtext">{!! $section->description !!}</div>
+                                    @endif
+                                    @if($section->button_text)
+                                        <div class="bona-content-inline-action">
+                                            <a
+                                                class="bona-button bona-button--dark"
+                                                href="#dialog-call-measurer"
+                                                data-lead-modal-open="dialog-call-measurer"
+                                            >
+                                                {{ $section->button_text }}
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            </article>
+                        @endforeach
                     </div>
-                </div>
+                @else
+                    <div class="bona-content-empty"><p>{{ trans('base.services_empty') }}</p></div>
+                @endif
             </div>
-
-        @endforeach
+        </section>
     </div>
-
-
-@stop
+@endsection

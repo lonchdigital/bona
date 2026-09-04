@@ -1,7 +1,12 @@
 @props(['brands', 'section' => []])
 
 @php
-    $partnerBrands = $brands->pluck('brand')->filter();
+    // The homepage stores selected brands in wrapper records, while the
+    // about page already receives Brand models directly. Normalize both so
+    // the shared visual section does not silently disappear on either page.
+    $partnerBrands = collect($brands)
+        ->map(fn ($item) => data_get($item, 'brand') ?: $item)
+        ->filter(fn ($brand) => $brand instanceof App\Models\Brand);
     $localized = static function ($value) {
         if (! is_array($value)) {
             return trim((string) $value);

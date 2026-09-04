@@ -3,104 +3,83 @@
 @php
     $worksTitle = trans('base.our_works');
     $worksIntro = trans('base.our_works_intro');
+    $worksPageTitle = $worksTitle.' — '.trans('base.site_title');
     $worksUrl = url()->current();
     $worksHomeUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
+    $worksCover = count($works) > 0 ? $works->first() : null;
+    $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
 @endphp
 
-@section('title')
-    <title>{{ $worksTitle . ' — ' . trans('base.site_title') }}</title>
-    <meta name="title" content="{{ $worksTitle }}">
-    <meta name="description" content="{{ $worksIntro }}">
+@section('body_class', 'bona-content-body')
+@section('seo_title', $worksPageTitle)
+@section('meta_description', $worksIntro)
+@section('og_title', $worksPageTitle)
+@section('og_description', $worksIntro)
 
-    <meta property="og:title" content="{{ $worksTitle . ' — ' . trans('base.site_title') }}">
-    <meta property="og:description" content="{{ $worksIntro }}">
-    <meta name="twitter:card" content="summary_large_image">
-@endsection
-
-@php
-    $worksCover = $works->isNotEmpty() ? $works->first() : null;
-@endphp
-
-@if($worksCover && $worksCover->og_image_url)
+@if($worksCover?->og_image_url)
     @section('og_image', $worksCover->og_image_url)
 @endif
 
-@section('content')
-
-    @include('pages.store.partials.page_header', ['links' => ['#' => 'our_works']])
-
-    @php
-        $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
-
-        $worksListSchema = [
+@push('structured_data')
+    @if(count($works) > 0)
+        <script type="application/ld+json">{!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'CollectionPage',
+            '@id' => $worksUrl.'#works-page',
             'url' => $worksUrl,
             'name' => $worksTitle,
             'description' => $worksIntro,
-            'inLanguage' => app()->getLocale(),
+            'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
             'mainEntity' => [
                 '@type' => 'ItemList',
                 'itemListElement' => $works->values()->map(fn ($item, $index) => array_filter([
                     '@type' => 'ListItem',
-                    'position' => $index + 1,
+                    'position' => (($works->currentPage() - 1) * $works->perPage()) + $index + 1,
                     'name' => (string) $item->name,
                     'url' => url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.work.page', ['workSlug' => $item->slug])),
                     'image' => $item->og_image_url,
                 ]))->all(),
             ],
-        ];
-
-        $worksBreadcrumbSchema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'BreadcrumbList',
-            'itemListElement' => [
-                ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($worksHomeUrl)],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => $worksTitle, 'item' => $worksUrl],
-            ],
-        ];
-    @endphp
-
-    @if($works->isNotEmpty())
-        <script type="application/ld+json">{!! json_encode($worksListSchema, $schemaFlags) !!}</script>
+        ], $schemaFlags) !!}</script>
     @endif
-    <script type="application/ld+json">{!! json_encode($worksBreadcrumbSchema, $schemaFlags) !!}</script>
+    <script type="application/ld+json">{!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($worksHomeUrl)],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => $worksTitle, 'item' => $worksUrl],
+        ],
+    ], $schemaFlags) !!}</script>
+@endpush
 
-    <section class="blog art-section-pd">
-        <div class="container">
+@section('content')
+    <div class="bona-content-page bona-works-page">
+        <x-store.content-breadcrumbs :items="[['label' => $worksTitle]]" />
 
-            <div class="row">
-                <header class="col-12 art-header-left">
-                    <div>
-                        <h1 class="title">{{ $worksTitle }}</h1>
-                        <div class="subtitle font-two">
-                            <p>{{ $worksIntro }}</p>
-                        </div>
-                    </div>
-                </header>
+        <section class="bona-content-hero" aria-labelledby="works-page-title">
+            <div class="bona-shell bona-content-hero__grid">
+                <div class="bona-content-hero__copy">
+                    <p class="bona-content-kicker">{{ trans('base.content_works_kicker') }}</p>
+                    <h1 id="works-page-title">{{ $worksTitle }}</h1>
+                </div>
+                <p class="bona-content-hero__lead">{{ $worksIntro }}</p>
             </div>
+        </section>
 
-            <div class="row">
-                @if( count($works) > 0 )
-                    <div class="art-blog-archive-wrapper">
+        <section class="bona-works-list" aria-label="{{ $worksTitle }}">
+            <div class="bona-shell">
+                @if(count($works) > 0)
+                    <div class="bona-works-list__grid">
                         @foreach($works as $work)
-                            <div class="col-lg-4">
-                                @include('pages.works.partials.work_item', ['work' => $work])
-                            </div>
+                            @include('pages.works.partials.work_item', ['work' => $work, 'headingLevel' => 'h2'])
                         @endforeach
                     </div>
+
+                    {{ $works->links('pagination.editorial') }}
                 @else
-                    <div class="col-12">
-                        <p class="nothing-found-text mt-5">{{ trans('base.works_empty') }}</p>
-                    </div>
+                    <div class="bona-content-empty"><p>{{ trans('base.works_empty') }}</p></div>
                 @endif
             </div>
-
-            @if($works->hasPages())
-                {{ $works->links('pagination.common') }}
-            @endif
-
-        </div>
-    </section>
-
+        </section>
+    </div>
 @endsection

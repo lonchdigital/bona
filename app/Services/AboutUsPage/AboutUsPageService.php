@@ -47,7 +47,7 @@ class AboutUsPageService extends BaseService
             $imagesToDelete = [];
             $deliveryImage = null;
             if (! is_null($request->image)) {
-                $imagesToDelete[] = $existingConfig->image;
+                $imagesToDelete[] = $existingConfig?->image;
 
                 $newImagePath = self::DELIVERY_PAGE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
                 $dataToUpdate['image'] = $newImagePath.'.webp';
@@ -67,7 +67,7 @@ class AboutUsPageService extends BaseService
                 }
             }
 
-            if ($request->imageDeleted) {
+            if ($request->imageDeleted && $existingConfig?->image) {
                 $this->deleteImage($existingConfig->image);
                 $dataToUpdate['image'] = null;
             }

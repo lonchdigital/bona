@@ -1,238 +1,262 @@
 @extends('layouts.store-main')
 
-@section('title')
+@php
+    $aboutTitle = trans('base.about_us');
+    $aboutDescription = trim((string) ($aboutUsConfig->meta_description ?: preg_replace(
+        '/\s+/u',
+        ' ',
+        html_entity_decode(strip_tags((string) $aboutUsConfig->description))
+    )));
+    $aboutLead = Illuminate\Support\Str::limit($aboutDescription, 240);
+    $aboutPageTitle = $aboutUsConfig->meta_title ?: $aboutTitle.' — '.trans('base.site_title');
+    $hasIntroMedia = filled($aboutUsConfig->iframe) || filled($aboutUsConfig->image);
+    $hasIntroContent = $hasIntroMedia
+        || filled($aboutUsConfig->title)
+        || filled(strip_tags((string) $aboutUsConfig->description))
+        || filled($aboutUsConfig->button_url);
+    $homeUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
+    $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+@endphp
 
-    @if(isset($aboutUsConfig))
-        @if($aboutUsConfig->meta_title)
-            <title>{{ $aboutUsConfig->meta_title }}</title>
-            <meta name="title" content="{{ $aboutUsConfig->meta_title }}">
-        @endif
+@section('body_class', 'bona-content-body')
+@section('seo_title', $aboutPageTitle)
+@section('meta_description', $aboutDescription)
+@section('meta_keywords', $aboutUsConfig->meta_keywords ?: '')
+@section('og_title', $aboutPageTitle)
+@section('og_description', $aboutDescription)
 
-        @if($aboutUsConfig->meta_description)
-            <meta name="description" content="{{ $aboutUsConfig->meta_description }}">
-        @endif
-        @if($aboutUsConfig->meta_keywords)
-            <meta name="keywords" content="{{ $aboutUsConfig->meta_keywords }}">
-        @endif
-
-        @if($aboutUsConfig->meta_tags)
-            {!! $aboutUsConfig->meta_tags !!}
-        @endif
-
-        <meta property="og:title" content="{{ trans('base.about_us') . ' - ' . trans('base.site_title') }}">
-
-        @if($aboutUsConfig->meta_description)
-            <meta property="og:description" content="{{ $aboutUsConfig->meta_description }}">
-        @endif
-
-        <meta name="twitter:card" content="summary_large_image">
-    @endif
-
-@endsection
-
-@if(isset($aboutUsConfig) && $aboutUsConfig->image)
+@if($aboutUsConfig->image)
     @section('og_image', App\Helpers\PreviewImage::url($aboutUsConfig->image))
 @endif
 
+@push('head')
+    @if($aboutUsConfig->meta_tags)
+        {!! $aboutUsConfig->meta_tags !!}
+    @endif
+@endpush
+
+@push('structured_data')
+    <script type="application/ld+json">{!! json_encode(array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'AboutPage',
+        '@id' => url()->current().'#about-page',
+        'url' => url()->current(),
+        'name' => $aboutPageTitle,
+        'description' => $aboutDescription ?: null,
+        'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
+        'mainEntity' => ['@id' => app(App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+    ]), $schemaFlags) !!}</script>
+    <script type="application/ld+json">{!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => $aboutTitle, 'item' => url()->current()],
+        ],
+    ], $schemaFlags) !!}</script>
+@endpush
+
 @section('content')
+    <div class="bona-content-page bona-about-page">
+        <x-store.content-breadcrumbs :items="[['label' => $aboutTitle]]" />
 
-    @include('pages.store.partials.page_header', ['links' => ['#' => 'about_us']])
-
-    <div class="art-section-pd">
-        <div class="container">
-            <div class="row">
-                <header class=" col-12 art-header-left">
-                    <div>
-                        <h1 class="title">{{ trans('base.about_us') }}</h1>
-                    </div>
-                </header>
-            </div>
-        </div>
-    </div>
-
-    <section class="art-common-page-section">
-        <div class="container">
-            <div class="art-row-block art-even">
-{{--                @dd($aboutUsConfig)--}}
-                @if( !empty($aboutUsConfig->iframe) )
-                    <div class="col-md-5 video-side">{!! $aboutUsConfig->iframe !!}</div>
-                @else
-                    <div class="col-md-5 image-side">
-                        <img src="{{ $aboutUsConfig->imageUrl }}" alt="block image">
-                    </div>
+        <section class="bona-content-hero" aria-labelledby="about-page-title">
+            <div class="bona-shell bona-content-hero__grid">
+                <div class="bona-content-hero__copy">
+                    <p class="bona-content-kicker">{{ trans('base.content_about_kicker') }}</p>
+                    <h1 id="about-page-title">{{ $aboutTitle }}</h1>
+                </div>
+                @if($aboutLead)
+                    <p class="bona-content-hero__lead">{{ $aboutLead }}</p>
                 @endif
-                <div class="col-md-7 desc-side">
-                    <div class="h5 title">{{ $aboutUsConfig->title }}</div>
-                    {!! $aboutUsConfig->description !!}
-                    @if( !empty($aboutUsConfig->button_url) )
-                        <a href="{{ $aboutUsConfig->button_url }}" target="_blank" class="btn btn-empty color-dark" >{{ $aboutUsConfig->button_text }}</a>
+            </div>
+        </section>
+
+        @if($hasIntroContent)
+            <section class="bona-content-feature{{ $hasIntroMedia ? '' : ' bona-content-feature--text-only' }}">
+                <div class="bona-shell bona-content-feature__grid">
+                    @if($hasIntroMedia)
+                        <div class="bona-content-feature__media">
+                            @if(filled($aboutUsConfig->iframe))
+                                {!! $aboutUsConfig->iframe !!}
+                            @elseif($aboutUsConfig->image)
+                                <img
+                                    src="{{ $aboutUsConfig->imageUrl }}"
+                                    alt="{{ $aboutUsConfig->title ?: $aboutTitle }}"
+                                    width="760"
+                                    height="850"
+                                    decoding="async"
+                                >
+                            @endif
+                        </div>
                     @endif
-                </div>
-            </div>
-        </div>
-    </section>
 
-    @if($aboutUsFacts->count())
-        <section class="art-section-pd art-about-facts">
-            <div class="container">
-                @if($aboutUsConfig->facts_title)
-                    <h2 class="title h2">{{ $aboutUsConfig->facts_title }}</h2>
-                @endif
-                <ul class="art-about-facts__list">
-                    @foreach($aboutUsFacts as $fact)
-                        <li>
-                            <span class="art-about-facts__value">{{ $fact->value }}</span>
-                            @if($fact->label)
-                                <span class="art-about-facts__label">{{ $fact->label }}</span>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </section>
-    @endif
-
-    @if($aboutUsConfig->history_text)
-        <section class="art-section-pd art-about-history">
-            <div class="container">
-                @if($aboutUsConfig->history_title)
-                    <h2 class="title h2">{{ $aboutUsConfig->history_title }}</h2>
-                @endif
-                <div class="art-about-history__text">{!! $aboutUsConfig->history_text !!}</div>
-            </div>
-        </section>
-    @endif
-
-    @if($aboutUsSteps->count())
-        <section class="art-section-pd art-about-steps">
-            <div class="container">
-                @if($aboutUsConfig->steps_title)
-                    <h2 class="title h2">{{ $aboutUsConfig->steps_title }}</h2>
-                @endif
-                <ol class="art-about-steps__list">
-                    @foreach($aboutUsSteps as $step)
-                        <li>
-                            <h3>{{ $step->title }}</h3>
-                            @if($step->text)
-                                <p>{{ $step->text }}</p>
-                            @endif
-                        </li>
-                    @endforeach
-                </ol>
-            </div>
-        </section>
-    @endif
-
-    @if($aboutUsTeam->count())
-        <section class="art-section-pd art-about-team">
-            <div class="container">
-                @if($aboutUsConfig->team_title)
-                    <h2 class="title h2">{{ $aboutUsConfig->team_title }}</h2>
-                @endif
-                <ul class="art-about-team__list">
-                    @foreach($aboutUsTeam as $member)
-                        <li>
-                            @if($member->photo_url)
-                                <img src="{{ $member->photo_url }}" alt="{{ $member->name }}{{ $member->role ? ', ' . $member->role : '' }}" loading="lazy">
-                            @endif
-                            <span class="art-about-team__name">{{ $member->name }}</span>
-                            @if($member->role)
-                                <span class="art-about-team__role">{{ $member->role }}</span>
-                            @endif
-                            @if($member->experience)
-                                <span class="art-about-team__experience">{{ $member->experience }}</span>
-                            @endif
-                            @if($member->quote)
-                                <p class="art-about-team__quote">{{ $member->quote }}</p>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </section>
-    @endif
-
-    @if($aboutUsConfig->cta_title || $aboutUsConfig->cta_text)
-        <section class="art-section-pd art-about-cta">
-            <div class="container text-center">
-                @if($aboutUsConfig->cta_title)
-                    <h2 class="title h2">{{ $aboutUsConfig->cta_title }}</h2>
-                @endif
-                @if($aboutUsConfig->cta_text)
-                    <p>{{ $aboutUsConfig->cta_text }}</p>
-                @endif
-                @if($aboutUsConfig->cta_button_text)
-                    <a href="{{ $aboutUsConfig->cta_button_url ?: '#dialog-call-measurer' }}"
-                       class="btn btn-main"
-                       @if(!$aboutUsConfig->cta_button_url) data-lead-modal-open="dialog-call-measurer" @endif>
-                        {{ $aboutUsConfig->cta_button_text }}
-                    </a>
-                @endif
-            </div>
-        </section>
-    @endif
-
-    <section class="art-brands-list">
-        <div class="container">
-
-            <div class="swiper art-brands-owl-items mt-6">
-                <div class="swiper-wrapper">
-                    @foreach( $brands as $brand )
-                        <div class="swiper-slide">
-                            @include('pages.store.partials.brand_item', ['brand' => $brand])
-                        </div>
-                    @endforeach
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================  Blog ======================== -->
-    <section class="blog art-dark-bg">
-        <div class="container">
-
-            <div class="row">
-                <header class="col-12 art-header-left">
-                    <div>
-                        <h2 class="title">{{trans('base.blog')}}</h2>
-                    </div>
-                </header>
-            </div>
-
-            <div class="row">
-                <div class="art-blog-archive-wrapper">
-                    @foreach($articles as $article)
-                        <div class="col-lg-4">
-                            <article class="art-post-archive-item">
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]) }}">
-                                    <div class="image" style="background-image:url({{ $article->hero_image_url }})">
-                                        <img src="{{ $article->hero_image_url }}" alt="{{ $article->name }}">
-                                    </div>
-                                    <div class="entry entry-post">
-                                        <div class="preview-post-left">
-                                            <div class="date-wrapper">
-                                                <div class="date">
-                                                    <strong>{{ $article->created_at->format('d') }}</strong>
-                                                    <span>{{ $article->created_at->format('M') }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="preview-post-right">
-                                            <div class="title">
-                                                <h2 class="h5">{{ $article->name }}</h2>
-                                            </div>
-                                            <div class="art-preview-text"><p>{{ $article->preview_text }}</p></div>
-                                        </div>
-                                    </div>
+                    <div class="bona-content-feature__copy">
+                        @if($aboutUsConfig->title)
+                            <p class="bona-content-kicker">{{ trans('base.content_about_intro_kicker') }}</p>
+                            <h2>{{ $aboutUsConfig->title }}</h2>
+                        @endif
+                        @if(filled(strip_tags((string) $aboutUsConfig->description)))
+                            <div class="bona-content-richtext">{!! $aboutUsConfig->description !!}</div>
+                        @endif
+                        @if($aboutUsConfig->button_url && $aboutUsConfig->button_text)
+                            @php
+                                $aboutButtonExternal = Illuminate\Support\Str::startsWith($aboutUsConfig->button_url, ['http://', 'https://']);
+                            @endphp
+                            <div class="bona-content-inline-action">
+                                <a
+                                    class="bona-button bona-button--dark"
+                                    href="{{ $aboutUsConfig->button_url }}"
+                                    @if($aboutButtonExternal) target="_blank" rel="noopener noreferrer" @endif
+                                >
+                                    {{ $aboutUsConfig->button_text }}
                                 </a>
-                            </article>
-                        </div>
-                    @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
-            </div> <!--/row-->
-        </div><!--/container-->
-    </section>
+            </section>
+        @endif
 
-@stop
+        @if($aboutUsFacts->isNotEmpty())
+            <section class="bona-content-facts" aria-labelledby="about-facts-title">
+                <div class="bona-shell">
+                    <div class="bona-content-facts__panel">
+                        <p class="bona-content-kicker">{{ trans('base.content_facts_kicker') }}</p>
+                        <h2 id="about-facts-title">{{ $aboutUsConfig->facts_title ?: trans('base.content_facts_title') }}</h2>
+                        <ul class="bona-content-facts__grid">
+                            @foreach($aboutUsFacts as $fact)
+                                <li class="bona-content-facts__item">
+                                    <span class="bona-content-facts__value">{{ $fact->value }}</span>
+                                    @if($fact->label)
+                                        <span class="bona-content-facts__label">{{ $fact->label }}</span>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        @if(filled(strip_tags((string) $aboutUsConfig->history_text)))
+            <section class="bona-content-story" aria-labelledby="about-story-title">
+                <div class="bona-shell bona-content-story__grid">
+                    <div>
+                        <p class="bona-content-kicker">{{ trans('base.content_story_kicker') }}</p>
+                        <h2 id="about-story-title">{{ $aboutUsConfig->history_title ?: trans('base.content_story_title') }}</h2>
+                    </div>
+                    <div class="bona-content-richtext">{!! $aboutUsConfig->history_text !!}</div>
+                </div>
+            </section>
+        @endif
+
+        @if($aboutUsSteps->isNotEmpty())
+            <section class="bona-content-process" aria-labelledby="about-process-title">
+                <div class="bona-shell">
+                    <header class="bona-content-heading">
+                        <div>
+                            <p class="bona-content-kicker">{{ trans('base.content_process_kicker') }}</p>
+                            <h2 id="about-process-title">{{ $aboutUsConfig->steps_title ?: trans('base.content_process_title') }}</h2>
+                        </div>
+                    </header>
+                    <ol class="bona-content-process__list">
+                        @foreach($aboutUsSteps as $step)
+                            <li class="bona-content-process__item">
+                                <span>{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                                <h3>{{ $step->title }}</h3>
+                                @if($step->text)
+                                    <p>{{ $step->text }}</p>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ol>
+                </div>
+            </section>
+        @endif
+
+        @if($aboutUsTeam->isNotEmpty())
+            <section class="bona-content-team" aria-labelledby="about-team-title">
+                <div class="bona-shell">
+                    <header class="bona-content-heading">
+                        <div>
+                            <p class="bona-content-kicker">{{ trans('base.content_team_kicker') }}</p>
+                            <h2 id="about-team-title">{{ $aboutUsConfig->team_title ?: trans('base.content_team_title') }}</h2>
+                        </div>
+                    </header>
+                    <ul class="bona-content-team__grid">
+                        @foreach($aboutUsTeam as $member)
+                            <li class="bona-team-member">
+                                @if($member->photo_url)
+                                    <div class="bona-team-member__portrait">
+                                        <img
+                                            src="{{ $member->photo_url }}"
+                                            alt="{{ $member->name }}{{ $member->role ? ', '.$member->role : '' }}"
+                                            width="520"
+                                            height="650"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+                                    </div>
+                                @endif
+                                <div class="bona-team-member__body">
+                                    <h3>{{ $member->name }}</h3>
+                                    @if($member->role)<span class="bona-team-member__role">{{ $member->role }}</span>@endif
+                                    @if($member->experience)<span class="bona-team-member__experience">{{ $member->experience }}</span>@endif
+                                    @if($member->quote)<p class="bona-team-member__quote">“{{ $member->quote }}”</p>@endif
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </section>
+        @endif
+
+        @if($aboutUsConfig->cta_title || $aboutUsConfig->cta_text)
+            @php
+                $aboutCtaUrl = $aboutUsConfig->cta_button_url ?: '#dialog-call-measurer';
+                $aboutCtaExternal = Illuminate\Support\Str::startsWith($aboutCtaUrl, ['http://', 'https://']);
+            @endphp
+            <section class="bona-content-cta" aria-labelledby="about-cta-title">
+                <div class="bona-shell">
+                    <div class="bona-content-cta__panel">
+                        <div>
+                            @if($aboutUsConfig->cta_title)
+                                <h2 id="about-cta-title">{{ $aboutUsConfig->cta_title }}</h2>
+                            @endif
+                            @if($aboutUsConfig->cta_text)<p>{{ $aboutUsConfig->cta_text }}</p>@endif
+                        </div>
+                        @if($aboutUsConfig->cta_button_text)
+                            <a
+                                class="bona-button bona-button--light"
+                                href="{{ $aboutCtaUrl }}"
+                                @if(!$aboutUsConfig->cta_button_url) data-lead-modal-open="dialog-call-measurer" @endif
+                                @if($aboutCtaExternal) target="_blank" rel="noopener noreferrer" @endif
+                            >
+                                {{ $aboutUsConfig->cta_button_text }}
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <x-store.home-partners
+            :brands="$brands"
+            :section="[
+                'kicker' => trans('base.partners_kicker'),
+                'title' => trans('base.our_partners'),
+            ]"
+        />
+
+        <x-store.home-blog
+            :articles="$articles"
+            :section="[
+                'kicker' => trans('base.blog_latest'),
+                'title' => trans('base.blog'),
+                'link_label' => trans('base.blog_all'),
+                'link_url' => App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page'),
+            ]"
+        />
+    </div>
+@endsection
