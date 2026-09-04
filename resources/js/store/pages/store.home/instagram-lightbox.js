@@ -27,6 +27,9 @@ export function init() {
     if (!section || !modal || modal.dataset.instagramLightboxBound === 'true') return;
 
     const items = parseItems(modal);
+    const dialog = modal.querySelector('.bona-instagram-lightbox__dialog');
+    const mediaFrame = modal.querySelector('.bona-instagram-lightbox__media');
+    const details = modal.querySelector('.bona-instagram-lightbox__details');
     const image = modal.querySelector('[data-instagram-modal-image]');
     const video = modal.querySelector('[data-instagram-modal-video]');
     const caption = modal.querySelector('[data-instagram-modal-caption]');
@@ -42,7 +45,7 @@ export function init() {
     const commentsWrapper = modal.querySelector('[data-instagram-modal-comments-wrap]');
     const comments = modal.querySelector('[data-instagram-modal-comments]');
 
-    if (!items.length || !image || !video || !caption || !counter) return;
+    if (!items.length || !dialog || !mediaFrame || !details || !image || !video || !caption || !counter) return;
 
     modal.dataset.instagramLightboxBound = 'true';
 
@@ -56,7 +59,73 @@ export function init() {
         year: 'numeric',
     });
     let activeIndex = 0;
+    let activeMediaRatio = null;
+    let mediaLayoutFrame = null;
     let returnFocus = null;
+
+    const resetMediaLayout = () => {
+        dialog.style.removeProperty('--bona-instagram-dialog-width');
+        dialog.style.removeProperty('--bona-instagram-media-width');
+    };
+
+    const syncMediaLayout = () => {
+        if (mediaLayoutFrame !== null) window.cancelAnimationFrame(mediaLayoutFrame);
+
+        mediaLayoutFrame = window.requestAnimationFrame(() => {
+            mediaLayoutFrame = null;
+            resetMediaLayout();
+
+            if (
+                modal.hidden
+                || !Number.isFinite(activeMediaRatio)
+                || activeMediaRatio <= 0
+                || window.matchMedia('(max-width: 760px)').matches
+            ) return;
+
+            const dialogRect = dialog.getBoundingClientRect();
+            const mediaRect = mediaFrame.getBoundingClientRect();
+            const detailsRect = details.getBoundingClientRect();
+            const fittedMediaWidth = Math.floor(mediaRect.height * activeMediaRatio);
+
+            if (fittedMediaWidth <= 0 || fittedMediaWidth >= mediaRect.width - 1) return;
+
+            const dialogChromeWidth = Math.max(
+                0,
+                dialogRect.width - mediaRect.width - detailsRect.width
+            );
+            const fittedDialogWidth = fittedMediaWidth + detailsRect.width + dialogChromeWidth;
+
+            if (fittedDialogWidth > window.innerWidth - 48) return;
+
+            dialog.style.setProperty('--bona-instagram-media-width', `${fittedMediaWidth}px`);
+            dialog.style.setProperty('--bona-instagram-dialog-width', `${Math.ceil(fittedDialogWidth)}px`);
+        });
+    };
+
+    const setMediaRatio = (width, height) => {
+        const naturalWidth = Number(width);
+        const naturalHeight = Number(height);
+
+        activeMediaRatio = naturalWidth > 0 && naturalHeight > 0
+            ? naturalWidth / naturalHeight
+            : null;
+        syncMediaLayout();
+    };
+
+    const syncActiveMediaRatio = () => {
+        if (!video.hidden && video.videoWidth > 0 && video.videoHeight > 0) {
+            setMediaRatio(video.videoWidth, video.videoHeight);
+            return;
+        }
+
+        if (!image.hidden && image.naturalWidth > 0 && image.naturalHeight > 0) {
+            setMediaRatio(image.naturalWidth, image.naturalHeight);
+        }
+    };
+
+    image.addEventListener('load', syncActiveMediaRatio);
+    video.addEventListener('loadedmetadata', syncActiveMediaRatio);
+    window.addEventListener('resize', syncMediaLayout, { passive: true });
 
     const stopVideo = () => {
         video.pause();
@@ -87,6 +156,8 @@ export function init() {
 
     const render = (requestedIndex) => {
         activeIndex = (requestedIndex + items.length) % items.length;
+        activeMediaRatio = null;
+        resetMediaLayout();
 
         const item = items[activeIndex] || {};
         const itemCaption = String(item.caption || modal.dataset.emptyCaption || 'Instagram');
@@ -145,12 +216,16 @@ export function init() {
             permalink.hidden = !hasPermalink;
             if (hasPermalink) permalink.href = item.permalink;
         }
+
+        window.requestAnimationFrame(syncActiveMediaRatio);
     };
 
     const close = () => {
         if (modal.hidden) return;
 
         stopVideo();
+        activeMediaRatio = null;
+        resetMediaLayout();
         modal.hidden = true;
         document.body.classList.remove('bona-instagram-lightbox-open');
 
@@ -163,6 +238,7 @@ export function init() {
         render(index);
         modal.hidden = false;
         document.body.classList.add('bona-instagram-lightbox-open');
+        window.requestAnimationFrame(syncActiveMediaRatio);
         window.setTimeout(() => closeButton?.focus(), 30);
     };
 

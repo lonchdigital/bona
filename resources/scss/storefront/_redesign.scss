@@ -2836,10 +2836,10 @@ body.bona-instagram-lightbox-open {
     &__dialog {
         position: relative;
         display: grid;
-        width: min(980px, calc(100vw - 48px));
+        width: min(var(--bona-instagram-dialog-width, 980px), calc(100vw - 48px));
         height: min(720px, calc(100svh - 48px));
         max-height: calc(100svh - 48px);
-        grid-template-columns: minmax(0, 1fr) minmax(310px, 360px);
+        grid-template-columns: minmax(0, var(--bona-instagram-media-width, 1fr)) minmax(310px, 360px);
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, .58);
         border-radius: 22px;

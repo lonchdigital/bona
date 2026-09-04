@@ -168,7 +168,20 @@ class HomePageRedesignSectionsTest extends TestCase
             '/&__media\s*\{.*?img,\s*video\s*\{.*?position:\s*absolute;.*?inset:\s*0;.*?width:\s*100%\s*!important;.*?height:\s*100%\s*!important;.*?object-fit:\s*contain\s*!important;/s',
             $source,
         );
-        $this->assertStringContainsString('width: min(980px, calc(100vw - 48px));', $source);
+        $this->assertStringContainsString(
+            'width: min(var(--bona-instagram-dialog-width, 980px), calc(100vw - 48px));',
+            $source,
+        );
+        $this->assertStringContainsString(
+            'grid-template-columns: minmax(0, var(--bona-instagram-media-width, 1fr)) minmax(310px, 360px);',
+            $source,
+        );
+
+        $script = file_get_contents(resource_path('js/store/pages/store.home/instagram-lightbox.js'));
+
+        $this->assertStringContainsString('const fittedMediaWidth = Math.floor(mediaRect.height * activeMediaRatio);', $script);
+        $this->assertStringContainsString("dialog.style.setProperty('--bona-instagram-media-width'", $script);
+        $this->assertStringContainsString("dialog.style.setProperty('--bona-instagram-dialog-width'", $script);
     }
 
     public function test_reference_sections_are_composed_in_the_expected_order(): void
