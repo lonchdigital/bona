@@ -28,6 +28,17 @@
         aria-controls="{{ $id }}-results"
         aria-expanded="false"
     >
+    <button
+        class="bona-search__clear"
+        type="button"
+        aria-label="{{ trans('base.storefront_search_clear') }}"
+        data-search-clear
+        hidden
+    >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 3 13 13M13 3 3 13"></path>
+        </svg>
+    </button>
     <div
         id="{{ $id }}-results"
         class="bona-search-results"

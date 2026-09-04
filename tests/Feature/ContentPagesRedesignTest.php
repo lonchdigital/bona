@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\AboutUsConfig;
 use App\Models\Brand;
+use App\Models\ServicesConfig;
 use App\Models\User;
 use App\Models\Work;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,6 +40,48 @@ class ContentPagesRedesignTest extends TestCase
             ->assertOk()
             ->assertSee('Реализованные проекты')
             ->assertSee('bona-works-list', false);
+    }
+
+    public function test_services_page_legacy_description_is_cleaned_without_overwriting_admin_copy(): void
+    {
+        $config = ServicesConfig::create([
+            'meta_description' => [
+                'uk' => 'Замовити послуги компанії Bona-Doors в Одесі ✅ Гарантія якості ✅ Гарантія якості',
+                'ru' => 'Заказать услуги компании Bona-Doors в Одессе ✅ Гарантия качества',
+            ],
+        ]);
+
+        $migration = require database_path('migrations/2026_09_05_230000_clean_services_page_description.php');
+        $migration->up();
+
+        $descriptions = $config->fresh()->getTranslations('meta_description');
+
+        $this->assertSame(
+            'Замовити послуги компанії Bona Doors в Одесі. Гарантія якості.',
+            $descriptions['uk'],
+        );
+        $this->assertSame(
+            'Заказать услуги компании Bona Doors в Одессе. Гарантия качества.',
+            $descriptions['ru'],
+        );
+
+        $this->get(route('store.services'))
+            ->assertOk()
+            ->assertSee('Замовити послуги компанії Bona Doors в Одесі. Гарантія якості.')
+            ->assertDontSee('✅');
+
+        $config->update([
+            'meta_description' => [
+                'uk' => 'Текст, відредагований в адмінці.',
+                'ru' => 'Текст, отредактированный в админке.',
+            ],
+        ]);
+        $migration->up();
+
+        $this->assertSame(
+            'Текст, відредагований в адмінці.',
+            $config->fresh()->getTranslation('meta_description', 'uk'),
+        );
     }
 
     public function test_about_page_section_headings_are_translatable(): void

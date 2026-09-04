@@ -496,6 +496,7 @@ return [
     'storefront_close_menu' => 'Закрити меню',
     'storefront_search_label' => 'Пошук дверей і послуг',
     'storefront_search_placeholder' => 'Пошук дверей і послуг…',
+    'storefront_search_clear' => 'Очистити пошук',
     'storefront_search_results' => 'Результати пошуку',
     'storefront_search_loading' => 'Шукаємо…',
     'storefront_search_products' => 'Двері',

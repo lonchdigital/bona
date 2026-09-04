@@ -30,10 +30,18 @@ class StorefrontLayoutTest extends TestCase
     public function test_homepage_interactive_controls_use_valid_aria_contracts(): void
     {
         $search = file_get_contents(resource_path('views/components/store/search.blade.php'));
+        $searchScript = file_get_contents(resource_path('js/store/common/storefront-search.js'));
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
         $hero = file_get_contents(resource_path('views/components/store/home-hero.blade.php'));
         $heroScript = file_get_contents(resource_path('js/store/common/home-hero.js'));
 
         $this->assertStringContainsString('role="combobox"', $search);
+        $this->assertStringContainsString('data-search-clear', $search);
+        $this->assertStringContainsString('base.storefront_search_clear', $search);
+        $this->assertStringContainsString('M3 3 13 13M13 3 3 13', $search);
+        $this->assertStringContainsString("clearButton.addEventListener('click', clearSearch)", $searchScript);
+        $this->assertStringContainsString('&::-webkit-search-cancel-button,', $stylesheet);
+        $this->assertStringContainsString('-webkit-appearance: none;', $stylesheet);
         $this->assertStringContainsString('class="bona-hero__dots" role="group"', $hero);
         $this->assertStringContainsString('aria-current="{{ $loop->first', $hero);
         $this->assertStringNotContainsString('class="bona-hero__dots" role="tablist"', $hero);

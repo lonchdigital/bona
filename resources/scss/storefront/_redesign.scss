@@ -1137,6 +1137,7 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
     }
 
     input {
+        appearance: none;
         height: auto;
         min-width: 0;
         min-height: 0;
@@ -1153,7 +1154,44 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
             opacity: .62;
         }
 
-        &::-webkit-search-cancel-button { opacity: .6; }
+        &::-webkit-search-cancel-button,
+        &::-webkit-search-decoration {
+            display: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        &::-ms-clear { display: none; width: 0; height: 0; }
+    }
+
+    &__clear {
+        display: grid;
+        width: 26px;
+        height: 26px;
+        flex: 0 0 26px;
+        padding: 0;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        opacity: .72;
+        transition: background-color .2s ease, opacity .2s ease;
+
+        &[hidden] { display: none; }
+        &:hover { background: color-mix(in srgb, currentColor 10%, transparent); opacity: 1; }
+        &:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; opacity: 1; }
+
+        svg {
+            display: block;
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-width: 1.5;
+        }
     }
 }
 

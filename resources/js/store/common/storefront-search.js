@@ -78,10 +78,11 @@ function renderState(panel, title, description) {
 
 function initSearch(form) {
     const input = form.querySelector('input[type="search"]');
+    const clearButton = form.querySelector('[data-search-clear]');
     const panel = form.querySelector('.bona-search-results');
     const endpoint = form.dataset.searchUrl;
 
-    if (!input || !panel || !endpoint) {
+    if (!input || !clearButton || !panel || !endpoint) {
         return;
     }
 
@@ -96,6 +97,20 @@ function initSearch(form) {
     const open = () => {
         panel.hidden = false;
         input.setAttribute('aria-expanded', 'true');
+    };
+
+    const syncClearButton = () => {
+        clearButton.hidden = input.value.length === 0;
+    };
+
+    const clearSearch = () => {
+        window.clearTimeout(timer);
+        controller?.abort();
+        input.value = '';
+        panel.replaceChildren();
+        close();
+        syncClearButton();
+        input.focus();
     };
 
     const search = async () => {
@@ -155,9 +170,12 @@ function initSearch(form) {
     };
 
     input.addEventListener('input', () => {
+        syncClearButton();
         window.clearTimeout(timer);
         timer = window.setTimeout(search, SEARCH_DELAY);
     });
+
+    clearButton.addEventListener('click', clearSearch);
 
     input.addEventListener('focus', () => {
         if (panel.childElementCount && input.value.trim().length >= 3) open();
@@ -216,6 +234,8 @@ function initSearch(form) {
     document.addEventListener('pointerdown', (event) => {
         if (!form.contains(event.target)) close();
     });
+
+    syncClearButton();
 }
 
 export default {
