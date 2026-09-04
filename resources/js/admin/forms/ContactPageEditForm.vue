@@ -61,6 +61,10 @@ export default {
             type: Array,
             default: [],
         },
+        workingHoursOne: {
+            type: Object,
+            default: () => ({}),
+        },
         iframeOne: {
             type: String,
             default: '',
@@ -82,6 +86,10 @@ export default {
             type: Array,
             default: [],
         },
+        workingHoursTwo: {
+            type: Object,
+            default: () => ({}),
+        },
         iframeTwo: {
             type: String,
             default: '',
@@ -102,6 +110,10 @@ export default {
         emailThree: {
             type: Array,
             default: [],
+        },
+        workingHoursThree: {
+            type: Object,
+            default: () => ({}),
         },
         iframeThree: {
             type: String,
@@ -235,6 +247,16 @@ export default {
                     :errors="errors"
                 />
 
+                <multi-language-input-component
+                    :title="$t('admin.working_hours')"
+                    name="working_hours_one"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workingHoursOne"
+                    :errors="errors"
+                />
+
                 <div class="form-group mb-3">
                     <input-component
                         title="iframe #1"
@@ -295,6 +317,16 @@ export default {
                     :errors="errors"
                 />
 
+                <multi-language-input-component
+                    :title="$t('admin.working_hours')"
+                    name="working_hours_two"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workingHoursTwo"
+                    :errors="errors"
+                />
+
                 <div class="form-group mb-3">
                     <input-component
                         title="iframe #2"
@@ -350,6 +382,16 @@ export default {
                     :available-languages="availableLanguages"
                     :is-required="false"
                     :init-data="(emailThree) ? emailThree : []"
+                    :errors="errors"
+                />
+
+                <multi-language-input-component
+                    :title="$t('admin.working_hours')"
+                    name="working_hours_three"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="workingHoursThree"
                     :errors="errors"
                 />
 

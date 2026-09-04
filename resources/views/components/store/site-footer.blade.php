@@ -16,6 +16,8 @@
         ['key' => 'facebook', 'label' => 'Facebook'],
     ])->filter(fn (array $social) => filled(data_get($options, $social['key'])));
     $stores = App\Support\Storefront\StoreLocations::from($contacts);
+    $footerMenus = app(App\Services\CatalogMenu\CatalogMenuService::class)
+        ->getStorefrontFooterMenus($options, $productTypes, $locale);
 @endphp
 
 <footer class="bona-footer">
@@ -48,31 +50,18 @@
             <nav class="bona-footer__nav" aria-labelledby="footer-navigation-title">
                 <h2 class="bona-footer__heading" id="footer-navigation-title">{{ trans('base.navigation') }}</h2>
                 <ul class="bona-footer__links">
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{ trans('base.about_us') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{ trans('base.delivery') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{ trans('base.services') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{ trans('base.our_works') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{ trans('base.blog') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{ trans('base.contacts') }}</a></li>
-                    <li><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.faq.page') }}">{{ trans('base.faq') }}</a></li>
+                    @foreach($footerMenus['navigation'] as $item)
+                        <li><a href="{{ $item['url'] }}">{{ $item['label'] }}</a></li>
+                    @endforeach
                 </ul>
             </nav>
 
             <nav class="bona-footer__nav" aria-labelledby="footer-categories-title">
                 <h2 class="bona-footer__heading" id="footer-categories-title">{{ trans('base.footer_cat') }}</h2>
                 <ul class="bona-footer__links">
-                    @foreach($productTypes as $productType)
-                        <li>
-                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
-                                {{ $productType->name }}
-                            </a>
-                        </li>
+                    @foreach($footerMenus['categories'] as $item)
+                        <li><a href="{{ $item['url'] }}">{{ $item['label'] }}</a></li>
                     @endforeach
-                    <li>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', ['productTypeSlug' => 'aksessuar', 'categorySlug' => 'dverni-rucky']) }}">
-                            {{ trans('shop.door_handles') }}
-                        </a>
-                    </li>
                 </ul>
             </nav>
 
@@ -108,7 +97,7 @@
                                 @endif
                                 <div class="bona-footer__address-row">
                                     <span>{{ trans('base.home_footer_hours_label') }}</span>
-                                    <p>{{ trans('base.working_hours') }}</p>
+                                    <p>{{ $store['working_hours'] }}</p>
                                 </div>
                             </address>
                         @endforeach

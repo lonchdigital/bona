@@ -109,7 +109,7 @@
                                             <a href="{{ $store['map_url'] }}" target="_blank" rel="noopener noreferrer">
                                                 {{ $store['address'] }}
                                             </a>
-                                            <span>{{ trans('base.working_hours') }}</span>
+                                            <span>{{ $store['working_hours'] }}</span>
                                         </p>
                                     </div>
                                     <div class="bona-contact-showroom-card__meta">

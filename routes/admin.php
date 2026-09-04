@@ -37,6 +37,7 @@ use App\Http\Actions\Admin\CatalogMenu\Pages\ShowCatalogMenuEditPageAction;
 use App\Http\Actions\Admin\CatalogMenu\Pages\ShowCatalogMenuPageAction;
 use App\Http\Actions\Admin\CatalogMenu\UpdateCatalogMenuContentAction;
 use App\Http\Actions\Admin\CatalogMenu\UpdateCatalogMenuOverviewAction;
+use App\Http\Actions\Admin\CatalogMenu\UpdateFooterMenusAction;
 use App\Http\Actions\Admin\Colors\ColorCreateAction;
 use App\Http\Actions\Admin\Colors\ColorDeleteAction;
 use App\Http\Actions\Admin\Colors\ColorEditAction;
@@ -176,6 +177,7 @@ Route::prefix('admin')->middleware([
     Route::prefix('catalog-menu')->group(function () {
         Route::name('admin.catalog-menu.page')->get('/', ShowCatalogMenuPageAction::class);
         Route::name('admin.catalog-menu.update')->post('/', UpdateCatalogMenuOverviewAction::class);
+        Route::name('admin.catalog-menu.footer.update')->post('/footer', UpdateFooterMenusAction::class);
         Route::name('admin.catalog-menu.edit.page')->get('/{productType}', ShowCatalogMenuEditPageAction::class);
         Route::name('admin.catalog-menu.edit')->post('/{productType}', UpdateCatalogMenuContentAction::class);
     });

@@ -8,8 +8,11 @@ class ShowCatalogMenuPageAction
 {
     public function __invoke(CatalogMenuService $service)
     {
+        $productTypes = $service->getAdminProductTypes();
+
         return view('pages.admin.catalog-menu.index', [
-            'menuProductTypes' => $service->getAdminProductTypes(),
+            'menuProductTypes' => $productTypes,
+            'footerMenus' => $service->getAdminFooterMenus($productTypes),
         ]);
     }
 }

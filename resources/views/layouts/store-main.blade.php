@@ -169,6 +169,7 @@
     <x-store.site-header
         :product-types="$productTypes"
         :options="$applicationGlobalOptions"
+        :contacts="$contactsFooter"
         :overlay="request()->routeIs('store.home', 'localized.store.home')"
     />
     <x-store.call-measurer-modal />

@@ -26,18 +26,21 @@ class ContactsPageService extends BaseService
                 'address_one' => $request->addressOne,
                 'phone_one' => $request->phoneOne,
                 'email_one' => $request->emailOne,
+                'working_hours_one' => $request->workingHoursOne,
                 'iframe_address_one' => $request->iframeAddressOne,
 
                 'city_two' => $request->cityTwo,
                 'address_two' => $request->addressTwo,
                 'phone_two' => $request->phoneTwo,
                 'email_two' => $request->emailTwo,
+                'working_hours_two' => $request->workingHoursTwo,
                 'iframe_address_two' => $request->iframeAddressTwo,
 
                 'city_three' => $request->cityThree,
                 'address_three' => $request->addressThree,
                 'phone_three' => $request->phoneThree,
                 'email_three' => $request->emailThree,
+                'working_hours_three' => $request->workingHoursThree,
                 'iframe_address_three' => $request->iframeAddressThree,
             ];
 
@@ -60,6 +63,22 @@ class ContactsPageService extends BaseService
 
     public function getContactsFooter()
     {
-        return ContactConfig::select('city_one', 'address_one', 'phone_one', 'email_one', 'city_two', 'address_two', 'phone_two', 'email_two', 'city_three', 'address_three', 'phone_three', 'email_three')->first();
+        return ContactConfig::select(
+            'city_one',
+            'address_one',
+            'phone_one',
+            'email_one',
+            'working_hours_one',
+            'city_two',
+            'address_two',
+            'phone_two',
+            'email_two',
+            'working_hours_two',
+            'city_three',
+            'address_three',
+            'phone_three',
+            'email_three',
+            'working_hours_three',
+        )->first();
     }
 }

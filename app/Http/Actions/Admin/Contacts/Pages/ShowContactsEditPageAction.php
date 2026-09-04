@@ -12,9 +12,14 @@ class ShowContactsEditPageAction extends BaseAction
         ApplicationConfigService $applicationService,
         ContactsPageService $contactsService,
     ) {
+        $availableLanguages = $applicationService->getAvailableLanguages();
+
         return view('pages.admin.contacts.edit', [
-            'availableLanguages' => $applicationService->getAvailableLanguages(),
+            'availableLanguages' => $availableLanguages,
             'contactsConfig' => $contactsService->getContactsConfig(),
+            'defaultWorkingHours' => collect($availableLanguages)
+                ->mapWithKeys(fn (string $locale) => [$locale => trans('base.working_hours', [], $locale)])
+                ->all(),
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\ApplicationConfig;
 use App\Models\CatalogMenuConfiguration;
 use App\Models\Category;
 use App\Models\Role;
@@ -179,6 +180,88 @@ class CatalogMenuTest extends TestCase
             ])
             ->assertRedirect(route('admin.catalog-menu.edit.page', $productType))
             ->assertSessionHasErrors('columns.0.items.0.label.uk');
+    }
+
+    public function test_admin_can_edit_bilingual_footer_menus_and_the_storefront_uses_them(): void
+    {
+        $payload = [
+            'navigation' => [
+                [
+                    'label' => ['uk' => 'Навігація тест', 'ru' => 'Навигация тест'],
+                    'url' => ['uk' => '/contacts', 'ru' => '/ru/contacts'],
+                    'is_visible' => 1,
+                    'sort_order' => 2,
+                ],
+                [
+                    'label' => ['uk' => 'Прихований пункт', 'ru' => 'Скрытый пункт'],
+                    'url' => ['uk' => '/hidden', 'ru' => '/ru/hidden'],
+                    'is_visible' => 0,
+                    'sort_order' => 1,
+                ],
+            ],
+            'categories' => [[
+                'label' => ['uk' => 'Категорія тест', 'ru' => 'Категория тест'],
+                'url' => ['uk' => '/shop', 'ru' => '/ru/shop'],
+                'is_visible' => 1,
+                'sort_order' => 0,
+            ]],
+        ];
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.catalog-menu.footer.update'), $payload)
+            ->assertRedirect(route('admin.catalog-menu.page', ['tab' => 'footer']));
+
+        $storedNavigation = ApplicationConfig::query()
+            ->where('config_name', CatalogMenuService::FOOTER_NAVIGATION_CONFIG)
+            ->firstOrFail()
+            ->config_data;
+
+        $this->assertSame(
+            'Навігація тест',
+            collect($storedNavigation)->firstWhere('is_visible', true)['label']['uk'],
+        );
+
+        $this->get(route('store.home'))
+            ->assertOk()
+            ->assertSee('Навігація тест')
+            ->assertSee('href="/contacts"', false)
+            ->assertSee('Категорія тест')
+            ->assertDontSee('Прихований пункт');
+
+        $this->get(route('localized.store.home', ['lang' => 'ru']))
+            ->assertOk()
+            ->assertSee('Навигация тест')
+            ->assertSee('href="/ru/contacts"', false)
+            ->assertSee('Категория тест')
+            ->assertDontSee('Скрытый пункт');
+    }
+
+    public function test_footer_menu_rejects_unsafe_urls(): void
+    {
+        $this->actingAs($this->admin())
+            ->from(route('admin.catalog-menu.page', ['tab' => 'footer']))
+            ->post(route('admin.catalog-menu.footer.update'), [
+                'navigation' => [[
+                    'label' => ['uk' => 'Небезпечний', 'ru' => 'Опасный'],
+                    'url' => ['uk' => 'javascript:alert(1)', 'ru' => '/ru/contacts'],
+                    'is_visible' => 1,
+                    'sort_order' => 0,
+                ]],
+                'categories' => [],
+            ])
+            ->assertRedirect(route('admin.catalog-menu.page', ['tab' => 'footer']))
+            ->assertSessionHasErrors('navigation.0.url.uk');
+    }
+
+    public function test_footer_menu_editor_is_available_as_a_separate_menu_settings_tab(): void
+    {
+        $this->actingAs($this->admin())
+            ->get(route('admin.catalog-menu.page', ['tab' => 'footer']))
+            ->assertOk()
+            ->assertSee(trans('admin.footer_menu_tab'))
+            ->assertSee('name="navigation[0][label][uk]"', false)
+            ->assertSee('name="categories[0][label][ru]"', false)
+            ->assertSee('data-footer-menu-add', false);
     }
 
     private function admin(): User

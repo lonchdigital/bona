@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use App\Http\Requests\Admin\ApplicationConfigs\ApplicationConfigsEditRequest;
+use App\Http\Requests\Admin\Contacts\ContactsEditRequest;
 use App\Models\ApplicationConfig;
 use App\Models\ContactConfig;
 use App\Services\Application\ApplicationConfigService;
+use App\Services\Contacts\ContactsPageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -179,6 +181,7 @@ class StorefrontLayoutTest extends TestCase
             ],
             'phone_one' => ['uk' => '+380 (67) 953 47 74', 'ru' => '+380 (67) 953 47 74'],
             'email_one' => ['uk' => 'bona@example.test', 'ru' => 'bona@example.test'],
+            'working_hours_one' => ['uk' => 'Пн–Пт: 10:00–19:00', 'ru' => 'Пн–Пт: 10:00–19:00'],
             'iframe_address_one' => '<iframe src="about:blank"></iframe>',
             'city_two' => ['uk' => 'Одеса', 'ru' => 'Одесса'],
             'address_two' => [
@@ -187,6 +190,7 @@ class StorefrontLayoutTest extends TestCase
             ],
             'phone_two' => ['uk' => '+380 (67) 953 44 42', 'ru' => '+380 (67) 953 44 42'],
             'email_two' => ['uk' => 'bona@example.test', 'ru' => 'bona@example.test'],
+            'working_hours_two' => ['uk' => 'Сб: 10:00–16:00', 'ru' => 'Сб: 10:00–16:00'],
             'iframe_address_two' => '<iframe src="about:blank"></iframe>',
             'meta_title' => ['uk' => 'Контакти Bona Doors', 'ru' => 'Контакты Bona Doors'],
             'meta_description' => ['uk' => 'Салони в Одесі', 'ru' => 'Салоны в Одессе'],
@@ -202,6 +206,8 @@ class StorefrontLayoutTest extends TestCase
             ->assertSee('data-lead-inline', false)
             ->assertSee('https://www.google.com/maps/search/?api=1&amp;query=', false)
             ->assertSee('title="Карта розташування:', false)
+            ->assertSee('Пн–Пт: 10:00–19:00')
+            ->assertSee('Сб: 10:00–16:00')
             ->assertDontSee('art-contacts-line', false)
             ->assertDontSee('class="main-header"', false)
             ->assertDontSee('bona-footer__languages', false);
@@ -219,5 +225,40 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString("form.closest('[data-lead-modal], [data-lead-inline]')", $script);
         $this->assertStringContainsString('[data-lead-modal-thanks], [data-lead-inline-thanks]', $script);
         $this->assertStringContainsString('label.bona-lead-consent > input {', $stylesheet);
+    }
+
+    public function test_footer_settings_are_grouped_and_link_to_their_single_sources_of_truth(): void
+    {
+        $adminView = file_get_contents(resource_path('views/pages/admin/application-config/edit.blade.php'));
+        $adminForm = file_get_contents(resource_path('js/admin/forms/ApplicationConfigsPageEditForm.vue'));
+        $contactsForm = file_get_contents(resource_path('js/admin/forms/ContactPageEditForm.vue'));
+
+        $this->assertStringContainsString('initial-tab="{{ request(\'tab\') === \'footer\'', $adminView);
+        $this->assertStringContainsString('application-settings-main-tab', $adminForm);
+        $this->assertStringContainsString('application-settings-footer-tab', $adminForm);
+        $this->assertStringContainsString('contactsRoute', $adminForm);
+        $this->assertStringContainsString('menuSettingsRoute', $adminForm);
+        $this->assertStringContainsString('name="working_hours_one"', $contactsForm);
+        $this->assertStringContainsString('name="working_hours_two"', $contactsForm);
+        $this->assertStringContainsString('name="working_hours_three"', $contactsForm);
+    }
+
+    public function test_contact_settings_save_the_working_hours_used_by_the_footer(): void
+    {
+        $request = ContactsEditRequest::create('/', 'POST', [
+            'working_hours_one' => [
+                'uk' => 'Щодня: 10:00–19:00',
+                'ru' => 'Ежедневно: 10:00–19:00',
+            ],
+        ]);
+
+        $dto = $request->toDTO();
+        $this->assertSame('Щодня: 10:00–19:00', $dto->workingHoursOne['uk']);
+
+        app(ContactsPageService::class)->editContactsPage($dto);
+
+        $contacts = ContactConfig::query()->firstOrFail();
+        $this->assertSame('Щодня: 10:00–19:00', $contacts->getTranslation('working_hours_one', 'uk'));
+        $this->assertSame('Ежедневно: 10:00–19:00', $contacts->getTranslation('working_hours_one', 'ru'));
     }
 }

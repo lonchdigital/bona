@@ -18,6 +18,7 @@ final class StoreLocations
      *     phone: mixed,
      *     phone_href: ?string,
      *     email: mixed,
+     *     working_hours: string,
      *     iframe_html: string
      * }>
      */
@@ -33,6 +34,7 @@ final class StoreLocations
                 $rawAddress = trim((string) data_get($contacts, "address_{$suffix}"));
                 $phone = data_get($contacts, "phone_{$suffix}");
                 $email = data_get($contacts, "email_{$suffix}");
+                $workingHours = trim((string) data_get($contacts, "working_hours_{$suffix}"));
 
                 if ($rawAddress === '') {
                     return null;
@@ -66,6 +68,7 @@ final class StoreLocations
                     'phone' => $phone,
                     'phone_href' => filled($phone) ? preg_replace('/[^\d+]/', '', (string) $phone) : null,
                     'email' => $email,
+                    'working_hours' => $workingHours !== '' ? $workingHours : trans('base.working_hours'),
                     'iframe_html' => $iframe,
                 ];
             })

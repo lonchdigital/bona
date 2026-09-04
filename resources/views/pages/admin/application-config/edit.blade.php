@@ -59,6 +59,9 @@
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
                     submit-route="{{ route('admin.application-config.edit') }}"
+                    contacts-route="{{ route('admin.contacts.edit.page') }}"
+                    menu-settings-route="{{ route('admin.catalog-menu.page', ['tab' => 'footer']) }}"
+                    initial-tab="{{ request('tab') === 'footer' ? 'footer' : 'main' }}"
 
 
                     @if( !is_null($applicationConfig) )

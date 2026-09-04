@@ -1,6 +1,7 @@
 @props([
     'productTypes',
     'options' => [],
+    'contacts' => null,
     'overlay' => false,
 ])
 
@@ -8,7 +9,9 @@
     // Both the hero overlay and the solid inner-page header are dark in the
     // approved storefront design, so they use the light logo consistently.
     $logoPath = $options['logoLight'] ?? $options['logoDark'] ?? null;
-    $phone = $options['phoneOne'] ?? null;
+    $primaryStore = App\Support\Storefront\StoreLocations::from($contacts)->first();
+    $phone = data_get($primaryStore, 'phone') ?: ($options['phoneOne'] ?? null);
+    $workingHours = data_get($primaryStore, 'working_hours') ?: trans('base.working_hours');
     $hasMenuConfiguration = $productTypes->contains(fn ($productType) => $productType->catalogMenuConfiguration !== null);
     $navigationTypes = $hasMenuConfiguration
         ? $productTypes
@@ -64,7 +67,7 @@
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{ trans('base.contacts') }}</a>
             </nav>
             <div class="bona-topbar__meta">
-                <span>{{ trans('base.working_hours') }}</span>
+                <span>{{ $workingHours }}</span>
                 @if($phone)
                     <a class="bona-topbar__phone" href="tel:{{ preg_replace('/[^+\d]/', '', $phone) }}">{{ $phone }}</a>
                 @endif

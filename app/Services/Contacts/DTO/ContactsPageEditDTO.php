@@ -16,18 +16,21 @@ class ContactsPageEditDTO implements BaseDTO
         public readonly ?array $addressOne,
         public readonly ?array $phoneOne,
         public readonly ?array $emailOne,
+        public readonly ?array $workingHoursOne,
         public readonly ?string $iframeAddressOne,
 
         public readonly ?array $cityTwo,
         public readonly ?array $addressTwo,
         public readonly ?array $phoneTwo,
         public readonly ?array $emailTwo,
+        public readonly ?array $workingHoursTwo,
         public readonly ?string $iframeAddressTwo,
 
         public readonly ?array $cityThree,
         public readonly ?array $addressThree,
         public readonly ?array $phoneThree,
         public readonly ?array $emailThree,
+        public readonly ?array $workingHoursThree,
         public readonly ?string $iframeAddressThree,
     ) {}
 }

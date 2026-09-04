@@ -6,10 +6,17 @@
             <div class="col-12">
                 <h2 class="page-title">{{trans('base.contacts')}}</h2>
 
+                <div class="alert alert-info">
+                    {{ trans('admin.contacts_footer_usage_hint') }}
+                </div>
+
                 <contact-page-edit-form
                     base-language="{{ $baseLanguage }}"
                     :available-languages="{{ json_encode($availableLanguages) }}"
                     submit-route="{{ route('admin.contacts.edit') }}"
+                    :working-hours-one="{{ json_encode($contactsConfig?->getTranslations('working_hours_one') ?: $defaultWorkingHours) }}"
+                    :working-hours-two="{{ json_encode($contactsConfig?->getTranslations('working_hours_two') ?: $defaultWorkingHours) }}"
+                    :working-hours-three="{{ json_encode($contactsConfig?->getTranslations('working_hours_three') ?: $defaultWorkingHours) }}"
 
                     @if( !is_null($contactsConfig) )
                         :page-meta-title="{{ json_encode($contactsConfig->getTranslations('meta_title')) }}"

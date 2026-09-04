@@ -71,6 +71,11 @@ class ContactsEditRequest extends BaseRequest
                 'nullable',
                 'string',
             ];
+            $rules['working_hours_one.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:160',
+            ];
 
             $rules['city_two.'.$availableLanguage] = [
                 'nullable',
@@ -88,6 +93,11 @@ class ContactsEditRequest extends BaseRequest
                 'nullable',
                 'string',
             ];
+            $rules['working_hours_two.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:160',
+            ];
 
             $rules['city_three.'.$availableLanguage] = [
                 'nullable',
@@ -104,6 +114,11 @@ class ContactsEditRequest extends BaseRequest
             $rules['email_three.'.$availableLanguage] = [
                 'nullable',
                 'string',
+            ];
+            $rules['working_hours_three.'.$availableLanguage] = [
+                'nullable',
+                'string',
+                'max:160',
             ];
         }
 
@@ -139,18 +154,21 @@ class ContactsEditRequest extends BaseRequest
             $this->input('address_one'),
             $this->input('phone_one'),
             $this->input('email_one'),
+            $this->input('working_hours_one'),
             $this->input('iframe_address_one'),
 
             $this->input('city_two'),
             $this->input('address_two'),
             $this->input('phone_two'),
             $this->input('email_two'),
+            $this->input('working_hours_two'),
             $this->input('iframe_address_two'),
 
             $this->input('city_three'),
             $this->input('address_three'),
             $this->input('phone_three'),
             $this->input('email_three'),
+            $this->input('working_hours_three'),
             $this->input('iframe_address_three'),
         );
     }
