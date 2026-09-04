@@ -137,9 +137,14 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('aria-label="TikTok"', $footer);
         $this->assertStringContainsString('bona-footer__social-icon--tiktok', $footer);
         $this->assertStringContainsString("width: 40px;\n            height: 40px;", $stylesheet);
-        $this->assertStringContainsString("width: 23px;\n        height: 23px;", $stylesheet);
-        $this->assertStringContainsString("&--tiktok { -webkit-mask-image: url('/assets/icons/i-tiktok.svg');", $stylesheet);
+        $this->assertStringContainsString("width: 24px;\n        height: 24px;", $stylesheet);
+        $this->assertStringContainsString("&--tiktok { -webkit-mask-image: url('/assets/icons/i-tiktok.svg?v=24');", $stylesheet);
         $this->assertStringNotContainsString('-webkit-mask-size: 52px', $stylesheet);
+        $this->assertStringContainsString('viewBox="14 13 21 21"', file_get_contents(public_path('assets/icons/i-instagram.svg')));
+        $this->assertStringContainsString('viewBox="1.5 0 21 24"', file_get_contents(public_path('assets/icons/i-tiktok.svg')));
+        $this->assertStringContainsString('viewBox="9 12 19 16"', file_get_contents(public_path('assets/icons/i-telegram.svg')));
+        $this->assertStringContainsString('viewBox="13 13 14 14"', file_get_contents(public_path('assets/icons/i-viber.svg')));
+        $this->assertStringContainsString('viewBox="21 16 7 15"', file_get_contents(public_path('assets/icons/i-facebook.svg')));
         $this->assertStringContainsString("&__addresses {\n        display: flex;\n        flex-direction: column;\n        gap: 44px;", $stylesheet);
         $this->assertFileExists(public_path('assets/icons/i-tiktok.svg'));
     }

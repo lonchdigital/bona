@@ -2068,8 +2068,8 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
 
     &__social-icon {
         display: block;
-        width: 23px;
-        height: 23px;
+        width: 24px;
+        height: 24px;
         background: currentColor;
         -webkit-mask-position: center;
         -webkit-mask-repeat: no-repeat;
@@ -2078,11 +2078,11 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
         mask-repeat: no-repeat;
         mask-size: contain;
 
-        &--instagram { -webkit-mask-image: url('/assets/icons/i-instagram.svg'); mask-image: url('/assets/icons/i-instagram.svg'); }
-        &--telegram { -webkit-mask-image: url('/assets/icons/i-telegram.svg'); mask-image: url('/assets/icons/i-telegram.svg'); }
-        &--viber { -webkit-mask-image: url('/assets/icons/i-viber.svg'); mask-image: url('/assets/icons/i-viber.svg'); }
-        &--facebook { -webkit-mask-image: url('/assets/icons/i-facebook.svg'); mask-image: url('/assets/icons/i-facebook.svg'); }
-        &--tiktok { -webkit-mask-image: url('/assets/icons/i-tiktok.svg'); mask-image: url('/assets/icons/i-tiktok.svg'); }
+        &--instagram { -webkit-mask-image: url('/assets/icons/i-instagram.svg?v=24'); mask-image: url('/assets/icons/i-instagram.svg?v=24'); }
+        &--telegram { -webkit-mask-image: url('/assets/icons/i-telegram.svg?v=24'); mask-image: url('/assets/icons/i-telegram.svg?v=24'); }
+        &--viber { -webkit-mask-image: url('/assets/icons/i-viber.svg?v=24'); mask-image: url('/assets/icons/i-viber.svg?v=24'); }
+        &--facebook { -webkit-mask-image: url('/assets/icons/i-facebook.svg?v=24'); mask-image: url('/assets/icons/i-facebook.svg?v=24'); }
+        &--tiktok { -webkit-mask-image: url('/assets/icons/i-tiktok.svg?v=24'); mask-image: url('/assets/icons/i-tiktok.svg?v=24'); }
     }
 
     &__heading {
