@@ -167,7 +167,13 @@ class CatalogRedesignTest extends TestCase
         $catalogStyles = file_get_contents(resource_path('scss/storefront/_catalog.scss'));
 
         $this->assertStringContainsString('&__grid.art-product-list.art-three-column {', $catalogStyles);
+        $this->assertMatchesRegularExpression(
+            '/@media \(max-width: 1180px\).*?&__grid\.art-product-list\.art-three-column\s*\{\s*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s',
+            $catalogStyles
+        );
         $this->assertStringContainsString('grid-template-columns: repeat(2, minmax(0, 1fr));', $catalogStyles);
+        $this->assertStringContainsString('&__consultant-person > div { overflow: hidden; }', $catalogStyles);
+        $this->assertStringContainsString('overflow-wrap: anywhere;', $catalogStyles);
         $this->assertStringContainsString('height: clamp(190px, 42vw, 250px);', $catalogStyles);
         $this->assertStringContainsString('-webkit-line-clamp: 3;', $catalogStyles);
         $this->assertStringContainsString('.bona-product-card__price strong { font-size: 14px; }', $catalogStyles);
@@ -185,6 +191,7 @@ class CatalogRedesignTest extends TestCase
         );
 
         $html = view('pagination.store', ['paginator' => $paginator])->render();
+        $catalogStyles = file_get_contents(resource_path('scss/storefront/_catalog.scss'));
 
         $this->assertStringContainsString('data-catalog-load-more', $html);
         $this->assertStringContainsString('href="https://bona.test/product-category/interior-doors/filter/color=white?page=7"', $html);
@@ -192,6 +199,9 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('>…</span>', $html);
         $this->assertStringNotContainsString('href="#', $html);
         $this->assertStringNotContainsString('>2</a>', $html);
+        $this->assertStringContainsString('.pagination > .page-item:first-child,', $catalogStyles);
+        $this->assertStringContainsString("position: static;\n            transform: none;", $catalogStyles);
+        $this->assertStringContainsString('.pagination-wrapper .page-link { width: 40px; height: 40px; }', $catalogStyles);
     }
 
     public function test_query_page_overrides_the_legacy_page_filter(): void

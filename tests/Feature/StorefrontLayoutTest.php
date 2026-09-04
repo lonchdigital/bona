@@ -177,6 +177,8 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('grid-template-columns: 64px minmax(0, 1fr) 44px;', $storefrontStyles);
         $this->assertStringContainsString("min-width: 0;\n            width: 100%;\n            height: auto;", $storefrontStyles);
         $this->assertStringContainsString(".custom-control-number--cart input[type='number']", $storefrontStyles);
+        $this->assertStringContainsString('button.bona-cart-trigger .bona-cart-icon', $storefrontStyles);
+        $this->assertStringContainsString('width: 20px !important;', $storefrontStyles);
         $this->assertStringContainsString('body.bona-cart-drawer-open .bona-mobile-bottom-nav', $mobileNavigationStyles);
     }
 

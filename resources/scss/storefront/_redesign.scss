@@ -4075,8 +4075,22 @@ label.bona-lead-consent > input {
         gap: 17px;
 
         svg { width: 23px; height: 23px; }
-        .bona-cart-icon { width: 23px; height: 23px; }
         .icon-cart::before { font-size: 23px; }
+    }
+    .bona-header__actions.header-main-others li.basket-list button.bona-cart-trigger {
+        width: 44px;
+        height: 44px;
+    }
+    .bona-header__actions.header-main-others li.basket-list button.bona-cart-trigger .bona-cart-icon {
+        width: 20px !important;
+        height: 20px !important;
+        fill: none !important;
+        stroke: currentColor;
+    }
+    .bona-header__actions.header-main-others li.basket-list button.bona-cart-trigger .art-main-basket-count {
+        top: 1px;
+        right: 0;
+        left: auto;
     }
     .bona-header__profile { display: none !important; }
     .bona-header__burger { display: block; }

@@ -678,8 +678,10 @@
     }
 
     .pagination-wrapper {
+        width: 100%;
         max-width: 100%;
         margin: 0;
+        padding: 0;
 
         .pagination {
             display: flex;
@@ -691,13 +693,26 @@
             list-style: none;
         }
 
-        .page-item { margin: 0; }
+        .page-item {
+            position: static;
+            flex: 0 0 auto;
+            margin: 0;
+        }
+
+        .pagination > .page-item:first-child,
+        .pagination > .page-item:last-child,
+        .pagination > .page-item:first-child:hover,
+        .pagination > .page-item:last-child:hover {
+            position: static;
+            transform: none;
+        }
 
         .page-link {
             display: grid;
             width: 38px;
             height: 38px;
             place-items: center;
+            margin: 0;
             padding: 0;
             border: 1px solid transparent;
             border-radius: 50%;
@@ -956,7 +971,7 @@
 @media (max-width: 1180px) {
     .bona-catalog {
         &__layout { grid-template-columns: 242px minmax(0, 1fr); column-gap: 30px; }
-        &__grid.art-product-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 22px; }
+        &__grid.art-product-list.art-three-column { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 22px; }
     }
 }
 
@@ -992,6 +1007,14 @@
         }
 
         &__results { padding-top: 30px; }
+        &__consultant {
+            min-width: 0;
+            padding: 22px;
+        }
+        &__consultant-person { gap: 12px; }
+        &__consultant-person img { width: 82px; height: 82px; }
+        &__consultant-person > div { overflow: hidden; }
+        &__consultant-person strong { max-width: 100%; font-size: 23px; overflow-wrap: anywhere; }
         .bona-product-card--catalog .bona-product-card__actions { opacity: 1; pointer-events: auto; transform: none; }
     }
 
@@ -1019,8 +1042,8 @@
         &__pagination-block { margin-top: 50px; }
         &__load-more { width: min(100%, 320px); }
         .pagination-wrapper .pagination { gap: 2px; }
-        .pagination-wrapper .page-link { width: 34px; height: 34px; }
-        .pagination-wrapper .page-item--ellipsis .page-link { width: 18px; }
+        .pagination-wrapper .page-link { width: 40px; height: 40px; }
+        .pagination-wrapper .page-item--ellipsis .page-link { width: 8px; }
 
         .bona-product-card--catalog {
             min-width: 0;
@@ -1151,6 +1174,14 @@
     .bona-catalog-seo { padding: 72px 0; }
     .bona-catalog-seo header h2 { font-size: 34px; }
     .bona-catalog-seo__content { columns: 1; }
+}
+
+@media (max-width: 360px) {
+    .bona-catalog {
+        .pagination-wrapper .pagination { gap: 0; }
+        .pagination-wrapper .page-link { width: 38px; height: 38px; }
+        .pagination-wrapper .page-item--ellipsis { display: none; }
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
