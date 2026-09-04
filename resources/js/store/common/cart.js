@@ -158,10 +158,6 @@ export default {
         $('.single-product-add-to-cart').click(function () {
             const productSlug = $(this).attr('id');
             const count = $('#count-of-products').val();
-            const productAddedToCartButton = document.getElementById("product-added-to-cart-button");
-
-            // const countOfProductsBody = $('#count-of-products-body');
-            const goToCartBody = $('.go-to-cart-body');
 
             var selectAttributes = {};
             $('select.art-select-attribute').each(function() {
@@ -186,9 +182,6 @@ export default {
                 count,
                 selectAttributes,
                 function (data) {
-                    productAddedToCartButton.click();
-                    // goToCartBody.removeClass('d-none');
-
                     handleBasket(data);
                 },
                 function () {
@@ -207,7 +200,6 @@ export default {
                             artButton.data("slug"), // product slug
                             productCount,
                             function (data) {
-                                // goToCartBody.removeClass('d-none');
                                 handleBasket(data);
                             },
                             function () {

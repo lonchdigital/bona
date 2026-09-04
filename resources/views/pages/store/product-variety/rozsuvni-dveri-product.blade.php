@@ -249,33 +249,6 @@
         </div> <!--/info-->
     </section>
 
-    <!-- Popup Added Product -->
-    <a href="" class="btn btn-main art-header-coll-button d-none" id="product-added-to-cart-button" data-fancybox data-src="#product-added-to-cart"></a>
-    <div id="product-added-to-cart" class="art-popup-window">
-        <div class="art-measurer-form-wrapper">
-            <div class="container">
-
-                <header class="art-light">
-                    <div class="text-center">
-                        <h2 class="title h2">{{ trans('base.product_add_to_cart_success') }}</h2>
-                        <div class="art-popup-content font-two">
-                            <div class="art-buttons-line">
-                                <div>
-                                    <a href="#" data-fancybox-close class="btn btn-empty is-close-btn" title="Close">{{ trans('base.continue_shopping') }}</a>
-                                </div>
-                                <div>
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-main">{{ trans('base.go_to_cart') }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-            </div>
-        </div>
-    </div>
-    <!-- /Popup Added Product -->
-
     <x-precise-form-component />
 
     @if(count($sameTypeProducts))
