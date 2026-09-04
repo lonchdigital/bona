@@ -69,6 +69,14 @@
     .bona-product-page.product-page .sec-head--split { align-items: flex-end; gap: 24px; }
 }
 
+/* The legacy theme gives every <section> large vertical padding.  The static
+   product reference owns spacing per component, so neutralise that inherited
+   rule before loading the reference stylesheet below.  :where() keeps the
+   reset weak enough for intentional section paddings in product.css to win. */
+.product-body .bona-product-page :where(section) {
+    padding: 0;
+}
+
 .product-body {
     @include meta.load-css('../../../bona-html/css/product');
 }
@@ -132,7 +140,9 @@ body.product-body {
         width: auto;
         height: auto;
 
-        svg { display: block; width: 18px; height: 18px; }
+        svg { width: 18px; height: 18px; }
+        .art-heart-outline { display: block; }
+        .art-heart-filled { display: none; }
 
         &.link-heart-active,
         &.is-active {
@@ -140,7 +150,7 @@ body.product-body {
             background: var(--ink);
             color: #fff;
 
-            .art-heart-empty { display: none; }
+            .art-heart-outline { display: none; }
             .art-heart-filled { display: block; }
         }
     }

@@ -28,6 +28,7 @@ class ProductGalleryTest extends TestCase
         $pageScript = file_get_contents(resource_path('js/store/pages/store.product.page.js'));
         $referenceScript = file_get_contents(resource_path('js/store/pages/store.product.page/product-reference.js'));
         $cartScript = file_get_contents(resource_path('js/store/common/cart.js'));
+        $referenceStyles = file_get_contents(resource_path('scss/storefront/_product-reference.scss'));
 
         $this->assertStringContainsString("import('./store.product.page/product-reference')", $pageScript);
         $this->assertStringNotContainsString("import('./store.product.page/swiper')", $pageScript);
@@ -37,5 +38,8 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("querySelector('.product-kit-selections')", $referenceScript);
         $this->assertStringContainsString("$(this).data('product-slug') || $(this).attr('id')", $cartScript);
         $this->assertStringContainsString("replace(/\\s+/g, '')", $cartScript);
+        $this->assertStringContainsString('.product-body .bona-product-page :where(section)', $referenceStyles);
+        $this->assertStringContainsString('.art-heart-filled { display: none; }', $referenceStyles);
+        $this->assertStringContainsString('.art-heart-outline { display: none; }', $referenceStyles);
     }
 }
