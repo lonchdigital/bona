@@ -174,7 +174,10 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('grid-template-columns: repeat(2, minmax(0, 1fr));', $catalogStyles);
         $this->assertStringContainsString('&__consultant-person > div { overflow: hidden; }', $catalogStyles);
         $this->assertStringContainsString('overflow-wrap: anywhere;', $catalogStyles);
-        $this->assertStringContainsString('height: clamp(190px, 42vw, 250px);', $catalogStyles);
+        $this->assertStringContainsString('height: clamp(238px, 52.5vw, 312px);', $catalogStyles);
+        $this->assertStringContainsString('width: 125%;', $catalogStyles);
+        $this->assertStringContainsString('object-position: center bottom;', $catalogStyles);
+        $this->assertStringContainsString('transform: translateX(-50%);', $catalogStyles);
         $this->assertStringContainsString('-webkit-line-clamp: 3;', $catalogStyles);
         $this->assertStringContainsString('.bona-product-card__price strong { font-size: 14px; }', $catalogStyles);
         $this->assertStringContainsString('.bona-product-card__open { width: 44px; height: 44px; }', $catalogStyles);

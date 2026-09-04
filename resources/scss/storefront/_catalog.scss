@@ -1063,11 +1063,23 @@
             }
 
             .bona-product-card__media {
-                height: clamp(190px, 42vw, 250px);
+                height: clamp(238px, 52.5vw, 312px);
                 border-radius: 10px;
             }
 
-            .bona-product-card__media img { padding: 2px; }
+            .bona-product-card__media img {
+                position: relative;
+                left: 50%;
+                width: 125%;
+                max-width: none;
+                padding: 2px;
+                object-position: center bottom;
+                transform: translateX(-50%);
+            }
+
+            .bona-product-card__media:hover img {
+                transform: translateX(-50%) scale(1.015);
+            }
 
             .bona-product-card__badges {
                 top: 8px;
