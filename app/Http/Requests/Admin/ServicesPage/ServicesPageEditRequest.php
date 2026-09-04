@@ -13,6 +13,17 @@ class ServicesPageEditRequest extends BaseRequest
             'sections.*.id' => [
                 'nullable',
             ],
+            'sections.*.slug' => [
+                'required',
+                'string',
+                'max:180',
+                'distinct',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+            ],
+            'sections.*.meta_tags' => [
+                'nullable',
+                'string',
+            ],
             'meta_title' => [
                 'nullable',
                 'array',
@@ -38,8 +49,9 @@ class ServicesPageEditRequest extends BaseRequest
                     'image',
                 ];
                 $rules['sections.'.$index.'.button_url'] = [
-                    'required',
+                    'nullable',
                     'string',
+                    $this->relativeOrHttpUrlRule(),
                 ];
             }
         }
@@ -65,14 +77,52 @@ class ServicesPageEditRequest extends BaseRequest
                 'nullable',
                 'string',
             ];
-            $rules['sections.*.button_text.'.$availableLanguage] = [
-                'required',
+            $rules['sections.*.intro.'.$availableLanguage] = [
+                'nullable',
                 'string',
             ];
+            $rules['sections.*.content.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['sections.*.button_text.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['sections.*.meta_title.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['sections.*.meta_description.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['sections.*.meta_keywords.'.$availableLanguage] = ['nullable', 'string'];
 
         }
 
         return $rules;
+    }
+
+    private function relativeOrHttpUrlRule(): \Closure
+    {
+        return static function (string $attribute, mixed $value, \Closure $fail): void {
+            if ($value === null || $value === '') {
+                return;
+            }
+
+            $url = trim((string) $value);
+
+            if (str_starts_with($url, '#')) {
+                return;
+            }
+
+            if (str_starts_with($url, '/')
+                && ! str_starts_with($url, '//')
+                && ! str_contains($url, '\\')) {
+                return;
+            }
+
+            if (filter_var($url, FILTER_VALIDATE_URL) && in_array(parse_url($url, PHP_URL_SCHEME), ['http', 'https'], true)) {
+                return;
+            }
+
+            $fail(trans('validation.url'));
+        };
     }
 
     public function attributes(): array

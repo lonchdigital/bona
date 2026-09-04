@@ -1,0 +1,248 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\DataClasses\BlogArticleBlockTypesDataClass;
+use App\Models\BlogArticle;
+use App\Models\BlogArticleBlock;
+use App\Models\ProductText;
+use App\Models\Role;
+use App\Models\ServicesPageSections;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Tests\Support\MakesShopData;
+use Tests\TestCase;
+
+class EditorialCommercePagesTest extends TestCase
+{
+    use MakesShopData;
+    use RefreshDatabase;
+
+    public function test_blog_archive_renders_without_a_saved_page_configuration(): void
+    {
+        $this->get(route('blog.main.page'))
+            ->assertOk()
+            ->assertSee('bona-blog-index', false)
+            ->assertSee('"@type":"Blog"', false)
+            ->assertSee('"@type":"BreadcrumbList"', false);
+    }
+
+    public function test_article_renders_managed_blocks_and_valid_faq_schema_in_both_languages(): void
+    {
+        $article = BlogArticle::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Як вибрати двері', 'ru' => 'Как выбрать двери'],
+            'preview_text' => ['uk' => 'Практична вступна порада.', 'ru' => 'Практический вводный совет.'],
+            'slug' => 'yak-vybraty-dveri',
+            'hero_image_path' => 'blog/test.webp',
+            'meta_title' => ['uk' => 'Як вибрати двері | Bona Doors', 'ru' => 'Как выбрать двери | Bona Doors'],
+            'meta_description' => ['uk' => 'Поради про вибір дверей.', 'ru' => 'Советы по выбору дверей.'],
+            'meta_keywords' => ['uk' => 'двері', 'ru' => 'двери'],
+        ]);
+
+        BlogArticleBlock::create([
+            'blog_article_id' => $article->id,
+            'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
+            'content' => [
+                'uk' => '<h2>Матеріал і конструкція</h2><p>Текст українською.</p>',
+                'ru' => '<h2>Материал и конструкция</h2><p>Текст на русском.</p>',
+            ],
+        ]);
+        BlogArticleBlock::create([
+            'blog_article_id' => $article->id,
+            'type_id' => BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS,
+            'content' => ['questions' => [[
+                'question' => ['uk' => 'Коли робити замір?', 'ru' => 'Когда делать замер?'],
+                'answer' => ['uk' => 'Після чистової підлоги.', 'ru' => 'После чистового пола.'],
+            ]]],
+        ]);
+
+        $this->get(route('blog.article.page', ['blogArticleSlug' => $article->slug]))
+            ->assertOk()
+            ->assertSee('bona-article-page', false)
+            ->assertSee('Матеріал і конструкція')
+            ->assertSee('"@type":"BlogPosting"', false)
+            ->assertSee('"@type":"FAQPage"', false)
+            ->assertSee('Коли робити замір?');
+
+        $this->get(route('localized.blog.article.page', ['lang' => 'ru', 'blogArticleSlug' => $article->slug]))
+            ->assertOk()
+            ->assertSee('Материал и конструкция')
+            ->assertSee('Когда делать замер?')
+            ->assertDontSee('Текст українською.');
+    }
+
+    public function test_service_detail_uses_managed_copy_and_hides_an_empty_content_section(): void
+    {
+        $filled = ServicesPageSections::create([
+            'slug' => 'montazh-dverei-test',
+            'title' => ['uk' => 'Монтаж дверей', 'ru' => 'Монтаж дверей'],
+            'description' => ['uk' => 'Акуратний монтаж.', 'ru' => 'Аккуратный монтаж.'],
+            'intro' => ['uk' => 'Працюємо чисто й точно.', 'ru' => 'Работаем чисто и точно.'],
+            'content' => ['uk' => '<h2>Що входить</h2><p>Монтаж і регулювання.</p>', 'ru' => '<h2>Что входит</h2><p>Монтаж и регулировка.</p>'],
+            'button_text' => ['uk' => 'Замовити', 'ru' => 'Заказать'],
+            'button_url' => '/contacts',
+            'section_image_path' => 'assets/images/services/installation.webp',
+            'meta_title' => ['uk' => 'Монтаж дверей | Bona Doors', 'ru' => 'Монтаж дверей | Bona Doors'],
+            'meta_description' => ['uk' => 'Монтаж дверей в Одесі.', 'ru' => 'Монтаж дверей в Одессе.'],
+            'sort_order' => 0,
+        ]);
+
+        $response = $this->get(route('store.service.page', ['serviceSlug' => $filled->slug]));
+        $response
+            ->assertOk()
+            ->assertSee('bona-service-detail', false)
+            ->assertSee('/assets/images/services/installation.webp', false)
+            ->assertSee('href="/contacts"', false)
+            ->assertSee('"@type":"Service"', false)
+            ->assertSee('Монтаж і регулювання.');
+
+        $empty = ServicesPageSections::create([
+            'slug' => 'porozhnia-posluha',
+            'title' => ['uk' => 'Порожня послуга', 'ru' => 'Пустая услуга'],
+            'description' => ['uk' => '', 'ru' => ''],
+            'intro' => ['uk' => '', 'ru' => ''],
+            'content' => ['uk' => '', 'ru' => ''],
+            'button_text' => ['uk' => 'Зв’язатися', 'ru' => 'Связаться'],
+            'section_image_path' => '',
+            'sort_order' => 1,
+        ]);
+
+        $this->get(route('store.service.page', ['serviceSlug' => $empty->slug]))
+            ->assertOk()
+            ->assertDontSee('bona-service-detail__content', false)
+            ->assertDontSee('bona-service-detail__hero-media', false);
+    }
+
+    public function test_admin_can_edit_every_service_page_field_and_unsafe_links_are_rejected(): void
+    {
+        $section = ServicesPageSections::create([
+            'slug' => 'stara-posluha',
+            'title' => ['uk' => 'Стара послуга', 'ru' => 'Старая услуга'],
+            'description' => ['uk' => 'Старий опис', 'ru' => 'Старое описание'],
+            'button_text' => ['uk' => 'Замовити', 'ru' => 'Заказать'],
+            'button_url' => '#dialog-call-measurer',
+            'section_image_path' => 'assets/images/services/consultation.webp',
+        ]);
+
+        $payload = [
+            'meta_title' => ['uk' => 'Послуги | Bona Doors', 'ru' => 'Услуги | Bona Doors'],
+            'meta_description' => ['uk' => 'Опис послуг', 'ru' => 'Описание услуг'],
+            'meta_keywords' => ['uk' => 'послуги', 'ru' => 'услуги'],
+            'sections' => [[
+                'id' => $section->id,
+                'slug' => 'konsultatsiia-test',
+                'title' => ['uk' => 'Консультація', 'ru' => 'Консультация'],
+                'description' => ['uk' => 'Новий опис.', 'ru' => 'Новое описание.'],
+                'intro' => ['uk' => 'Вступ українською.', 'ru' => 'Вступление на русском.'],
+                'content' => ['uk' => '<h2>Етапи</h2><p>Підбір рішення.</p>', 'ru' => '<h2>Этапы</h2><p>Подбор решения.</p>'],
+                'button_text' => ['uk' => 'Написати нам', 'ru' => 'Написать нам'],
+                'button_url' => '/contacts',
+                'meta_title' => ['uk' => 'Консультація | Bona Doors', 'ru' => 'Консультация | Bona Doors'],
+                'meta_description' => ['uk' => 'Консультація щодо дверей.', 'ru' => 'Консультация по дверям.'],
+                'meta_keywords' => ['uk' => 'консультація', 'ru' => 'консультация'],
+                'meta_tags' => '',
+            ]],
+        ];
+
+        $this->actingAs($this->admin())
+            ->from(route('admin.services.edit.page'))
+            ->post(route('admin.services.edit'), $payload)
+            ->assertOk()
+            ->assertJsonPath('data.success', true);
+
+        $section->refresh();
+        $this->assertSame('konsultatsiia-test', $section->slug);
+        $this->assertSame('Консультация', $section->getTranslation('title', 'ru'));
+        $this->assertSame('Вступ українською.', $section->getTranslation('intro', 'uk'));
+        $this->assertSame('/contacts', $section->button_url);
+
+        data_set($payload, 'sections.0.button_url', '//malicious.example');
+
+        $this->actingAs($this->admin())
+            ->from(route('admin.services.edit.page'))
+            ->post(route('admin.services.edit'), $payload)
+            ->assertRedirect(route('admin.services.edit.page'))
+            ->assertSessionHasErrors('sections.0.button_url');
+    }
+
+    public function test_product_page_keeps_commerce_hooks_schema_and_only_filled_flexible_blocks(): void
+    {
+        $this->seedCurrency();
+
+        $product = $this->makeProduct([
+            'slug' => 'editorial-test-door',
+            'sku' => 'BD-SEO-01',
+            'main_image_path' => 'products/test-main.webp',
+            'preview_image_path' => 'products/test-preview.webp',
+            'meta_title' => ['uk' => 'Тестові двері | Bona Doors', 'ru' => 'Тестовая дверь | Bona Doors'],
+            'meta_description' => ['uk' => 'Опис тестових дверей.', 'ru' => 'Описание тестовой двери.'],
+            'meta_keywords' => ['uk' => 'двері', 'ru' => 'двери'],
+            'content_blocks' => [
+                [
+                    'id' => 'filled-block',
+                    'type' => 'text',
+                    'eyebrow' => ['uk' => 'Деталі', 'ru' => 'Детали'],
+                    'title' => ['uk' => 'Продумана конструкція', 'ru' => 'Продуманная конструкция'],
+                    'content' => ['uk' => '<p>Заповнений блок товару.</p>', 'ru' => '<p>Заполненный блок товара.</p>'],
+                ],
+                [
+                    'id' => 'empty-block',
+                    'type' => 'text',
+                    'title' => ['uk' => '', 'ru' => ''],
+                    'content' => ['uk' => '', 'ru' => ''],
+                ],
+            ],
+        ]);
+
+        ProductText::create([
+            'product_id' => $product->id,
+            'language' => 'uk',
+            'short_content' => '<p>Короткий опис.</p>',
+            'content' => '<h2>Про модель</h2><p>Повний опис.</p>',
+        ]);
+
+        $response = $this->get(route('store.product.page', ['productSlug' => $product->slug]));
+        $response
+            ->assertOk()
+            ->assertSee('bona-product-page', false)
+            ->assertSee('single-product-add-to-cart', false)
+            ->assertSee('single-product-wish-list', false)
+            ->assertSee('data-product-compare', false)
+            ->assertSee('"@type":"Product"', false)
+            ->assertSee('"sku":"BD-SEO-01"', false)
+            ->assertSee('Продумана конструкція')
+            ->assertSee('Заповнений блок товару.')
+            ->assertDontSee('empty-block')
+            ->assertDontSee('"@type":"FAQPage"', false);
+
+        $this->assertSame(1, substr_count($response->getContent(), 'bona-product-editorial--text'));
+    }
+
+    public function test_new_editorial_pages_define_mobile_breakpoints_and_admin_block_ordering(): void
+    {
+        $styles = file_get_contents(resource_path('scss/storefront/_editorial-commerce.scss'));
+        $productEditor = file_get_contents(resource_path('js/admin/forms/ProductPageEditForm.vue'));
+        $articleEditor = file_get_contents(resource_path('js/admin/containers/BlogArticleBlocksContainer.vue'));
+
+        $this->assertStringContainsString('@media (max-width: 900px)', $styles);
+        $this->assertStringContainsString('@media (max-width: 640px)', $styles);
+        $this->assertStringContainsString('ProductContentBlockComponent', $productEditor);
+        $this->assertStringContainsString('moveBlock', $articleEditor);
+    }
+
+    private function admin(): User
+    {
+        DB::table('roles')->insertOrIgnore([
+            'id' => Role::ADMIN_ROLE_ID,
+            'role' => 'Admin',
+            'role_slug' => 'admin',
+        ]);
+
+        $admin = User::factory()->create();
+        $admin->update(['role_id' => Role::ADMIN_ROLE_ID]);
+
+        return $admin;
+    }
+}

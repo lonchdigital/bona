@@ -25,7 +25,7 @@ class BlogArticle extends Model implements Sitemapable
 
     public function blocks()
     {
-        return $this->hasMany(BlogArticleBlock::class);
+        return $this->hasMany(BlogArticleBlock::class)->orderBy('id');
     }
 
     public function heroImageUrl(): Attribute

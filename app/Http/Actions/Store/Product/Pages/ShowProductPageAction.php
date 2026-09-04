@@ -78,6 +78,9 @@ class ShowProductPageAction extends BaseAction
             'characteristics' => $productService->getProductCharacteristics($product->id),
             'productGallery' => $productService->getProductGallery($product->id),
             'productVideos' => $productService->getProductVideos($product->id),
+            'productFaqs' => $productService->getProductFaqs($product->id),
+            'productSeoData' => $productService->getProductSeoText($product->id),
+            'productContentBlocks' => $product->content_blocks ?? [],
 
             'cart' => $cart,
             'cartService' => $cartService,

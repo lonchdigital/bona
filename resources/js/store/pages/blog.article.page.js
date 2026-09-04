@@ -1,12 +1,15 @@
-export default async function () {
-    const [
-        Swiper,
-        Plyr
-    ] = await Promise.all([
-        import('./blog.article.page/swiper'),
-        import('./blog.article.page/plyr'),
-    ]);
+export default function initBlogArticlePage() {
+    document.querySelectorAll('.js-article-share-copy').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const originalLabel = button.textContent;
 
-    Swiper.init();
-    Plyr.init();
+            try {
+                await navigator.clipboard.writeText(button.dataset.url || window.location.href);
+                button.textContent = button.dataset.copiedText || originalLabel;
+                window.setTimeout(() => { button.textContent = originalLabel; }, 1800);
+            } catch (error) {
+                window.prompt('', button.dataset.url || window.location.href);
+            }
+        });
+    });
 }

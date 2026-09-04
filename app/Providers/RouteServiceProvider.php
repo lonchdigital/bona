@@ -12,6 +12,7 @@ use App\Models\Collection;
 use App\Models\FilterGroup;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Models\ServicesPageSections;
 use App\Models\WishList;
 use App\Models\Work;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -60,6 +61,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::bind('productTypeSlug', fn (string $slug) => ProductType::where('slug', $slug)->firstOrFail());
         Route::bind('productSlug', fn (string $slug) => Product::where('slug', $slug)->firstOrFail());
+        Route::bind('serviceSlug', fn (string $slug) => ServicesPageSections::where('slug', $slug)->firstOrFail());
         Route::bind('wishListAccessToken', fn (string $token) => WishList::where('access_token', $token)->firstOrFail());
         Route::bind('categorySlug', fn (string $slug) => Category::where('slug', $slug)->firstOrFail());
         Route::bind('brandSlug', fn (string $slug) => Brand::where('slug', $slug)->firstOrFail());

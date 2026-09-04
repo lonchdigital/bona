@@ -11,6 +11,7 @@ use App\Models\HomePageConfig;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\ServicesConfig;
+use App\Models\ServicesPageSections;
 use App\Models\StaticPage;
 use App\Models\Work;
 use App\Services\Base\BaseService;
@@ -78,6 +79,12 @@ class SitemapService extends BaseService
         if ($servicesConfig = ServicesConfig::first()) {
             foreach ($servicesConfig->toSitemapTag() as $langUrl) {
                 $urls->push($this->withLastModified(Url::create($langUrl), $servicesConfig->updated_at));
+            }
+        }
+
+        foreach (ServicesPageSections::query()->whereNotNull('slug')->get() as $service) {
+            foreach ($service->toSitemapTag() as $langUrl) {
+                $urls->push($this->withLastModified(Url::create($langUrl), $service->updated_at));
             }
         }
 

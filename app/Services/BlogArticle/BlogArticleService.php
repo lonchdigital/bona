@@ -56,18 +56,31 @@ class BlogArticleService extends BaseService
      */
     public function extractFaq(BlogArticle $article, string $locale): array
     {
-        $textBlock = $article->blocks
-            ->firstWhere('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT);
+        $faq = [];
 
-        if (! $textBlock) {
-            return [];
+        foreach ($article->blocks->where('type_id', BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS) as $qaBlock) {
+            foreach (($qaBlock->content['questions'] ?? []) as $entry) {
+                $question = trim(strip_tags((string) ($entry['question'][$locale] ?? '')));
+                $answer = trim((string) ($entry['answer'][$locale] ?? ''));
+
+                if ($question !== '' && trim(strip_tags($answer)) !== '') {
+                    $faq[] = ['question' => $question, 'answer' => $answer];
+                }
+            }
         }
 
-        $content = $textBlock->content;
-        $html = is_array($content) ? ($content[$locale] ?? '') : '';
+        if (! class_exists(\DOMDocument::class)) {
+            return $faq;
+        }
 
-        if (! is_string($html) || ! str_contains($html, 'accordion-item-wrapper') || ! class_exists(\DOMDocument::class)) {
-            return [];
+        $html = $article->blocks
+            ->where('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT)
+            ->map(fn (BlogArticleBlock $block) => (string) ($block->content[$locale] ?? ''))
+            ->filter(fn (string $content) => str_contains($content, 'accordion-item-wrapper'))
+            ->implode('');
+
+        if ($html === '') {
+            return $faq;
         }
 
         $document = new \DOMDocument('1.0', 'UTF-8');
@@ -86,8 +99,6 @@ class BlogArticleService extends BaseService
         }
 
         $xpath = new \DOMXPath($document);
-        $faq = [];
-
         $wrappers = $xpath->query(
             '//div[contains(concat(" ", normalize-space(@class), " "), " accordion-item-wrapper ")]'
         );
@@ -119,7 +130,10 @@ class BlogArticleService extends BaseService
             ];
         }
 
-        return $faq;
+        return collect($faq)
+            ->unique(fn (array $entry) => mb_strtolower($entry['question']))
+            ->values()
+            ->all();
     }
 
     public function createBlogArticle(EditBlogArticleDTO $request, User $creator): ServiceActionResult

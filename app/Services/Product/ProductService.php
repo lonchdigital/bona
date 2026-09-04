@@ -26,11 +26,14 @@ use App\Services\Product\DTO\SearchProductDTO;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class ProductService extends BaseService
 {
+    private const PRODUCT_CONTENT_IMAGES_FOLDER = 'product-content-images';
+
     public function __construct(
         private readonly ProductFiltersAdminService $filtersAdminService,
         private readonly ProductFiltersService $filterService,
@@ -390,17 +393,14 @@ class ProductService extends BaseService
 
     public function getProductTextByLanguage(int $id, string $language)
     {
-        $productTextData = ProductText::where('product_id', $id)->get();
-        $data = [];
+        $productText = ProductText::where('product_id', $id)
+            ->where('language', $language)
+            ->first();
 
-        if ($productTextData) {
-            $data['short_content'] = $productTextData->where('language', $language)->first()->short_content;
-            $data['content'] = $productTextData->where('language', $language)->first()->content;
-
-            return $data;
-        }
-
-        return null;
+        return [
+            'short_content' => $productText?->short_content,
+            'content' => $productText?->content,
+        ];
     }
 
     public function searchParentProducts(FilterProductAdminDTO $request): Collection
@@ -459,6 +459,7 @@ class ProductService extends BaseService
     public function createProduct(User $creator, ProductType $productType, EditProductDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use ($productType, $request, $creator) {
+            [$contentBlocks] = $this->prepareContentBlocks($request->contentBlocks);
             $productData = [
                 'is_active' => 0,
                 'creator_id' => $creator->id,
@@ -481,6 +482,7 @@ class ProductService extends BaseService
                 'width' => $request->width,
                 'height' => $request->height,
                 'special_offers' => $request->specialOfferIds,
+                'content_blocks' => $contentBlocks ?: null,
             ];
 
             if ($productType->has_color) {
@@ -553,6 +555,10 @@ class ProductService extends BaseService
     public function productEdit(ProductType $productType, Product $product, EditProductDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use ($productType, $product, $request) {
+            [$contentBlocks, $contentImagesToDelete] = $this->prepareContentBlocks(
+                $request->contentBlocks,
+                $product->content_blocks ?? [],
+            );
             $this->mediaService->syncGallery($product->id, $request->gallery, $request->galleryColorIds);
             $this->relationsService->syncCharacteristics($product->id, $request->characteristics);
             $this->relationsService->syncVideos($product->id, $request->videos);
@@ -584,6 +590,7 @@ class ProductService extends BaseService
                 'width' => $request->width,
                 'height' => $request->height,
                 'special_offers' => $request->specialOfferIds,
+                'content_blocks' => $contentBlocks ?: null,
             ];
 
             if ($productType->has_color) {
@@ -657,8 +664,61 @@ class ProductService extends BaseService
                 }
             }
 
+            foreach ($contentImagesToDelete as $imageToDelete) {
+                $this->deleteImage($imageToDelete);
+            }
+
             return ServiceActionResult::make(true, trans('admin.product_edit_success'));
         });
+    }
+
+    /**
+     * Normalise flexible product content and keep media lifecycle predictable.
+     * Empty blocks may remain in the editor, but the storefront deliberately
+     * ignores them until a translated title/body/item is actually filled.
+     *
+     * @return array{0: array<int, array<string, mixed>>, 1: array<int, string>}
+     */
+    private function prepareContentBlocks(?array $blocks, array $existingBlocks = []): array
+    {
+        $existingById = collect($existingBlocks)->keyBy('id');
+        $prepared = [];
+        $keptImages = [];
+
+        foreach ($blocks ?? [] as $block) {
+            $id = (string) ($block['id'] ?? Str::uuid());
+            $existing = $existingById->get($id, []);
+            $normalised = Arr::only($block, [
+                'type',
+                'eyebrow',
+                'title',
+                'content',
+                'quote',
+                'author',
+                'button_label',
+                'button_url',
+                'image_position',
+                'items',
+            ]);
+            $normalised['id'] = $id;
+
+            if (($block['image'] ?? null) instanceof UploadedFile) {
+                $imageBasePath = self::PRODUCT_CONTENT_IMAGES_FOLDER.'/'.sha1((string) microtime(true)).'_'.Str::random(10);
+                $this->storeImage($imageBasePath, $block['image'], 'webp');
+                $this->storeImage($imageBasePath, $block['image'], 'jpg');
+                $normalised['image_path'] = $imageBasePath.'.webp';
+                $keptImages[] = $normalised['image_path'];
+            } elseif (empty($block['image_deleted']) && ! empty($existing['image_path'])) {
+                $normalised['image_path'] = $existing['image_path'];
+                $keptImages[] = $existing['image_path'];
+            }
+
+            $prepared[] = $normalised;
+        }
+
+        $existingImages = collect($existingBlocks)->pluck('image_path')->filter()->all();
+
+        return [$prepared, array_values(array_diff($existingImages, $keptImages))];
     }
 
     public function getProductCharacteristics(int $id): Collection

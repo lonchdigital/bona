@@ -80,6 +80,7 @@ use App\Http\Actions\Store\ProductReview\SubmitProductReviewAction;
 use App\Http\Actions\Store\Seo\ShowLlmsTxtFileContent;
 use App\Http\Actions\Store\Seo\ShowRobotsTxtFileContent;
 use App\Http\Actions\Store\Seo\ShowSitemapXml;
+use App\Http\Actions\Store\ServicesPage\Pages\ShowServicePageAction;
 use App\Http\Actions\Store\ServicesPage\Pages\ShowServicesPageAction;
 use App\Http\Actions\Store\StaticPage\Pages\ShowStaticPagePageAction;
 use App\Http\Actions\Store\WishList\GetWishListProductSlugsAction;
@@ -187,6 +188,7 @@ $optionalLanguageRoutes = function () {
     Route::name('store.comparison.page')->get('/compare', ShowComparisonPageAction::class);
 
     Route::name('store.services')->get('/services', ShowServicesPageAction::class);
+    Route::name('store.service.page')->get('/services/{serviceSlug}', ShowServicePageAction::class);
     Route::name('store.delivery-info')->get('/delivery-info', ShowDeliveryPageAction::class);
     Route::name('store.about-us')->get('/about-us', ShowAboutUsPageAction::class);
     Route::name('store.contacts')->get('/contacts', ShowContactsPageAction::class);

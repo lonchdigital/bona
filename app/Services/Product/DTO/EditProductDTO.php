@@ -45,5 +45,6 @@ class EditProductDTO implements BaseDTO
         public readonly ?array $faqs,
         public readonly ?array $seoTitle,
         public readonly ?array $seoText,
+        public readonly ?array $contentBlocks,
     ) {}
 }

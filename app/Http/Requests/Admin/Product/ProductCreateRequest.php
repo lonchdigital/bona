@@ -123,6 +123,14 @@ class ProductCreateRequest extends BaseRequest
                 $this->productType->has_height ? 'required' : 'nullable',
                 'numeric',
             ],
+            'content_blocks' => ['nullable', 'array', 'max:20'],
+            'content_blocks.*.id' => ['required', 'string', 'max:80', 'distinct'],
+            'content_blocks.*.type' => ['required', Rule::in(['text', 'image_text', 'features', 'quote'])],
+            'content_blocks.*.image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:8192'],
+            'content_blocks.*.image_deleted' => ['nullable', 'boolean'],
+            'content_blocks.*.image_position' => ['nullable', Rule::in(['left', 'right'])],
+            'content_blocks.*.button_url' => ['nullable', 'string', 'max:500', $this->relativeOrHttpUrlRule()],
+            'content_blocks.*.items' => ['nullable', 'array', 'max:12'],
         ];
 
         if ($this->input('gallery')) {
@@ -277,6 +285,12 @@ class ProductCreateRequest extends BaseRequest
                 'nullable',
                 'string',
             ];
+
+            foreach (['eyebrow', 'title', 'content', 'quote', 'author', 'button_label'] as $field) {
+                $rules['content_blocks.*.'.$field.'.'.$availableLanguage] = ['nullable', 'string'];
+            }
+            $rules['content_blocks.*.items.*.title.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['content_blocks.*.items.*.text.'.$availableLanguage] = ['nullable', 'string'];
         }
 
         return $rules;
@@ -377,6 +391,31 @@ class ProductCreateRequest extends BaseRequest
             $this->validated('faqs'),
             $this->input('seo_title'),
             $this->input('seo_text'),
+            $this->validated('content_blocks'),
         );
+    }
+
+    private function relativeOrHttpUrlRule(): \Closure
+    {
+        return function (string $attribute, mixed $value, \Closure $fail): void {
+            $value = trim((string) $value);
+
+            if ($value === '' || str_starts_with($value, '#')) {
+                return;
+            }
+
+            if (str_starts_with($value, '/')
+                && ! str_starts_with($value, '//')
+                && ! str_contains($value, '\\')) {
+                return;
+            }
+
+            if (filter_var($value, FILTER_VALIDATE_URL)
+                && in_array(parse_url($value, PHP_URL_SCHEME), ['http', 'https'], true)) {
+                return;
+            }
+
+            $fail(trans('validation.url', ['attribute' => $attribute]));
+        };
     }
 }

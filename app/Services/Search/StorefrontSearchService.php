@@ -56,6 +56,8 @@ class StorefrontSearchService
                     $this->whereTranslatedLike($descriptionQuery, 'description', $query);
                 });
             })
+            ->orderBy('sort_order')
+            ->orderBy('id')
             ->limit(2)
             ->get()
             ->map(function (ServicesPageSections $section) {
@@ -68,7 +70,9 @@ class StorefrontSearchService
                     'id' => $section->id,
                     'title' => $section->title,
                     'description' => $description,
-                    'link' => MultiLangRoute::getMultiLangRoute('store.services').'#service-'.$section->id,
+                    'link' => $section->slug
+                        ? MultiLangRoute::getMultiLangRoute('store.service.page', ['serviceSlug' => $section->slug])
+                        : MultiLangRoute::getMultiLangRoute('store.services').'#service-'.$section->id,
                 ];
             });
     }

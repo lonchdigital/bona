@@ -23,6 +23,7 @@ class StorefrontSearchTest extends TestCase
 
         foreach (range(1, 3) as $number) {
             ServicesPageSections::create([
+                'slug' => 'test-posluha-'.$number,
                 'title' => ['uk' => 'Тест послуга '.$number, 'ru' => 'Тест услуга '.$number],
                 'description' => ['uk' => 'Опис послуги', 'ru' => 'Описание услуги'],
                 'button_text' => ['uk' => 'Замовити', 'ru' => 'Заказать'],
@@ -37,7 +38,7 @@ class StorefrontSearchTest extends TestCase
             ->assertOk()
             ->assertJsonCount(3, 'data.products')
             ->assertJsonCount(2, 'data.services')
-            ->assertJsonPath('data.services.0.link', '/services#service-1');
+            ->assertJsonPath('data.services.0.link', '/services/test-posluha-1');
     }
 
     public function test_it_searches_the_same_legacy_products_that_the_catalog_displays(): void

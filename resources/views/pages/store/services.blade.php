@@ -103,7 +103,11 @@
                                 @endif
                                 <div class="bona-service-row__copy">
                                     <span class="bona-service-row__number">{{ trans('base.content_service_number', ['number' => str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT)]) }}</span>
-                                    <h2>{{ $section->title }}</h2>
+                                    <h2>
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.service.page', ['serviceSlug' => $section->slug]) }}">
+                                            {{ $section->title }}
+                                        </a>
+                                    </h2>
                                     @if(filled(strip_tags((string) $section->description)))
                                         <div class="bona-content-richtext">{!! $section->description !!}</div>
                                     @endif
@@ -111,10 +115,10 @@
                                         <div class="bona-content-inline-action">
                                             <a
                                                 class="bona-button bona-button--dark"
-                                                href="#dialog-call-measurer"
-                                                data-lead-modal-open="dialog-call-measurer"
+                                                href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.service.page', ['serviceSlug' => $section->slug]) }}"
                                             >
                                                 {{ $section->button_text }}
+                                                <span aria-hidden="true">→</span>
                                             </a>
                                         </div>
                                     @endif

@@ -1,0 +1,844 @@
+/* Blog, article, service and product detail pages share one restrained editorial system. */
+
+.bona-blog-index,
+.bona-article-page,
+.bona-product-page,
+.bona-service-detail {
+    h1,
+    h2,
+    h3 { text-transform: none; }
+}
+
+/* Blog archive */
+.bona-blog-index__hero {
+    padding-block: 70px 86px !important;
+    border-bottom: 1px solid var(--bona-line);
+
+    &-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, .55fr);
+        align-items: end;
+        gap: 80px;
+
+        h1 {
+            margin: 0;
+            color: var(--bona-ink);
+            font: 400 clamp(62px, 7vw, 104px)/.92 var(--bona-display);
+            letter-spacing: -.03em;
+        }
+
+        > p {
+            max-width: 590px;
+            margin: 0 0 8px;
+            color: var(--bona-muted);
+            font-size: 17px;
+            line-height: 1.75;
+        }
+    }
+}
+
+.bona-blog-index__featured { padding-block: 104px !important; }
+
+.bona-blog-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(340px, .72fr);
+    align-items: stretch;
+    gap: 0;
+
+    &__media {
+        min-height: 610px;
+        overflow: hidden;
+        border-radius: 24px 0 0 24px;
+        background: var(--bona-paper);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+        }
+
+        &:hover img,
+        &:focus-visible img { transform: scale(1.02); }
+    }
+
+    &__copy {
+        display: flex;
+        min-width: 0;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 68px 64px;
+        flex-direction: column;
+        border-radius: 0 24px 24px 0;
+        background: var(--bona-dark);
+        color: var(--bona-cream);
+
+        time {
+            margin-bottom: 24px;
+            color: rgba(247, 244, 238, .54);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin: 0;
+            color: var(--bona-cream);
+            font: 400 clamp(40px, 4vw, 58px)/1.06 var(--bona-display);
+            letter-spacing: -.015em;
+
+            a { color: inherit; }
+        }
+
+        > p:not(.bona-content-kicker) {
+            display: -webkit-box;
+            margin: 24px 0 34px;
+            overflow: hidden;
+            color: rgba(247, 244, 238, .7);
+            font-size: 15px;
+            line-height: 1.75;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 5;
+        }
+    }
+}
+
+.bona-blog-index__archive {
+    padding-block: 104px !important;
+    border-top: 1px solid var(--bona-line);
+}
+
+.bona-blog-index__empty {
+    padding: 80px 0;
+    color: var(--bona-muted);
+    font-size: 16px;
+}
+
+.bona-editorial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 62px 28px;
+}
+
+.bona-editorial-card {
+    min-width: 0;
+
+    &__media {
+        position: relative;
+        display: block;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        border-radius: 20px;
+        background: var(--bona-paper);
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+        }
+
+        time {
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            padding: 9px 12px;
+            border-radius: 999px;
+            background: rgba(252, 251, 248, .94);
+            color: var(--bona-ink);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            backdrop-filter: blur(8px);
+        }
+
+        &:hover img,
+        &:focus-visible img { transform: scale(1.025); }
+    }
+
+    &__body { padding: 23px 4px 0; }
+
+    h2 {
+        margin: 0;
+        color: var(--bona-ink);
+        font: 400 31px/1.16 var(--bona-display);
+        letter-spacing: -.01em;
+
+        a {
+            color: inherit;
+            &:hover,
+            &:focus-visible { color: var(--bona-gold-text); }
+        }
+    }
+
+    p {
+        display: -webkit-box;
+        margin: 15px 0 0;
+        overflow: hidden;
+        color: var(--bona-muted);
+        font-size: 13px;
+        line-height: 1.7;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
+
+    &__link {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: 19px;
+        color: var(--bona-ink);
+        font-size: 12px;
+        font-weight: 800;
+
+        span { transition: transform .2s ease; }
+        &:hover span,
+        &:focus-visible span { transform: translateX(4px); }
+    }
+}
+
+/* Article */
+.bona-article-hero {
+    padding-block: 62px 0 !important;
+
+    &__copy {
+        max-width: 1120px;
+        text-align: center;
+
+        h1 {
+            max-width: 1050px;
+            margin: 0 auto;
+            color: var(--bona-ink);
+            font: 400 clamp(52px, 6.1vw, 88px)/.98 var(--bona-display);
+            letter-spacing: -.025em;
+        }
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 28px;
+        color: var(--bona-gold-text);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+
+        > * + *::before { content: '·'; margin-right: 24px; }
+    }
+
+    &__lead {
+        max-width: 760px;
+        margin: 30px auto 0;
+        color: var(--bona-muted);
+        font-size: 18px;
+        line-height: 1.75;
+    }
+
+    &__media {
+        aspect-ratio: 16 / 8.4;
+        margin-top: 64px;
+        overflow: hidden;
+        border-radius: 24px;
+        background: var(--bona-paper);
+
+        img { width: 100%; height: 100%; object-fit: cover; }
+    }
+}
+
+.bona-article-layout {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 820px) minmax(0, 1fr);
+    gap: 56px;
+    padding-block: 104px;
+}
+
+.bona-article-share {
+    position: sticky;
+    top: 120px;
+    display: flex;
+    height: max-content;
+    align-items: flex-start;
+    gap: 13px;
+    flex-direction: column;
+
+    > span {
+        margin-bottom: 7px;
+        color: var(--bona-gold-text);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+
+    a,
+    button {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--bona-muted);
+        cursor: pointer;
+        font: 600 12px/1.4 var(--bona-ui);
+        text-align: left;
+
+        &:hover,
+        &:focus-visible { color: var(--bona-ink); }
+    }
+}
+
+.bona-article-content { grid-column: 2; min-width: 0; }
+
+.bona-article-block {
+    margin: 0 0 58px;
+    &:last-child { margin-bottom: 0; }
+}
+
+.bona-article-block--text {
+    color: #514c43;
+    font-size: 17px;
+    line-height: 1.88;
+
+    h2 { margin-top: 58px; font-size: 45px; }
+    h3 { margin-top: 46px; font-size: 34px; }
+    img { max-width: 100%; height: auto; border-radius: 16px; }
+}
+
+.bona-article-images {
+    display: grid;
+    gap: 20px;
+
+    &--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    figure {
+        position: relative;
+        margin: 0;
+        overflow: hidden;
+        border-radius: 18px;
+        background: var(--bona-paper);
+    }
+
+    img { display: block; width: 100%; height: auto; }
+
+    figcaption {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        padding: 9px 13px;
+        border-radius: 999px;
+        background: rgba(252, 251, 248, .94);
+        font-size: 11px;
+        font-weight: 700;
+    }
+}
+
+.bona-article-quote {
+    padding: 52px 56px;
+    border-radius: 20px;
+    background: var(--bona-dark);
+    color: var(--bona-cream);
+
+    > img { width: 64px; height: 64px; margin-bottom: 30px; border-radius: 50%; object-fit: cover; }
+    blockquote { margin: 0; color: var(--bona-cream); font: 400 clamp(31px, 3.1vw, 44px)/1.24 var(--bona-display); }
+    blockquote p { margin: 0; }
+    figcaption { display: flex; gap: 5px; margin-top: 28px; flex-direction: column; }
+    figcaption strong { color: var(--bona-gold-light); font-size: 12px; }
+    figcaption span { color: rgba(247, 244, 238, .55); font-size: 11px; }
+}
+
+.bona-article-sponsor {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 26px;
+    padding: 28px;
+    border: 1px solid var(--bona-line);
+    border-radius: 18px;
+
+    img { width: 92px; height: 72px; border-radius: 10px; object-fit: contain; }
+    p { margin: 0; color: var(--bona-muted); font-size: 13px; line-height: 1.65; }
+    a { color: var(--bona-ink); font-size: 12px; font-weight: 800; white-space: nowrap; }
+}
+
+.bona-article-video,
+.bona-product-video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #17140f;
+
+    iframe,
+    video { position: absolute; inset: 0; width: 100% !important; height: 100% !important; border: 0; }
+}
+
+.bona-article-slider {
+    display: grid;
+    grid-auto-columns: minmax(72%, 1fr);
+    grid-auto-flow: column;
+    gap: 18px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    scrollbar-width: thin;
+
+    figure { aspect-ratio: 1; margin: 0; overflow: hidden; border-radius: 18px; scroll-snap-align: start; }
+    img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.bona-article-faq,
+.bona-product-faq {
+    h2 { margin: 0 0 30px; color: var(--bona-ink); font: 400 46px/1.05 var(--bona-display); }
+
+    details { border-top: 1px solid var(--bona-line); }
+    details:last-child { border-bottom: 1px solid var(--bona-line); }
+    summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 22px 0;
+        color: var(--bona-ink);
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 650;
+        list-style: none;
+        &::-webkit-details-marker { display: none; }
+        p { margin: 0; }
+        span { font-size: 24px; font-weight: 300; transition: transform .2s ease; }
+    }
+    details[open] summary span { transform: rotate(45deg); }
+    details > .bona-content-richtext { padding: 0 50px 24px 0; }
+}
+
+.bona-article-author {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 80px;
+    padding-top: 34px;
+    border-top: 1px solid var(--bona-line);
+
+    img { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; }
+    div { display: flex; gap: 4px; flex-direction: column; }
+    span { color: var(--bona-gold-text); font-size: 9px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    strong { color: var(--bona-ink); font: 400 25px/1.2 var(--bona-display); }
+    p { margin: 0; color: var(--bona-muted); font-size: 12px; }
+}
+
+.bona-article-related {
+    padding-block: 104px !important;
+    border-top: 1px solid var(--bona-line);
+    background: var(--bona-paper);
+}
+
+/* Service detail */
+.bona-service-detail__hero {
+    padding-block: 62px 104px !important;
+
+    &-grid {
+        display: grid;
+        grid-template-columns: minmax(320px, .72fr) minmax(0, 1.28fr);
+        align-items: center;
+        gap: clamp(60px, 8vw, 130px);
+    }
+
+    &-copy {
+        h1 { margin: 0; color: var(--bona-ink); font: 400 clamp(52px, 5.8vw, 84px)/.98 var(--bona-display); letter-spacing: -.025em; }
+        .bona-button { margin-top: 34px; }
+    }
+
+    &-media {
+        aspect-ratio: 4 / 3;
+        margin: 0;
+        overflow: hidden;
+        border-radius: 24px;
+        background: var(--bona-paper);
+        img { width: 100%; height: 100%; object-fit: cover; }
+    }
+}
+
+.bona-service-detail__lead { margin-top: 28px; color: var(--bona-muted); font-size: 17px; line-height: 1.75; p { margin: 0; } }
+
+.bona-service-detail__content {
+    padding-block: 104px !important;
+    border-top: 1px solid var(--bona-line);
+
+    &-grid { display: grid; grid-template-columns: 240px minmax(0, 760px); gap: 84px; }
+}
+
+.bona-service-detail__aside {
+    span { display: block; color: var(--bona-gold-text); font: 400 50px/1 var(--bona-display); }
+    p { max-width: 150px; margin: 18px 0 0; color: var(--bona-muted); font-size: 11px; font-weight: 800; letter-spacing: .13em; line-height: 1.6; text-transform: uppercase; }
+}
+
+.bona-service-detail__richtext { font-size: 17px; }
+
+.bona-service-detail__cta { padding-block: 0 104px !important; }
+.bona-service-detail__cta-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 60px;
+    padding: 66px 70px;
+    border-radius: 24px;
+    background: var(--bona-dark);
+    h2 { max-width: 850px; margin: 0; color: var(--bona-cream); font: 400 clamp(40px, 4.5vw, 64px)/1.03 var(--bona-display); }
+}
+
+.bona-service-detail__related { padding-block: 104px !important; border-top: 1px solid var(--bona-line); }
+.bona-service-detail__related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.bona-service-mini-card {
+    &__media { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 18px; background: var(--bona-paper); img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; } &:hover img { transform: scale(1.025); } }
+    > div { padding: 20px 3px 0; }
+    h3 { margin: 0; color: var(--bona-ink); font: 400 30px/1.14 var(--bona-display); }
+    &__link { display: inline-flex; gap: 8px; margin-top: 15px; color: var(--bona-ink); font-size: 12px; font-weight: 800; }
+}
+
+/* Product detail */
+.bona-product-hero { padding-block: 42px 104px !important; }
+.bona-product-hero__grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(400px, .72fr); align-items: start; gap: clamp(52px, 6vw, 96px); }
+
+.bona-product-gallery {
+    min-width: 0;
+
+    .swiper-single-wallpaper-wrap { position: relative; display: block; }
+    .swiper-single-wallpaper {
+        position: relative;
+        height: min(690px, 68vw);
+        overflow: hidden;
+        border-radius: 24px;
+        background: #f2f0eb;
+    }
+    .swiper-slide { height: 100%; }
+    .swiper-slide > a { display: grid; width: 100%; height: 100%; place-items: center; padding: 38px; }
+    .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .swiper-button-next,
+    .swiper-button-prev {
+        display: grid;
+        width: 48px;
+        height: 48px;
+        place-items: center;
+        border: 1px solid rgba(35, 32, 27, .15);
+        border-radius: 50%;
+        background: rgba(252, 251, 248, .94);
+        color: var(--bona-ink);
+        &::after { font-size: 15px; font-weight: 700; }
+    }
+    .swiper-single-wallpaper-thumbs-wrap { display: flex; align-items: center; gap: 20px; margin-top: 18px; }
+    .swiper-single-wallpaper-thumbs-wrap > .swiper-pagination { position: static; width: auto; min-width: 25px; color: var(--bona-muted); font-size: 10px; }
+    .art-single-wallpaper-thumbs-wrapper { min-width: 0; flex: 1; }
+    .swiper-single-wallpaper-thumbs { overflow: hidden; }
+    .swiper-single-wallpaper-thumbs .swiper-slide { height: 92px; padding-right: 10px; cursor: pointer; opacity: .5; }
+    .swiper-single-wallpaper-thumbs .swiper-slide-thumb-active { opacity: 1; }
+    .art-swiper-slide { width: 100%; height: 100%; padding: 9px; overflow: hidden; border: 1px solid var(--bona-line); border-radius: 12px; background: #fff; }
+    .art-swiper-slide img { object-fit: contain; }
+    &__empty { display: grid; min-height: 580px; place-items: center; border-radius: 24px; background: var(--bona-paper); img { max-width: 60%; } }
+}
+
+.bona-product-buybox {
+    position: sticky;
+    top: 106px;
+    min-width: 0;
+    padding: 42px;
+    border: 1px solid var(--bona-line);
+    border-radius: 24px;
+    background: #fff;
+
+    &__topline { display: flex; min-height: 42px; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+    &__brand { display: inline-block; margin-bottom: 13px; color: var(--bona-gold-text); font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    h1 { margin: 0; color: var(--bona-ink); font: 400 clamp(40px, 3.4vw, 55px)/1.04 var(--bona-display); letter-spacing: -.018em; }
+    &__intro { margin-top: 22px; font-size: 14px; line-height: 1.7; }
+}
+
+.bona-product-status { color: var(--bona-gold-text); font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.bona-product-status--2 { color: #466951; }
+
+.bona-product-actions { display: flex; gap: 9px; }
+.bona-product-actions .link-heart,
+.bona-product-actions .bona-pdp-compare {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--bona-line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--bona-ink);
+    cursor: pointer;
+    svg { display: block; width: 20px; height: 20px; }
+    &:hover,
+    &:focus-visible,
+    &.is-active,
+    &.link-heart-active { border-color: var(--bona-gold); color: var(--bona-gold-text); }
+}
+
+.bona-product-meta {
+    margin: 30px 0 0;
+    padding: 18px 0;
+    border-top: 1px solid var(--bona-line);
+    border-bottom: 1px solid var(--bona-line);
+
+    > div { display: grid; grid-template-columns: minmax(100px, .48fr) minmax(0, 1fr); gap: 20px; padding: 7px 0; }
+    dt { color: var(--bona-muted); font-size: 11px; font-weight: 500; }
+    dd { margin: 0; color: var(--bona-ink); font-size: 12px; font-weight: 650; text-align: right; }
+}
+
+.bona-product-options { display: grid; gap: 20px; margin-top: 26px; }
+.bona-product-option {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    > span:first-child { color: var(--bona-ink); font-size: 11px; font-weight: 750; }
+    select { width: 100%; min-height: 48px; padding: 0 42px 0 15px; border: 1px solid var(--bona-line); border-radius: 10px; background: #fff; color: var(--bona-ink); font-size: 12px; }
+    &__picker { display: flex; width: 100%; align-items: center; justify-content: space-between; padding: 14px 0; border: 0; border-top: 1px solid var(--bona-line); border-bottom: 1px solid var(--bona-line); background: transparent; color: var(--bona-ink); cursor: pointer; font-size: 12px; font-weight: 700; }
+}
+
+.bona-product-colors { display: flex; flex-wrap: wrap; gap: 9px; }
+.bona-product-colors .color-btn { display: grid; width: 34px; height: 34px; place-items: center; overflow: hidden; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px var(--bona-line); cursor: pointer; transition: box-shadow .2s ease; }
+.bona-product-colors .color-btn img { width: 100%; height: 100%; object-fit: cover; }
+.bona-product-colors .color-btn.color-selected { box-shadow: 0 0 0 1px var(--bona-ink); }
+
+.added-sub-products { display: flex; flex-wrap: wrap; gap: 6px; }
+.added-sub-products .added-line { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 999px; background: var(--bona-paper); color: var(--bona-ink); cursor: pointer; font-size: 10px; }
+
+.bona-product-purchase { margin-top: 32px; padding-top: 27px; border-top: 1px solid var(--bona-line); }
+.bona-product-price {
+    margin-bottom: 24px;
+    > div { color: var(--bona-ink); font-size: 16px; font-weight: 650; }
+    #product-price { font: 400 42px/1 var(--bona-display); }
+    del { display: block; margin-top: 7px; color: var(--bona-muted); font-size: 12px; }
+    small { display: block; max-width: 360px; margin-top: 12px; color: var(--bona-muted); font-size: 9px; line-height: 1.5; }
+}
+.bona-product-purchase__controls { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 12px; }
+.bona-product-purchase .custom-control-number { display: grid; grid-template-columns: 32px minmax(0, 1fr) 32px; align-items: center; min-height: 50px; border: 1px solid var(--bona-line); border-radius: 999px; overflow: hidden; }
+.bona-product-purchase .custom-control-number input { min-width: 0; width: 100%; padding: 0; border: 0; background: transparent; color: var(--bona-ink); font-weight: 700; text-align: center; appearance: textfield; }
+.bona-product-purchase .counter { position: relative; display: block; width: 32px; height: 48px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.bona-product-purchase .counter::before,
+.bona-product-purchase .counter.plus::after { content: ''; position: absolute; top: 50%; left: 50%; width: 9px; height: 1px; background: var(--bona-ink); transform: translate(-50%, -50%); }
+.bona-product-purchase .counter.plus::after { transform: translate(-50%, -50%) rotate(90deg); }
+.bona-product-secondary-action { display: flex; width: 100%; align-items: center; justify-content: space-between; margin-top: 15px; padding: 14px 2px; border: 0; background: transparent; color: var(--bona-ink); cursor: pointer; font-size: 12px; font-weight: 750; }
+
+.bona-product-core { padding-block: 104px !important; border-top: 1px solid var(--bona-line); background: var(--bona-paper); }
+.bona-product-core__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(330px, .7fr); gap: clamp(70px, 9vw, 150px); }
+.bona-product-description .bona-content-richtext { max-width: 760px; font-size: 17px; }
+.bona-product-specs dl { margin: 0; border-top: 1px solid #d8d4cb; }
+.bona-product-specs dl > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 30px; padding: 15px 0; border-bottom: 1px solid #d8d4cb; }
+.bona-product-specs dt { color: var(--bona-muted); font-size: 12px; font-weight: 500; }
+.bona-product-specs dd { margin: 0; color: var(--bona-ink); font-size: 12px; font-weight: 700; text-align: right; }
+
+.bona-product-editorial { padding-block: 104px !important; border-top: 1px solid var(--bona-line); }
+.bona-product-editorial__text { max-width: 930px; }
+.bona-product-editorial h2 { max-width: 900px; margin: 0 0 28px; color: var(--bona-ink); font: 400 clamp(43px, 5vw, 70px)/1.02 var(--bona-display); letter-spacing: -.018em; }
+.bona-product-editorial__split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .8fr); align-items: center; gap: clamp(58px, 8vw, 130px); }
+.bona-product-editorial__split.is-reverse figure { order: 2; }
+.bona-product-editorial__split figure { aspect-ratio: 4 / 3; margin: 0; overflow: hidden; border-radius: 22px; background: var(--bona-paper); }
+.bona-product-editorial__split figure img { width: 100%; height: 100%; object-fit: cover; }
+.bona-product-editorial__split .bona-button { margin-top: 27px; }
+.bona-product-editorial--features { background: var(--bona-dark); color: var(--bona-cream); }
+.bona-product-editorial--features h2 { color: var(--bona-cream); }
+.bona-product-features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 54px; border-top: 1px solid rgba(247, 244, 238, .18); }
+.bona-product-features article { min-width: 0; padding: 32px 32px 20px 0; border-bottom: 1px solid rgba(247, 244, 238, .18); }
+.bona-product-features article:not(:nth-child(3n + 1)) { padding-left: 32px; border-left: 1px solid rgba(247, 244, 238, .18); }
+.bona-product-features span { color: var(--bona-gold-light); font-size: 10px; font-weight: 800; letter-spacing: .14em; }
+.bona-product-features h3 { margin: 25px 0 0; color: var(--bona-cream); font: 400 29px/1.15 var(--bona-display); }
+.bona-product-features p { margin: 12px 0 0; color: rgba(247, 244, 238, .65); font-size: 13px; line-height: 1.7; }
+.bona-product-editorial--quote blockquote { max-width: 1080px; margin: 0; color: var(--bona-ink); font: 400 clamp(40px, 5vw, 68px)/1.16 var(--bona-display); }
+.bona-product-editorial--quote blockquote p { margin: 0; }
+.bona-product-editorial--quote cite { display: block; margin-top: 28px; color: var(--bona-gold-text); font-size: 11px; font-style: normal; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+
+.bona-product-videos { padding-block: 104px !important; border-top: 1px solid var(--bona-line); }
+.bona-product-videos__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 42px 28px; }
+.bona-product-videos article h3 { margin: 0 0 14px; color: var(--bona-ink); font: 400 27px/1.2 var(--bona-display); }
+
+.bona-product-faq { padding-block: 104px !important; border-top: 1px solid var(--bona-line); background: var(--bona-paper); }
+.bona-product-faq__grid { display: grid; grid-template-columns: minmax(260px, .65fr) minmax(0, 1.35fr); gap: 80px; }
+.bona-product-faq header h2 { max-width: 440px; margin: 0; font-size: clamp(43px, 4.4vw, 62px); }
+
+.bona-product-reviews { padding-block: 104px !important; border-top: 1px solid var(--bona-line); }
+.bona-product-reviews__grid { display: grid; grid-template-columns: minmax(260px, .7fr) minmax(0, 1.3fr); gap: 80px; }
+.bona-product-reviews h2 { margin: 0; color: var(--bona-ink); font: 400 clamp(43px, 4.4vw, 62px)/1.04 var(--bona-display); }
+.bona-product-reviews header .bona-button { margin-top: 30px; }
+.bona-product-reviews__rating { margin: 18px 0 0; color: var(--bona-muted); font-size: 12px; }
+.bona-product-reviews__rating strong { color: var(--bona-ink); font: 400 34px/1 var(--bona-display); }
+.bona-product-reviews__list { margin: 0; padding: 0; border-top: 1px solid var(--bona-line); list-style: none; }
+.bona-product-reviews__list li { padding: 24px 0; border-bottom: 1px solid var(--bona-line); }
+.bona-product-reviews__list li > div { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; }
+.bona-product-reviews__list strong { color: var(--bona-ink); font-size: 13px; }
+.bona-product-reviews__list span { color: var(--bona-gold-text); font-size: 11px; font-weight: 800; }
+.bona-product-reviews__list time { color: var(--bona-muted); font-size: 10px; }
+.bona-product-reviews__list p { margin: 13px 0 0; color: var(--bona-muted); font-size: 14px; line-height: 1.7; }
+.bona-product-reviews__empty { margin: 0; padding: 26px 0; border-top: 1px solid var(--bona-line); border-bottom: 1px solid var(--bona-line); color: var(--bona-muted); }
+.bona-notice { margin-bottom: 20px; padding: 13px 16px; border-left: 3px solid; font-size: 12px; }
+.bona-notice--success { border-color: #4b7756; background: #eef5ef; }
+.bona-notice--error { border-color: #a9584f; background: #faefed; }
+
+.bona-product-seo { padding-block: 80px !important; border-top: 1px solid var(--bona-line); }
+.bona-product-seo__inner { max-width: 940px; }
+.bona-product-seo h2 { margin: 0 0 24px; color: var(--bona-ink); font: 400 38px/1.1 var(--bona-display); }
+.bona-product-seo .bona-content-richtext { color: #807a70; font-size: 13px; line-height: 1.75; }
+
+.bona-product-related { padding-block: 104px !important; border-top: 1px solid var(--bona-line); background: var(--bona-paper); }
+.bona-product-related .swiper { overflow: hidden; }
+.bona-product-related .swiper-wrapper { align-items: stretch; }
+.bona-product-related .swiper-slide { height: auto; padding: 1px; }
+.bona-product-related .swiper-pagination { position: static; margin-top: 34px; }
+
+.bona-subproduct-dialog { display: none; width: min(920px, calc(100vw - 32px)); padding: 36px; border-radius: 20px; background: #fcfbf8; }
+.bona-subproduct-dialog h2 { margin: 0 0 24px; color: var(--bona-ink); font: 400 42px/1.05 var(--bona-display); }
+.bona-subproduct-dialog .art-popup-list-sub-products { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.bona-subproduct-dialog .art-product-item { padding: 16px; border: 1px solid var(--bona-line); border-radius: 14px; }
+.bona-subproduct-dialog .art-product-link { display: block; }
+.bona-subproduct-dialog .image { display: grid; height: 180px; place-items: center; }
+.bona-subproduct-dialog .image img { max-width: 100%; max-height: 100%; }
+.bona-subproduct-dialog h3 { margin: 14px 0 8px; color: var(--bona-ink); font: 400 22px/1.2 var(--bona-display); }
+.bona-subproduct-dialog .price-wrapper { font-size: 12px; font-weight: 700; }
+.bona-subproduct-dialog .single-sub-product-add-to-cart { width: 100%; margin-top: 14px; padding: 10px; border: 1px solid var(--bona-ink); border-radius: 999px; background: transparent; }
+
+.bona-form-dialog { display: none; width: min(720px, calc(100vw - 28px)); padding: 0; overflow: hidden; border-radius: 22px; background: var(--bona-dark); color: var(--bona-cream); }
+.bona-form-dialog form { padding: 52px; }
+.bona-form-dialog h2 { margin: 0; color: var(--bona-cream); font: 400 48px/1.05 var(--bona-display); }
+.bona-form-dialog form > p { max-width: 550px; margin: 18px 0 30px; color: rgba(247, 244, 238, .65); font-size: 13px; line-height: 1.7; }
+.bona-form-dialog .art-fields-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.bona-form-dialog label { display: grid; gap: 8px; margin-bottom: 14px; color: rgba(247, 244, 238, .72); font-size: 11px; }
+.bona-form-dialog .art-light-field { width: 100%; min-height: 50px; padding: 13px 15px; border: 1px solid rgba(247, 244, 238, .25); border-radius: 10px; background: transparent; color: var(--bona-cream); }
+.bona-form-dialog textarea.art-light-field { min-height: 120px; resize: vertical; }
+.bona-form-dialog select option { color: var(--bona-ink); }
+.bona-form-dialog .bona-button { margin-top: 14px; }
+.art-review-form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+@media (max-width: 1100px) {
+    .bona-editorial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bona-article-layout { grid-template-columns: 130px minmax(0, 1fr); }
+    .bona-article-content { grid-column: 2; }
+    .bona-product-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(360px, .78fr); gap: 38px; }
+    .bona-product-buybox { padding: 32px; }
+    .bona-product-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bona-product-features article:not(:nth-child(3n + 1)) { padding-left: 0; border-left: 0; }
+    .bona-product-features article:nth-child(even) { padding-left: 28px; border-left: 1px solid rgba(247, 244, 238, .18); }
+}
+
+@media (max-width: 900px) {
+    .bona-blog-index__hero-grid,
+    .bona-blog-feature,
+    .bona-service-detail__hero-grid,
+    .bona-service-detail__content-grid,
+    .bona-service-detail__cta-panel,
+    .bona-product-hero__grid,
+    .bona-product-core__grid,
+    .bona-product-editorial__split,
+    .bona-product-faq__grid,
+    .bona-product-reviews__grid { grid-template-columns: 1fr; }
+
+    .bona-blog-index__hero-grid { gap: 32px; }
+    .bona-blog-feature__media { min-height: 480px; border-radius: 22px 22px 0 0; }
+    .bona-blog-feature__copy { border-radius: 0 0 22px 22px; }
+    .bona-article-layout { grid-template-columns: 1fr; gap: 38px; }
+    .bona-article-share { position: static; display: flex; grid-row: 1; align-items: center; gap: 16px; flex-direction: row; flex-wrap: wrap; }
+    .bona-article-share > span { width: 100%; margin: 0; }
+    .bona-article-content { grid-column: 1; }
+    .bona-service-detail__hero-grid { gap: 48px; }
+    .bona-service-detail__hero-copy { max-width: 720px; }
+    .bona-service-detail__content-grid { gap: 38px; }
+    .bona-service-detail__aside { display: flex; align-items: baseline; gap: 18px; }
+    .bona-service-detail__aside p { max-width: none; }
+    .bona-service-detail__cta-panel { align-items: start; gap: 34px; }
+    .bona-service-detail__related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bona-product-buybox { position: static; }
+    .bona-product-gallery .swiper-single-wallpaper { height: min(760px, 92vw); }
+    .bona-product-core__grid,
+    .bona-product-editorial__split { gap: 50px; }
+    .bona-product-editorial__split.is-reverse figure { order: initial; }
+    .bona-product-faq__grid,
+    .bona-product-reviews__grid { gap: 42px; }
+}
+
+@media (max-width: 640px) {
+    .bona-blog-index__hero { padding-block: 45px 62px !important; }
+    .bona-blog-index__hero-grid h1 { font-size: clamp(54px, 18vw, 76px); }
+    .bona-blog-index__hero-grid > p { font-size: 15px; }
+    .bona-blog-index__featured,
+    .bona-blog-index__archive,
+    .bona-article-related,
+    .bona-service-detail__content,
+    .bona-service-detail__related,
+    .bona-product-core,
+    .bona-product-editorial,
+    .bona-product-videos,
+    .bona-product-faq,
+    .bona-product-reviews,
+    .bona-product-related { padding-block: 72px !important; }
+    .bona-blog-feature__media { min-height: 340px; }
+    .bona-blog-feature__copy { padding: 42px 28px; }
+    .bona-blog-feature__copy h2 { font-size: 40px; }
+    .bona-editorial-grid { grid-template-columns: 1fr; gap: 48px; }
+    .bona-editorial-card__media { border-radius: 16px; }
+    .bona-editorial-card h2 { font-size: 29px; }
+
+    .bona-article-hero { padding-block: 38px 0 !important; }
+    .bona-article-hero__copy h1 { font-size: clamp(43px, 13vw, 62px); }
+    .bona-article-hero__meta { gap: 12px; margin-top: 22px; font-size: 9px; }
+    .bona-article-hero__meta > * + *::before { margin-right: 12px; }
+    .bona-article-hero__lead { margin-top: 24px; font-size: 16px; }
+    .bona-article-hero__media { aspect-ratio: 4 / 3; margin-top: 42px; border-radius: 16px; }
+    .bona-article-layout { padding-block: 72px; }
+    .bona-article-block { margin-bottom: 46px; }
+    .bona-article-block--text { font-size: 16px; line-height: 1.8; }
+    .bona-article-block--text h2 { margin-top: 46px; font-size: 38px; }
+    .bona-article-block--text h3 { margin-top: 38px; font-size: 29px; }
+    .bona-article-images--grid { grid-template-columns: 1fr; }
+    .bona-article-quote { padding: 38px 28px; border-radius: 16px; }
+    .bona-article-sponsor { grid-template-columns: 1fr; align-items: start; }
+    .bona-article-slider { grid-auto-columns: 88%; }
+    .bona-article-faq h2 { font-size: 40px; }
+
+    .bona-service-detail__hero { padding-block: 40px 72px !important; }
+    .bona-service-detail__hero-copy h1 { font-size: 52px; }
+    .bona-service-detail__hero-media { border-radius: 16px; }
+    .bona-service-detail__cta { padding-block: 0 72px !important; }
+    .bona-service-detail__cta-panel { padding: 42px 28px; border-radius: 18px; }
+    .bona-service-detail__cta-panel .bona-button { width: 100%; }
+    .bona-service-detail__related-grid { grid-template-columns: 1fr; gap: 44px; }
+
+    .bona-product-hero { padding-block: 22px 72px !important; }
+    .bona-product-hero__grid { gap: 28px; }
+    .bona-product-gallery .swiper-single-wallpaper { height: 112vw; max-height: 620px; border-radius: 16px; }
+    .bona-product-gallery .swiper-slide > a { padding: 24px; }
+    .bona-product-gallery .swiper-button-next,
+    .bona-product-gallery .swiper-button-prev { width: 42px; height: 42px; }
+    .bona-product-gallery .swiper-single-wallpaper-thumbs-wrap { display: none !important; }
+    .bona-product-buybox { padding: 28px 22px; border-radius: 18px; }
+    .bona-product-buybox h1 { font-size: 42px; }
+    .bona-product-meta > div { grid-template-columns: minmax(86px, .45fr) minmax(0, 1fr); }
+    .bona-product-purchase__controls { grid-template-columns: 1fr; }
+    .bona-product-purchase .custom-control-number { width: 124px; }
+    .bona-product-purchase__controls .bona-button { width: 100%; }
+    .bona-product-core__grid,
+    .bona-product-editorial__split { gap: 42px; }
+    .bona-product-editorial h2 { font-size: 44px; }
+    .bona-product-editorial__split figure { border-radius: 16px; }
+    .bona-product-features { grid-template-columns: 1fr; }
+    .bona-product-features article,
+    .bona-product-features article:nth-child(even) { padding: 28px 0; border-left: 0; }
+    .bona-product-videos__grid { grid-template-columns: 1fr; }
+    .bona-product-faq header h2,
+    .bona-product-reviews h2 { font-size: 43px; }
+    .bona-product-reviews header .bona-button { width: 100%; }
+    .bona-subproduct-dialog { padding: 28px 20px; }
+    .bona-subproduct-dialog .art-popup-list-sub-products { grid-template-columns: 1fr; }
+    .bona-form-dialog form { padding: 42px 24px; }
+    .bona-form-dialog h2 { font-size: 40px; }
+    .bona-form-dialog .art-fields-row { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bona-blog-feature__media img,
+    .bona-editorial-card__media img,
+    .bona-service-mini-card__media img { transition: none; }
+}

@@ -24,6 +24,16 @@ export default {
         }
     },
     methods: {
+        moveBlock(index, direction) {
+            const targetIndex = index + direction;
+
+            if (targetIndex < 0 || targetIndex >= this.blocksList.length) {
+                return;
+            }
+
+            const [block] = this.blocksList.splice(index, 1);
+            this.blocksList.splice(targetIndex, 0, block);
+        },
         addBlock() {
             this.blockToCreateError = '';
             if (this.blockToCreate === 1) {
@@ -70,8 +80,12 @@ export default {
 <template>
     <div class="row">
         <div class="col">
-            <div class="row" v-for="(block, index) in blocksList">
+            <div class="row" v-for="(block, index) in blocksList" :key="block.id || 'new-' + index">
                 <div class="col">
+                    <div class="d-flex justify-content-end mb-2" style="gap: .4rem">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" :disabled="index === 0" @click="moveBlock(index, -1)" :aria-label="$t('admin.move_up')">↑</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" :disabled="index === blocksList.length - 1" @click="moveBlock(index, 1)" :aria-label="$t('admin.move_down')">↓</button>
+                    </div>
                     <multi-language-rich-text-editor-block-component
                         :name="'block[' + index + ']'"
                         v-if="block.type_id === 1"

@@ -29,7 +29,19 @@ class Product extends Model implements Sitemapable
         'gallery_images' => 'array',
         'custom_fields' => 'array',
         'special_offers' => 'array',
+        'content_blocks' => 'array',
     ];
+
+    public function contentBlocksForAdmin(): array
+    {
+        return collect($this->content_blocks ?? [])->map(function (array $block) {
+            if (! empty($block['image_path'])) {
+                $block['image_url'] = Storage::url($block['image_path']);
+            }
+
+            return $block;
+        })->values()->all();
+    }
 
     public function scopeOrderByAvailabilityStatus($query)
     {

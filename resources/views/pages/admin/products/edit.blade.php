@@ -196,6 +196,9 @@
                         @if(isset($seoData['content']))
                             :seo-text="{{ json_encode($seoData['content']) }}"
                         @endif
+                        @if(isset($productContentBlocks) && count($productContentBlocks))
+                            :product-content-blocks="{{ json_encode($productContentBlocks) }}"
+                        @endif
                         {{--end--}}
                     />
 
@@ -207,4 +210,3 @@
 @section('vue')
     <vue/>
 @endsection
-

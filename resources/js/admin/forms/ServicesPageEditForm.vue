@@ -102,6 +102,15 @@ export default {
         deleteSection(index) {
             this.sections.splice(index, 1);
         },
+        moveSection(index, direction) {
+            const nextIndex = index + direction;
+            if (nextIndex < 0 || nextIndex >= this.sections.length) {
+                return;
+            }
+
+            const section = this.sections.splice(index, 1)[0];
+            this.sections.splice(nextIndex, 0, section);
+        },
 
     }
 
@@ -166,14 +175,17 @@ export default {
 
                 <services-sections-component
                     v-for="(section, index) in sections"
+                    :key="section.id || 'new-' + index"
                     :section-id="section.hasOwnProperty('id') ? section.id : null"
                     :section="section"
                     :index="index"
+                    :is-last="index === sections.length - 1"
                     :base-language="baseLanguage"
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
                     :errors="errors"
                     @delete-section="() => deleteSection(index)"
+                    @move-section="(direction) => moveSection(index, direction)"
                 />
 
                 <div class="row">

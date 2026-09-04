@@ -40,7 +40,17 @@ class ServicesPageService extends BaseService
 
     public function getServicesPageSections(): Collection
     {
-        return ServicesPageSections::orderBy('id')->get();
+        return ServicesPageSections::orderBy('sort_order')->orderBy('id')->get();
+    }
+
+    public function getOtherServices(ServicesPageSections $current, int $limit = 3): Collection
+    {
+        return ServicesPageSections::query()
+            ->where('id', '!=', $current->getKey())
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get();
     }
 
     private function syncSections(?array $sections): void
@@ -49,12 +59,20 @@ class ServicesPageService extends BaseService
 
         $existingSections = ServicesPageSections::get();
         if ($sections) {
-            foreach ($sections as $section) {
+            foreach ($sections as $index => $section) {
                 $dataToUpdate = [
                     'title' => $section['title'],
                     'description' => $section['description'],
+                    'intro' => $section['intro'] ?? null,
+                    'content' => $section['content'] ?? null,
                     'button_text' => $section['button_text'],
                     'button_url' => $section['button_url'],
+                    'slug' => $section['slug'],
+                    'meta_title' => $section['meta_title'] ?? null,
+                    'meta_description' => $section['meta_description'] ?? null,
+                    'meta_keywords' => $section['meta_keywords'] ?? null,
+                    'meta_tags' => $section['meta_tags'] ?? null,
+                    'sort_order' => $index,
                 ];
 
                 if (isset($section['image'])) {
@@ -90,7 +108,9 @@ class ServicesPageService extends BaseService
         $sectionsToDelete = $existingSections->whereNotIn('id', $existingSectionsInRequest);
 
         foreach ($sectionsToDelete as $sectionToDelete) {
-            $imagesToDelete[] = $sectionToDelete->section_image_path;
+            if (! str_starts_with((string) $sectionToDelete->section_image_path, 'assets/')) {
+                $imagesToDelete[] = $sectionToDelete->section_image_path;
+            }
             $sectionToDelete->delete();
         }
 

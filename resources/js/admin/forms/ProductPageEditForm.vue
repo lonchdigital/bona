@@ -13,6 +13,7 @@ import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
 import ProductAttributesComponent from "../components/ProductAttributesComponent.vue";
 import TextAreaComponent from "../components/TextAreaComponent.vue";
 import DatePickerComponent from "../components/DatePickerComponent.vue";
+import ProductContentBlockComponent from "../components/ProductContentBlockComponent.vue";
 import * as transliteration from 'transliteration';
 
 
@@ -29,7 +30,8 @@ export default {
         ProductAttributesComponent,
         HomePageFaqComponent,
         TextAreaComponent,
-        DatePickerComponent
+        DatePickerComponent,
+        ProductContentBlockComponent
     },
     props: {
         submitRoute: {
@@ -209,6 +211,10 @@ export default {
             type: String,
             default: '',
         },
+        productContentBlocks: {
+            type: Array,
+            default: () => [],
+        },
 
     },
     data() {
@@ -234,6 +240,8 @@ export default {
             faqDeleted: false,
             faqs: [],
             createdAt: '',
+            contentBlocks: [],
+            contentBlockType: 'text',
         }
     },
     created() {
@@ -264,6 +272,9 @@ export default {
         }
         if (this.productGallery) {
             this.gallery = this.productGallery;
+        }
+        if (this.productContentBlocks) {
+            this.contentBlocks = this.productContentBlocks;
         }
 
         this.selectedMainColorsShow = this.mainColorSelected;
@@ -380,6 +391,24 @@ export default {
         },
         deleteFaq(index) {
             this.faqs.splice(index, 1);
+        },
+        addContentBlock() {
+            this.contentBlocks.push({
+                id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+                type: this.contentBlockType,
+                items: this.contentBlockType === 'features' ? [{}] : [],
+            });
+        },
+        deleteContentBlock(index) {
+            this.contentBlocks.splice(index, 1);
+        },
+        moveContentBlock(index, direction) {
+            const nextIndex = index + direction;
+            if (nextIndex < 0 || nextIndex >= this.contentBlocks.length) {
+                return;
+            }
+            const block = this.contentBlocks.splice(index, 1)[0];
+            this.contentBlocks.splice(nextIndex, 0, block);
         },
     }
 
@@ -808,6 +837,44 @@ export default {
                 <div class="row">
                     <div class="col">
                         <a href="#" id="add-faq-option" class="btn mb-2 btn-secondary" @click.prevent="addFaq"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.question_add')}}</a>
+                    </div>
+                </div>
+
+                <div class="card mt-5 mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-2">{{ $t('admin.product_content_blocks') }}</h4>
+                        <p class="text-muted mb-4">{{ $t('admin.product_content_blocks_help') }}</p>
+
+                        <product-content-block-component
+                            v-for="(block, index) in contentBlocks"
+                            :key="block.id"
+                            :block="block"
+                            :index="index"
+                            :selected-language="selectedLanguage"
+                            :available-languages="availableLanguages"
+                            :errors="errors"
+                            :is-first="index === 0"
+                            :is-last="index === contentBlocks.length - 1"
+                            @delete="deleteContentBlock(index)"
+                            @move="(direction) => moveContentBlock(index, direction)"
+                        />
+
+                        <div class="row align-items-end">
+                            <div class="col-md-6">
+                                <label for="product-content-block-type">{{ $t('admin.blog_article_select_block_type') }}</label>
+                                <select id="product-content-block-type" v-model="contentBlockType" class="form-control">
+                                    <option value="text">{{ $t('admin.product_block_text') }}</option>
+                                    <option value="image_text">{{ $t('admin.product_block_image_text') }}</option>
+                                    <option value="features">{{ $t('admin.product_block_features') }}</option>
+                                    <option value="quote">{{ $t('admin.product_block_quote') }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <button type="button" class="btn btn-secondary" @click="addContentBlock">
+                                    <span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.blog_article_add_block') }}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

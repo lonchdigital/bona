@@ -21,6 +21,10 @@ export default {
             type: Number,
             default: 0,
         },
+        isLast: {
+            type: Boolean,
+            default: false,
+        },
         baseLanguage: {
             type: String,
             default: 'uk',
@@ -40,6 +44,7 @@ export default {
     },
     emits: [
         'deleteSection',
+        'moveSection',
     ],
     data () {
         return {
@@ -78,6 +83,37 @@ export default {
                     />
 
                     <multi-language-input-component
+                        :title="$t('admin.service_intro')"
+                        :name="'sections[' + index + '][intro]'"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :is-required="false"
+                        :init-data="section.hasOwnProperty('intro') && section.intro !== null ? section.intro : []"
+                        :errors="errors"
+                    />
+
+                    <multi-language-rich-text-editor-component
+                        :title="$t('admin.service_page_content')"
+                        :name="'sections[' + index + '][content]'"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :is-required="false"
+                        :content="section.hasOwnProperty('content') && section.content !== null ? section.content : []"
+                        :errors="errors"
+                    />
+
+                    <div class="form-group mb-3">
+                        <input-component
+                            :title="$t('admin.slug')"
+                            :name="'sections[' + index + '][slug]'"
+                            :model-value="section.slug || ''"
+                            :errors="errors"
+                            :is-required="true"
+                        />
+                        <small class="form-text text-muted">{{ $t('admin.service_slug_help') }}</small>
+                    </div>
+
+                    <multi-language-input-component
                         :title="$t('admin.text_button')"
                         :name="'sections[' + index + '][button_text]'"
                         :selected-language="selectedLanguage"
@@ -106,11 +142,59 @@ export default {
                         :init-data="section.hasOwnProperty('section_image_url') ? section.section_image_url : null"
                     />
 
+                    <hr class="my-4">
+                    <p><strong>{{ $t('admin.service_page_seo') }}</strong></p>
+
+                    <multi-language-input-component
+                        :title="$t('admin.meta_title')"
+                        :name="'sections[' + index + '][meta_title]'"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :is-required="false"
+                        :init-data="section.hasOwnProperty('meta_title') && section.meta_title !== null ? section.meta_title : []"
+                        :errors="errors"
+                    />
+
+                    <multi-language-input-component
+                        :title="$t('admin.meta_description')"
+                        :name="'sections[' + index + '][meta_description]'"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :is-required="false"
+                        :init-data="section.hasOwnProperty('meta_description') && section.meta_description !== null ? section.meta_description : []"
+                        :errors="errors"
+                    />
+
+                    <multi-language-input-component
+                        :title="$t('admin.meta_keywords')"
+                        :name="'sections[' + index + '][meta_keywords]'"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :is-required="false"
+                        :init-data="section.hasOwnProperty('meta_keywords') && section.meta_keywords !== null ? section.meta_keywords : []"
+                        :errors="errors"
+                    />
+
+                    <div class="form-group mb-3">
+                        <label :for="'service-meta-tags-' + index">{{ $t('admin.meta_tags') }}</label>
+                        <textarea
+                            class="form-control"
+                            :id="'service-meta-tags-' + index"
+                            :name="'sections[' + index + '][meta_tags]'"
+                            rows="3"
+                            :value="section.meta_tags || ''"
+                        ></textarea>
+                    </div>
+
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <a href="#" id="add-option" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteSection', index)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.section_delete')}}</a>
+                    <div class="d-flex flex-wrap align-items-center" style="gap: .5rem">
+                        <button type="button" class="btn mb-2 btn-outline-secondary" @click="$emit('moveSection', -1)" :disabled="index === 0" :aria-label="$t('admin.move_up')">↑</button>
+                        <button type="button" class="btn mb-2 btn-outline-secondary" @click="$emit('moveSection', 1)" :disabled="isLast" :aria-label="$t('admin.move_down')">↓</button>
+                        <a href="#" class="btn mb-2 btn-danger" @click.prevent="() => $emit('deleteSection', index)"><span class="fe fe-trash fe-16 mr-2"></span>{{ $t('admin.section_delete')}}</a>
+                    </div>
                 </div>
             </div>
         </div>

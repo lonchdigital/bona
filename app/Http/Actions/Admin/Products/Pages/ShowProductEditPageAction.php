@@ -51,6 +51,7 @@ class ShowProductEditPageAction
             'productFaqs' => $productsService->getProductFaqs($product->id),
             'seoData' => $productsService->getProductSeoText($product->id),
             'attributeOptions' => $productsService->getAttributeOptions($product->id, $productType),
+            'productContentBlocks' => $product->contentBlocksForAdmin(),
         ]);
     }
 }
