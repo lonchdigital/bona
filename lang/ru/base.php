@@ -41,6 +41,7 @@ return [
     'catalog_by_manufacturer_meta_title' => ':product_type :brand — купить в Bona Doors',
     'catalog_by_manufacturer_meta_description' => 'Каталог :product_type производителя :brand в Bona Doors. Актуальные модели, цены, профессиональный замер и монтаж.',
     'cart' => 'Корзина',
+    'cart_close' => 'Закрыть корзину',
     'product_successfully_added_to_cart' => 'Товар успешно добавлен в корзину',
     'summary' => 'Итого',
     'make_order' => 'Оформить заказ',

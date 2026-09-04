@@ -57,8 +57,24 @@
 {{--    @dd($filters['main'])--}}
     @php
         $slugToRemove = 'termin-vyrobnyctva';
-        $updatedCollection = $filters['main']->reject(function ($item) use ($slugToRemove) {
-            return $item->slug === $slugToRemove;
+        $selectedManufacturerSlug = isset($selectedBrand) ? mb_strtolower((string) $selectedBrand->slug) : null;
+        $manufacturerFieldSlugs = ['manufacturer', 'brand', 'vyrobnyk', 'proizvoditel', 'proyzvodytel-dvere'];
+        $updatedCollection = $filters['main']->reject(function ($item) use ($slugToRemove, $selectedManufacturerSlug, $manufacturerFieldSlugs) {
+            if ($item->slug === $slugToRemove) {
+                return true;
+            }
+
+            if ($selectedManufacturerSlug === null) {
+                return false;
+            }
+
+            if (in_array(mb_strtolower((string) $item->slug), $manufacturerFieldSlugs, true)) {
+                return true;
+            }
+
+            return $item->options->contains(
+                fn ($option) => mb_strtolower((string) $option->slug) === $selectedManufacturerSlug,
+            );
         });
     @endphp
 

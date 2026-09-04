@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\CatalogMenu\CatalogMenuService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
 
@@ -123,6 +124,44 @@ class CatalogMenuTest extends TestCase
             ->assertSee('Barausse')
             ->assertSee('/product-category/visible-doors/manufacturer/barausse', false)
             ->assertSee('class="bona-mainnav__direct"', false);
+    }
+
+    public function test_storefront_menu_uses_a_real_product_image_when_the_type_image_is_missing(): void
+    {
+        Storage::fake('public');
+        config()->set('app.images_disk_default', 'public');
+
+        $productType = $this->productType([
+            'slug' => 'white-doors',
+            'name' => ['uk' => 'Білі двері', 'ru' => 'Белые двери'],
+            'image_path' => 'missing/type.webp',
+            'sort_order' => 1,
+        ]);
+        $productImage = 'products/white-door-preview.webp';
+        Storage::disk('public')->put($productImage, 'image');
+
+        $this->makeProduct([
+            'product_type_id' => $productType->id,
+            'preview_image_path' => $productImage,
+            'main_image_path' => 'missing/product-main.webp',
+            'orders_count' => 8,
+        ]);
+
+        CatalogMenuConfiguration::query()->create([
+            'product_type_id' => $productType->id,
+            'is_visible' => true,
+            'sort_order' => 0,
+            'show_in_header' => true,
+            'header_order' => 0,
+            'cards' => [],
+            'columns' => [],
+        ]);
+        app(CatalogMenuService::class)->forgetCache();
+
+        $this->get(route('store.home'))
+            ->assertOk()
+            ->assertSee(Storage::disk('public')->url($productImage), false)
+            ->assertDontSee(Storage::disk('public')->url('missing/type.webp'), false);
     }
 
     public function test_header_promotes_door_handles_instead_of_the_accessories_type(): void

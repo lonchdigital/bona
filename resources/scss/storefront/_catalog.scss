@@ -329,6 +329,11 @@
         .active > .title > span::after,
         .active > .filter-box > .title > span::after { transform: rotate(0); }
 
+        // The legacy stylesheet arrives asynchronously on catalogue pages.
+        // Keep expanded filters usable before and after that stylesheet loads.
+        .archive-catalog-filter-left.active > .filter-content { display: flex; }
+        .archive-catalog-filter-left.active > .filter-box.active > .filter-content { display: block; }
+
         .filter-content { padding: 0 0 18px; }
 
         .filter-item--price > .position-relative { padding-bottom: 22px; }

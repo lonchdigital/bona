@@ -150,10 +150,25 @@ class HomePageRedesignSectionsTest extends TestCase
             $source,
         );
         $this->assertStringContainsString('box-shadow: 0 12px 30px rgba(35, 32, 27, .075);', $source);
+        $this->assertStringContainsString('.swiper-slide > .bona-product-card { height: 100%; }', $source);
+        $this->assertStringContainsString('.art-heart { grid-area: 1 / 1; }', $source);
+        $this->assertStringContainsString('.art-heart-filled { display: none; }', $source);
+        $this->assertMatchesRegularExpression('/&--slider\s*\{.*?&:hover,.*?&:focus-within\s*\{.*?transform:\s*none;/s', $source);
         $this->assertMatchesRegularExpression(
             '/&__more\s*\{.*?display:\s*inline-flex;.*?min-width:\s*24px;.*?min-height:\s*24px;.*?padding:\s*0;.*?line-height:\s*1;/s',
             $catalogSource,
         );
+    }
+
+    public function test_instagram_viewer_contains_portrait_media_without_cropping(): void
+    {
+        $source = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertMatchesRegularExpression(
+            '/&__media\s*\{.*?img,\s*video\s*\{.*?position:\s*absolute;.*?inset:\s*0;.*?width:\s*100%\s*!important;.*?height:\s*100%\s*!important;.*?object-fit:\s*contain\s*!important;/s',
+            $source,
+        );
+        $this->assertStringContainsString('width: min(980px, calc(100vw - 48px));', $source);
     }
 
     public function test_reference_sections_are_composed_in_the_expected_order(): void

@@ -20,6 +20,7 @@
             'filtersData' => $filtersData,
             'productsMaxPrice' => $productsMaxPrice,
             'productStatuses' => $productStatuses,
+            'selectedBrand' => $selectedBrand ?? null,
         ])
 
         @if($showColorFilter)

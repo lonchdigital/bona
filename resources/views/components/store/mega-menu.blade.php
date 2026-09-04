@@ -148,8 +148,10 @@
                         @endif
                     @else
                         <a class="bona-mega__type-card" href="{{ $typeUrl }}">
-                            @if($productType->image_url)
-                                <img src="{{ $productType->image_url }}" alt="" loading="lazy" decoding="async" width="320" height="240">
+                            @if($productType->menu_image_url)
+                                <img src="{{ $productType->menu_image_url }}" alt="" loading="lazy" decoding="async" width="320" height="240">
+                            @else
+                                <span class="bona-mega__type-placeholder" aria-hidden="true">BONA</span>
                             @endif
                             <span>
                                 <small>{{ trans('base.storefront_open_catalog') }}</small>

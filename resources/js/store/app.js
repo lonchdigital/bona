@@ -48,6 +48,10 @@ async function loadJsByPage()
         pageToLoad = 'store.catalog.page';
     }
 
+    if (pageToLoad === 'store.catalog.manufacturer.page') {
+        pageToLoad = 'store.catalog.page';
+    }
+
     if (pageToLoad === 'store.all-products.filter.page') {
         pageToLoad = 'store.all-products.page';
     }

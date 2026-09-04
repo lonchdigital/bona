@@ -124,7 +124,7 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringNotContainsString('&__languages {', $stylesheet);
     }
 
-    public function test_footer_renders_the_configured_tiktok_profile_with_larger_glyphs(): void
+    public function test_footer_renders_the_configured_tiktok_profile_with_balanced_glyphs(): void
     {
         $url = 'https://www.tiktok.com/@bonadoors';
         $footer = view('components.store.site-footer', [
@@ -137,9 +137,27 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('aria-label="TikTok"', $footer);
         $this->assertStringContainsString('bona-footer__social-icon--tiktok', $footer);
         $this->assertStringContainsString("width: 40px;\n            height: 40px;", $stylesheet);
-        $this->assertStringContainsString("width: 24px;\n        height: 24px;", $stylesheet);
+        $this->assertStringContainsString("width: 23px;\n        height: 23px;", $stylesheet);
         $this->assertStringContainsString("&--tiktok { -webkit-mask-image: url('/assets/icons/i-tiktok.svg');", $stylesheet);
+        $this->assertStringNotContainsString('-webkit-mask-size: 52px', $stylesheet);
+        $this->assertStringContainsString("&__addresses {\n        display: flex;\n        flex-direction: column;\n        gap: 44px;", $stylesheet);
         $this->assertFileExists(public_path('assets/icons/i-tiktok.svg'));
+    }
+
+    public function test_header_cart_is_an_accessible_click_opened_drawer(): void
+    {
+        $markup = file_get_contents(resource_path('views/components/cart-window.blade.php'));
+        $cartScript = file_get_contents(resource_path('js/store/common/cart.js'));
+        $legacyMenuScript = file_get_contents(resource_path('js/store/common/show-menu.js'));
+
+        $this->assertStringContainsString('data-cart-drawer-open', $markup);
+        $this->assertStringContainsString('id="bona-cart-drawer"', $markup);
+        $this->assertStringContainsString('role="dialog"', $markup);
+        $this->assertStringContainsString('aria-modal="true"', $markup);
+        $this->assertStringContainsString("trigger.addEventListener('click'", $cartScript);
+        $this->assertStringContainsString("event.key === 'Escape'", $cartScript);
+        $this->assertStringContainsString("document.body.classList.add('bona-cart-drawer-open')", $cartScript);
+        $this->assertStringNotContainsString("$('.bona-header__actions .basket-basket-list .basket-link')", $legacyMenuScript);
     }
 
     public function test_tiktok_profile_is_prepopulated_and_saved_through_application_settings(): void

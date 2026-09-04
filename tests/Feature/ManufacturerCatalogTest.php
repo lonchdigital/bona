@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Brand;
+use App\Models\ProductField;
+use App\Models\ProductFieldOption;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
@@ -22,12 +24,50 @@ class ManufacturerCatalogTest extends TestCase
         ]);
         $artporte = $this->brand('artporte', 'Artporte');
         $otherBrand = $this->brand('other-brand', 'Інший виробник');
+        $manufacturerField = ProductField::query()->create([
+            'creator_id' => $this->author()->id,
+            'field_name' => ['uk' => 'Виробник', 'ru' => 'Производитель'],
+            'slug' => 'proyzvodytel-dvere',
+            'field_type_id' => 4,
+        ]);
+        $styleField = ProductField::query()->create([
+            'creator_id' => $this->author()->id,
+            'field_name' => ['uk' => 'Стиль', 'ru' => 'Стиль'],
+            'slug' => 'style',
+            'field_type_id' => 4,
+        ]);
+        $manufacturerOption = ProductFieldOption::query()->create([
+            'product_field_id' => $manufacturerField->id,
+            'name' => ['uk' => 'Artporte', 'ru' => 'Artporte'],
+            'slug' => 'artporte',
+        ]);
+        $styleOption = ProductFieldOption::query()->create([
+            'product_field_id' => $styleField->id,
+            'name' => ['uk' => 'Мінімалізм', 'ru' => 'Минимализм'],
+            'slug' => 'minimalism',
+        ]);
+
+        foreach ([
+            $manufacturerField->id => ['uk' => 'Виробник', 'ru' => 'Производитель'],
+            $styleField->id => ['uk' => 'Стиль', 'ru' => 'Стиль'],
+        ] as $fieldId => $filterName) {
+            $productType->fields()->attach($fieldId, [
+                'show_as_filter' => true,
+                'show_on_main_filters_list' => true,
+                'filter_name' => json_encode($filterName, JSON_UNESCAPED_UNICODE),
+                'filter_full_position_id' => 1,
+            ]);
+        }
 
         $matchingProduct = $this->makeProduct([
             'slug' => 'artporte-door',
             'product_type_id' => $productType->id,
             'brand_id' => $artporte->id,
             'name' => ['uk' => 'Двері Artporte', 'ru' => 'Двери Artporte'],
+            'custom_fields' => [
+                (string) $manufacturerField->id => (string) $manufacturerOption->id,
+                (string) $styleField->id => (string) $styleOption->id,
+            ],
         ]);
         $otherProduct = $this->makeProduct([
             'slug' => 'other-door',
@@ -46,9 +86,18 @@ class ManufacturerCatalogTest extends TestCase
             ->assertSee('Міжкімнатні двері Artporte')
             ->assertDontSee('filter-item--brands', false)
             ->assertDontSee('search_by_brand', false)
+            ->assertDontSee('name="proyzvodytel-dvere"', false)
+            ->assertSee('name="style"', false)
+            ->assertSee('Мінімалізм')
             ->assertSee($matchingProduct->name)
             ->assertDontSee($otherProduct->name)
             ->assertDontSee('Mali'.'na', false);
+
+        $loader = file_get_contents(resource_path('js/store/app.js'));
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_catalog.scss'));
+
+        $this->assertStringContainsString("pageToLoad === 'store.catalog.manufacturer.page'", $loader);
+        $this->assertStringContainsString('.archive-catalog-filter-left.active > .filter-content { display: flex; }', $stylesheet);
     }
 
     public function test_legacy_brand_page_permanently_redirects_to_the_filtered_catalog(): void

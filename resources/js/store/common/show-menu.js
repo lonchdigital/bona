@@ -26,14 +26,6 @@ function showMenu(link, menu, wrapper) {
 
 export default {
     init: async function () {
-        // The commerce dropdown stays intact; only its trigger now lives in
-        // the redesigned header.
-        showMenu(
-            $('.bona-header__actions .basket-basket-list .basket-link'),
-            $('.bona-header__actions .basket-basket-list .basket-sub-menu'),
-            $('.bona-header__actions .basket-basket-list')
-        );
-
         // These menus still appear on catalogue surfaces outside the global
         // header and therefore keep their existing behaviour.
         showMenu(

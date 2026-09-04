@@ -3,10 +3,120 @@ import iconUrl from '$img/icon.svg';
 import InputCounter from "./input-counter";
 // import wishList from "./wish-list";
 
-const $basket_with_products = $('.header-main-others .basket-basket-list .basket-with-products');
-const $basket_without_products = $('.header-main-others .basket-basket-list .basket-without-products');
 const $main_basket_count = $('.art-main-basket-count.count-of-products-in-basket');
 const $art_cart_checkout_button = $('.art-cart-checkout-button');
+let cartDrawerCloseTimer = null;
+let cartSuccessTimer = null;
+
+function closeCartDrawer({ restoreFocus = true } = {})
+{
+    const root = document.querySelector('[data-cart-drawer-root]');
+    const drawer = root?.querySelector('.bona-cart-drawer');
+    const backdrop = root?.querySelector('.bona-cart-drawer__backdrop');
+    const trigger = root?.querySelector('[data-cart-drawer-open]');
+
+    if (!root || !drawer || !backdrop || !trigger || drawer.hidden) {
+        return;
+    }
+
+    root.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden', 'true');
+    trigger.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('bona-cart-drawer-open');
+
+    window.clearTimeout(cartDrawerCloseTimer);
+    cartDrawerCloseTimer = window.setTimeout(() => {
+        if (!root.classList.contains('is-open')) {
+            drawer.hidden = true;
+            backdrop.hidden = true;
+        }
+    }, 320);
+
+    if (restoreFocus) {
+        trigger.focus({ preventScroll: true });
+    }
+}
+
+function openCartDrawer()
+{
+    const root = document.querySelector('[data-cart-drawer-root]');
+    const drawer = root?.querySelector('.bona-cart-drawer');
+    const backdrop = root?.querySelector('.bona-cart-drawer__backdrop');
+    const trigger = root?.querySelector('[data-cart-drawer-open]');
+
+    if (!root || !drawer || !backdrop || !trigger) {
+        return;
+    }
+
+    window.clearTimeout(cartDrawerCloseTimer);
+    drawer.hidden = false;
+    backdrop.hidden = false;
+    drawer.setAttribute('aria-hidden', 'false');
+    trigger.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('bona-cart-drawer-open');
+
+    window.requestAnimationFrame(() => {
+        root.classList.add('is-open');
+        drawer.querySelector('.bona-cart-drawer__close')?.focus({ preventScroll: true });
+    });
+}
+
+function initCartDrawer()
+{
+    const root = document.querySelector('[data-cart-drawer-root]');
+    const drawer = root?.querySelector('.bona-cart-drawer');
+    const trigger = root?.querySelector('[data-cart-drawer-open]');
+
+    if (!root || !drawer || !trigger || root.dataset.cartDrawerInitialized === 'true') {
+        return;
+    }
+
+    root.dataset.cartDrawerInitialized = 'true';
+    trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        if (root.classList.contains('is-open')) {
+            closeCartDrawer();
+        } else {
+            openCartDrawer();
+        }
+    });
+
+    root.querySelectorAll('[data-cart-drawer-close]').forEach((control) => {
+        control.addEventListener('click', () => closeCartDrawer());
+    });
+
+    drawer.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab') {
+            return;
+        }
+
+        const focusable = [...drawer.querySelectorAll('a[href], button:not([disabled]), input:not([disabled])')]
+            .filter((element) => element.offsetParent !== null);
+
+        if (focusable.length === 0) {
+            event.preventDefault();
+            return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && root.classList.contains('is-open')) {
+            closeCartDrawer();
+        }
+    });
+}
 
 function syncCartCount(count)
 {
@@ -19,6 +129,7 @@ function syncCartCount(count)
 
 export default {
     init: async function () {
+        initCartDrawer();
 
         getProductsInCart(
             function (data) {
@@ -554,6 +665,8 @@ function drawProductsInCartWindowHTML(data)
 
     $('.basket-sub-menu .sub-menu-list').html(productsToAppend);
     $('.basket-sub-menu .items-total-price').text(data.data.summary.total + ' ' + store.base_currency_name_short);
+    $('.basket-sub-menu').toggleClass('is-empty', data.data.products.length === 0);
+    $('.basket-sub-menu .bona-cart-drawer__empty').toggleClass('d-none', data.data.products.length > 0);
     InputCounter.addCounterHandler($('.basket-sub-menu .sub-menu-list .counter'));
     addChangeProductCountHandlers($('.basket-sub-menu .sub-menu-list .product-count-input'));
     addDeleteProductFromCartHandlers($('.basket-sub-menu .sub-menu-list .item-delete'));
@@ -606,11 +719,11 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
                         ${productAttributesHTML}
                     </div>
                 </a>
-                <div class="item-delete">
+                <button class="item-delete" type="button" aria-label="${translations.delete}">
                     <svg>
                         <use href="${iconUrl}#i-item-delete"></use>
                     </svg>
-                </div>
+                </button>
             </div>
             <div class="item-counts d-flex align-items-center ml-9">
                 <div class="custom-control-number custom-control-number--cart mr-3">
@@ -916,14 +1029,14 @@ function handleBasket(data)
         $art_cart_checkout_button.addClass('d-none');
     }
 
-    if(parseInt(data.data.products.length) === 1){
-        $basket_with_products.removeClass('d-none');
-        $basket_without_products.addClass('d-none');
-        $('.sub-menu.basket-sub-menu').removeClass('d-none');
-    }
-
     syncCartCount(data.data.products.length);
     basketSubMenuSuccess.removeClass('d-none');
 
     drawProductsInCartWindowHTML(data);
+    openCartDrawer();
+
+    window.clearTimeout(cartSuccessTimer);
+    cartSuccessTimer = window.setTimeout(() => {
+        basketSubMenuSuccess.addClass('d-none');
+    }, 3000);
 }

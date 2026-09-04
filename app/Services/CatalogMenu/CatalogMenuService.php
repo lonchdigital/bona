@@ -4,10 +4,12 @@ namespace App\Services\CatalogMenu;
 
 use App\Models\ApplicationConfig;
 use App\Models\CatalogMenuConfiguration;
+use App\Models\Product;
 use App\Models\ProductType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CatalogMenuService
 {
@@ -31,22 +33,63 @@ class CatalogMenuService
     {
         return Cache::remember(self::CACHE_KEY, 43200, function () {
             if (! CatalogMenuConfiguration::query()->exists()) {
-                return ProductType::query()
+                $productTypes = ProductType::query()
                     ->with(['catalogMenuConfiguration', 'categories'])
                     ->where('sort_order', '>', 0)
                     ->orderBy('sort_order')
                     ->get();
+            } else {
+                $productTypes = ProductType::query()
+                    ->with(['catalogMenuConfiguration', 'categories'])
+                    ->whereHas('catalogMenuConfiguration', function ($query) {
+                        $query->where('is_visible', true)
+                            ->orWhere('show_in_header', true);
+                    })
+                    ->orderBy('id')
+                    ->get();
             }
 
-            return ProductType::query()
-                ->with(['catalogMenuConfiguration', 'categories'])
-                ->whereHas('catalogMenuConfiguration', function ($query) {
-                    $query->where('is_visible', true)
-                        ->orWhere('show_in_header', true);
-                })
-                ->orderBy('id')
-                ->get();
+            return $productTypes->each(function (ProductType $productType): void {
+                $productType->setAttribute('menu_image_url', $this->resolveMenuImageUrl($productType));
+            });
         });
+    }
+
+    private function resolveMenuImageUrl(ProductType $productType): ?string
+    {
+        $disk = Storage::disk(config('app.images_disk_default'));
+
+        if (filled($productType->image_path) && $disk->exists($productType->image_path)) {
+            return $disk->url($productType->image_path);
+        }
+
+        $candidates = Product::query()
+            ->select(['id', 'preview_image_path', 'main_image_path'])
+            ->where('is_active', true)
+            ->where(function ($query) use ($productType): void {
+                $query->where('product_type_id', $productType->id)
+                    ->orWhereHas('productTypes', function ($query) use ($productType): void {
+                        $query->where('product_types.id', $productType->id);
+                    });
+            })
+            ->where(function ($query): void {
+                $query->whereNotNull('preview_image_path')
+                    ->orWhereNotNull('main_image_path');
+            })
+            ->orderByDesc('orders_count')
+            ->orderBy('id')
+            ->limit(20)
+            ->get();
+
+        foreach ($candidates as $product) {
+            foreach ([$product->preview_image_path, $product->main_image_path] as $path) {
+                if (filled($path) && $disk->exists($path)) {
+                    return $disk->url($path);
+                }
+            }
+        }
+
+        return null;
     }
 
     public function updateOverview(array $configurations): void
