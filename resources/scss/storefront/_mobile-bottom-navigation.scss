@@ -158,7 +158,8 @@
         }
     }
 
-    body.bona-menu-open .bona-mobile-bottom-nav {
+    body.bona-menu-open .bona-mobile-bottom-nav,
+    body.bona-cart-drawer-open .bona-mobile-bottom-nav {
         visibility: hidden;
         opacity: 0;
         pointer-events: none;

@@ -55,6 +55,11 @@ function openCartDrawer()
     trigger.setAttribute('aria-expanded', 'true');
     document.body.classList.add('bona-cart-drawer-open');
 
+    const drawerBody = drawer.querySelector('.bona-cart-drawer__body');
+    if (drawerBody) {
+        drawerBody.scrollTop = 0;
+    }
+
     window.requestAnimationFrame(() => {
         root.classList.add('is-open');
         drawer.querySelector('.bona-cart-drawer__close')?.focus({ preventScroll: true });
@@ -701,31 +706,31 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
     return `
         <li class="sub-menu-list-item cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
-            <div class="item-link-wrapper d-flex align-items-center justify-content-between">
-                <a href="${productData.link}" class="d-flex align-items-center mr-4">
-                    <span class="item-image mr-1 d-flex align-items-center justify-content-center">
-                        <img src="${productCurrentImageUrl}" alt="item">
-                    </span>
-                    <div class="item-text">
+            <div class="item-link-wrapper">
+                <a href="${productData.link}" class="item-image">
+                    <img src="${productCurrentImageUrl}" alt="">
+                </a>
+                <div class="item-content">
+                    <a href="${productData.link}" class="item-text">
                         ${productNameLocale[locale]}
                         ${productAttributesHTML}
+                    </a>
+                    <div class="item-counts">
+                        <div class="custom-control-number custom-control-number--cart">
+                            <span class="counter minus"></span>
+                            <input type="number" class="form-control product-count-input" min="1" value="${productData.count}">
+                            <span class="counter plus"></span>
+                        </div>
+                        <div class="item-price">
+                            <strong class="item-price-text">${artProductPrice}</strong> ${store.base_currency_name_short}
+                        </div>
                     </div>
-                </a>
+                </div>
                 <button class="item-delete" type="button" aria-label="${translations.delete}">
                     <svg>
                         <use href="${iconUrl}#i-item-delete"></use>
                     </svg>
                 </button>
-            </div>
-            <div class="item-counts d-flex align-items-center ml-9">
-                <div class="custom-control-number custom-control-number--cart mr-3">
-                    <span class="counter minus"></span>
-                    <input type="number" class="form-control product-count-input" min="1" value="${productData.count}">
-                    <span class="counter plus"></span>
-                </div>
-                <div class="item-price">
-                    <strong class="item-price-text">${artProductPrice}</strong> ${store.base_currency_name_short}
-                </div>
             </div>
         </li>
     `;

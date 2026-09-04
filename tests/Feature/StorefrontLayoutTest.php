@@ -154,6 +154,8 @@ class StorefrontLayoutTest extends TestCase
         $markup = file_get_contents(resource_path('views/components/cart-window.blade.php'));
         $cartScript = file_get_contents(resource_path('js/store/common/cart.js'));
         $legacyMenuScript = file_get_contents(resource_path('js/store/common/show-menu.js'));
+        $storefrontStyles = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+        $mobileNavigationStyles = file_get_contents(resource_path('scss/storefront/_mobile-bottom-navigation.scss'));
         $productTemplate = file_get_contents(resource_path('views/pages/store/product.blade.php'));
         $slidingDoorTemplate = file_get_contents(resource_path('views/pages/store/product-variety/rozsuvni-dveri-product.blade.php'));
 
@@ -164,12 +166,17 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString("trigger.addEventListener('click'", $cartScript);
         $this->assertStringContainsString("event.key === 'Escape'", $cartScript);
         $this->assertStringContainsString("document.body.classList.add('bona-cart-drawer-open')", $cartScript);
+        $this->assertStringContainsString('drawerBody.scrollTop = 0;', $cartScript);
+        $this->assertStringContainsString('class="item-content"', $cartScript);
         $this->assertStringContainsString('drawProductsInCartWindowHTML(data);', $cartScript);
         $this->assertStringContainsString('openCartDrawer();', $cartScript);
         $this->assertStringNotContainsString('productAddedToCartButton', $cartScript);
         $this->assertStringNotContainsString('product-added-to-cart', $productTemplate);
         $this->assertStringNotContainsString('product-added-to-cart', $slidingDoorTemplate);
         $this->assertStringNotContainsString("$('.bona-header__actions .basket-basket-list .basket-link')", $legacyMenuScript);
+        $this->assertStringContainsString('grid-template-columns: 64px minmax(0, 1fr) 44px;', $storefrontStyles);
+        $this->assertStringContainsString(".custom-control-number--cart input[type='number']", $storefrontStyles);
+        $this->assertStringContainsString('body.bona-cart-drawer-open .bona-mobile-bottom-nav', $mobileNavigationStyles);
     }
 
     public function test_tiktok_profile_is_prepopulated_and_saved_through_application_settings(): void

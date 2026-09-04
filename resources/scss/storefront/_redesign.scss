@@ -235,15 +235,15 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
         padding: 18px 26px;
         border-bottom: 1px solid var(--bona-line);
 
-        .item-link-wrapper { align-items: flex-start !important; }
-
-        .item-link-wrapper > a {
-            min-width: 0;
-            flex: 1 1 auto;
+        .item-link-wrapper {
+            display: grid !important;
+            grid-template-columns: 72px minmax(0, 1fr) 34px;
+            align-items: start !important;
             gap: 14px;
-            margin-right: 14px !important;
-            color: var(--bona-ink) !important;
-            text-decoration: none;
+        }
+
+        .item-content {
+            min-width: 0;
         }
 
         .item-image {
@@ -263,12 +263,14 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
         }
 
         .item-text {
+            display: block;
             min-width: 0;
             margin: 3px 0 0 !important;
-            color: var(--bona-ink);
+            color: var(--bona-ink) !important;
             font-size: 13px !important;
             font-weight: 650 !important;
             line-height: 1.4 !important;
+            text-decoration: none;
         }
 
         .product-attributes { margin-top: 6px; line-height: 1.35 !important; }
@@ -295,9 +297,11 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
         }
 
         .item-counts {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin: 12px 0 0 86px !important;
+            margin: 12px 0 0 !important;
         }
 
         .custom-control-number--cart { margin-right: 0 !important; }
@@ -372,6 +376,127 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
         font-size: 11px;
 
         img { width: 42px !important; height: 42px; object-fit: contain; }
+    }
+}
+
+@media (max-width: 640px) {
+    .bona-cart-drawer {
+        &__header {
+            min-height: 88px;
+            padding: 18px;
+
+            h2 { font-size: 30px; }
+        }
+
+        &__close {
+            width: 44px;
+            height: 44px;
+            flex-basis: 44px;
+        }
+
+        &__success { padding: 10px 18px; }
+
+        .sub-menu-list-item {
+            padding: 14px 18px;
+
+            .item-link-wrapper {
+                grid-template-columns: 64px minmax(0, 1fr) 44px;
+                gap: 10px;
+            }
+
+            .item-image {
+                width: 64px;
+                height: 80px;
+                flex-basis: 64px;
+            }
+
+            .item-text {
+                margin-top: 1px !important;
+                font-size: 12px !important;
+                line-height: 1.35 !important;
+            }
+
+            .product-attributes { margin-top: 4px; }
+
+            .item-delete {
+                width: 44px;
+                height: 44px;
+                flex-basis: 44px;
+            }
+
+            .item-counts {
+                display: grid;
+                grid-template-columns: 120px minmax(0, 1fr);
+                align-items: center;
+                gap: 8px;
+                margin-top: 8px !important;
+            }
+
+            .custom-control-number--cart {
+                width: 120px;
+                height: 44px;
+                overflow: hidden;
+                border: 1px solid var(--bona-line);
+                border-radius: 999px;
+                background: #f3f0ea;
+            }
+
+            .custom-control-number--cart input[type='number'] {
+                width: 100%;
+                height: 44px;
+                padding: 0 44px;
+                border: 0;
+                background: transparent;
+                color: var(--bona-ink);
+                font-size: 13px;
+                font-weight: 700;
+                line-height: 44px;
+            }
+
+            .custom-control-number--cart .minus,
+            .custom-control-number--cart .plus {
+                width: 44px;
+                height: 44px;
+                padding: 0;
+                border-radius: 0;
+                background: transparent;
+            }
+
+            .item-price {
+                min-width: 0;
+                font-size: 12px !important;
+                text-align: right;
+            }
+        }
+
+        &__footer {
+            padding: 16px 18px calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .items-total { padding-bottom: 14px; }
+    }
+}
+
+@media (max-width: 360px) {
+    .bona-cart-drawer .sub-menu-list-item {
+        padding-inline: 14px;
+
+        .item-link-wrapper {
+            grid-template-columns: 56px minmax(0, 1fr) 44px;
+            gap: 8px;
+        }
+
+        .item-image {
+            width: 56px;
+            height: 72px;
+        }
+
+        .item-counts {
+            grid-template-columns: 1fr;
+            justify-items: start;
+        }
+
+        .item-price { text-align: left; }
     }
 }
 

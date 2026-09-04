@@ -1011,16 +1011,140 @@
         &__select.dropdown-custom .btn-dropdown > span { display: none; }
         &__programs small { display: none; }
         &__programs li.is-recovery img { width: 100px; max-width: 100%; }
-        &__grid.art-product-list { grid-template-columns: 1fr; gap: 28px; }
-        &__consultant { min-height: 520px; }
+        &__grid.art-product-list.art-three-column {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 10px;
+        }
+        &__consultant { min-height: 420px; grid-column: 1 / -1; }
         &__pagination-block { margin-top: 50px; }
         &__load-more { width: min(100%, 320px); }
         .pagination-wrapper .pagination { gap: 2px; }
         .pagination-wrapper .page-link { width: 34px; height: 34px; }
         .pagination-wrapper .page-item--ellipsis .page-link { width: 18px; }
-    }
 
-    .bona-product-card--catalog .bona-product-card__media { height: 360px; }
+        .bona-product-card--catalog {
+            min-width: 0;
+            gap: 8px;
+            padding: 8px 8px 12px;
+            border-radius: 14px;
+
+            &:hover,
+            &:focus-within {
+                box-shadow: none;
+                transform: none;
+            }
+
+            .bona-product-card__media {
+                height: clamp(190px, 42vw, 250px);
+                border-radius: 10px;
+            }
+
+            .bona-product-card__media img { padding: 2px; }
+
+            .bona-product-card__badges {
+                top: 8px;
+                left: 8px;
+                max-width: calc(100% - 62px);
+            }
+
+            .bona-product-card__badge {
+                max-width: 100%;
+                min-height: 24px;
+                padding: 6px 7px;
+                font-size: 7px;
+                line-height: 1.2;
+                letter-spacing: .09em;
+                white-space: normal;
+            }
+
+            .bona-product-card__actions {
+                top: 8px;
+                right: 8px;
+                gap: 6px;
+            }
+
+            .bona-product-card__action,
+            .bona-product-card__actions .bona-product-card__wish {
+                width: 44px;
+                height: 44px;
+            }
+
+            .bona-product-card__action svg { width: 20px; height: 20px; }
+
+            .bona-product-card__swatches {
+                min-width: 0;
+                min-height: 36px;
+                padding: 0 2px;
+                overflow-x: auto;
+                scrollbar-width: none;
+
+                &::-webkit-scrollbar { display: none; }
+            }
+
+            .bona-product-card__swatch {
+                width: 36px;
+                height: 36px;
+                flex-basis: 36px;
+
+                &::before { inset: 9px; }
+            }
+
+            .bona-product-card__more {
+                min-width: 36px;
+                min-height: 36px;
+            }
+
+            .bona-product-card__info {
+                gap: 3px;
+                padding: 0 2px;
+            }
+
+            .bona-product-card__meta {
+                display: -webkit-box;
+                min-height: 0;
+                overflow: hidden;
+                font-size: 8px;
+                line-height: 1.3;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }
+
+            .bona-product-card__info h3 {
+                display: -webkit-box;
+                overflow: hidden;
+                font-size: 17px;
+                line-height: 1.2;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+            }
+
+            .bona-product-card__footer {
+                min-width: 0;
+                align-items: flex-end;
+                gap: 6px;
+                padding: 4px 2px 0;
+            }
+
+            .bona-product-card__pricing {
+                display: grid;
+                min-width: 0;
+                flex: 1 1 auto;
+                gap: 2px;
+            }
+
+            .bona-product-card__price {
+                min-width: 0;
+                flex-wrap: wrap;
+                gap: 2px 4px;
+            }
+
+            .bona-product-card__price small { font-size: 8px; }
+            .bona-product-card__price strong { font-size: 14px; }
+            .bona-product-card__old-price { font-size: 9px; }
+            .bona-product-card__unit { font-size: 8px; }
+            .bona-product-card__open { width: 44px; height: 44px; }
+        }
+    }
 
     .bona-catalog-faq { padding: 72px 0; }
     .bona-catalog-faq .accordion-faqs { margin-top: 32px; }

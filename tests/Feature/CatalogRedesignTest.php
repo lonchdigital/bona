@@ -162,6 +162,18 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('variant="catalog"', $catalog);
     }
 
+    public function test_mobile_catalog_cards_keep_a_compact_two_column_layout(): void
+    {
+        $catalogStyles = file_get_contents(resource_path('scss/storefront/_catalog.scss'));
+
+        $this->assertStringContainsString('&__grid.art-product-list.art-three-column {', $catalogStyles);
+        $this->assertStringContainsString('grid-template-columns: repeat(2, minmax(0, 1fr));', $catalogStyles);
+        $this->assertStringContainsString('height: clamp(190px, 42vw, 250px);', $catalogStyles);
+        $this->assertStringContainsString('-webkit-line-clamp: 3;', $catalogStyles);
+        $this->assertStringContainsString('.bona-product-card__price strong { font-size: 14px; }', $catalogStyles);
+        $this->assertStringContainsString('.bona-product-card__open { width: 44px; height: 44px; }', $catalogStyles);
+    }
+
     public function test_catalog_pagination_uses_real_compact_page_urls_and_progressive_load_more(): void
     {
         $paginator = new LengthAwarePaginator(
