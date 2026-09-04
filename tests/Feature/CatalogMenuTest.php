@@ -145,6 +145,9 @@ class CatalogMenuTest extends TestCase
             'preview_image_path' => $productImage,
             'main_image_path' => 'missing/product-main.webp',
             'orders_count' => 8,
+            // Legacy production data uses this flag inconsistently, while the
+            // same products remain visible in storefront catalogue queries.
+            'is_active' => false,
         ]);
 
         CatalogMenuConfiguration::query()->create([

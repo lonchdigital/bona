@@ -65,7 +65,6 @@ class CatalogMenuService
 
         $candidates = Product::query()
             ->select(['id', 'preview_image_path', 'main_image_path'])
-            ->where('is_active', true)
             ->where(function ($query) use ($productType): void {
                 $query->where('product_type_id', $productType->id)
                     ->orWhereHas('productTypes', function ($query) use ($productType): void {
