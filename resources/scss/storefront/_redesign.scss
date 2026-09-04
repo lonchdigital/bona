@@ -776,6 +776,28 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
     }
 }
 
+// The legacy theme uses a very specific 40px SVG rule for header actions.
+// Keep the desktop cart geometry stable when that stylesheet arrives late.
+@media (min-width: 961px) {
+    .bona-header__actions.header-main-others li.list-inline-item.basket-list button.bona-cart-trigger {
+        width: 24px;
+        height: 32px;
+    }
+
+    .bona-header__actions.header-main-others li.list-inline-item.basket-list button.bona-cart-trigger .bona-cart-icon {
+        width: 21px !important;
+        height: 21px !important;
+        fill: none !important;
+        stroke: currentColor;
+    }
+
+    .bona-header__actions.header-main-others li.list-inline-item.basket-list button.bona-cart-trigger .art-main-basket-count {
+        top: -1px;
+        right: -7px;
+        left: auto;
+    }
+}
+
 .bona-site-header.is-menu-open .bona-header__burger {
     span:nth-child(1) { top: 21px; transform: rotate(45deg); }
     span:nth-child(2) { opacity: 0; }

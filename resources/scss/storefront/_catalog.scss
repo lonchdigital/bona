@@ -538,7 +538,7 @@
         padding: 26px 0 0;
     }
 
-    &__grid.art-product-list {
+    &__grid.art-product-list.art-three-column {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 36px 24px;
@@ -707,7 +707,7 @@
             transform: none;
         }
 
-        .page-link {
+        .pagination > .page-item > .page-link {
             display: grid;
             width: 38px;
             height: 38px;
@@ -722,6 +722,11 @@
             text-decoration: none;
 
             svg { width: 18px; height: 18px; }
+        }
+
+        .pagination > .page-item:first-child > .page-link,
+        .pagination > .page-item:last-child > .page-link {
+            border-radius: 50%;
         }
 
         .page-item.active .page-link { border-color: var(--bona-ink); background: var(--bona-ink); color: #fff; }

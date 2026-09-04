@@ -178,8 +178,23 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString("min-width: 0;\n            width: 100%;\n            height: auto;", $storefrontStyles);
         $this->assertStringContainsString(".custom-control-number--cart input[type='number']", $storefrontStyles);
         $this->assertStringContainsString('button.bona-cart-trigger .bona-cart-icon', $storefrontStyles);
+        $this->assertStringContainsString('li.list-inline-item.basket-list button.bona-cart-trigger', $storefrontStyles);
+        $this->assertStringContainsString('width: 21px !important;', $storefrontStyles);
         $this->assertStringContainsString('width: 20px !important;', $storefrontStyles);
         $this->assertStringContainsString('body.bona-cart-drawer-open .bona-mobile-bottom-nav', $mobileNavigationStyles);
+    }
+
+    public function test_storefront_styles_are_the_final_authoritative_cascade_layer(): void
+    {
+        $layout = file_get_contents(resource_path('views/layouts/store-main.blade.php'));
+
+        $legacyPosition = strpos($layout, "Vite::asset('resources/scss/theme-additional.scss')");
+        $storefrontPosition = strpos($layout, "Vite::asset('resources/scss/storefront.scss')");
+
+        $this->assertNotFalse($legacyPosition);
+        $this->assertNotFalse($storefrontPosition);
+        $this->assertLessThan($storefrontPosition, $legacyPosition);
+        $this->assertStringContainsString('authoritative final layer', $layout);
     }
 
     public function test_wishlist_icons_have_safe_geometry_before_storefront_css_loads(): void

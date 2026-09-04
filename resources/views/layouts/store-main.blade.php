@@ -105,10 +105,9 @@
         .link-heart-active .art-heart-filled { display: block; }
     </style>
 
-    {{-- The current storefront has its own compact critical bundle. Historical
-         widgets still receive Bootstrap and the legacy theme asynchronously. --}}
-    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/storefront.scss') }}">
-
+    {{-- Historical widgets still receive Bootstrap and the legacy theme
+         asynchronously. Keep them before the current storefront in the
+         cascade so their late arrival cannot overwrite the redesign. --}}
     @unless($isHomePage)
         <link rel="stylesheet" href="{{ Vite::asset('resources/scss/libs.scss') }}" media="print" onload="this.media='all'">
         <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" media="print" onload="this.media='all'">
@@ -125,6 +124,10 @@
             <link rel="stylesheet" href="{{ Vite::asset('resources/scss/theme-additional.scss') }}">
         </noscript>
     @endunless
+
+    {{-- The redesign is the authoritative final layer for every storefront
+         page, including after the asynchronous legacy styles have loaded. --}}
+    <link rel="stylesheet" href="{{ Vite::asset('resources/scss/storefront.scss') }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.gstatic.com/s/forum/v19/6aey4Ky-Vb8Ew8IVOpI43XnSBTM.woff2" as="font" type="font/woff2" crossorigin>

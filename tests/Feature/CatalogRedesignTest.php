@@ -201,6 +201,8 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringNotContainsString('>2</a>', $html);
         $this->assertStringContainsString('.pagination > .page-item:first-child,', $catalogStyles);
         $this->assertStringContainsString("position: static;\n            transform: none;", $catalogStyles);
+        $this->assertStringContainsString('.pagination > .page-item > .page-link {', $catalogStyles);
+        $this->assertStringContainsString('.pagination > .page-item:first-child > .page-link,', $catalogStyles);
         $this->assertStringContainsString('.pagination-wrapper .page-link { width: 40px; height: 40px; }', $catalogStyles);
     }
 
