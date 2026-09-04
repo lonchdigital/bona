@@ -90,6 +90,21 @@
 
     @stack('head')
 
+    {{-- Keep inline icons bounded during the first paint, even when the main
+         storefront stylesheet is still crossing the network. --}}
+    <style id="bona-critical-icon-geometry">
+        .art-heart,
+        .bona-header__actions svg,
+        .bona-mobile-bottom-nav__icon > svg {
+            width: 24px;
+            height: 24px;
+        }
+        .art-heart { display: block; }
+        .art-heart-filled { display: none; }
+        .link-heart-active .art-heart-outline { display: none; }
+        .link-heart-active .art-heart-filled { display: block; }
+    </style>
+
     {{-- The current storefront has its own compact critical bundle. Historical
          widgets still receive Bootstrap and the legacy theme asynchronously. --}}
     <link rel="stylesheet" href="{{ Vite::asset('resources/scss/storefront.scss') }}">

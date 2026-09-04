@@ -182,6 +182,22 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('body.bona-cart-drawer-open .bona-mobile-bottom-nav', $mobileNavigationStyles);
     }
 
+    public function test_wishlist_icons_have_safe_geometry_before_storefront_css_loads(): void
+    {
+        $layout = file_get_contents(resource_path('views/layouts/store-main.blade.php'));
+        $heart = file_get_contents(resource_path('views/components/wish-heart.blade.php'));
+
+        $this->assertStringContainsString('id="bona-critical-icon-geometry"', $layout);
+        $this->assertStringContainsString('.bona-header__actions svg,', $layout);
+        $this->assertStringContainsString('.bona-mobile-bottom-nav__icon > svg', $layout);
+        $this->assertStringContainsString('.art-heart-filled { display: none; }', $layout);
+        $this->assertLessThan(
+            strpos($layout, "Vite::asset('resources/scss/storefront.scss')"),
+            strpos($layout, 'id="bona-critical-icon-geometry"'),
+        );
+        $this->assertSame(2, substr_count($heart, 'width="24" height="24"'));
+    }
+
     public function test_tiktok_profile_is_prepopulated_and_saved_through_application_settings(): void
     {
         $url = 'https://www.tiktok.com/@bonadoors';
