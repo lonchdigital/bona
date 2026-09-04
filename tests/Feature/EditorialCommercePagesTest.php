@@ -24,8 +24,10 @@ class EditorialCommercePagesTest extends TestCase
         $this->get(route('blog.main.page'))
             ->assertOk()
             ->assertSee('bona-blog-index', false)
+            ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"Blog"', false)
-            ->assertSee('"@type":"BreadcrumbList"', false);
+            ->assertSee('"@type":"BreadcrumbList"', false)
+            ->assertDontSee('__contextArgs', false);
     }
 
     public function test_article_renders_managed_blocks_and_valid_faq_schema_in_both_languages(): void
@@ -62,9 +64,11 @@ class EditorialCommercePagesTest extends TestCase
             ->assertOk()
             ->assertSee('bona-article-page', false)
             ->assertSee('Матеріал і конструкція')
+            ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"BlogPosting"', false)
             ->assertSee('"@type":"FAQPage"', false)
-            ->assertSee('Коли робити замір?');
+            ->assertSee('Коли робити замір?')
+            ->assertDontSee('__contextArgs', false);
 
         $this->get(route('localized.blog.article.page', ['lang' => 'ru', 'blogArticleSlug' => $article->slug]))
             ->assertOk()
@@ -95,8 +99,10 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('bona-service-detail', false)
             ->assertSee('/assets/images/services/installation.webp', false)
             ->assertSee('href="/contacts"', false)
+            ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"Service"', false)
-            ->assertSee('Монтаж і регулювання.');
+            ->assertSee('Монтаж і регулювання.')
+            ->assertDontSee('__contextArgs', false);
 
         $empty = ServicesPageSections::create([
             'slug' => 'porozhnia-posluha',
@@ -210,12 +216,14 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('single-product-add-to-cart', false)
             ->assertSee('single-product-wish-list', false)
             ->assertSee('data-product-compare', false)
+            ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"Product"', false)
             ->assertSee('"sku":"BD-SEO-01"', false)
             ->assertSee('Продумана конструкція')
             ->assertSee('Заповнений блок товару.')
             ->assertDontSee('empty-block')
-            ->assertDontSee('"@type":"FAQPage"', false);
+            ->assertDontSee('"@type":"FAQPage"', false)
+            ->assertDontSee('__contextArgs', false);
 
         $this->assertSame(1, substr_count($response->getContent(), 'bona-product-editorial--text'));
     }

@@ -44,7 +44,7 @@
         }
 
         $faqSchema = $faqQuestions ? [
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'FAQPage',
             '@id' => $faqUrl . '#faq',
             'url' => $faqUrl,
@@ -55,7 +55,7 @@
         ] : null;
 
         $faqBreadcrumbSchema = [
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'BreadcrumbList',
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($faqHomeUrl)],

@@ -13,7 +13,7 @@
 @if(($section['enabled'] ?? true) && count($faqs) > 0)
     @php
         $homeFaqSchema = [
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'FAQPage',
             'mainEntity' => $faqs->map(fn ($faq) => [
                 '@type' => 'Question',

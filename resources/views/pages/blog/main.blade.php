@@ -30,7 +30,7 @@
 
 @push('structured_data')
     <script type="application/ld+json">{!! json_encode(array_filter([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'Blog',
         '@id' => $blogUrl.'#blog',
         'url' => $blogUrl,
@@ -49,7 +49,7 @@
         ]))->values()->all(),
     ]), $schemaFlags) !!}</script>
     <script type="application/ld+json">{!! json_encode([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],

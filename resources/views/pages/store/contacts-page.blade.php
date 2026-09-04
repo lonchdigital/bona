@@ -27,7 +27,7 @@
 
 @push('structured_data')
     <script type="application/ld+json">{!! json_encode([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'ContactPage',
         '@id' => url()->current().'#contact-page',
         'url' => url()->current(),
@@ -37,7 +37,7 @@
         'mainEntity' => ['@id' => app(App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
     ], $schemaFlags) !!}</script>
     <script type="application/ld+json">{!! json_encode([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
         'itemListElement' => [
             [

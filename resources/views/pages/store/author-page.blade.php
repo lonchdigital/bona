@@ -52,7 +52,7 @@
 
     @php
         $personSchema = array_filter([
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'Person',
             '@id' => $authorUrl . '#person',
             'name' => $authorName,
@@ -83,7 +83,7 @@
         ]);
 
         $breadcrumbSchema = [
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'BreadcrumbList',
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],
@@ -92,7 +92,7 @@
         ];
 
         $profilePageSchema = [
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'ProfilePage',
             'mainEntity' => ['@id' => $authorUrl . '#person'],
             'url' => $authorUrl,

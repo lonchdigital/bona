@@ -26,7 +26,7 @@
     }
 
     $workSchema = array_filter([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'CreativeWork',
         '@id' => $workUrl.'#project',
         'url' => $workUrl,
@@ -46,7 +46,7 @@
     ]);
 
     $serviceSchema = $serviceTitle ? array_filter([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'Service',
         '@id' => $workUrl.'#service',
         'name' => $serviceTitle,
@@ -87,7 +87,7 @@
         <script type="application/ld+json">{!! json_encode($serviceSchema, $schemaFlags) !!}</script>
     @endif
     <script type="application/ld+json">{!! json_encode([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($workHomeUrl)],

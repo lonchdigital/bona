@@ -23,7 +23,7 @@
 @push('structured_data')
     @if(count($works) > 0)
         <script type="application/ld+json">{!! json_encode([
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'CollectionPage',
             '@id' => $worksUrl.'#works-page',
             'url' => $worksUrl,
@@ -43,7 +43,7 @@
         ], $schemaFlags) !!}</script>
     @endif
     <script type="application/ld+json">{!! json_encode([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($worksHomeUrl)],

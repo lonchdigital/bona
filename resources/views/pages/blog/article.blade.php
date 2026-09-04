@@ -33,7 +33,7 @@
 
 @push('structured_data')
     <script type="application/ld+json">{!! json_encode(array_filter([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'BlogPosting',
         '@id' => $articleUrl.'#article',
         'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleUrl],
@@ -57,7 +57,7 @@
         'publisher' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
     ]), $schemaFlags) !!}</script>
     <script type="application/ld+json">{!! json_encode([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],
@@ -67,7 +67,7 @@
     ], $schemaFlags) !!}</script>
     @if($articleFaq)
         <script type="application/ld+json">{!! json_encode([
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'FAQPage',
             'mainEntity' => array_map(fn ($entry) => [
                 '@type' => 'Question',

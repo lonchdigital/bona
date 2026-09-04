@@ -1,7 +1,7 @@
 @if(isset($faqs) && count($faqs))
     @php
         $categoryFaqSchema = [
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'FAQPage',
             'mainEntity' => collect($faqs)->map(fn ($faq) => [
                 '@type' => 'Question',

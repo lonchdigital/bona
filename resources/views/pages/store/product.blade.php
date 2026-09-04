@@ -75,7 +75,7 @@
 
 @push('structured_data')
     <script type="application/ld+json">{!! json_encode(array_filter([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'Product',
         '@id' => $productUrl.'#product',
         'name' => (string) $product->name,
@@ -110,7 +110,7 @@
         ]) : null,
     ]), $schemaFlags) !!}</script>
     <script type="application/ld+json">{!! json_encode([
-        '@context' => 'https://schema.org',
+        '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home'))],
@@ -120,7 +120,7 @@
     ], $schemaFlags) !!}</script>
     @if($faqItems->isNotEmpty())
         <script type="application/ld+json">{!! json_encode([
-            '@context' => 'https://schema.org',
+            '@'.'context' => 'https://schema.org',
             '@type' => 'FAQPage',
             'mainEntity' => $faqItems->map(fn ($item) => [
                 '@type' => 'Question',

@@ -49,4 +49,23 @@ class BladeTemplatesCompileTest extends TestCase
         $this->assertGreaterThan(100, $checked, 'Шаблонів знайшлось підозріло мало.');
         $this->assertSame([], $broken, "Ці шаблони компілюються у зламаний PHP:\n".implode("\n", $broken));
     }
+
+    public function test_json_ld_context_keys_cannot_be_compiled_as_blade_context_directives(): void
+    {
+        $root = resource_path('views');
+        $templates = Finder::create()->files()->in($root)->name('*.blade.php');
+        $unsafe = [];
+
+        foreach ($templates as $template) {
+            if (str_contains((string) file_get_contents($template->getRealPath()), "'@context'")) {
+                $unsafe[] = ltrim(str_replace($root, '', $template->getRealPath()), '/');
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $unsafe,
+            "JSON-LD ключ @context потрібно складати як '@'.'context', інакше Blade перетворює його на директиву:\n".implode("\n", $unsafe),
+        );
+    }
 }
