@@ -161,8 +161,8 @@ export default {
 
 
         $('.single-product-add-to-cart').click(function () {
-            const productSlug = $(this).attr('id');
-            const count = $('#count-of-products').val();
+            const productSlug = $(this).data('product-slug') || $(this).attr('id');
+            const count = $('#count-of-products').val() || 1;
 
             var selectAttributes = {};
             $('select.art-select-attribute').each(function() {
@@ -170,7 +170,7 @@ export default {
             });
 
             const selected_color = $('.color-btn.color-selected').first();
-            if (selected_color !== undefined) {
+            if (selected_color.length) {
                 let selected_color_name = selected_color.attr('data-name');
                 let selected_color_id = selected_color.attr('data-color-id');
 
@@ -224,6 +224,8 @@ export default {
         /*************************   Change Price on WEB   *************************/
 
         const productPriceElement = document.getElementById("product-price");
+        const readPrice = (value) => Number.parseFloat(String(value ?? '').replace(/\s+/g, '').replace(',', '.')) || 0;
+        const formatPrice = (value) => Math.round(Number(value) || 0).toLocaleString('uk-UA');
 
         function countProductDynamicPrice(countProducts, subProductPrice, countSubProduct, additionalCount, oldCountSubProducts, decrease) {
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
@@ -240,7 +242,7 @@ export default {
             }
 
             productPriceElement.setAttribute("data-product-price", newPrice.toString());
-            productPriceElement.innerText = newPrice.toString();
+            productPriceElement.innerText = formatPrice(newPrice);
         }
 
         // SubProducts
@@ -293,14 +295,14 @@ export default {
             thisElement.parent().find('[data-sub-id="'+ productSubID +'"]').remove();
 
             // Reduce Product Price
-            var currentPriceTag = productPriceElement.innerText;
+            var currentPriceTag = readPrice(productPriceElement.innerText);
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
 
             var sumOfSubProducts = parseFloat(productPrice) * parseFloat(countOfProducts);
 
             var newPrice = parseFloat(currentPrice) - sumOfSubProducts;
             productPriceElement.setAttribute("data-product-price", newPrice.toString());
-            productPriceElement.innerText = parseFloat(currentPriceTag) - sumOfSubProducts;
+            productPriceElement.innerText = formatPrice(currentPriceTag - sumOfSubProducts);
         });
 
 
@@ -334,7 +336,7 @@ export default {
             }
 
             var totalPrice = currentPrice + (attributePrices * countProducts);
-            productPriceElement.innerText = totalPrice.toFixed();
+            productPriceElement.innerText = formatPrice(totalPrice);
         }
 
         // Attributes
@@ -359,30 +361,18 @@ export default {
         // Colors
         if(colorList !== null) {
             colorList.addEventListener("click", function(event) {
-                const clickedElement = event.target;
+                const clickedSpan = event.target.closest('.color-btn');
 
-                // Check if there is an <img> inside the element or one of its parent elements
-                const imgElement = clickedElement.closest("span").querySelector("img");
-
-                if (imgElement || clickedElement.closest("span").tagName === "SPAN") {
-                    // If there is an <img> where the click event occurred
-                    const clickedImg = imgElement || clickedElement.closest("span");
-
-                    // Check if the parent element is <span>
-                    const clickedSpan = clickedImg.tagName === "SPAN" ? clickedImg : clickedImg.closest("span");
-
-                    if (clickedSpan) {
-                        // Remove the 'color-selected' class from all spans within the container
-                        const allSpans = colorList.querySelectorAll("span");
-                        allSpans.forEach(function(span) {
-                            span.classList.remove("color-selected");
-                        });
-
-                        // Add the 'color-selected' class to the parent span
-                        clickedSpan.classList.add("color-selected");
-                        updateTotalPriceWithAttributes(clickedSpan);
-                    }
+                if (!clickedSpan || !colorList.contains(clickedSpan)) {
+                    return;
                 }
+
+                colorList.querySelectorAll('.color-btn').forEach(function(span) {
+                    span.classList.remove("color-selected");
+                });
+
+                clickedSpan.classList.add("color-selected");
+                updateTotalPriceWithAttributes(clickedSpan);
             });
         }
 
@@ -412,7 +402,7 @@ export default {
         // Increase Product Price
         const $countOfProductsBodyPlus = $('#count-of-products-body .counter.plus');
         $countOfProductsBodyPlus.on('click', function() {
-            var currentPriceTag = productPriceElement.innerText;
+            var currentPriceTag = readPrice(productPriceElement.innerText);
             var startPrice = parseFloat(productPriceElement.getAttribute("data-start-price"));
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
             var newPrice = parseFloat(startPrice) + parseFloat(currentPrice);
@@ -422,7 +412,7 @@ export default {
             // update data count on Price TAG
             productPriceElement.setAttribute("data-product-price", newPrice.toString());
             productPriceElement.setAttribute("data-count", countProducts);
-            productPriceElement.innerText = parseFloat(currentPriceTag) + parseFloat(startPrice.toString());
+            productPriceElement.innerText = formatPrice(currentPriceTag + parseFloat(startPrice.toString()));
 
             walkThroughAllSubProducts(countProducts, false);
 
@@ -431,7 +421,7 @@ export default {
         // Reduce Product Price
         const $countOfProductsBodyMinus = $('#count-of-products-body .counter.minus');
         $countOfProductsBodyMinus.on('click', function() {
-            var currentPriceTag = productPriceElement.innerText;
+            var currentPriceTag = readPrice(productPriceElement.innerText);
             var startPrice = parseFloat(productPriceElement.getAttribute("data-start-price"));
             var currentPrice = parseFloat(productPriceElement.getAttribute("data-product-price"));
             var newPrice = parseFloat(currentPrice) - parseFloat(startPrice);
@@ -442,7 +432,7 @@ export default {
 
                 productPriceElement.setAttribute("data-product-price", newPrice.toString());
                 productPriceElement.setAttribute("data-count", countProducts);
-                productPriceElement.innerText = parseFloat(currentPriceTag) - parseFloat(startPrice.toString());
+                productPriceElement.innerText = formatPrice(currentPriceTag - parseFloat(startPrice.toString()));
 
                 walkThroughAllSubProducts(countProducts, true);
 

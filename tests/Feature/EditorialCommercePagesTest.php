@@ -213,6 +213,14 @@ class EditorialCommercePagesTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('bona-product-page', false)
+            ->assertSee('product-page product-v1', false)
+            ->assertSee('class="product-hero"', false)
+            ->assertSee('data-product-gallery', false)
+            ->assertSee('class="product-buybox"', false)
+            ->assertSee('class="product-services"', false)
+            ->assertSee('class="product-details-grid"', false)
+            ->assertSee('class="product-info-tabs"', false)
+            ->assertSee('class="mobile-buybar"', false)
             ->assertSee('single-product-add-to-cart', false)
             ->assertSee('single-product-wish-list', false)
             ->assertSee('data-product-compare', false)
@@ -222,6 +230,7 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('Продумана конструкція')
             ->assertSee('Заповнений блок товару.')
             ->assertDontSee('empty-block')
+            ->assertDontSee('class="bona-product-hero"', false)
             ->assertDontSee('"@type":"FAQPage"', false)
             ->assertDontSee('__contextArgs', false);
 

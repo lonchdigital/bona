@@ -22,4 +22,20 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("page.slice('localized.'.length)", $script);
         $this->assertStringContainsString("pages['./pages/' + pageToLoad + '.js']", $script);
     }
+
+    public function test_reference_product_interactions_cover_gallery_tabs_installments_and_mobile_cart(): void
+    {
+        $pageScript = file_get_contents(resource_path('js/store/pages/store.product.page.js'));
+        $referenceScript = file_get_contents(resource_path('js/store/pages/store.product.page/product-reference.js'));
+        $cartScript = file_get_contents(resource_path('js/store/common/cart.js'));
+
+        $this->assertStringContainsString("import('./store.product.page/product-reference')", $pageScript);
+        $this->assertStringNotContainsString("import('./store.product.page/swiper')", $pageScript);
+        $this->assertStringContainsString("querySelector('[data-product-gallery]')", $referenceScript);
+        $this->assertStringContainsString("querySelectorAll('[data-product-tab]')", $referenceScript);
+        $this->assertStringContainsString("querySelector('[data-installment-card]')", $referenceScript);
+        $this->assertStringContainsString("querySelector('.product-kit-selections')", $referenceScript);
+        $this->assertStringContainsString("$(this).data('product-slug') || $(this).attr('id')", $cartScript);
+        $this->assertStringContainsString("replace(/\\s+/g, '')", $cartScript);
+    }
 }

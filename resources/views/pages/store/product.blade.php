@@ -57,7 +57,7 @@
     $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
 @endphp
 
-@section('body_class', 'bona-content-body')
+@section('body_class', 'bona-content-body product-body product-v1')
 @section('seo_title', $product->meta_title ?: $product->name.' — '.trans('base.site_title'))
 @section('meta_description', $product->meta_description ?: $productDescription)
 @section('meta_keywords', $product->meta_keywords ?: '')
@@ -132,6 +132,9 @@
 @endpush
 
 @section('content')
+    @include('pages.store.partials.product-reference')
+
+    @if(false)
     <div class="bona-content-page bona-product-page product">
         <x-store.content-breadcrumbs :items="[
             ['label' => $product->productType->name, 'url' => $catalogUrl],
@@ -464,6 +467,7 @@
             </section>
         @endif
     </div>
+    @endif
 
     <div id="order-request" class="art-popup-call-measurer bona-form-dialog">
         <form action="#" id="order-request-form" method="post" class="art-contact-form art-order-form">
