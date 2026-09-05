@@ -392,6 +392,7 @@ class SerpAgentHtmlService
         // so these take the language of the field they were delivered in.
         [null, 'П', 'В'],
         [null, 'В', 'О'],
+        [null, 'Q', 'А'],
         [null, 'Q', 'A'],
     ];
 
@@ -400,6 +401,27 @@ class SerpAgentHtmlService
         'ru' => ['Вопрос', 'Ответ'],
         'en' => ['Question', 'Answer'],
     ];
+
+    private const ADVICE_LABELS = [
+        'порада',
+        'совет',
+        'tip',
+    ];
+
+    /**
+     * Adds presentation hooks to both newly imported and older saved bodies.
+     *
+     * Some existing articles predate the content decorators. Applying them at
+     * render time keeps those articles consistent without rewriting editorial
+     * content in the database, while the import pipeline still persists the
+     * same durable markup for new deliveries.
+     */
+    public function decorateForDisplay(string $html, string $locale): string
+    {
+        $html = $this->styleInlineQa($html, $locale);
+
+        return $this->styleArticleElements($html);
+    }
 
     /**
      * Dresses the question and answer pairs written into the body.
@@ -421,8 +443,9 @@ class SerpAgentHtmlService
             [$questionLabel, $answerLabel] = self::QA_LABELS[$markerLanguage ?? $locale]
                 ?? self::QA_LABELS['uk'];
 
-            $pattern = '~<p>\s*'.preg_quote($questionMarker, '~').'\s*:\s*(.+?)\s*<br\s*/?>\s*'
-                .'(?:<strong>\s*)?'.preg_quote($answerMarker, '~').'\s*:\s*(?:</strong>)?\s*(.+?)\s*</p>~su';
+            $pattern = '~<p\b[^>]*>\s*(?:<strong\b[^>]*>\s*)?'
+                .preg_quote($questionMarker, '~').'\s*:\s*(.+?)(?:\s*</strong>)?\s*<br\s*/?>\s*'
+                .'(?:<strong\b[^>]*>\s*)?'.preg_quote($answerMarker, '~').'\s*:\s*(?:</strong>)?\s*(.+?)\s*</p>~sui';
 
             $html = preg_replace_callback(
                 $pattern,
@@ -432,6 +455,105 @@ class SerpAgentHtmlService
         }
 
         return $html;
+    }
+
+    /**
+     * Gives advice paragraphs and tables stable hooks without asking editors
+     * to know implementation class names. DOM parsing also lets this repair
+     * older tables that were saved before the responsive wrapper was added.
+     */
+    private function styleArticleElements(string $html): string
+    {
+        $html = trim($html);
+
+        if ($html === '' || ! class_exists(DOMDocument::class)) {
+            return preg_replace(
+                '~<p(?![^>]*\bclass=)([^>]*)>\s*(<strong\b[^>]*>\s*(?:Порада|Совет|Tip)\s*:?\s*</strong>)~ui',
+                '<p class="article-advice"$1>$2',
+                $html
+            ) ?? $html;
+        }
+
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $previousUseErrors = libxml_use_internal_errors(true);
+
+        $loaded = $document->loadHTML(
+            '<?xml encoding="UTF-8"?><div data-article-display-root="1">'.$html.'</div>',
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+        );
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseErrors);
+
+        if (! $loaded) {
+            return $html;
+        }
+
+        $xpath = new DOMXPath($document);
+        $root = $xpath->query('//div[@data-article-display-root]')->item(0);
+
+        if (! $root instanceof DOMElement) {
+            return $html;
+        }
+
+        $this->wrapTables($document, $root);
+
+        foreach ($xpath->query('.//p[strong]', $root) as $paragraph) {
+            if (! $paragraph instanceof DOMElement) {
+                continue;
+            }
+
+            $strong = null;
+
+            foreach ($paragraph->childNodes as $child) {
+                if ($child instanceof DOMText && trim($child->textContent) === '') {
+                    continue;
+                }
+
+                if ($child instanceof DOMElement && strtolower($child->tagName) === 'strong') {
+                    $strong = $child;
+                }
+
+                break;
+            }
+
+            if (! $strong instanceof DOMElement) {
+                continue;
+            }
+
+            $label = mb_strtolower(trim(rtrim(trim($strong->textContent), ':')));
+
+            if (! in_array($label, self::ADVICE_LABELS, true)) {
+                continue;
+            }
+
+            $classes = array_filter(preg_split('/\s+/', trim($paragraph->getAttribute('class'))) ?: []);
+
+            if (! in_array('article-advice', $classes, true)) {
+                $classes[] = 'article-advice';
+                $paragraph->setAttribute('class', implode(' ', $classes));
+            }
+        }
+
+        foreach ($xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " accordion ")]', $root) as $trigger) {
+            if (! $trigger instanceof DOMElement) {
+                continue;
+            }
+
+            $classes = preg_split('/\s+/', trim($trigger->getAttribute('class'))) ?: [];
+
+            $trigger->setAttribute('role', 'button');
+            $trigger->setAttribute('tabindex', '0');
+            $trigger->setAttribute('aria-expanded', in_array('active', $classes, true) ? 'true' : 'false');
+        }
+
+        $result = '';
+
+        foreach ($root->childNodes as $child) {
+            $result .= $document->saveHTML($child);
+        }
+
+        return trim($result);
     }
 
     private function buildQaCard(string $questionLabel, string $question, string $answerLabel, string $answer): string
@@ -488,7 +610,7 @@ class SerpAgentHtmlService
             $isFirst = false;
 
             $items .= '<div class="accordion-item-wrapper">'
-                .'<h3 class="accordion'.$openClass.'" tabindex="0">'
+                .'<h3 class="accordion'.$openClass.'" role="button" tabindex="0" aria-expanded="'.($openClass ? 'true' : 'false').'">'
                 .'<span class="question">'.e($question).'</span>'
                 .'</h3>'
                 .'<div class="art-panel"'.$openStyle.'>'
@@ -596,11 +718,14 @@ class SerpAgentHtmlService
 
             if ($parent instanceof DOMElement
                 && str_contains($parent->getAttribute('class'), 'article-table')) {
+                $parent->setAttribute('tabindex', '0');
+
                 continue;
             }
 
             $wrapper = $document->createElement('div');
             $wrapper->setAttribute('class', 'article-table');
+            $wrapper->setAttribute('tabindex', '0');
 
             $parent->replaceChild($wrapper, $table);
             $wrapper->appendChild($table);

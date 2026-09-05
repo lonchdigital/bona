@@ -73,9 +73,9 @@ class SerpAgentArticleService extends BaseService
             $body = $this->htmlService->removeInlineFaq($body, $locale);
         }
 
-        // Question and answer pairs left in the running text get a card of
-        // their own rather than opening with bare shorthand.
-        $body = $this->htmlService->styleInlineQa($body, $locale);
+        // Question/answer pairs, advice and tables get durable presentation
+        // hooks rather than relying on editors to add CSS class names.
+        $body = $this->htmlService->decorateForDisplay($body, $locale);
 
         $body .= $this->buildAppendix($dto, $locale, $hasInlineFaq);
 

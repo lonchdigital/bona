@@ -48,8 +48,8 @@ class EditorialCommercePagesTest extends TestCase
             'blog_article_id' => $article->id,
             'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
             'content' => [
-                'uk' => '<h2>Матеріал і конструкція</h2><p>Текст українською.</p>',
-                'ru' => '<h2>Материал и конструкция</h2><p>Текст на русском.</p>',
+                'uk' => '<h2>Матеріал і конструкція</h2><p>Текст українською.</p><table><thead><tr><th>Критерій</th><th>Що перевірити</th></tr></thead><tbody><tr><td>Гарантія</td><td>Умови</td></tr></tbody></table><p><strong>Порада:</strong> Перевірте договір.</p><p><strong>Q: Скільки діє право на обмін?</strong><br><strong>А:</strong> Чотирнадцять днів.</p>',
+                'ru' => '<h2>Материал и конструкция</h2><p>Текст на русском.</p><p><strong>Совет:</strong> Проверьте договор.</p><p><strong>Q: Сколько действует право на обмен?</strong><br><strong>A:</strong> Четырнадцать дней.</p>',
             ],
         ]);
         BlogArticleBlock::create([
@@ -64,7 +64,18 @@ class EditorialCommercePagesTest extends TestCase
         $this->get(route('blog.article.page', ['blogArticleSlug' => $article->slug]))
             ->assertOk()
             ->assertSee('bona-article-page', false)
+            ->assertSee('bona-article-hero', false)
+            ->assertSee('Bona Doors Editorial')
+            ->assertSee('bona-article-sidebar', false)
+            ->assertSee('bona-article-consultant', false)
+            ->assertSee('bona-article-configurator', false)
             ->assertSee('Матеріал і конструкція')
+            ->assertSee('class="article-table"', false)
+            ->assertSee('class="article-advice"', false)
+            ->assertSee('class="article-qa"', false)
+            ->assertSee('Питання')
+            ->assertSee('Відповідь')
+            ->assertDontSee('Q: Скільки діє право', false)
             ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"BlogPosting"', false)
             ->assertSee('"@type":"FAQPage"', false)
@@ -74,6 +85,10 @@ class EditorialCommercePagesTest extends TestCase
         $this->get(route('localized.blog.article.page', ['lang' => 'ru', 'blogArticleSlug' => $article->slug]))
             ->assertOk()
             ->assertSee('Материал и конструкция')
+            ->assertSee('class="article-advice"', false)
+            ->assertSee('class="article-qa"', false)
+            ->assertSee('Вопрос')
+            ->assertSee('Ответ')
             ->assertSee('Когда делать замер?')
             ->assertDontSee('Текст українською.');
     }
