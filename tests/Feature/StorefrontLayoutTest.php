@@ -236,6 +236,17 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('authoritative final layer', $layout);
     }
 
+    public function test_cart_quantity_value_overrides_legacy_counter_spacing(): void
+    {
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_commerce.scss'));
+
+        $this->assertStringContainsString("> input.product-count-input[type='number']", $stylesheet);
+        $this->assertStringContainsString("padding: 0;\n        border: 0;", $stylesheet);
+        $this->assertStringContainsString('font-variant-numeric: tabular-nums;', $stylesheet);
+        $this->assertStringContainsString('-webkit-text-fill-color: var(--bona-ink);', $stylesheet);
+        $this->assertStringContainsString("margin-top: 12px;\n            padding-top: 0;", $stylesheet);
+    }
+
     public function test_wishlist_icons_have_safe_geometry_before_storefront_css_loads(): void
     {
         $layout = file_get_contents(resource_path('views/layouts/store-main.blade.php'));
