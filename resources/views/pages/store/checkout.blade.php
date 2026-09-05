@@ -22,6 +22,13 @@
         $formatPrice = fn ($amount) => number_format((float) $amount, 0, ',', ' ').' '.$currency;
         $productsCount = $productsInCart->sum(fn ($product) => (int) $product->pivot->count);
         $signInUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page', ['redirect_to' => request()->getRequestUri()]);
+        $signInActionUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in');
+        $forgotPasswordUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.forgot-password.page');
+        $checkoutRegisteredEmail = $checkoutRegisteredEmail ?? null;
+        $registeredEmailError = $checkoutRegisteredEmail ? $errors->first('email') : null;
+        $otherCheckoutErrors = collect($errors->all())
+            ->reject(fn ($error) => $registeredEmailError && $error === $registeredEmailError)
+            ->values();
         $monoPeriods = App\Support\Payment\InstallmentPeriods::for('monobank');
         $privatPeriods = App\Support\Payment\InstallmentPeriods::for('privatbank');
         $selectedMonoPeriod = (int) old('mono_payment_period', $checkoutMonoPeriod);
@@ -53,7 +60,27 @@
             @csrf
 
             <div class="bona-checkout-form">
-                @if($errors->any())
+                @if($checkoutRegisteredEmail)
+                    <div class="bona-checkout-errors bona-checkout-errors--account" role="alert" tabindex="-1" data-checkout-errors data-checkout-account-error>
+                        <svg viewBox="0 0 32 32" aria-hidden="true">
+                            <circle cx="16" cy="12" r="5"></circle>
+                            <path d="M7.5 26c1.6-5 4.5-7.5 8.5-7.5S22.9 21 24.5 26"></path>
+                        </svg>
+                        <div>
+                            <strong>{{ trans('base.checkout_registered_account_title') }}</strong>
+                            <p>{{ trans('base.checkout_registered_account_text') }}</p>
+                            @if($otherCheckoutErrors->isNotEmpty())
+                                <ul>@foreach($otherCheckoutErrors as $error)<li>{{ $error }}</li>@endforeach</ul>
+                            @endif
+                        </div>
+                        <a
+                            class="bona-button bona-button--dark"
+                            href="{{ $signInUrl }}"
+                            data-checkout-auth-open
+                            data-auth-email="{{ $checkoutRegisteredEmail }}"
+                        >{{ trans('base.checkout_registered_account_action') }}</a>
+                    </div>
+                @elseif($errors->any())
                     <div class="bona-checkout-errors" role="alert" tabindex="-1" data-checkout-errors>
                         <strong>{{ trans('base.checkout_order_error') }}</strong>
                         <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
@@ -66,7 +93,7 @@
                     @guest
                         <div class="bona-checkout-auth-prompt">
                             <div><strong>{{ trans('base.checkout_signin_title') }}</strong><p>{{ trans('base.checkout_signin_text') }}</p></div>
-                            <a class="bona-button bona-button--outline" href="{{ $signInUrl }}">{{ trans('base.checkout_signin_action') }}</a>
+                            <a class="bona-button bona-button--outline" href="{{ $signInUrl }}" data-checkout-auth-open data-auth-email="{{ old('email') }}">{{ trans('base.checkout_signin_action') }}</a>
                         </div>
                         <div class="bona-form-grid">
                             <div class="bona-field @error('full_name') has-error @enderror @error('first_name') has-error @enderror @error('last_name') has-error @enderror"><label for="name">{{ trans('base.checkout_full_name') }}</label><input id="name" name="full_name" type="text" value="{{ old('full_name', trim(old('first_name').' '.old('last_name'))) }}" autocomplete="name" maxlength="201" placeholder="{{ trans('base.checkout_full_name_placeholder') }}" required>@error('full_name')<small>{{ $message }}</small>@enderror @error('first_name')<small>{{ $message }}</small>@enderror @error('last_name')<small>{{ $message }}</small>@enderror</div>
@@ -292,5 +319,56 @@
                 <a href="https://privatbank.ua/kredyty/oplata-chastynamy-ta-myttyeva-rozstrochka" target="_blank" rel="noopener noreferrer">{{ trans('base.checkout_installment_official') }}</a>
             </div>
         </dialog>
+
+        @guest
+            <dialog class="bona-checkout-dialog bona-checkout-auth-dialog" data-checkout-auth-dialog aria-labelledby="checkout-auth-title">
+                <div class="bona-checkout-dialog__head">
+                    <div>
+                        <h2 id="checkout-auth-title">{{ trans('base.checkout_auth_title') }}</h2>
+                    </div>
+                    <button type="button" data-checkout-auth-close aria-label="{{ trans('base.checkout_auth_close') }}">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                    </button>
+                </div>
+                <div class="bona-checkout-dialog__content bona-checkout-auth-dialog__content">
+                    <p class="bona-checkout-auth-dialog__intro">{{ trans('base.checkout_auth_intro') }}</p>
+                    <form
+                        action="{{ $signInActionUrl }}"
+                        method="POST"
+                        data-checkout-auth-form
+                        data-fallback-error="{{ trans('base.checkout_auth_error') }}"
+                        data-network-error="{{ trans('base.checkout_auth_network_error') }}"
+                        data-processing-label="{{ trans('base.checkout_auth_processing') }}"
+                    >
+                        @csrf
+                        <input type="hidden" name="redirect_to" value="{{ request()->getRequestUri() }}">
+                        <div class="bona-checkout-auth-dialog__status" role="alert" aria-live="assertive" data-checkout-auth-status hidden></div>
+                        <div class="bona-field">
+                            <label for="checkout-auth-email">{{ trans('auth.email') }}</label>
+                            <input id="checkout-auth-email" name="email" type="email" value="{{ old('email') }}" autocomplete="email" maxlength="255" placeholder="{{ trans('auth.email_placeholder') }}" required>
+                        </div>
+                        <div class="bona-field">
+                            <label for="checkout-auth-password">{{ trans('auth.password') }}</label>
+                            <input id="checkout-auth-password" name="password" type="password" autocomplete="current-password" placeholder="{{ trans('auth.password_placeholder') }}" required>
+                        </div>
+                        <div class="bona-checkout-auth-dialog__options">
+                            <label class="bona-checkout-auth-dialog__remember">
+                                <input type="checkbox" name="remember_me" value="1">
+                                <span>{{ trans('auth.remember_me') }}</span>
+                            </label>
+                            <a
+                                href="{{ $forgotPasswordUrl }}{{ $checkoutRegisteredEmail ? '?'.http_build_query(['email' => $checkoutRegisteredEmail]) : '' }}"
+                                data-checkout-auth-forgot
+                                data-base-url="{{ $forgotPasswordUrl }}"
+                            >{{ trans('auth.forgot_password') }}</a>
+                        </div>
+                        <button class="bona-button bona-button--dark bona-button--full" type="submit">
+                            <span data-checkout-auth-submit-label>{{ trans('auth.sign_in') }}</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </dialog>
+        @endguest
     </div>
 @endsection

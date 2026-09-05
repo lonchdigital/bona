@@ -264,6 +264,15 @@ class CheckoutConfirmOrderRequest extends BaseRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'email.unique' => trans('base.checkout_email_registered_error', [
+                'email' => trim((string) $this->input('email')),
+            ]),
+        ];
+    }
+
     public function toDTO(): CheckoutConfirmOrderDTO
     {
         return new CheckoutConfirmOrderDTO(

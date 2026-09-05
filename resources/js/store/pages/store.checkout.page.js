@@ -14,6 +14,137 @@ export default async function () {
     Inputmask({ mask: '+38(099)999-99-99' }).mask($('#phone'));
     Inputmask({ mask: '+38(099)999-99-99' }).mask($('#custom_phone'));
 
+    const authDialog = document.querySelector('[data-checkout-auth-dialog]');
+    const authForm = authDialog?.querySelector('[data-checkout-auth-form]');
+    const authEmail = authForm?.querySelector('input[name="email"]');
+    const authPassword = authForm?.querySelector('input[name="password"]');
+    const authStatus = authForm?.querySelector('[data-checkout-auth-status]');
+    const authSubmit = authForm?.querySelector('button[type="submit"]');
+    const authSubmitLabel = authForm?.querySelector('[data-checkout-auth-submit-label]');
+    const authForgot = authForm?.querySelector('[data-checkout-auth-forgot]');
+    const authSubmitDefaultLabel = authSubmitLabel?.textContent || '';
+
+    const setAuthStatus = (message = '') => {
+        if (!authStatus) return;
+
+        authStatus.textContent = message;
+        authStatus.hidden = message === '';
+    };
+
+    const updateForgotPasswordLink = () => {
+        if (!authForgot) return;
+
+        const url = new URL(authForgot.dataset.baseUrl || authForgot.href, window.location.origin);
+        const email = authEmail?.value.trim();
+        if (email) url.searchParams.set('email', email);
+        else url.searchParams.delete('email');
+        authForgot.href = url.toString();
+    };
+
+    const closeAuthDialog = () => {
+        if (!authDialog) return;
+        if (typeof authDialog.close === 'function') authDialog.close();
+        else authDialog.removeAttribute('open');
+    };
+
+    const openAuthDialog = (email = '') => {
+        if (!authDialog || !authForm) return;
+
+        setAuthStatus();
+        authForm.querySelectorAll('[aria-invalid="true"]').forEach((input) => input.removeAttribute('aria-invalid'));
+        if (email && authEmail) authEmail.value = email;
+        updateForgotPasswordLink();
+
+        if (typeof authDialog.showModal === 'function') authDialog.showModal();
+        else authDialog.setAttribute('open', '');
+
+        requestAnimationFrame(() => {
+            const target = authEmail?.value ? authPassword : authEmail;
+            target?.focus();
+        });
+    };
+
+    document.querySelectorAll('[data-checkout-auth-open]').forEach((trigger) => {
+        trigger.addEventListener('click', (event) => {
+            if (!authDialog) return;
+            event.preventDefault();
+            openAuthDialog(trigger.dataset.authEmail || document.querySelector('#email')?.value || '');
+        });
+    });
+
+    authDialog?.querySelector('[data-checkout-auth-close]')?.addEventListener('click', closeAuthDialog);
+    authDialog?.addEventListener('click', (event) => {
+        if (event.target === authDialog) closeAuthDialog();
+    });
+    authDialog?.addEventListener('close', () => {
+        if (authPassword) authPassword.value = '';
+        setAuthStatus();
+    });
+    authEmail?.addEventListener('input', updateForgotPasswordLink);
+
+    authForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        if (!authForm.checkValidity()) {
+            authForm.reportValidity();
+            return;
+        }
+
+        setAuthStatus();
+        authForm.querySelectorAll('[aria-invalid="true"]').forEach((input) => input.removeAttribute('aria-invalid'));
+        if (authSubmit) {
+            authSubmit.disabled = true;
+            authSubmit.setAttribute('aria-busy', 'true');
+        }
+        if (authSubmitLabel) authSubmitLabel.textContent = authForm.dataset.processingLabel;
+
+        try {
+            const signInData = new FormData(authForm);
+            const checkoutDraft = {};
+            new FormData(form).forEach((value, key) => {
+                if (key !== '_token' && typeof value === 'string') checkoutDraft[key] = value;
+            });
+            signInData.set('checkout_draft', JSON.stringify(checkoutDraft));
+
+            const response = await fetch(authForm.action, {
+                method: 'POST',
+                body: signInData,
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            });
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                const errors = data.errors || {};
+                const fieldName = Object.keys(errors)[0];
+                const field = fieldName ? authForm.elements.namedItem(fieldName) : null;
+                const message = fieldName && Array.isArray(errors[fieldName])
+                    ? errors[fieldName][0]
+                    : (data.message || authForm.dataset.fallbackError);
+
+                if (field instanceof HTMLElement) {
+                    field.setAttribute('aria-invalid', 'true');
+                    field.focus();
+                }
+                setAuthStatus(message);
+                return;
+            }
+
+            window.location.assign(data.redirect_to || window.location.href);
+        } catch (error) {
+            setAuthStatus(authForm.dataset.networkError);
+        } finally {
+            if (authSubmit) {
+                authSubmit.disabled = false;
+                authSubmit.removeAttribute('aria-busy');
+            }
+            if (authSubmitLabel) authSubmitLabel.textContent = authSubmitDefaultLabel;
+        }
+    });
+
     const showPanel = (selector, activeId) => {
         document.querySelectorAll(selector).forEach((panel) => {
             panel.hidden = panel.id !== activeId;

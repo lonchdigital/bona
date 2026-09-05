@@ -25,7 +25,7 @@
                                 @csrf
                                 <div class="form-group">
                                     <label class="custom-control-label2" for="email">{{ trans('auth.email') }}</label>
-                                    <input id="email" class="art-form-light-control" placeholder="{{ trans('auth.email_placeholder') }}" type="text" name="email" value="{{ old('email') }}"/>
+                                    <input id="email" class="art-form-light-control" placeholder="{{ trans('auth.email_placeholder') }}" type="email" name="email" value="{{ old('email', request('email')) }}" autocomplete="email"/>
                                     @error('email')
                                     <div class="text-danger">{{ $message }}</div>
                                     @enderror

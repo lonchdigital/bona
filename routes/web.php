@@ -132,7 +132,7 @@ $optionalLanguageRoutes = function () {
         ])->group(function () {
             // sign in
             Route::name('auth.sign-in.page')->get('sign-in', ShowSignInPageAction::class);
-            Route::name('auth.sign-in')->post('sign-in', SignInAction::class);
+            Route::name('auth.sign-in')->middleware('throttle:10,1')->post('sign-in', SignInAction::class);
 
             // sign up
             Route::name('auth.sign-up.page')->get('sign-up', ShowSignUpPageAction::class);

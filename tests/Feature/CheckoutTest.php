@@ -210,6 +210,29 @@ class CheckoutTest extends TestCase
         $this->assertSame(0, Order::count());
     }
 
+    public function test_an_existing_email_gets_a_checkout_specific_sign_in_recovery(): void
+    {
+        $this->seedCurrency();
+        $existingUser = User::factory()->create(['email' => 'registered@example.com']);
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+        $response = $this->confirm(['email' => $existingUser->email]);
+
+        $response->assertSessionHasErrors([
+            'email' => trans('base.checkout_email_registered_error', [
+                'email' => $existingUser->email,
+            ]),
+        ]);
+
+        $this->get(route('store.checkout.page'))
+            ->assertOk()
+            ->assertSee(trans('base.checkout_registered_account_title'))
+            ->assertSee(trans('base.checkout_registered_account_action'))
+            ->assertSee('data-checkout-account-error', false)
+            ->assertSee('data-auth-email="'.$existingUser->email.'"', false);
+    }
+
     public function test_an_order_is_refused_with_an_unusable_phone(): void
     {
         $this->seedCurrency();

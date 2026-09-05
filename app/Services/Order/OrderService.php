@@ -78,7 +78,9 @@ class OrderService extends BaseService
             if (is_null($user)) {
                 if (User::where('email', $request->email)->exists()) {
                     throw ValidationException::withMessages([
-                        'email' => trans('validation.unique', ['attribute' => 'email']),
+                        'email' => trans('base.checkout_email_registered_error', [
+                            'email' => $request->email,
+                        ]),
                     ]);
                 }
 

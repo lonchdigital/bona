@@ -12,9 +12,13 @@ class SignInRequest extends BaseRequest
         return [
             'email' => [
                 'required',
+                'string',
+                'email',
+                'max:255',
             ],
             'password' => [
                 'required',
+                'string',
             ],
             'remember_me' => [
                 'nullable',
@@ -23,6 +27,11 @@ class SignInRequest extends BaseRequest
                 'nullable',
                 'string',
                 'max:2048',
+            ],
+            'checkout_draft' => [
+                'nullable',
+                'string',
+                'max:20000',
             ],
         ];
     }

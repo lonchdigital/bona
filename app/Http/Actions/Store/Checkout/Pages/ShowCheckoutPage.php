@@ -7,6 +7,7 @@ use App\DataClasses\PaymentTypesDataClass;
 use App\Helpers\MultiLangRoute;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
+use App\Models\User;
 use App\Services\Cart\CartService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Delivery\DeliveryService;
@@ -70,6 +71,14 @@ class ShowCheckoutPage extends BaseAction
             ? $deliveryService->getSATDepartmentByRef((string) old('sat_department'))->first()
             : null;
 
+        $checkoutRegisteredEmail = null;
+        $oldEmail = trim((string) old('email'));
+        if (! auth()->check() && $oldEmail !== '' && User::query()
+            ->whereRaw('LOWER(email) = ?', [mb_strtolower($oldEmail)])
+            ->exists()) {
+            $checkoutRegisteredEmail = $oldEmail;
+        }
+
         return view('pages.store.checkout', [
             'productsInCart' => $cartService->getProductsInCart($cart),
             'regions' => $regionService->getRegions(),
@@ -84,6 +93,7 @@ class ShowCheckoutPage extends BaseAction
             'npDepartmentInitial' => $npDepartmentInitial ?: null,
             'satCityInitial' => $satCityInitial ?: null,
             'satDepartmentInitial' => $satDepartmentInitial ?: null,
+            'checkoutRegisteredEmail' => $checkoutRegisteredEmail,
         ]);
     }
 }
