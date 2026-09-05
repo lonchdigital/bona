@@ -1,36 +1,52 @@
-<section class="card shadow my-4" data-footer-menu-editor>
-    <div class="card-body">
-        <div class="d-flex flex-wrap align-items-start justify-content-between mb-3" style="gap: 12px">
+@php
+    $orderedFooterItems = collect($items)
+        ->sortBy(fn ($item, $index) => [(int) data_get($item, 'sort_order', $index), $index]);
+@endphp
+
+<section class="catalog-menu-panel footer-menu-editor" data-footer-menu-editor>
+    <div class="catalog-menu-panel__header">
+        <div>
+            <span class="catalog-menu-panel__step">{{ $menuKey === 'navigation' ? '01' : '02' }}</span>
             <div>
-                <h3 class="h5 mb-1">{{ $title }}</h3>
-                <p class="text-muted mb-0">{{ $description }}</p>
+                <h3>{{ $title }}</h3>
+                <p>{{ $description }}</p>
             </div>
+        </div>
+        <div class="footer-menu-editor__actions">
+            <span class="footer-menu-editor__count" data-menu-list-count data-label="{{ trans('admin.footer_menu_items_short') }}">
+                {{ trans('admin.footer_menu_items_short') }}: {{ $orderedFooterItems->count() }}
+            </span>
             <button class="btn btn-sm btn-outline-dark" type="button" data-footer-menu-add>
-                {{ trans('admin.footer_menu_add_item') }}
+                <span class="fe fe-plus mr-1" aria-hidden="true"></span>{{ trans('admin.footer_menu_add_item') }}
             </button>
         </div>
+    </div>
 
-        <div data-footer-menu-list>
-            @foreach($items as $index => $item)
-                @include('pages.admin.catalog-menu.partials.footer-menu-row', [
-                    'menuKey' => $menuKey,
-                    'index' => $index,
-                    'item' => $item,
-                ])
-            @endforeach
-        </div>
-
-        <template>
+    <div class="footer-menu-list" data-footer-menu-list data-menu-sort-list>
+        @foreach($orderedFooterItems as $index => $item)
             @include('pages.admin.catalog-menu.partials.footer-menu-row', [
                 'menuKey' => $menuKey,
-                'index' => '__INDEX__',
-                'item' => [
-                    'label' => ['uk' => '', 'ru' => ''],
-                    'url' => ['uk' => '', 'ru' => ''],
-                    'is_visible' => true,
-                    'sort_order' => 0,
-                ],
+                'index' => $index,
+                'item' => $item,
             ])
-        </template>
+        @endforeach
+
+        <div class="catalog-menu-list-empty" data-menu-list-empty>
+            <span class="fe fe-link" aria-hidden="true"></span>
+            <p>{{ trans('admin.footer_menu_empty') }}</p>
+        </div>
     </div>
+
+    <template data-footer-menu-template>
+        @include('pages.admin.catalog-menu.partials.footer-menu-row', [
+            'menuKey' => $menuKey,
+            'index' => '__INDEX__',
+            'item' => [
+                'label' => ['uk' => '', 'ru' => ''],
+                'url' => ['uk' => '', 'ru' => ''],
+                'is_visible' => true,
+                'sort_order' => 0,
+            ],
+        ])
+    </template>
 </section>

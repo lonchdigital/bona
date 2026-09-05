@@ -33,3 +33,12 @@ Bona Doors is a premium, approachable door showroom for homeowners and interior 
 - Render the actual content managed in the admin panel. Do not invent awards, metrics, promises, team members, or project facts.
 - Optional sections disappear when their corresponding content is empty.
 - Ukrainian and Russian storefronts receive equivalent structure and translated interface labels.
+
+## Admin operational surfaces
+
+- Keep the existing Bootstrap/Overpass admin shell, but make editing screens calm, compact, and task-led rather than decorative.
+- Use a single visible locale at a time for bilingual content. The language switch changes the editing context while both translations remain part of the saved form.
+- Represent hierarchy visually: parent groups use restrained panels, child items use compact nested rows and a subtle connecting rail.
+- Ordering is direct manipulation through drag-and-drop, with keyboard arrow controls as a fallback. Do not expose raw order numbers when the position can be shown spatially.
+- Every builder must cover enabled, disabled, empty, dragging, unsaved, saving, saved, validation-error, and responsive states.
+- Use neutral white and warm-gray surfaces, 6–10px radii, fine borders, and existing admin controls. Avoid gradients, oversized cards, and ornamental dashboard styling.

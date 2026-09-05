@@ -21,12 +21,30 @@ class CatalogMenuService
 
     public function getAdminProductTypes(): Collection
     {
-        return ProductType::query()
+        $productTypes = ProductType::query()
             ->with(['catalogMenuConfiguration', 'categories'])
-            ->orderByRaw('CASE WHEN sort_order > 0 THEN 0 ELSE 1 END')
-            ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
+
+        return $productTypes
+            ->sortBy(function (ProductType $productType): array {
+                $configuration = $productType->catalogMenuConfiguration;
+
+                if ($configuration) {
+                    return [0, $configuration->sort_order, $productType->id];
+                }
+
+                if ($productType->sort_order > 0) {
+                    return [0, $productType->sort_order, $productType->id];
+                }
+
+                return [
+                    1,
+                    0,
+                    $productType->id,
+                ];
+            })
+            ->values();
     }
 
     public function getStorefrontProductTypes(): Collection

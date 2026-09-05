@@ -1,32 +1,63 @@
 @extends('layouts.admin-main')
 
 @php
-    $configuredCards = old('cards');
+    $configuredCards = old('cards', []);
     $savedCardIds = collect($menuConfiguration?->cards ?? $menuProductType->categories->take(5)->pluck('id')->all())
         ->map(fn ($id) => (int) $id)
         ->values();
-    $cardOrder = $savedCardIds->flip();
-    $columns = old('columns', $menuConfiguration?->columns ?? []);
+    $savedCardOrder = $savedCardIds->flip();
+    $orderedCategories = $menuProductType->categories->sortBy(function ($category) use ($configuredCards, $savedCardIds, $savedCardOrder) {
+        $oldCard = $configuredCards[$category->id] ?? null;
+        $isEnabled = $oldCard !== null
+            ? (bool) ($oldCard['enabled'] ?? false)
+            : $savedCardIds->contains($category->id);
+        $order = $oldCard['sort_order'] ?? $savedCardOrder->get($category->id, PHP_INT_MAX);
+
+        return [$isEnabled ? 0 : 1, (int) $order, $category->id];
+    })->values();
+    $selectedCardCount = $orderedCategories->filter(function ($category) use ($configuredCards, $savedCardIds) {
+        $oldCard = $configuredCards[$category->id] ?? null;
+
+        return $oldCard !== null
+            ? (bool) ($oldCard['enabled'] ?? false)
+            : $savedCardIds->contains($category->id);
+    })->count();
+    $columns = collect(old('columns', $menuConfiguration?->columns ?? []))
+        ->sortBy(fn ($column, $index) => [(int) data_get($column, 'sort_order', $index), $index]);
+    $initialMenuLocale = collect($errors->keys())->contains(fn ($key) => str_contains($key, '.ru'))
+        ? 'ru'
+        : (in_array(app()->getLocale(), ['uk', 'ru'], true) ? app()->getLocale() : 'uk');
 @endphp
 
 @section('content')
-    <div class="container-fluid">
+    <div
+        class="container-fluid catalog-menu-admin"
+        data-menu-builder
+        data-default-locale="{{ $initialMenuLocale }}"
+        data-force-default-locale="{{ $errors->any() ? 'true' : 'false' }}"
+        data-unsaved-warning="{{ trans('admin.menu_unsaved_warning') }}"
+    >
         <div class="row justify-content-center">
             <div class="col-12">
-                <div class="d-flex align-items-start justify-content-between mb-3">
+                <a class="catalog-menu-back-link" href="{{ route('admin.catalog-menu.page') }}">
+                    <span class="fe fe-arrow-left" aria-hidden="true"></span>{{ trans('admin.catalog_menu_back_to_structure') }}
+                </a>
+
+                <header class="catalog-menu-page-header catalog-menu-page-header--editor">
                     <div>
-                        <h2 class="mb-2 page-title">{{ trans('admin.catalog_menu') }} — {{ $menuProductType->name }}</h2>
+                        <p class="catalog-menu-page-header__eyebrow">{{ trans('admin.catalog_menu_tab_path', ['TYPE' => $menuProductType->name]) }}</p>
+                        <h2 class="page-title mb-2">{{ trans('admin.catalog_menu_content_title') }}</h2>
                         <p class="card-text mb-0">{{ trans('admin.catalog_menu_content_description') }}</p>
                     </div>
-                    <a href="{{ route('admin.catalog-menu.page') }}" class="btn btn-secondary">{{ trans('admin.back') }}</a>
-                </div>
+                    @include('pages.admin.catalog-menu.partials.language-switch')
+                </header>
 
                 @if(Session::has('success'))
-                    <div class="alert alert-success" role="alert">{{ Session::get('success') }}</div>
+                    <div class="alert alert-success mt-3" role="status">{{ Session::get('success') }}</div>
                 @endif
 
                 @if($errors->any())
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-danger mt-3" role="alert">
                         <strong>{{ trans('admin.catalog_menu_validation_error') }}</strong>
                         <ul class="mb-0 mt-2">
                             @foreach($errors->all() as $error)
@@ -36,236 +67,167 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('admin.catalog-menu.edit', $menuProductType) }}">
+                <form method="POST" action="{{ route('admin.catalog-menu.edit', $menuProductType) }}" data-menu-form>
                     @csrf
 
-                    <div class="card shadow mb-4">
-                        <div class="card-header">
-                            <strong>{{ trans('admin.catalog_menu_visual_cards') }}</strong>
-                            <div class="small text-muted mt-1">{{ trans('admin.catalog_menu_visual_cards_hint') }}</div>
-                        </div>
-                        <div class="card-body">
-                            @if($menuProductType->categories->isEmpty())
-                                <div class="alert alert-warning mb-0">{{ trans('admin.catalog_menu_no_categories') }}</div>
-                            @else
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th class="text-center" style="width: 100px">{{ trans('admin.catalog_menu_show') }}</th>
-                                            <th>{{ trans('admin.category') }}</th>
-                                            <th style="width: 150px">{{ trans('admin.catalog_menu_order') }}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach($menuProductType->categories as $category)
-                                            @php
-                                                $oldCard = $configuredCards[$category->id] ?? null;
-                                                $isEnabled = $oldCard !== null
-                                                    ? (bool) ($oldCard['enabled'] ?? false)
-                                                    : $savedCardIds->contains($category->id);
-                                                $order = $oldCard['sort_order'] ?? $cardOrder->get($category->id, $loop->index);
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center align-middle">
-                                                    <input type="hidden" name="cards[{{ $category->id }}][enabled]" value="0">
-                                                    <input type="checkbox" name="cards[{{ $category->id }}][enabled]" value="1" @checked($isEnabled)>
-                                                </td>
-                                                <td class="align-middle">
-                                                    <div class="d-flex align-items-center">
-                                                        @if($category->image_url)
-                                                            <img src="{{ $category->image_url }}" alt="" class="rounded mr-3" style="width: 48px; height: 48px; object-fit: cover">
-                                                        @endif
-                                                        <strong>{{ $category->name }}</strong>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <input class="form-control" type="number" min="0" max="999" name="cards[{{ $category->id }}][sort_order]" value="{{ $order }}">
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @endif
-                        </div>
+                    <div class="catalog-menu-context-note">
+                        <span class="fe fe-eye" aria-hidden="true"></span>
+                        <p>{{ trans('admin.catalog_menu_content_context', ['TYPE' => $menuProductType->name]) }}</p>
                     </div>
 
-                    <div class="card shadow mb-4">
-                        <div class="card-header d-flex align-items-center justify-content-between">
+                    <section class="catalog-menu-panel" aria-labelledby="visual-cards-title">
+                        <div class="catalog-menu-panel__header">
                             <div>
-                                <strong>{{ trans('admin.catalog_menu_text_columns') }}</strong>
-                                <div class="small text-muted mt-1">{{ trans('admin.catalog_menu_text_columns_hint') }}</div>
-                            </div>
-                            <button type="button" class="btn btn-sm btn-outline-dark" data-add-column>{{ trans('admin.catalog_menu_add_column') }}</button>
-                        </div>
-                        <div class="card-body" data-columns-container>
-                            @foreach($columns as $columnIndex => $column)
-                                <div class="border rounded p-3 mb-4 catalog-menu-column" data-column-index="{{ $columnIndex }}">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <strong>{{ trans('admin.catalog_menu_column') }} <span data-column-number>{{ $loop->iteration }}</span></strong>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-remove-column>{{ trans('admin.delete') }}</button>
-                                    </div>
-                                    <div class="row">
-                                        @foreach($availableLanguages as $language)
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label>{{ trans('admin.catalog_menu_column_title') }} {{ mb_strtoupper($language) }}</label>
-                                                    <input class="form-control" type="text" name="columns[{{ $columnIndex }}][title][{{ $language }}]" value="{{ $column['title'][$language] ?? '' }}">
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label>{{ trans('admin.catalog_menu_order') }}</label>
-                                                <input class="form-control" type="number" min="0" max="999" name="columns[{{ $columnIndex }}][sort_order]" value="{{ $column['sort_order'] ?? $columnIndex }}">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div data-items-container>
-                                        @foreach($column['items'] ?? [] as $itemIndex => $item)
-                                            <div class="bg-light rounded p-3 mb-3 catalog-menu-item" data-item-index="{{ $itemIndex }}">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <strong class="small">{{ trans('admin.catalog_menu_item') }}</strong>
-                                                    <button type="button" class="btn btn-sm btn-link text-danger" data-remove-item>{{ trans('admin.delete') }}</button>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-5">
-                                                        <div class="form-group">
-                                                            <label>{{ trans('admin.catalog_menu_category_target') }}</label>
-                                                            <select class="form-control" name="columns[{{ $columnIndex }}][items][{{ $itemIndex }}][category_id]">
-                                                                <option value="">{{ trans('admin.catalog_menu_custom_link') }}</option>
-                                                                @foreach($menuProductType->categories as $category)
-                                                                    <option value="{{ $category->id }}" @selected((int) ($item['category_id'] ?? 0) === $category->id)>{{ $category->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <div class="form-group">
-                                                            <label>{{ trans('admin.catalog_menu_order') }}</label>
-                                                            <input class="form-control" type="number" min="0" max="999" name="columns[{{ $columnIndex }}][items][{{ $itemIndex }}][sort_order]" value="{{ $item['sort_order'] ?? $itemIndex }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    @foreach($availableLanguages as $language)
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>{{ trans('admin.catalog_menu_custom_label') }} {{ mb_strtoupper($language) }}</label>
-                                                                <input class="form-control" type="text" name="columns[{{ $columnIndex }}][items][{{ $itemIndex }}][label][{{ $language }}]" value="{{ $item['label'][$language] ?? '' }}">
-                                                            </div>
-                                                            <div class="form-group mb-0">
-                                                                <label>URL {{ mb_strtoupper($language) }}</label>
-                                                                <input class="form-control" type="text" name="columns[{{ $columnIndex }}][items][{{ $itemIndex }}][url][{{ $language }}]" value="{{ $item['url'][$language] ?? '' }}" placeholder="/product-category/...">
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" data-add-item>{{ trans('admin.catalog_menu_add_item') }}</button>
+                                <span class="catalog-menu-panel__step">01</span>
+                                <div>
+                                    <h3 id="visual-cards-title">{{ trans('admin.catalog_menu_visual_cards') }}</h3>
+                                    <p>{{ trans('admin.catalog_menu_visual_cards_hint') }}</p>
                                 </div>
-                            @endforeach
+                            </div>
+                            <span
+                                class="catalog-menu-selection-count"
+                                data-card-selected-count
+                                data-label="{{ trans('admin.catalog_menu_selected_short') }}"
+                            >{{ trans('admin.catalog_menu_selected_short') }}: {{ $selectedCardCount }}</span>
                         </div>
-                    </div>
 
-                    <div class="text-right mb-5">
-                        <a href="{{ route('admin.catalog-menu.page') }}" class="btn btn-secondary">{{ trans('admin.back') }}</a>
-                        <button type="submit" class="btn btn-dark">{{ trans('admin.save') }}</button>
+                        @if($menuProductType->categories->isEmpty())
+                            <div class="catalog-menu-list-empty catalog-menu-list-empty--standalone">
+                                <span class="fe fe-image" aria-hidden="true"></span>
+                                <p>{{ trans('admin.catalog_menu_no_categories') }}</p>
+                            </div>
+                        @else
+                            <div class="catalog-menu-card-list" data-menu-sort-list data-visual-card-list>
+                                @foreach($orderedCategories as $category)
+                                    @php
+                                        $oldCard = $configuredCards[$category->id] ?? null;
+                                        $isEnabled = $oldCard !== null
+                                            ? (bool) ($oldCard['enabled'] ?? false)
+                                            : $savedCardIds->contains($category->id);
+                                        $order = $oldCard['sort_order'] ?? $savedCardOrder->get($category->id, $loop->index);
+                                    @endphp
+                                    <article
+                                        class="catalog-menu-category-card {{ $isEnabled ? '' : 'is-muted' }}"
+                                        data-menu-sort-item
+                                        data-menu-visibility-item
+                                    >
+                                        <input type="hidden" name="cards[{{ $category->id }}][sort_order]" value="{{ $order }}" data-menu-sort-order>
+
+                                        @include('pages.admin.catalog-menu.partials.drag-handle', [
+                                            'dragLabel' => trans('admin.menu_drag_item', ['ITEM' => $category->name]),
+                                        ])
+
+                                        <span class="catalog-menu-category-card__image">
+                                            @if($category->image_url)
+                                                <img src="{{ $category->image_url }}" alt="" width="68" height="54" loading="lazy">
+                                            @else
+                                                <span class="fe fe-image" aria-hidden="true"></span>
+                                            @endif
+                                        </span>
+
+                                        <span class="catalog-menu-category-card__name">
+                                            <strong data-menu-locale-content="uk" @if($initialMenuLocale !== 'uk') hidden @endif>{{ $category->getTranslation('name', 'uk') }}</strong>
+                                            <strong data-menu-locale-content="ru" @if($initialMenuLocale !== 'ru') hidden @endif>{{ $category->getTranslation('name', 'ru') }}</strong>
+                                            <small>/{{ $category->slug }}</small>
+                                        </span>
+
+                                        <label class="catalog-menu-switch">
+                                            <input type="hidden" name="cards[{{ $category->id }}][enabled]" value="0">
+                                            <input
+                                                type="checkbox"
+                                                name="cards[{{ $category->id }}][enabled]"
+                                                value="1"
+                                                data-menu-visibility-toggle
+                                                data-visual-card-toggle
+                                                @checked($isEnabled)
+                                            >
+                                            <span class="catalog-menu-switch__track" aria-hidden="true"><span></span></span>
+                                            <span class="catalog-menu-switch__label">{{ trans('admin.catalog_menu_card_enabled') }}</span>
+                                        </label>
+                                    </article>
+                                @endforeach
+                            </div>
+                        @endif
+                    </section>
+
+                    <section class="catalog-menu-panel" aria-labelledby="text-columns-title">
+                        <div class="catalog-menu-panel__header">
+                            <div>
+                                <span class="catalog-menu-panel__step">02</span>
+                                <div>
+                                    <h3 id="text-columns-title">{{ trans('admin.catalog_menu_text_columns') }}</h3>
+                                    <p>{{ trans('admin.catalog_menu_text_columns_hint') }}</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-dark" data-add-column>
+                                <span class="fe fe-plus mr-1" aria-hidden="true"></span>{{ trans('admin.catalog_menu_add_column') }}
+                            </button>
+                        </div>
+
+                        <div class="catalog-menu-columns" data-columns-container data-menu-sort-list>
+                            @foreach($columns as $columnIndex => $column)
+                                @include('pages.admin.catalog-menu.partials.catalog-column', [
+                                    'columnIndex' => $columnIndex,
+                                    'column' => $column,
+                                    'menuProductType' => $menuProductType,
+                                ])
+                            @endforeach
+
+                            <div class="catalog-menu-list-empty catalog-menu-list-empty--standalone" data-menu-list-empty>
+                                <span class="fe fe-columns" aria-hidden="true"></span>
+                                <p>{{ trans('admin.catalog_menu_columns_empty') }}</p>
+                                <button type="button" class="btn btn-sm btn-outline-dark" data-add-column>
+                                    <span class="fe fe-plus mr-1" aria-hidden="true"></span>{{ trans('admin.catalog_menu_add_column') }}
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="catalog-menu-savebar" data-menu-savebar>
+                        <a href="{{ route('admin.catalog-menu.page') }}" class="btn btn-link text-muted">{{ trans('admin.back') }}</a>
+                        <span
+                            class="catalog-menu-savebar__status"
+                            data-menu-dirty-status
+                            data-clean="{{ trans('admin.menu_changes_saved') }}"
+                            data-dirty="{{ trans('admin.menu_changes_unsaved') }}"
+                            data-saving="{{ trans('admin.menu_changes_saving') }}"
+                        >{{ trans('admin.menu_changes_saved') }}</span>
+                        <button type="submit" class="btn btn-dark">
+                            <span class="fe fe-check mr-1" aria-hidden="true"></span>{{ trans('admin.menu_save_changes') }}
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
+
+        <template id="catalog-menu-column-template">
+            @include('pages.admin.catalog-menu.partials.catalog-column', [
+                'columnIndex' => '__COLUMN__',
+                'column' => [
+                    'title' => ['uk' => '', 'ru' => ''],
+                    'sort_order' => 0,
+                    'items' => [],
+                ],
+                'menuProductType' => $menuProductType,
+            ])
+        </template>
+
+        <template id="catalog-menu-item-template">
+            @include('pages.admin.catalog-menu.partials.catalog-column-item', [
+                'columnIndex' => '__COLUMN__',
+                'itemIndex' => '__ITEM__',
+                'item' => [
+                    'category_id' => null,
+                    'label' => ['uk' => '', 'ru' => ''],
+                    'url' => ['uk' => '', 'ru' => ''],
+                    'sort_order' => 0,
+                ],
+                'menuProductType' => $menuProductType,
+            ])
+        </template>
     </div>
-
-    <template id="catalog-menu-column-template">
-        <div class="border rounded p-3 mb-4 catalog-menu-column" data-column-index="__COLUMN__">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <strong>{{ trans('admin.catalog_menu_column') }} <span data-column-number></span></strong>
-                <button type="button" class="btn btn-sm btn-outline-danger" data-remove-column>{{ trans('admin.delete') }}</button>
-            </div>
-            <div class="row">
-                @foreach($availableLanguages as $language)
-                    <div class="col-md-5"><div class="form-group"><label>{{ trans('admin.catalog_menu_column_title') }} {{ mb_strtoupper($language) }}</label><input class="form-control" type="text" name="columns[__COLUMN__][title][{{ $language }}]"></div></div>
-                @endforeach
-                <div class="col-md-2"><div class="form-group"><label>{{ trans('admin.catalog_menu_order') }}</label><input class="form-control" type="number" min="0" max="999" name="columns[__COLUMN__][sort_order]" value="__COLUMN__"></div></div>
-            </div>
-            <div data-items-container></div>
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-add-item>{{ trans('admin.catalog_menu_add_item') }}</button>
-        </div>
-    </template>
-
-    <template id="catalog-menu-item-template">
-        <div class="bg-light rounded p-3 mb-3 catalog-menu-item" data-item-index="__ITEM__">
-            <div class="d-flex justify-content-between align-items-center mb-2"><strong class="small">{{ trans('admin.catalog_menu_item') }}</strong><button type="button" class="btn btn-sm btn-link text-danger" data-remove-item>{{ trans('admin.delete') }}</button></div>
-            <div class="row">
-                <div class="col-md-5"><div class="form-group"><label>{{ trans('admin.catalog_menu_category_target') }}</label><select class="form-control" name="columns[__COLUMN__][items][__ITEM__][category_id]"><option value="">{{ trans('admin.catalog_menu_custom_link') }}</option>@foreach($menuProductType->categories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach</select></div></div>
-                <div class="col-md-2"><div class="form-group"><label>{{ trans('admin.catalog_menu_order') }}</label><input class="form-control" type="number" min="0" max="999" name="columns[__COLUMN__][items][__ITEM__][sort_order]" value="__ITEM__"></div></div>
-            </div>
-            <div class="row">
-                @foreach($availableLanguages as $language)
-                    <div class="col-md-6"><div class="form-group"><label>{{ trans('admin.catalog_menu_custom_label') }} {{ mb_strtoupper($language) }}</label><input class="form-control" type="text" name="columns[__COLUMN__][items][__ITEM__][label][{{ $language }}]"></div><div class="form-group mb-0"><label>URL {{ mb_strtoupper($language) }}</label><input class="form-control" type="text" name="columns[__COLUMN__][items][__ITEM__][url][{{ $language }}]" placeholder="/product-category/..."></div></div>
-                @endforeach
-            </div>
-        </div>
-    </template>
 @endsection
 
 @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const container = document.querySelector('[data-columns-container]');
-            const columnTemplate = document.getElementById('catalog-menu-column-template').innerHTML;
-            const itemTemplate = document.getElementById('catalog-menu-item-template').innerHTML;
-
-            const refreshColumnNumbers = () => {
-                container.querySelectorAll('.catalog-menu-column').forEach((column, index) => {
-                    const number = column.querySelector('[data-column-number]');
-                    if (number) number.textContent = index + 1;
-                });
-            };
-
-            document.querySelector('[data-add-column]').addEventListener('click', function () {
-                const existingIndexes = Array.from(container.querySelectorAll('.catalog-menu-column'))
-                    .map(column => Number(column.dataset.columnIndex));
-                const columnIndex = existingIndexes.length ? Math.max(...existingIndexes) + 1 : 0;
-                container.insertAdjacentHTML('beforeend', columnTemplate.replaceAll('__COLUMN__', columnIndex));
-                refreshColumnNumbers();
-            });
-
-            container.addEventListener('click', function (event) {
-                const removeColumn = event.target.closest('[data-remove-column]');
-                if (removeColumn) {
-                    removeColumn.closest('.catalog-menu-column').remove();
-                    refreshColumnNumbers();
-                    return;
-                }
-
-                const removeItem = event.target.closest('[data-remove-item]');
-                if (removeItem) {
-                    removeItem.closest('.catalog-menu-item').remove();
-                    return;
-                }
-
-                const addItem = event.target.closest('[data-add-item]');
-                if (!addItem) return;
-
-                const column = addItem.closest('.catalog-menu-column');
-                const columnIndex = column.dataset.columnIndex;
-                const itemsContainer = column.querySelector('[data-items-container]');
-                const existingIndexes = Array.from(itemsContainer.querySelectorAll('.catalog-menu-item'))
-                    .map(item => Number(item.dataset.itemIndex));
-                const itemIndex = existingIndexes.length ? Math.max(...existingIndexes) + 1 : 0;
-                const html = itemTemplate
-                    .replaceAll('__COLUMN__', columnIndex)
-                    .replaceAll('__ITEM__', itemIndex);
-                itemsContainer.insertAdjacentHTML('beforeend', html);
-            });
-
-            refreshColumnNumbers();
-        });
-    </script>
+    <script src="/static-admin/js/catalog-menu-builder.js?v={{ filemtime(public_path('static-admin/js/catalog-menu-builder.js')) }}"></script>
 @endpush

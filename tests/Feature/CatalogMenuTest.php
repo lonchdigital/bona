@@ -301,9 +301,105 @@ class CatalogMenuTest extends TestCase
             ->get(route('admin.catalog-menu.page', ['tab' => 'footer']))
             ->assertOk()
             ->assertSee(trans('admin.footer_menu_tab'))
+            ->assertSee('data-menu-language-switch', false)
+            ->assertSee('data-footer-menu-list', false)
+            ->assertSee('data-menu-sort-order', false)
             ->assertSee('name="navigation[0][label][uk]"', false)
             ->assertSee('name="categories[0][label][ru]"', false)
             ->assertSee('data-footer-menu-add', false);
+    }
+
+    public function test_catalog_menu_overview_is_a_localized_drag_and_drop_builder(): void
+    {
+        $productType = $this->productType([
+            'name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери'],
+            'sort_order' => 1,
+        ]);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.catalog-menu.page'))
+            ->assertOk()
+            ->assertSee('data-menu-language-switch', false)
+            ->assertSee('data-header-links-list', false)
+            ->assertSee('data-catalog-types-list', false)
+            ->assertSee('data-product-type-id="'.$productType->id.'"', false)
+            ->assertSee('data-menu-drag-handle', false)
+            ->assertSee('name="configurations['.$productType->id.'][sort_order]"', false)
+            ->assertSee('name="configurations['.$productType->id.'][header_order]"', false)
+            ->assertSee(trans('admin.catalog_menu_edit_content'))
+            ->assertDontSee('type="number"', false);
+    }
+
+    public function test_catalog_menu_content_editor_exposes_visual_hierarchy_without_manual_order_fields(): void
+    {
+        $productType = $this->productType(['sort_order' => 1]);
+        $category = $this->category($productType->id, 'classic', 'Класика');
+
+        CatalogMenuConfiguration::query()->create([
+            'product_type_id' => $productType->id,
+            'is_visible' => true,
+            'sort_order' => 0,
+            'show_in_header' => false,
+            'header_order' => 0,
+            'cards' => [$category->id],
+            'columns' => [[
+                'title' => ['uk' => 'За стилем', 'ru' => 'По стилю'],
+                'sort_order' => 0,
+                'items' => [[
+                    'category_id' => $category->id,
+                    'label' => ['uk' => '', 'ru' => ''],
+                    'url' => ['uk' => '', 'ru' => ''],
+                    'sort_order' => 0,
+                ]],
+            ]],
+        ]);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.catalog-menu.edit.page', $productType))
+            ->assertOk()
+            ->assertSee('data-menu-language-switch', false)
+            ->assertSee('data-visual-card-list', false)
+            ->assertSee('data-columns-container', false)
+            ->assertSee('data-items-container', false)
+            ->assertSee('data-menu-category-select', false)
+            ->assertSee('name="columns[0][title][uk]"', false)
+            ->assertSee('name="columns[0][title][ru]"', false)
+            ->assertDontSee('type="number"', false);
+    }
+
+    public function test_catalog_menu_overview_uses_the_saved_builder_order(): void
+    {
+        $laterType = $this->productType(['slug' => 'later-type', 'name' => 'Пізніше', 'sort_order' => 1]);
+        $firstType = $this->productType(['slug' => 'first-type', 'name' => 'Спочатку', 'sort_order' => 2]);
+        $unconfiguredType = $this->productType(['slug' => 'hidden-type', 'name' => 'Без налаштувань', 'sort_order' => 0]);
+
+        CatalogMenuConfiguration::query()->create([
+            'product_type_id' => $laterType->id,
+            'is_visible' => true,
+            'sort_order' => 8,
+            'show_in_header' => false,
+            'header_order' => 0,
+            'cards' => [],
+            'columns' => [],
+        ]);
+        CatalogMenuConfiguration::query()->create([
+            'product_type_id' => $firstType->id,
+            'is_visible' => true,
+            'sort_order' => 1,
+            'show_in_header' => false,
+            'header_order' => 0,
+            'cards' => [],
+            'columns' => [],
+        ]);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.catalog-menu.page'))
+            ->assertOk()
+            ->assertSeeInOrder([
+                'data-product-type-id="'.$firstType->id.'"',
+                'data-product-type-id="'.$laterType->id.'"',
+                'data-product-type-id="'.$unconfiguredType->id.'"',
+            ], false);
     }
 
     private function admin(): User

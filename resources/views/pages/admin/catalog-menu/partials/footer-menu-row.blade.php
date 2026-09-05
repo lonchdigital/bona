@@ -1,40 +1,57 @@
-<div class="border rounded p-3 mb-3" data-footer-menu-row data-index="{{ $index }}">
-    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap: 12px">
-        <div class="d-flex flex-wrap align-items-center" style="gap: 20px">
-            <label class="mb-0">
-                <input type="hidden" name="{{ $menuKey }}[{{ $index }}][is_visible]" value="0">
-                <input
-                    type="checkbox"
-                    name="{{ $menuKey }}[{{ $index }}][is_visible]"
-                    value="1"
-                    @checked((bool) data_get($item, 'is_visible', true))
-                >
-                <span class="ml-1">{{ trans('admin.catalog_menu_show') }}</span>
-            </label>
-            <label class="mb-0 d-flex align-items-center" style="gap: 8px">
-                <span>{{ trans('admin.catalog_menu_order') }}</span>
-                <input
-                    class="form-control form-control-sm"
-                    style="width: 90px"
-                    type="number"
-                    min="0"
-                    max="999"
-                    name="{{ $menuKey }}[{{ $index }}][sort_order]"
-                    value="{{ data_get($item, 'sort_order', $index === '__INDEX__' ? 0 : $index) }}"
-                    required
-                >
-            </label>
-        </div>
-        <button class="btn btn-sm btn-outline-danger" type="button" data-footer-menu-remove>
-            {{ trans('admin.delete') }}
-        </button>
-    </div>
+@php
+    $rowName = data_get($item, 'label.uk') ?: data_get($item, 'label.ru') ?: trans('admin.footer_menu_new_item');
+@endphp
 
-    <div class="row">
+<article
+    class="footer-menu-row {{ data_get($item, 'is_visible', true) ? '' : 'is-muted' }}"
+    data-footer-menu-row
+    data-index="{{ $index }}"
+    data-menu-sort-item
+    data-menu-removable
+    data-menu-visibility-item
+>
+    <input
+        type="hidden"
+        name="{{ $menuKey }}[{{ $index }}][sort_order]"
+        value="{{ data_get($item, 'sort_order', $index === '__INDEX__' ? 0 : $index) }}"
+        data-menu-sort-order
+    >
+
+    @include('pages.admin.catalog-menu.partials.drag-handle', [
+        'dragLabel' => trans('admin.menu_drag_item', ['ITEM' => $rowName]),
+    ])
+
+    <div class="footer-menu-row__content">
+        <div class="footer-menu-row__header">
+            <div class="footer-menu-row__title">
+                <strong data-menu-summary-locale="uk" data-empty-label="{{ trans('admin.footer_menu_new_item') }}" @if(($initialMenuLocale ?? 'uk') !== 'uk') hidden @endif>{{ data_get($item, 'label.uk') ?: trans('admin.footer_menu_new_item') }}</strong>
+                <strong data-menu-summary-locale="ru" data-empty-label="{{ trans('admin.footer_menu_new_item') }}" @if(($initialMenuLocale ?? 'uk') !== 'ru') hidden @endif>{{ data_get($item, 'label.ru') ?: trans('admin.footer_menu_new_item') }}</strong>
+                <small>{{ trans('admin.footer_menu_item_hint') }}</small>
+            </div>
+
+            <div class="footer-menu-row__actions">
+                <label class="catalog-menu-switch">
+                    <input type="hidden" name="{{ $menuKey }}[{{ $index }}][is_visible]" value="0">
+                    <input
+                        type="checkbox"
+                        name="{{ $menuKey }}[{{ $index }}][is_visible]"
+                        value="1"
+                        data-menu-visibility-toggle
+                        @checked((bool) data_get($item, 'is_visible', true))
+                    >
+                    <span class="catalog-menu-switch__track" aria-hidden="true"><span></span></span>
+                    <span class="catalog-menu-switch__label">{{ trans('admin.catalog_menu_show') }}</span>
+                </label>
+
+                <button class="catalog-menu-icon-button catalog-menu-icon-button--danger" type="button" data-menu-remove aria-label="{{ trans('admin.delete') }}">
+                    <span class="fe fe-trash-2" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
         @foreach(['uk', 'ru'] as $locale)
-            <div class="col-lg-6">
-                <p class="small font-weight-bold text-uppercase mb-2">{{ $locale }}</p>
-                <div class="form-group">
+            <div class="footer-menu-row__fields" data-menu-locale-content="{{ $locale }}" @if($locale !== ($initialMenuLocale ?? 'uk')) hidden @endif>
+                <div class="form-group mb-0">
                     <label for="footer-menu-{{ $menuKey }}-{{ $index }}-label-{{ $locale }}">
                         {{ trans('admin.footer_menu_label') }}
                     </label>
@@ -45,10 +62,11 @@
                         name="{{ $menuKey }}[{{ $index }}][label][{{ $locale }}]"
                         value="{{ data_get($item, "label.$locale") }}"
                         maxlength="160"
-                        required
+                        data-menu-summary-input="{{ $locale }}"
+                        placeholder="{{ trans('admin.footer_menu_label_placeholder') }}"
                     >
                 </div>
-                <div class="form-group mb-lg-0">
+                <div class="form-group mb-0">
                     <label for="footer-menu-{{ $menuKey }}-{{ $index }}-url-{{ $locale }}">
                         {{ trans('admin.footer_menu_url') }}
                     </label>
@@ -60,10 +78,9 @@
                         value="{{ data_get($item, "url.$locale") }}"
                         maxlength="2048"
                         placeholder="{{ $locale === 'ru' ? '/ru/contacts' : '/contacts' }}"
-                        required
                     >
                 </div>
             </div>
         @endforeach
     </div>
-</div>
+</article>
