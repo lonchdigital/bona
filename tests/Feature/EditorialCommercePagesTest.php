@@ -322,6 +322,9 @@ class EditorialCommercePagesTest extends TestCase
 
         $this->assertStringContainsString('@media (max-width: 900px)', $styles);
         $this->assertStringContainsString('@media (max-width: 640px)', $styles);
+        $this->assertStringContainsString('body.bona-article-body', $styles);
+        $this->assertStringContainsString('.bona-article-page > .bona-content-breadcrumbs', $styles);
+        $this->assertStringContainsString('padding-top: 0 !important;', $styles);
         $this->assertStringContainsString('ProductContentBlockComponent', $productEditor);
         $this->assertStringContainsString('moveBlock', $articleEditor);
     }

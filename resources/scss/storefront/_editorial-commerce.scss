@@ -201,10 +201,43 @@
 }
 
 /* Article */
-.bona-article-body .bona-header { margin-bottom: 0; }
+body.bona-article-body {
+    .bona-site-header,
+    .bona-header { margin-bottom: 0 !important; }
+
+    #main-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+}
 
 .bona-article-body .wrapper,
 .bona-article-page { overflow: visible; }
+
+.bona-article-page {
+    position: relative;
+    margin-top: 0;
+}
+
+/* Keep the cover flush with the site header. The direct-child selector also
+   supports article markup cached before breadcrumbs moved inside the cover. */
+.bona-article-page > .bona-content-breadcrumbs,
+.bona-article-hero > .bona-content-breadcrumbs {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+
+    ol,
+    a { color: rgba(252, 251, 248, .72); }
+
+    a:hover,
+    a:focus-visible { color: #fff; }
+}
 
 .bona-article-hero {
     position: relative;
@@ -222,27 +255,13 @@
         position: absolute;
         z-index: 1;
         inset: 0;
-        background: linear-gradient(180deg, rgba(20, 17, 13, .34) 0%, rgba(20, 17, 13, .28) 30%, rgba(20, 17, 13, .9) 100%);
+        background: linear-gradient(180deg, rgba(20, 17, 13, .58) 0%, rgba(20, 17, 13, .3) 30%, rgba(20, 17, 13, .9) 100%);
         content: '';
         pointer-events: none;
     }
 
     &--without-image::after {
         background: linear-gradient(145deg, rgba(182, 144, 91, .12), transparent 46%), #211d18;
-    }
-
-    > .bona-content-breadcrumbs {
-        position: absolute;
-        z-index: 2;
-        top: 0;
-        right: 0;
-        left: 0;
-
-        ol,
-        a { color: rgba(252, 251, 248, .72); }
-
-        a:hover,
-        a:focus-visible { color: #fff; }
     }
 
     &__copy {
