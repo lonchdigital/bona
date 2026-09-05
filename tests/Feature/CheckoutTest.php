@@ -235,6 +235,7 @@ class CheckoutTest extends TestCase
         $response->assertOk();
         $this->assertSame(PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK, $response->viewData('checkoutPaymentType'));
         $this->assertSame(5, $response->viewData('checkoutMonoPeriod'));
+        $response->assertSee('class="selected-payment-type">'.trans('base.checkout_payment_paypart_mono_bank').'</span>', false);
     }
 
     public function test_product_page_can_preselect_privatbank_and_rejects_unoffered_periods(): void
@@ -253,5 +254,6 @@ class CheckoutTest extends TestCase
         $response->assertOk();
         $this->assertSame(PaymentTypesDataClass::CARD_PAYMENT_PAYPART, $response->viewData('checkoutPaymentType'));
         $this->assertSame(2, $response->viewData('checkoutPrivatPeriod'));
+        $response->assertSee('class="selected-payment-type">'.trans('base.checkout_payment_paypart').'</span>', false);
     }
 }

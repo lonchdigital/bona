@@ -7,6 +7,16 @@
 
 @section('content')
 
+    @php
+        $selectedPaymentType = (int) old('payment_type_id', $checkoutPaymentType);
+        $selectedPaymentLabel = match ($selectedPaymentType) {
+            App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT => trans('base.checkout_payment_card'),
+            App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART => trans('base.checkout_payment_paypart'),
+            App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK => trans('base.checkout_payment_paypart_mono_bank'),
+            default => trans('base.checkout_payment_cash'),
+        };
+    @endphp
+
     @include('pages.store.partials.page_header', ['links' => ['#' => 'checkout']])
 
     <main id="checkout" class="checkout">
@@ -742,7 +752,7 @@
                                                 <div
                                                     class="checkout-payment checkout-order-info-delivery-title mb-1 pt-1">{{ trans('base.checkout_payment') }}
                                                     :&nbsp;<span
-                                                        class="selected-payment-type">{{ trans('base.checkout_payment_cash') }}</span>
+                                                        class="selected-payment-type">{{ $selectedPaymentLabel }}</span>
                                                 </div>
                                                 <div class="checkout-delivery checkout-order-info-delivery-title mb-1 pt-1">{{ trans('base.delivery') }}
                                                     : <span class="selected-delivery-type">{{ trans('base.checkout_address_delivery') }}</span>
