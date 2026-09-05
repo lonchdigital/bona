@@ -113,3 +113,22 @@
     width: 20px;
     height: 20px;
 }
+
+.visit-request-row {
+    cursor: pointer;
+    transition: background-color 120ms ease;
+}
+
+.visit-request-row > td {
+    vertical-align: middle;
+}
+
+.visit-request-row:focus-within {
+    background-color: rgba(49, 52, 61, 0.06);
+}
+
+.visit-request-row__link:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid rgba(49, 52, 61, 0.45);
+    outline-offset: 2px;
+}

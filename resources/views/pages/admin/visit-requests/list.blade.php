@@ -37,10 +37,11 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <!-- table start -->
-                                            <table class="table datatables" id="dataTable-1">
+                                            <table class="table table-hover datatables" id="dataTable-1">
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
+                                                    <th>{{ trans('admin.visit_request_created_at') }}</th>
                                                     <th>{{ trans('admin.visit_request_name') }}</th>
                                                     <th>{{ trans('admin.visit_request_phone') }}</th>
                                                     <th class="text-center">{{ trans('admin.status') }}</th>
@@ -48,10 +49,19 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach($visitRequestsPaginated as $visitRequest)
-                                                    <tr>
+                                                @forelse($visitRequestsPaginated as $visitRequest)
+                                                    <tr class="visit-request-row"
+                                                        data-visit-request-row
+                                                        data-href="{{ route('admin.visit-request.details.page', ['visitRequest' => $visitRequest->id]) }}">
                                                         <td>{{ $visitRequest->id }}</td>
-                                                        <td>{{ $visitRequest->name }}</td>
+                                                        <td class="text-nowrap">{{ $visitRequest->created_at->copy()->timezone('Europe/Kyiv')->format('d.m.Y H:i') }}</td>
+                                                        <td>
+                                                            <a class="visit-request-row__link text-dark"
+                                                               href="{{ route('admin.visit-request.details.page', ['visitRequest' => $visitRequest->id]) }}"
+                                                               aria-label="{{ trans('admin.visit_request_open', ['id' => $visitRequest->id]) }}">
+                                                                {{ $visitRequest->name }}
+                                                            </a>
+                                                        </td>
                                                         <td>{{ $visitRequest->phone }}</td>
                                                         <td class="text-center"><span class="badge " style="background-color: {{ \App\DataClasses\VisitRequestStatusesDataClass::get($visitRequest->status_id)['color'] }};"><strong class="text-dark">{{ \App\DataClasses\VisitRequestStatusesDataClass::get($visitRequest->status_id)['name'] }}</strong></span></td>
                                                         <td class="text-right">
@@ -59,12 +69,15 @@
                                                                 <span class="text-muted sr-only">{{ trans('admin.action') }}</span>
                                                             </button>
                                                             <div class="dropdown-menu dropdown-menu-right">
-                                                                <a class="dropdown-item" href="{{ route('admin.visit-request.details.page', ['visitRequest' => $visitRequest->id]) }}">{{ trans('admin.view') }}</a>
                                                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteVisitRequestModal-{{ $visitRequest->id }}">{{ trans('admin.delete') }}</a>
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                @endforeach
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="6" class="py-4 text-center text-muted">{{ trans('admin.visit_requests_empty') }}</td>
+                                                    </tr>
+                                                @endforelse
                                                 </tbody>
                                             </table>
                                             <!-- table end -->
@@ -109,6 +122,24 @@
     <script>
         $('#status_id').select2({
             theme: 'bootstrap4',
+        });
+
+        document.querySelectorAll('[data-visit-request-row]').forEach(function (row) {
+            function openRequest() {
+                window.location.assign(row.dataset.href);
+            }
+
+            row.addEventListener('click', function (event) {
+                if (event.target.closest('a, button, form, input, select, textarea, [data-toggle]')) {
+                    return;
+                }
+
+                if (window.getSelection && window.getSelection().toString()) {
+                    return;
+                }
+
+                openRequest();
+            });
         });
     </script>
 @endpush

@@ -18,7 +18,9 @@ class VisitRequestService extends BaseService
             $query->where('status_id', $request->statusId);
         }
 
-        return $query->paginate(config('domain.items_per_page'));
+        return $query
+            ->latest()
+            ->paginate(config('domain.items_per_page'));
     }
 
     public function editVisitRequest(VisitRequest $visitRequest, VisitRequestEditDTO $request): ServiceActionResult
