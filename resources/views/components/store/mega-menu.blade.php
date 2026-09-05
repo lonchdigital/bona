@@ -4,6 +4,8 @@
 
 @php
     $menuTypes = $productTypes->values();
+    $defaultMenuType = $menuTypes->firstWhere('slug', 'interior-doors') ?? $menuTypes->first();
+    $defaultMenuTypeId = $defaultMenuType?->id;
     $locale = app()->getLocale();
     $translatedValue = static function ($values) use ($locale) {
         if (!is_array($values)) {
@@ -26,14 +28,15 @@
     <div class="bona-shell bona-mega__inner">
         <div class="bona-mega__aside" role="tablist" aria-label="{{ trans('base.storefront_catalog') }}">
             @forelse($menuTypes as $productType)
+                @php $isDefaultMenuType = $productType->id === $defaultMenuTypeId; @endphp
                 <button
-                    class="bona-mega__tab{{ $loop->first ? ' is-active' : '' }}"
+                    class="bona-mega__tab{{ $isDefaultMenuType ? ' is-active' : '' }}"
                     id="bona-mega-tab-{{ $productType->id }}"
                     type="button"
                     role="tab"
                     aria-controls="bona-mega-panel-{{ $productType->id }}"
-                    aria-selected="{{ $loop->first ? 'true' : 'false' }}"
-                    tabindex="{{ $loop->first ? '0' : '-1' }}"
+                    aria-selected="{{ $isDefaultMenuType ? 'true' : 'false' }}"
+                    tabindex="{{ $isDefaultMenuType ? '0' : '-1' }}"
                     data-mega-tab="{{ $productType->id }}"
                 >
                     {{ $productType->name }}
@@ -54,6 +57,8 @@
                     $categories = $productType->categories->values();
                     $categoryLookup = $categories->keyBy('id');
                     $configuration = $productType->catalogMenuConfiguration;
+                    $styleCards = collect(app(App\Services\CatalogMenu\CatalogMenuService::class)
+                        ->getInteriorStyleCards($productType));
                     $configuredCardIds = $configuration?->cards;
                     $cardCategories = is_array($configuredCardIds)
                         ? collect($configuredCardIds)->map(fn ($id) => $categoryLookup->get((int) $id))->filter()->values()
@@ -75,12 +80,12 @@
                     ]);
                 @endphp
                 <section
-                    class="bona-mega__panel{{ $loop->first ? ' is-active' : '' }}"
+                    class="bona-mega__panel{{ $productType->id === $defaultMenuTypeId ? ' is-active' : '' }}"
                     id="bona-mega-panel-{{ $productType->id }}"
                     role="tabpanel"
                     aria-labelledby="bona-mega-tab-{{ $productType->id }}"
                     data-mega-panel="{{ $productType->id }}"
-                    @if(!$loop->first) hidden @endif
+                    @if($productType->id !== $defaultMenuTypeId) hidden @endif
                 >
                     <div class="bona-mega__heading">
                         <div>
@@ -90,8 +95,30 @@
                         <a href="{{ $typeUrl }}">{{ trans('base.storefront_view_all') }} <span aria-hidden="true">→</span></a>
                     </div>
 
-                    @if($cardCategories->isNotEmpty() || count($menuColumns) > 0)
-                        @if($cardCategories->isNotEmpty())
+                    @if($styleCards->isNotEmpty() || $cardCategories->isNotEmpty() || count($menuColumns) > 0)
+                        @if($styleCards->isNotEmpty())
+                            <div class="bona-mega__cards" aria-label="{{ trans('base.storefront_door_styles') }}">
+                                @foreach($styleCards as $styleCard)
+                                    <a
+                                        class="bona-mega-card"
+                                        href="{{ $styleCard['url'] }}"
+                                        data-menu-style-card="{{ $styleCard['key'] }}"
+                                    >
+                                        <span class="bona-mega-card__image">
+                                            <img
+                                                src="{{ Vite::asset($styleCard['image']) }}"
+                                                alt="{{ $styleCard['alt'] }}"
+                                                loading="lazy"
+                                                decoding="async"
+                                                width="960"
+                                                height="720"
+                                            >
+                                        </span>
+                                        <span>{{ $styleCard['label'] }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @elseif($cardCategories->isNotEmpty())
                         <div class="bona-mega__cards">
                             @foreach($cardCategories as $category)
                                 <a class="bona-mega-card" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [

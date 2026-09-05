@@ -126,6 +126,55 @@ class CatalogMenuTest extends TestCase
             ->assertSee('class="bona-mainnav__direct"', false);
     }
 
+    public function test_interior_doors_menu_uses_the_reference_style_cards_and_real_catalogue_links(): void
+    {
+        $interiorDoors = $this->productType([
+            'slug' => 'interior-doors',
+            'name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери'],
+            'sort_order' => 1,
+        ]);
+
+        CatalogMenuConfiguration::query()->create([
+            'product_type_id' => $interiorDoors->id,
+            'is_visible' => true,
+            'sort_order' => 0,
+            'show_in_header' => false,
+            'header_order' => 0,
+            'cards' => [],
+            'columns' => [],
+        ]);
+        app(CatalogMenuService::class)->forgetCache();
+
+        $this->get(route('store.home'))
+            ->assertOk()
+            ->assertSee('data-mega-tab="'.$interiorDoors->id.'"', false)
+            ->assertSee('aria-selected="true"', false)
+            ->assertSee('data-menu-style-card="modern"', false)
+            ->assertSee('data-menu-style-card="classic"', false)
+            ->assertSee('data-menu-style-card="neoclassic"', false)
+            ->assertSee('data-menu-style-card="minimal"', false)
+            ->assertSee('data-menu-style-card="hitech"', false)
+            ->assertSee('Двері модерн')
+            ->assertSee('Двері класика')
+            ->assertSee('Двері неокласика')
+            ->assertSee('Двері мінімалізм')
+            ->assertSee('Двері хай-тек')
+            ->assertSee('/product-category/interior-doors/filter/styl=modern', false)
+            ->assertSee('/product-category/interior-doors/filter/styl=klassyka', false)
+            ->assertSee('/product-category/interior-doors/filter/styl=neoklassyka', false)
+            ->assertSee('/product-category/interior-doors/filter/styl=mynymalyzm', false)
+            ->assertSee('/product/mizhkimnatni-dveri-glasso', false)
+            ->assertSee('Двері модерн в інтер’єрі')
+            ->assertSee('Двері хай-тек в інтер’єрі');
+
+        $this->get(route('localized.store.home', ['lang' => 'ru']))
+            ->assertOk()
+            ->assertSee('Двери модерн')
+            ->assertSee('Двери классика')
+            ->assertSee('/ru/product-category/interior-doors/filter/styl=modern', false)
+            ->assertSee('/ru/product/mizhkimnatni-dveri-glasso', false);
+    }
+
     public function test_storefront_menu_uses_a_real_product_image_when_the_type_image_is_missing(): void
     {
         Storage::fake('public');

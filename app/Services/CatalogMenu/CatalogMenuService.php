@@ -2,6 +2,7 @@
 
 namespace App\Services\CatalogMenu;
 
+use App\Helpers\MultiLangRoute;
 use App\Models\ApplicationConfig;
 use App\Models\CatalogMenuConfiguration;
 use App\Models\Product;
@@ -18,6 +19,76 @@ class CatalogMenuService
     public const FOOTER_NAVIGATION_CONFIG = 'footerNavigation';
 
     public const FOOTER_CATEGORIES_CONFIG = 'footerCategories';
+
+    /**
+     * The reference storefront treats the first mega-menu row as a curated
+     * visual style guide, rather than a list of ordinary product categories.
+     * Keep the routes data-driven where a real catalogue filter exists and
+     * point the remaining high-tech card to the representative live model.
+     *
+     * @return array<int, array{key: string, label: string, alt: string, image: string, url: string}>
+     */
+    public function getInteriorStyleCards(ProductType $productType): array
+    {
+        if ($productType->slug !== 'interior-doors') {
+            return [];
+        }
+
+        $definitions = [
+            [
+                'key' => 'modern',
+                'translation' => 'base.storefront_door_style_modern',
+                'image' => 'resources/img/storefront/mega-menu/modern-artporte-ostin.webp',
+                'filter' => 'modern',
+            ],
+            [
+                'key' => 'classic',
+                'translation' => 'base.storefront_door_style_classic',
+                'image' => 'resources/img/storefront/mega-menu/classic-omega-milan.webp',
+                'filter' => 'klassyka',
+            ],
+            [
+                'key' => 'neoclassic',
+                'translation' => 'base.storefront_door_style_neoclassic',
+                'image' => 'resources/img/storefront/mega-menu/neoclassic-bonadoors-dublin.webp',
+                'filter' => 'neoklassyka',
+            ],
+            [
+                'key' => 'minimal',
+                'translation' => 'base.storefront_door_style_minimal',
+                'image' => 'resources/img/storefront/mega-menu/minimal-artporte-new-york.webp',
+                'filter' => 'mynymalyzm',
+            ],
+            [
+                'key' => 'hitech',
+                'translation' => 'base.storefront_door_style_hitech',
+                'image' => 'resources/img/storefront/mega-menu/hitech-bonadoors-glasso.webp',
+                'product_slug' => 'mizhkimnatni-dveri-glasso',
+            ],
+        ];
+
+        return collect($definitions)
+            ->map(function (array $definition) use ($productType): array {
+                $label = trans($definition['translation']);
+                $url = isset($definition['filter'])
+                    ? MultiLangRoute::getMultiLangRoute('store.catalog.filter.page', [
+                        'productTypeSlug' => $productType->slug,
+                        'catalogFiltersString' => 'styl='.$definition['filter'],
+                    ])
+                    : MultiLangRoute::getMultiLangRoute('store.product.page', [
+                        'productSlug' => $definition['product_slug'],
+                    ]);
+
+                return [
+                    'key' => $definition['key'],
+                    'label' => $label,
+                    'alt' => trans('base.storefront_door_style_image_alt', ['style' => $label]),
+                    'image' => $definition['image'],
+                    'url' => $url,
+                ];
+            })
+            ->all();
+    }
 
     public function getAdminProductTypes(): Collection
     {

@@ -1217,10 +1217,10 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
 
     &__image {
         display: grid;
-        height: 190px;
+        height: 230px;
         overflow: hidden;
         place-items: center;
-        border-radius: 12px;
+        border-radius: 14px;
         background: var(--bona-paper);
         color: #aaa397;
         font: 400 16px/1 var(--bona-display);
@@ -1232,6 +1232,11 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
             object-fit: cover;
             transition: transform .3s ease, opacity .2s ease;
         }
+    }
+
+    > span:last-child {
+        font-size: 14px;
+        font-weight: 600;
     }
 
     &:hover img { opacity: .9; transform: scale(1.02); }
@@ -4266,7 +4271,9 @@ label.bona-lead-consent > input {
     .bona-mainnav { gap: 18px; }
     .bona-mainnav__direct:nth-of-type(n + 3) { display: none; }
     .bona-search { min-width: 180px; }
-    .bona-mega__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .bona-mega__inner { grid-template-columns: 210px minmax(0, 1fr); gap: 28px; }
+    .bona-mega__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .bona-mega-card__image { height: 160px; border-radius: 10px; }
     .bona-mega-card:nth-child(n + 5) { display: none; }
     .bona-partners__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .bona-numbers__card { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
