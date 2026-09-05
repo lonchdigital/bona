@@ -188,6 +188,7 @@ class HomePageEditRequest extends BaseRequest
             'content_sections.reviews.link_url',
             'content_sections.instagram.link_url',
             'content_sections.blog.link_url',
+            'content_sections.ideas.items.*.url',
             'content_sections.works.items.*.url',
         ] as $urlField) {
             $rules[$urlField] = ['nullable', 'string', 'max:500', $this->relativeOrHttpUrlRule()];

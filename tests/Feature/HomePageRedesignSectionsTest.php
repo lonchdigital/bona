@@ -10,6 +10,26 @@ use Tests\TestCase;
 
 class HomePageRedesignSectionsTest extends TestCase
 {
+    public function test_interior_idea_cards_use_their_full_clickable_area(): void
+    {
+        $html = view('components.store.home-ideas', [
+            'section' => [
+                'enabled' => true,
+                'items' => [[
+                    'title' => ['uk' => 'Приховані двері у спальні'],
+                    'text' => ['uk' => 'Лаконічний інтерʼєр'],
+                    'url' => '/product-category/hidden-doors',
+                    'image_url' => '/build/assets/interior-hidden-bedroom.webp',
+                    'sort_order' => 0,
+                ]],
+            ],
+        ])->render();
+
+        $this->assertStringContainsString('<a class="bona-idea-card" href="/product-category/hidden-doors"', $html);
+        $this->assertStringContainsString('aria-label="Приховані двері у спальні"', $html);
+        $this->assertStringContainsString('bona-idea-card__arrow', $html);
+    }
+
     public function test_reviews_render_as_the_new_accessible_slider(): void
     {
         $testimonials = collect([

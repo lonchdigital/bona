@@ -42,9 +42,9 @@ class HomePageService extends BaseService
     private const STOREFRONT_CACHE_PREFIX = 'store.home.payload.v2.';
 
     private const CONTENT_IMAGE_ASSETS = [
-        'bedroom' => 'bona-html/img/interior-bedroom.jpg',
+        'bedroom' => 'bona-html/img/interior-hidden-bedroom.webp',
         'living' => 'bona-html/img/interior-living.jpg',
-        'hall' => 'bona-html/img/interior-hall.jpg',
+        'hall' => 'bona-html/img/interior-sliding-office.webp',
         'apartment' => 'bona-html/img/interior-apartment.jpg',
         'house' => 'bona-html/img/interior-house.jpg',
         'office' => 'bona-html/img/interior-office.jpg',
@@ -246,7 +246,11 @@ class HomePageService extends BaseService
             }
 
             if (in_array($sectionKey, ['ideas', 'works'], true)) {
-                $section['items'] = collect($section['items'] ?? [])->map(function (array $item) {
+                $section['items'] = collect($section['items'] ?? [])->map(function (array $item) use ($sectionKey) {
+                    if ($sectionKey === 'ideas' && blank($item['url'] ?? null)) {
+                        $item['url'] = $this->defaultIdeaUrl((string) ($item['default_image'] ?? ''));
+                    }
+
                     $item['image_url'] = $this->contentImageUrl($item);
 
                     return $item;
@@ -521,11 +525,28 @@ class HomePageService extends BaseService
         return [
             'title' => $this->translations($titleKey),
             'text' => $this->translations($textKey),
-            'url' => '',
+            'url' => $this->defaultIdeaUrl($image),
             'image_path' => null,
             'default_image' => $image,
             'sort_order' => $sortOrder,
         ];
+    }
+
+    private function defaultIdeaUrl(string $image): string
+    {
+        return match ($image) {
+            'bedroom' => MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+                'productTypeSlug' => 'hidden-doors',
+            ]),
+            'living' => MultiLangRoute::getMultiLangRoute('store.products-by-field.page', [
+                'productField' => 14,
+                'productOptionID' => 78,
+            ]),
+            'hall' => MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+                'productTypeSlug' => 'rozsuvni-dveri',
+            ]),
+            default => '',
+        };
     }
 
     private function translations(string $key): array

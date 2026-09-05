@@ -240,6 +240,7 @@ class HomePageStyleSectionTest extends TestCase
                         'items' => [[
                             'title' => ['uk' => 'Світла спальня', 'ru' => 'Светлая спальня'],
                             'text' => ['uk' => 'Приховані двері', 'ru' => 'Скрытые двери'],
+                            'url' => '/product-category/hidden-doors',
                             'image' => UploadedFile::fake()->image('idea.jpg', 1200, 900),
                         ]],
                     ],
@@ -283,6 +284,7 @@ class HomePageStyleSectionTest extends TestCase
         $this->assertSame('Bona у цифрах', $sections['numbers']['title']['uk']);
         $this->assertSame('16', $sections['numbers']['items'][0]['value']);
         $this->assertSame('Світла спальня', $sections['ideas']['items'][0]['title']['uk']);
+        $this->assertSame('/product-category/hidden-doors', $sections['ideas']['items'][0]['url']);
         $this->assertSame('/works/apartment', $sections['works']['items'][0]['url']);
         Storage::disk(config('app.images_disk_default'))->assertExists($sections['ideas']['items'][0]['image_path']);
         Storage::disk(config('app.images_disk_default'))->assertExists($sections['works']['items'][0]['image_path']);
@@ -311,10 +313,59 @@ class HomePageStyleSectionTest extends TestCase
                         'enabled' => 1,
                         'link_url' => 'javascript:alert(1)',
                     ],
+                    'ideas' => [
+                        'enabled' => 1,
+                        'items' => [[
+                            'title' => ['uk' => 'Приховані двері', 'ru' => 'Скрытые двери'],
+                            'url' => 'javascript:alert(2)',
+                            'default_image' => 'bedroom',
+                        ]],
+                    ],
                 ],
             ])
             ->assertRedirect(route('admin.home-page.edit.page'))
-            ->assertSessionHasErrors('content_sections.popular.link_url');
+            ->assertSessionHasErrors([
+                'content_sections.popular.link_url',
+                'content_sections.ideas.items.0.url',
+            ]);
+    }
+
+    public function test_default_homepage_ideas_link_to_the_matching_catalog_sections(): void
+    {
+        $config = $this->homePageConfig();
+        $config->update([
+            'content_sections' => [
+                'ideas' => [
+                    'enabled' => true,
+                    'items' => [
+                        ['title' => ['uk' => 'Приховані двері'], 'default_image' => 'bedroom', 'url' => '', 'sort_order' => 0],
+                        ['title' => ['uk' => 'Фарбовані двері'], 'default_image' => 'living', 'url' => '', 'sort_order' => 1],
+                        ['title' => ['uk' => 'Розсувні системи'], 'default_image' => 'hall', 'url' => '', 'sort_order' => 2],
+                    ],
+                ],
+            ],
+        ]);
+
+        app()->setLocale('uk');
+        $ukrainianUrls = collect(app(HomePageService::class)->getHomePageContentSections()['ideas']['items'])
+            ->pluck('url')
+            ->all();
+
+        app()->setLocale('ru');
+        $russianUrls = collect(app(HomePageService::class)->getHomePageContentSections()['ideas']['items'])
+            ->pluck('url')
+            ->all();
+
+        $this->assertSame([
+            '/product-category/hidden-doors',
+            '/product-category/field/14/78',
+            '/product-category/rozsuvni-dveri',
+        ], $ukrainianUrls);
+        $this->assertSame([
+            '/ru/product-category/hidden-doors',
+            '/ru/product-category/field/14/78',
+            '/ru/product-category/rozsuvni-dveri',
+        ], $russianUrls);
     }
 
     public function test_homepage_content_rejects_protocol_relative_links(): void
