@@ -93,6 +93,15 @@ class BrandService extends BaseService
         })->get();
     }
 
+    public function getAvailableBrandsForAdminProductType(ProductType $productType): Collection
+    {
+        return Brand::query()
+            ->whereHas('products', function (Builder $query) use ($productType) {
+                $query->where('product_type_id', $productType->id);
+            })
+            ->get();
+    }
+
     public function createBrand(User $creator, EditBrandDTO $request): ServiceActionResult
     {
         return $this->coverWithDBTransaction(function () use ($request, $creator) {

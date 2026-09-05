@@ -112,6 +112,7 @@ use App\Http\Actions\Admin\Products\ProductCreateAction;
 use App\Http\Actions\Admin\Products\ProductDeleteAction;
 use App\Http\Actions\Admin\Products\ProductEditAction;
 use App\Http\Actions\Admin\Products\ProductEditCreatedAtAction;
+use App\Http\Actions\Admin\Products\ProductReorderAction;
 use App\Http\Actions\Admin\ProductsImport\DeleteImportedProductsAction;
 use App\Http\Actions\Admin\ProductsImport\DeleteProductFromListAction;
 use App\Http\Actions\Admin\ProductsImport\DownloadProductsImportExampleAction;
@@ -393,6 +394,7 @@ Route::prefix('admin')->middleware([
         // List
         Route::name('admin.product.list.page')->get('/', ShowProductsListPageAction::class);
         Route::name('admin.product.list')->get('/search', GetProductsBySearchAction::class);
+        Route::name('admin.product.reorder')->post('/reorder', ProductReorderAction::class);
 
         // Single
         Route::name('admin.product.parent')->get('{product}/data', GetParentProductDataAction::class);

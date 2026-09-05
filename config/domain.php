@@ -3,6 +3,7 @@
 return [
     'blog_items_per_page' => 9,
     'items_per_page' => 10,
+    'admin_products_items_per_page' => 30,
     'store_catalog_items_per_page' => 18,
     'works_per_page' => 12,
     'wallpaper_product_type_slug' => 'spalery',

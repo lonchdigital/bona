@@ -76,6 +76,7 @@ return [
     'extended_filter' => 'Розширений фільтр',
     'sort_by' => 'Сортувати за',
     'sort_by_popularity' => 'Популярністю',
+    'sort_by_recommended' => 'Рекомендованим порядком',
     'sort_by_new' => 'Новим надходженням',
     'sort_by_price_from_low' => 'Зростання ціни',
     'sort_by_price_from_high' => 'Зменшення ціни',

@@ -48,6 +48,15 @@ class Product extends Model implements Sitemapable
         return $query->orderByRaw('CASE WHEN availability_status_id = 4 THEN 1 ELSE 0 END');
     }
 
+    public function scopeOrderByCatalogPosition($query)
+    {
+        return $query
+            ->orderByRaw('CASE WHEN sort_order IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('sort_order')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'creator_id');

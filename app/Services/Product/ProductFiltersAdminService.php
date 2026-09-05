@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ProductFiltersAdminService extends BaseService
 {
-    public function handleProductFilters(FilterProductAdminDTO $request, Builder $query): Builder
+    public function handleProductFilters(FilterProductAdminDTO $request, Builder $query, ?int $styleFieldId = null): Builder
     {
         if ($request->search) {
             $query->where(function (Builder $query) use ($request) {
@@ -43,10 +43,14 @@ class ProductFiltersAdminService extends BaseService
             });
         }
 
-        if ($request->categoryId) {
+        if (isset($request->categoryId) && $request->categoryId) {
             $query->whereHas('categories', function (Builder $query) use ($request) {
                 return $query->where('category_id', $request->categoryId);
             });
+        }
+
+        if ($styleFieldId && isset($request->styleOptionId) && $request->styleOptionId) {
+            $query->whereJsonContains('custom_fields->'.$styleFieldId, (string) $request->styleOptionId);
         }
 
         return $query;

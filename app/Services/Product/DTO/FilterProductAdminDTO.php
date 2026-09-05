@@ -13,5 +13,9 @@ class FilterProductAdminDTO implements BaseDTO
         public readonly ?int $collectionId,
         public readonly ?int $countryId,
         public readonly ?int $categoryId,
+        public readonly ?int $styleOptionId,
+        public readonly int $perPage,
+        public readonly string $sort,
+        public readonly string $direction,
     ) {}
 }

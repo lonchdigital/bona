@@ -749,7 +749,9 @@ class ProductFiltersService extends BaseService
     public function handleSortingFilter(Builder $query, array $filterData): Builder
     {
         if (isset($filterData['sort_by'])) {
-            if ($filterData['sort_by'] === ProductSortOptionsDataClass::SORT_BY_POPULARITY) {
+            if ($filterData['sort_by'] === ProductSortOptionsDataClass::SORT_BY_RECOMMENDED) {
+                $query->orderByCatalogPosition();
+            } elseif ($filterData['sort_by'] === ProductSortOptionsDataClass::SORT_BY_POPULARITY) {
                 $query = $this->handleSortByPopularity($query);
             } elseif ($filterData['sort_by'] === ProductSortOptionsDataClass::SORT_BY_NEW) {
                 $query->orderByDesc('created_at');
@@ -759,7 +761,7 @@ class ProductFiltersService extends BaseService
                 $query->orderByDesc('price');
             }
         } else {
-            $query = $this->handleSortByPopularity($query);
+            $query->orderByCatalogPosition();
         }
 
         return $query;

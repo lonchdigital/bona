@@ -4,6 +4,8 @@ namespace App\DataClasses;
 
 class ProductSortOptionsDataClass implements BaseDataClass
 {
+    const SORT_BY_RECOMMENDED = 'recommended';
+
     const SORT_BY_POPULARITY = 'popularity';
 
     const SORT_BY_NEW = 'new';
@@ -16,9 +18,14 @@ class ProductSortOptionsDataClass implements BaseDataClass
     {
         $collection = collect([
             [
+                'id' => self::SORT_BY_RECOMMENDED,
+                'name' => trans('base.sort_by_recommended'),
+                'is_active_by_default' => true,
+            ],
+            [
                 'id' => self::SORT_BY_POPULARITY,
                 'name' => trans('base.sort_by_popularity'),
-                'is_active_by_default' => true,
+                'is_active_by_default' => false,
             ],
             [
                 'id' => self::SORT_BY_NEW,

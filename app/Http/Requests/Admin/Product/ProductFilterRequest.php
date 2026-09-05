@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\Product;
 
 use App\Http\Requests\BaseRequest;
 use App\Services\Product\DTO\FilterProductAdminDTO;
+use Illuminate\Validation\Rule;
 
 class ProductFilterRequest extends BaseRequest
 {
@@ -39,6 +40,26 @@ class ProductFilterRequest extends BaseRequest
                 'integer',
                 'exists:categories,id',
             ],
+            'style_option_id' => [
+                'nullable',
+                'integer',
+                'exists:product_field_options,id',
+            ],
+            'per_page' => [
+                'nullable',
+                'integer',
+                Rule::in([30, 50, 100, 200]),
+            ],
+            'sort' => [
+                'nullable',
+                'string',
+                Rule::in(['position', 'name', 'created_at']),
+            ],
+            'direction' => [
+                'nullable',
+                'string',
+                Rule::in(['asc', 'desc']),
+            ],
         ];
     }
 
@@ -51,6 +72,10 @@ class ProductFilterRequest extends BaseRequest
             $this->input('collection_id'),
             $this->input('country_id'),
             $this->input('category_id'),
+            $this->input('style_option_id'),
+            (int) $this->input('per_page', config('domain.admin_products_items_per_page', 30)),
+            (string) $this->input('sort', 'position'),
+            (string) $this->input('direction', 'asc'),
         );
     }
 }

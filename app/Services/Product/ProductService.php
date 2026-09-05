@@ -49,20 +49,67 @@ class ProductService extends BaseService
         return $product;
     }
 
-    public function getProductsByTypePaginatedAdmin(int $productTypeId, FilterProductAdminDTO $request, ?int $perPage = null): LengthAwarePaginator
+    public function getProductsByTypePaginatedAdmin(ProductType $productType, FilterProductAdminDTO $request, ?int $styleFieldId = null): LengthAwarePaginator
     {
-        $query = Product::query();
+        $query = Product::query()
+            ->with(['brand', 'categories'])
+            ->where('product_type_id', $productType->id);
 
-        $query->with([
-            'brand',
-            'creator',
-        ]);
+        $query = $this->filtersAdminService->handleProductFilters($request, $query, $styleFieldId);
 
-        $query = $this->filtersAdminService->handleProductFilters($request, $query);
+        if ($request->sort === 'name') {
+            $query->orderBy('name->'.app()->getLocale(), $request->direction)
+                ->orderBy('id', $request->direction);
+        } elseif ($request->sort === 'created_at') {
+            $query->orderBy('created_at', $request->direction)
+                ->orderBy('id', $request->direction);
+        } else {
+            $query->orderByCatalogPosition();
+        }
 
-        return $query->where('product_type_id', $productTypeId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(config('domain.items_per_page'));
+        return $query->paginate($request->perPage);
+    }
+
+    public function reorderProducts(ProductType $productType, array $orderedProductIds): ServiceActionResult
+    {
+        return $this->coverWithDBTransaction(function () use ($productType, $orderedProductIds) {
+            $orderedProductIds = array_values(array_map('intval', $orderedProductIds));
+            $products = Product::query()
+                ->where('product_type_id', $productType->id)
+                ->orderByCatalogPosition()
+                ->lockForUpdate()
+                ->get(['id']);
+            $allProductIds = $products->pluck('id')->map(fn ($id) => (int) $id)->all();
+            $allowedIds = array_flip($allProductIds);
+
+            if (count($orderedProductIds) !== count(array_unique($orderedProductIds)) ||
+                collect($orderedProductIds)->contains(fn (int $id) => ! isset($allowedIds[$id]))) {
+                return ServiceActionResult::make(false, trans('admin.product_reorder_invalid'));
+            }
+
+            $requestedIds = array_flip($orderedProductIds);
+            $slots = [];
+
+            foreach ($allProductIds as $index => $productId) {
+                if (isset($requestedIds[$productId])) {
+                    $slots[] = $index;
+                }
+            }
+
+            if (count($slots) !== count($orderedProductIds)) {
+                return ServiceActionResult::make(false, trans('admin.product_reorder_invalid'));
+            }
+
+            foreach ($slots as $index => $slot) {
+                $allProductIds[$slot] = $orderedProductIds[$index];
+            }
+
+            foreach ($allProductIds as $index => $productId) {
+                Product::query()->whereKey($productId)->update(['sort_order' => $index + 1]);
+            }
+
+            return ServiceActionResult::make(true, trans('admin.product_reorder_success'));
+        });
     }
 
     public function getBestSellersByBrandId(int $brandId): Collection
@@ -84,9 +131,7 @@ class ProductService extends BaseService
     public function getProductsByTypePaginated(ProductType $productType, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'productType', 'colors', 'galleries'])
-            ->orderByAvailabilityStatus()
-            ->orderBy('created_at', 'desc');
+            ->with(['brand', 'productType', 'colors', 'galleries']);
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
@@ -101,9 +146,7 @@ class ProductService extends BaseService
     public function getAllProductsPaginated(FilterProductDTO $request, int $perPage, int $page, array $allFilters): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'productType', 'colors', 'galleries'])
-            ->orderByAvailabilityStatus()
-            ->orderBy('created_at', 'desc');
+            ->with(['brand', 'productType', 'colors', 'galleries']);
 
         $query = $this->filterService->handleAllProductFilters($request->filters, $query, false, $allFilters);
 
@@ -196,8 +239,7 @@ class ProductService extends BaseService
 
     public function getProductsByColorPaginated(int $perPage, int $page, Color $color): LengthAwarePaginator
     {
-        return Product::orderByAvailabilityStatus()
-            ->orderBy('created_at', 'desc')
+        return Product::orderByCatalogPosition()
             ->whereHas('colors', function ($query) use ($color) {
                 $query->where('colors.id', $color->id);
             })
@@ -212,8 +254,7 @@ class ProductService extends BaseService
         })
             ->paginate($perPage, ['*'], null, $page);*/
 
-        return Product::orderByAvailabilityStatus()
-            ->orderBy('created_at', 'desc')
+        return Product::orderByCatalogPosition()
             ->where('product_type_id', $productType->id)
             ->where(function ($query) use ($color) {
                 $query->where('main_color_id', $color->id)
@@ -233,15 +274,14 @@ class ProductService extends BaseService
 
     public function getProductsByFieldPaginated(int $perPage, int $page, ProductField $productField, string $productOptionID)
     {
-        return Product::orderByAvailabilityStatus()
-            ->orderBy('created_at', 'desc')
+        return Product::orderByCatalogPosition()
             ->whereJsonContains('custom_fields', [$productField->id => $productOptionID])
             ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getProductsByDiscountPaginated(int $perPage, int $page): LengthAwarePaginator
     {
-        return Product::orderByAvailabilityStatus()->where('old_price', '>', 0)
+        return Product::orderByCatalogPosition()->where('old_price', '>', 0)
             ->whereNotNull('old_price')
             ->paginate($perPage, ['*'], 'page', $page);
     }
@@ -249,6 +289,7 @@ class ProductService extends BaseService
     public function getProductsByAvailabilityPaginated(int $perPage, int $page): LengthAwarePaginator
     {
         return Product::where('availability_status_id', 2)
+            ->orderByCatalogPosition()
             ->paginate($perPage, ['*'], 'page', $page);
     }
 
@@ -257,6 +298,7 @@ class ProductService extends BaseService
         $targetTypeIds = [1, 2, 3, 4, 5, 19, 20, 21];
 
         return Product::where('availability_status_id', 2)
+            ->orderByCatalogPosition()
             ->whereHas('productType', function ($query) use ($targetTypeIds) {
                 $query->whereIn('id', $targetTypeIds);
             })
@@ -267,8 +309,7 @@ class ProductService extends BaseService
     {
         $query = Product::query()
             ->with(['brand', 'productType', 'colors', 'galleries'])
-            ->orderByAvailabilityStatus()
-            ->orderBy('created_at', 'desc');
+            ->orderByCatalogPosition();
 
         /*return $query->where('brand_id', $brandId)
             ->paginate($perPage, '*', null, $page);*/
@@ -291,9 +332,7 @@ class ProductService extends BaseService
     public function getProductsByTypePaginatedByCategory(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'productType', 'colors', 'galleries'])
-            ->orderByAvailabilityStatus()
-            ->orderBy('created_at', 'desc');
+            ->with(['brand', 'productType', 'colors', 'galleries']);
 
         $query = $this->filterService->handleProductFilters($productType, $request->filters, $query);
 
@@ -485,6 +524,7 @@ class ProductService extends BaseService
                 'is_active' => 0,
                 'creator_id' => $creator->id,
                 'product_type_id' => $productType->id,
+                'sort_order' => ((int) Product::query()->where('product_type_id', $productType->id)->max('sort_order')) + 1,
                 'sku' => $request->sku,
                 'sub_products' => $this->encodeSubProductIds($request->selectedSubProductsId),
                 'name' => $request->name,

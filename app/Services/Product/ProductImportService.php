@@ -465,6 +465,7 @@ class ProductImportService extends BaseService
         $data = [
             'is_active' => true,
             'product_type_id' => $importedProduct->product_type_id,
+            'sort_order' => ((int) Product::query()->where('product_type_id', $importedProduct->product_type_id)->max('sort_order')) + 1,
             'sku' => $importedProduct->sku,
             'creator_id' => $creator->id,
             'name' => $importedProduct->getTranslations('name'),
