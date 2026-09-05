@@ -20,7 +20,9 @@ class StorefrontLayoutTest extends TestCase
         $this->get(route('store.home'))
             ->assertOk()
             ->assertSee('data-site-header', false)
+            ->assertSee('data-home-overlay-header', false)
             ->assertSee('bona-site-header--overlay', false)
+            ->assertSee('data-reveal-on-scroll', false)
             ->assertSee('data-home-hero', false)
             ->assertDontSee('art-contact-form-section', false)
             ->assertDontSee('art-quote-carousel-home', false)
@@ -53,7 +55,9 @@ class StorefrontLayoutTest extends TestCase
     {
         $this->get(route('store.services'))
             ->assertOk()
-            ->assertSee('bona-site-header--solid', false);
+            ->assertSee('bona-site-header--solid', false)
+            ->assertDontSee('data-home-overlay-header', false)
+            ->assertDontSee('data-reveal-on-scroll', false);
     }
 
     public function test_mobile_header_overrides_legacy_spacing_and_uses_readable_action_icons(): void
@@ -94,18 +98,43 @@ class StorefrontLayoutTest extends TestCase
             ->assertSee('href="/ru/compare"', false);
     }
 
-    public function test_mobile_bottom_navigation_is_persistent_and_yields_to_open_overlays(): void
+    public function test_mobile_bottom_navigation_reveals_after_homepage_scroll_then_yields_to_open_overlays(): void
     {
         $source = file_get_contents(resource_path('js/store/common/mobile-bottom-navigation.js'));
 
         $this->assertStringContainsString("const MOBILE_BREAKPOINT = '(max-width: 960px)'", $source);
+        $this->assertStringContainsString('const REVEAL_SCROLL_OFFSET = 32;', $source);
+        $this->assertStringContainsString("navigation.hasAttribute('data-reveal-on-scroll')", $source);
+        $this->assertStringContainsString('let hasBeenRevealed = !revealOnScroll;', $source);
+        $this->assertStringContainsString("navigationEntry.type === 'navigate'", $source);
+        $this->assertStringContainsString('let pageHasShown', $source);
+        $this->assertStringContainsString('window.scrollY < REVEAL_SCROLL_OFFSET', $source);
         $this->assertStringContainsString('const shouldShow = mediaQuery.matches', $source);
+        $this->assertStringContainsString('&& hasBeenRevealed', $source);
         $this->assertStringContainsString("document.body.classList.contains('bona-menu-open')", $source);
         $this->assertStringContainsString("document.body.classList.contains('bona-cart-drawer-open')", $source);
         $this->assertStringContainsString('new MutationObserver(setVisible)', $source);
         $this->assertStringContainsString('menuToggle.click()', $source);
         $this->assertStringContainsString('setVisible();', $source);
-        $this->assertStringNotContainsString("window.addEventListener('scroll'", $source);
+        $this->assertStringContainsString("window.addEventListener('scroll', handleScroll, { passive: true })", $source);
+        $this->assertStringContainsString("window.removeEventListener('scroll', handleScroll)", $source);
+    }
+
+    public function test_mobile_home_header_is_kept_visible_on_a_fresh_navigation(): void
+    {
+        $headerScript = file_get_contents(resource_path('js/store/common/site-header.js'));
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertStringContainsString("window.matchMedia('(max-width: 960px)').matches", $headerScript);
+        $this->assertStringContainsString("header.hasAttribute('data-home-overlay-header')", $headerScript);
+        $this->assertStringContainsString("navigationEntry.type === 'navigate'", $headerScript);
+        $this->assertStringContainsString('resetUnexpectedOffset();', $headerScript);
+        $this->assertStringContainsString("window.addEventListener('pageshow', resetUnexpectedOffset, { once: true })", $headerScript);
+        $this->assertStringContainsString("window.scrollTo({ top: 0, left: 0, behavior: 'auto' })", $headerScript);
+        $this->assertStringContainsString("&--overlay {\n            // Keep the header on its own compositing layer.", $stylesheet);
+        $this->assertStringContainsString('transform: translateZ(0);', $stylesheet);
+        $this->assertStringContainsString('-webkit-backface-visibility: hidden;', $stylesheet);
+        $this->assertStringContainsString('backface-visibility: hidden;', $stylesheet);
     }
 
     public function test_mobile_footer_places_navigation_and_categories_side_by_side(): void

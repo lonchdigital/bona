@@ -4256,6 +4256,15 @@ label.bona-lead-consent > input {
     .bona-site-header {
         .bona-topbar { display: none; }
 
+        &--overlay {
+            // Keep the header on its own compositing layer. Mobile Safari can
+            // otherwise paint the fading hero slide above this absolute layer
+            // until the first scroll invalidates the viewport.
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
         &.is-menu-open {
             position: fixed;
             inset: 0;

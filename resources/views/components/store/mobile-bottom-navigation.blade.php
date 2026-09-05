@@ -38,6 +38,7 @@
         'auth.sign-in.page',
         'localized.auth.sign-in.page'
     );
+    $revealAfterScroll = request()->routeIs('store.home', 'localized.store.home');
 @endphp
 
 <nav
@@ -45,6 +46,7 @@
     aria-label="{{ trans('base.mobile_navigation') }}"
     aria-hidden="true"
     data-mobile-bottom-navigation
+    @if($revealAfterScroll) data-reveal-on-scroll @endif
 >
     <a
         class="bona-mobile-bottom-nav__item{{ $catalogActive ? ' is-current' : '' }}"

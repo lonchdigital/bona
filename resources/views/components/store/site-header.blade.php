@@ -55,7 +55,11 @@
     });
 @endphp
 
-<div class="bona-site-header {{ $overlay ? 'bona-site-header--overlay' : 'bona-site-header--solid' }}" data-site-header>
+<div
+    class="bona-site-header {{ $overlay ? 'bona-site-header--overlay' : 'bona-site-header--solid' }}"
+    data-site-header
+    @if($overlay) data-home-overlay-header @endif
+>
     <div class="bona-topbar">
         <div class="bona-shell bona-topbar__inner">
             <nav class="bona-topbar__nav" aria-label="{{ trans('base.storefront_secondary_navigation') }}">

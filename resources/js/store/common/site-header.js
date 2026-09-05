@@ -123,9 +123,41 @@ function initMobileMenu(header) {
     });
 }
 
+function keepFreshHomepageAtTheHeader(header) {
+    if (!window.matchMedia('(max-width: 960px)').matches
+        || !header.hasAttribute('data-home-overlay-header')
+        || window.location.hash) {
+        return;
+    }
+
+    const navigationEntry = typeof performance.getEntriesByType === 'function'
+        ? performance.getEntriesByType('navigation')[0]
+        : null;
+    const isFreshNavigation = !navigationEntry || navigationEntry.type === 'navigate';
+
+    if (!isFreshNavigation) {
+        return;
+    }
+
+    const resetUnexpectedOffset = () => {
+        if (window.scrollY > 0) {
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        }
+    };
+
+    resetUnexpectedOffset();
+
+    if (document.readyState === 'complete') {
+        requestAnimationFrame(resetUnexpectedOffset);
+    } else {
+        window.addEventListener('pageshow', resetUnexpectedOffset, { once: true });
+    }
+}
+
 export default {
     init() {
         document.querySelectorAll('[data-site-header]').forEach((header) => {
+            keepFreshHomepageAtTheHeader(header);
             initMegaMenu(header);
             initMobileMenu(header);
         });
