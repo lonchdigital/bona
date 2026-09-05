@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\DataClasses\BlogArticleBlockTypesDataClass;
+use App\Models\Author;
 use App\Models\BlogArticle;
 use App\Models\BlogArticleBlock;
 use App\Models\ProductText;
@@ -61,7 +62,15 @@ class EditorialCommercePagesTest extends TestCase
             ]]],
         ]);
 
-        $this->get(route('blog.article.page', ['blogArticleSlug' => $article->slug]))
+        Author::create([
+            'creator_id' => $this->author()->id,
+            'slug' => 'oksana-honchar-test',
+            'name' => ['uk' => 'Оксана Гончар', 'ru' => 'Оксана Гончар'],
+        ]);
+
+        $response = $this->get(route('blog.article.page', ['blogArticleSlug' => $article->slug]));
+
+        $response
             ->assertOk()
             ->assertSee('bona-article-page', false)
             ->assertSee('bona-article-hero', false)
@@ -80,7 +89,14 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('"@type":"BlogPosting"', false)
             ->assertSee('"@type":"FAQPage"', false)
             ->assertSee('Коли робити замір?')
+            ->assertSeeInOrder([
+                'bona-article-faq',
+                'bona-article-sidebar',
+                'bona-article-author',
+            ], false)
             ->assertDontSee('__contextArgs', false);
+
+        $this->assertSame(1, substr_count($response->getContent(), 'class="bona-article-sidebar"'));
 
         $this->get(route('localized.blog.article.page', ['lang' => 'ru', 'blogArticleSlug' => $article->slug]))
             ->assertOk()

@@ -313,7 +313,14 @@
     padding-block: 96px 112px;
 }
 
-.bona-article-sidebar { min-width: 0; align-self: stretch; }
+.bona-article-sidebar {
+    position: absolute;
+    top: 0;
+    right: calc(100% + clamp(48px, 5vw, 76px));
+    bottom: 0;
+    width: 286px;
+    min-width: 0;
+}
 
 .bona-article-sidebar__sticky {
     position: sticky;
@@ -471,7 +478,11 @@
     }
 }
 
-.bona-article-content { min-width: 0; }
+.bona-article-content {
+    position: relative;
+    min-width: 0;
+    grid-column: 2;
+}
 
 .bona-article-block {
     margin: 0 0 58px;
@@ -1117,8 +1128,16 @@
 
 @media (max-width: 1100px) {
     .bona-editorial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .bona-article-layout { grid-template-columns: 224px minmax(0, 1fr); gap: 34px; }
+    .bona-article-layout { grid-template-columns: minmax(0, 820px); gap: 38px; }
+    .bona-article-content { grid-column: 1; }
+    .bona-article-sidebar { position: static; width: auto; margin-top: 58px; }
+    .bona-article-sidebar__sticky { position: static; display: grid; max-height: none; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; padding: 0; }
+    .bona-article-share { grid-column: 1 / -1; padding: 0 0 22px; }
+    .bona-article-share__actions { display: flex; gap: 22px; flex-wrap: wrap; }
+    .bona-article-share__action { width: auto; }
     .bona-article-consultant { padding-inline: 20px; }
+    .bona-article-consultant,
+    .bona-article-configurator { height: 100%; }
     .bona-article-consultant h2,
     .bona-article-configurator h2 { font-size: 25px; }
     .bona-product-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(360px, .78fr); gap: 38px; }
@@ -1143,13 +1162,6 @@
     .bona-blog-index__hero-grid { gap: 32px; }
     .bona-blog-feature__media { min-height: 480px; border-radius: 22px 22px 0 0; }
     .bona-blog-feature__copy { border-radius: 0 0 22px 22px; }
-    .bona-article-layout { grid-template-columns: 1fr; gap: 38px; }
-    .bona-article-sidebar__sticky { position: static; display: grid; max-height: none; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; padding: 0; }
-    .bona-article-share { grid-column: 1 / -1; padding: 0 0 22px; }
-    .bona-article-share__actions { display: flex; gap: 22px; flex-wrap: wrap; }
-    .bona-article-share__action { width: auto; }
-    .bona-article-consultant,
-    .bona-article-configurator { height: 100%; }
     .bona-service-detail__hero-grid { gap: 48px; }
     .bona-service-detail__hero-copy { max-width: 720px; }
     .bona-service-detail__content-grid { gap: 38px; }
@@ -1198,6 +1210,7 @@
     .bona-article-hero__meta > * + *::before { width: 12px; margin-right: 10px; }
     .bona-article-hero__lead { margin-top: 22px; font-size: 14px; line-height: 1.65; }
     .bona-article-layout { gap: 50px; padding-block: 64px 72px; }
+    .bona-article-sidebar { margin-top: 48px; }
     .bona-article-sidebar__sticky { grid-template-columns: 1fr; gap: 18px; }
     .bona-article-share { grid-column: 1; }
     .bona-article-share__actions { gap: 14px 20px; }
