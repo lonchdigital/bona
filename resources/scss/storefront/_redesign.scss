@@ -1089,6 +1089,10 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
 
     &__panel {
         display: none;
+        // Inner pages still load the historical global `section` spacing.
+        // The mega-menu panel owns its own rhythm through the parent grid, so
+        // neutralise that padding explicitly to keep every page aligned.
+        padding: 0;
 
         &.is-active {
             display: block;
@@ -1162,6 +1166,7 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
             overflow: hidden;
             color: var(--bona-muted);
             font-size: 13px;
+            line-height: 1.35;
             text-overflow: ellipsis;
             white-space: nowrap;
 
@@ -1240,6 +1245,57 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
     }
 
     &:hover img { opacity: .9; transform: scale(1.02); }
+}
+
+// Keep the complete desktop menu inside a laptop viewport. At full desktop
+// sizes the editorial image treatment remains spacious; around 1340px wide or
+// on a shorter screen the same content uses a denser, still-readable rhythm.
+@media (min-width: 961px) and (max-width: 1400px),
+    (min-width: 961px) and (max-height: 900px) {
+    .bona-mega__inner {
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 30px;
+        padding-block: 22px 24px;
+    }
+
+    .bona-mega__aside {
+        padding-right: 20px;
+    }
+
+    .bona-mega__heading {
+        margin-bottom: 14px;
+
+        span,
+        small { line-height: 1.2; }
+
+        h2 { font-size: 28px; }
+        a { line-height: 1.3; }
+    }
+
+    .bona-mega__cards { gap: 14px; }
+
+    .bona-mega-card {
+        gap: 8px;
+
+        &__image {
+            height: 160px;
+            border-radius: 12px;
+        }
+
+        > span:last-child { line-height: 1.35; }
+    }
+
+    .bona-mega__columns {
+        gap: 22px;
+        margin-top: 18px;
+        padding-top: 16px;
+    }
+
+    .bona-mega__column {
+        h3 { margin-bottom: 8px; }
+    }
+
+    .bona-mega__column-links { gap: 5px; }
 }
 
 .bona-search {

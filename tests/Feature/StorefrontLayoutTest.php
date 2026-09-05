@@ -60,6 +60,21 @@ class StorefrontLayoutTest extends TestCase
             ->assertDontSee('data-reveal-on-scroll', false);
     }
 
+    public function test_mega_menu_neutralises_legacy_section_spacing_and_compacts_for_laptop_viewports(): void
+    {
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertMatchesRegularExpression(
+            '/&__panel\s*\{\s*display:\s*none;.*?padding:\s*0;/s',
+            $stylesheet,
+        );
+        $this->assertStringContainsString('line-height: 1.35;', $stylesheet);
+        $this->assertStringContainsString('@media (min-width: 961px) and (max-width: 1400px),', $stylesheet);
+        $this->assertStringContainsString('(min-width: 961px) and (max-height: 900px)', $stylesheet);
+        $this->assertStringContainsString("grid-template-columns: 220px minmax(0, 1fr);\n        gap: 30px;\n        padding-block: 22px 24px;", $stylesheet);
+        $this->assertStringContainsString("height: 160px;\n            border-radius: 12px;", $stylesheet);
+    }
+
     public function test_mobile_header_overrides_legacy_spacing_and_uses_readable_action_icons(): void
     {
         $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
