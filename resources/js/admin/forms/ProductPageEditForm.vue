@@ -393,10 +393,12 @@ export default {
             this.faqs.splice(index, 1);
         },
         addContentBlock() {
+            const itemTypes = ['features', 'benefits', 'full_kit', 'journey'];
+
             this.contentBlocks.push({
                 id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
                 type: this.contentBlockType,
-                items: this.contentBlockType === 'features' ? [{}] : [],
+                items: itemTypes.includes(this.contentBlockType) ? [{}] : [],
             });
         },
         deleteContentBlock(index) {
@@ -866,6 +868,10 @@ export default {
                                     <option value="text">{{ $t('admin.product_block_text') }}</option>
                                     <option value="image_text">{{ $t('admin.product_block_image_text') }}</option>
                                     <option value="features">{{ $t('admin.product_block_features') }}</option>
+                                    <option value="benefits">{{ $t('admin.product_block_benefits') }}</option>
+                                    <option value="full_kit">{{ $t('admin.product_block_full_kit') }}</option>
+                                    <option value="journey">{{ $t('admin.product_block_journey') }}</option>
+                                    <option value="installments">{{ $t('admin.product_block_installments') }}</option>
                                     <option value="quote">{{ $t('admin.product_block_quote') }}</option>
                                 </select>
                             </div>

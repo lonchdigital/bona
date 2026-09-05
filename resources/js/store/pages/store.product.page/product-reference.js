@@ -10,6 +10,52 @@ const readVisiblePrice = (element) => {
     return Number.parseFloat(element.textContent.replace(/\s+/g, '').replace(',', '.')) || 0;
 };
 
+const parsePeriods = (value, fallback = [3]) => {
+    try {
+        const periods = JSON.parse(value || '[]')
+            .map((period) => Number.parseInt(period, 10))
+            .filter((period) => Number.isInteger(period) && period > 0);
+
+        return periods.length ? [...new Set(periods)].sort((left, right) => left - right) : fallback;
+    } catch {
+        return fallback;
+    }
+};
+
+const isRussian = () => document.documentElement.lang.toLowerCase().startsWith('ru');
+
+const closeProductDialog = (dialog) => {
+    if (!dialog) {
+        return;
+    }
+
+    if (typeof dialog.close === 'function' && dialog.open) {
+        dialog.close();
+    } else {
+        dialog.removeAttribute('open');
+        document.documentElement.classList.remove('product-dialog-is-open');
+    }
+};
+
+const openProductDialog = (dialog, opener = null) => {
+    if (!dialog) {
+        return;
+    }
+
+    dialog._productDialogOpener = opener || document.activeElement;
+
+    if (typeof dialog.showModal === 'function') {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
+    } else {
+        dialog.setAttribute('open', '');
+    }
+
+    document.documentElement.classList.add('product-dialog-is-open');
+    window.requestAnimationFrame(() => dialog.querySelector('[data-product-dialog-close]')?.focus({ preventScroll: true }));
+};
+
 export function init() {
     const page = document.querySelector('[data-product-reference]');
 
@@ -17,10 +63,44 @@ export function init() {
         return;
     }
 
+    initProductDialogs();
     initGallery(page);
     initProductTabs(page);
     initInstallments(page);
-    initKitSummary(page);
+    initKitBuilder(page);
+}
+
+function initProductDialogs() {
+    document.querySelectorAll('[data-product-dialog]').forEach((dialog) => {
+        if (dialog.dataset.productDialogInitialized === 'true') {
+            return;
+        }
+
+        dialog.dataset.productDialogInitialized = 'true';
+        dialog.querySelectorAll('[data-product-dialog-close]').forEach((button) => {
+            button.addEventListener('click', () => closeProductDialog(dialog));
+        });
+
+        dialog.addEventListener('click', (event) => {
+            if (event.target === dialog) {
+                closeProductDialog(dialog);
+            }
+        });
+
+        dialog.addEventListener('close', () => {
+            if (!document.querySelector('[data-product-dialog][open]')) {
+                document.documentElement.classList.remove('product-dialog-is-open');
+            }
+
+            dialog._productDialogOpener?.focus?.({ preventScroll: true });
+        });
+    });
+
+    document.querySelectorAll('[data-product-dialog-open]').forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+            openProductDialog(document.getElementById(trigger.dataset.productDialogOpen), trigger);
+        });
+    });
 }
 
 function initGallery(page) {
@@ -90,10 +170,7 @@ function initGallery(page) {
         showThumb(thumbs[(currentIndex + direction + thumbs.length) % thumbs.length]);
     };
 
-    allThumbs.forEach((thumb) => {
-        thumb.addEventListener('click', () => showThumb(thumb));
-    });
-
+    allThumbs.forEach((thumb) => thumb.addEventListener('click', () => showThumb(thumb)));
     gallery.querySelector('[data-gallery-prev]')?.addEventListener('click', () => move(-1));
     gallery.querySelector('[data-gallery-next]')?.addEventListener('click', () => move(1));
 
@@ -136,9 +213,7 @@ function initGallery(page) {
             });
 
             const selectedLabel = page.querySelector('#selected-color');
-            if (selectedLabel) {
-                selectedLabel.textContent = color.dataset.colorLabel || '';
-            }
+            if (selectedLabel) selectedLabel.textContent = color.dataset.colorLabel || '';
 
             const colorThumb = thumbsToShow.find((thumb) => String(thumb.dataset.colorId || '0') === colorId);
             showThumb(colorThumb || thumbsToShow[0]);
@@ -158,9 +233,7 @@ function initProductTabs(page) {
     const tabs = Array.from(page.querySelectorAll('[data-product-tab]'));
     const panels = Array.from(page.querySelectorAll('[data-product-panel]'));
 
-    if (!tabs.length) {
-        return;
-    }
+    if (!tabs.length) return;
 
     const activate = (name, moveFocus = false) => {
         tabs.forEach((tab) => {
@@ -168,10 +241,7 @@ function initProductTabs(page) {
             tab.classList.toggle('is-active', isActive);
             tab.setAttribute('aria-selected', String(isActive));
             tab.tabIndex = isActive ? 0 : -1;
-
-            if (isActive && moveFocus) {
-                tab.focus();
-            }
+            if (isActive && moveFocus) tab.focus();
         });
 
         panels.forEach((panel) => {
@@ -184,18 +254,14 @@ function initProductTabs(page) {
     tabs.forEach((tab, index) => {
         tab.addEventListener('click', () => activate(tab.dataset.productTab));
         tab.addEventListener('keydown', (event) => {
-            if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
-                return;
-            }
+            if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
 
             event.preventDefault();
             let nextIndex = index;
-
             if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
             if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
             if (event.key === 'Home') nextIndex = 0;
             if (event.key === 'End') nextIndex = tabs.length - 1;
-
             activate(tabs[nextIndex].dataset.productTab, true);
         });
     });
@@ -217,40 +283,96 @@ function initInstallments(page) {
     const monthsValue = card?.querySelector('[data-months-value]');
     const minus = card?.querySelector('[data-months-minus]');
     const plus = card?.querySelector('[data-months-plus]');
-    let months = 3;
+    const creditButton = card?.querySelector('[data-checkout-base]');
+    const providerButtons = Array.from(card?.querySelectorAll('[data-provider]') || []);
+    const termsDialog = document.getElementById('installment-terms-dialog');
+    let activeProvider = providerButtons.find((button) => button.classList.contains('is-active')) || providerButtons[0] || null;
+    let periods = parsePeriods(activeProvider?.dataset.periods);
+    let months = periods[0] || 3;
 
-    if (!price) {
-        return;
-    }
+    if (!price) return;
+
+    const updateTermsPanel = () => {
+        termsDialog?.querySelectorAll('[data-terms-provider]').forEach((panel) => {
+            panel.hidden = panel.dataset.termsProvider !== activeProvider?.dataset.provider;
+        });
+    };
 
     const update = () => {
         const currentPrice = readVisiblePrice(price);
+        const currentIndex = Math.max(periods.indexOf(months), 0);
 
         if (monthlyPayment) monthlyPayment.textContent = formatNumber(Math.ceil(currentPrice / months));
         if (monthsValue) monthsValue.textContent = String(months);
-        if (minus) minus.disabled = months <= 3;
-        if (plus) plus.disabled = months >= 10;
+        if (minus) minus.disabled = currentIndex <= 0;
+        if (plus) plus.disabled = currentIndex >= periods.length - 1;
         if (mobilePrice) mobilePrice.textContent = formatNumber(currentPrice);
+
+        page.querySelectorAll('[data-installment-example]').forEach((example) => {
+            const provider = providerButtons.find((button) => button.dataset.provider === example.dataset.providerExample);
+            const providerPeriods = parsePeriods(provider?.dataset.periods, [1]);
+            const maximumPeriod = Math.max(...providerPeriods);
+            const prefix = isRussian() ? 'от' : 'від';
+            const suffix = isRussian() ? 'мес.' : 'міс.';
+            example.textContent = `${prefix} ${formatNumber(Math.ceil(currentPrice / maximumPeriod))} грн/${suffix}`;
+        });
+
+        if (creditButton && activeProvider) {
+            const checkout = new URL(creditButton.dataset.checkoutBase, window.location.origin);
+            checkout.searchParams.set('payment_type_id', activeProvider.dataset.paymentType);
+            checkout.searchParams.delete('payment_period');
+            checkout.searchParams.delete('mono_payment_period');
+            checkout.searchParams.set(activeProvider.dataset.provider === 'mono' ? 'mono_payment_period' : 'payment_period', String(months));
+            creditButton.dataset.checkoutRedirect = checkout.toString();
+        }
     };
 
-    card?.querySelectorAll('[data-provider]').forEach((button) => {
-        button.addEventListener('click', () => {
-            card.querySelectorAll('[data-provider]').forEach((item) => {
-                const isActive = item === button;
-                item.classList.toggle('is-active', isActive);
-                item.setAttribute('aria-selected', String(isActive));
-            });
+    const selectProvider = (button, keepMonth = false) => {
+        if (!button) return;
+
+        activeProvider = button;
+        periods = parsePeriods(button.dataset.periods);
+        if (!keepMonth || !periods.includes(months)) months = periods[0] || 3;
+
+        providerButtons.forEach((item) => {
+            const isActive = item === button;
+            item.classList.toggle('is-active', isActive);
+            item.setAttribute('aria-selected', String(isActive));
         });
-    });
+
+        updateTermsPanel();
+        update();
+    };
+
+    providerButtons.forEach((button) => button.addEventListener('click', () => selectProvider(button, true)));
 
     minus?.addEventListener('click', () => {
-        months = Math.max(3, months - 1);
+        const index = Math.max(periods.indexOf(months), 0);
+        months = periods[Math.max(0, index - 1)] || months;
         update();
     });
 
     plus?.addEventListener('click', () => {
-        months = Math.min(10, months + 1);
+        const index = Math.max(periods.indexOf(months), 0);
+        months = periods[Math.min(periods.length - 1, index + 1)] || months;
         update();
+    });
+
+    card?.querySelector('[data-installment-terms-open]')?.addEventListener('click', (event) => {
+        updateTermsPanel();
+        openProductDialog(termsDialog, event.currentTarget);
+    });
+
+    page.querySelectorAll('[data-focus-provider]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const provider = providerButtons.find((button) => button.dataset.provider === link.dataset.focusProvider);
+            selectProvider(provider);
+            card?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card?.classList.remove('is-focused');
+            window.requestAnimationFrame(() => card?.classList.add('is-focused'));
+            window.setTimeout(() => card?.classList.remove('is-focused'), 1500);
+        });
     });
 
     new MutationObserver(update).observe(price, {
@@ -261,29 +383,166 @@ function initInstallments(page) {
         subtree: true,
     });
 
-    update();
+    selectProvider(activeProvider);
 }
 
-function initKitSummary(page) {
-    const selections = page.querySelector('.product-kit-selections');
-    const count = page.querySelector('#kit-count');
-    const summary = page.querySelector('#kit-summary');
+function initKitBuilder(page) {
+    const dialog = document.getElementById('product-kit-dialog');
+    const openButton = page.querySelector('[data-product-dialog-open="product-kit-dialog"]');
+    const price = page.querySelector('#product-price');
+    const categoryButtons = Array.from(dialog?.querySelectorAll('[data-kit-category]') || []);
+    const choiceButtons = Array.from(dialog?.querySelectorAll('[data-kit-option]') || []);
+    const clearButton = dialog?.querySelector('[data-kit-choice-clear]');
+    const saveButton = dialog?.querySelector('[data-kit-save]');
+    const selectedList = dialog?.querySelector('[data-kit-dialog-selected]');
+    const totalNode = dialog?.querySelector('[data-kit-dialog-total]');
+    const categoryTitle = dialog?.querySelector('[data-kit-choice-title]');
+    const categoryStep = dialog?.querySelector('[data-kit-choice-step]');
+    const countNode = page.querySelector('#kit-count');
+    const summaryNode = page.querySelector('#kit-summary');
+    const selectionChips = page.querySelector('.product-kit-selections');
+    const basePrice = Number.parseFloat(price?.dataset.startPrice || '0') || 0;
+    const currency = page.querySelector('.product-price-row strong > span:last-child')?.textContent.trim() || 'грн.';
+    const emptyCount = countNode?.textContent || '';
+    const emptySummary = summaryNode?.textContent || '';
+    const emptySelectionText = isRussian() ? 'Дополнительные элементы не выбраны' : 'Додаткові елементи не обрані';
+    let activeCategory = categoryButtons[0]?.dataset.kitCategory || '';
+    let committed = new Map();
+    let draft = new Map();
 
-    if (!selections || !count || !summary) {
-        return;
-    }
+    if (!dialog || !price || !categoryButtons.length || !choiceButtons.length) return;
 
-    const emptyLabel = count.textContent;
-    const emptySummary = summary.textContent;
-
-    const update = () => {
-        const selected = Array.from(selections.querySelectorAll('.added-line'));
-        const names = selected.map((item) => item.textContent.trim()).filter(Boolean);
-
-        count.textContent = selected.length ? `${selected.length} ${count.dataset.selectedLabel || 'обрано'}` : emptyLabel;
-        summary.textContent = names.length ? names.join(' · ') : emptySummary;
+    const calculateOptionSurcharge = () => {
+        const attributePrice = [...page.querySelectorAll('select.art-select-attribute')]
+            .reduce((sum, select) => sum + (Number.parseFloat(select.selectedOptions[0]?.dataset.price) || 0), 0);
+        const colorPrice = Number.parseFloat(page.querySelector('.color-btn.color-selected')?.dataset.price) || 0;
+        return attributePrice + colorPrice;
     };
 
-    new MutationObserver(update).observe(selections, { childList: true, subtree: true });
-    update();
+    const currentQuantity = () => Math.max(Number.parseInt(price.dataset.count || '1', 10) || 1, 1);
+
+    const selectedChoices = (values = draft) => [...values.values()]
+        .map((optionKey) => choiceButtons.find((button) => button.dataset.kitOptionKey === optionKey))
+        .filter(Boolean);
+
+    const renderSummary = () => {
+        const selected = selectedChoices();
+        const extras = selected.reduce((sum, button) => sum + (Number.parseFloat(button.dataset.kitPrice) || 0), 0);
+
+        if (selectedList) {
+            selectedList.replaceChildren();
+            if (!selected.length) {
+                const item = document.createElement('li');
+                item.textContent = emptySelectionText;
+                selectedList.append(item);
+            } else {
+                selected.forEach((button) => {
+                    const item = document.createElement('li');
+                    const label = document.createElement('span');
+                    const amount = document.createElement('span');
+                    label.textContent = `${button.dataset.kitCategoryName}: ${button.dataset.kitLabel}`;
+                    amount.textContent = `+${formatNumber(button.dataset.kitPrice)} ${currency}`;
+                    item.append(label, amount);
+                    selectedList.append(item);
+                });
+            }
+        }
+
+        if (totalNode) {
+            totalNode.textContent = `${formatNumber((basePrice + extras + calculateOptionSurcharge()) * currentQuantity())} ${currency}`;
+        }
+    };
+
+    const render = () => {
+        categoryButtons.forEach((button, index) => {
+            const selectedKey = draft.get(button.dataset.kitCategory);
+            const selected = choiceButtons.find((choice) => choice.dataset.kitOptionKey === selectedKey);
+            const isActive = button.dataset.kitCategory === activeCategory;
+            const summary = button.querySelector('[data-kit-category-summary]');
+            const state = button.querySelector('.kit-builder__state');
+            button.classList.toggle('is-active', isActive);
+            button.classList.toggle('is-complete', Boolean(selected));
+            button.setAttribute('aria-current', isActive ? 'step' : 'false');
+            if (summary) summary.textContent = selected?.dataset.kitLabel || (isRussian() ? 'Выберите подходящий элемент' : 'Оберіть потрібний елемент');
+            if (state) state.textContent = selected ? '✓' : '→';
+            if (isActive) {
+                if (categoryTitle) categoryTitle.textContent = button.querySelector('.kit-builder__copy b')?.textContent || '';
+                if (categoryStep) categoryStep.textContent = `${isRussian() ? 'Шаг' : 'Крок'} ${String(index + 1).padStart(2, '0')}`;
+            }
+        });
+
+        choiceButtons.forEach((button) => {
+            const isVisible = button.dataset.kitCategoryKey === activeCategory;
+            const isSelected = draft.get(activeCategory) === button.dataset.kitOptionKey;
+            button.hidden = !isVisible;
+            button.classList.toggle('is-selected', isSelected);
+            button.setAttribute('aria-pressed', String(isSelected));
+            const label = button.querySelector('.kit-choice-card__copy em');
+            if (label) label.textContent = isSelected ? (isRussian() ? 'Выбрано' : 'Обрано') : (isRussian() ? 'Выбрать' : 'Обрати');
+        });
+
+        const isCategoryEmpty = !draft.has(activeCategory);
+        clearButton?.classList.toggle('is-active', isCategoryEmpty);
+        clearButton?.setAttribute('aria-pressed', String(isCategoryEmpty));
+        renderSummary();
+    };
+
+    const save = () => {
+        committed = new Map(draft);
+        const selected = selectedChoices(committed);
+        const extras = selected.reduce((sum, button) => sum + (Number.parseFloat(button.dataset.kitPrice) || 0), 0);
+
+        document.querySelectorAll('.product-kit-cart-data .single-sub-product-add-to-cart').forEach((carrier) => {
+            carrier.setAttribute('data-count', '0');
+            carrier.setAttribute('data-added', '0');
+        });
+
+        const quantity = currentQuantity();
+
+        selected.forEach((button) => {
+            const carrier = document.getElementById(button.dataset.kitCarrier);
+            carrier?.setAttribute('data-count', String(quantity));
+            carrier?.setAttribute('data-added', '1');
+        });
+
+        const kitPrice = (basePrice + extras) * quantity;
+        price.dataset.productPrice = String(kitPrice);
+        price.textContent = formatNumber(kitPrice + (calculateOptionSurcharge() * quantity));
+
+        if (countNode) countNode.textContent = selected.length ? `${selected.length} ${countNode.dataset.selectedLabel || 'обрано'}` : emptyCount;
+        if (summaryNode) summaryNode.textContent = selected.length ? selected.map((button) => button.dataset.kitLabel).join(' · ') : emptySummary;
+        if (selectionChips) {
+            selectionChips.replaceChildren(...selected.map((button) => {
+                const chip = document.createElement('span');
+                chip.className = 'product-kit-selection';
+                chip.textContent = `${button.dataset.kitCategoryName}: ${button.dataset.kitLabel}`;
+                return chip;
+            }));
+        }
+
+        closeProductDialog(dialog);
+    };
+
+    categoryButtons.forEach((button) => button.addEventListener('click', () => {
+        activeCategory = button.dataset.kitCategory;
+        render();
+    }));
+
+    choiceButtons.forEach((button) => button.addEventListener('click', () => {
+        draft.set(button.dataset.kitCategoryKey, button.dataset.kitOptionKey);
+        render();
+    }));
+
+    clearButton?.addEventListener('click', () => {
+        draft.delete(activeCategory);
+        render();
+    });
+
+    saveButton?.addEventListener('click', save);
+    openButton?.addEventListener('click', () => {
+        draft = new Map(committed);
+        render();
+    });
+
+    render();
 }

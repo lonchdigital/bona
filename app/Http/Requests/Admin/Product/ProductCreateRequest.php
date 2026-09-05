@@ -39,10 +39,11 @@ class ProductCreateRequest extends BaseRequest
                 'date_format:Y-m-d H:i:s',
                 'string',
             ],
-            /*'selected_sub_products_id' => [
+            'selected_sub_products_id' => [
                 'nullable',
-                'array',
-            ],*/
+                'string',
+                'max:5000',
+            ],
             'meta_title' => [
                 'nullable',
                 'array',
@@ -125,7 +126,7 @@ class ProductCreateRequest extends BaseRequest
             ],
             'content_blocks' => ['nullable', 'array', 'max:20'],
             'content_blocks.*.id' => ['required', 'string', 'max:80', 'distinct'],
-            'content_blocks.*.type' => ['required', Rule::in(['text', 'image_text', 'features', 'quote'])],
+            'content_blocks.*.type' => ['required', Rule::in(['text', 'image_text', 'features', 'benefits', 'full_kit', 'journey', 'installments', 'quote'])],
             'content_blocks.*.image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:8192'],
             'content_blocks.*.image_deleted' => ['nullable', 'boolean'],
             'content_blocks.*.image_position' => ['nullable', Rule::in(['left', 'right'])],
@@ -291,6 +292,7 @@ class ProductCreateRequest extends BaseRequest
             }
             $rules['content_blocks.*.items.*.title.'.$availableLanguage] = ['nullable', 'string'];
             $rules['content_blocks.*.items.*.text.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['content_blocks.*.items.*.meta.'.$availableLanguage] = ['nullable', 'string'];
         }
 
         return $rules;
@@ -352,6 +354,14 @@ class ProductCreateRequest extends BaseRequest
 
     public function toDTO(): EditProductDTO
     {
+        $selectedSubProductIds = collect(explode(',', (string) $this->input('selected_sub_products_id')))
+            ->map(static fn (string $id): string => trim($id))
+            ->filter(static fn (string $id): bool => ctype_digit($id) && (int) $id > 0)
+            ->map(static fn (string $id): int => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
         return new EditProductDTO(
             //            (bool) $this->input('is_active'),
             $this->input('name'),
@@ -361,7 +371,7 @@ class ProductCreateRequest extends BaseRequest
             $this->input('meta_description'),
             $this->input('meta_keywords'),
             $this->input('meta_tags'),
-            explode(',', $this->input('selected_sub_products_id')),
+            $selectedSubProductIds ?: null,
             $this->input('availability_status_id'),
             $this->input('special_offer_id') ? array_map('intval', $this->input('special_offer_id')) : null,
             $this->input('sku'),

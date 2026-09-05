@@ -9,6 +9,7 @@ use App\Models\ProductText;
 use App\Models\Role;
 use App\Models\ServicesPageSections;
 use App\Models\User;
+use App\Support\Product\ProductPageDefaults;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\Support\MakesShopData;
@@ -224,6 +225,8 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('single-product-add-to-cart', false)
             ->assertSee('single-product-wish-list', false)
             ->assertSee('data-product-compare', false)
+            ->assertSee('4.9')
+            ->assertSee(trans('base.product_review_based_on', ['COUNT' => 3]))
             ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"Product"', false)
             ->assertSee('"sku":"BD-SEO-01"', false)
@@ -235,6 +238,44 @@ class EditorialCommercePagesTest extends TestCase
             ->assertDontSee('__contextArgs', false);
 
         $this->assertSame(1, substr_count($response->getContent(), 'bona-product-editorial--text'));
+    }
+
+    public function test_default_product_sections_render_from_admin_managed_content_and_keep_dynamic_instalments(): void
+    {
+        $this->seedCurrency();
+        config()->set('payment.monobank.periods', [3, 4, 5]);
+        config()->set('payment.privatbank.periods', [2, 3, 6]);
+        $product = $this->makeProduct([
+            'slug' => 'complete-reference-door',
+            'price' => 6000,
+            'content_blocks' => ProductPageDefaults::blocks(),
+        ]);
+
+        $this->get(route('store.product.page', ['productSlug' => $product->slug]))
+            ->assertOk()
+            ->assertSee('Відчуття в щоденному житті')
+            ->assertSee('Повний комплект')
+            ->assertSee('Від заміру до монтажу')
+            ->assertSee('Без переплат за комфорт')
+            ->assertSee('data-provider-example="mono"', false)
+            ->assertSee('1 200 грн/міс.')
+            ->assertSee('1 000 грн/міс.')
+            ->assertSee('data-installment-terms-open', false)
+            ->assertSee('/door-configurator', false);
+    }
+
+    public function test_door_configurator_placeholder_is_available_in_both_languages_with_schema(): void
+    {
+        $this->get(route('store.door-configurator.page'))
+            ->assertOk()
+            ->assertSee('bona-door-configurator', false)
+            ->assertSee('Конфігуратор дверей')
+            ->assertSee('"@type":"WebPage"', false);
+
+        $this->get(route('localized.store.door-configurator.page', ['lang' => 'ru']))
+            ->assertOk()
+            ->assertSee('Конфигуратор дверей')
+            ->assertSee('"inLanguage":"ru-UA"', false);
     }
 
     public function test_new_editorial_pages_define_mobile_breakpoints_and_admin_block_ordering(): void

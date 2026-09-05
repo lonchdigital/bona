@@ -74,6 +74,7 @@ use App\Http\Actions\Store\Payment\Pages\ShowGoToPaymentPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentOrdinaryPageAction;
 use App\Http\Actions\Store\Payment\Pages\ShowLiqPayPaymentPaypartPageAction;
 use App\Http\Actions\Store\Payment\UpdateOrderPaymentStatusAction;
+use App\Http\Actions\Store\Product\Pages\ShowDoorConfiguratorPageAction;
 use App\Http\Actions\Store\Product\Pages\ShowProductPageAction;
 use App\Http\Actions\Store\Product\SearchProductAction;
 use App\Http\Actions\Store\ProductReview\SubmitProductReviewAction;
@@ -186,6 +187,7 @@ $optionalLanguageRoutes = function () {
      */
     Route::name('store.home')->get('/', ShowHomePageAction::class);
     Route::name('store.comparison.page')->get('/compare', ShowComparisonPageAction::class);
+    Route::name('store.door-configurator.page')->get('/door-configurator', ShowDoorConfiguratorPageAction::class);
 
     Route::name('store.services')->get('/services', ShowServicesPageAction::class);
     Route::name('store.service.page')->get('/services/{serviceSlug}', ShowServicePageAction::class);

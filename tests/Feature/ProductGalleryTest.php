@@ -36,9 +36,12 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("querySelectorAll('[data-product-tab]')", $referenceScript);
         $this->assertStringContainsString("querySelector('[data-installment-card]')", $referenceScript);
         $this->assertStringContainsString("querySelector('.product-kit-selections')", $referenceScript);
-        $this->assertStringContainsString("$(this).data('product-slug') || $(this).attr('id')", $cartScript);
+        $this->assertStringContainsString('const trigger = $(this)', $cartScript);
+        $this->assertStringContainsString("trigger.data('product-slug') || trigger.attr('id')", $cartScript);
+        $this->assertStringContainsString("trigger.attr('data-checkout-redirect')", $cartScript);
         $this->assertStringContainsString("replace(/\\s+/g, '')", $cartScript);
         $this->assertStringContainsString('.product-body .bona-product-page :where(section)', $referenceStyles);
+        $this->assertStringNotContainsString(".product-body .product-kit-dialog {\n    display: none;", $referenceStyles);
         $this->assertStringContainsString('.art-heart-filled { display: none; }', $referenceStyles);
         $this->assertStringContainsString('.art-heart-outline { display: none; }', $referenceStyles);
     }

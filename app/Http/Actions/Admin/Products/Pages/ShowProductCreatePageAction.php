@@ -10,6 +10,7 @@ use App\Services\Country\CountryService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductService;
 use App\Services\ProductCategory\CategoryService;
+use App\Support\Product\ProductPageDefaults;
 
 class ShowProductCreatePageAction
 {
@@ -41,6 +42,7 @@ class ShowProductCreatePageAction
             'brands' => $brandService->getBrands(),
             'colors' => $colorService->getColors(),
             'countries' => $countryService->getCountries(),
+            'productContentBlocks' => ProductPageDefaults::blocks(),
         ]);
     }
 }

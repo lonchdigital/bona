@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\OrderStatusesDataClass;
+use App\Mail\AdminNotificationEmail;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
 
@@ -56,6 +58,19 @@ class OneClickOrderTest extends TestCase
 
         $this->assertSame('Марія', $customer->first_name);
         $this->assertSame('+38(050)999-88-77', $customer->phone);
+    }
+
+    public function test_the_shop_is_emailed_after_a_one_click_order_is_recorded(): void
+    {
+        Mail::fake();
+        config()->set('domain.admin_notification_emails', 'orders@example.com,owner@example.com');
+        $product = $this->makeProduct();
+
+        $this->buy($product->slug)->assertOk();
+
+        Mail::assertQueued(AdminNotificationEmail::class, 2);
+        Mail::assertQueued(AdminNotificationEmail::class, fn (AdminNotificationEmail $mail) => $mail->hasTo('orders@example.com'));
+        Mail::assertQueued(AdminNotificationEmail::class, fn (AdminNotificationEmail $mail) => $mail->hasTo('owner@example.com'));
     }
 
     public function test_a_second_order_from_the_same_number_reuses_the_customer(): void

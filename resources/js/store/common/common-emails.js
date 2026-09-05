@@ -124,8 +124,14 @@ export default {
             event.preventDefault();
 
             const $form = $(this);
+            const $submit = $form.find('[type="submit"]');
+
+            if ($submit.prop('disabled')) {
+                return;
+            }
 
             $form.find('.field-error').remove();
+            $submit.prop('disabled', true).attr('aria-busy', 'true');
 
             $.ajax({
                 url: $form.attr('action'),
@@ -153,6 +159,8 @@ export default {
                 } else {
                     console.error('[OneClick]: could not place the order.');
                 }
+            }).always(function () {
+                $submit.prop('disabled', false).removeAttr('aria-busy');
             });
         });
 

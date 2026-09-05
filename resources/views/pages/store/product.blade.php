@@ -44,6 +44,7 @@
         $block['_items'] = collect($block['items'] ?? [])->map(fn ($item) => [
             'title' => $localizeBlockValue($item['title'] ?? ''),
             'text' => $localizeBlockValue($item['text'] ?? ''),
+            'meta' => $localizeBlockValue($item['meta'] ?? ''),
         ])->filter(fn ($item) => filled($item['title']) || filled($item['text']))->values();
 
         return $block;
@@ -481,28 +482,33 @@
         </form>
     </div>
 
-    <div id="dialog-buy-one-click" class="art-popup-call-measurer bona-form-dialog">
+    <div id="dialog-buy-one-click" class="art-popup-call-measurer bona-form-dialog bona-product-form-dialog" role="dialog" aria-labelledby="one-click-title" aria-describedby="one-click-description">
         <form action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.one-click-order', ['productSlug' => $currentProduct->slug]) }}" id="one-click-order-form" method="post" class="art-contact-form">
             @csrf
-            <h2>{{ trans('base.buy_in_one_click') }}</h2>
-            <p>{{ trans('base.buy_one_click_description') }}</p>
-            <div class="art-fields-row"><input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}" required><input type="tel" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}" inputmode="tel" required></div>
+            <p class="bona-product-form-dialog__kicker">{{ app()->getLocale() === 'ru' ? 'Быстрый заказ' : 'Швидке замовлення' }}</p>
+            <h2 id="one-click-title">{{ trans('base.buy_in_one_click') }}</h2>
+            <p id="one-click-description">{{ trans('base.buy_one_click_description') }}</p>
+            <div class="art-fields-row">
+                <label><span>{{ trans('base.name') }}</span><input type="text" class="art-light-field name-field" name="name" placeholder="{{ app()->getLocale() === 'ru' ? 'Например, Елена' : 'Наприклад, Олена' }}" autocomplete="name" required></label>
+                <label><span>{{ trans('base.phone') }}</span><input type="tel" class="art-light-field phone-field" name="phone" placeholder="+380 00 000 00 00" autocomplete="tel" inputmode="tel" required></label>
+            </div>
             <input type="hidden" name="agree" value="1"><input type="hidden" name="event" value="submit_form_buy_one_click">
-            <button type="submit" class="bona-button bona-button--light">{{ trans('base.buy_one_click_submit') }}</button>
+            <button type="submit" class="product-dialog__submit">{{ trans('base.buy_one_click_submit') }}</button>
         </form>
     </div>
 
-    <div id="dialog-product-review" class="art-popup-call-measurer bona-form-dialog">
+    <div id="dialog-product-review" class="art-popup-call-measurer bona-form-dialog bona-product-form-dialog" role="dialog" aria-labelledby="product-review-title" aria-describedby="product-review-description">
         <form action="{{ route('store.product-review.submit') }}" method="post" class="art-contact-form art-review-form">
             @csrf
             <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <h2>{{ trans('base.product_review_leave') }}</h2>
-            <p>{{ trans('base.product_review_about_hint') }}</p>
-            <div class="art-fields-row"><label>{{ trans('base.product_review_rating') }}<select name="rating" class="art-light-field" required>@foreach([5,4,3,2,1] as $rating)<option value="{{ $rating }}" @selected(old('rating', 5) == $rating)>{{ $rating }} / 5</option>@endforeach</select></label><label>{{ trans('base.name') }}<input type="text" class="art-light-field" name="author_name" value="{{ old('author_name') }}" required></label></div>
-            <label>{{ trans('base.email') }}<input type="email" class="art-light-field" name="author_email" value="{{ old('author_email') }}" required></label>
-            <label>{{ trans('base.product_review_text') }}<textarea class="art-light-field" name="review" rows="5" required>{{ old('review') }}</textarea></label>
+            <p class="bona-product-form-dialog__kicker">{{ app()->getLocale() === 'ru' ? 'Ваш опыт' : 'Ваш досвід' }}</p>
+            <h2 id="product-review-title">{{ trans('base.product_review_leave') }}</h2>
+            <p id="product-review-description">{{ trans('base.product_review_about_hint') }}</p>
+            <div class="art-fields-row"><label><span>{{ trans('base.product_review_rating') }}</span><select name="rating" class="art-light-field" required>@foreach([5,4,3,2,1] as $rating)<option value="{{ $rating }}" @selected(old('rating', 5) == $rating)>{{ $rating }} / 5</option>@endforeach</select></label><label><span>{{ trans('base.name') }}</span><input type="text" class="art-light-field" name="author_name" value="{{ old('author_name') }}" autocomplete="name" required></label></div>
+            <label><span>{{ trans('base.email') }}</span><input type="email" class="art-light-field" name="author_email" value="{{ old('author_email') }}" autocomplete="email" required></label>
+            <label><span>{{ trans('base.product_review_text') }}</span><textarea class="art-light-field" name="review" rows="5" required>{{ old('review') }}</textarea></label>
             <div class="art-review-form__trap" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-            <button type="submit" class="bona-button bona-button--light">{{ trans('base.send') }}</button>
+            <button type="submit" class="product-dialog__submit">{{ trans('base.send') }}</button>
         </form>
     </div>
 @endsection

@@ -161,7 +161,9 @@ export default {
 
 
         $('.single-product-add-to-cart').click(function () {
-            const productSlug = $(this).data('product-slug') || $(this).attr('id');
+            const trigger = $(this);
+            const productSlug = trigger.data('product-slug') || trigger.attr('id');
+            const checkoutRedirect = trigger.attr('data-checkout-redirect');
             const count = $('#count-of-products').val() || 1;
 
             var selectAttributes = {};
@@ -181,42 +183,63 @@ export default {
             }
 
 
-            // Add main Product to cart
-            addProductToCart(
+            const selectedSubProducts = [];
+
+            $(".art-popup-single-product .art-product-item").each(function () {
+                const artButton = $(this).find('.single-sub-product-add-to-cart');
+                const productCount = Number.parseInt(artButton.attr('data-count'), 10) || 0;
+
+                if (productCount > 0) {
+                    selectedSubProducts.push({
+                        slug: artButton.data('slug'),
+                        count: productCount,
+                    });
+                }
+            });
+
+            const addSelectedSubProducts = (index, latestResponse, done, fail) => {
+                if (index >= selectedSubProducts.length) {
+                    done(latestResponse);
+                    return;
+                }
+
+                const subProduct = selectedSubProducts[index];
+                addSubProductToCart(
+                    subProduct.slug,
+                    subProduct.count,
+                    (data) => addSelectedSubProducts(index + 1, data, done, fail),
+                    fail
+                );
+            };
+
+            trigger.prop('disabled', true).attr('aria-busy', 'true');
+
+            const mainRequest = addProductToCart(
                 productSlug,
                 count,
                 selectAttributes,
-                function (data) {
-                    handleBasket(data);
-                },
+                function () {},
                 function () {
                     console.error('[Cart]: init: error during adding product to cart.');
                 }
             );
 
-            // add SubProducts to cart
-            $(".art-popup-single-product").each(function () {
-                $(this).find(".art-product-item").each(function () {
-                    var artButton = $(this).find('.single-sub-product-add-to-cart');
-                    var productCount = artButton.data("count");
-
-                    if( productCount > 0 ) {
-                        addSubProductToCart(
-                            artButton.data("slug"), // product slug
-                            productCount,
-                            function (data) {
-                                handleBasket(data);
-                            },
-                            function () {
-                                console.error('[Cart]: init: error during adding sub product to cart.');
-                            }
-                        );
+            mainRequest.done(function (data) {
+                addSelectedSubProducts(0, data, function (latestResponse) {
+                    if (checkoutRedirect) {
+                        window.location.assign(checkoutRedirect);
+                        return;
                     }
 
+                    handleBasket(latestResponse);
+                    trigger.prop('disabled', false).removeAttr('aria-busy');
+                }, function () {
+                    console.error('[Cart]: init: error during adding sub product to cart.');
+                    trigger.prop('disabled', false).removeAttr('aria-busy');
                 });
+            }).fail(function () {
+                trigger.prop('disabled', false).removeAttr('aria-busy');
             });
-
-
         });
 
 
@@ -488,7 +511,7 @@ function addProductToCart(slug, count, selectAttributes, success, fail)
 {
     const routeWithSlug = routes.cart.product_add_route.replace('PRODUCT_SLUG', slug);
 
-    $.ajax({
+    return $.ajax({
         url: routeWithSlug,
         type: 'post',
         data: {
@@ -507,7 +530,7 @@ function addSubProductToCart(slug, updatedCount, success, fail)
 {
     const routeWithSlug = routes.cart.sub_product_add_route.replace('PRODUCT_SLUG', slug);
 
-    $.ajax({
+    return $.ajax({
         url: routeWithSlug,
         type: 'post',
         data: {

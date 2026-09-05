@@ -66,10 +66,16 @@
     $firstColor = $product->colors->first();
     $reviewCount = (int) data_get($productRatingSummary, 'count', 0);
     $reviewAverage = data_get($productRatingSummary, 'average');
+    $displayReviewCount = $reviewCount ?: 3;
+    $displayReviewAverage = $reviewAverage ?: 4.9;
     $descriptionAvailable = filled(strip_tags($productDescriptionHtml));
     $specificationsAvailable = $characteristics->isNotEmpty();
     $firstTab = $descriptionAvailable ? 'description' : ($specificationsAvailable ? 'specs' : 'reviews');
     $deliveryUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info');
+    $checkoutUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page');
+    $monoPeriods = array_values(array_map('intval', config('payment.monobank.periods', [3])));
+    $privatPeriods = array_values(array_map('intval', config('payment.privatbank.periods', [2])));
+    $initialInstallmentPeriod = $monoPeriods[0] ?? 3;
     $catalogLink = $catalogUrl;
 @endphp
 
@@ -143,18 +149,12 @@
 
                 <h1 id="product-title">{{ $product->name }}</h1>
 
-                @if($reviewAverage || $product->sku)
-                    <div class="product-meta">
-                        @if($reviewAverage)
-                            <a class="product-rating" href="#product-details" data-open-reviews aria-label="{{ trans('base.review_rating', ['rating' => $reviewAverage]) }}">
-                                <span aria-hidden="true">★★★★★</span><b>{{ $reviewAverage }}</b><u>{{ trans('base.product_review_based_on', ['COUNT' => $reviewCount]) }}</u>
-                            </a>
-                        @else
-                            <span></span>
-                        @endif
-                        @if($product->sku)<span>{{ trans('base.sku') }}: {{ $product->sku }}</span>@endif
-                    </div>
-                @endif
+                <div class="product-meta">
+                    <a class="product-rating" href="#product-details" data-open-reviews aria-label="{{ trans('base.review_rating', ['rating' => $displayReviewAverage]) }}">
+                        <span aria-hidden="true">★★★★★</span><b>{{ $displayReviewAverage }}</b><u>{{ trans('base.product_review_based_on', ['COUNT' => $displayReviewCount]) }}</u>
+                    </a>
+                    @if($product->sku)<span>{{ trans('base.sku') }}: {{ $product->sku }}</span>@endif
+                </div>
 
                 @if(filled(strip_tags($productShortHtml)))
                     <div class="product-intro bona-content-richtext">{!! $productShortHtml !!}</div>
@@ -217,7 +217,7 @@
                             <span>{{ $isRussian ? 'Комплектация' : 'Комплектація' }}</span>
                             <strong id="kit-count" data-selected-label="{{ $isRussian ? 'выбрано' : 'обрано' }}">{{ $isRussian ? 'Только полотно' : 'Лише полотно' }}</strong>
                         </div>
-                        <button class="kit-config-trigger" id="kit-open" type="button" data-fancybox data-src="#product-kit-dialog">
+                        <button class="kit-config-trigger" id="kit-open" type="button" data-product-dialog-open="product-kit-dialog">
                             <span class="kit-config-trigger__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 21V3h15v18"></path><path d="M7.5 21V6h9v15"></path><path d="M13.5 13h.01"></path><path d="M3 21h18"></path></svg></span>
                             <span><b>{{ $isRussian ? 'Выбрать комплектацию' : 'Обрати комплектацію' }}</b><small id="kit-summary">{{ $isRussian ? 'Короб, петли, механизм и другие элементы' : 'Короб, завіси, механізм та інші елементи' }}</small></span>
                             <span class="kit-config-trigger__arrow" aria-hidden="true">→</span>
@@ -243,15 +243,15 @@
                     </div>
 
                     <div class="installment-card" id="purchase-installments" data-installment-card>
-                        <div class="installment-card__head"><span>{{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</span><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{ $isRussian ? 'Условия' : 'Умови' }}</a></div>
+                        <div class="installment-card__head"><span>{{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</span><button type="button" data-installment-terms-open>{{ $isRussian ? 'Условия' : 'Умови' }}</button></div>
                         <div class="installment-card__providers" role="tablist" aria-label="{{ $isRussian ? 'Банк для оплаты частями' : 'Банк для оплати частинами' }}">
-                            <button class="provider-button is-active" type="button" data-provider="mono" role="tab" aria-selected="true"><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt=""><span>mono</span></button>
-                            <button class="provider-button" type="button" data-provider="privat" role="tab" aria-selected="false"><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt=""><span>ПриватБанк</span></button>
+                            <button class="provider-button is-active" type="button" data-provider="mono" data-payment-type="{{ \App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" data-periods='@json($monoPeriods)' role="tab" aria-selected="true"><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt=""><span>mono</span></button>
+                            <button class="provider-button" type="button" data-provider="privat" data-payment-type="{{ \App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" data-periods='@json($privatPeriods)' role="tab" aria-selected="false"><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt=""><span>ПриватБанк</span></button>
                         </div>
                         <div class="installment-card__calc">
-                            <div><small>{{ $isRussian ? 'Ежемесячный платеж' : 'Щомісячний платіж' }}</small><strong><span data-monthly-payment>{{ number_format((int) ceil($numericPrice / 3), 0, '.', ' ') }}</span> {{ $baseCurrency->name_short }}</strong></div>
-                            <div class="month-stepper"><button type="button" data-months-minus aria-label="{{ $isRussian ? 'Уменьшить количество платежей' : 'Зменшити кількість платежів' }}">−</button><span><b data-months-value>3</b> {{ $isRussian ? 'платежа' : 'платежі' }}</span><button type="button" data-months-plus aria-label="{{ $isRussian ? 'Увеличить количество платежей' : 'Збільшити кількість платежів' }}">+</button></div>
-                            <button class="installment-buy btn-one-click" type="button" data-fancybox data-src="#dialog-buy-one-click"><span>{{ $isRussian ? 'Купить в кредит' : 'Купити в кредит' }}</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"></path></svg></button>
+                            <div><small>{{ $isRussian ? 'Ежемесячный платеж' : 'Щомісячний платіж' }}</small><strong><span data-monthly-payment>{{ number_format((int) ceil($numericPrice / $initialInstallmentPeriod), 0, '.', ' ') }}</span> {{ $baseCurrency->name_short }}</strong></div>
+                            <div class="month-stepper"><button type="button" data-months-minus aria-label="{{ $isRussian ? 'Уменьшить количество платежей' : 'Зменшити кількість платежів' }}">−</button><span><b data-months-value>{{ $initialInstallmentPeriod }}</b> {{ $isRussian ? 'платежа' : 'платежі' }}</span><button type="button" data-months-plus aria-label="{{ $isRussian ? 'Увеличить количество платежей' : 'Збільшити кількість платежів' }}">+</button></div>
+                            <button class="installment-buy single-product-add-to-cart" type="button" data-product-slug="{{ $product->slug }}" data-checkout-base="{{ $checkoutUrl }}"><span>{{ $isRussian ? 'Купить в кредит' : 'Купити в кредит' }}</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"></path></svg></button>
                         </div>
                     </div>
                 @else
@@ -294,7 +294,7 @@
                         data-product-slug="{{ $product->slug }}"
                         data-add-label="{{ trans('base.add_to_compare') }}"
                         data-remove-label="{{ trans('base.remove_from_compare') }}"
-                    ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 4v16M19 4v16M2.5 7H8M16 17h5.5"></path><path d="m5.8 4.5 2.3 2.4-2.3 2.4M18.2 14.5l-2.3 2.4 2.3 2.4"></path></svg><span>{{ trans('base.add_to_compare') }}</span></button>
+                    ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h14"></path><path d="m14 3 4 4-4 4"></path><path d="M20 17H6"></path><path d="m10 13-4 4 4 4"></path></svg><span>{{ trans('base.add_to_compare') }}</span></button>
                 </div>
 
                 <section class="service-card service-card--delivery" id="delivery">
@@ -318,7 +318,7 @@
                     <div class="service-card__eyebrow">{{ $isRussian ? 'Конфигуратор дверей' : 'Конфігуратор дверей' }}</div>
                     <h2>{{ $isRussian ? 'Увидьте двери в своём интерьере' : 'Побачте двері у своєму інтер’єрі' }}</h2>
                     <p>{{ $isRussian ? 'Выберите стиль, цвет и бюджет — покажем модели, которые подойдут именно вашему пространству.' : 'Оберіть стиль, колір і бюджет — покажемо моделі, які пасують саме вашому простору.' }}</p>
-                    <button class="service-card__button" type="button" data-fancybox data-src="#dialog-call-consultation">{{ $isRussian ? 'Подобрать свои двери' : 'Підібрати свої двері' }} <span aria-hidden="true">→</span></button>
+                    <a class="service-card__button" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.door-configurator.page') }}">{{ $isRussian ? 'Подобрать свои двери' : 'Підібрати свої двері' }} <span aria-hidden="true">→</span></a>
                 </section>
             </aside>
         </section>
@@ -332,7 +332,7 @@
                     @if($specificationsAvailable)
                         <button class="{{ $firstTab === 'specs' ? 'is-active' : '' }}" id="tab-specs" type="button" role="tab" aria-selected="{{ $firstTab === 'specs' ? 'true' : 'false' }}" aria-controls="panel-specs" data-product-tab="specs">{{ trans('base.characteristics') }}</button>
                     @endif
-                    <button class="{{ $firstTab === 'reviews' ? 'is-active' : '' }}" id="tab-reviews" type="button" role="tab" aria-selected="{{ $firstTab === 'reviews' ? 'true' : 'false' }}" aria-controls="panel-reviews" data-product-tab="reviews">{{ trans('base.product_reviews_title') }} @if($reviewCount)<span>{{ $reviewCount }}</span>@endif</button>
+                    <button class="{{ $firstTab === 'reviews' ? 'is-active' : '' }}" id="tab-reviews" type="button" role="tab" aria-selected="{{ $firstTab === 'reviews' ? 'true' : 'false' }}" aria-controls="panel-reviews" data-product-tab="reviews">{{ trans('base.product_reviews_title') }} <span>{{ $displayReviewCount }}</span></button>
                 </div>
 
                 @if($descriptionAvailable)
@@ -356,9 +356,9 @@
                 <div class="product-info-tabs__panel{{ $firstTab === 'reviews' ? ' is-active' : '' }}" id="panel-reviews" role="tabpanel" aria-labelledby="tab-reviews" data-product-panel="reviews" @if($firstTab !== 'reviews') hidden @endif>
                     <div class="tab-reviews" id="reviews">
                         <div class="tab-reviews__score">
-                            <strong>{{ $reviewAverage ?: '—' }}</strong>
-                            <span aria-hidden="true">{{ $reviewAverage ? '★★★★★' : '☆☆☆☆☆' }}</span>
-                            <small>{{ $reviewCount ? trans('base.product_review_based_on', ['COUNT' => $reviewCount]) : trans('base.product_reviews_empty') }}</small>
+                            <strong>{{ $displayReviewAverage }}</strong>
+                            <span aria-hidden="true">★★★★★</span>
+                            <small>{{ trans('base.product_review_based_on', ['COUNT' => $displayReviewCount]) }}</small>
                             <button class="reviews-write art-product-reviews__open" type="button" data-fancybox data-src="#dialog-product-review">{{ trans('base.product_review_leave') }} <span aria-hidden="true">→</span></button>
                         </div>
                         <div class="review-list">
@@ -380,7 +380,7 @@
                 <div class="manager-mini"><img src="{{ Vite::asset('bona-html/img/manager-oksana.webp') }}" alt="{{ $isRussian ? 'Оксана, консультант Bona Doors' : 'Оксана, консультант Bona Doors' }}" width="94" height="94" loading="lazy" decoding="async"><span><b>Оксана</b><small>{{ $isRussian ? 'Консультант Bona Doors' : 'Консультант Bona Doors' }}</small></span><i aria-hidden="true"></i></div>
                 <h2>{{ $isRussian ? 'Нужна помощь с комплектацией?' : 'Потрібна допомога з комплектацією?' }}</h2>
                 <p>{{ $isRussian ? 'Бесплатно проверим размеры, совместимость короба и фурнитуры и подготовим точную смету.' : 'Безкоштовно перевіримо розміри, сумісність короба й фурнітури та підготуємо точний кошторис.' }}</p>
-                <button class="service-card__link" type="button" data-fancybox data-src="#dialog-call-consultation">{{ $isRussian ? 'Посоветоваться с Оксаной' : 'Порадитися з Оксаною' }} <span aria-hidden="true">→</span></button>
+                <button class="service-card__link" type="button" data-lead-modal-open="dialog-call-consultation">{{ $isRussian ? 'Получить консультацию' : 'Отримати консультацію' }} <span aria-hidden="true">→</span></button>
             </section>
         </section>
     </div>
@@ -401,6 +401,53 @@
                 </div>
                 @if($block['_image_url'])<figure class="product-reference-editorial__image{{ ($block['image_position'] ?? 'left') === 'right' ? ' is-right' : '' }}"><img src="{{ $block['_image_url'] }}" alt="{{ $block['_title'] ?: $product->name }}" width="1328" height="720" loading="lazy" decoding="async"></figure>@endif
                 @if($block['_button_label'] && filled($block['button_url'] ?? null))<a class="product-reference-editorial__button" href="{{ $block['button_url'] }}">{{ $block['_button_label'] }} <span aria-hidden="true">→</span></a>@endif
+            </div></section>
+        @elseif(($block['type'] ?? '') === 'benefits' && $block['_items']->isNotEmpty())
+            <section class="product-benefits product-reference-editorial"><div class="container">
+                <div class="product-section-head product-section-head--compact"><div>@if($block['_eyebrow'])<div class="kicker">{{ $block['_eyebrow'] }}</div>@endif @if($block['_title'])<h2>{{ $block['_title'] }}</h2>@endif</div></div>
+                <div class="benefits-grid">
+                    @foreach($block['_items']->take(4) as $item)
+                        <article>
+                            <span>{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            @switch($loop->iteration)
+                                @case(1)<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6 21h5l4 5V10l-4 5H6v6Z"></path><path d="M21 14c2 2 2 6 0 8m4-12c5 5 5 11 0 16"></path></svg>@break
+                                @case(2)<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" aria-hidden="true"><path d="M18 5c7 8 10 12 10 17a10 10 0 0 1-20 0c0-5 3-9 10-17Z"></path><path d="M12 23c1 3 3 4 6 4"></path></svg>@break
+                                @case(3)<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" aria-hidden="true"><path d="M7 29V7h22v22H7Z"></path><path d="m11 24 6-6 4 4 4-4"></path></svg>@break
+                                @default<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="18" cy="18" r="12"></circle><path d="m12 18 4 4 8-9"></path></svg>
+                            @endswitch
+                            @if($item['title'])<h3>{{ $item['title'] }}</h3>@endif
+                            @if($item['text'])<p>{{ $item['text'] }}</p>@endif
+                        </article>
+                    @endforeach
+                </div>
+            </div></section>
+        @elseif(($block['type'] ?? '') === 'full_kit' && $block['_items']->isNotEmpty())
+            <section class="product-kit product-reference-editorial"><div class="container">
+                <div class="product-section-head">
+                    <div>@if($block['_eyebrow'])<div class="kicker">{{ $block['_eyebrow'] }}</div>@endif @if($block['_title'])<h2>{{ $block['_title'] }}</h2>@endif</div>
+                    @if(filled(strip_tags($block['_content'])))<div class="product-reference-copy bona-content-richtext">{!! $block['_content'] !!}</div>@endif
+                </div>
+                <div class="kit-diagram">
+                    <div class="kit-diagram__visual" aria-hidden="true"><div class="door-scheme"><span class="door-scheme__frame"></span><span class="door-scheme__leaf"></span><span class="door-scheme__line"></span><span class="door-scheme__handle"></span></div>@foreach($block['_items']->take(4) as $item)<span class="kit-point kit-point--{{ $loop->iteration }}">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>@endforeach</div>
+                    <ol class="kit-diagram__list">@foreach($block['_items']->take(4) as $item)<li><span>{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><div>@if($item['title'])<b>{{ $item['title'] }}</b>@endif @if($item['text'])<p>{{ $item['text'] }}</p>@endif</div></li>@endforeach</ol>
+                </div>
+            </div></section>
+        @elseif(($block['type'] ?? '') === 'journey' && $block['_items']->isNotEmpty())
+            <section class="delivery-section product-reference-editorial"><div class="container">
+                <div class="product-section-head">
+                    <div>@if($block['_eyebrow'])<div class="kicker">{{ $block['_eyebrow'] }}</div>@endif @if($block['_title'])<h2>{{ $block['_title'] }}</h2>@endif</div>
+                    @if(filled(strip_tags($block['_content'])))<div class="product-reference-copy bona-content-richtext">{!! $block['_content'] !!}</div>@endif
+                </div>
+                <div class="delivery-steps">@foreach($block['_items']->take(4) as $item)<article><span>{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>@if($item['title'])<h3>{{ $item['title'] }}</h3>@endif @if($item['text'])<p>{{ $item['text'] }}</p>@endif @if($item['meta'])<small>{{ $item['meta'] }}</small>@endif</article>@endforeach</div>
+            </div></section>
+        @elseif(($block['type'] ?? '') === 'installments' && $hasPrice)
+            <section class="installments-section product-reference-editorial"><div class="container installments-section__inner">
+                <div class="installments-section__copy">@if($block['_eyebrow'])<div class="kicker">{{ $block['_eyebrow'] }}</div>@endif @if($block['_title'])<h2>{{ $block['_title'] }}</h2>@endif @if(filled(strip_tags($block['_content'])))<div class="product-reference-copy bona-content-richtext">{!! $block['_content'] !!}</div>@endif</div>
+                <div class="installments-section__cards">
+                    <a class="installments-section__card" href="#purchase-installments" data-focus-provider="mono"><div><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt="monobank"><strong>{{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</strong></div><p><b data-installment-example data-provider-example="mono">{{ $isRussian ? 'от' : 'від' }} {{ number_format((int) ceil($numericPrice / max($monoPeriods ?: [1])), 0, '.', ' ') }} {{ $baseCurrency->name_short }}/{{ $isRussian ? 'мес.' : 'міс.' }}</b><span>{{ $isRussian ? 'до' : 'до' }} {{ max($monoPeriods ?: [1]) }} {{ $isRussian ? 'платежей' : 'платежів' }}</span></p><em>{{ $isRussian ? 'Рассчитать платёж' : 'Розрахувати платіж' }} <span>↑</span></em></a>
+                    <a class="installments-section__card" href="#purchase-installments" data-focus-provider="privat"><div><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt="ПриватБанк"><strong>{{ $isRussian ? 'Оплата частями' : 'Оплата частинами' }}</strong></div><p><b data-installment-example data-provider-example="privat">{{ $isRussian ? 'от' : 'від' }} {{ number_format((int) ceil($numericPrice / max($privatPeriods ?: [1])), 0, '.', ' ') }} {{ $baseCurrency->name_short }}/{{ $isRussian ? 'мес.' : 'міс.' }}</b><span>{{ $isRussian ? 'до' : 'до' }} {{ max($privatPeriods ?: [1]) }} {{ $isRussian ? 'платежей' : 'платежів' }}</span></p><em>{{ $isRussian ? 'Рассчитать платёж' : 'Розрахувати платіж' }} <span>↑</span></em></a>
+                    <small>{{ $isRussian ? 'Пример рассчитан для текущей комплектации. Условия и лимит определяет банк.' : 'Приклад розраховано для поточної комплектації. Умови та ліміт визначає банк.' }}</small>
+                </div>
             </div></section>
         @elseif(($block['type'] ?? '') === 'features' && $block['_items']->isNotEmpty())
             <section class="product-benefits product-reference-editorial"><div class="container">
@@ -444,7 +491,7 @@
     <section class="consult-strip"><div class="container consult-strip__inner">
         <div class="consult-strip__person"><img src="{{ Vite::asset('bona-html/img/manager-oksana.webp') }}" alt="Оксана, консультант Bona Doors" width="300" height="300" loading="lazy" decoding="async"><span><i aria-hidden="true"></i><small>{{ $isRussian ? 'Оксана сейчас на связи' : 'Оксана зараз на зв’язку' }}</small></span></div>
         <div><div class="kicker">{{ $isRussian ? 'Бесплатная консультация' : 'Безкоштовна консультація' }}</div><h2>{{ $isRussian ? 'Не уверены в размере или комплектации?' : 'Не впевнені в розмірі чи комплектації?' }}</h2><p>{{ $isRussian ? 'Пришлите фото проёма — Оксана подскажет, что именно нужно, и подготовит предварительную смету.' : 'Надішліть фото прорізу — Оксана підкаже, що саме потрібно, і підготує попередній кошторис.' }}</p></div>
-        <button type="button" data-fancybox data-src="#dialog-call-consultation">{{ $isRussian ? 'Получить консультацию' : 'Отримати консультацію' }} <span aria-hidden="true">→</span></button>
+        <button type="button" data-lead-modal-open="dialog-call-consultation">{{ $isRussian ? 'Получить консультацию' : 'Отримати консультацію' }} <span aria-hidden="true">→</span></button>
     </div></section>
 
     @if(count($sameTypeProducts))
@@ -467,32 +514,89 @@
 </div>
 
 @if(count($categoryProducts))
-    <div id="product-kit-dialog" class="product-kit-dialog" aria-hidden="true">
-        <div class="kicker">{{ $isRussian ? 'Комплектация дверей' : 'Комплектація дверей' }}</div>
-        <h2>{{ $isRussian ? 'Соберите свой комплект' : 'Зберіть свій комплект' }}</h2>
-        <p>{{ $isRussian ? 'Выберите нужные элементы — полная стоимость обновится автоматически.' : 'Оберіть потрібні елементи — повна вартість оновиться автоматично.' }}</p>
-        <div class="product-kit-dialog__groups">
-            @foreach($categoryProducts as $categoryName => $subProducts)
-                @php($subDialogId = 'product-kit-group-'.\Illuminate\Support\Str::slug($categoryName).'-'.$loop->index)
-                <section id="{{ $subDialogId }}" class="art-popup-single-product product-kit-dialog__group">
-                    <h3>{{ $categoryName }}</h3>
-                    <div class="art-popup-list-sub-products product-kit-dialog__grid">
-                        @foreach($subProducts as $subProduct)
-                            <article class="art-product-item">
-                                <div class="art-product-data">
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $subProduct->slug]) }}" class="art-product-link">
-                                        <span class="image"><img src="{{ $subProduct->preview_image_url }}" alt="{{ $subProduct->name }}" width="220" height="220" loading="lazy" decoding="async"></span>
-                                        <span class="text"><span class="product-title">{{ $subProduct->name }}</span><span class="price-wrapper"><span class="price">{{ $subProduct->price }}</span> <span class="currency">{{ $baseCurrency->name_short }}</span></span></span>
-                                    </a>
-                                    <button type="button" class="single-sub-product-add-to-cart" data-count="0" data-added="0" data-id="{{ $subProduct->id }}" data-slug="{{ $subProduct->slug }}">{{ trans('base.select') }}</button>
-                                </div>
-                            </article>
+    <dialog class="product-dialog kit-dialog" id="product-kit-dialog" data-product-dialog>
+        <button class="product-dialog__close" type="button" data-product-dialog-close aria-label="{{ $isRussian ? 'Закрыть' : 'Закрити' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        <div class="kit-dialog__top">
+            <div class="kit-dialog__intro">
+                <div class="kicker">{{ $isRussian ? 'Комплектация дверей' : 'Комплектація дверей' }}</div>
+                <h2>{{ $isRussian ? 'Соберите свой комплект' : 'Зберіть свій комплект' }}</h2>
+                <p>{{ $isRussian ? 'Выберите по одному совместимому элементу в каждой категории. Итоговая стоимость обновится автоматически.' : 'Оберіть по одному сумісному елементу в кожній категорії. Підсумкова вартість оновиться автоматично.' }}</p>
+            </div>
+        </div>
+        <div class="kit-dialog__layout">
+            <div class="kit-dialog__workspace">
+                <nav class="kit-builder" data-kit-categories aria-label="{{ $isRussian ? 'Категории комплектации' : 'Категорії комплектації' }}">
+                    @foreach($categoryProducts as $categoryName => $subProducts)
+                        @php($kitCategoryKey = (\Illuminate\Support\Str::slug((string) $categoryName) ?: 'group').'-'.$loop->index)
+                        <button class="kit-builder__item{{ $loop->first ? ' is-active' : '' }}" type="button" data-kit-category="{{ $kitCategoryKey }}" aria-current="{{ $loop->first ? 'step' : 'false' }}">
+                            <span class="kit-builder__number">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            <span class="kit-builder__copy"><b>{{ $categoryName }}</b><small data-kit-category-summary>{{ $isRussian ? 'Выберите подходящий элемент' : 'Оберіть потрібний елемент' }}</small></span>
+                            <span class="kit-builder__state" aria-hidden="true">→</span>
+                        </button>
+                    @endforeach
+                </nav>
+                <section class="kit-choice-panel" aria-live="polite">
+                    <div class="kit-choice-panel__head">
+                        <div><span data-kit-choice-step>{{ $isRussian ? 'Шаг 01' : 'Крок 01' }}</span><h3 data-kit-choice-title>{{ array_key_first($categoryProducts) }}</h3><p>{{ $isRussian ? 'Выберите один совместимый вариант или оставьте категорию без дополнительного элемента.' : 'Оберіть один сумісний варіант або залиште категорію без додаткового елемента.' }}</p></div>
+                        <button type="button" data-kit-choice-clear>{{ $isRussian ? 'Не добавлять' : 'Не додавати' }}</button>
+                    </div>
+                    <div class="kit-choice-grid" data-kit-choice-grid>
+                        @foreach($categoryProducts as $categoryName => $subProducts)
+                            @php($kitCategoryKey = (\Illuminate\Support\Str::slug((string) $categoryName) ?: 'group').'-'.$loop->index)
+                            @foreach($subProducts as $subProduct)
+                                @php($carrierId = 'kit-carrier-'.$kitCategoryKey.'-'.$subProduct->id)
+                                <button class="kit-choice-card" type="button" data-kit-option="{{ $subProduct->id }}" data-kit-option-key="{{ $carrierId }}" data-kit-category-key="{{ $kitCategoryKey }}" data-kit-category-name="{{ $categoryName }}" data-kit-label="{{ $subProduct->name }}" data-kit-price="{{ (float) $subProduct->price }}" data-kit-carrier="{{ $carrierId }}" aria-pressed="false" @if(!$loop->parent->first) hidden @endif>
+                                    <span class="kit-choice-card__image"><img src="{{ $subProduct->preview_image_url ?: asset('assets/images/no-image.png') }}" alt="{{ $subProduct->name }}" width="300" height="225" loading="lazy" decoding="async"><i aria-hidden="true">✓</i></span>
+                                    <span class="kit-choice-card__copy"><b>{{ $subProduct->name }}</b><small>{{ collect([$subProduct->sku, $subProduct->brand?->name])->filter()->join(' · ') ?: $categoryName }}</small><strong>+{{ number_format((float) $subProduct->price, 0, '.', ' ') }} {{ $baseCurrency->name_short }}</strong><em>{{ $isRussian ? 'Выбрать' : 'Обрати' }}</em></span>
+                                </button>
+                            @endforeach
                         @endforeach
                     </div>
                 </section>
-            @endforeach
+            </div>
         </div>
+        <aside class="kit-dialog__summary" aria-label="{{ $isRussian ? 'Итог комплектации' : 'Підсумок комплектації' }}">
+            <div class="kit-dialog__selection">
+                <span class="kit-dialog__selection-label">{{ $isRussian ? 'Выбрано' : 'Обрано' }}</span>
+                <div class="kit-dialog__selection-base"><strong>{{ $isRussian ? 'Дверное полотно' : 'Дверне полотно' }}</strong><b>{{ number_format($numericPrice, 0, '.', ' ') }} {{ $baseCurrency->name_short }}</b></div>
+                <ul data-kit-dialog-selected><li>{{ $isRussian ? 'Дополнительные элементы не выбраны' : 'Додаткові елементи не обрані' }}</li></ul>
+            </div>
+            <div class="kit-dialog__total"><span>{{ $isRussian ? 'Итого' : 'Разом' }}</span><strong data-kit-dialog-total>{{ number_format($numericPrice, 0, '.', ' ') }} {{ $baseCurrency->name_short }}</strong></div>
+            <button type="button" data-kit-save>{{ $isRussian ? 'Сохранить комплектацию' : 'Зберегти комплектацію' }}</button>
+            <small>{{ $isRussian ? 'Совместимость и размеры проверит менеджер перед оплатой.' : 'Сумісність і розміри перевірить менеджер перед оплатою.' }}</small>
+        </aside>
+    </dialog>
+
+    <div class="product-kit-cart-data" hidden aria-hidden="true">
+        @foreach($categoryProducts as $categoryName => $subProducts)
+            @php($kitCategoryKey = (\Illuminate\Support\Str::slug((string) $categoryName) ?: 'group').'-'.$loop->index)
+            <div class="art-popup-single-product">
+                @foreach($subProducts as $subProduct)
+                    @php($carrierId = 'kit-carrier-'.$kitCategoryKey.'-'.$subProduct->id)
+                    <article class="art-product-item"><div class="art-product-data"><a class="art-product-link" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $subProduct->slug]) }}"><span class="text"><span class="product-title">{{ $subProduct->name }}</span><span class="price">{{ (float) $subProduct->price }}</span></span></a><button id="{{ $carrierId }}" type="button" class="single-sub-product-add-to-cart" data-count="0" data-added="0" data-id="{{ $subProduct->id }}" data-slug="{{ $subProduct->slug }}" tabindex="-1"></button></div></article>
+                @endforeach
+            </div>
+        @endforeach
     </div>
+@endif
+
+@if($hasPrice)
+    <dialog class="product-dialog installment-terms-dialog" id="installment-terms-dialog" data-product-dialog>
+        <button class="product-dialog__close" type="button" data-product-dialog-close aria-label="{{ $isRussian ? 'Закрыть' : 'Закрити' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        <div class="kicker">{{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</div>
+        <h2>{{ $isRussian ? 'Условия выбранной программы' : 'Умови обраної програми' }}</h2>
+        <section data-terms-provider="mono">
+            <div class="installment-terms-dialog__brand"><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt="monobank"><strong>monobank · {{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</strong></div>
+            <ol><li>{{ $isRussian ? 'Добавьте комплект в корзину и выберите monobank при оформлении.' : 'Додайте комплект у кошик і оберіть monobank під час оформлення.' }}</li><li>{{ $isRussian ? 'Подтвердите покупку в приложении mono в пределах доступного лимита.' : 'Підтвердьте покупку в застосунку mono в межах доступного ліміту.' }}</li><li>{{ $isRussian ? 'Банк покажет точное количество и график равных платежей до подтверждения.' : 'Банк покаже точну кількість і графік рівних платежів до підтвердження.' }}</li></ol>
+            <a href="https://monobank.ua/chast" target="_blank" rel="noopener noreferrer">{{ $isRussian ? 'Официальные условия monobank' : 'Офіційні умови monobank' }} <span aria-hidden="true">↗</span></a>
+        </section>
+        <section data-terms-provider="privat" hidden>
+            <div class="installment-terms-dialog__brand"><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt="ПриватБанк"><strong>{{ $isRussian ? 'ПриватБанк · Оплата частями' : 'ПриватБанк · Оплата частинами' }}</strong></div>
+            <ol><li>{{ $isRussian ? 'Добавьте комплект в корзину и выберите ПриватБанк при оформлении.' : 'Додайте комплект у кошик і оберіть ПриватБанк під час оформлення.' }}</li><li>{{ $isRussian ? 'Для оплаты нужен доступный лимит сервиса «Оплата частями».' : 'Для оплати потрібен доступний ліміт сервісу «Оплата частинами».' }}</li><li>{{ $isRussian ? 'Перед подтверждением банк покажет окончательный график и условия платежей.' : 'Перед підтвердженням банк покаже остаточний графік та умови платежів.' }}</li></ol>
+            <a href="https://privatbank.ua/kredyty/oplata-chastynamy-ta-myttyeva-rozstrochka" target="_blank" rel="noopener noreferrer">{{ $isRussian ? 'Официальные условия ПриватБанка' : 'Офіційні умови ПриватБанку' }} <span aria-hidden="true">↗</span></a>
+        </section>
+        <p class="installment-terms-dialog__note">{{ $isRussian ? 'Доступность программы, лимит и окончательные условия определяет банк.' : 'Доступність програми, ліміт та остаточні умови визначає банк.' }}</p>
+    </dialog>
 @endif
 
 <x-store.call-consultation-modal :options="$applicationGlobalOptions" />

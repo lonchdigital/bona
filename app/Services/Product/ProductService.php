@@ -465,7 +465,7 @@ class ProductService extends BaseService
                 'creator_id' => $creator->id,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
-                'sub_products' => (! is_null($request->selectedSubProductsId)) ? json_encode($request->selectedSubProductsId) : null,
+                'sub_products' => $this->encodeSubProductIds($request->selectedSubProductsId),
                 'name' => $request->name,
                 'slug' => $request->slug,
                 'old_price' => $request->oldPrice,
@@ -573,7 +573,7 @@ class ProductService extends BaseService
                 'is_active' => 0,
                 'product_type_id' => $productType->id,
                 'sku' => $request->sku,
-                'sub_products' => $request->selectedSubProductsId,
+                'sub_products' => $this->encodeSubProductIds($request->selectedSubProductsId),
                 'name' => $request->name,
                 'slug' => $request->slug,
                 'created_at' => $request->createdAt,
@@ -726,7 +726,7 @@ class ProductService extends BaseService
         return $this->relationsService->getCharacteristics($id);
     }
 
-    public function replaceTagsWithData(string $text, Product $product): string
+    public function replaceTagsWithData(?string $text, Product $product): string
     {
         $allTags = [
             '%title%' => $product->name,
@@ -734,7 +734,19 @@ class ProductService extends BaseService
             '%product_type%' => $product->productType->name,
         ];
 
-        return str_replace(array_keys($allTags), array_values($allTags), $text);
+        return str_replace(array_keys($allTags), array_values($allTags), (string) $text);
+    }
+
+    private function encodeSubProductIds(?array $ids): ?string
+    {
+        $normalizedIds = collect($ids ?? [])
+            ->filter(static fn (mixed $id): bool => is_numeric($id) && (int) $id > 0)
+            ->map(static fn (mixed $id): int => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        return $normalizedIds === [] ? null : json_encode($normalizedIds, JSON_THROW_ON_ERROR);
     }
 
     public function getSelectedSubItems(?array $sub_products): Collection|array

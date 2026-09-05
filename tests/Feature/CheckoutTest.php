@@ -218,4 +218,40 @@ class CheckoutTest extends TestCase
             'payment_period' => 3,
         ])->assertSessionHasNoErrors();
     }
+
+    public function test_product_page_can_preselect_monobank_and_its_period_in_checkout(): void
+    {
+        $this->seedCurrency();
+        config()->set('payment.monobank.periods', [3, 4, 5]);
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+
+        $response = $this->get(route('store.checkout.page', [
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK,
+            'mono_payment_period' => 5,
+        ]));
+
+        $response->assertOk();
+        $this->assertSame(PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK, $response->viewData('checkoutPaymentType'));
+        $this->assertSame(5, $response->viewData('checkoutMonoPeriod'));
+    }
+
+    public function test_product_page_can_preselect_privatbank_and_rejects_unoffered_periods(): void
+    {
+        $this->seedCurrency();
+        config()->set('payment.privatbank.periods', [2, 3, 4, 5, 6]);
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+
+        $response = $this->get(route('store.checkout.page', [
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART,
+            'payment_period' => 25,
+        ]));
+
+        $response->assertOk();
+        $this->assertSame(PaymentTypesDataClass::CARD_PAYMENT_PAYPART, $response->viewData('checkoutPaymentType'));
+        $this->assertSame(2, $response->viewData('checkoutPrivatPeriod'));
+    }
 }

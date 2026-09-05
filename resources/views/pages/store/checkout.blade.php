@@ -432,7 +432,7 @@
                                                     <div class="checkbox art-mb-10">
                                                         <div class="position-relative">
                                                             <input type="radio"
-                                                                   @if(!old('payment_type_id') || old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT) checked
+                                                                   @if(!old('payment_type_id', $checkoutPaymentType) || old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT) checked
                                                                    @endif id="payment-cash" name="payment_type_id"
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}">
                                                             <label class="custom-control-label"
@@ -454,7 +454,7 @@
                                                     <div class="checkbox art-mb-10">
                                                         <div class="position-relative">
                                                             <input type="radio"
-                                                                   @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT) checked
+                                                                   @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT) checked
                                                                    @endif id="payment-card" name="payment_type_id"
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}">
                                                             <label class="custom-control-label"
@@ -470,7 +470,7 @@
                                                     <div class="checkbox art-mb-10">
                                                         <div class="position-relative">
                                                             <input type="radio"
-                                                                   @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) checked
+                                                                   @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) checked
                                                                    @endif id="payment-card_paypart" name="payment_type_id"
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}">
                                                             <label class="custom-control-label"
@@ -483,7 +483,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="" id="collapsePartialPayment" @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) style="display: block" @else style="display: none" @endif>
+                                            <div class="" id="collapsePartialPayment" @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) style="display: block" @else style="display: none" @endif>
                                                 <div class="row">
                                                     <div class="col mt-1">
                                                         <div class="delivery-title mb-1">
@@ -492,7 +492,7 @@
                                                         <div>
                                                             <select class="art-form-light-control art-plain-select" name="payment_period" id="payment_period" style="width: 150px">
                                                                 @foreach(config('payment.privatbank.periods') as $period)
-                                                                    <option @if(old('payment_period') == $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
+                                                                    <option @if((int) old('payment_period', $checkoutPrivatPeriod) === (int) $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -507,7 +507,7 @@
                                                     <div class="checkbox art-mb-10">
                                                         <div class="position-relative">
                                                             <input type="radio"
-                                                                   @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) checked
+                                                                   @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) checked
                                                                    @endif id="payment-card_paypart-mono-bank" name="payment_type_id"
                                                                    value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
                                                             <label class="custom-control-label"
@@ -520,7 +520,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="" id="collapseMonoPartialPayment" @if(old('payment_type_id') == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) style="display: block" @else style="display: none" @endif>
+                                            <div class="" id="collapseMonoPartialPayment" @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) style="display: block" @else style="display: none" @endif>
                                                 <div class="row">
                                                     <div class="col mt-1">
                                                         <div class="delivery-title mb-1">
@@ -528,10 +528,8 @@
                                                         </div>
                                                         <div>
                                                             <select class="art-form-light-control art-plain-select" name="mono_payment_period" id="mono_payment_period" style="width: 150px">
-                                                                {{-- These read old('payment_period') — the other bank's field —
-                                                                     so a rejected form put back the wrong choice, or none. --}}
                                                                 @foreach(config('payment.monobank.periods') as $period)
-                                                                    <option @if(old('mono_payment_period') == $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
+                                                                    <option @if((int) old('mono_payment_period', $checkoutMonoPeriod) === (int) $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>

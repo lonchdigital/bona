@@ -33,6 +33,10 @@ export default {
                 text: this.$t('admin.product_block_text'),
                 image_text: this.$t('admin.product_block_image_text'),
                 features: this.$t('admin.product_block_features'),
+                benefits: this.$t('admin.product_block_benefits'),
+                full_kit: this.$t('admin.product_block_full_kit'),
+                journey: this.$t('admin.product_block_journey'),
+                installments: this.$t('admin.product_block_installments'),
                 quote: this.$t('admin.product_block_quote'),
             };
 
@@ -87,7 +91,7 @@ export default {
                 :errors="errors"
             />
 
-            <template v-if="block.type === 'text' || block.type === 'image_text'">
+            <template v-if="['text', 'image_text', 'full_kit', 'journey', 'installments'].includes(block.type)">
                 <multi-language-rich-text-editor-component
                     :title="$t('admin.description')"
                     :name="fieldPrefix + '[content]'"
@@ -133,7 +137,7 @@ export default {
                 </div>
             </template>
 
-            <template v-if="block.type === 'features'">
+            <template v-if="['features', 'benefits', 'full_kit', 'journey'].includes(block.type)">
                 <div class="border rounded p-3 mb-3" v-for="(item, itemIndex) in featureItems" :key="itemIndex">
                     <multi-language-input-component
                         :title="$t('admin.title')"
@@ -142,6 +146,16 @@ export default {
                         :available-languages="availableLanguages"
                         :is-required="false"
                         :init-data="item.title || {}"
+                        :errors="errors"
+                    />
+                    <multi-language-input-component
+                        v-if="block.type === 'journey'"
+                        :title="$t('admin.product_block_meta')"
+                        :name="fieldPrefix + '[items][' + itemIndex + '][meta]'"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :is-required="false"
+                        :init-data="item.meta || {}"
                         :errors="errors"
                     />
                     <multi-language-input-component
