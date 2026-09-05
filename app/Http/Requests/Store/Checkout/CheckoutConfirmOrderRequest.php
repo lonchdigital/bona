@@ -275,13 +275,20 @@ class CheckoutConfirmOrderRequest extends BaseRequest
 
     public function toDTO(): CheckoutConfirmOrderDTO
     {
+        $paymentTypeId = (int) $this->input('payment_type_id');
+        $installmentPeriod = match ($paymentTypeId) {
+            PaymentTypesDataClass::CARD_PAYMENT_PAYPART => (int) $this->input('payment_period'),
+            PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK => (int) $this->input('mono_payment_period'),
+            default => null,
+        };
+
         return new CheckoutConfirmOrderDTO(
             $this->input('first_name'),
             $this->input('last_name'),
             $this->input('phone'),
             $this->input('email'),
             $this->input('delivery_type_id'),
-            $this->input('payment_type_id'),
+            $paymentTypeId,
             $this->input('region_id'),
             $this->input('district'),
             $this->input('city'),
@@ -305,7 +312,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $this->input('np_department'),
             $this->input('meest_city'),
             $this->input('meest_department'),
-            $this->input('payment_period')
+            $installmentPeriod,
         );
     }
 }

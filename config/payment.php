@@ -31,7 +31,27 @@ return [
         | The bank itself takes 2 to 25. What belongs here is what the shop's
         | agreement covers.
         */
-        'periods' => [3, 4, 5, 6],
+        'minimum_period' => 2,
+        'periods' => [2, 3, 4, 5, 6, 7, 8, 9, 10],
+
+        /*
+        | The surcharge is part of the financed order total. These are the
+        | final rates charged to the customer (the bank's rate plus the
+        | additional 1.3 percentage points supplied by the shop). Keeping the
+        | final number here means the browser, order snapshot and bank request
+        | all use the same table.
+        */
+        'installment_surcharges' => [
+            2 => 3.5,
+            3 => 3.8,
+            4 => 4.9,
+            5 => 6.6,
+            6 => 7.8,
+            7 => 9.0,
+            8 => 10.1,
+            9 => 11.2,
+            10 => 12.5,
+        ],
 
     ],
 
@@ -43,7 +63,18 @@ return [
         'point_id' => env('MONOBANK_POINT_ID', ''),
 
         // The bank itself takes 3 to 25.
-        'periods' => [3, 4, 5],
+        'minimum_period' => 3,
+        'periods' => [3, 4, 5, 6, 7, 8, 9, 10],
+        'installment_surcharges' => [
+            3 => 2.9,
+            4 => 4.1,
+            5 => 5.9,
+            6 => 7.2,
+            7 => 8.3,
+            8 => 9.5,
+            9 => 10.8,
+            10 => 12.0,
+        ],
 
     ],
 

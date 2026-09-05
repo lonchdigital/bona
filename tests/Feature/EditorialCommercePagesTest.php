@@ -292,11 +292,11 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('Від заміру до монтажу')
             ->assertSee('Без переплат за комфорт')
             ->assertSee('data-provider-example="mono"', false)
-            ->assertSee('1 200 грн/міс.')
-            ->assertSee('1 000 грн/міс.')
+            ->assertSee('1 270,80 грн/міс.')
+            ->assertSee('1 078 грн/міс.')
             ->assertSee('data-installment-terms-open', false)
-            ->assertSee("data-periods='[3,6]'", false)
-            ->assertDontSee("data-periods='[2,3,6]'", false)
+            ->assertSee("data-periods='[3,4,5]'", false)
+            ->assertSee("data-periods='[2,3,6]'", false)
             ->assertSee('/door-configurator', false);
     }
 

@@ -321,6 +321,16 @@
 
     &--discount strong { color: var(--bona-gold-light); }
 
+    &--installment {
+        span em {
+            color: var(--bona-gold-light);
+            font-style: normal;
+            white-space: nowrap;
+        }
+
+        strong { color: var(--bona-gold-light); }
+    }
+
     &--total {
         align-items: center;
         margin-top: 20px;
@@ -1422,6 +1432,7 @@
         article { min-height: 120px; padding: 24px; background: #fff; }
         span { display: block; margin-bottom: 12px; color: var(--bona-gold-text); font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
         strong { display: block; color: var(--bona-ink); font-size: 13px; line-height: 1.55; }
+        small { display: block; margin-top: 7px; color: var(--bona-muted); font-size: 10px; line-height: 1.5; }
         a { display: inline-flex; margin-top: 8px; color: var(--bona-muted); font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
     }
 

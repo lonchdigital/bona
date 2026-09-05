@@ -317,6 +317,13 @@ html.product-dialog-is-open body {
         &:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
     }
 
+    .installment-card__calc small em {
+        color: var(--gold);
+        font-style: normal;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
     .service-card__button,
     button.service-card__link {
         width: 100%;

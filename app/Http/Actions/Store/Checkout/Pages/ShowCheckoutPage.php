@@ -54,6 +54,13 @@ class ShowCheckoutPage extends BaseAction
         $monoPeriods = InstallmentPeriods::for('monobank');
         $privatPeriod = request()->integer('payment_period');
         $monoPeriod = request()->integer('mono_payment_period');
+        $selectedPrivatPeriod = in_array($privatPeriod, $privatPeriods, true) ? $privatPeriod : ($privatPeriods[0] ?? null);
+        $selectedMonoPeriod = in_array($monoPeriod, $monoPeriods, true) ? $monoPeriod : ($monoPeriods[0] ?? null);
+        $selectedInstallmentPeriod = match ($paymentType) {
+            PaymentTypesDataClass::CARD_PAYMENT_PAYPART => $selectedPrivatPeriod,
+            PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK => $selectedMonoPeriod,
+            default => null,
+        };
 
         // FastSelect stores the carrier reference in the submitted input. If
         // validation sends the customer back, also restore the human-readable
@@ -85,9 +92,14 @@ class ShowCheckoutPage extends BaseAction
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'checkoutPaymentType' => $paymentType,
             'checkoutDeliveryType' => $deliveryType,
-            'checkoutPrivatPeriod' => in_array($privatPeriod, $privatPeriods, true) ? $privatPeriod : ($privatPeriods[0] ?? null),
-            'checkoutMonoPeriod' => in_array($monoPeriod, $monoPeriods, true) ? $monoPeriod : ($monoPeriods[0] ?? null),
-            'initialSummary' => $pricingService->forCart($cart, $deliveryType),
+            'checkoutPrivatPeriod' => $selectedPrivatPeriod,
+            'checkoutMonoPeriod' => $selectedMonoPeriod,
+            'initialSummary' => $pricingService->forCart(
+                $cart,
+                $deliveryType,
+                $paymentType,
+                $selectedInstallmentPeriod,
+            ),
             'promoCode' => $cart->promoCode,
             'npCityInitial' => $npCityInitial ?: null,
             'npDepartmentInitial' => $npDepartmentInitial ?: null,

@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Services\Base\BaseService;
 use App\Services\Order\OrderAccessUrlService;
 use App\Services\Pricing\PricingService;
+use App\Support\Payment\InstallmentPaymentLines;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
@@ -99,40 +100,12 @@ class PaymentService extends BaseService
     public function createPrivateBankPartialPaymentOrder(Order $order, int $payment_period, string $merchant_type): ?array
     {
         $client = new Client;
-        $redirect_url = $this->orderAccessUrlService->thankYou($order);
-        $response_url = route('store.checkout.partial.payment');
-        $store_password = (string) config('payment.privatbank.password');
-        $store_id = (string) config('payment.privatbank.store_id');
-        if ($store_password === '' || $store_id === '') {
-            Log::error('PrivatBank instalments are not configured.');
+        $data = $this->createPrivateBankPartialPaymentPayload($order, $payment_period, $merchant_type);
 
+        if ($data === null) {
             return null;
         }
 
-        $amount = round($this->pricingService->forOrder($order)['total'], 2);
-        $signature = $this->makePartialPaymentSignature(
-            $order, $amount, $payment_period, $merchant_type, $response_url, $redirect_url, $store_password, $store_id
-        );
-
-        $data = [
-            'storeId' => $store_id,
-            'orderId' => $order->id,
-            'amount' => number_format($amount, 2, '.', ''),
-            'partsCount' => $payment_period,
-            'merchantType' => $merchant_type,
-            'products' => [],
-            'responseUrl' => $response_url,
-            'redirectUrl' => $redirect_url,
-            'signature' => $signature,
-        ];
-        foreach ($order->products as $product) {
-            $count = $product->pivot->count;
-            $data['products'][] = [
-                'name' => $product->name,
-                'count' => $count,
-                'price' => number_format(round($product->pivot->price + $product->pivot->attributes_price, 2, PHP_ROUND_HALF_DOWN), 2, '.', ''),
-            ];
-        }
         try {
             $response = $client->post('https://payparts2.privatbank.ua/ipp/v2/payment/create', [
                 'body' => json_encode($data, JSON_UNESCAPED_UNICODE),
@@ -150,6 +123,48 @@ class PaymentService extends BaseService
         }
     }
 
+    public function createPrivateBankPartialPaymentPayload(Order $order, int $paymentPeriod, string $merchantType): ?array
+    {
+        $redirect_url = $this->orderAccessUrlService->thankYou($order);
+        $response_url = route('store.checkout.partial.payment');
+        $store_password = (string) config('payment.privatbank.password');
+        $store_id = (string) config('payment.privatbank.store_id');
+        if ($store_password === '' || $store_id === '') {
+            Log::error('PrivatBank instalments are not configured.');
+
+            return null;
+        }
+
+        $summary = $this->pricingService->forOrder($order);
+        $amount = round($summary['total'], 2);
+        $products = $this->collectPrivatBankProducts($order, $summary);
+        $signature = $this->makePartialPaymentSignature(
+            $order,
+            $amount,
+            $paymentPeriod,
+            $merchantType,
+            $response_url,
+            $redirect_url,
+            $store_password,
+            $store_id,
+            $products,
+        );
+
+        $data = [
+            'storeId' => $store_id,
+            'orderId' => $order->id,
+            'amount' => number_format($amount, 2, '.', ''),
+            'partsCount' => $paymentPeriod,
+            'merchantType' => $merchantType,
+            'products' => $products,
+            'responseUrl' => $response_url,
+            'redirectUrl' => $redirect_url,
+            'signature' => $signature,
+        ];
+
+        return $data;
+    }
+
     private function makePartialPaymentSignature(
         Order $order,
         float $amount,
@@ -158,20 +173,13 @@ class PaymentService extends BaseService
         string $response_url,
         string $redirect_url,
         string $store_password,
-        string $store_id
+        string $store_id,
+        array $products,
     ): string {
 
         $product_str = '';
-        /*$amount = 0;
-        foreach ($order->products as $product) {
-            $count = $product->pivot->count;
-            $amount = $count * ($product->pivot->price + $product->pivot->attributes_price);
-            $product_str .= ($product->name.$count.$this->withoutFloating($product->pivot->price + $product->pivot->attributes_price));
-        }*/
-        foreach ($order->products as $product) {
-            $count = $product->pivot->count;
-            $price = $product->pivot->price + $product->pivot->attributes_price;
-            $product_str .= ($product->name.$count.$this->withoutFloating($price));
+        foreach ($products as $product) {
+            $product_str .= $product['name'].$product['count'].$this->withoutFloating((float) $product['price']);
         }
         $str = base64_encode(sha1(
             $store_password
@@ -188,6 +196,17 @@ class PaymentService extends BaseService
         ));
 
         return $str;
+    }
+
+    private function collectPrivatBankProducts(Order $order, array $summary): array
+    {
+        return collect(InstallmentPaymentLines::forOrder($order, $summary))
+            ->map(fn (array $line) => [
+                'name' => $line['name'],
+                'count' => $line['count'],
+                'price' => number_format($line['unit_in_cents'] / 100, 2, '.', ''),
+            ])
+            ->all();
     }
 
     /*private function withoutFloating(float $number): string

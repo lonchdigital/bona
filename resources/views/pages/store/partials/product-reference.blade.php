@@ -75,7 +75,20 @@
     $checkoutUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page');
     $monoPeriods = \App\Support\Payment\InstallmentPeriods::for('monobank');
     $privatPeriods = \App\Support\Payment\InstallmentPeriods::for('privatbank');
+    $monoRates = \App\Support\Payment\InstallmentPricing::ratesFor('monobank');
+    $privatRates = \App\Support\Payment\InstallmentPricing::ratesFor('privatbank');
     $initialInstallmentPeriod = $monoPeriods[0] ?? 3;
+    $initialInstallmentQuote = \App\Support\Payment\InstallmentPricing::quoteInCents((int) round($numericPrice * 100), 'monobank', $initialInstallmentPeriod);
+    $monoExamplePeriod = max($monoPeriods ?: [3]);
+    $privatExamplePeriod = max($privatPeriods ?: [2]);
+    $monoExampleQuote = \App\Support\Payment\InstallmentPricing::quoteInCents((int) round($numericPrice * 100), 'monobank', $monoExamplePeriod);
+    $privatExampleQuote = \App\Support\Payment\InstallmentPricing::quoteInCents((int) round($numericPrice * 100), 'privatbank', $privatExamplePeriod);
+    $formatInstallmentAmount = fn (int $amountInCents) => number_format(
+        $amountInCents / 100,
+        $amountInCents % 100 === 0 ? 0 : 2,
+        ',',
+        ' ',
+    );
     $catalogLink = $catalogUrl;
 @endphp
 
@@ -260,11 +273,11 @@
                     <div class="installment-card" id="purchase-installments" data-installment-card>
                         <div class="installment-card__head"><span>{{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</span><button type="button" data-installment-terms-open>{{ $isRussian ? 'Условия' : 'Умови' }}</button></div>
                         <div class="installment-card__providers" role="tablist" aria-label="{{ $isRussian ? 'Банк для оплаты частями' : 'Банк для оплати частинами' }}">
-                            <button class="provider-button is-active" type="button" data-provider="mono" data-payment-type="{{ \App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" data-periods='@json($monoPeriods)' role="tab" aria-selected="true"><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt=""><span>mono</span></button>
-                            <button class="provider-button" type="button" data-provider="privat" data-payment-type="{{ \App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" data-periods='@json($privatPeriods)' role="tab" aria-selected="false"><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt=""><span>ПриватБанк</span></button>
+                            <button class="provider-button is-active" type="button" data-provider="mono" data-payment-type="{{ \App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" data-periods='@json($monoPeriods)' data-rates='@json($monoRates)' role="tab" aria-selected="true"><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt=""><span>mono</span></button>
+                            <button class="provider-button" type="button" data-provider="privat" data-payment-type="{{ \App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" data-periods='@json($privatPeriods)' data-rates='@json($privatRates)' role="tab" aria-selected="false"><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt=""><span>ПриватБанк</span></button>
                         </div>
                         <div class="installment-card__calc">
-                            <div><small>{{ $isRussian ? 'Ежемесячный платеж' : 'Щомісячний платіж' }}</small><strong><span data-monthly-payment>{{ number_format((int) ceil($numericPrice / $initialInstallmentPeriod), 0, '.', ' ') }}</span> {{ $baseCurrency->name_short }}</strong></div>
+                            <div><small>{{ $isRussian ? 'Ежемесячный платеж' : 'Щомісячний платіж' }} · <em data-product-installment-rate>+{{ str_replace('.', ',', $initialInstallmentQuote['rate']) }}%</em></small><strong><span data-monthly-payment>{{ $formatInstallmentAmount($initialInstallmentQuote['monthly_in_cents']) }}</span> {{ $baseCurrency->name_short }}</strong></div>
                             <div class="month-stepper"><button type="button" data-months-minus aria-label="{{ $isRussian ? 'Уменьшить количество платежей' : 'Зменшити кількість платежів' }}">−</button><span><b data-months-value>{{ $initialInstallmentPeriod }}</b> {{ $isRussian ? 'платежа' : 'платежі' }}</span><button type="button" data-months-plus aria-label="{{ $isRussian ? 'Увеличить количество платежей' : 'Збільшити кількість платежів' }}">+</button></div>
                             <button class="installment-buy single-product-add-to-cart" type="button" data-product-slug="{{ $product->slug }}" data-checkout-base="{{ $checkoutUrl }}"><span>{{ $isRussian ? 'Купить в кредит' : 'Купити в кредит' }}</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"></path></svg></button>
                         </div>
@@ -449,8 +462,8 @@
             <section class="installments-section product-reference-editorial"><div class="container installments-section__inner">
                 <div class="installments-section__copy">@if($block['_eyebrow'])<div class="kicker">{{ $block['_eyebrow'] }}</div>@endif @if($block['_title'])<h2>{{ $block['_title'] }}</h2>@endif @if(filled(strip_tags($block['_content'])))<div class="product-reference-copy bona-content-richtext">{!! $block['_content'] !!}</div>@endif</div>
                 <div class="installments-section__cards">
-                    <a class="installments-section__card" href="#purchase-installments" data-focus-provider="mono"><div><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt="monobank"><strong>{{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</strong></div><p><b data-installment-example data-provider-example="mono">{{ $isRussian ? 'от' : 'від' }} {{ number_format((int) ceil($numericPrice / max($monoPeriods ?: [1])), 0, '.', ' ') }} {{ $baseCurrency->name_short }}/{{ $isRussian ? 'мес.' : 'міс.' }}</b><span>{{ $isRussian ? 'до' : 'до' }} {{ max($monoPeriods ?: [1]) }} {{ $isRussian ? 'платежей' : 'платежів' }}</span></p><em>{{ $isRussian ? 'Рассчитать платёж' : 'Розрахувати платіж' }} <span>↑</span></em></a>
-                    <a class="installments-section__card" href="#purchase-installments" data-focus-provider="privat"><div><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt="ПриватБанк"><strong>{{ $isRussian ? 'Оплата частями' : 'Оплата частинами' }}</strong></div><p><b data-installment-example data-provider-example="privat">{{ $isRussian ? 'от' : 'від' }} {{ number_format((int) ceil($numericPrice / max($privatPeriods ?: [1])), 0, '.', ' ') }} {{ $baseCurrency->name_short }}/{{ $isRussian ? 'мес.' : 'міс.' }}</b><span>{{ $isRussian ? 'до' : 'до' }} {{ max($privatPeriods ?: [1]) }} {{ $isRussian ? 'платежей' : 'платежів' }}</span></p><em>{{ $isRussian ? 'Рассчитать платёж' : 'Розрахувати платіж' }} <span>↑</span></em></a>
+                    <a class="installments-section__card" href="#purchase-installments" data-focus-provider="mono"><div><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt="monobank"><strong>{{ $isRussian ? 'Покупка частями' : 'Покупка частинами' }}</strong></div><p><b data-installment-example data-provider-example="mono">{{ $isRussian ? 'от' : 'від' }} {{ $formatInstallmentAmount($monoExampleQuote['monthly_in_cents']) }} {{ $baseCurrency->name_short }}/{{ $isRussian ? 'мес.' : 'міс.' }}</b><span>{{ $isRussian ? 'до' : 'до' }} {{ $monoExamplePeriod }} {{ $isRussian ? 'платежей' : 'платежів' }}</span></p><em>{{ $isRussian ? 'Рассчитать платёж' : 'Розрахувати платіж' }} <span>↑</span></em></a>
+                    <a class="installments-section__card" href="#purchase-installments" data-focus-provider="privat"><div><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt="ПриватБанк"><strong>{{ $isRussian ? 'Оплата частями' : 'Оплата частинами' }}</strong></div><p><b data-installment-example data-provider-example="privat">{{ $isRussian ? 'от' : 'від' }} {{ $formatInstallmentAmount($privatExampleQuote['monthly_in_cents']) }} {{ $baseCurrency->name_short }}/{{ $isRussian ? 'мес.' : 'міс.' }}</b><span>{{ $isRussian ? 'до' : 'до' }} {{ $privatExamplePeriod }} {{ $isRussian ? 'платежей' : 'платежів' }}</span></p><em>{{ $isRussian ? 'Рассчитать платёж' : 'Розрахувати платіж' }} <span>↑</span></em></a>
                     <small>{{ $isRussian ? 'Пример рассчитан для текущей комплектации. Условия и лимит определяет банк.' : 'Приклад розраховано для поточної комплектації. Умови та ліміт визначає банк.' }}</small>
                 </div>
             </div></section>

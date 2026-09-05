@@ -60,7 +60,11 @@ class CheckoutConfirmOrderAction extends BaseAction
         } elseif ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART) {
 
             $merchant_type = PaymentTypesDataClass::get($order->payment_type_id)['internal_name'];
-            $response = $paymentService->createPrivateBankPartialPaymentOrder($order, $request->payment_period, $merchant_type);
+            $response = $paymentService->createPrivateBankPartialPaymentOrder(
+                $order,
+                (int) $order->installment_period,
+                $merchant_type,
+            );
 
             if ($response !== null) {
                 if ($response['state'] === 'SUCCESS') {
@@ -76,7 +80,11 @@ class CheckoutConfirmOrderAction extends BaseAction
 
         } elseif ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) {
 
-            $response = $paymentMonoBankService->createMonoBankPartialPaymentOrder($order, $phone, $request->get('mono_payment_period'));
+            $response = $paymentMonoBankService->createMonoBankPartialPaymentOrder(
+                $order,
+                $phone,
+                (string) $order->installment_period,
+            );
             if (! is_null($response)) {
                 return redirect()->to($orderAccessUrlService->monoBankThankYou($order));
             } else {

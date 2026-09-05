@@ -11,7 +11,12 @@
 @section('content')
     @php
         $currency = $baseCurrency->name_short;
-        $formatPrice = fn ($amount) => number_format((float) $amount, 0, ',', ' ').' '.$currency;
+        $formatPrice = fn ($amount) => number_format(
+            (float) $amount,
+            ((int) round((float) $amount * 100)) % 100 === 0 ? 0 : 2,
+            ',',
+            ' ',
+        ).' '.$currency;
         $deliveryLabel = App\DataClasses\DeliveryTypesDataClass::get((int) $order->delivery_type_id)['name'] ?? trans('base.checkout_success_address_pending');
         $paymentLabel = App\DataClasses\PaymentTypesDataClass::get((int) $order->payment_type_id)['name'] ?? trans('base.checkout_payment_manager_confirmation');
         $recipientName = (int) $order->recipient_type_id === App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM
@@ -36,6 +41,7 @@
         $catalogUrl = $productType
             ? App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug])
             : App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
+        $installmentRateLabel = rtrim(rtrim(number_format((float) $orderSummary['installment_rate'], 2, ',', ''), '0'), ',');
     @endphp
 
     <main class="bona-commerce-page bona-checkout-success">
@@ -72,7 +78,13 @@
                     </article>
                     <article><span>{{ trans('base.checkout_success_delivery') }}</span><strong>{{ $deliveryLabel }}</strong></article>
                     <article><span>{{ trans('base.checkout_success_address') }}</span><strong>{{ $deliveryAddress ?: trans('base.checkout_success_address_pending') }}</strong></article>
-                    <article><span>{{ trans('base.checkout_success_payment') }}</span><strong>{{ $paymentLabel }}</strong></article>
+                    <article>
+                        <span>{{ trans('base.checkout_success_payment') }}</span>
+                        <strong>{{ $paymentLabel }}</strong>
+                        @if($orderSummary['installment_fee'] > 0)
+                            <small>{{ trans('base.installment_order_details', ['count' => $orderSummary['installment_period'], 'rate' => $installmentRateLabel]) }}</small>
+                        @endif
+                    </article>
                 </div>
 
                 <div class="bona-checkout-success__items">
@@ -99,6 +111,9 @@
                     <div><span>{{ trans('base.products_price_discount') }}</span><b>−{{ $formatPrice($orderSummary['discount']) }}</b></div>
                 @endif
                 <div><span>{{ trans('base.delivery') }}</span><b>{{ $orderSummary['is_carrier'] ? trans('base.cart_delivery_price') : $formatPrice($orderSummary['delivery']) }}</b></div>
+                @if($orderSummary['installment_fee'] > 0)
+                    <div><span>{{ trans('base.installment_surcharge') }} (+{{ $installmentRateLabel }}%)</span><b>{{ $formatPrice($orderSummary['installment_fee']) }}</b></div>
+                @endif
 
                 <div class="bona-checkout-success__next">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v12H9l-4 4V4Zm4 5h6M9 12h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>

@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Pricing\PricingService;
+use App\Support\Payment\InstallmentPaymentLines;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
@@ -364,18 +365,16 @@ class PaymentMonoBankService extends BaseService
 
     private function collectAllProductsFromOrder(Order $order): array
     {
-        $data['products'] = [];
+        $summary = $this->pricingService->forOrder($order);
+        $data['products'] = collect(InstallmentPaymentLines::forOrder($order, $summary))
+            ->map(fn (array $line) => [
+                'name' => $line['name'],
+                'count' => $line['count'],
+                'sum' => (float) ($line['unit_in_cents'] / 100),
+            ])
+            ->all();
 
-        foreach ($order->products as $product) {
-            $count = $product->pivot->count;
-            $data['products'][] = [
-                'name' => $product->name,
-                'count' => (int) $count,
-                'sum' => round((float) $product->pivot->price + (float) $product->pivot->attributes_price, 2),
-            ];
-        }
-
-        $data['amount'] = round($this->pricingService->forOrder($order)['total'], 2);
+        $data['amount'] = round($summary['total'], 2);
 
         return $data;
     }

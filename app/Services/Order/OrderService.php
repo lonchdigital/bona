@@ -24,6 +24,7 @@ use App\Services\Order\DTO\OrderFilterDTO;
 use App\Services\Order\DTO\UpdateOrderDTO;
 use App\Services\Pricing\PricingService;
 use App\Services\PromoCode\PromoCodeService;
+use App\Support\Payment\InstallmentPricing;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -130,11 +131,29 @@ class OrderService extends BaseService
                 $satDepartment = ['uk' => $satDepartment, 'ru' => $satDepartment];
             }
 
+            $installmentProvider = InstallmentPricing::providerForPaymentType($request->paymentTypeId);
+            $installmentQuote = null;
+
+            if ($installmentProvider && $request->installmentPeriod) {
+                $baseSummary = $this->pricingService->forCart($cart, $request->deliveryTypeId);
+                $installmentQuote = InstallmentPricing::quoteInCents(
+                    $baseSummary['total_in_cents'],
+                    $installmentProvider,
+                    $request->installmentPeriod,
+                );
+            }
+
             $order = Order::create([
                 'status_id' => OrderStatusesDataClass::STATUS_NEW,
                 'user_id' => $user->id,
                 'delivery_type_id' => $request->deliveryTypeId,
                 'payment_type_id' => $request->paymentTypeId,
+                'installment_provider' => $installmentQuote['provider'] ?? null,
+                'installment_period' => $installmentQuote['period'] ?? null,
+                'installment_surcharge_percent' => $installmentQuote['rate'] ?? null,
+                'installment_surcharge_amount' => isset($installmentQuote)
+                    ? $installmentQuote['fee_in_cents'] / 100
+                    : 0,
                 'promo_code_id' => $cart->promo_code_id,
                 'region_id' => $request->regionId,
                 'district' => $request->district,

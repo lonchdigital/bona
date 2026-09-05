@@ -288,8 +288,15 @@ class CheckoutTest extends TestCase
 
         $this->confirm([
             'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART,
-            'payment_period' => 3,
+            'payment_period' => 2,
         ])->assertSessionHasNoErrors();
+
+        $order = Order::firstOrFail();
+        $this->assertSame('privatbank', $order->installment_provider);
+        $this->assertSame(2, $order->installment_period);
+        $this->assertSame(3.5, (float) $order->installment_surcharge_percent);
+        $this->assertSame(175.0, (float) $order->installment_surcharge_amount);
+        $this->assertSame(5_175.0, $order->summary);
     }
 
     public function test_an_invoice_order_is_recorded_as_unpaid_and_sent_to_the_confirmation_page(): void
@@ -433,8 +440,8 @@ class CheckoutTest extends TestCase
 
         $response->assertOk();
         $this->assertSame(PaymentTypesDataClass::CARD_PAYMENT_PAYPART, $response->viewData('checkoutPaymentType'));
-        $this->assertSame(3, $response->viewData('checkoutPrivatPeriod'));
+        $this->assertSame(2, $response->viewData('checkoutPrivatPeriod'));
         $response->assertSee('class="selected-payment-type">'.trans('base.checkout_payment_paypart').'</span>', false);
-        $response->assertDontSee('<option value="2"', false);
+        $response->assertSee('<option value="2"', false);
     }
 }

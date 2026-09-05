@@ -22,6 +22,15 @@ class Order extends Model
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'installment_period' => 'integer',
+            'installment_surcharge_percent' => 'decimal:2',
+            'installment_surcharge_amount' => 'decimal:2',
+        ];
+    }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_products')

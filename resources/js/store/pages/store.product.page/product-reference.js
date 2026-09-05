@@ -1,6 +1,16 @@
+import {
+    formatInstallmentRate,
+    installmentQuote,
+    parseInstallmentRates,
+} from '../../payment/installment-pricing';
+
 const formatNumber = (value) => new Intl.NumberFormat('uk-UA', {
     maximumFractionDigits: 0,
 }).format(Math.round(Number(value) || 0));
+
+const formatInstallmentAmount = (value) => new Intl.NumberFormat(document.documentElement.lang || 'uk-UA', {
+    maximumFractionDigits: 2,
+}).format(Number(value) || 0);
 
 const readVisiblePrice = (element) => {
     if (!element) {
@@ -14,7 +24,7 @@ const parsePeriods = (value, fallback = [3]) => {
     try {
         const periods = JSON.parse(value || '[]')
             .map((period) => Number.parseInt(period, 10))
-            .filter((period) => Number.isInteger(period) && period >= 3);
+            .filter((period) => Number.isInteger(period) && period >= 2);
 
         return periods.length ? [...new Set(periods)].sort((left, right) => left - right) : fallback;
     } catch {
@@ -349,6 +359,7 @@ function initInstallments(page) {
     const card = page.querySelector('[data-installment-card]');
     const price = page.querySelector('#product-price');
     const monthlyPayment = card?.querySelector('[data-monthly-payment]');
+    const rateCopy = card?.querySelector('[data-product-installment-rate]');
     const monthsValue = card?.querySelector('[data-months-value]');
     const minus = card?.querySelector('[data-months-minus]');
     const plus = card?.querySelector('[data-months-plus]');
@@ -357,6 +368,7 @@ function initInstallments(page) {
     const termsDialog = document.getElementById('installment-terms-dialog');
     let activeProvider = providerButtons.find((button) => button.classList.contains('is-active')) || providerButtons[0] || null;
     let periods = parsePeriods(activeProvider?.dataset.periods);
+    let rates = parseInstallmentRates(activeProvider?.dataset.rates);
     let months = periods[0] || 3;
 
     if (!price) return;
@@ -370,18 +382,22 @@ function initInstallments(page) {
     const update = () => {
         const currentPrice = readVisiblePrice(price);
         const currentIndex = Math.max(periods.indexOf(months), 0);
+        const quote = installmentQuote(currentPrice, months, rates[months]);
 
-        if (monthlyPayment) monthlyPayment.textContent = formatNumber(Math.ceil(currentPrice / months));
+        if (monthlyPayment) monthlyPayment.textContent = formatInstallmentAmount(quote.monthly);
+        if (rateCopy) rateCopy.textContent = `+${formatInstallmentRate(quote.rate)}%`;
         if (monthsValue) monthsValue.textContent = String(months);
         if (minus) minus.disabled = currentIndex <= 0;
         if (plus) plus.disabled = currentIndex >= periods.length - 1;
         page.querySelectorAll('[data-installment-example]').forEach((example) => {
             const provider = providerButtons.find((button) => button.dataset.provider === example.dataset.providerExample);
             const providerPeriods = parsePeriods(provider?.dataset.periods, [3]);
+            const providerRates = parseInstallmentRates(provider?.dataset.rates);
             const maximumPeriod = Math.max(...providerPeriods);
+            const exampleQuote = installmentQuote(currentPrice, maximumPeriod, providerRates[maximumPeriod]);
             const prefix = isRussian() ? 'от' : 'від';
             const suffix = isRussian() ? 'мес.' : 'міс.';
-            example.textContent = `${prefix} ${formatNumber(Math.ceil(currentPrice / maximumPeriod))} грн/${suffix}`;
+            example.textContent = `${prefix} ${formatInstallmentAmount(exampleQuote.monthly)} грн/${suffix}`;
         });
 
         if (creditButton && activeProvider) {
@@ -399,6 +415,7 @@ function initInstallments(page) {
 
         activeProvider = button;
         periods = parsePeriods(button.dataset.periods);
+        rates = parseInstallmentRates(button.dataset.rates);
         if (!keepMonth || !periods.includes(months)) months = periods[0] || 3;
 
         providerButtons.forEach((item) => {

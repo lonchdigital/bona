@@ -19,7 +19,12 @@
             ? (App\DataClasses\DeliveryTypesDataClass::get($selectedDeliveryType)['name'] ?? trans('base.checkout_delivery_not_selected'))
             : trans('base.checkout_delivery_not_selected');
         $currency = $baseCurrency->name_short;
-        $formatPrice = fn ($amount) => number_format((float) $amount, 0, ',', ' ').' '.$currency;
+        $formatPrice = fn ($amount) => number_format(
+            (float) $amount,
+            ((int) round((float) $amount * 100)) % 100 === 0 ? 0 : 2,
+            ',',
+            ' ',
+        ).' '.$currency;
         $productsCount = $productsInCart->sum(fn ($product) => (int) $product->pivot->count);
         $signInUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page', ['redirect_to' => request()->getRequestUri()]);
         $signInActionUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in');
@@ -33,6 +38,16 @@
         $privatPeriods = App\Support\Payment\InstallmentPeriods::for('privatbank');
         $selectedMonoPeriod = (int) old('mono_payment_period', $checkoutMonoPeriod);
         $selectedPrivatPeriod = (int) old('payment_period', $checkoutPrivatPeriod);
+        $monoRates = App\Support\Payment\InstallmentPricing::ratesFor('monobank');
+        $privatRates = App\Support\Payment\InstallmentPricing::ratesFor('privatbank');
+        $monoQuote = App\Support\Payment\InstallmentPricing::quoteInCents($initialSummary['base_total_in_cents'], 'monobank', $selectedMonoPeriod);
+        $privatQuote = App\Support\Payment\InstallmentPricing::quoteInCents($initialSummary['base_total_in_cents'], 'privatbank', $selectedPrivatPeriod);
+        $formatInstallmentPrice = fn (int $amountInCents) => number_format(
+            $amountInCents / 100,
+            $amountInCents % 100 === 0 ? 0 : 2,
+            ',',
+            ' ',
+        ).' '.$currency;
     @endphp
 
     <div class="bona-commerce-page bona-checkout-page">
@@ -61,7 +76,7 @@
             class="bona-shell bona-checkout-layout"
             action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}"
             method="POST"
-            data-checkout-total="{{ $initialSummary['total'] }}"
+            data-checkout-base-total="{{ $initialSummary['base_total'] }}"
             data-delivery-empty-label="{{ trans('base.checkout_delivery_not_selected') }}"
             novalidate
         >
@@ -196,11 +211,12 @@
                             data-checkout-installment
                             data-provider="mono"
                             data-periods='@json($monoPeriods)'
+                            data-rates='@json($monoRates)'
                             @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)
                         >
                             <div class="bona-installment-option__payment">
                                 <span>{{ trans('base.checkout_installment_monthly_label') }}</span>
-                                <p aria-live="polite"><strong data-installment-monthly>{{ $formatPrice(ceil($initialSummary['total'] / max(1, $selectedMonoPeriod))) }}</strong><small>{{ trans('base.checkout_installment_per_month') }}</small></p>
+                                <p aria-live="polite"><strong data-installment-monthly>{{ $formatInstallmentPrice($monoQuote['monthly_in_cents']) }}</strong><small>{{ trans('base.checkout_installment_per_month') }} · <span data-installment-rate>+{{ str_replace('.', ',', $monoQuote['rate']) }}%</span></small></p>
                             </div>
                             <div class="bona-installment-option__controls">
                                 <span>{{ trans('base.checkout_payment_period_label') }}</span>
@@ -229,11 +245,12 @@
                             data-checkout-installment
                             data-provider="privat"
                             data-periods='@json($privatPeriods)'
+                            data-rates='@json($privatRates)'
                             @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)
                         >
                             <div class="bona-installment-option__payment">
                                 <span>{{ trans('base.checkout_installment_monthly_label') }}</span>
-                                <p aria-live="polite"><strong data-installment-monthly>{{ $formatPrice(ceil($initialSummary['total'] / max(1, $selectedPrivatPeriod))) }}</strong><small>{{ trans('base.checkout_installment_per_month') }}</small></p>
+                                <p aria-live="polite"><strong data-installment-monthly>{{ $formatInstallmentPrice($privatQuote['monthly_in_cents']) }}</strong><small>{{ trans('base.checkout_installment_per_month') }} · <span data-installment-rate>+{{ str_replace('.', ',', $privatQuote['rate']) }}%</span></small></p>
                             </div>
                             <div class="bona-installment-option__controls">
                                 <span>{{ trans('base.checkout_payment_period_label') }}</span>
@@ -283,6 +300,7 @@
                     <div class="bona-summary-line"><span>{{ trans('base.products_price') }}</span><strong class="price-products">{{ $formatPrice($initialSummary['products']) }}</strong></div>
                     <div class="bona-summary-line"><span>{{ trans('base.delivery') }}</span><strong class="price-delivery">{{ $initialSummary['is_carrier'] ? trans('base.cart_delivery_price') : $formatPrice($initialSummary['delivery']) }}</strong></div>
                     <div class="bona-summary-line bona-summary-line--discount" data-checkout-discount-row @hidden($initialSummary['discount'] <= 0)><span>{{ trans('base.products_price_discount') }}@if($promoCode) · {{ $promoCode->code }}@endif</span><strong class="price-discount">−{{ $formatPrice($initialSummary['discount']) }}</strong></div>
+                    <div class="bona-summary-line bona-summary-line--installment" data-checkout-installment-row @hidden($initialSummary['installment_fee'] <= 0)><span>{{ trans('base.installment_surcharge') }} <em data-checkout-installment-rate>@if($initialSummary['installment_fee'] > 0)(+{{ str_replace('.', ',', $initialSummary['installment_rate']) }}%)@endif</em></span><strong data-checkout-installment-fee>{{ $formatPrice($initialSummary['installment_fee']) }}</strong></div>
                     <div class="bona-summary-line bona-summary-line--total"><span>{{ trans('base.products_price_total') }}</span><strong class="total-price-delivery">{{ $formatPrice($initialSummary['total']) }}</strong></div>
                 </div>
                 <div class="bona-checkout-summary__selection"><p>{{ trans('base.checkout_payment') }}: <span class="selected-payment-type">{{ $selectedPaymentLabel }}</span></p><p>{{ trans('base.delivery') }}: <span class="selected-delivery-type">{{ $selectedDeliveryLabel }}</span></p></div>

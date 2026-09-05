@@ -5,11 +5,13 @@ namespace Tests\Feature;
 use App\DataClasses\DeliveryTypesDataClass;
 use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\OrderStatusesDataClass;
+use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\PromoCode;
 use App\Services\Payment\PaymentMonoBankService;
+use App\Services\Payment\PaymentService;
 use App\Services\Pricing\PricingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
@@ -87,6 +89,8 @@ class PricingConsistencyTest extends TestCase
             'store_id' => 'store',
             'point_id' => 'point-1',
             'periods' => [3],
+            'minimum_period' => 3,
+            'installment_surcharges' => [3 => 2.9],
         ]);
 
         $product = $this->makeProduct(['price' => 99.99]);
@@ -98,6 +102,11 @@ class PricingConsistencyTest extends TestCase
             'delivery_type_id' => DeliveryTypesDataClass::ADDRESS_DELIVERY,
             'recipient_type_id' => RecipientTypesDataClass::RECIPIENT_USER,
             'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_UNPAID,
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK,
+            'installment_provider' => 'monobank',
+            'installment_period' => 3,
+            'installment_surcharge_percent' => 2.9,
+            'installment_surcharge_amount' => 9.28,
         ]);
         $order->products()->attach($product->id, [
             'count' => 3,
@@ -108,9 +117,55 @@ class PricingConsistencyTest extends TestCase
         $payload = app(PaymentMonoBankService::class)
             ->createOrderPayload($order, '+380501234567', 3);
 
-        $this->assertSame(320.0, $payload['total_sum']);
-        $this->assertSame(100.0, $payload['products'][0]['sum']);
+        $this->assertSame(329.28, $payload['total_sum']);
+        $this->assertSame(90.0, $payload['products'][0]['sum']);
+        $this->assertSame(3, $payload['products'][0]['count']);
+        $this->assertSame(50.0, $payload['products'][1]['sum']);
+        $this->assertSame(trans('base.delivery'), $payload['products'][1]['name']);
+        $this->assertSame(9.28, $payload['products'][2]['sum']);
+        $this->assertSame(
+            $payload['total_sum'],
+            collect($payload['products'])->sum(fn (array $line) => $line['sum'] * $line['count']),
+        );
         $this->assertSame([3], $payload['available_programs'][0]['available_parts_count']);
         $this->assertSame('point-1', $payload['invoice']['point_id']);
+    }
+
+    public function test_privatbank_payload_uses_the_stored_installment_snapshot(): void
+    {
+        config()->set('payment.privatbank.store_id', 'privat-store');
+        config()->set('payment.privatbank.password', 'privat-secret');
+
+        $product = $this->makeProduct(['price' => 10_000]);
+        $order = Order::create([
+            'status_id' => OrderStatusesDataClass::STATUS_NEW,
+            'user_id' => $this->author()->id,
+            'delivery_type_id' => DeliveryTypesDataClass::PICK_UP_DELIVERY,
+            'recipient_type_id' => RecipientTypesDataClass::RECIPIENT_USER,
+            'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_UNPAID,
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART,
+            'installment_provider' => 'privatbank',
+            'installment_period' => 2,
+            'installment_surcharge_percent' => 3.5,
+            'installment_surcharge_amount' => 350,
+        ]);
+        $order->products()->attach($product->id, [
+            'count' => 1,
+            'price' => 10_000,
+            'attributes_price' => 0,
+        ]);
+
+        $payload = app(PaymentService::class)
+            ->createPrivateBankPartialPaymentPayload($order, 2, 'PP');
+
+        $this->assertNotNull($payload);
+        $this->assertSame('10350.00', $payload['amount']);
+        $this->assertSame(2, $payload['partsCount']);
+        $this->assertSame('350.00', $payload['products'][1]['price']);
+        $this->assertStringContainsString('3.5%', $payload['products'][1]['name']);
+        $this->assertSame(
+            (float) $payload['amount'],
+            collect($payload['products'])->sum(fn (array $line) => (float) $line['price'] * $line['count']),
+        );
     }
 }

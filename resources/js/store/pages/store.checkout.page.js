@@ -1,5 +1,10 @@
 import $ from 'jquery';
 import Inputmask from 'inputmask';
+import {
+    formatInstallmentRate,
+    installmentQuote,
+    parseInstallmentRates,
+} from '../payment/installment-pricing';
 
 const PAYMENT_PRIVAT = '3';
 const PAYMENT_MONO = '4';
@@ -154,24 +159,63 @@ export default async function () {
     const choiceName = (input) => input.closest('label')?.querySelector('b')?.textContent.trim() || '';
 
     const installmentPanels = [...form.querySelectorAll('[data-checkout-installment]')];
+    const activeInstallmentPanel = () => {
+        const selectedPayment = form.querySelector('input[name="payment_type_id"]:checked')?.value;
+
+        if (selectedPayment === PAYMENT_MONO) return installmentPanels.find((panel) => panel.dataset.provider === 'mono');
+        if (selectedPayment === PAYMENT_PRIVAT) return installmentPanels.find((panel) => panel.dataset.provider === 'privat');
+
+        return null;
+    };
+
+    const currentInstallmentQuote = (panel) => {
+        if (!panel) return null;
+
+        const select = panel.querySelector('[data-installment-select]');
+        const period = Number(select?.value || 0);
+        const rates = parseInstallmentRates(panel.dataset.rates);
+
+        if (!period || !Object.prototype.hasOwnProperty.call(rates, period)) return null;
+
+        return installmentQuote(Number(form.dataset.checkoutBaseTotal || 0), period, rates[period]);
+    };
+
     const updateInstallmentPanel = (panel) => {
         const select = panel.querySelector('[data-installment-select]');
         const monthly = panel.querySelector('[data-installment-monthly]');
         const periodCopy = panel.querySelector('[data-installment-period-copy]');
         const decrease = panel.querySelector('[data-installment-decrease]');
         const increase = panel.querySelector('[data-installment-increase]');
+        const rateCopy = panel.querySelector('[data-installment-rate]');
         const periods = JSON.parse(panel.dataset.periods || '[]').map(Number).filter(Number.isFinite);
         const currentPeriod = Number(select?.value || periods[0] || 1);
         const currentIndex = Math.max(0, periods.indexOf(currentPeriod));
-        const total = Number(form.dataset.checkoutTotal || 0);
+        const quote = currentInstallmentQuote(panel);
 
-        if (monthly) monthly.textContent = money(Math.ceil(total / Math.max(1, currentPeriod)));
+        if (monthly && quote) monthly.textContent = money(quote.monthly);
+        if (rateCopy && quote) rateCopy.textContent = `+${formatInstallmentRate(quote.rate)}%`;
         if (periodCopy && select) periodCopy.textContent = select.options[select.selectedIndex]?.textContent || currentPeriod;
         if (decrease) decrease.disabled = currentIndex <= 0;
         if (increase) increase.disabled = currentIndex >= periods.length - 1;
     };
 
-    const updateInstallments = () => installmentPanels.forEach(updateInstallmentPanel);
+    const updateInstallmentSummary = () => {
+        const quote = currentInstallmentQuote(activeInstallmentPanel());
+        const feeRow = form.querySelector('[data-checkout-installment-row]');
+        const fee = form.querySelector('[data-checkout-installment-fee]');
+        const rate = form.querySelector('[data-checkout-installment-rate]');
+        const displayedTotal = quote?.total ?? Number(form.dataset.checkoutBaseTotal || 0);
+
+        if (feeRow) feeRow.hidden = !quote || quote.fee <= 0;
+        if (fee) fee.textContent = quote ? money(quote.fee) : money(0);
+        if (rate) rate.textContent = quote ? `(+${formatInstallmentRate(quote.rate)}%)` : '';
+        form.querySelectorAll('.total-price-delivery').forEach((node) => { node.textContent = money(displayedTotal); });
+    };
+
+    const updateInstallments = () => {
+        installmentPanels.forEach(updateInstallmentPanel);
+        updateInstallmentSummary();
+    };
 
     installmentPanels.forEach((panel) => {
         const select = panel.querySelector('[data-installment-select]');
@@ -183,12 +227,12 @@ export default async function () {
             const currentIndex = Math.max(0, periods.indexOf(Number(select.value)));
             const nextIndex = Math.min(periods.length - 1, Math.max(0, currentIndex + direction));
             select.value = String(periods[nextIndex]);
-            updateInstallmentPanel(panel);
+            updateInstallments();
         };
 
         panel.querySelector('[data-installment-decrease]')?.addEventListener('click', () => changePeriod(-1));
         panel.querySelector('[data-installment-increase]')?.addEventListener('click', () => changePeriod(1));
-        select?.addEventListener('change', () => updateInstallmentPanel(panel));
+        select?.addEventListener('change', updateInstallments);
     });
 
     const updateProgress = (step) => {
@@ -269,6 +313,7 @@ export default async function () {
         const output = form.querySelector('.selected-payment-type');
         if (output) output.textContent = choiceName(input);
         updateProgress('payment');
+        updateInstallments();
     };
     paymentInputs.forEach((input) => input.addEventListener('change', () => onPaymentChange(input)));
 
@@ -342,8 +387,8 @@ function showSummaryWithDelivery(response, form, hasSelectedDelivery = true) {
             : form?.dataset.deliveryEmptyLabel;
     });
     document.querySelectorAll('.price-discount').forEach((node) => { node.textContent = `−${money(data.discount)}`; });
-    document.querySelectorAll('.total-price-delivery').forEach((node) => { node.textContent = money(data.total); });
-    if (form) form.dataset.checkoutTotal = String(Number(data.total || 0));
+    document.querySelectorAll('.total-price-delivery').forEach((node) => { node.textContent = money(data.base_total ?? data.total); });
+    if (form) form.dataset.checkoutBaseTotal = String(Number(data.base_total ?? data.total ?? 0));
 
     const discountRow = document.querySelector('[data-checkout-discount-row]');
     if (discountRow) discountRow.hidden = Number(data.discount || 0) <= 0;

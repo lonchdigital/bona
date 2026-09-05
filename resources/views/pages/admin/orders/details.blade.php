@@ -105,6 +105,19 @@
                                 <striong class="text-dark">{{ trans('admin.order_payment_type') }}</striong>
                                 <div class="mt-1">{{ \App\DataClasses\PaymentTypesDataClass::get($order->payment_type_id)['name'] ?? '—' }}</div>
                             </div>
+                            @if($orderSummaryDetailed['installment_fee'] > 0)
+                                <div class="mb-3">
+                                    <strong class="text-dark">{{ trans('base.checkout_payment_period_label') }}</strong>
+                                    <div class="mt-1">{{ $orderSummaryDetailed['installment_period'] }}</div>
+                                </div>
+                                <div class="mb-3">
+                                    <strong class="text-dark">{{ trans('base.installment_surcharge') }}</strong>
+                                    <div class="mt-1">
+                                        {{ rtrim(rtrim(number_format((float) $orderSummaryDetailed['installment_rate'], 2, ',', ''), '0'), ',') }}%
+                                        · {{ number_format((float) $orderSummaryDetailed['installment_fee'], 2, ',', ' ') }} {{ $baseCurrency->name_short }}
+                                    </div>
+                                </div>
+                            @endif
 
 
                             <p>
@@ -240,6 +253,17 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            <div class="mt-4 ml-auto" style="max-width: 420px">
+                                <div class="d-flex justify-content-between py-2 border-top"><span>{{ trans('base.products_price') }}</span><strong>{{ number_format((float) $orderSummaryDetailed['products'], 2, ',', ' ') }} {{ $baseCurrency->name_short }}</strong></div>
+                                @if($orderSummaryDetailed['discount'] > 0)
+                                    <div class="d-flex justify-content-between py-2 border-top"><span>{{ trans('base.products_price_discount') }}</span><strong>−{{ number_format((float) $orderSummaryDetailed['discount'], 2, ',', ' ') }} {{ $baseCurrency->name_short }}</strong></div>
+                                @endif
+                                <div class="d-flex justify-content-between py-2 border-top"><span>{{ trans('base.delivery') }}</span><strong>{{ number_format((float) $orderSummaryDetailed['delivery'], 2, ',', ' ') }} {{ $baseCurrency->name_short }}</strong></div>
+                                @if($orderSummaryDetailed['installment_fee'] > 0)
+                                    <div class="d-flex justify-content-between py-2 border-top"><span>{{ trans('base.installment_surcharge') }}</span><strong>{{ number_format((float) $orderSummaryDetailed['installment_fee'], 2, ',', ' ') }} {{ $baseCurrency->name_short }}</strong></div>
+                                @endif
+                                <div class="d-flex justify-content-between py-2 border-top"><strong>{{ trans('base.products_price_total') }}</strong><strong>{{ number_format((float) $orderSummaryDetailed['total'], 2, ',', ' ') }} {{ $baseCurrency->name_short }}</strong></div>
+                            </div>
                         </x-admin.reactive-form>
                     </div>
                 </div>
