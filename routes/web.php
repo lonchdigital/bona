@@ -32,6 +32,7 @@ use App\Http\Actions\Store\Cart\DeleteProductFromCartAction;
 use App\Http\Actions\Store\Cart\GetProductsInCartWithSummaryAction;
 use App\Http\Actions\Store\Cart\GetProductsSummaryWithDelivery;
 use App\Http\Actions\Store\Cart\Pages\ShowCartPageAction;
+use App\Http\Actions\Store\Cart\RemovePromoCodeFromCartAction;
 use App\Http\Actions\Store\Catalog\GetAllProductsCountByFilterAction;
 use App\Http\Actions\Store\Catalog\GetAvailabilityProductsCountByFilterWithCategoryAction;
 use App\Http\Actions\Store\Catalog\GetProductsCountByFilterAction;
@@ -255,6 +256,7 @@ $optionalLanguageRoutes = function () {
         Route::name('store.cart.delete-product')->post('product/{productSlug}/delete', DeleteProductFromCartAction::class);
         Route::name('store.cart.products-with-summary')->get('product', GetProductsInCartWithSummaryAction::class);
         Route::name('store.cart.add-promo-code')->post('promo', AddPromoCodeToCartAction::class);
+        Route::name('store.cart.remove-promo-code')->delete('promo', RemovePromoCodeFromCartAction::class);
     });
 
     Route::name('static-data.script')->get('static-data.js', GetStaticDataScript::class);

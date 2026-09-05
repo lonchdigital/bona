@@ -1,865 +1,197 @@
 @extends('layouts.store-main')
 
-@section('title')
-    <title>{{ config('app.name') . ' - ' . trans('base.order_creation') }}</title>
-    <meta name="robots" content="index, follow">
-@endsection
+@section('body_class', 'bona-commerce-body')
+@section('seo_title', trans('base.checkout').' — Bona Doors')
+@section('meta_description', trans('base.checkout_meta_description'))
+
+@push('head')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
 
 @section('content')
-
     @php
+        $selectedDeliveryType = (int) old('delivery_type_id', $checkoutDeliveryType);
         $selectedPaymentType = (int) old('payment_type_id', $checkoutPaymentType);
-        $selectedPaymentLabel = match ($selectedPaymentType) {
-            App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT => trans('base.checkout_payment_card'),
-            App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART => trans('base.checkout_payment_paypart'),
-            App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK => trans('base.checkout_payment_paypart_mono_bank'),
-            default => trans('base.checkout_payment_cash'),
-        };
+        $selectedRecipientType = (int) old('recipient_type_id', App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER);
+        $selectedPaymentLabel = App\DataClasses\PaymentTypesDataClass::get($selectedPaymentType)['name'] ?? trans('base.checkout_payment_cash');
+        $selectedDeliveryLabel = App\DataClasses\DeliveryTypesDataClass::get($selectedDeliveryType)['name'] ?? trans('base.checkout_address_delivery');
+        $currency = $baseCurrency->name_short;
+        $formatPrice = fn ($amount) => number_format((float) $amount, 0, ',', ' ').' '.$currency;
+        $productsCount = $productsInCart->sum(fn ($product) => (int) $product->pivot->count);
+        $signInUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page', ['redirect_to' => request()->getRequestUri()]);
     @endphp
 
-    @include('pages.store.partials.page_header', ['links' => ['#' => 'checkout']])
+    <div class="bona-commerce-page bona-checkout-page">
+        <x-store.content-breadcrumbs :items="[
+            ['label' => trans('base.cart'), 'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page')],
+            ['label' => trans('base.checkout')],
+        ]" />
 
-    <main id="checkout" class="checkout">
-        <div class="content">
-            <div class="entry-content common-page-section-wrapper art-section-pd">
-                <div class="container">
+        <section class="bona-commerce-hero" aria-labelledby="checkout-page-title">
+            <div class="bona-shell bona-commerce-hero__grid">
+                <div>
+                    <p class="bona-commerce-kicker">{{ trans('base.checkout_kicker') }}</p>
+                    <h1 id="checkout-page-title">{{ trans('base.checkout') }}</h1>
+                    <div class="bona-checkout-progress" aria-label="{{ trans('base.checkout_progress_label') }}">
+                        <span class="is-active" data-checkout-progress="contact">{{ trans('base.checkout_progress_contact') }}</span>
+                        <span data-checkout-progress="delivery">{{ trans('base.checkout_progress_delivery') }}</span>
+                        <span data-checkout-progress="payment">{{ trans('base.checkout_progress_payment') }}</span>
+                    </div>
+                </div>
+                <p>{{ trans('base.checkout_intro') }}</p>
+            </div>
+        </section>
 
-                    <div class="row">
-                        <header class=" col-12 art-header-left">
-                            <div>
-                                <h1 class="title">{{ trans('base.checkout') }}</h1>
+        <form id="checkout-main" class="bona-shell bona-checkout-layout" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST" novalidate>
+            @csrf
+
+            <div class="bona-checkout-form">
+                @if($errors->any())
+                    <div class="bona-checkout-errors" role="alert" tabindex="-1" data-checkout-errors>
+                        <strong>{{ trans('base.checkout_order_error') }}</strong>
+                        <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                    </div>
+                @endif
+
+                <section class="bona-checkout-step" data-checkout-step="contact" aria-labelledby="checkout-contact-title">
+                    <header class="bona-checkout-step__head"><span>01</span><h2 id="checkout-contact-title">{{ trans('base.checkout_contact_title') }}</h2></header>
+
+                    @guest
+                        <div class="bona-checkout-auth-prompt">
+                            <div><strong>{{ trans('base.checkout_signin_title') }}</strong><p>{{ trans('base.checkout_signin_text') }}</p></div>
+                            <a class="bona-button bona-button--outline" href="{{ $signInUrl }}">{{ trans('base.checkout_signin_action') }}</a>
+                        </div>
+                        <div class="bona-form-grid">
+                            <div class="bona-field @error('first_name') has-error @enderror"><label for="name">{{ trans('base.name') }}</label><input id="name" name="first_name" type="text" value="{{ old('first_name') }}" autocomplete="given-name" maxlength="100" required>@error('first_name')<small>{{ $message }}</small>@enderror</div>
+                            <div class="bona-field @error('last_name') has-error @enderror"><label for="surname">{{ trans('base.last_name') }}</label><input id="surname" name="last_name" type="text" value="{{ old('last_name') }}" autocomplete="family-name" maxlength="100" required>@error('last_name')<small>{{ $message }}</small>@enderror</div>
+                            <div class="bona-field @error('phone') has-error @enderror"><label for="phone">{{ trans('base.phone') }}</label><input id="phone" name="phone" type="tel" value="{{ old('phone') }}" autocomplete="tel" inputmode="tel" required>@error('phone')<small>{{ $message }}</small>@enderror</div>
+                            <div class="bona-field @error('email') has-error @enderror"><label for="email">{{ trans('base.email') }}</label><input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="email" maxlength="255" required>@error('email')<small>{{ $message }}</small>@enderror</div>
+                        </div>
+                    @else
+                        <div class="bona-checkout-customer">
+                            <span aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->first_name, 0, 1).mb_substr(auth()->user()->last_name, 0, 1)) }}</span>
+                            <div><p>{{ trans('base.checkout_signed_in_as') }}</p><strong>{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</strong><small>{{ auth()->user()->phone }} · {{ auth()->user()->email }}</small></div>
+                        </div>
+                    @endguest
+                </section>
+
+                <section class="bona-checkout-step" data-checkout-step="delivery" aria-labelledby="checkout-delivery-title">
+                    <header class="bona-checkout-step__head"><span>02</span><h2 id="checkout-delivery-title">{{ trans('base.checkout_delivery_title') }}</h2></header>
+
+                    <div class="bona-choice-list" id="checkout-delivery-accordion">
+                        <label class="bona-choice-card">
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-address" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}" data-accordion="delivery-1" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)>
+                            <span><b>{{ trans('base.checkout_address_delivery') }}</b><small>{{ trans('base.checkout_address_delivery_note') }}</small></span><strong>{{ $formatPrice(config('domain.delivery_price', 0)) }}</strong>
+                        </label>
+                        <div id="delivery-1" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)>
+                            <div class="bona-form-grid">
+                                <div class="bona-field @error('region_id') has-error @enderror"><label for="region_id">{{ trans('base.region') }}</label><select id="region_id" class="region-select" name="region_id"><option value=""></option>@foreach($regions as $region)<option value="{{ $region->id }}" @selected((int) old('region_id') === (int) $region->id)>{{ $region->name }}</option>@endforeach</select>@error('region_id')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('district') has-error @enderror"><label for="district">{{ trans('base.district') }}</label><input id="district" type="text" name="district" value="{{ old('district') }}" maxlength="150">@error('district')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('city') has-error @enderror"><label for="city">{{ trans('base.city') }}</label><input id="city" type="text" name="city" value="{{ old('city') }}" autocomplete="address-level2" maxlength="150">@error('city')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('street') has-error @enderror"><label for="street">{{ trans('base.checkout_street') }}</label><input id="street" type="text" name="street" value="{{ old('street') }}" autocomplete="street-address" maxlength="180">@error('street')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field bona-field--third @error('building_number') has-error @enderror"><label for="building_number">{{ trans('base.checkout_building_number') }}</label><input id="building_number" type="text" name="building_number" value="{{ old('building_number') }}" maxlength="30">@error('building_number')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field bona-field--third @error('apartment_number') has-error @enderror"><label for="apartment_number">{{ trans('base.checkout_apartment_number') }}</label><input id="apartment_number" type="text" name="apartment_number" value="{{ old('apartment_number') }}" maxlength="30">@error('apartment_number')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field bona-field--third @error('floor_number') has-error @enderror"><label for="floor_number">{{ trans('base.checkout_floor_number') }}</label><input id="floor_number" type="text" name="floor_number" value="{{ old('floor_number') }}" maxlength="20">@error('floor_number')<small>{{ $message }}</small>@enderror</div>
                             </div>
-                        </header>
+                        </div>
+
+                        <label class="bona-choice-card">
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-np" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY }}" data-accordion="delivery-2" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)>
+                            <span><b>{{ trans('base.checkout_np_delivery') }}</b><small>{{ trans('base.checkout_np_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
+                        </label>
+                        <div id="delivery-2" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)>
+                            <div class="bona-form-grid">
+                                <div class="bona-field @error('np_city') has-error @enderror"><label for="np_city">{{ trans('base.checkout_search_city') }}</label><input id="np_city" class="np-city-select" type="text" name="np_city" value="{{ old('np_city') }}" @if($npCityInitial) data-initial-value="{{ json_encode($npCityInitial, JSON_UNESCAPED_UNICODE) }}" @endif>@error('np_city')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('np_department') has-error @enderror" id="np-department-search-wrap"><label for="np_department">{{ trans('base.checkout_select_np_department') }}</label><input id="np_department" class="np-department-select" type="text" name="np_department" value="{{ old('np_department') }}" @if($npDepartmentInitial) data-initial-value="{{ json_encode($npDepartmentInitial, JSON_UNESCAPED_UNICODE) }}" @endif>@error('np_department')<small>{{ $message }}</small>@enderror</div>
+                            </div>
+                        </div>
+
+                        <label class="bona-choice-card">
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-sat" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}" data-accordion="delivery-3" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)>
+                            <span><b>{{ trans('base.checkout_sat_delivery') }}</b><small>{{ trans('base.checkout_sat_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
+                        </label>
+                        <div id="delivery-3" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)>
+                            <div class="bona-form-grid">
+                                <div class="bona-field @error('sat_city') has-error @enderror"><label for="sat_city">{{ trans('base.checkout_search_city') }}</label><input id="sat_city" class="sat-city-select" type="text" name="sat_city" value="{{ old('sat_city') }}" @if($satCityInitial) data-initial-value="{{ json_encode($satCityInitial, JSON_UNESCAPED_UNICODE) }}" @endif>@error('sat_city')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('sat_department') has-error @enderror" id="sat-department-search-wrap"><label for="sat_department">{{ trans('base.checkout_select_np_department') }}</label><input id="sat_department" class="sat-department-select" type="text" name="sat_department" value="{{ old('sat_department') }}" @if($satDepartmentInitial) data-initial-value="{{ json_encode($satDepartmentInitial, JSON_UNESCAPED_UNICODE) }}" @endif>@error('sat_department')<small>{{ $message }}</small>@enderror</div>
+                            </div>
+                        </div>
+
+                        <label class="bona-choice-card">
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-pickup" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY }}" data-accordion="delivery-4" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY)>
+                            <span><b>{{ trans('base.checkout_pickup_from_store') }}</b><small>{{ trans('base.checkout_pickup_note') }}</small></span><strong>{{ trans('base.checkout_free') }}</strong>
+                        </label>
+                        <div id="delivery-4" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY)><p>{{ trans('base.checkout_pickup_panel') }}</p></div>
                     </div>
 
-
-                    <form class="row checkout-main mb-lg-4" id="checkout-main" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST">
-                        <div class="left-content col-lg-8">
-                            <!-- checkout-order-data -->
-                            <div id="checkout-order-data" class="checkout-order-data">
-                                <div class="checkout-order-data-form flex-column mb-10 mb-lg-20">
-                                    @csrf
-                                    @guest
-                                        <div class="flex-column flex-lg-row pr-xl-18 mt-10 mt-lg-4 mt-xxl-26 mb-4 mb-lg-10">
-                                            <div class="">
-                                                <div class="h4 mb-4 d-none d-lg-block">{{ trans('base.personal_data') }}</div>
-                                            </div>
-                                            <div class="">
-                                                <div class="checkout-personal-data pr-xl-18 mb-4 mb-lg-10">
-                                                    <div class="art-row-line mb-1">
-                                                        <div class="col-6">
-                                                            <div class="field @if($errors->has('first_name')) field-error @endif mr-n1">
-                                                                <input type="text" class="art-form-light-control" id="name"
-                                                                       name="first_name"
-                                                                       placeholder="{{ trans('base.name') }}"
-                                                                       value="{{ old('first_name') }}">
-                                                                <div class="row mb-5">
-                                                                    <div class="col-12 text-danger">
-                                                                        @error('first_name')
-                                                                        <div class="field-error-help-descr">{{ $message }}</div>
-                                                                        @enderror
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <div class="field @if($errors->has('last_name')) field-error @endif ml-n1">
-                                                                <input type="text" class="art-form-light-control" id="surname"
-                                                                       name="last_name"
-                                                                       placeholder="{{ trans('base.last_name') }}"
-                                                                       value="{{ old('last_name') }}">
-                                                                <div class="row mb-5">
-                                                                    <div class="col-12 text-danger">
-                                                                        @error('last_name')
-                                                                        <div class="field-error-help-descr">{{ $message }}</div>
-                                                                        @enderror
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="field  @if($errors->has('phone')) field-error @endif  mb-1 mb-lg-1 mb-xl-1 d-flex flex-column-reverse">
-                                                        <input type="tel" class="art-form-light-control" id="phone" name="phone"
-                                                               placeholder="{{ trans('base.phone') }}"
-                                                               value="{{ old('phone') }}">
-                                                    </div>
-                                                    <div class="row mb-5">
-                                                        <div class="col-12 text-danger">
-                                                            @error('phone')
-                                                            <div class="field-error-help-descr">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="field @if($errors->has('email')) field-error @endif mb-1 d-flex flex-column">
-                                                        <input type="email" class="art-form-light-control" id="email" name="email"
-                                                               placeholder="{{ trans('base.email') }}"
-                                                               value="{{ old('email') }}">
-                                                    </div>
-                                                    <div class="row mb-1">
-                                                        <div class="col-12 text-danger">
-                                                            @error('email')
-                                                            <div class="field-error-help-descr">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    @endguest
-
-                                    <div class="checkout-delivery d-flex flex-column flex-xl-row pr-xl-18 mt-10 mt-lg-4 mt-xxl-26 mb-4 mb-lg-10">
-                                        <div class="checkout-delivery-accordion w-100 mt-1" id="checkout-delivery-accordion">
-
-                                            <h4>{{ trans('base.delivery') }}</h4>
-
-                                            <div class="card delivery-address">
-                                                <div class="card-header">
-                                                    <div class="card-header-row">
-                                                        <div class="card-header-left checkbox">
-                                                            <div class="position-relative">
-                                                                <input data-accordion="delivery-1"
-                                                                       class="art-accordion-delivery"
-                                                                       type="radio"
-                                                                       @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) checked
-                                                                       @endif id="delivery-radio-address"
-                                                                       name="delivery_type_id"
-                                                                       value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}"
-                                                                >
-                                                                <label class="custom-control-label" for="delivery-radio-address">{{ trans('base.checkout_address_delivery') }}</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-header-right">
-                                                            <div class="nav-item-info d-flex align-items-center justify-content-between">
-                                                                {{--
-                                                                <div class="delivery-free mr-3">{{ config('domain.delivery_price') }}грн.</div>
-                                                                --}}
-
-                                                                <div class="i-info" data-toggle="tooltip"
-                                                                     title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
-                                                                    <span class="icon-i-info"><span
-                                                                            class="path1"></span><span
-                                                                            class="path2"></span></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div id="delivery-1"
-                                                     class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)art-show @else art-hide @endif"
-                                                     data-parent="#checkout-delivery-accordion">
-                                                    <div class="card-body pt-5 px-0 pb-5 mb-4">
-                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}:</div>
-                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_address_to_delivery') }}</div>
-                                                        <div class="city-search-wrap">
-                                                            <div class="field @if($errors->has('region_id')) field-error @endif city-search mb-1">
-                                                                <select class="region-select" name="region_id">
-                                                                    <option disabled @if(!old('region_id')) selected @endif value="">{{ trans('base.checkout_search_area') }}</option>
-                                                                    @foreach($regions as $region)
-                                                                        <option @if(old('region_id') == $region->id) selected @endif value="{{ $region->id }}">{{ $region->name }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('region_id')
-                                                                    <div
-                                                                        class="field-error-help-descr">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row mb-1">
-                                                            <div class="col-12">
-                                                                <div class="field @if($errors->has('district')) field-error @endif">
-                                                                    <input type="text" name="district"
-                                                                           class="art-form-light-control"
-                                                                           placeholder="{{ trans('base.district') }}"
-                                                                           value="{{ old('district') }}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row mb-3">
-                                                            <div class="col-12 text-danger">
-                                                                @error('district')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-1">
-                                                            <div class="col-12">
-                                                                <div
-                                                                    class="field @if($errors->has('city')) field-error @endif">
-                                                                    <input type="text" name="city"
-                                                                           class="art-form-light-control"
-                                                                           placeholder="{{ trans('base.city') }}"
-                                                                           value="{{ old('city') }}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-12 text-danger">
-                                                                @error('city')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-                                                        <div class="address-search-wrap mb-10 mb-sm-0">
-                                                            <div
-                                                                class="field @if($errors->has('street')) field-error @endif field--house">
-                                                                <input type="text" name="street"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_street') }}"
-                                                                       value="{{ old('street') }}">
-                                                            </div>
-                                                            <div
-                                                                class="field @if($errors->has('building_number')) field-error @endif field--house">
-                                                                <input type="text" name="building_number"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_building_number') }}"
-                                                                       value="{{ old('building_number') }}">
-                                                            </div>
-                                                            <div
-                                                                class="field @if($errors->has('apartment_number')) field-error @endif field--apart">
-                                                                <input type="text" name="apartment_number"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_apartment_number') }}"
-                                                                       value="{{ old('apartment_number') }}">
-                                                            </div>
-                                                            <div
-                                                                class="field @if($errors->has('floor_number')) field-error @endif field--floor">
-                                                                <input type="text" name="floor_number"
-                                                                       class="art-form-light-control"
-                                                                       placeholder="{{ trans('base.checkout_floor_number') }}"
-                                                                       value="{{ old('floor_number') }}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row my-1">
-                                                            <div class="col-12 text-danger">
-                                                                @error('street')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                                @error('building_number')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                                @error('apartment_number')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                                @error('floor_number')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row mt-1">
-                                                            <div class="col-12 text-danger">
-                                                                @error('delivery_date')
-                                                                <div
-                                                                    class="field-error-help-descr">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="card delivery-np">
-                                                <div class="card-header">
-                                                    <div class="card-header-row">
-                                                        <div class="card-header-left checkbox">
-                                                            <div class="position-relative">
-                                                                <input data-accordion="delivery-2"
-                                                                       class="art-accordion-delivery"
-                                                                       type="radio"
-                                                                       id="delivery-radio-np"
-                                                                       @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) checked
-                                                                       @endif name="delivery_type_id"
-                                                                       value="{{ App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY }}"
-                                                                >
-                                                                <label class="custom-control-label"
-                                                                       for="delivery-radio-np">
-                                                                    <span class="i-np mr-2">
-                                                                        <svg>
-                                                                            <use
-                                                                                xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-np"></use>
-                                                                        </svg>
-                                                                    </span>
-                                                                    {{ trans('base.checkout_np_delivery') }}
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-header-right">
-                                                            <div
-                                                                class="nav-item-info d-flex align-items-center justify-content-between">
-                                                                <div
-                                                                    class="delivery-free mr-3">{{ trans('base.cart_delivery_price') }}</div>
-                                                                <div class="i-info" data-toggle="tooltip"
-                                                                     title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
-                                                                    <span class="icon-i-info"><span
-                                                                            class="path1"></span><span
-                                                                            class="path2"></span></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-{{--                                                @dd('hi3', json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpCityByRef('Льво')))--}}
-                                                <div id="delivery-2"
-                                                     class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY) art-show @else art-hide @endif"
-                                                     data-parent="#checkout-delivery-accordion">
-                                                    <div class="card-body pt-5 px-0 pb-5 mb-4">
-                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_select_np_department') }}</div>
-                                                        <div class="city-search-wrap">
-                                                            <div class="field @if($errors->has('np_city')) field-error @endif city-search mb-1">
-                                                                <input value="{{ old('np_city') }}"
-                                                                       @if(old('np_city')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpCityByRef(old('np_city'))) }}' @endif
-                                                                       type="text" class="np-city-select"
-                                                                       name="np_city">
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('np_city')
-                                                                    <div
-                                                                        class="field-error-np_area">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div id="np-department-search-wrap">
-                                                            <div
-                                                                class="field @if($errors->has('np_department')) field-error @endif city-search mb-1">
-                                                                <input value="{{ old('np_department') }}"
-                                                                       @if(old('np_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getNpDepartmentByRef(old('np_city'), old('np_department'))) }}'
-                                                                       @endif  type="text"
-                                                                       class="np-department-select"
-                                                                       name="np_department">
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('np_department')
-                                                                    <div
-                                                                        class="field-error-np_area">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="card delivery-sat">
-                                                <div class="card-header">
-                                                    <div class="card-header-row">
-                                                        <div class="card-header-left checkbox">
-                                                            <div class="position-relative">
-                                                                <input data-accordion="delivery-3"
-                                                                       class="art-accordion-delivery"
-                                                                       type="radio"
-                                                                       @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) checked
-                                                                       @endif id="delivery-radio-sat"
-                                                                       name="delivery_type_id"
-                                                                       value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}"
-                                                                >
-                                                                <label class="custom-control-label" for="delivery-radio-sat">{{ trans('base.checkout_sat_delivery') }}</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div id="delivery-3"
-                                                     class="accordion-delivery-data @if(old('delivery_type_id') == App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY) art-show @else art-hide @endif"
-                                                     data-parent="#checkout-delivery-accordion">
-                                                    <div class="card-body pt-5 px-0 pb-5 mb-4">
-                                                        <div class="delivery-title mb-4">{{ trans('base.checkout_select_city') }}:</div>
-
-                                                        <div class="city-search-wrap">
-                                                            <div class="field @if($errors->has('sat_city')) field-error @endif city-search mb-1">
-{{--                                                                @dd(old('sat_city'))--}}
-                                                                <input value="{{ old('sat_city') }}"
-                                                                       @if(old('sat_city')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getSatCityByRef(old('sat_city'))) }}' @endif
-                                                                       type="text"
-                                                                       class="sat-city-select"
-                                                                       name="sat_city">
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('sat_city')
-                                                                    <div class="field-error-np_area">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div id="sat-department-search-wrap">
-                                                            <div
-                                                                class="field @if($errors->has('sat_department')) field-error @endif city-search mb-1">
-                                                                <input value="{{ old('sat_department') }}"
-                                                                       @if(old('sat_department')) data-initial-value='{{ json_encode(app()->make(\App\Services\Delivery\DeliveryService::class)->getSATDepartmentByRef( old('sat_department') )) }}'
-                                                                       @endif  type="text"
-                                                                       class="sat-department-select"
-                                                                       name="sat_department">
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('sat_department')
-                                                                    <div
-                                                                        class="field-error-sat_area">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-
-
-                                    <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-payment pr-xl-18 mb-10 mb-lg-10">
-                                        <div class="w-100 checkbox">
-                                            <div class="mt-1">
-                                                <div class="">
-                                                    <h4>{{ trans('base.checkout_payment') }}</h4>
-                                                    <div class="checkbox art-mb-10">
-                                                        <div class="position-relative">
-                                                            <input type="radio"
-                                                                   @if(!old('payment_type_id', $checkoutPaymentType) || old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT) checked
-                                                                   @endif id="payment-cash" name="payment_type_id"
-                                                                   value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}">
-                                                            <label class="custom-control-label"
-                                                                   for="payment-cash">{{ trans('base.checkout_payment_cash') . ' (' . trans('base.checkout_payment_upon_receipt') . ')' }}</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-2">
-                                                    <div class="i-info ml-auto" data-toggle="tooltip"
-                                                         title="<span class='help'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta fuga quasi numquam nesciunt consequuntur ullam odio iure ut repellat! Libero mollitia perferendis magni minima. Quae pariatur maiores recusandae minima accusantium.</span>">
-                                                        <span class="icon-i-info"><span
-                                                                class="path1"></span><span class="path2"></span></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="">
-                                                <div class="">
-                                                    <div class="checkbox art-mb-10">
-                                                        <div class="position-relative">
-                                                            <input type="radio"
-                                                                   @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT) checked
-                                                                   @endif id="payment-card" name="payment_type_id"
-                                                                   value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}">
-                                                            <label class="custom-control-label"
-                                                                   for="payment-card">{{ trans('base.checkout_payment_card') }}</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="">
-                                                <div class="">
-                                                    <div class="checkbox art-mb-10">
-                                                        <div class="position-relative">
-                                                            <input type="radio"
-                                                                   @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) checked
-                                                                   @endif id="payment-card_paypart" name="payment_type_id"
-                                                                   value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}">
-                                                            <label class="custom-control-label"
-                                                                   for="payment-card_paypart">
-                                                                <span class="i-np mr-2"><img src="{{ asset('public/static-images/liq.png') }}" style="width: 24px" alt="liqpay"></span>
-                                                                {{ trans('base.checkout_payment_paypart') }}
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="" id="collapsePartialPayment" @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART) style="display: block" @else style="display: none" @endif>
-                                                <div class="row">
-                                                    <div class="col mt-1">
-                                                        <div class="delivery-title mb-1">
-                                                            {{ trans('base.payment_period') }}
-                                                        </div>
-                                                        <div>
-                                                            <select class="art-form-light-control art-plain-select" name="payment_period" id="payment_period" style="width: 150px">
-                                                                @foreach(config('payment.privatbank.periods') as $period)
-                                                                    <option @if((int) old('payment_period', $checkoutPrivatPeriod) === (int) $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-
-                                            <div class="">
-                                                <div class="">
-                                                    <div class="checkbox art-mb-10">
-                                                        <div class="position-relative">
-                                                            <input type="radio"
-                                                                   @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) checked
-                                                                   @endif id="payment-card_paypart-mono-bank" name="payment_type_id"
-                                                                   value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}">
-                                                            <label class="custom-control-label"
-                                                                   for="payment-card_paypart-mono-bank">
-                                                                <span class="i-np mr-2"><img src="{{ asset('public/static-images/monobank.png') }}" style="width: 24px" alt="monobank"></span>
-                                                                {{ trans('base.checkout_payment_paypart_mono_bank') }}
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="" id="collapseMonoPartialPayment" @if(old('payment_type_id', $checkoutPaymentType) == App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) style="display: block" @else style="display: none" @endif>
-                                                <div class="row">
-                                                    <div class="col mt-1">
-                                                        <div class="delivery-title mb-1">
-                                                            {{ trans('base.payment_period') }}
-                                                        </div>
-                                                        <div>
-                                                            <select class="art-form-light-control art-plain-select" name="mono_payment_period" id="mono_payment_period" style="width: 150px">
-                                                                @foreach(config('payment.monobank.periods') as $period)
-                                                                    <option @if((int) old('mono_payment_period', $checkoutMonoPeriod) === (int) $period) selected @endif value="{{ $period }}">{{ $period }} {{ trans('base.short_month') }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            @auth
-                                                @if(auth()->user()->role_id === 1)
-
-
-
-                                                @endif
-                                            @endauth
-
-
-                                        </div>
-                                    </div>
-
-                                    <div class="checkout-delivery d-flex flex-column flex-xl-row checkout-recipient pr-xl-18">
-                                        <div class="w-100 checkbox">
-
-                                            <h4>{{ trans('base.checkout_recipient') }}</h4>
-
-                                            <div class="mt-1">
-                                                <div class="checkbox art-mb-10">
-                                                    <div class="position-relative">
-                                                        <input data-accordion="recipient-1"
-                                                               class="art-accordion-recipient"
-                                                               type="radio"
-                                                               @if(!old('recipient_type_id') || (old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER)) checked
-                                                               @endif id="recipient-user"
-                                                               name="recipient_type_id"
-                                                               value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER }}">
-                                                        <label data-toggle="collapse"
-                                                               data-target="#collapse-self-recipient"
-                                                               for="recipient-user">{{ trans('base.checkout_recipient_me') }}</label>
-                                                    </div>
-                                                </div>
-                                                <div class="">
-                                                    <div class="position-relative">
-                                                        <input data-accordion="recipient-2"
-                                                               class="art-accordion-recipient"
-                                                               type="radio"
-                                                               @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) checked
-                                                               @endif id="recipient-other"
-                                                               name="recipient_type_id"
-                                                               value="{{ \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM }}">
-                                                        <label data-toggle="collapse"
-                                                               data-target="#collapse-custom-recipient"
-                                                               for="recipient-other">{{ trans('base.checkout_recipient_another_person') }}</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="" id="checkout-custom-recipient-accordion">
-                                                    <div id="recipient-2"
-                                                         class="accordion-recipient-data  @if((old('recipient_type_id') == \App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)) art-show @else art-hide @endif"
-                                                         data-parent="#checkout-custom-recipient-accordion">
-                                                        <div class="checkout-personal-data mb-6 mb-xl-0 pt-5">
-                                                            <div class="art-row-line mb-1">
-                                                                <div class="col-6">
-                                                                    <div
-                                                                        class="field @if($errors->has('custom_first_name')) field-error @endif mr-n1">
-                                                                        <input type="text" class="art-form-light-control"
-                                                                               id="custom_name"
-                                                                               name="custom_first_name"
-                                                                               placeholder="{{ trans('base.name') }}"
-                                                                               value="{{ old('custom_first_name') }}">
-                                                                        <label class="form-label d-none mb-1"
-                                                                               for="custom_name">{{ trans('base.name') }}</label>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-6">
-                                                                    <div
-                                                                        class="field @if($errors->has('custom_last_name')) field-error @endif ml-n1">
-                                                                        <input type="text" class="art-form-light-control"
-                                                                               id="custom_surname"
-                                                                               name="custom_last_name"
-                                                                               placeholder="{{ trans('base.last_name') }}"
-                                                                               value="{{ old('custom_last_name') }}">
-                                                                        <label class="form-label d-none mb-1"
-                                                                               for="custom_surname">{{ trans('base.last_name') }}</label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mb-5">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('custom_first_name')
-                                                                    <div
-                                                                        class="field-error-help-descr">{{ $message }}</div>
-                                                                    @enderror
-                                                                    @error('custom_last_name')
-                                                                    <div
-                                                                        class="field-error-help-descr">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                            <div
-                                                                class="field  @if($errors->has('custom_phone')) field-error @endif  mb-1 mb-lg-1 mb-xl-1 d-flex flex-column-reverse">
-                                                                <input type="tel" class="art-form-light-control"
-                                                                       id="custom_phone" name="custom_phone"
-                                                                       placeholder="{{ trans('base.phone') }}"
-                                                                       value="{{ old('custom_phone') }}">
-                                                            </div>
-                                                            <div class="row mb-5">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('custom_phone')
-                                                                    <div
-                                                                        class="field-error-help-descr">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                            <div
-                                                                class="field @if($errors->has('custom_email')) field-error @endif mb-1 d-flex flex-column">
-                                                                <input type="email" class="art-form-light-control"
-                                                                       id="custom_email" name="custom_email"
-                                                                       placeholder="{{ trans('base.email') }}"
-                                                                       value="{{ old('custom_email') }}">
-                                                            </div>
-                                                            <div class="row mb-1">
-                                                                <div class="col-12 text-danger">
-                                                                    @error('custom_email')
-                                                                    <div
-                                                                        class="field-error-help-descr">{{ $message }}</div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="">
-                                                    <div class="delivery-title mb-3 mt-4">{{ trans('base.checkout_order_comment') }}</div>
-                                                    <div class="field mb-4">
-                                                        <textarea class="art-form-light-control h-100" name="comment"
-                                                                  rows="4"
-                                                                  placeholder="{{ trans('base.checkout_order_comment_placeholder') }}"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                    <div class="bona-recipient-block">
+                        <h3>{{ trans('base.checkout_recipient') }}</h3>
+                        <div class="bona-inline-choices">
+                            <label><input class="art-accordion-recipient" type="radio" id="recipient-user" name="recipient_type_id" value="{{ App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER }}" data-accordion="recipient-1" @checked($selectedRecipientType === App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER)><span>{{ trans('base.checkout_recipient_me') }}</span></label>
+                            <label><input class="art-accordion-recipient" type="radio" id="recipient-other" name="recipient_type_id" value="{{ App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM }}" data-accordion="checkout-custom-recipient-accordion" @checked($selectedRecipientType === App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)><span>{{ trans('base.checkout_recipient_another_person') }}</span></label>
+                        </div>
+                        <div id="checkout-custom-recipient-accordion" class="bona-choice-panel accordion-recipient-data" @hidden($selectedRecipientType !== App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM)>
+                            <div class="bona-form-grid">
+                                <div class="bona-field @error('custom_first_name') has-error @enderror"><label for="custom_name">{{ trans('base.name') }}</label><input id="custom_name" name="custom_first_name" type="text" value="{{ old('custom_first_name') }}" maxlength="100">@error('custom_first_name')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('custom_last_name') has-error @enderror"><label for="custom_surname">{{ trans('base.last_name') }}</label><input id="custom_surname" name="custom_last_name" type="text" value="{{ old('custom_last_name') }}" maxlength="100">@error('custom_last_name')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('custom_phone') has-error @enderror"><label for="custom_phone">{{ trans('base.phone') }}</label><input id="custom_phone" name="custom_phone" type="tel" value="{{ old('custom_phone') }}" inputmode="tel">@error('custom_phone')<small>{{ $message }}</small>@enderror</div>
+                                <div class="bona-field @error('custom_email') has-error @enderror"><label for="custom_email">{{ trans('base.email') }}</label><input id="custom_email" name="custom_email" type="email" value="{{ old('custom_email') }}" maxlength="255">@error('custom_email')<small>{{ $message }}</small>@enderror</div>
                             </div>
                         </div>
+                    </div>
+                </section>
 
-                        <div class="right-sidebar col-lg-4">
-                            <!-- checkout-order-info -->
-                            <div id="checkout-sidebar" class="checkout-sidebar">
-                                <div id="checkout-order-info" class="checkout-order-info">
-                                    <div class="checkout-order-info-form">
-                                        <div class="total-info-top w-100">
-                                            <div class="total-info-top-header d-flex align-items-center justify-content-between mb-4">
-                                                <div class="h4 art-total-info-title">{{ trans('base.checkout_my_order') }}</div>
-                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-edit p-0 m-0">
-                                                    <div class="i-gear mr-2">
-                                                        <svg>
-                                                            <use
-                                                                xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-gear"></use>
-                                                        </svg>
-                                                    </div>
-                                                    <span>{{ trans('base.checkout_edit_order') }}</span>
-                                                </a>
-                                            </div>
+                <section class="bona-checkout-step" data-checkout-step="payment" aria-labelledby="checkout-payment-title">
+                    <header class="bona-checkout-step__head"><span>03</span><h2 id="checkout-payment-title">{{ trans('base.checkout_payment') }}</h2></header>
+                    <div class="bona-choice-list bona-payment-choices">
+                        <label class="bona-choice-card"><input type="radio" id="payment-cash" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT)><span><b>{{ trans('base.checkout_payment_cash') }}</b><small>{{ trans('base.checkout_payment_cash_note') }}</small></span><strong>{{ trans('base.checkout_no_commission') }}</strong></label>
+                        <label class="bona-choice-card"><input type="radio" id="payment-card" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT)><span><b>{{ trans('base.checkout_payment_card') }}</b><small>{{ trans('base.checkout_payment_card_note') }}</small></span><strong class="bona-payment-brand">LiqPay</strong></label>
+                        <label class="bona-choice-card"><input type="radio" id="payment-invoice" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT)><span><b>{{ trans('base.checkout_payment_invoice') }}</b><small>{{ trans('base.checkout_payment_invoice_note') }}</small></span><svg class="bona-payment-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7V3Zm8 0v5h4M10 12h6M10 16h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+                        <label class="bona-choice-card"><input type="radio" id="payment-card_paypart-mono-bank" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)><span><b>{{ trans('base.checkout_payment_paypart_mono_bank') }} monobank</b><small>{{ trans('base.checkout_payment_mono_note') }}</small></span><strong class="bona-bank-mark bona-bank-mark--mono">mono</strong></label>
+                        <div id="collapseMonoPartialPayment" class="bona-payment-period" @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)><label for="mono_payment_period">{{ trans('base.checkout_payment_period_label') }}</label><select id="mono_payment_period" name="mono_payment_period">@foreach(config('payment.monobank.periods', []) as $period)<option value="{{ $period }}" @selected((int) old('mono_payment_period', $checkoutMonoPeriod) === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach</select></div>
+                        <label class="bona-choice-card"><input type="radio" id="payment-card_paypart" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)><span><b>{{ trans('base.checkout_payment_paypart') }} ПриватБанк</b><small>{{ trans('base.checkout_payment_privat_note') }}</small></span><strong class="bona-bank-mark bona-bank-mark--privat">Приват</strong></label>
+                        <div id="collapsePartialPayment" class="bona-payment-period" @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)><label for="payment_period">{{ trans('base.checkout_payment_period_label') }}</label><select id="payment_period" name="payment_period">@foreach(config('payment.privatbank.periods', []) as $period)<option value="{{ $period }}" @selected((int) old('payment_period', $checkoutPrivatPeriod) === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach</select></div>
+                    </div>
+                </section>
 
-                                            <div class="checkout-order-list-product-descr art-checkout-order-list ">
-                                                <div class="row">
-                                                    <div class="col checkout-product-list">
-                                                        @foreach($productsInCart as $product)
-                                                            <div class="list-product-item mb-2">
-                                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}"
-                                                                   class="table-product d-flex align-items-center">
-                                                                    <div class="table-product-image mr-3 d-block">
-                                                                        @if( $product->pivot->current_image_path !== null )
-                                                                            <img src="{{ '/storage/' . $product->pivot->current_image_path }}" alt="{{ $product->name }}">
-                                                                        @else
-                                                                            <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}">
-                                                                        @endif
-                                                                    </div>
-                                                                    <div class="table-product-info d-block">
-                                                                        <div class="table-product-name mb-0 d-block">
-                                                                            @if($product->pivot->count > 1)
-                                                                                {{ $product->name }}<span>{{ ' ( x'.$product->pivot->count.' )' }}</span>
-                                                                            @else
-                                                                                {{ $product->name }}
-                                                                            @endif
-                                                                        </div>
-                                                                        {{--@if($product->pivot->attributes)
-                                                                            <div class="product-attributes">
-                                                                                @foreach(json_decode($product->pivot->attributes) as $key => $value)
-                                                                                    <div class="product-attribute-line">
-                                                                                        <div class="attribute-value">{{ $value }}</div>
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            </div>
-                                                                        @endif--}}
-                                                                        <div class="table-total-price position-relative">
-                                                                            <div class="price">
-{{--                                                                                {{ $product->price }} {{ $baseCurrency->name_short }}--}}
-                                                                                {{ $product->price + $product->pivot->attributes_price }} {{ $baseCurrency->name_short }}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    class="checkout-payment checkout-order-info-delivery-title mb-1 pt-1">{{ trans('base.checkout_payment') }}
-                                                    :&nbsp;<span
-                                                        class="selected-payment-type">{{ $selectedPaymentLabel }}</span>
-                                                </div>
-                                                <div class="checkout-delivery checkout-order-info-delivery-title mb-1 pt-1">{{ trans('base.delivery') }}
-                                                    : <span class="selected-delivery-type">{{ trans('base.checkout_address_delivery') }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="info-top-prices mb-3">
-                                                <div class="info-top-item mb-1 pt-1">
-                                                    <span class="">{{ trans('base.products_price') }}: </span>
-                                                    <span class="text-nowrap price-products"></span>
-                                                </div>
-
-                                                {{-- TODO: Price delivery --}}
-                                            {{--
-                                            <div class="info-top-item pb-3 normal-delivery">
-                                                <span class="mr-6">{{ trans('base.delivery') }}</span>
-                                                <span class="text-nowrap price-delivery"></span>
-
-
-<!--                                                    <div class="d-flex">
-                                                        <span class="old-price-delivery text-nowrap"></span>
-                                                        <span class="text-nowrap price-delivery"></span>
-                                                    </div>-->
-                                                </div>
-                                            --}}
-                                                <div class="info-top-item mb-1 pt-1">
-                                                    <span class="">{{ trans('base.products_price_discount') }}: </span>
-                                                    <span class="text-nowrap price-discount"></span>
-                                                </div>
-                                                <div class="info-top-item pb-3 normal-total pt-1">
-                                                    <span class="total-title-delivery">{{ trans('base.products_price_total') }}: </span>
-                                                    <span class="text-nowrap total-price-delivery"></span>
-                                                </div>
-                                            </div>
-                                            <hr class="pb-2">
-
-                                            <div class="total-info-bottom">
-
-                                                <div class="agreement-wrapper">
-                                                    <div class="custom-control custom-checkbox position-relative art-checkout-agreement">
-                                                        <input type="hidden" name="agreement" value="0">
-                                                        <input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1">
-                                                        <label for="checkout-order-info-form-check">{{ trans('base.checkout_by_confirm_i_agree') }}
-                                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ mb_strtolower(trans('base.conditions')) }}</a>
-                                                        </label>
-                                                    </div>
-                                                    @error('agreement')
-                                                    <div class="row">
-                                                        <div class="col-12 text-danger">
-                                                            {{ $message }}
-                                                        </div>
-                                                    </div>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="buttons-wrapper">
-                                                    <button type="submit" class="btn btn-main w-100 mb-4" id="submit-button">{{ trans('base.checkout_confirm_order') }}</button>
-                                                    <div id="loader" class="text-center" style="display: none;">
-                                                        <span class="loader"></span>
-                                                    </div>
-
-                                                    <div class="info-top-pay text-center d-flex flex-column flex-lg-row justify-content-center mb-lg-6">
-                                                        <div class="pay-title mr-lg-2 mb-2 mb-lg-0">{{ trans('base.payments_methods') }}:</div>
-                                                        <div class="pay-list d-flex align-items-center justify-content-center">
-                                                            <div class="pay-list-item overflow-hidden d-flex align-items-center justify-content-center">
-                                                                <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa">
-                                                            </div>
-                                                            <div class="pay-list-item overflow-hidden d-flex align-items-center justify-content-center">
-                                                                <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard">
-                                                            </div>
-                                                            <div class="pay-list-item overflow-hidden d-flex align-items-center justify-content-center">
-                                                                <img src="{{ Vite::asset('resources/img/payment/cash.svg') }}" alt="Cash">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="info-bottom-title mb-7 text-center d-none">
-                                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}">{{ trans('base.checkout_apply_promo_code') }}</a>
-                                                    </div>
-                                                </div>
-
-                                                @if( !is_null(old('delivery_type_id')) && old('delivery_type_id') != App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY )
-                                                    @error('phone')
-                                                    <div class="row">
-                                                        <div class="col-12 text-danger">
-                                                            {{ $message }}
-                                                        </div>
-                                                    </div>
-                                                    @enderror
-                                                    @error('unknown_error')
-                                                    <div class="row">
-                                                        <div class="col-12 text-danger">
-                                                            {{ $message }}
-                                                        </div>
-                                                    </div>
-                                                    @enderror
-                                                @endif
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
+                <section class="bona-checkout-step bona-checkout-step--comment"><div class="bona-field"><label for="checkout-comment">{{ trans('base.checkout_order_comment') }}</label><textarea id="checkout-comment" name="comment" rows="4" maxlength="2000" placeholder="{{ trans('base.checkout_order_comment_placeholder') }}">{{ old('comment') }}</textarea></div></section>
             </div>
-        </div>
-    </main>
+
+            <aside class="bona-order-summary bona-checkout-summary">
+                <div class="bona-checkout-summary__head">
+                    <div><p class="bona-commerce-kicker">{{ trans('base.checkout_summary_label') }}</p><h2>{{ trans_choice('base.checkout_summary_products', $productsCount, ['count' => $productsCount]) }}</h2></div>
+                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}">{{ trans('base.checkout_edit_order') }}</a>
+                </div>
+                <div class="bona-checkout-items">
+                    @foreach($productsInCart as $product)
+                        @php
+                            $unitPrice = (float) $product->pivot->price + (float) ($product->pivot->attributes_price ?? 0);
+                            $imageUrl = $product->pivot->current_image_path ? '/storage/'.$product->pivot->current_image_path : $product->main_image_url;
+                        @endphp
+                        <a class="bona-checkout-item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}">
+                            <span class="bona-checkout-item__image"><img src="{{ $imageUrl }}" alt="{{ $product->name }}"></span>
+                            <span class="bona-checkout-item__body"><b>{{ $product->name }}</b><small>{{ $product->pivot->count }} × {{ $formatPrice($unitPrice) }}</small></span>
+                            <strong>{{ $formatPrice($unitPrice * $product->pivot->count) }}</strong>
+                        </a>
+                    @endforeach
+                </div>
+                <div class="bona-summary-lines">
+                    <div class="bona-summary-line"><span>{{ trans('base.products_price') }}</span><strong class="price-products">{{ $formatPrice($initialSummary['products']) }}</strong></div>
+                    <div class="bona-summary-line"><span>{{ trans('base.delivery') }}</span><strong class="price-delivery">{{ $initialSummary['is_carrier'] ? trans('base.cart_delivery_price') : $formatPrice($initialSummary['delivery']) }}</strong></div>
+                    <div class="bona-summary-line bona-summary-line--discount" data-checkout-discount-row @hidden($initialSummary['discount'] <= 0)><span>{{ trans('base.products_price_discount') }}@if($promoCode) · {{ $promoCode->code }}@endif</span><strong class="price-discount">−{{ $formatPrice($initialSummary['discount']) }}</strong></div>
+                    <div class="bona-summary-line bona-summary-line--total"><span>{{ trans('base.products_price_total') }}</span><strong class="total-price-delivery">{{ $formatPrice($initialSummary['total']) }}</strong></div>
+                </div>
+                <div class="bona-checkout-summary__selection"><p>{{ trans('base.checkout_payment') }}: <span class="selected-payment-type">{{ $selectedPaymentLabel }}</span></p><p>{{ trans('base.delivery') }}: <span class="selected-delivery-type">{{ $selectedDeliveryLabel }}</span></p></div>
+                <label class="bona-consent @error('agreement') has-error @enderror" for="checkout-order-info-form-check">
+                    <input type="hidden" name="agreement" value="0"><input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1" @checked((bool) old('agreement')) required>
+                    <span>{{ trans('base.checkout_by_confirm_i_agree') }} <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ mb_strtolower(trans('base.conditions')) }}</a></span>
+                </label>
+                @error('agreement')<p class="bona-consent-error">{{ $message }}</p>@enderror
+                <button type="submit" class="bona-button bona-button--light bona-button--full" id="submit-button"><span>{{ trans('base.checkout_confirm_order') }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <div id="loader" class="bona-checkout-loader" role="status" hidden>{{ trans('base.checkout_processing') }}</div>
+                <p class="bona-summary-note">{{ trans('base.checkout_summary_note') }}</p>
+                <div class="bona-payment-marks" aria-label="{{ trans('base.payments_methods') }}"><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa"><img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard"><span>LiqPay</span></div>
+            </aside>
+        </form>
+    </div>
 @endsection

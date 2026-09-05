@@ -15,6 +15,7 @@ const routes = {
         product_update_route: '{{ route('store.cart.change-product-count', ['productSlug' => 'PRODUCT_SLUG']) }}',
         product_delete_route: '{{ route('store.cart.delete-product', ['productSlug' => 'PRODUCT_SLUG']) }}',
         promo_code_add_route: '{{ route('store.cart.add-promo-code') }}',
+        promo_code_remove_route: '{{ route('store.cart.remove-promo-code') }}',
         summary_with_delivery_route: '{{ route('store.cart.summary-with-delivery') }}',
     },
     email: {
@@ -78,6 +79,11 @@ const translations = {
     storefront_search_retry: '@lang('base.storefront_search_retry')',
     checkout_search_np_department: '@lang('base.checkout_search_np_department')',
     checkout_search_np_department_not_found: '@lang('base.checkout_search_np_department_not_found')',
+    promo_code_required: '@lang('base.promo_code_required')',
+    count_of_products: '@lang('base.count_of_products')',
+    decrease_quantity: '@lang('base.decrease_quantity')',
+    increase_quantity: '@lang('base.increase_quantity')',
+    cart_unit_price: '@lang('base.cart_unit_price')',
 };
 
 const store = {

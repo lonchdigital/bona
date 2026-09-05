@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Cart;
+use App\Models\PromoCode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
@@ -58,5 +59,32 @@ class GuestCartSurvivesTest extends TestCase
             Cart::whereNotNull('user_id')->count(),
             'Після входу кошик, зібраний гостем, має належати цьому акаунту.'
         );
+    }
+
+    public function test_a_promo_applied_before_signing_in_moves_with_the_guest_cart(): void
+    {
+        $product = $this->makeProduct();
+        $user = $this->author();
+        $promo = PromoCode::create([
+            'code' => 'WELCOME-10',
+            'discount' => 10,
+            'discount_type' => PromoCode::TYPE_PERCENT,
+            'discount_value' => 10,
+            'is_active' => true,
+            'all_products' => true,
+            'minimum_order_amount' => 0,
+        ]);
+
+        $this->addToCart($product->slug)->assertOk();
+        $this->postJson(route('store.cart.add-promo-code'), ['code' => 'welcome-10'])->assertOk();
+
+        $this->keepCookies($this->post(route('auth.sign-in'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ]));
+
+        $userCart = Cart::where('user_id', $user->id)->firstOrFail();
+        $this->assertSame($promo->id, $userCart->promo_code_id);
+        $this->assertSame(1, $userCart->products()->count());
     }
 }

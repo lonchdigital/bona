@@ -1,152 +1,85 @@
 @extends('layouts.store-main')
 
-@section('title')
-    <title>{{ config('app.name') . ' - ' . trans('base.cart') }}</title>
-    <meta name="robots" content="noindex, nofollow" />
-@endsection
+@section('body_class', 'bona-commerce-body')
+@section('seo_title', trans('base.cart').' — Bona Doors')
+@section('meta_description', trans('base.cart_meta_description'))
+
+@push('head')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
 
 @section('content')
+    <div class="bona-commerce-page bona-cart-page">
+        <x-store.content-breadcrumbs :items="[['label' => trans('base.cart')]]" />
 
-    @include('pages.store.partials.page_header', ['links' => ['#' => 'cart']])
+        <section class="bona-commerce-hero" aria-labelledby="cart-page-title">
+            <div class="bona-shell bona-commerce-hero__grid">
+                <div>
+                    <p class="bona-commerce-kicker">{{ trans('base.cart_kicker') }}</p>
+                    <h1 id="cart-page-title">{{ trans('base.cart') }}</h1>
+                </div>
+                <p>{{ trans('base.cart_intro') }}</p>
+            </div>
+        </section>
 
-    <main id="page-cart" class="page-cart">
-        <div class="content">
-            <div class="entry-content common-page-section-wrapper art-section-pd">
-                <div class="container">
-
-                    <div class="row">
-                        <header class=" col-12 art-header-left">
-                            <div>
-                                <h1 class="title">{{ trans('base.cart') }}</h1>
-                            </div>
-                        </header>
-                    </div>
-
-                    <div class="art-cart-products-wrapper">
-                        <div id="basket-list-product" class="basket-list-product">
-                            <div class="list-product-table">
-
-                                <div class="table-head mb-8 d-none d-xl-block">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="table-title">{{ trans('base.name_of_product') }}</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <div class="table-title">{{ trans('base.price_per_product') }}</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="table-title">{{ trans('base.count_of_products') }}</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="table-title text-right">{{ trans('base.price') }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col cart-page-products-list">
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-                    </div>
-
-
-                    <div class="art-cart-bottom">
-                        <div id="basket-total-info" class="row">
-
-                            <div class="col-lg-8">
-                                <div class="total-info-left">
-                                    <div class="info-bottom-title mb-3 text-center">
-                                        {{ trans('base.enter_promo_code') }}
-                                    </div>
-                                    <div class="info-bottom-form mt-3">
-                                        <form id="promo-code-form">
-                                            <div class="d-flex">
-                                                <input type="text" name="code" class="form-control" placeholder="{{ trans('base.your_promo_code') }}">
-                                                <button type="button" class="btn btn-dark ml-1 add-promo-code-button">{{ trans('base.enter') }}</button>
-                                            </div>
-                                            <div class="success-text text-success d-none">{{ trans('base.promo_code_add_success') }}</div>
-                                            <div class="error-text text-danger"></div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <div class="total-info-right">
-
-                                    <div class="info-top-count d-none d-lg-block mb-2 py-3 px-5">
-                                        {!! trans('base.products_in_cart') !!}
-                                    </div>
-                                    {{-- TODO:: hided temporary
-                                    <div class="info-top-delivery text-center d-none d-lg-flex mb-3">
-                                        <div class="btn-free-shiping font-weight-bold d-none">
-                                            <img src="{{ Vite::asset('resources/img/gift-box-delivery.png') }}" alt="{{ trans('base.free_shipment') }}">
-                                            <span class="ml-3">
-                                                {{ trans('base.free_shipment') }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    --}}
-                                    <div class="info-top-prices mb-6">
-                                        <div class="info-top-item py-3 px-5">
-                                            <span class="">{{ trans('base.products_price') }}: </span>
-                                            <span class="text-nowrap price-products"></span>
-                                        </div>
-
-                                        {{-- TODO:: hided temporary
-                                        <div class="info-top-item py-3 px-5">
-                                            <span class="mr-6 total-title-delivery">{{ trans('base.products_price_discount') }}</span>
-                                            <span class="text-nowrap price-discount"></span>
-                                        </div>
-                                        --}}
-                                        <div class="info-top-item py-3 px-5">
-                                            <span class="total-title-delivery">{{ trans('base.products_price_total') }}: </span>
-                                            <span class="text-nowrap total-price-delivery"></span>
-                                        </div>
-
-                                        <div class="info-top-item py-3 px-5">
-                                            <span class="">{{ trans('base.delivery') }}</span>
-                                            <span class="">
-                                                <span class="text-nowrap price-delivery">{{ trans('base.cart_delivery_price') }}</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="art-cart-checkout-button btn btn-main w-100 mb-5 mb-lg-9 d-none">{{ trans('base.make_order') }}</a>
-                                    <div class="info-top-pay text-center">
-                                        <div class="pay-title">{{ trans('base.payments_methods') }}:</div>
-                                        <div class="pay-list d-flex align-items-center justify-content-center">
-                                            <div class="pay-list-item bg-white overflow-hidden d-flex align-items-center justify-content-center">
-                                                <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa">
-                                            </div>
-                                            <div class="pay-list-item bg-white overflow-hidden d-flex align-items-center justify-content-center">
-                                                <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard">
-                                            </div>
-                                            <div class="pay-list-item bg-white overflow-hidden d-flex align-items-center justify-content-center">
-                                                <img src="{{ Vite::asset('resources/img/payment/cash.svg') }}" alt="Cash">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- upsale here -->
+        <div class="bona-shell bona-commerce-layout" data-cart-page>
+            <section aria-label="{{ trans('base.products_in_cart_label') }}">
+                <div class="bona-cart-list cart-page-products-list" data-cart-list aria-live="polite">
+                    <div class="bona-cart-loading" data-cart-loading><span></span><span></span></div>
                 </div>
 
-            </div>
+                <div class="bona-cart-empty" data-cart-empty hidden>
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                        <path d="M18 23h31l-4 21H22L18 23Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M13 16h4l5 28M26 51a3 3 0 1 0 0 .1M42 51a3 3 0 1 0 0 .1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <h2>{{ trans('base.cart_empty_title') }}</h2>
+                    <p>{{ trans('base.cart_empty_text') }}</p>
+                    <a class="bona-button bona-button--dark" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}">{{ trans('base.wish_list_go_to_catalog') }}</a>
+                </div>
+
+                <article class="bona-service-offer" data-cart-service-offer>
+                    <div>
+                        <h2>{{ trans('base.cart_measure_title') }}</h2>
+                        <p>{{ trans('base.cart_measure_text') }}</p>
+                    </div>
+                    <a class="bona-button bona-button--dark" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.service.page', ['serviceSlug' => 'vyklyk-maistra']) }}">{{ trans('base.cart_measure_cta') }}</a>
+                </article>
+            </section>
+
+            <aside class="bona-order-summary" data-cart-summary>
+                <p class="bona-commerce-kicker">{{ trans('base.cart_summary') }}</p>
+                <h2>{{ trans('base.cart_to_pay') }}</h2>
+
+                <div class="bona-summary-lines">
+                    <div class="bona-summary-line"><span>{{ trans('base.products_price') }}</span><strong class="price-products" data-summary-subtotal>—</strong></div>
+                    <div class="bona-summary-line"><span>{{ trans('base.delivery') }}</span><strong>{{ trans('base.cart_delivery_next') }}</strong></div>
+                    <div class="bona-summary-line bona-summary-line--discount" data-summary-discount-row hidden><span>{{ trans('base.products_price_discount') }}</span><strong class="price-discount" data-summary-discount>—</strong></div>
+                    <div class="bona-summary-line bona-summary-line--total"><span>{{ trans('base.products_price_total') }}</span><strong class="total-price-delivery" data-summary-total>—</strong></div>
+                </div>
+
+                <form class="bona-promo-form" id="promo-code-form" data-promo-form novalidate>
+                    <label class="sr-only" for="cart-promo-code">{{ trans('base.your_promo_code') }}</label>
+                    <div class="bona-promo-form__control">
+                        <input id="cart-promo-code" type="text" name="code" maxlength="64" autocomplete="off" placeholder="{{ trans('base.your_promo_code') }}">
+                        <button type="submit" class="add-promo-code-button" aria-label="{{ trans('base.cart_apply_promo') }}">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                    <div class="bona-promo-form__applied" data-promo-applied hidden><span data-promo-applied-label></span><button type="button" data-promo-remove>{{ trans('base.cart_remove_promo') }}</button></div>
+                    <p class="success-text" data-promo-success hidden>{{ trans('base.promo_code_add_success') }}</p>
+                    <p class="error-text" data-promo-error role="alert"></p>
+                </form>
+
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="bona-button bona-button--light bona-button--full art-cart-checkout-button" data-checkout-link>{{ trans('base.make_order') }}</a>
+                <p class="bona-summary-note">{{ trans('base.cart_summary_note') }}</p>
+
+                <div class="bona-payment-marks" aria-label="{{ trans('base.payments_methods') }}">
+                    <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa">
+                    <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard">
+                    <span>LiqPay</span>
+                </div>
+            </aside>
         </div>
-    </main>
+    </div>
 @endsection

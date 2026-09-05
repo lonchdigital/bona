@@ -8,6 +8,26 @@ const $art_cart_checkout_button = $('.art-cart-checkout-button');
 let cartDrawerCloseTimer = null;
 let cartSuccessTimer = null;
 
+function isCartPage()
+{
+    return page === 'store.cart.page' || page === 'localized.store.cart.page';
+}
+
+function escapeHTML(value)
+{
+    return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+function formatMoney(value)
+{
+    return `${Math.round(Number(value) || 0).toLocaleString(locale === 'ru' ? 'ru-RU' : 'uk-UA')} ${store.base_currency_name_short}`;
+}
+
 function closeCartDrawer({ restoreFocus = true } = {})
 {
     const root = document.querySelector('[data-cart-drawer-root]');
@@ -148,7 +168,7 @@ export default {
 
                 drawProductsInCartWindowHTML(data);
 
-                if (page === 'store.cart.page') {
+                if (isCartPage()) {
                     drawProductsInCartPageHTML(data);
                 }
             },
@@ -466,35 +486,58 @@ export default {
         /*************************   Change Price on WEB END   *************************/
 
 
-        if (page === 'store.cart.page') {
+        if (isCartPage()) {
             const promoCodeForm = $('#promo-code-form');
             const promoCodeInput = promoCodeForm.find('input[name="code"]');
             const promoCodeSubmitButton = promoCodeForm.find('.add-promo-code-button');
-            const promoCodeErrorText = promoCodeForm.find('.error-text');
-            const promoCodeSuccessText = promoCodeForm.find('.success-text');
+            const promoCodeErrorText = promoCodeForm.find('[data-promo-error]');
 
-            promoCodeSubmitButton.click(function (event) {
+            promoCodeForm.on('submit', function (event) {
                 event.preventDefault();
 
                 promoCodeErrorText.text('');
+                const code = promoCodeInput.val().trim();
+
+                if (!code) {
+                    promoCodeErrorText.text(translations.promo_code_required);
+                    promoCodeInput.trigger('focus');
+                    return;
+                }
+
+                promoCodeSubmitButton.prop('disabled', true).attr('aria-busy', 'true');
 
                 addPromoCode(
-                    promoCodeInput.val(),
+                    code,
                     function (data) {
-                        promoCodeSuccessText.removeClass('d-none');
-
                         drawProductsInCartWindowHTML(data);
                         drawProductsInCartPageHTML(data);
-
-                        promoCodeSubmitButton.attr('disabled', true);
-                        promoCodeInput.attr('disabled', true);
                     },
                     function (data) {
                         if(data.hasOwnProperty('responseJSON') && data.responseJSON.hasOwnProperty('message')) {
                             promoCodeErrorText.text(data.responseJSON.message);
+                        } else if (data.responseJSON?.errors?.code?.[0]) {
+                            promoCodeErrorText.text(data.responseJSON.errors.code[0]);
                         } else {
                             promoCodeErrorText.text(translations.action_unexpected_error);
                         }
+
+                        promoCodeSubmitButton.prop('disabled', false).removeAttr('aria-busy');
+                    }
+                );
+            });
+
+            promoCodeForm.on('click', '[data-promo-remove]', function () {
+                promoCodeErrorText.text('');
+                $(this).prop('disabled', true);
+
+                removePromoCode(
+                    function (data) {
+                        drawProductsInCartWindowHTML(data);
+                        drawProductsInCartPageHTML(data);
+                    },
+                    function () {
+                        promoCodeErrorText.text(translations.action_unexpected_error);
+                        promoCodeForm.find('[data-promo-remove]').prop('disabled', false);
                     }
                 );
             });
@@ -622,6 +665,16 @@ function addPromoCode(code, success, fail)
     });
 }
 
+function removePromoCode(success, fail)
+{
+    $.ajax({
+        url: routes.cart.promo_code_remove_route,
+        type: 'delete',
+        data: { _token: csrf },
+        dataType: 'json',
+    }).done(success).fail(fail);
+}
+
 //html window
 function drawProductsInCartWindowHTML(data)
 {
@@ -689,14 +742,7 @@ function drawProductsInCartWindowHTML(data)
         freeDeliveryButton.addClass('d-none');
     }
 
-    if (data.data.promo_code) {
-        const promoCodeForm = $('#promo-code-form');
-        const promoCodeInput = promoCodeForm.find('input[name="code"]');
-        const promoCodeSubmitButton = promoCodeForm.find('.add-promo-code-button');
-        promoCodeInput.val(data.data.promo_code.code);
-        promoCodeSubmitButton.attr('disabled', true);
-        promoCodeInput.attr('disabled', true);
-    }
+    renderPromoCodeState(data.data.promo_code);
 }
 
 function getProductInCartWindowHTML(productData, productAttributesHTML)
@@ -752,170 +798,147 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
 //html page
 function drawProductsInCartPageHTML(data)
 {
-    let productsToAppend = '';
-    let productAttributes = '';
-    let productAttributeClass = '';
-    data.data.products.forEach(function (product) {
+    const products = data.data.products || [];
+    const productsToAppend = products.map(function (product) {
+        return getProductInCartPageHTML(product, getProductAttributesHTML(product));
+    }).join('');
 
-        let productAttributesHTML = '<div class="product-attributes">';
+    const cartPage = $('[data-cart-page]');
+    const list = cartPage.find('[data-cart-list]');
+    const isEmpty = products.length === 0;
 
-        if( product.attributes !== 'null' && product.attributes !== null ) {
-        // if( product.attributes !== null ) {
+    list.html(productsToAppend).attr('aria-busy', 'false');
+    cartPage.find('[data-cart-empty]').prop('hidden', !isEmpty);
+    cartPage.find('[data-cart-summary]').prop('hidden', isEmpty);
+    cartPage.find('[data-cart-service-offer]').prop('hidden', isEmpty);
+    cartPage.find('[data-checkout-link]').prop('hidden', isEmpty);
 
-            productAttributes = JSON.parse(product.attributes);
+    cartPage.find('[data-summary-subtotal]').text(formatMoney(data.data.summary.products));
+    cartPage.find('[data-summary-total]').text(formatMoney(data.data.summary.total));
+    cartPage.find('[data-summary-discount]').text(`−${formatMoney(data.data.summary.discount)}`);
+    cartPage.find('[data-summary-discount-row]').prop('hidden', Number(data.data.summary.discount) <= 0);
 
-            delete productAttributes.color_id;
-
-            for (var key in productAttributes) {
-                productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
-
-                let productAttribute = productAttributes[key];
-
-                if (typeof productAttribute === 'string') {
-                    try {
-                        let productAttributeLocalName = '';
-                        productAttribute = JSON.parse(productAttribute);
-                        productAttributeLocalName = JSON.parse(productAttribute.name);
-
-                        let productAttributeOptionID = '';
-                        if (productAttribute.id) {
-                            productAttributeOptionID = '<span class="attribute-id">' + productAttribute.id + '</span>';
-                        }
-
-                        productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'">'+ productAttributeOptionID +'<span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributeLocalName[locale] +'</span></div>';
-                    } catch (e) {
-                        console.error('Cannot parse attribute.');
-                    }
-                }
-            }
-
-        }
-
-        productAttributesHTML += '</div>';
-
-        // productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
-        productsToAppend += getProductInCartPageHTML(product, productAttributesHTML);
-    });
-
-    /*if (data.data.products.length > 0) {
-        productsToAppend += '<hr class="d-lg-none">';
-    }*/
-
-
-    $('.cart-page-products-list').html(productsToAppend);
-    $('.total-info-right .price-products').text(data.data.summary.products + ' ' + store.base_currency_name_short);
-
-    $('.total-info-right .total-price-delivery').text(data.data.summary.total + ' ' + store.base_currency_name_short);
-    $('.total-info-right .price-discount').text(data.data.summary.discount + ' ' + store.base_currency_name_short);
     InputCounter.addCounterHandler($('.cart-page-products-list .counter'));
     addChangeProductCountHandlers($('.cart-page-products-list .product-count-input'));
     addDeleteProductFromCartHandlers($('.cart-page-products-list .delete-product-from-cart-button'));
-    /*if (is_auth) {
-        $('.cart-page-products-list .wrapper-wish-list').click(function (event) {
-            wishList.addWishListButtonHandlerSingleProduct(
-                $(this).find('.product-wish-list-button'),
-                function (element) {
-                    return element.closest('.cart-item').find('input[name="product_slug"]').val();
-                },
-                event,
-            )
-        });
-    }*/
-
-    const freeDeliveryButton = $('.total-info-right .btn-free-shiping');
-
-    if (data.data.has_free_delivery && freeDeliveryButton.hasClass('d-none')) {
-        freeDeliveryButton.removeClass('d-none');
-    } else if(!data.data.has_free_delivery && !freeDeliveryButton.hasClass('d-none')) {
-        freeDeliveryButton.addClass('d-none');
-    }
-
-    $('.products-in-cart').text(data.data.products.length);
+    renderPromoCodeState(data.data.promo_code);
 }
 
 function getProductInCartPageHTML(productData, productAttributesHTML)
 {
-    let artProductPrice = 0;
-    if(productData.attributes_price > 0) {
-        artProductPrice = (productData.attributes_price * productData.count) + productData.price;
-    } else {
-        artProductPrice = productData.price
-    }
+    const productCurrentImageUrl = productData.current_image_path
+        ? `/storage/${productData.current_image_path}`
+        : productData.main_image_url;
+    const meta = [productData.brand_name, productData.availability].filter(Boolean).join(' · ');
 
-    let productCurrentImageUrl;
-    if( productData.current_image_path !== null) {
-        productCurrentImageUrl = "/storage/" + productData.current_image_path;
-    } else {
-        productCurrentImageUrl = productData.main_image_url;
-    }
-
-    let productNameLocale = JSON.parse(productData.name);
     return `
-        <div class="list-product-item cart-item">
+        <article class="bona-cart-row cart-item">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
-            <div class="col-12 col-xl-6">
-                <a href="${productData.link}" class="table-product d-flex align-items-center">
-                    <div class="table-product-image mr-3 d-block">
-                        <img src="${productCurrentImageUrl}" alt="img">
+            <a href="${escapeHTML(productData.link)}" class="bona-cart-row__image">
+                <img src="${escapeHTML(productCurrentImageUrl)}" alt="${escapeHTML(productData.display_name)}" loading="lazy" decoding="async">
+            </a>
+            <div class="bona-cart-row__body">
+                ${meta ? `<p class="bona-cart-row__meta">${escapeHTML(meta)}</p>` : ''}
+                <h2><a href="${escapeHTML(productData.link)}">${escapeHTML(productData.display_name)}</a></h2>
+                ${productAttributesHTML}
+                <div class="bona-cart-row__controls">
+                    <div class="custom-control-number bona-qty-control" aria-label="${escapeHTML(translations.count_of_products)}">
+                        <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}">−</button>
+                        <input type="number" class="product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
+                        <button class="counter plus" type="button" aria-label="${escapeHTML(translations.increase_quantity)}">+</button>
                     </div>
-                    <div class="table-product-info d-block">
-                        <div class="table-price mb-3 text-right d-lg-none">
-                            ${productData.price} ${store.base_currency_name_short}
-                        </div>
-                        ${productData.sku !== null ? `<div class="table-product-code mb-2">${translations.sku} <span>${productData.sku}</span></div>` : ''}
-                        <div class="table-product-name h4 mb-0 d-block">
-                            ${productNameLocale[locale]}
-                        </div>
-                        ${productAttributesHTML}
-                    </div>
-                </a>
-            </div>
-            <div class="col-12 col-xl-6 d-flex align-items-center">
-                <div class="list-product-right">
-                    <div class="row align-items-center">
-                        <div class="col d-none d-lg-block">
-                            <div class="table-price">
-                                 ${productData.price_per_product_with_attributes} ${store.base_currency_name_short}
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="table-count position-relative">
-                                <div class="custom-control-number custom-control-number--cart">
-                                    <span class="counter minus"></span>
-                                    <input type="number" class="form-control product-count-input" min="1" value="${productData.count}">
-                                    <span class="counter plus"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col d-none d-lg-block">
-                            <div class="table-total-price position-relative text-right">
-                                <div class="price">
-                                    ${artProductPrice} ${store.base_currency_name_short}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-end list-product-r-b art-delete-button">
-
-                        <div class="col-auto item">
-                            <div class="link-wrapper">
-                                <a href="#" class="link-wish-list delete-product-from-cart-button">
-                                    <span class="wrapper-wish-list">
-                                        <div class="i-item-delete">
-                                            <svg>
-                                                <use xlink:href="${iconUrl}#i-item-delete"></use>
-                                            </svg>
-                                        </div>
-                                        <span class="ml-2">${translations.delete}</span>
-                                    </span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="bona-remove-link delete-product-from-cart-button" type="button">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>${escapeHTML(translations.delete)}</span>
+                    </button>
                 </div>
             </div>
-        </div>
+            <div class="bona-cart-row__price">
+                <strong>${formatMoney(productData.line_total)}</strong>
+                <small>${escapeHTML(translations.cart_unit_price)}</small>
+            </div>
+        </article>
     `;
+}
+
+function getProductAttributesHTML(productData)
+{
+    let attributes;
+
+    try {
+        attributes = typeof productData.attributes === 'string'
+            ? JSON.parse(productData.attributes)
+            : productData.attributes;
+    } catch (_) {
+        attributes = null;
+    }
+
+    if (!attributes || typeof attributes !== 'object') {
+        return '<div class="product-attributes bona-cart-row__config"></div>';
+    }
+
+    const lines = [];
+    const colorId = attributes.color_id;
+    const colorName = attributes.color_name;
+
+    if (colorId !== undefined && colorId !== null) {
+        lines.push(attributeLine('color_name', colorId, colorName || ''));
+    }
+
+    Object.entries(attributes).forEach(([key, value]) => {
+        if (key === 'color_id' || key === 'color_name' || value === null) return;
+
+        try {
+            const option = typeof value === 'string' ? JSON.parse(value) : value;
+            if (!option || option.id === undefined) return;
+            let names = option.name;
+            if (typeof names === 'string') names = JSON.parse(names);
+            const label = typeof names === 'object' ? (names[locale] || names.uk || names.ru || '') : names;
+            lines.push(attributeLine(key, option.id, label));
+        } catch (_) {
+            // Historical cart rows can contain deleted options. Keep the line
+            // editable without exposing broken JSON to the page.
+        }
+    });
+
+    return `<div class="product-attributes bona-cart-row__config">${lines.join('')}</div>`;
+}
+
+function attributeLine(key, id, label)
+{
+    return `<span class="product-attribute-line">
+        <span class="bona-cart-attribute-meta attribute-key">${escapeHTML(key)}</span>
+        <span class="bona-cart-attribute-meta attribute-id">${escapeHTML(id)}</span>
+        <span class="attribute-value">${escapeHTML(label)}</span>
+    </span>`;
+}
+
+function renderPromoCodeState(promoCode)
+{
+    const form = $('#promo-code-form');
+    if (!form.length) return;
+
+    const input = form.find('input[name="code"]');
+    const submit = form.find('.add-promo-code-button');
+    const applied = form.find('[data-promo-applied]');
+    const success = form.find('[data-promo-success]');
+
+    submit.prop('disabled', false).removeAttr('aria-busy');
+    form.find('[data-promo-remove]').prop('disabled', false);
+    form.find('[data-promo-error]').text('');
+
+    if (promoCode) {
+        input.val(promoCode.code).prop('disabled', true);
+        form.find('[data-promo-applied-label]').text(`${promoCode.code} · ${promoCode.label}`);
+        applied.prop('hidden', false);
+        success.prop('hidden', false);
+        form.find('.bona-promo-form__control').prop('hidden', true);
+    } else {
+        input.val('').prop('disabled', false);
+        applied.prop('hidden', true);
+        success.prop('hidden', true);
+        form.find('.bona-promo-form__control').prop('hidden', false);
+    }
 }
 
 
@@ -941,7 +964,7 @@ function addChangeProductCountHandlers(elements)
             function (data) {
                 drawProductsInCartWindowHTML(data);
 
-                if (page === 'store.cart.page') {
+                if (isCartPage()) {
                     drawProductsInCartPageHTML(data);
                 }
             },
@@ -980,7 +1003,7 @@ function addDeleteProductFromCartHandlers(elements)
 
                 drawProductsInCartWindowHTML(data);
 
-                if (page === 'store.cart.page') {
+                if (isCartPage()) {
                     drawProductsInCartPageHTML(data);
                 }
             },

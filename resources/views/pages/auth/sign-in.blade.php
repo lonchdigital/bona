@@ -22,6 +22,9 @@
                             <h1 class="mt-5 text-center">{{ trans('auth.sign_in') }}</h1>
                             <form action="{{ route('auth.sign-in') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
                                 @csrf
+                                @if(request('redirect_to') || old('redirect_to'))
+                                    <input type="hidden" name="redirect_to" value="{{ old('redirect_to', request('redirect_to')) }}">
+                                @endif
                                 <div class="form-group">
                                     <input id="email" class="fstElement" placeholder="{{ trans('auth.email_placeholder') }}" type="text" name="email" value="{{ old('email') }}"/>
                                     @error('email')

@@ -12,6 +12,8 @@ class PaymentTypesDataClass implements BaseDataClass
 
     const CARD_PAYMENT_PAYPART_MONO_BANK = 4;
 
+    const INVOICE_PAYMENT = 5;
+
     public static function get(?int $item = null): mixed
     {
         $collection = collect([
@@ -33,6 +35,10 @@ class PaymentTypesDataClass implements BaseDataClass
                 'id' => self::CARD_PAYMENT_PAYPART_MONO_BANK,
                 'name' => trans('base.checkout_payment_paypart_mono_bank'),
                 'internal_name' => 'PP mono',
+            ], [
+                'id' => self::INVOICE_PAYMENT,
+                'name' => trans('base.checkout_payment_invoice'),
+                'internal_name' => 'invoice',
             ],
         ]);
 

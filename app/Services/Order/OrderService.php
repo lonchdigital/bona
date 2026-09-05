@@ -23,6 +23,7 @@ use App\Services\Order\DTO\CheckoutConfirmOrderDTO;
 use App\Services\Order\DTO\OrderFilterDTO;
 use App\Services\Order\DTO\UpdateOrderDTO;
 use App\Services\Pricing\PricingService;
+use App\Services\PromoCode\PromoCodeService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -31,6 +32,7 @@ class OrderService extends BaseService
     public function __construct(
         private readonly DeliveryService $deliveryService,
         private readonly PricingService $pricingService,
+        private readonly PromoCodeService $promoCodeService,
     ) {}
 
     public function getOrdersPaginated(OrderFilterDTO $request)
@@ -51,13 +53,25 @@ class OrderService extends BaseService
             if ($cart->promo_code_id) {
                 $promoCode = PromoCode::query()->lockForUpdate()->find($cart->promo_code_id);
 
-                if (! $promoCode || $promoCode->is_used) {
+                if (! $promoCode) {
                     throw ValidationException::withMessages([
                         'promo_code' => trans('base.promo_code_already_used'),
                     ]);
                 }
 
-                $promoCode->update(['is_used' => true]);
+                $validation = $this->promoCodeService->validateForCart($promoCode, $cart);
+                if (! $validation->isSuccess()) {
+                    throw ValidationException::withMessages([
+                        'promo_code' => $validation->getMessage(),
+                    ]);
+                }
+
+                $usageCount = (int) $promoCode->usage_count + 1;
+                $usageLimit = $promoCode->effectiveUsageLimit();
+                $promoCode->update([
+                    'usage_count' => $usageCount,
+                    'is_used' => $usageLimit !== null && $usageCount >= $usageLimit,
+                ]);
             }
 
             $newUserCreated = false;

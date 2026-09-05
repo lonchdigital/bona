@@ -5,15 +5,21 @@ namespace App\Services\Pricing;
 use App\DataClasses\DeliveryTypesDataClass;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\PromoCode;
+use App\Services\PromoCode\PromoCodeService;
 use Illuminate\Support\Enumerable;
 
 class PricingService
 {
+    public function __construct(
+        private readonly PromoCodeService $promoCodeService,
+    ) {}
+
     public function forCart(Cart $cart, ?int $deliveryTypeId = null): array
     {
         return $this->calculate(
             $cart->products,
-            $cart->promoCode?->discount,
+            $cart->promoCode,
             $deliveryTypeId,
         );
     }
@@ -22,12 +28,12 @@ class PricingService
     {
         return $this->calculate(
             $order->products,
-            $order->promoCode?->discount,
+            $order->promoCode,
             $order->delivery_type_id,
         );
     }
 
-    private function calculate(Enumerable $products, ?int $discountPercent, ?int $deliveryTypeId): array
+    private function calculate(Enumerable $products, ?PromoCode $promoCode, ?int $deliveryTypeId): array
     {
         $productsInCents = 0;
 
@@ -37,8 +43,9 @@ class PricingService
             $productsInCents += $unitPriceInCents * max(0, (int) $product->pivot->count);
         }
 
-        $discountPercent = max(0, min(100, (int) ($discountPercent ?? 0)));
-        $discountInCents = (int) round($productsInCents * $discountPercent / 100);
+        $discountInCents = $promoCode
+            ? $this->toCents($this->promoCodeService->discount($promoCode, $products))
+            : 0;
 
         $freeDeliveryThresholdInCents = $this->toCents((float) config('domain.free_delivery_from_price', 0));
         $hasFreeDelivery = $freeDeliveryThresholdInCents > 0

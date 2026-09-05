@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\DataClasses\DeliveryTypesDataClass;
+use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\OrderStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
@@ -217,6 +218,24 @@ class CheckoutTest extends TestCase
             'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART,
             'payment_period' => 3,
         ])->assertSessionHasNoErrors();
+    }
+
+    public function test_an_invoice_order_is_recorded_as_unpaid_and_sent_to_the_confirmation_page(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct(['price' => 7600]);
+
+        $this->addToCart($product->slug)->assertOk();
+        $response = $this->confirm([
+            'payment_type_id' => PaymentTypesDataClass::INVOICE_PAYMENT,
+        ]);
+
+        $order = Order::firstOrFail();
+
+        $response->assertRedirect();
+        $this->assertStringContainsString('/checkout/'.$order->id.'/thank', $response->headers->get('Location'));
+        $this->assertSame(PaymentTypesDataClass::INVOICE_PAYMENT, (int) $order->payment_type_id);
+        $this->assertSame(OrderPaymentStatusesDataClass::STATUS_UNPAID, (int) $order->payment_status_id);
     }
 
     public function test_product_page_can_preselect_monobank_and_its_period_in_checkout(): void

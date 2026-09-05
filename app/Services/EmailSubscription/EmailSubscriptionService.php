@@ -55,6 +55,12 @@ class EmailSubscriptionService extends BaseService
             PromoCode::create([
                 'code' => $code,
                 'discount' => 15,
+                'discount_type' => PromoCode::TYPE_PERCENT,
+                'discount_value' => 15,
+                'usage_limit' => 1,
+                'usage_count' => 0,
+                'is_active' => true,
+                'all_products' => true,
             ]);
 
             Mail::to($emailSubscription->email)->send(new EmailSubscriptionConfirmedEmail($code));

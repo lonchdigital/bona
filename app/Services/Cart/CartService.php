@@ -7,7 +7,6 @@ use App\Models\CartProducts;
 use App\Models\Color;
 use App\Models\Product;
 use App\Models\ProductGalleries;
-use App\Models\PromoCode;
 use App\Models\User;
 use App\Models\WishList;
 use App\Services\Base\BaseService;
@@ -17,6 +16,7 @@ use App\Services\Cart\DTO\ChangeProductCountInCartDTO;
 use App\Services\Cart\DTO\DeleteProductFromCartDTO;
 use App\Services\Cart\DTO\GetProductsSummaryWithDeliveryDTO;
 use App\Services\Pricing\PricingService;
+use App\Services\PromoCode\PromoCodeService;
 use App\Services\WishList\WishListService;
 use Illuminate\Support\Collection;
 
@@ -25,6 +25,7 @@ class CartService extends BaseService
     public function __construct(
         private readonly WishListService $wishListService,
         private readonly PricingService $pricingService,
+        private readonly PromoCodeService $promoCodeService,
     ) {}
 
     public function getCartForGuestUser(string $token): ?Cart
@@ -95,6 +96,13 @@ class CartService extends BaseService
                     'attributes' => $product->pivot->attributes,
                     'attributes_price' => $product->pivot->attributes_price,
                 ]);
+            }
+
+            // Keep the customer's existing campaign choice when both carts
+            // have one; otherwise carry the valid code they applied before
+            // signing in together with the guest cart lines.
+            if (! $userCart->promo_code_id && $guestCart->promo_code_id) {
+                $userCart->update(['promo_code_id' => $guestCart->promo_code_id]);
             }
 
             $guestCart->products()->detach();
@@ -402,10 +410,15 @@ class CartService extends BaseService
 
     public function attachPromoCode(AddPromoCodeToCartDTO $request, Cart $cart): ServiceActionResult
     {
-        $code = PromoCode::where('code', $request->code)->first();
+        $code = $this->promoCodeService->findByCode($request->code);
 
-        if ($code->is_used) {
-            return ServiceActionResult::make(false, trans('base.promo_code_already_used'));
+        if (! $code) {
+            return ServiceActionResult::make(false, trans('base.promo_code_invalid'));
+        }
+
+        $result = $this->promoCodeService->validateForCart($code, $cart);
+        if (! $result->isSuccess()) {
+            return $result;
         }
 
         $cart->update([
@@ -413,6 +426,12 @@ class CartService extends BaseService
         ]);
 
         return ServiceActionResult::make(true, trans('base.promo_code_add_success'));
+    }
+
+    public function detachPromoCode(Cart $cart): void
+    {
+        $cart->update(['promo_code_id' => null]);
+        $cart->unsetRelation('promoCode');
     }
 
     public function getCartSummaryWithDelivery(GetProductsSummaryWithDeliveryDTO $request, Cart $cart, ?WishList $wishList): array

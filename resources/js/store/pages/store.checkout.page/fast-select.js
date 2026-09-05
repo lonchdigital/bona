@@ -54,8 +54,6 @@ export function init () {
             loadOnce: false,
             apiParam: 'query',
             onItemSelect: function (event, model) {
-                // console.log(model);
-                console.log(model);
                 if (model.hasOwnProperty('value')) {
                     SATCityRef = model.value;
                 }

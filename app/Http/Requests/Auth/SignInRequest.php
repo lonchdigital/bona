@@ -19,6 +19,11 @@ class SignInRequest extends BaseRequest
             'remember_me' => [
                 'nullable',
             ],
+            'redirect_to' => [
+                'nullable',
+                'string',
+                'max:2048',
+            ],
         ];
     }
 

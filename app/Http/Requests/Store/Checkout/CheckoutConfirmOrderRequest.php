@@ -52,13 +52,15 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $rules['first_name'] = [
                 'required',
                 'string',
-                'alpha',
+                'max:100',
+                'regex:/^[\pL\pM\'\x{2019}\-\s]+$/u',
             ];
 
             $rules['last_name'] = [
                 'required',
                 'string',
-                'alpha',
+                'max:100',
+                'regex:/^[\pL\pM\'\x{2019}\-\s]+$/u',
             ];
 
             $rules['phone'] = [
@@ -84,36 +86,37 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $rules['city'] = [
                 'required',
                 'string',
+                'max:150',
             ];
 
             $rules['district'] = [
                 'required',
                 'string',
-                'alpha',
+                'max:150',
             ];
 
             $rules['street'] = [
                 'required',
                 'string',
-                'alpha',
+                'max:180',
             ];
 
             $rules['building_number'] = [
                 'required',
                 'string',
-                'numeric',
+                'max:30',
             ];
 
             $rules['apartment_number'] = [
                 'nullable',
                 'string',
-                'numeric',
+                'max:30',
             ];
 
             $rules['floor_number'] = [
                 'nullable',
                 'string',
-                'numeric',
+                'max:20',
             ];
 
             $rules['has_elevator'] = [

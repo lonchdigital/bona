@@ -26,11 +26,11 @@ class AddPromoCodeToCartAction extends BaseAction
         if ($result->isSuccess()) {
             return CartResource::make($cartService->getProductsInCartWithSummary($cart, $wishList));
         } else {
-            return response(BaseActionResource::make([
+            return BaseActionResource::make([
                 'success' => $result->isSuccess(),
                 'message' => $result->getMessage(),
                 'redirect_to' => '',
-            ]))->setStatusCode(422);
+            ])->response()->setStatusCode(422);
         }
 
     }

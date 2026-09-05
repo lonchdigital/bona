@@ -129,6 +129,12 @@ use App\Http\Actions\Admin\ProductTypes\ProductTypeCreateAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeDeleteAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeEditAction;
 use App\Http\Actions\Admin\ProductTypes\ProductTypeSearchProductsAction;
+use App\Http\Actions\Admin\PromoCodes\Pages\ShowPromoCodeCreatePageAction;
+use App\Http\Actions\Admin\PromoCodes\Pages\ShowPromoCodeEditPageAction;
+use App\Http\Actions\Admin\PromoCodes\Pages\ShowPromoCodesListPageAction;
+use App\Http\Actions\Admin\PromoCodes\PromoCodeCreateAction;
+use App\Http\Actions\Admin\PromoCodes\PromoCodeDeleteAction;
+use App\Http\Actions\Admin\PromoCodes\PromoCodeEditAction;
 use App\Http\Actions\Admin\SEO\FilterGroupCreateAction;
 use App\Http\Actions\Admin\SEO\FilterGroupDeleteAction;
 use App\Http\Actions\Admin\SEO\FilterGroupEditAction;
@@ -421,6 +427,15 @@ Route::prefix('admin')->middleware([
         Route::name('admin.order.monobank.reject')->post('{order}/reject', MonoBankRejectOrderAction::class);
         Route::name('admin.order.monobank.confirm')->post('{order}/confirm', MonoBankConfirmOrderAction::class);
         Route::name('admin.order.monobank.return')->post('{order}/return', MonoBankReturnOrderAction::class);
+    });
+
+    Route::prefix('promo-codes')->group(function () {
+        Route::name('admin.promo-code.list.page')->get('/', ShowPromoCodesListPageAction::class);
+        Route::name('admin.promo-code.create.page')->get('/create', ShowPromoCodeCreatePageAction::class);
+        Route::name('admin.promo-code.create')->post('/create', PromoCodeCreateAction::class);
+        Route::name('admin.promo-code.edit.page')->get('/{promoCode}', ShowPromoCodeEditPageAction::class);
+        Route::name('admin.promo-code.edit')->post('/{promoCode}', PromoCodeEditAction::class);
+        Route::name('admin.promo-code.delete')->post('/{promoCode}/delete', PromoCodeDeleteAction::class);
     });
 
     // Products import

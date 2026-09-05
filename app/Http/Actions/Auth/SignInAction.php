@@ -37,6 +37,11 @@ class SignInAction
             if (auth()->user()->isAdmin()) {
                 return redirect()->route('admin.order.list.page');
             } else {
+                $redirectTo = $request->input('redirect_to');
+                if (is_string($redirectTo) && str_starts_with($redirectTo, '/') && ! str_starts_with($redirectTo, '//')) {
+                    return redirect()->to($redirectTo);
+                }
+
                 return redirect()->route('user.profile.orders.page');
             }
         } else {
@@ -45,6 +50,7 @@ class SignInAction
             ])->withInput([
                 'email' => $dto->email,
                 'remember_me' => $dto->rememberMe,
+                'redirect_to' => $request->input('redirect_to'),
             ]);
         }
 

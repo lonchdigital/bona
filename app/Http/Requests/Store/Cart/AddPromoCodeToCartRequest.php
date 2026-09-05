@@ -12,7 +12,8 @@ class AddPromoCodeToCartRequest extends BaseRequest
         return [
             'code' => [
                 'required',
-                'exists:promo_codes,code',
+                'string',
+                'max:64',
             ],
         ];
     }
