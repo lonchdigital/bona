@@ -58,14 +58,14 @@
                                             {{ trans('base.color') }}
                                         </div>
                                         <div class="filter-content">
-                                            <div id="art-filter-color-content" class="art-filter-color-content colors-wrapper {{ count($colors) > 5 ? 'content-hidden' : 'content-expanded' }}">
+                                            <div id="art-filter-color-content" class="art-filter-color-content colors-wrapper {{ count($colors) > 24 ? 'content-hidden' : 'content-expanded' }}">
                                                 @foreach($colors as $color)
                                                     @include('pages.store.partials.color_item', ['color' => $color, 'filtersData' => $filtersData])
                                                 @endforeach
                                             </div>
                                         </div>
 
-                                        @if( count($colors) > 5 )
+                                        @if( count($colors) > 24 )
                                             <div id="art-filter-color-control" class="art-filter-color-control">
                                                 <span class="art-show-colors">{{ trans('base.filter_show_more_colors') }}</span>
                                                 <span class="art-hide-colors d-none">{{ trans('base.filter_show_less_colors') }}</span>

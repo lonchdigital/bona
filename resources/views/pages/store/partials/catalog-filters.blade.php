@@ -1,4 +1,5 @@
 @php
+    $collapsedColorLimit = 24; // Twelve rows in the two-column colour grid.
     $showColorFilter = isset($colors)
         && $colors->isNotEmpty()
         && (! isset($productType) || $productType->has_color);
@@ -28,13 +29,13 @@
                 <div class="filter-box filter-item1 filter-item--colors active">
                     <div class="title font-title">{{ trans('base.color') }}</div>
                     <div class="filter-content">
-                        <div id="art-filter-color-content" class="art-filter-color-content colors-wrapper {{ $colors->count() > 5 ? 'content-hidden' : 'content-expanded' }}">
+                        <div id="art-filter-color-content" class="art-filter-color-content colors-wrapper {{ $colors->count() > $collapsedColorLimit ? 'content-hidden' : 'content-expanded' }}">
                             @foreach($colors as $color)
                                 @include('pages.store.partials.color_item', ['color' => $color, 'filtersData' => $filtersData])
                             @endforeach
                         </div>
 
-                        @if($colors->count() > 5)
+                        @if($colors->count() > $collapsedColorLimit)
                             <button id="art-filter-color-control" class="art-filter-color-control" type="button">
                                 <span class="art-show-colors">{{ trans('base.filter_show_more_colors') }}</span>
                                 <span class="art-hide-colors d-none">{{ trans('base.filter_show_less_colors') }}</span>

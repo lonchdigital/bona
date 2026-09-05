@@ -101,6 +101,23 @@ class CatalogRedesignTest extends TestCase
         );
     }
 
+    public function test_color_filter_shows_twelve_complete_rows_before_expanding(): void
+    {
+        $filters = file_get_contents(resource_path('views/pages/store/partials/catalog-filters.blade.php'));
+        $catalogStyles = file_get_contents(resource_path('scss/storefront/_catalog.scss'));
+
+        $this->assertStringContainsString('$collapsedColorLimit = 24;', $filters);
+        $this->assertStringContainsString('$colors->count() > $collapsedColorLimit', $filters);
+        $this->assertStringContainsString('grid-template-columns: repeat(2, minmax(0, 1fr));', $catalogStyles);
+        $this->assertStringContainsString('grid-auto-rows: minmax(20px, auto);', $catalogStyles);
+        $this->assertStringContainsString('max-height: 345px;', $catalogStyles);
+        $this->assertStringContainsString("padding: 3px;\n            overflow: hidden;", $catalogStyles);
+        $this->assertMatchesRegularExpression(
+            '/&\.content-expanded\s*\{[^}]*max-height:\s*none;[^}]*overflow:\s*visible;/s',
+            $catalogStyles
+        );
+    }
+
     public function test_catalog_renders_a_consultation_card_after_every_five_products(): void
     {
         config()->set('constants.ROZSUVNI_DVERI_ID', -1);
