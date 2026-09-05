@@ -38,10 +38,15 @@ class ShowCheckoutPage extends BaseAction
             ? $paymentType
             : PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT;
 
-        $deliveryType = (int) old('delivery_type_id', DeliveryTypesDataClass::ADDRESS_DELIVERY);
+        // Do not choose a delivery method on the customer's behalf. Keeping
+        // this nullable also lets the first checkout render with every detail
+        // panel collapsed and without prematurely adding address delivery to
+        // the total. Validation redirects still restore the customer's choice.
+        $oldDeliveryType = old('delivery_type_id');
+        $deliveryType = filled($oldDeliveryType) ? (int) $oldDeliveryType : null;
         $allowedDeliveryTypes = DeliveryTypesDataClass::get()->pluck('id')->map(fn ($id) => (int) $id)->all();
-        if (! in_array($deliveryType, $allowedDeliveryTypes, true)) {
-            $deliveryType = DeliveryTypesDataClass::ADDRESS_DELIVERY;
+        if ($deliveryType !== null && ! in_array($deliveryType, $allowedDeliveryTypes, true)) {
+            $deliveryType = null;
         }
 
         $privatPeriods = InstallmentPeriods::for('privatbank');

@@ -1,53 +1,115 @@
 @extends('layouts.store-main')
 
-@section('title')
-    <title>{{ config('app.name') . ' - ' . trans('base.thank_you_for_order') }}</title>
-@endsection
+@section('body_class', 'bona-commerce-body')
+@section('seo_title', trans('base.checkout_success_title').' — Bona Doors')
+@section('meta_description', trans('base.checkout_success_intro'))
+
+@push('head')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
 
 @section('content')
+    @php
+        $currency = $baseCurrency->name_short;
+        $formatPrice = fn ($amount) => number_format((float) $amount, 0, ',', ' ').' '.$currency;
+        $deliveryLabel = App\DataClasses\DeliveryTypesDataClass::get((int) $order->delivery_type_id)['name'] ?? trans('base.checkout_success_address_pending');
+        $paymentLabel = App\DataClasses\PaymentTypesDataClass::get((int) $order->payment_type_id)['name'] ?? trans('base.checkout_payment_manager_confirmation');
+        $recipientName = (int) $order->recipient_type_id === App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM
+            ? trim($order->custom_recipient_first_name.' '.$order->custom_recipient_last_name)
+            : trim(($order->user?->first_name ?? '').' '.($order->user?->last_name ?? ''));
+        $recipientPhone = (int) $order->recipient_type_id === App\DataClasses\RecipientTypesDataClass::RECIPIENT_CUSTOM
+            ? $order->custom_recipient_phone
+            : $order->user?->phone;
+        $deliveryAddress = match ((int) $order->delivery_type_id) {
+            App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY => collect([
+                $order->region?->name,
+                $order->district,
+                $order->city,
+                $order->street,
+                $order->building_number,
+                $order->apartment_number ? trans('base.checkout_apartment_number').' '.$order->apartment_number : null,
+            ])->filter()->implode(', '),
+            App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY => collect([$order->np_city, $order->np_department])->filter()->implode(', '),
+            App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY => collect([$order->sat_city, $order->sat_department])->filter()->implode(', '),
+            default => trans('base.checkout_success_address_pending'),
+        };
+        $catalogUrl = $productType
+            ? App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug])
+            : App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
+    @endphp
 
-    @include('pages.store.partials.page_header', ['links' => ['#' => 'thank_you_for_order']])
+    <main class="bona-commerce-page bona-checkout-success">
+        <x-store.content-breadcrumbs :items="[
+            ['label' => trans('base.checkout_title_short')],
+            ['label' => trans('base.checkout_success_title')],
+        ]" />
 
-    <main id="thanks" class="thanks mb-20">
-        <div class="content">
-            <div class="entry-content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 col-sm-10 col-xl-8 col-xxl-7 mx-auto">
-
-                            <div class="d-flex align-items-center justify-content-center mb-4 mt-14 mx-auto position-relative">
-                                <div class="i-congratulations mr-lg-4">
-                                    <svg>
-                                        <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-congratulations"></use>
-                                    </svg>
-                                </div>
-                                @if(!is_null($order->user))
-                                    <div class="h5 thanks-title text-center"><span>{{ $order->user->first_name }}</span>, {{ trans('base.thank_you_for_order') }}</div>
-                                @else
-                                    <div class="h5 thanks-title text-center"><span>{{ trans('base.thank_you_for_order') }}</div>
-                                @endif
-                            </div>
-                            @if(!is_null($order->user))
-                                <div class="thanks-subtitle d-flex flex-column flex-lg-row justify-content-center text-center text-lg-left mr-lg-2 mb-11">{{ trans('base.order_phone') }}:
-                                    <a href="tel:+38 (098) 123 45 67" class="d-flex align-items-center link-phone justify-content-center justify-content-sm-start mt-4 mt-lg-0 mx-auto ml-lg-0 mr-lg-0">
-                                        <svg>
-                                            <use xlink:href="{{ Vite::asset('resources/img/icon.svg') }}#i-phone"></use>
-                                        </svg>
-                                        {{ $order->user->phone }}
-                                    </a>
-                                </div>
-                            @else
-                                <div class="thanks-subtitle d-flex flex-column flex-lg-row justify-content-center text-center text-lg-left mr-lg-2 mb-11">{{ trans('base.order_success') }}</div>
-                            @endif
-
-                            <div class="d-flex align-items-center justify-content-center mb-4 mt-14 mx-auto position-relative">
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}" class="btn btn-empty color-dark">{{ trans('base.continue_shopping') }}</a>
-                            </div>
-
-                        </div>
-                    </div>
+        <section class="bona-checkout-success__hero">
+            <div class="bona-shell bona-checkout-success__hero-inner">
+                <span class="bona-checkout-success__mark" aria-hidden="true">
+                    <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m14.5 24.5 6.2 6.2 13-14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <div>
+                    <p class="bona-commerce-kicker">{{ trans('base.checkout_success_kicker') }}</p>
+                    <h1>{{ trans('base.checkout_success_title') }}</h1>
+                    <p>{{ $monoBankPending ? trans('base.checkout_success_mono_intro') : trans('base.checkout_success_intro') }}</p>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <section class="bona-shell bona-checkout-success__layout" aria-label="{{ trans('base.checkout_success_number') }}">
+            <div class="bona-checkout-success__main">
+                <div class="bona-checkout-success__reference">
+                    <div><span>{{ trans('base.checkout_success_number') }}</span><strong>#BD-{{ str_pad((string) $order->id, 6, '0', STR_PAD_LEFT) }}</strong></div>
+                    <div><span>{{ trans('base.checkout_success_date') }}</span><strong>{{ $order->created_at?->format('d.m.Y · H:i') }}</strong></div>
+                </div>
+
+                <div class="bona-checkout-success__details">
+                    <article>
+                        <span>{{ trans('base.checkout_success_recipient') }}</span>
+                        <strong>{{ $recipientName ?: trans('base.checkout_success_address_pending') }}</strong>
+                        @if($recipientPhone)<a href="tel:{{ preg_replace('/[^\d+]/', '', $recipientPhone) }}">{{ $recipientPhone }}</a>@endif
+                    </article>
+                    <article><span>{{ trans('base.checkout_success_delivery') }}</span><strong>{{ $deliveryLabel }}</strong></article>
+                    <article><span>{{ trans('base.checkout_success_address') }}</span><strong>{{ $deliveryAddress ?: trans('base.checkout_success_address_pending') }}</strong></article>
+                    <article><span>{{ trans('base.checkout_success_payment') }}</span><strong>{{ $paymentLabel }}</strong></article>
+                </div>
+
+                <div class="bona-checkout-success__items">
+                    <div class="bona-checkout-success__section-head">
+                        <h2>{{ trans('base.checkout_success_items') }}</h2>
+                        <span>{{ $order->products->sum(fn ($product) => (int) $product->pivot->count) }}</span>
+                    </div>
+                    @foreach($order->products as $product)
+                        @php $unitPrice = (float) $product->pivot->price + (float) ($product->pivot->attributes_price ?? 0); @endphp
+                        <a class="bona-checkout-success__item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}">
+                            <span><img src="{{ $product->main_image_url ?: $product->preview_image_url }}" alt="{{ $product->name }}"></span>
+                            <div><strong>{{ $product->name }}</strong><small>{{ $product->pivot->count }} × {{ $formatPrice($unitPrice) }}</small></div>
+                            <b>{{ $formatPrice($unitPrice * $product->pivot->count) }}</b>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            <aside class="bona-checkout-success__summary">
+                <p class="bona-commerce-kicker">{{ trans('base.checkout_success_total') }}</p>
+                <strong>{{ $formatPrice($orderSummary['total']) }}</strong>
+                <div><span>{{ trans('base.products_price') }}</span><b>{{ $formatPrice($orderSummary['products']) }}</b></div>
+                @if($orderSummary['discount'] > 0)
+                    <div><span>{{ trans('base.products_price_discount') }}</span><b>−{{ $formatPrice($orderSummary['discount']) }}</b></div>
+                @endif
+                <div><span>{{ trans('base.delivery') }}</span><b>{{ $orderSummary['is_carrier'] ? trans('base.cart_delivery_price') : $formatPrice($orderSummary['delivery']) }}</b></div>
+
+                <div class="bona-checkout-success__next">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v12H9l-4 4V4Zm4 5h6M9 12h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div><h2>{{ trans('base.checkout_success_next_title') }}</h2><p>{{ trans('base.checkout_success_next_text') }}</p></div>
+                </div>
+
+                <a class="bona-button bona-button--light bona-button--full" href="{{ $catalogUrl }}">
+                    <span>{{ trans('base.continue_shopping') }}</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </aside>
+        </section>
     </main>
 @endsection

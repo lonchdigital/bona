@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\ProductType;
 use App\Services\Cart\CartService;
 use App\Services\Currency\CurrencyService;
+use App\Services\Pricing\PricingService;
 
 class ShowCheckoutThankYouMonoBankPageAction extends BaseAction
 {
@@ -17,10 +18,16 @@ class ShowCheckoutThankYouMonoBankPageAction extends BaseAction
         Order $order,
         CartService $cartService,
         CurrencyService $currencyService,
+        PricingService $pricingService,
     ) {
-        return view('pages.store.checkout-thank-you-mono-bank', [
+        $order->loadMissing(['products', 'promoCode', 'region', 'user']);
+
+        return view('pages.store.checkout-thank-you', [
             'order' => $order,
+            'baseCurrency' => $currencyService->getBaseCurrency(),
             'productType' => ProductType::first(),
+            'orderSummary' => $pricingService->forOrder($order),
+            'monoBankPending' => true,
         ]);
     }
 }

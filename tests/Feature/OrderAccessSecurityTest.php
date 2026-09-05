@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\OrderStatusesDataClass;
+use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
 use App\Models\Order;
 use App\Services\Order\OrderAccessUrlService;
@@ -44,5 +45,32 @@ class OrderAccessSecurityTest extends TestCase
         $this->get(app(OrderAccessUrlService::class)->thankYou($order))
             ->assertOk()
             ->assertSee($order->user->phone);
+    }
+
+    public function test_an_unpaid_invoice_still_gets_the_successful_order_page(): void
+    {
+        $order = $this->order();
+        $order->update([
+            'payment_type_id' => PaymentTypesDataClass::INVOICE_PAYMENT,
+            'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_UNPAID,
+        ]);
+
+        $this->get(app(OrderAccessUrlService::class)->thankYou($order))
+            ->assertOk()
+            ->assertSee(trans('base.checkout_success_title'))
+            ->assertSee('#BD-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT));
+    }
+
+    public function test_an_unpaid_online_card_order_still_gets_the_payment_failure_page(): void
+    {
+        $order = $this->order();
+        $order->update([
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT,
+            'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_UNPAID,
+        ]);
+
+        $this->get(app(OrderAccessUrlService::class)->thankYou($order))
+            ->assertOk()
+            ->assertViewIs('pages.store.payment-failure');
     }
 }

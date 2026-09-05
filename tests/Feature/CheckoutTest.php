@@ -313,6 +313,41 @@ class CheckoutTest extends TestCase
         $this->assertSame(OrderPaymentStatusesDataClass::STATUS_UNPAID, (int) $order->payment_status_id);
     }
 
+    public function test_checkout_waits_for_the_customer_to_choose_delivery(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct(['price' => 5400]);
+
+        $this->addToCart($product->slug)->assertOk();
+
+        $page = $this->get(route('store.checkout.page'));
+
+        $page->assertOk();
+        $this->assertNull($page->viewData('checkoutDeliveryType'));
+        $this->assertSame(0.0, (float) $page->viewData('initialSummary')['delivery']);
+        $page->assertSee(trans('base.checkout_delivery_not_selected'));
+        $this->assertMatchesRegularExpression('/id="delivery-1"[^>]*hidden/', $page->getContent());
+        $this->assertMatchesRegularExpression('/id="delivery-2"[^>]*hidden/', $page->getContent());
+    }
+
+    public function test_checkout_renders_interactive_installment_controls_for_both_banks(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct(['price' => 12000]);
+
+        $this->addToCart($product->slug)->assertOk();
+
+        $page = $this->get(route('store.checkout.page'));
+
+        $page->assertOk();
+        $page->assertSee('data-provider="mono"', false);
+        $page->assertSee('data-provider="privat"', false);
+        $page->assertSee('data-installment-decrease', false);
+        $page->assertSee('data-installment-increase', false);
+        $page->assertSee('data-installment-terms="mono"', false);
+        $page->assertSee('data-installment-terms="privat"', false);
+    }
+
     public function test_cash_on_receipt_remains_a_separate_payment_method(): void
     {
         $this->seedCurrency();

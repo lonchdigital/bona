@@ -10,15 +10,22 @@
 
 @section('content')
     @php
-        $selectedDeliveryType = (int) old('delivery_type_id', $checkoutDeliveryType);
+        $selectedDeliveryValue = old('delivery_type_id', $checkoutDeliveryType);
+        $selectedDeliveryType = filled($selectedDeliveryValue) ? (int) $selectedDeliveryValue : null;
         $selectedPaymentType = (int) old('payment_type_id', $checkoutPaymentType);
         $selectedRecipientType = (int) old('recipient_type_id', App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER);
         $selectedPaymentLabel = App\DataClasses\PaymentTypesDataClass::get($selectedPaymentType)['name'] ?? trans('base.checkout_payment_manager_confirmation');
-        $selectedDeliveryLabel = App\DataClasses\DeliveryTypesDataClass::get($selectedDeliveryType)['name'] ?? trans('base.checkout_address_delivery');
+        $selectedDeliveryLabel = $selectedDeliveryType
+            ? (App\DataClasses\DeliveryTypesDataClass::get($selectedDeliveryType)['name'] ?? trans('base.checkout_delivery_not_selected'))
+            : trans('base.checkout_delivery_not_selected');
         $currency = $baseCurrency->name_short;
         $formatPrice = fn ($amount) => number_format((float) $amount, 0, ',', ' ').' '.$currency;
         $productsCount = $productsInCart->sum(fn ($product) => (int) $product->pivot->count);
         $signInUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page', ['redirect_to' => request()->getRequestUri()]);
+        $monoPeriods = App\Support\Payment\InstallmentPeriods::for('monobank');
+        $privatPeriods = App\Support\Payment\InstallmentPeriods::for('privatbank');
+        $selectedMonoPeriod = (int) old('mono_payment_period', $checkoutMonoPeriod);
+        $selectedPrivatPeriod = (int) old('payment_period', $checkoutPrivatPeriod);
     @endphp
 
     <div class="bona-commerce-page bona-checkout-page">
@@ -42,7 +49,7 @@
             </div>
         </div>
 
-        <form id="checkout-main" class="bona-shell bona-checkout-layout" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST" novalidate>
+        <form id="checkout-main" class="bona-shell bona-checkout-layout" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST" data-checkout-total="{{ $initialSummary['total'] }}" novalidate>
             @csrf
 
             <div class="bona-checkout-form">
@@ -79,7 +86,7 @@
 
                     <div class="bona-choice-list" id="checkout-delivery-accordion">
                         <label class="bona-choice-card">
-                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-address" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}" data-accordion="delivery-1" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)>
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-address" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}" data-accordion="delivery-1" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) required>
                             <span><b>{{ trans('base.checkout_address_delivery') }}</b><small>{{ trans('base.checkout_address_delivery_note') }}</small></span><strong>{{ $formatPrice(config('domain.delivery_price', 0)) }}</strong>
                         </label>
                         <div id="delivery-1" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)>
@@ -148,16 +155,78 @@
                         <label class="bona-choice-card"><input type="radio" id="payment-card" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT)><span><b>{{ trans('base.checkout_payment_card') }}</b><small>{{ trans('base.checkout_payment_card_note') }}</small></span><strong class="bona-payment-brand">LiqPay</strong></label>
                         <label class="bona-choice-card"><input type="radio" id="payment-invoice" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT)><span><b>{{ trans('base.checkout_payment_invoice') }}</b><small>{{ trans('base.checkout_payment_invoice_note') }}</small></span><svg class="bona-payment-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7V3Zm8 0v5h4M10 12h6M10 16h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
                         <label class="bona-choice-card"><input type="radio" id="payment-card_paypart-mono-bank" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)><span><b>{{ trans('base.checkout_payment_paypart_mono_bank') }} monobank</b><small>{{ trans('base.checkout_payment_mono_note') }}</small></span><img class="bona-payment-logo bona-payment-logo--mono" src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt="monobank"></label>
-                        <div id="collapseMonoPartialPayment" class="bona-payment-period" @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)><label for="mono_payment_period">{{ trans('base.checkout_payment_period_label') }}</label><select id="mono_payment_period" name="mono_payment_period">@foreach(App\Support\Payment\InstallmentPeriods::for('monobank') as $period)<option value="{{ $period }}" @selected((int) old('mono_payment_period', $checkoutMonoPeriod) === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach</select></div>
+                        <div
+                            id="collapseMonoPartialPayment"
+                            class="bona-installment-option"
+                            data-checkout-installment
+                            data-provider="mono"
+                            data-periods='@json($monoPeriods)'
+                            @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)
+                        >
+                            <div class="bona-installment-option__payment">
+                                <span>{{ trans('base.checkout_installment_monthly_label') }}</span>
+                                <p aria-live="polite"><strong data-installment-monthly>{{ $formatPrice(ceil($initialSummary['total'] / max(1, $selectedMonoPeriod))) }}</strong><small>{{ trans('base.checkout_installment_per_month') }}</small></p>
+                            </div>
+                            <div class="bona-installment-option__controls">
+                                <span>{{ trans('base.checkout_payment_period_label') }}</span>
+                                <div class="bona-installment-stepper">
+                                    <button type="button" data-installment-decrease aria-label="{{ trans('base.checkout_installment_decrease') }}">
+                                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                    </button>
+                                    <output data-installment-period-copy>{{ trans_choice('base.checkout_payment_count', $selectedMonoPeriod, ['count' => $selectedMonoPeriod]) }}</output>
+                                    <button type="button" data-installment-increase aria-label="{{ trans('base.checkout_installment_increase') }}">
+                                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5v10M5 10h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                    </button>
+                                </div>
+                                <select id="mono_payment_period" class="sr-only" name="mono_payment_period" data-installment-select tabindex="-1" aria-hidden="true">
+                                    @foreach($monoPeriods as $period)<option value="{{ $period }}" @selected($selectedMonoPeriod === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach
+                                </select>
+                            </div>
+                            <button class="bona-installment-option__terms" type="button" data-installment-terms="mono">
+                                <span>{{ trans('base.checkout_installment_terms') }}</span>
+                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 10h8m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
                         <label class="bona-choice-card"><input type="radio" id="payment-card_paypart" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)><span><b>{{ trans('base.checkout_payment_paypart') }} ПриватБанк</b><small>{{ trans('base.checkout_payment_privat_note') }}</small></span><img class="bona-payment-logo bona-payment-logo--privat" src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt="ПриватБанк"></label>
-                        <div id="collapsePartialPayment" class="bona-payment-period" @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)><label for="payment_period">{{ trans('base.checkout_payment_period_label') }}</label><select id="payment_period" name="payment_period">@foreach(App\Support\Payment\InstallmentPeriods::for('privatbank') as $period)<option value="{{ $period }}" @selected((int) old('payment_period', $checkoutPrivatPeriod) === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach</select></div>
+                        <div
+                            id="collapsePartialPayment"
+                            class="bona-installment-option"
+                            data-checkout-installment
+                            data-provider="privat"
+                            data-periods='@json($privatPeriods)'
+                            @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)
+                        >
+                            <div class="bona-installment-option__payment">
+                                <span>{{ trans('base.checkout_installment_monthly_label') }}</span>
+                                <p aria-live="polite"><strong data-installment-monthly>{{ $formatPrice(ceil($initialSummary['total'] / max(1, $selectedPrivatPeriod))) }}</strong><small>{{ trans('base.checkout_installment_per_month') }}</small></p>
+                            </div>
+                            <div class="bona-installment-option__controls">
+                                <span>{{ trans('base.checkout_payment_period_label') }}</span>
+                                <div class="bona-installment-stepper">
+                                    <button type="button" data-installment-decrease aria-label="{{ trans('base.checkout_installment_decrease') }}">
+                                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                    </button>
+                                    <output data-installment-period-copy>{{ trans_choice('base.checkout_payment_count', $selectedPrivatPeriod, ['count' => $selectedPrivatPeriod]) }}</output>
+                                    <button type="button" data-installment-increase aria-label="{{ trans('base.checkout_installment_increase') }}">
+                                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5v10M5 10h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                    </button>
+                                </div>
+                                <select id="payment_period" class="sr-only" name="payment_period" data-installment-select tabindex="-1" aria-hidden="true">
+                                    @foreach($privatPeriods as $period)<option value="{{ $period }}" @selected($selectedPrivatPeriod === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach
+                                </select>
+                            </div>
+                            <button class="bona-installment-option__terms" type="button" data-installment-terms="privat">
+                                <span>{{ trans('base.checkout_installment_terms') }}</span>
+                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 10h8m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
                 <section class="bona-checkout-step bona-checkout-step--comment"><div class="bona-field"><label for="checkout-comment">{{ trans('base.checkout_order_comment') }}</label><textarea id="checkout-comment" name="comment" rows="4" maxlength="2000" placeholder="{{ trans('base.checkout_order_comment_placeholder') }}">{{ old('comment') }}</textarea></div></section>
             </div>
 
-            <aside class="bona-order-summary bona-checkout-summary">
+            <aside class="bona-order-summary bona-checkout-summary" data-checkout-summary>
                 <div class="bona-checkout-summary__head">
                     <div><p class="bona-commerce-kicker">{{ trans('base.checkout_summary_label') }}</p><h2>{{ trans_choice('base.checkout_summary_products', $productsCount, ['count' => $productsCount]) }}</h2></div>
                     <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}">{{ trans('base.checkout_edit_order') }}</a>
@@ -166,7 +235,7 @@
                     @foreach($productsInCart as $product)
                         @php
                             $unitPrice = (float) $product->pivot->price + (float) ($product->pivot->attributes_price ?? 0);
-                            $imageUrl = $product->pivot->current_image_path ? '/storage/'.$product->pivot->current_image_path : $product->main_image_url;
+                            $imageUrl = $product->pivot->current_image_path ? '/storage/'.$product->pivot->current_image_path : ($product->main_image_url ?: $product->preview_image_url);
                         @endphp
                         <a class="bona-checkout-item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}">
                             <span class="bona-checkout-item__image"><img src="{{ $imageUrl }}" alt="{{ $product->name }}"></span>
@@ -193,5 +262,35 @@
                 <div class="bona-payment-marks" aria-label="{{ trans('base.payments_methods') }}"><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa"><img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard"><span>LiqPay</span></div>
             </aside>
         </form>
+
+        <dialog class="bona-checkout-dialog" data-installment-terms-dialog aria-labelledby="checkout-installment-terms-title">
+            <div class="bona-checkout-dialog__head">
+                <div>
+                    <p class="bona-commerce-kicker">{{ trans('base.checkout_installment_kicker') }}</p>
+                    <h2 id="checkout-installment-terms-title">{{ trans('base.checkout_installment_terms_title') }}</h2>
+                </div>
+                <button type="button" data-installment-terms-close aria-label="{{ trans('base.checkout_installment_close') }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+            <div class="bona-checkout-dialog__content" data-installment-terms-panel="mono" hidden>
+                <ol>
+                    <li>{{ trans('base.checkout_installment_mono_step_1') }}</li>
+                    <li>{{ trans('base.checkout_installment_mono_step_2') }}</li>
+                    <li>{{ trans('base.checkout_installment_mono_step_3') }}</li>
+                </ol>
+                <p>{{ trans('base.checkout_installment_terms_note') }}</p>
+                <a href="https://monobank.ua/chast" target="_blank" rel="noopener noreferrer">{{ trans('base.checkout_installment_official') }}</a>
+            </div>
+            <div class="bona-checkout-dialog__content" data-installment-terms-panel="privat" hidden>
+                <ol>
+                    <li>{{ trans('base.checkout_installment_privat_step_1') }}</li>
+                    <li>{{ trans('base.checkout_installment_privat_step_2') }}</li>
+                    <li>{{ trans('base.checkout_installment_privat_step_3') }}</li>
+                </ol>
+                <p>{{ trans('base.checkout_installment_terms_note') }}</p>
+                <a href="https://privatbank.ua/kredyty/oplata-chastynamy-ta-myttyeva-rozstrochka" target="_blank" rel="noopener noreferrer">{{ trans('base.checkout_installment_official') }}</a>
+            </div>
+        </dialog>
     </div>
 @endsection

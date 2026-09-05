@@ -22,6 +22,44 @@ export default async function () {
 
     const choiceName = (input) => input.closest('label')?.querySelector('b')?.textContent.trim() || '';
 
+    const installmentPanels = [...form.querySelectorAll('[data-checkout-installment]')];
+    const updateInstallmentPanel = (panel) => {
+        const select = panel.querySelector('[data-installment-select]');
+        const monthly = panel.querySelector('[data-installment-monthly]');
+        const periodCopy = panel.querySelector('[data-installment-period-copy]');
+        const decrease = panel.querySelector('[data-installment-decrease]');
+        const increase = panel.querySelector('[data-installment-increase]');
+        const periods = JSON.parse(panel.dataset.periods || '[]').map(Number).filter(Number.isFinite);
+        const currentPeriod = Number(select?.value || periods[0] || 1);
+        const currentIndex = Math.max(0, periods.indexOf(currentPeriod));
+        const total = Number(form.dataset.checkoutTotal || 0);
+
+        if (monthly) monthly.textContent = money(Math.ceil(total / Math.max(1, currentPeriod)));
+        if (periodCopy && select) periodCopy.textContent = select.options[select.selectedIndex]?.textContent || currentPeriod;
+        if (decrease) decrease.disabled = currentIndex <= 0;
+        if (increase) increase.disabled = currentIndex >= periods.length - 1;
+    };
+
+    const updateInstallments = () => installmentPanels.forEach(updateInstallmentPanel);
+
+    installmentPanels.forEach((panel) => {
+        const select = panel.querySelector('[data-installment-select]');
+        const periods = JSON.parse(panel.dataset.periods || '[]').map(Number).filter(Number.isFinite);
+
+        const changePeriod = (direction) => {
+            if (!select || !periods.length) return;
+
+            const currentIndex = Math.max(0, periods.indexOf(Number(select.value)));
+            const nextIndex = Math.min(periods.length - 1, Math.max(0, currentIndex + direction));
+            select.value = String(periods[nextIndex]);
+            updateInstallmentPanel(panel);
+        };
+
+        panel.querySelector('[data-installment-decrease]')?.addEventListener('click', () => changePeriod(-1));
+        panel.querySelector('[data-installment-increase]')?.addEventListener('click', () => changePeriod(1));
+        select?.addEventListener('change', () => updateInstallmentPanel(panel));
+    });
+
     const updateProgress = (step) => {
         const order = ['contact', 'delivery', 'payment'];
         const activeIndex = order.indexOf(step);
@@ -40,7 +78,12 @@ export default async function () {
         const output = form.querySelector('.selected-delivery-type');
         if (output) output.textContent = choiceName(input);
         updateProgress('delivery');
-        if (refreshSummary) getSummaryByDeliveryTypeId(input.value, showSummaryWithDelivery);
+        if (refreshSummary) {
+            getSummaryByDeliveryTypeId(input.value, (response) => {
+                showSummaryWithDelivery(response, form);
+                updateInstallments();
+            });
+        }
     };
     deliveryInputs.forEach((input) => input.addEventListener('change', () => onDeliveryChange(input)));
 
@@ -66,8 +109,34 @@ export default async function () {
     const activeRecipient = recipientInputs.find((input) => input.checked);
     const activePayment = paymentInputs.find((input) => input.checked);
     if (activeDelivery) onDeliveryChange(activeDelivery, true);
+    else showPanel('.accordion-delivery-data', null);
     if (activeRecipient) showPanel('.accordion-recipient-data', activeRecipient.dataset.accordion);
     if (activePayment) onPaymentChange(activePayment);
+    updateInstallments();
+
+    const termsDialog = document.querySelector('[data-installment-terms-dialog]');
+    const closeTermsDialog = () => {
+        if (!termsDialog) return;
+        if (typeof termsDialog.close === 'function') termsDialog.close();
+        else termsDialog.removeAttribute('open');
+    };
+
+    document.querySelectorAll('[data-installment-terms]').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (!termsDialog) return;
+
+            termsDialog.querySelectorAll('[data-installment-terms-panel]').forEach((panel) => {
+                panel.hidden = panel.dataset.installmentTermsPanel !== button.dataset.installmentTerms;
+            });
+
+            if (typeof termsDialog.showModal === 'function') termsDialog.showModal();
+            else termsDialog.setAttribute('open', '');
+        });
+    });
+    termsDialog?.querySelector('[data-installment-terms-close]')?.addEventListener('click', closeTermsDialog);
+    termsDialog?.addEventListener('click', (event) => {
+        if (event.target === termsDialog) closeTermsDialog();
+    });
 
     const errors = document.querySelector('[data-checkout-errors]');
     if (errors) {
@@ -95,7 +164,7 @@ function money(value) {
     }).format(amount)} ${store.base_currency_name_short}`;
 }
 
-function showSummaryWithDelivery(response) {
+function showSummaryWithDelivery(response, form) {
     const data = response?.data || response;
     if (!data) return;
 
@@ -105,6 +174,7 @@ function showSummaryWithDelivery(response) {
     });
     document.querySelectorAll('.price-discount').forEach((node) => { node.textContent = `−${money(data.discount)}`; });
     document.querySelectorAll('.total-price-delivery').forEach((node) => { node.textContent = money(data.total); });
+    if (form) form.dataset.checkoutTotal = String(Number(data.total || 0));
 
     const discountRow = document.querySelector('[data-checkout-discount-row]');
     if (discountRow) discountRow.hidden = Number(data.discount || 0) <= 0;
