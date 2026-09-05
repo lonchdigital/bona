@@ -101,8 +101,10 @@
             <span aria-hidden="true">/</span>
             <span aria-current="page">{{ $product->name }}</span>
         </nav>
+    </div>
 
-        <nav class="product-section-nav" data-product-section-nav aria-label="{{ $isRussian ? 'Разделы товара' : 'Розділи товару' }}">
+    <nav class="product-section-nav" data-product-section-nav aria-label="{{ $isRussian ? 'Разделы товара' : 'Розділи товару' }}">
+        <div class="container">
             <div class="product-section-nav__list">
                 <button class="is-active" type="button" data-product-overview aria-current="true">
                     {{ trans('base.product_about') }}
@@ -115,8 +117,10 @@
                 @endif
                 <button id="tab-reviews" type="button" data-product-tab="reviews" aria-controls="panel-reviews" aria-pressed="false">{{ trans('base.product_reviews_title') }} <span>{{ $displayReviewCount }}</span></button>
             </div>
-        </nav>
+        </div>
+    </nav>
 
+    <div class="container">
         <section class="product-hero" id="product-overview" aria-labelledby="product-title">
             <div class="product-gallery" data-product-gallery aria-label="{{ $isRussian ? 'Галерея товара' : 'Галерея товару' }}">
                 <div class="product-gallery__main{{ $galleryItems->first()['is_interior'] ? ' is-interior' : '' }}" data-gallery-main>
@@ -147,22 +151,36 @@
                 </div>
 
                 @if($galleryItems->count() > 1)
-                    <div class="product-gallery__thumbs" role="list" aria-label="{{ $isRussian ? 'Миниатюры изображений' : 'Мініатюри зображень' }}">
-                        @foreach($galleryItems as $galleryItem)
-                            <button
-                                class="product-gallery__thumb{{ $loop->first ? ' is-active' : '' }}"
-                                type="button"
-                                data-gallery-thumb
-                                data-image="{{ $galleryItem['url'] }}"
-                                data-color-id="{{ $galleryItem['color_id'] }}"
-                                data-interior="{{ $galleryItem['is_interior'] ? 'true' : 'false' }}"
-                                data-alt="{{ $product->name }}"
-                                aria-label="{{ ($isRussian ? 'Фото ' : 'Фото ').$loop->iteration }}"
-                                aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
-                            >
-                                <img src="{{ $galleryItem['url'] }}" alt="" width="180" height="120" loading="lazy" decoding="async">
+                    <div class="product-gallery__thumbs-shell{{ $galleryItems->count() > 4 ? ' has-overflow' : '' }}" data-gallery-thumbs-shell>
+                        @if($galleryItems->count() > 4)
+                            <button class="product-gallery__thumb-nav product-gallery__thumb-nav--prev" type="button" data-gallery-thumbs-prev aria-label="{{ $isRussian ? 'Предыдущие миниатюры' : 'Попередні мініатюри' }}">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m14.5 6-6 6 6 6"></path></svg>
                             </button>
-                        @endforeach
+                        @endif
+
+                        <div class="product-gallery__thumbs" data-gallery-thumbs role="list" aria-label="{{ $isRussian ? 'Миниатюры изображений' : 'Мініатюри зображень' }}">
+                            @foreach($galleryItems as $galleryItem)
+                                <button
+                                    class="product-gallery__thumb{{ $loop->first ? ' is-active' : '' }}"
+                                    type="button"
+                                    data-gallery-thumb
+                                    data-image="{{ $galleryItem['url'] }}"
+                                    data-color-id="{{ $galleryItem['color_id'] }}"
+                                    data-interior="{{ $galleryItem['is_interior'] ? 'true' : 'false' }}"
+                                    data-alt="{{ $product->name }}"
+                                    aria-label="{{ ($isRussian ? 'Фото ' : 'Фото ').$loop->iteration }}"
+                                    aria-pressed="{{ $loop->first ? 'true' : 'false' }}"
+                                >
+                                    <img src="{{ $galleryItem['url'] }}" alt="" width="180" height="120" loading="lazy" decoding="async">
+                                </button>
+                            @endforeach
+                        </div>
+
+                        @if($galleryItems->count() > 4)
+                            <button class="product-gallery__thumb-nav product-gallery__thumb-nav--next" type="button" data-gallery-thumbs-next aria-label="{{ $isRussian ? 'Следующие миниатюры' : 'Наступні мініатюри' }}">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9.5 6 6 6-6 6"></path></svg>
+                            </button>
+                        @endif
                     </div>
                 @endif
             </div>

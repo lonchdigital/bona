@@ -36,6 +36,10 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("import('./store.product.page/product-reference')", $pageScript);
         $this->assertStringNotContainsString("import('./store.product.page/swiper')", $pageScript);
         $this->assertStringContainsString("querySelector('[data-product-gallery]')", $referenceScript);
+        $this->assertStringContainsString("querySelector('[data-gallery-thumbs]')", $referenceScript);
+        $this->assertStringContainsString('const thumbsPerPage = 4;', $referenceScript);
+        $this->assertStringContainsString("querySelector('[data-gallery-thumbs-prev]')", $referenceScript);
+        $this->assertStringContainsString("querySelector('[data-gallery-thumbs-next]')", $referenceScript);
         $this->assertStringContainsString("querySelectorAll('[data-product-tab]')", $referenceScript);
         $this->assertStringContainsString("querySelector('[data-product-section-nav]')", $referenceScript);
         $this->assertStringContainsString("querySelector('[data-product-overview]')", $referenceScript);
@@ -46,6 +50,9 @@ class ProductGalleryTest extends TestCase
         $this->assertStringNotContainsString('data-kit-choice-clear', $referenceScript);
         $this->assertStringNotContainsString('data-kit-choice-clear', $referenceView);
         $this->assertStringContainsString('data-product-section-nav', $referenceView);
+        $this->assertStringContainsString('data-gallery-thumbs-shell', $referenceView);
+        $this->assertStringContainsString('data-gallery-thumbs-prev', $referenceView);
+        $this->assertStringContainsString('data-gallery-thumbs-next', $referenceView);
         $this->assertStringContainsString("trans('base.purchase')", $referenceView);
         $this->assertStringNotContainsString('mobile-buybar', $referenceView);
         $this->assertStringContainsString('data-kit-selection-hint', $referenceView);
@@ -56,6 +63,8 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("replace(/\\s+/g, '')", $cartScript);
         $this->assertStringContainsString('.product-body .bona-product-page :where(section)', $referenceStyles);
         $this->assertStringContainsString('.product-section-nav', $referenceStyles);
+        $this->assertStringContainsString('.product-gallery__thumbs-shell', $referenceStyles);
+        $this->assertStringContainsString('flex: 0 0 calc((100% - 30px) / 4);', $referenceStyles);
         $this->assertStringNotContainsString(".product-body .product-kit-dialog {\n    display: none;", $referenceStyles);
         $this->assertStringContainsString('.art-heart-filled { display: none; }', $referenceStyles);
         $this->assertStringContainsString('.art-heart-outline { display: none; }', $referenceStyles);

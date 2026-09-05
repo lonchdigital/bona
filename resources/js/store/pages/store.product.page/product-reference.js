@@ -120,15 +120,55 @@ function initGallery(page) {
     const allThumbs = Array.from(gallery?.querySelectorAll('[data-gallery-thumb]') || []);
     const currentNode = gallery?.querySelector('[data-gallery-current]');
     const totalNode = gallery?.querySelector('[data-gallery-total]');
+    const thumbsShell = gallery?.querySelector('[data-gallery-thumbs-shell]');
+    const thumbsTrack = gallery?.querySelector('[data-gallery-thumbs]');
+    const thumbsPrevious = gallery?.querySelector('[data-gallery-thumbs-prev]');
+    const thumbsNext = gallery?.querySelector('[data-gallery-thumbs-next]');
+    const thumbsPerPage = 4;
     let activeThumb = allThumbs[0] || null;
+    let thumbWindowStart = 0;
     let swipeStartX = null;
     let imageSwapTimer = null;
+    let thumbResizeFrame = null;
 
     if (!gallery || !main || !image || !allThumbs.length) {
         return;
     }
 
     const visibleThumbs = () => allThumbs.filter((thumb) => !thumb.hidden);
+
+    const updateThumbCarousel = (focusThumb = activeThumb, smooth = false) => {
+        const thumbs = visibleThumbs();
+        const hasOverflow = thumbs.length > thumbsPerPage;
+        const maximumStart = Math.max(thumbs.length - thumbsPerPage, 0);
+        const focusIndex = thumbs.indexOf(focusThumb);
+
+        if (focusIndex >= 0 && (focusIndex < thumbWindowStart || focusIndex >= thumbWindowStart + thumbsPerPage)) {
+            thumbWindowStart = Math.min(Math.floor(focusIndex / thumbsPerPage) * thumbsPerPage, maximumStart);
+        }
+
+        thumbWindowStart = Math.min(Math.max(thumbWindowStart, 0), maximumStart);
+        thumbsShell?.classList.toggle('has-overflow', hasOverflow);
+
+        [thumbsPrevious, thumbsNext].forEach((button) => {
+            if (button) button.hidden = !hasOverflow;
+        });
+
+        if (thumbsPrevious) thumbsPrevious.disabled = !hasOverflow || thumbWindowStart === 0;
+        if (thumbsNext) thumbsNext.disabled = !hasOverflow || thumbWindowStart >= maximumStart;
+
+        if (!thumbsTrack) return;
+
+        const target = thumbs[thumbWindowStart];
+        const targetLeft = target
+            ? target.getBoundingClientRect().left - thumbsTrack.getBoundingClientRect().left + thumbsTrack.scrollLeft
+            : 0;
+        if (typeof thumbsTrack.scrollTo === 'function') {
+            thumbsTrack.scrollTo({ left: targetLeft, behavior: smooth ? 'smooth' : 'auto' });
+        } else {
+            thumbsTrack.scrollLeft = targetLeft;
+        }
+    };
 
     const showThumb = (thumb, animate = true) => {
         const thumbs = visibleThumbs();
@@ -167,6 +207,8 @@ function initGallery(page) {
         if (totalNode) {
             totalNode.textContent = String(thumbs.length).padStart(2, '0');
         }
+
+        updateThumbCarousel(thumb, animate);
     };
 
     const move = (direction) => {
@@ -183,6 +225,16 @@ function initGallery(page) {
     allThumbs.forEach((thumb) => thumb.addEventListener('click', () => showThumb(thumb)));
     gallery.querySelector('[data-gallery-prev]')?.addEventListener('click', () => move(-1));
     gallery.querySelector('[data-gallery-next]')?.addEventListener('click', () => move(1));
+    thumbsPrevious?.addEventListener('click', () => {
+        const thumbs = visibleThumbs();
+        thumbWindowStart = Math.max(thumbWindowStart - thumbsPerPage, 0);
+        showThumb(thumbs[thumbWindowStart]);
+    });
+    thumbsNext?.addEventListener('click', () => {
+        const thumbs = visibleThumbs();
+        thumbWindowStart = Math.min(thumbWindowStart + thumbsPerPage, Math.max(thumbs.length - thumbsPerPage, 0));
+        showThumb(thumbs[thumbWindowStart]);
+    });
 
     main.addEventListener('pointerdown', (event) => {
         if (event.target.closest('button')) {
@@ -215,6 +267,7 @@ function initGallery(page) {
             allThumbs.forEach((thumb) => {
                 thumb.hidden = !thumbsToShow.includes(thumb);
             });
+            thumbWindowStart = 0;
 
             page.querySelectorAll('.color-option[data-color-id]').forEach((item) => {
                 const isActive = item === color;
@@ -237,6 +290,12 @@ function initGallery(page) {
             }
         });
     });
+
+    updateThumbCarousel(activeThumb);
+    window.addEventListener('resize', () => {
+        window.cancelAnimationFrame(thumbResizeFrame);
+        thumbResizeFrame = window.requestAnimationFrame(() => updateThumbCarousel(activeThumb));
+    }, { passive: true });
 }
 
 function initProductTabs(page) {

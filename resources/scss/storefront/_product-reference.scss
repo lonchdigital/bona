@@ -137,7 +137,7 @@ html.product-dialog-is-open body {
 
         &.is-stuck {
             background: #fbfaf7;
-            box-shadow: 0 14px 30px rgba(35, 32, 27, .08);
+            box-shadow: 0 12px 26px rgba(35, 32, 27, .07);
         }
 
         &__list {
@@ -199,6 +199,14 @@ html.product-dialog-is-open body {
                 font-size: 8px;
             }
         }
+    }
+
+    .product-gallery__main {
+        height: 720px;
+    }
+
+    &.product-v1 .product-gallery__main:not(.is-interior) > img {
+        object-fit: contain;
     }
 
     #product-overview,
@@ -297,10 +305,76 @@ html.product-dialog-is-open body {
         }
     }
 
-    .product-gallery__thumb {
-        background: #fff;
+    .product-gallery__thumbs-shell {
+        display: grid;
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        margin-top: 11px;
 
-        img { background: #fff; }
+        &.has-overflow {
+            grid-template-columns: 44px minmax(0, 1fr) 44px;
+        }
+    }
+
+    .product-gallery__thumbs {
+        display: flex;
+        min-width: 0;
+        gap: 10px;
+        margin-top: 0;
+        overflow: hidden;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar { display: none; }
+    }
+
+    .product-gallery__thumb {
+        width: auto;
+        height: 88px;
+        flex: 0 0 calc((100% - 30px) / 4);
+        background: #fff;
+        scroll-snap-align: start;
+
+        img {
+            background: #fff;
+            object-fit: contain;
+        }
+    }
+
+    .product-gallery__thumb-nav {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(35, 32, 27, .16);
+        border-radius: 50%;
+        background: #fff;
+        color: var(--ink);
+        cursor: pointer;
+        transition: border-color .2s ease, background-color .2s ease, color .2s ease, opacity .2s ease;
+
+        &[hidden] { display: none; }
+        svg { width: 18px; height: 18px; }
+
+        &:hover:not(:disabled) {
+            border-color: var(--ink);
+            background: var(--ink);
+            color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        &:disabled {
+            opacity: .3;
+            cursor: default;
+        }
     }
 
     .installment-card__head > button {
@@ -754,8 +828,17 @@ html.product-dialog-is-open body {
     display: block;
 }
 
+@media (max-width: 1150px) {
+    .product-body .bona-product-page .product-gallery__main { height: 650px; }
+}
+
+@media (max-width: 1024px) {
+    .product-body .bona-product-page .product-gallery__main { height: 600px; }
+}
+
 @media (max-width: 900px) {
     .product-body .bona-product-page {
+        .product-gallery__main { height: 520px; }
         .related-grid--dynamic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .product-reference-utility { padding: 72px 0; }
     }
@@ -767,6 +850,19 @@ html.product-dialog-is-open body {
 
     .product-body .bona-product-page {
         .breadcrumbs { padding-top: 24px; }
+
+        .product-gallery__main { height: 500px; }
+
+        .product-gallery__thumbs-shell {
+            gap: 8px;
+
+            &.has-overflow {
+                grid-template-columns: 44px minmax(0, 1fr) 44px;
+            }
+        }
+
+        .product-gallery__thumbs { gap: 7px; }
+        .product-gallery__thumb { height: 74px; flex-basis: calc((100% - 21px) / 4); }
 
         .product-section-nav {
             margin-bottom: 22px;
@@ -918,4 +1014,8 @@ html.product-dialog-is-open body {
         h2 { font-size: 39px; }
     }
 
+}
+
+@media (max-width: 420px) {
+    .product-body .bona-product-page .product-gallery__main { height: 450px; }
 }
