@@ -210,46 +210,39 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($order->products as $product)
-                                <tr>
-                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}"><img class="order-product-image" src="{{ $product->main_image_url }}"></a></td>
-                                    <td>
-                                        @if($product->pivot->attributes)
-                                            @php
-                                                $attributes = \App\Helpers\DecodeJson::decodeJsonRecursive(json_decode($product->pivot->attributes, true));
-                                                if(isset($attributes['color_id'])) {
-                                                    unset($attributes['color_id']);
-                                                }
-                                            @endphp
-
-                                            <div class="product-attributes">
-                                                @if(is_array($attributes))
-                                                    @foreach($attributes as $key => $value)
-                                                        @if(is_array($value))
-                                                            <div class="product-attribute-line">
-                                                                <div class="attribute-value">{{ $value['name'][app()->getLocale()] }}</div>
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
-                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a></td>
-                                    {{--
-                                    <td>
-                                        @if( !is_null($product->color) )
-                                            <div class="border rounded p-1 text-center" style="background-color: {{ $product->color->hex }}; ">
-                                                <span class="color-invert">{{ $product->color->name }}</span>
-                                            </div>
-                                        @endif
-                                    </td>
-                                    --}}
-                                    <td>{{ $product->pivot->count }}</td>
-                                    <td>{{ round( $product->pivot->price + $product->pivot->attributes_price, 2) }}</td>
-                                    <td>{{ round( ($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count, 2) }}</td>
-                                </tr>
+                                @foreach($orderProductGroups as $group)
+                                    @if($group['is_bundle'])
+                                        <tr class="admin-order-bundle__heading">
+                                            <td colspan="7">
+                                                <strong>{{ trans('base.cart_bundle_label') }}</strong>
+                                                <span>{{ $group['parent']->name }}</span>
+                                                <small>{{ trans('base.cart_bundle_hint') }}</small>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @foreach(collect([$group['parent']])->concat($group['items']) as $product)
+                                        @php
+                                            $isBundleItem = $group['is_bundle'] && $product->pivot->bundle_role === \App\Support\Commerce\ProductBundle::ROLE_ITEM;
+                                            $imageUrl = $product->pivot->current_image_path
+                                                ? '/storage/'.$product->pivot->current_image_path
+                                                : ($product->main_image_url ?: $product->preview_image_url);
+                                            $bundleCategory = $isBundleItem
+                                                ? \App\Support\Commerce\ProductBundle::localizedCategory($product->pivot->bundle_category)
+                                                : '';
+                                        @endphp
+                                        <tr @class(['admin-order-product-row', 'is-bundle-parent' => $group['is_bundle'] && ! $isBundleItem, 'is-bundle-item' => $isBundleItem])>
+                                            <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}"><img class="order-product-image" src="{{ $imageUrl }}" alt="{{ $product->name }}"></a></td>
+                                            <td>@include('pages.store.partials.product-configuration', ['product' => $product, 'class' => 'admin-order-product-config'])</td>
+                                            <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
+                                            <td>
+                                                @if($bundleCategory)<small class="admin-order-product-category">{{ $bundleCategory }}</small>@endif
+                                                <a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a>
+                                            </td>
+                                            <td>{{ $product->pivot->count }}</td>
+                                            <td>{{ round($product->pivot->price + $product->pivot->attributes_price, 2) }}</td>
+                                            <td>{{ round(($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count, 2) }}</td>
+                                        </tr>
+                                    @endforeach
                                 @endforeach
                                 </tbody>
                             </table>

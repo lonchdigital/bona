@@ -35,7 +35,18 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, 'order_products')
             ->withTimestamps()
-            ->withPivot(['count', 'price', 'attributes', 'attributes_price']);
+            ->withPivot([
+                'id',
+                'count',
+                'price',
+                'attributes',
+                'attributes_price',
+                'current_image_path',
+                'bundle_key',
+                'bundle_role',
+                'bundle_category',
+            ])
+            ->orderByPivot('id');
     }
 
     public function user()

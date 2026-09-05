@@ -4,7 +4,6 @@ namespace App\Services\Cart;
 
 use App\Models\Cart;
 use App\Models\CartProducts;
-use App\Models\Color;
 use App\Models\Product;
 use App\Models\ProductGalleries;
 use App\Models\User;
@@ -18,7 +17,10 @@ use App\Services\Cart\DTO\GetProductsSummaryWithDeliveryDTO;
 use App\Services\Pricing\PricingService;
 use App\Services\PromoCode\PromoCodeService;
 use App\Services\WishList\WishListService;
+use App\Support\Commerce\ProductBundle;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class CartService extends BaseService
 {
@@ -79,22 +81,58 @@ class CartService extends BaseService
                 return;
             }
 
-            foreach ($guestCart->products as $product) {
-                $existing = $userCart->products()->where('product_id', $product->id)->first();
+            $bundleKeyMap = [];
 
-                if ($existing) {
-                    $userCart->products()->updateExistingPivot($product->id, [
-                        'count' => $existing->pivot->count + $product->pivot->count,
+            foreach ($guestCart->products as $product) {
+                $guestBundleKey = trim((string) ($product->pivot->bundle_key ?? ''));
+
+                if ($guestBundleKey !== '') {
+                    $bundleKeyMap[$guestBundleKey] ??= CartProducts::query()
+                        ->where('cart_id', $userCart->id)
+                        ->where('bundle_key', $guestBundleKey)
+                        ->exists()
+                            ? (string) Str::uuid()
+                            : $guestBundleKey;
+
+                    CartProducts::create([
+                        'cart_id' => $userCart->id,
+                        'product_id' => $product->id,
+                        'count' => $product->pivot->count,
+                        'price' => $product->pivot->price,
+                        'attributes' => $product->pivot->attributes,
+                        'attributes_price' => $product->pivot->attributes_price,
+                        'current_image_path' => $product->pivot->current_image_path,
+                        'bundle_key' => $bundleKeyMap[$guestBundleKey],
+                        'bundle_role' => $product->pivot->bundle_role,
+                        'bundle_category' => $product->pivot->bundle_category,
                     ]);
 
                     continue;
                 }
 
-                $userCart->products()->attach($product->id, [
+                $existingQuery = CartProducts::query()
+                    ->where('cart_id', $userCart->id)
+                    ->where('product_id', $product->id)
+                    ->whereNull('bundle_key');
+
+                $existing = is_null($product->pivot->attributes)
+                    ? $existingQuery->whereNull('attributes')->first()
+                    : $existingQuery->where('attributes', $product->pivot->attributes)->first();
+
+                if ($existing) {
+                    $existing->update(['count' => $existing->count + $product->pivot->count]);
+
+                    continue;
+                }
+
+                CartProducts::create([
+                    'cart_id' => $userCart->id,
+                    'product_id' => $product->id,
                     'count' => $product->pivot->count,
                     'price' => $product->pivot->price,
                     'attributes' => $product->pivot->attributes,
                     'attributes_price' => $product->pivot->attributes_price,
+                    'current_image_path' => $product->pivot->current_image_path,
                 ]);
             }
 
@@ -174,97 +212,158 @@ class CartService extends BaseService
 
     public function addProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
-        $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
         $requestProductAttributes = $request->productAttributes;
         $isProductInCart = false;
 
-        $requestProductAttributesAlt = (! is_null($requestProductAttributes)) ? $this->prepareRequestProductAttributes($requestProductAttributes) : null;
+        if ($request->bundleKey !== null && CartProducts::query()
+            ->where('cart_id', $cart->id)
+            ->where('bundle_key', $request->bundleKey)
+            ->exists()) {
+            throw ValidationException::withMessages([
+                'bundle_key' => trans('base.cart_bundle_invalid'),
+            ]);
+        }
 
-        foreach ($allProductVariations as $allProductVariation) {
-            $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributesAlt);
+        $allProductVariations = CartProducts::query()
+            ->where('cart_id', $cart->id)
+            ->where('product_id', $product->id)
+            ->whereNull('bundle_key')
+            ->get();
+        $requestProductAttributesAlt = (! is_null($requestProductAttributes))
+            ? $this->prepareRequestProductAttributes($requestProductAttributes)
+            : null;
 
-            if ($isRequestedProduct) {
-                $count = $allProductVariation->count + $request->productCount;
-                $allProductVariation->update(['count' => $count]);
+        if ($request->bundleKey === null) {
+            foreach ($allProductVariations as $allProductVariation) {
+                $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributesAlt);
 
-                $isProductInCart = true;
-                break;
+                if ($isRequestedProduct) {
+                    $count = $allProductVariation->count + $request->productCount;
+                    $allProductVariation->update(['count' => $count]);
+
+                    $isProductInCart = true;
+                    break;
+                }
             }
         }
 
         if (! $isProductInCart) {
-            $attributeOptions = $this->getAttributesWithOptions($product->id, $product->productType);
+            $line = $this->prepareProductLine($product, $requestProductAttributes);
 
-            $productAttributesSum[] = 0;
-            $productAttributeColor['color_id'] = null;
-
-            if (! is_null($requestProductAttributes)) {
-
-                if (isset($requestProductAttributes['color_id'])) {
-                    $productAttributeColor['color_id'] = $requestProductAttributes['color_id'];
-                    unset($requestProductAttributes['color_id']);
-                    unset($requestProductAttributes['color_name']);
-                }
-
-                foreach ($requestProductAttributes as $attributeKey => $productAttr) {
-                    if (! is_null($productAttr)) {
-                        $productAtrID = preg_replace('/[^0-9]/', '', $attributeKey);
-                        $attributeItself = json_decode($productAttr, true);
-
-                        $productAttributesSum[] = collect($attributeOptions[$productAtrID])->firstWhere('id', $attributeItself['id'])->price;
-                    }
-                }
-
-                if (! is_null($productAttributeColor['color_id'])) {
-                    $color_price = $product->colors->firstWhere('id', $productAttributeColor['color_id'])->pivot->price;
-                    if (is_numeric($color_price) || is_float($color_price)) {
-                        $productAttributesSum[] = $color_price;
-                    }
-                }
-
-            }
-
-            $productAttributesSum = array_sum($productAttributesSum);
-
-            /*$color = Color::where(function ($query) use ($productAttributeColor) {
-                $query->whereJsonContains('name', ['uk' => $productAttributeColor['color']])
-                    ->orWhereJsonContains('name', ['ru' => $productAttributeColor['color']]);
-            })->first();*/
-
-            $color = Color::where('id', $productAttributeColor['color_id'])->first();
-
-            $currentImagePath = null;
-            if ($color !== null) {
-                $productGall = ProductGalleries::where('product_id', $product->id)->where('color_id', $color->id)->first();
-                $currentImagePath = (! is_null($productGall)) ? $productGall->image_path : null;
-            }
-
-            $cart->products()->attach([$product->id => [
+            CartProducts::create([
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
                 'count' => $request->productCount,
-                'price' => $product->price,
-                'attributes' => json_encode($request->productAttributes),
-                'attributes_price' => $productAttributesSum,
-                'current_image_path' => $currentImagePath,
-            ]]);
+                'price' => $line['price'],
+                'attributes' => $line['attributes'],
+                'attributes_price' => $line['attributes_price'],
+                'current_image_path' => $line['current_image_path'],
+                'bundle_key' => $request->bundleKey,
+                'bundle_role' => $request->bundleKey ? ProductBundle::ROLE_PARENT : null,
+                'bundle_category' => null,
+            ]);
         }
-
     }
 
     public function addSubProductToCart(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
-        if (! $cart->products()->where('product_id', $product->id)->exists()) {
-            $cart->products()->attach([$product->id => ['count' => $request->productCount, 'price' => $product->price]]);
-        } else {
-            $productCount = $cart->products()->where('product_id', $product->id)->first()->pivot->count;
-            $cart->products()->updateExistingPivot($product->id, ['count' => $productCount + $request->productCount]);
+        if ($request->bundleKey !== null) {
+            $parentLine = CartProducts::query()
+                ->where('cart_id', $cart->id)
+                ->where('bundle_key', $request->bundleKey)
+                ->where('bundle_role', ProductBundle::ROLE_PARENT)
+                ->first();
+
+            $parentProduct = $parentLine ? Product::find($parentLine->product_id) : null;
+            $allowedSubProducts = collect(json_decode((string) $parentProduct?->sub_products, true))
+                ->map(fn ($id) => (int) $id);
+
+            if (! $parentLine || ! $allowedSubProducts->contains((int) $product->id)) {
+                throw ValidationException::withMessages([
+                    'bundle_key' => trans('base.cart_bundle_invalid'),
+                ]);
+            }
+
+            $existing = CartProducts::query()
+                ->where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->where('bundle_key', $request->bundleKey)
+                ->where('bundle_role', ProductBundle::ROLE_ITEM)
+                ->first();
+
+            if ($existing) {
+                $existing->update(['count' => $existing->count + $request->productCount]);
+
+                return;
+            }
+
+            $product->loadMissing('categories');
+            $category = $product->categories->first();
+            $categoryName = $category?->getRawOriginal('name');
+            if (is_array($categoryName)) {
+                $categoryName = json_encode($categoryName, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+            }
+            $categoryName = $categoryName ?: json_encode([
+                'uk' => trans('base.cart_bundle_item', [], 'uk'),
+                'ru' => trans('base.cart_bundle_item', [], 'ru'),
+            ], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+
+            CartProducts::create([
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'count' => $request->productCount,
+                'price' => $product->price,
+                'attributes' => null,
+                'attributes_price' => 0,
+                'current_image_path' => null,
+                'bundle_key' => $request->bundleKey,
+                'bundle_role' => ProductBundle::ROLE_ITEM,
+                'bundle_category' => $categoryName,
+            ]);
+
+            return;
         }
+
+        $existing = CartProducts::query()
+            ->where('cart_id', $cart->id)
+            ->where('product_id', $product->id)
+            ->whereNull('bundle_key')
+            ->first();
+
+        if ($existing) {
+            $existing->update(['count' => $existing->count + $request->productCount]);
+
+            return;
+        }
+
+        CartProducts::create([
+            'cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'count' => $request->productCount,
+            'price' => $product->price,
+        ]);
     }
 
     public function changeProductCount(Cart $cart, Product $product, ChangeProductCountInCartDTO $request): void
     {
+        if ($request->cartLineId !== null) {
+            CartProducts::query()
+                ->whereKey($request->cartLineId)
+                ->where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->first()
+                ?->update(['count' => $request->productCount]);
+
+            return;
+        }
+
         if (! is_null($request->productAttributes)) { // all sub products have productAttributes as null
 
-            $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
+            $allProductVariations = CartProducts::query()
+                ->where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->whereNull('bundle_key')
+                ->get();
             $requestProductAttributes = $request->productAttributes;
 
             foreach ($allProductVariations as $allProductVariation) {
@@ -280,9 +379,12 @@ class CartService extends BaseService
 
         } else {
 
-            if ($cart->products()->where('product_id', $product->id)->exists()) {
-                $cart->products()->updateExistingPivot($product->id, ['count' => $request->productCount]);
-            }
+            CartProducts::query()
+                ->where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->whereNull('bundle_key')
+                ->first()
+                ?->update(['count' => $request->productCount]);
 
         }
 
@@ -290,9 +392,36 @@ class CartService extends BaseService
 
     public function deleteProductFromCart(Cart $cart, Product $product, DeleteProductFromCartDTO $request): void
     {
+        if ($request->cartLineId !== null) {
+            $line = CartProducts::query()
+                ->whereKey($request->cartLineId)
+                ->where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->first();
+
+            if (! $line) {
+                return;
+            }
+
+            if ($line->bundle_role === ProductBundle::ROLE_PARENT && $line->bundle_key) {
+                CartProducts::query()
+                    ->where('cart_id', $cart->id)
+                    ->where('bundle_key', $line->bundle_key)
+                    ->delete();
+            } else {
+                $line->delete();
+            }
+
+            return;
+        }
+
         if (! is_null($request->productAttributes)) { // all sub products have productAttributes as null
 
-            $allProductVariations = CartProducts::where('cart_id', $cart->id)->where('product_id', $product->id)->get();
+            $allProductVariations = CartProducts::query()
+                ->where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->whereNull('bundle_key')
+                ->get();
             $requestProductAttributes = $request->productAttributes;
 
             foreach ($allProductVariations as $allProductVariation) {
@@ -305,7 +434,11 @@ class CartService extends BaseService
             }
 
         } else {
-            $cart->products()->detach($product->id);
+            CartProducts::query()
+                ->where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->whereNull('bundle_key')
+                ->delete();
         }
 
     }
@@ -359,6 +492,46 @@ class CartService extends BaseService
         return $this->arraysAreEqual($preparedArray, $normalizedRequestAttributes);
     }
 
+    /** @return array{price: float|int|string|null, attributes: ?string, attributes_price: float, current_image_path: ?string} */
+    private function prepareProductLine(Product $product, ?array $requestProductAttributes): array
+    {
+        $attributeOptions = $this->getAttributesWithOptions($product->id, $product->productType);
+        $attributesForPricing = $requestProductAttributes ?? [];
+        $attributesPrice = 0.0;
+        $colorId = $attributesForPricing['color_id'] ?? null;
+        unset($attributesForPricing['color_id'], $attributesForPricing['color_name']);
+
+        foreach ($attributesForPricing as $attributeKey => $productAttribute) {
+            if ($productAttribute === null) {
+                continue;
+            }
+
+            $attributeId = (int) preg_replace('/[^0-9]/', '', (string) $attributeKey);
+            $selectedOption = is_string($productAttribute) ? json_decode($productAttribute, true) : $productAttribute;
+            if (! is_array($selectedOption) || ! isset($selectedOption['id'])) {
+                continue;
+            }
+
+            $option = collect($attributeOptions[$attributeId] ?? [])->firstWhere('id', $selectedOption['id']);
+            $attributesPrice += (float) ($option?->price ?? 0);
+        }
+
+        $color = $colorId !== null ? $product->colors->firstWhere('id', (int) $colorId) : null;
+        $attributesPrice += (float) ($color?->pivot?->price ?? 0);
+        $gallery = $color
+            ? ProductGalleries::query()->where('product_id', $product->id)->where('color_id', $color->id)->first()
+            : null;
+
+        return [
+            'price' => $product->price,
+            'attributes' => $requestProductAttributes === null
+                ? null
+                : json_encode($requestProductAttributes, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+            'attributes_price' => $attributesPrice,
+            'current_image_path' => $gallery?->image_path,
+        ];
+    }
+
     public function getSummary(Cart $cart, ?WishList $wishList): array
     {
         $this->discardInvalidPromoCode($cart);
@@ -407,7 +580,7 @@ class CartService extends BaseService
         $cart->loadMissing([
             'products.brand',
             'products.colors',
-            'products.productType',
+            'products.productType.attributes',
         ]);
 
         $cart->products->each(function ($product) {

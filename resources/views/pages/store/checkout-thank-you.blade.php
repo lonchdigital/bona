@@ -90,15 +90,23 @@
                 <div class="bona-checkout-success__items">
                     <div class="bona-checkout-success__section-head">
                         <h2>{{ trans('base.checkout_success_items') }}</h2>
-                        <span>{{ $order->products->sum(fn ($product) => (int) $product->pivot->count) }}</span>
+                        <span>{{ $orderProductGroupsCount }}</span>
                     </div>
-                    @foreach($order->products as $product)
-                        @php $unitPrice = (float) $product->pivot->price + (float) ($product->pivot->attributes_price ?? 0); @endphp
-                        <a class="bona-checkout-success__item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}">
-                            <span><img src="{{ $product->main_image_url ?: $product->preview_image_url }}" alt="{{ $product->name }}"></span>
-                            <div><strong>{{ $product->name }}</strong><small>{{ $product->pivot->count }} × {{ $formatPrice($unitPrice) }}</small></div>
-                            <b>{{ $formatPrice($unitPrice * $product->pivot->count) }}</b>
-                        </a>
+                    @foreach($orderProductGroups as $group)
+                        @if($group['is_bundle'])
+                            <section class="bona-checkout-success__bundle">
+                                <header><span>{{ trans('base.cart_bundle_label') }}</span><small>{{ $group['parent']->name }}</small></header>
+                                @include('pages.store.partials.checkout-success-product-row', ['product' => $group['parent'], 'isBundleItem' => false])
+                                @if($group['items']->isNotEmpty())
+                                    <div class="bona-checkout-success__bundle-label">{{ trans('base.cart_bundle_contents') }}</div>
+                                    @foreach($group['items'] as $product)
+                                        @include('pages.store.partials.checkout-success-product-row', ['product' => $product, 'isBundleItem' => true])
+                                    @endforeach
+                                @endif
+                            </section>
+                        @else
+                            @include('pages.store.partials.checkout-success-product-row', ['product' => $group['parent'], 'isBundleItem' => false])
+                        @endif
                     @endforeach
                 </div>
             </div>

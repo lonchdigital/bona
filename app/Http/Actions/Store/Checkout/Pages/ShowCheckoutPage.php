@@ -13,6 +13,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\Delivery\DeliveryService;
 use App\Services\Pricing\PricingService;
 use App\Services\Region\RegionService;
+use App\Support\Commerce\ProductBundle;
 use App\Support\Payment\InstallmentPeriods;
 
 class ShowCheckoutPage extends BaseAction
@@ -31,7 +32,14 @@ class ShowCheckoutPage extends BaseAction
             return redirect()->to(MultiLangRoute::getMultiLangRoute('store.cart.page'));
         }
 
-        $cart->loadMissing(['products', 'promoCode']);
+        $cart->loadMissing([
+            'products.brand',
+            'products.colors',
+            'products.productType.attributes',
+            'promoCode',
+        ]);
+
+        $productsInCart = $cartService->getProductsInCart($cart);
 
         $paymentType = request()->integer('payment_type_id');
         $allowedPaymentTypes = PaymentTypesDataClass::get()->pluck('id')->map(fn ($id) => (int) $id)->all();
@@ -86,8 +94,12 @@ class ShowCheckoutPage extends BaseAction
             $checkoutRegisteredEmail = $oldEmail;
         }
 
+        $productGroups = ProductBundle::group($productsInCart);
+
         return view('pages.store.checkout', [
-            'productsInCart' => $cartService->getProductsInCart($cart),
+            'productsInCart' => $productsInCart,
+            'productGroups' => $productGroups,
+            'productGroupsCount' => ProductBundle::countUnits($productGroups),
             'regions' => $regionService->getRegions(),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'checkoutPaymentType' => $paymentType,

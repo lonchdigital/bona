@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Support\Commerce\ProductBundle;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -34,9 +35,17 @@ class SuccessOrder extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
+        $this->order->loadMissing([
+            'products.colors',
+            'products.productType.attributes',
+        ]);
+
         return new Content(
             view: 'emails.success-order',
-            with: ['order' => $this->order],
+            with: [
+                'order' => $this->order,
+                'orderProductGroups' => ProductBundle::group($this->order->products),
+            ],
         );
     }
 

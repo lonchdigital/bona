@@ -87,6 +87,13 @@ const translations = {
     decrease_quantity: '@lang('base.decrease_quantity')',
     increase_quantity: '@lang('base.increase_quantity')',
     cart_unit_price: '@lang('base.cart_unit_price')',
+    cart_bundle_label: '@lang('base.cart_bundle_label')',
+    cart_bundle_contents: '@lang('base.cart_bundle_contents')',
+    cart_bundle_hint: '@lang('base.cart_bundle_hint')',
+    cart_bundle_item: '@lang('base.cart_bundle_item')',
+    cart_bundle_remove_all: '@lang('base.cart_bundle_remove_all')',
+    cart_item_remove: '@lang('base.cart_item_remove')',
+    color: '@lang('base.color')',
 };
 
 const store = {

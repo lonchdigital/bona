@@ -26,6 +26,20 @@ function formatMoney(value)
     return `${Math.round(Number(value) || 0).toLocaleString(locale === 'ru' ? 'ru-RU' : 'uk-UA')} ${store.base_currency_name_short}`;
 }
 
+function createBundleKey()
+{
+    if (globalThis.crypto?.randomUUID) {
+        return globalThis.crypto.randomUUID();
+    }
+
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (character) {
+        const random = Math.floor(Math.random() * 16);
+        const value = character === 'x' ? random : (random & 0x3) | 0x8;
+
+        return value.toString(16);
+    });
+}
+
 function responseErrorMessage(response, fallback)
 {
     const payload = response?.responseJSON || {};
@@ -217,6 +231,8 @@ export default {
                 }
             });
 
+            const bundleKey = selectedSubProducts.length > 0 ? createBundleKey() : null;
+
             const addSelectedSubProducts = (index, latestResponse, done, fail) => {
                 if (index >= selectedSubProducts.length) {
                     done(latestResponse);
@@ -227,6 +243,7 @@ export default {
                 addSubProductToCart(
                     subProduct.slug,
                     subProduct.count,
+                    bundleKey,
                     (data) => addSelectedSubProducts(index + 1, data, done, fail),
                     fail
                 );
@@ -238,6 +255,7 @@ export default {
                 productSlug,
                 count,
                 selectAttributes,
+                bundleKey,
                 function () {},
                 function () {
                     console.error('[Cart]: init: error during adding product to cart.');
@@ -633,6 +651,7 @@ function updateCartItemQuantity(input)
 {
     const cartItem = input.closest('.cart-item');
     const slug = cartItem?.querySelector('.product-slug-input')?.value;
+    const lineId = Number.parseInt(cartItem?.querySelector('.cart-line-id-input')?.value, 10) || null;
     if (!cartItem || !slug || input.disabled) return;
 
     const minimum = Number.parseInt(input.min, 10) || 1;
@@ -653,6 +672,7 @@ function updateCartItemQuantity(input)
         slug,
         quantity,
         getAllProductAttributes($(input)),
+        lineId,
         renderCartData,
         function (response) {
             if (document.contains(input)) input.value = String(committed);
@@ -666,6 +686,7 @@ function deleteCartItem(button)
 {
     const cartItem = button.closest('.cart-item');
     const slug = cartItem?.querySelector('.product-slug-input')?.value;
+    const lineId = Number.parseInt(cartItem?.querySelector('.cart-line-id-input')?.value, 10) || null;
     if (!cartItem || !slug || button.disabled) return;
 
     clearCartMutationError();
@@ -674,6 +695,7 @@ function deleteCartItem(button)
     deleteProductFromCart(
         slug,
         getAllProductAttributes($(button)),
+        lineId,
         renderCartData,
         function (response) {
             setCartItemBusy(cartItem, false);
@@ -703,7 +725,7 @@ function showCartPageLoadError()
 }
 
 //api
-function addProductToCart(slug, count, selectAttributes, success, fail)
+function addProductToCart(slug, count, selectAttributes, bundleKey, success, fail)
 {
     const routeWithSlug = routes.cart.product_add_route.replace('PRODUCT_SLUG', slug);
 
@@ -713,7 +735,8 @@ function addProductToCart(slug, count, selectAttributes, success, fail)
         data: {
             _token: csrf,
             product_count: count,
-            product_attributes: selectAttributes
+            product_attributes: selectAttributes,
+            bundle_key: bundleKey,
         },
         dataType: 'json'
     }).done(function(data) {
@@ -722,7 +745,7 @@ function addProductToCart(slug, count, selectAttributes, success, fail)
         fail(response);
     });
 }
-function addSubProductToCart(slug, updatedCount, success, fail)
+function addSubProductToCart(slug, updatedCount, bundleKey, success, fail)
 {
     const routeWithSlug = routes.cart.sub_product_add_route.replace('PRODUCT_SLUG', slug);
 
@@ -731,7 +754,8 @@ function addSubProductToCart(slug, updatedCount, success, fail)
         type: 'post',
         data: {
             _token: csrf,
-            product_count: updatedCount
+            product_count: updatedCount,
+            bundle_key: bundleKey,
         },
         dataType: 'json',
     }).done(function(data) {
@@ -761,7 +785,7 @@ function getProductsInCart(success, fail)
     });
 }
 
-function deleteProductFromCart(slug, productAttributes, success, fail)
+function deleteProductFromCart(slug, productAttributes, lineId, success, fail)
 {
     const routeWithSlug = routes.cart.product_delete_route.replace('PRODUCT_SLUG', slug);
 
@@ -770,7 +794,8 @@ function deleteProductFromCart(slug, productAttributes, success, fail)
         type: 'post',
         data: {
             _token: csrf,
-            product_attributes: productAttributes
+            product_attributes: productAttributes,
+            cart_line_id: lineId,
         },
         dataType: 'json',
     }).done(function(data) {
@@ -780,7 +805,7 @@ function deleteProductFromCart(slug, productAttributes, success, fail)
     });
 }
 
-function updateProductInCart(slug, count, productAttributes, success, fail)
+function updateProductInCart(slug, count, productAttributes, lineId, success, fail)
 {
     const routeWithSlug = routes.cart.product_update_route.replace('PRODUCT_SLUG', slug);
 
@@ -791,6 +816,7 @@ function updateProductInCart(slug, count, productAttributes, success, fail)
             _token: csrf,
             product_count: count,
             product_attributes: productAttributes,
+            cart_line_id: lineId,
             // product_attributes_price: 100,
         },
         dataType: 'json',
@@ -829,12 +855,49 @@ function removePromoCode(success, fail)
 }
 
 //html window
+function groupCartProducts(products)
+{
+    const groups = [];
+    const bundlesByKey = new Map();
+
+    products.forEach(function (product) {
+        const bundleKey = product.bundle?.key;
+
+        if (!bundleKey) {
+            groups.push({ key: null, parent: product, items: [], isBundle: false });
+            return;
+        }
+
+        let group = bundlesByKey.get(bundleKey);
+        if (!group) {
+            group = { key: bundleKey, parent: null, items: [], isBundle: true };
+            bundlesByKey.set(bundleKey, group);
+            groups.push(group);
+        }
+
+        if (product.bundle?.role === 'parent' && !group.parent) {
+            group.parent = product;
+        } else {
+            group.items.push(product);
+        }
+    });
+
+    return groups
+        .map(function (group) {
+            if (!group.parent && group.items.length > 0) {
+                group.parent = group.items.shift();
+                group.isBundle = false;
+            }
+
+            return group;
+        })
+        .filter((group) => group.parent);
+}
+
 function drawProductsInCartWindowHTML(data)
 {
     const products = data.data.products || [];
-    const productsToAppend = products.map(function (product) {
-        return getProductInCartWindowHTML(product, getProductAttributesHTML(product));
-    }).join('');
+    const productsToAppend = groupCartProducts(products).map(getCartBundleWindowHTML).join('');
 
     $('.basket-sub-menu .sub-menu-list').html(productsToAppend);
     $('.basket-sub-menu .items-total-price').text(formatMoney(data.data.summary.total));
@@ -851,24 +914,61 @@ function drawProductsInCartWindowHTML(data)
     renderPromoCodeState(data.data.promo_code);
 }
 
-function getProductInCartWindowHTML(productData, productAttributesHTML)
+function getCartBundleWindowHTML(group)
 {
+    if (!group.isBundle) {
+        return getProductInCartWindowHTML(group.parent, { tag: 'li' });
+    }
+
+    const items = group.items.map((product) => getProductInCartWindowHTML(product, {
+        tag: 'article',
+        modifier: 'is-bundle-item',
+        category: product.bundle?.category || translations.cart_bundle_item,
+    })).join('');
+
+    return `
+        <li class="bona-cart-drawer-bundle" data-cart-bundle="${escapeHTML(group.key)}">
+            <div class="bona-cart-drawer-bundle__head">
+                <span>${escapeHTML(translations.cart_bundle_label)}</span>
+                <small>${escapeHTML(translations.cart_bundle_hint)}</small>
+            </div>
+            ${getProductInCartWindowHTML(group.parent, { tag: 'article', modifier: 'is-bundle-parent' })}
+            ${items ? `
+                <div class="bona-cart-drawer-bundle__items-head">
+                    <span>${escapeHTML(translations.cart_bundle_contents)}</span>
+                    <b>${group.items.length}</b>
+                </div>
+                <div class="bona-cart-drawer-bundle__items">${items}</div>
+            ` : ''}
+        </li>
+    `;
+}
+
+function getProductInCartWindowHTML(productData, options = {})
+{
+    const tag = options.tag === 'article' ? 'article' : 'li';
+    const modifier = options.modifier ? ` ${options.modifier}` : '';
     const productCurrentImageUrl = productData.current_image_path
         ? `/storage/${productData.current_image_path}`
         : productData.main_image_url;
     const meta = [productData.brand_name, productData.availability].filter(Boolean).join(' · ');
+    const deleteLabel = productData.bundle?.role === 'parent'
+        ? translations.cart_bundle_remove_all
+        : translations.cart_item_remove;
 
     return `
-        <li class="sub-menu-list-item cart-item">
+        <${tag} class="sub-menu-list-item cart-item${modifier}">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${escapeHTML(productData.slug)}"/>
+            <input type="hidden" class="cart-line-id-input" value="${escapeHTML(productData.line_id)}"/>
             <div class="item-link-wrapper">
                 <a href="${escapeHTML(productData.link)}" class="item-image">
                     <img src="${escapeHTML(productCurrentImageUrl)}" alt="${escapeHTML(productData.display_name)}" loading="lazy" decoding="async">
                 </a>
                 <div class="item-content">
+                    ${options.category ? `<p class="item-bundle-category">${escapeHTML(options.category)}</p>` : ''}
                     ${meta ? `<p class="item-meta">${escapeHTML(meta)}</p>` : ''}
                     <a href="${escapeHTML(productData.link)}" class="item-text">${escapeHTML(productData.display_name)}</a>
-                    ${productAttributesHTML}
+                    ${getProductAttributesHTML(productData)}
                     <div class="item-counts">
                         <div class="custom-control-number custom-control-number--cart bona-qty-control" aria-label="${escapeHTML(translations.count_of_products)}">
                             <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
@@ -877,14 +977,15 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
                         </div>
                         <div class="item-price">
                             <strong class="item-price-text">${formatMoney(productData.line_total)}</strong>
+                            <small>${Number(productData.count) || 1} × ${formatMoney(productData.price_per_product_with_attributes)}</small>
                         </div>
                     </div>
                 </div>
-                <button class="item-delete" type="button" aria-label="${escapeHTML(translations.delete)}">
+                <button class="item-delete" type="button" aria-label="${escapeHTML(deleteLabel)}" title="${escapeHTML(deleteLabel)}">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
-        </li>
+        </${tag}>
     `;
 }
 
@@ -892,9 +993,7 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
 function drawProductsInCartPageHTML(data)
 {
     const products = data.data.products || [];
-    const productsToAppend = products.map(function (product) {
-        return getProductInCartPageHTML(product, getProductAttributesHTML(product));
-    }).join('');
+    const productsToAppend = groupCartProducts(products).map(getCartBundlePageHTML).join('');
 
     const cartPage = $('[data-cart-page]');
     const list = cartPage.find('[data-cart-list]');
@@ -915,38 +1014,76 @@ function drawProductsInCartPageHTML(data)
     renderPromoCodeState(data.data.promo_code);
 }
 
-function getProductInCartPageHTML(productData, productAttributesHTML)
+function getCartBundlePageHTML(group)
 {
+    if (!group.isBundle) {
+        return getProductInCartPageHTML(group.parent);
+    }
+
+    const items = group.items.map((product) => getProductInCartPageHTML(product, {
+        modifier: 'is-bundle-item',
+        category: product.bundle?.category || translations.cart_bundle_item,
+    })).join('');
+
+    return `
+        <section class="bona-cart-bundle" data-cart-bundle="${escapeHTML(group.key)}">
+            <header class="bona-cart-bundle__head">
+                <div>
+                    <span>${escapeHTML(translations.cart_bundle_label)}</span>
+                    <small>${escapeHTML(translations.cart_bundle_hint)}</small>
+                </div>
+                <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 6.5h13v19H8zM21 9.5h3v16H11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="17.5" cy="16" r="1" fill="currentColor"/></svg>
+            </header>
+            ${getProductInCartPageHTML(group.parent, { modifier: 'is-bundle-parent' })}
+            ${items ? `
+                <div class="bona-cart-bundle__items-head">
+                    <div><span>${escapeHTML(translations.cart_bundle_contents)}</span><small>${escapeHTML(group.parent.display_name)}</small></div>
+                    <b>${group.items.length}</b>
+                </div>
+                <div class="bona-cart-bundle__items">${items}</div>
+            ` : ''}
+        </section>
+    `;
+}
+
+function getProductInCartPageHTML(productData, options = {})
+{
+    const modifier = options.modifier ? ` ${options.modifier}` : '';
     const productCurrentImageUrl = productData.current_image_path
         ? `/storage/${productData.current_image_path}`
         : productData.main_image_url;
     const meta = [productData.brand_name, productData.availability].filter(Boolean).join(' · ');
+    const deleteLabel = productData.bundle?.role === 'parent'
+        ? translations.cart_bundle_remove_all
+        : translations.cart_item_remove;
 
     return `
-        <article class="bona-cart-row cart-item">
+        <article class="bona-cart-row cart-item${modifier}">
             <input type="hidden" class="product-slug-input" name="product_slug" value="${escapeHTML(productData.slug)}"/>
+            <input type="hidden" class="cart-line-id-input" value="${escapeHTML(productData.line_id)}"/>
             <a href="${escapeHTML(productData.link)}" class="bona-cart-row__image">
                 <img src="${escapeHTML(productCurrentImageUrl)}" alt="${escapeHTML(productData.display_name)}" loading="lazy" decoding="async">
             </a>
             <div class="bona-cart-row__body">
+                ${options.category ? `<p class="bona-cart-row__bundle-category">${escapeHTML(options.category)}</p>` : ''}
                 ${meta ? `<p class="bona-cart-row__meta">${escapeHTML(meta)}</p>` : ''}
                 <h2><a href="${escapeHTML(productData.link)}">${escapeHTML(productData.display_name)}</a></h2>
-                ${productAttributesHTML}
+                ${getProductAttributesHTML(productData)}
                 <div class="bona-cart-row__controls">
                     <div class="custom-control-number bona-qty-control" aria-label="${escapeHTML(translations.count_of_products)}">
                         <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
                         <input type="number" class="product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" data-committed-value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
                         <button class="counter plus" type="button" aria-label="${escapeHTML(translations.increase_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3v10"/></svg></button>
                     </div>
-                    <button class="bona-remove-link delete-product-from-cart-button" type="button">
+                    <button class="bona-remove-link delete-product-from-cart-button" type="button" aria-label="${escapeHTML(deleteLabel)}">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        <span>${escapeHTML(translations.delete)}</span>
+                        <span>${escapeHTML(deleteLabel)}</span>
                     </button>
                 </div>
             </div>
             <div class="bona-cart-row__price">
                 <strong>${formatMoney(productData.line_total)}</strong>
-                <small>${escapeHTML(translations.cart_unit_price)}</small>
+                <small>${Number(productData.count) || 1} × ${formatMoney(productData.price_per_product_with_attributes)}</small>
             </div>
         </article>
     `;
@@ -957,7 +1094,7 @@ function getProductAttributesHTML(productData)
     if (Array.isArray(productData.configuration)) {
         const lines = productData.configuration
             .filter((item) => item && item.label && item.key !== undefined && item.id !== undefined)
-            .map((item) => attributeLine(item.key, item.id, item.label));
+            .map((item) => attributeLine(item.key, item.id, item.name, item.label, item.swatch));
 
         return `<div class="product-attributes bona-cart-row__config">${lines.join('')}</div>`;
     }
@@ -981,7 +1118,7 @@ function getProductAttributesHTML(productData)
     const colorName = attributes.color_name;
 
     if (colorId !== undefined && colorId !== null) {
-        lines.push(attributeLine('color_name', colorId, colorName || ''));
+        lines.push(attributeLine('color_name', colorId, translations.color, colorName || '', null));
     }
 
     Object.entries(attributes).forEach(([key, value]) => {
@@ -993,7 +1130,7 @@ function getProductAttributesHTML(productData)
             let names = option.name;
             if (typeof names === 'string') names = JSON.parse(names);
             const label = typeof names === 'object' ? (names[locale] || names.uk || names.ru || '') : names;
-            lines.push(attributeLine(key, option.id, label));
+            lines.push(attributeLine(key, option.id, '', label, null));
         } catch (_) {
             // Historical cart rows can contain deleted options. Keep the line
             // editable without exposing broken JSON to the page.
@@ -1003,9 +1140,15 @@ function getProductAttributesHTML(productData)
     return `<div class="product-attributes bona-cart-row__config">${lines.join('')}</div>`;
 }
 
-function attributeLine(key, id, label)
+function attributeLine(key, id, name, label, swatch)
 {
+    const safeSwatch = typeof swatch === 'string' && /^#[0-9a-f]{3}(?:[0-9a-f]{1}|[0-9a-f]{3}|[0-9a-f]{5})?$/i.test(swatch)
+        ? swatch
+        : null;
+
     return `<span class="product-attribute-line" data-attribute-key="${escapeHTML(key)}" data-attribute-id="${escapeHTML(id)}">
+        ${safeSwatch ? `<i class="attribute-swatch" style="--attribute-swatch:${safeSwatch}" aria-hidden="true"></i>` : ''}
+        ${name ? `<span class="attribute-name">${escapeHTML(name)}:</span>` : ''}
         <span class="attribute-value">${escapeHTML(label)}</span>
     </span>`;
 }

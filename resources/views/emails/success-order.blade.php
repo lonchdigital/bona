@@ -28,41 +28,43 @@
                                             </tr>
                                             </thead>
                                             <tbody class="art-product-list">
-                                            @foreach($order->products as $product)
-                                                <tr class="art-product-row">
-                                                    <td class="art-column-img">
-                                                        <a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">
-                                                            <img class="order-product-image" src="{{ $product->preview_image_full_url }}" alt="Product image">
-                                                        </a>
-                                                    </td>
-                                                    <td class="art-column-name"><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a></td>
-                                                    <td>
-                                                        @if($product->pivot->attributes)
-                                                            @php
-                                                                $attributes = \App\Helpers\DecodeJson::decodeJsonRecursive(json_decode($product->pivot->attributes, true));
-                                                                if(isset($attributes['color_id'])) {
-                                                                    unset($attributes['color_id']);
-                                                                }
-                                                            @endphp
-
-                                                            <div class="product-attributes">
-                                                                @if(is_array($attributes))
-                                                                    @foreach($attributes as $key => $value)
-                                                                        @if(is_array($value))
-                                                                            <div class="product-attribute-line">
-                                                                                <div class="attribute-value">{{ $value['name'][app()->getLocale()] }}</div>
-                                                                            </div>
-                                                                        @endif
-                                                                    @endforeach
-                                                                @endif
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                    <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
-                                                    <td>{{ $product->pivot->count }}</td>
-                                                    <td>{{ round( $product->pivot->price + $product->pivot->attributes_price, 2) }}</td>
-                                                    <td>{{ round( ($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count, 2) }}</td>
-                                                </tr>
+                                            @foreach($orderProductGroups as $group)
+                                                @if($group['is_bundle'])
+                                                    <tr><td colspan="7" style="padding:12px 10px;background:#f3eee5;border-top:2px solid #ad8758;text-align:left"><strong style="display:block;color:#846238;font-size:11px;text-transform:uppercase">{{ trans('base.cart_bundle_label') }}</strong><span style="display:block;margin-top:3px">{{ $group['parent']->name }}</span></td></tr>
+                                                @endif
+                                                @foreach(collect([$group['parent']])->concat($group['items']) as $product)
+                                                    @php
+                                                        $isBundleItem = $group['is_bundle'] && $product->pivot->bundle_role === \App\Support\Commerce\ProductBundle::ROLE_ITEM;
+                                                        $configuration = \App\Support\Commerce\ProductConfiguration::for($product, $product->pivot->attributes);
+                                                        $bundleCategory = $isBundleItem ? \App\Support\Commerce\ProductBundle::localizedCategory($product->pivot->bundle_category) : '';
+                                                        $imageUrl = $product->pivot->current_image_path
+                                                            ? url('/storage/'.$product->pivot->current_image_path)
+                                                            : $product->preview_image_full_url;
+                                                    @endphp
+                                                    <tr class="art-product-row" @if($isBundleItem) style="background:#faf8f4" @endif>
+                                                        <td class="art-column-img" @if($isBundleItem) style="padding-left:20px" @endif>
+                                                            <a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">
+                                                                <img class="order-product-image" src="{{ $imageUrl }}" alt="{{ $product->name }}" style="background:#fff;object-fit:contain">
+                                                            </a>
+                                                        </td>
+                                                        <td class="art-column-name">
+                                                            @if($bundleCategory)<small style="display:block;color:#846238;font-size:9px;text-transform:uppercase">{{ $bundleCategory }}</small>@endif
+                                                            <a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->name }}</a>
+                                                        </td>
+                                                        <td>
+                                                            @foreach($configuration as $item)
+                                                                <div style="margin-bottom:4px;font-size:11px">
+                                                                    @if($item['swatch'])<i style="display:inline-block;width:11px;height:11px;margin-right:3px;border:1px solid #bdb5a9;border-radius:50%;background:{{ $item['swatch'] }};vertical-align:middle"></i>@endif
+                                                                    @if($item['name'])<strong>{{ $item['name'] }}:</strong>@endif {{ $item['label'] }}
+                                                                </div>
+                                                            @endforeach
+                                                        </td>
+                                                        <td><a href="{{ route('store.product.page', ['productSlug' => $product->slug]) }}">{{ $product->sku }}</a></td>
+                                                        <td>{{ $product->pivot->count }}</td>
+                                                        <td>{{ round($product->pivot->price + $product->pivot->attributes_price, 2) }}</td>
+                                                        <td>{{ round(($product->pivot->price + $product->pivot->attributes_price) * $product->pivot->count, 2) }}</td>
+                                                    </tr>
+                                                @endforeach
                                             @endforeach
                                             </tbody>
                                         </table>

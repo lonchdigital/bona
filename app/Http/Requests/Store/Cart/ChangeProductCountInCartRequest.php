@@ -22,6 +22,15 @@ class ChangeProductCountInCartRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'cart_line_id' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
+            'bundle_key' => [
+                'nullable',
+                'uuid',
+            ],
             /*'product_attributes_price' => [
                 'nullable',
                 'integer',
@@ -34,7 +43,8 @@ class ChangeProductCountInCartRequest extends BaseRequest
         return new ChangeProductCountInCartDTO(
             $this->input('product_count'),
             $this->input('product_attributes'),
-            //            $this->input('product_attributes_price'),
+            $this->integer('cart_line_id') ?: null,
+            $this->input('bundle_key'),
         );
     }
 }

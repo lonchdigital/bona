@@ -3,8 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Cart;
+use App\Models\CartProducts;
+use App\Models\Category;
 use App\Models\ServicesPageSections;
+use App\Support\Commerce\ProductBundle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
 
@@ -137,6 +141,82 @@ class CartTest extends TestCase
         )->assertOk();
 
         $this->assertCount(0, Cart::first()->fresh()->products);
+    }
+
+    public function test_a_door_configuration_stays_grouped_and_each_line_can_be_changed_independently(): void
+    {
+        $frame = $this->makeProduct(['name' => ['uk' => 'Короб телескопічний', 'ru' => 'Короб телескопический']]);
+        $trim = $this->makeProduct(['name' => ['uk' => 'Лиштва', 'ru' => 'Наличник']]);
+        $door = $this->makeProduct([
+            'name' => ['uk' => 'ArtPort New York', 'ru' => 'ArtPort New York'],
+            'sub_products' => json_encode([$frame->id, $trim->id]),
+        ]);
+        $category = Category::create([
+            'creator_id' => $this->author()->id,
+            'product_type_id' => $frame->product_type_id,
+            'name' => ['uk' => 'Короб', 'ru' => 'Короб'],
+            'slug' => 'cart-bundle-frame',
+            'image_path' => 'test/frame.webp',
+        ]);
+        $frame->categories()->attach($category->id);
+        $trim->categories()->attach($category->id);
+        $bundleKey = (string) Str::uuid();
+
+        $this->keepCookies($this->postJson(
+            route('store.cart.add-product', ['productSlug' => $door->slug]),
+            [
+                'product_count' => 1,
+                'bundle_key' => $bundleKey,
+                'product_attributes' => [
+                    'color_id' => null,
+                    'product_attribute_12' => json_encode([
+                        'id' => 55,
+                        'name' => ['uk' => 'Праве', 'ru' => 'Правое'],
+                    ]),
+                ],
+            ]
+        ))->assertOk();
+
+        foreach ([$frame, $trim] as $component) {
+            $this->keepCookies($this->postJson(
+                route('store.cart.add-sub-product', ['productSlug' => $component->slug]),
+                ['product_count' => 1, 'bundle_key' => $bundleKey]
+            ))->assertOk();
+        }
+
+        $lines = CartProducts::query()->where('bundle_key', $bundleKey)->orderBy('id')->get();
+        $this->assertCount(3, $lines);
+        $this->assertSame(ProductBundle::ROLE_PARENT, $lines->first()->bundle_role);
+        $this->assertSame(ProductBundle::ROLE_ITEM, $lines->get(1)->bundle_role);
+
+        $response = $this->keepCookies($this->getJson(route('store.cart.products-with-summary')))->assertOk();
+        $response->assertJsonFragment([
+            'key' => $bundleKey,
+            'role' => ProductBundle::ROLE_ITEM,
+            'category' => 'Короб',
+        ]);
+        $response->assertJsonFragment(['line_id' => $lines->get(1)->id]);
+
+        $this->keepCookies($this->postJson(
+            route('store.cart.change-product-count', ['productSlug' => $frame->slug]),
+            ['product_count' => 2, 'cart_line_id' => $lines->get(1)->id]
+        ))->assertOk();
+
+        $this->assertSame(2, (int) $lines->get(1)->fresh()->count);
+        $this->assertSame(1, (int) $lines->get(2)->fresh()->count);
+
+        $this->keepCookies($this->postJson(
+            route('store.cart.delete-product', ['productSlug' => $trim->slug]),
+            ['cart_line_id' => $lines->get(2)->id]
+        ))->assertOk();
+        $this->assertDatabaseMissing('cart_products', ['id' => $lines->get(2)->id]);
+        $this->assertDatabaseHas('cart_products', ['id' => $lines->first()->id]);
+
+        $this->keepCookies($this->postJson(
+            route('store.cart.delete-product', ['productSlug' => $door->slug]),
+            ['cart_line_id' => $lines->first()->id]
+        ))->assertOk();
+        $this->assertDatabaseMissing('cart_products', ['bundle_key' => $bundleKey]);
     }
 
     public function test_two_visitors_do_not_share_a_cart(): void

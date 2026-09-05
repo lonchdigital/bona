@@ -14,6 +14,11 @@ class DeleteProductFromCartRequest extends BaseRequest
                 'nullable',
                 'array',
             ],
+            'cart_line_id' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
         ];
     }
 
@@ -21,6 +26,7 @@ class DeleteProductFromCartRequest extends BaseRequest
     {
         return new DeleteProductFromCartDTO(
             $this->input('product_attributes'),
+            $this->integer('cart_line_id') ?: null,
         );
     }
 }

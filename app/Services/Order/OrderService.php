@@ -12,6 +12,7 @@ use App\Mail\OrderStatusEmail;
 use App\Mail\SuccessOrder;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\PromoCode;
 use App\Models\Role;
@@ -177,19 +178,20 @@ class OrderService extends BaseService
                 'payment_status_id' => $paymentStatus,
             ]);
 
-            $productsToSync = [];
-
             foreach ($cart->products as $product) {
-                $productsToSync[] = [
+                OrderProduct::create([
+                    'order_id' => $order->id,
                     'product_id' => $product->id,
                     'count' => $product->pivot->count,
                     'price' => $product->pivot->price,
                     'attributes' => $product->pivot->attributes,
                     'attributes_price' => $product->pivot->attributes_price,
-                ];
+                    'current_image_path' => $product->pivot->current_image_path,
+                    'bundle_key' => $product->pivot->bundle_key,
+                    'bundle_role' => $product->pivot->bundle_role,
+                    'bundle_category' => $product->pivot->bundle_category,
+                ]);
             }
-
-            $order->products()->sync($productsToSync);
 
             $cart->products()->sync([]);
             $cart->delete();

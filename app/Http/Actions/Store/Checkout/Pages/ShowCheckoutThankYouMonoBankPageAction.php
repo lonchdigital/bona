@@ -9,6 +9,7 @@ use App\Models\ProductType;
 use App\Services\Cart\CartService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Pricing\PricingService;
+use App\Support\Commerce\ProductBundle;
 
 class ShowCheckoutThankYouMonoBankPageAction extends BaseAction
 {
@@ -20,10 +21,20 @@ class ShowCheckoutThankYouMonoBankPageAction extends BaseAction
         CurrencyService $currencyService,
         PricingService $pricingService,
     ) {
-        $order->loadMissing(['products', 'promoCode', 'region', 'user']);
+        $order->loadMissing([
+            'products.colors',
+            'products.productType.attributes',
+            'promoCode',
+            'region',
+            'user',
+        ]);
+
+        $orderProductGroups = ProductBundle::group($order->products);
 
         return view('pages.store.checkout-thank-you', [
             'order' => $order,
+            'orderProductGroups' => $orderProductGroups,
+            'orderProductGroupsCount' => ProductBundle::countUnits($orderProductGroups),
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'productType' => ProductType::first(),
             'orderSummary' => $pricingService->forOrder($order),

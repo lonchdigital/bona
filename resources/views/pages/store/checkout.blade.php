@@ -25,7 +25,7 @@
             ',',
             ' ',
         ).' '.$currency;
-        $productsCount = $productsInCart->sum(fn ($product) => (int) $product->pivot->count);
+        $productsCount = $productGroupsCount;
         $signInUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page', ['redirect_to' => request()->getRequestUri()]);
         $signInActionUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in');
         $forgotPasswordUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('auth.forgot-password.page');
@@ -284,16 +284,24 @@
                     <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}">{{ trans('base.checkout_edit_order') }}</a>
                 </div>
                 <div class="bona-checkout-items">
-                    @foreach($productsInCart as $product)
-                        @php
-                            $unitPrice = (float) $product->pivot->price + (float) ($product->pivot->attributes_price ?? 0);
-                            $imageUrl = $product->pivot->current_image_path ? '/storage/'.$product->pivot->current_image_path : ($product->main_image_url ?: $product->preview_image_url);
-                        @endphp
-                        <a class="bona-checkout-item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]) }}">
-                            <span class="bona-checkout-item__image"><img src="{{ $imageUrl }}" alt="{{ $product->name }}"></span>
-                            <span class="bona-checkout-item__body"><b>{{ $product->name }}</b><small>{{ $product->pivot->count }} × {{ $formatPrice($unitPrice) }}</small></span>
-                            <strong>{{ $formatPrice($unitPrice * $product->pivot->count) }}</strong>
-                        </a>
+                    @foreach($productGroups as $group)
+                        @if($group['is_bundle'])
+                            <section class="bona-checkout-bundle">
+                                <div class="bona-checkout-bundle__head">
+                                    <span>{{ trans('base.cart_bundle_label') }}</span>
+                                    <small>{{ trans('base.cart_bundle_hint') }}</small>
+                                </div>
+                                @include('pages.store.partials.checkout-product-row', ['product' => $group['parent'], 'isBundleItem' => false])
+                                @if($group['items']->isNotEmpty())
+                                    <div class="bona-checkout-bundle__items-label">{{ trans('base.cart_bundle_contents') }}</div>
+                                    @foreach($group['items'] as $product)
+                                        @include('pages.store.partials.checkout-product-row', ['product' => $product, 'isBundleItem' => true])
+                                    @endforeach
+                                @endif
+                            </section>
+                        @else
+                            @include('pages.store.partials.checkout-product-row', ['product' => $group['parent'], 'isBundleItem' => false])
+                        @endif
                     @endforeach
                 </div>
                 <div class="bona-summary-lines">

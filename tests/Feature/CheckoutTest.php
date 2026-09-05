@@ -8,9 +8,12 @@ use App\DataClasses\OrderStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
 use App\Models\Cart;
+use App\Models\CartProducts;
 use App\Models\Order;
+use App\Models\OrderProduct;
 use App\Models\PromoCode;
 use App\Models\User;
+use App\Support\Commerce\ProductBundle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
@@ -261,6 +264,60 @@ class CheckoutTest extends TestCase
             (float) Order::first()->products->first()->pivot->price,
             'Замовлення має зберегти ціну, про яку домовлялись у кошику.'
         );
+    }
+
+    public function test_checkout_preserves_the_door_configuration_and_its_components_as_one_bundle(): void
+    {
+        $this->seedCurrency();
+        $door = $this->makeProduct(['name' => ['uk' => 'ArtPort New York', 'ru' => 'ArtPort New York']]);
+        $frame = $this->makeProduct(['name' => ['uk' => 'Короб', 'ru' => 'Короб']]);
+        $bundleKey = '5b816b8c-a98b-4f06-91be-c77f027d999a';
+
+        $this->addToCart($door->slug)->assertOk();
+        $cart = Cart::firstOrFail();
+        $parentLine = CartProducts::query()->where('cart_id', $cart->id)->firstOrFail();
+        $parentLine->update([
+            'attributes' => json_encode([
+                'color_id' => null,
+                'product_attribute_12' => json_encode([
+                    'id' => 55,
+                    'name' => ['uk' => '900 × 2000 мм', 'ru' => '900 × 2000 мм'],
+                ]),
+            ]),
+            'bundle_key' => $bundleKey,
+            'bundle_role' => ProductBundle::ROLE_PARENT,
+        ]);
+        CartProducts::create([
+            'cart_id' => $cart->id,
+            'product_id' => $frame->id,
+            'count' => 2,
+            'price' => 700,
+            'attributes_price' => 0,
+            'bundle_key' => $bundleKey,
+            'bundle_role' => ProductBundle::ROLE_ITEM,
+            'bundle_category' => json_encode(['uk' => 'Короб', 'ru' => 'Короб']),
+        ]);
+
+        $this->confirm(['email' => 'bundle-order@example.com'])->assertSessionHasNoErrors();
+
+        $order = Order::firstOrFail();
+        $orderLines = OrderProduct::query()->where('order_id', $order->id)->orderBy('id')->get();
+        $this->assertCount(2, $orderLines);
+        $this->assertSame($bundleKey, $orderLines->first()->bundle_key);
+        $this->assertSame(ProductBundle::ROLE_PARENT, $orderLines->first()->bundle_role);
+        $this->assertSame(ProductBundle::ROLE_ITEM, $orderLines->last()->bundle_role);
+        $this->assertSame(2, (int) $orderLines->last()->count);
+        $storedAttributes = json_decode((string) $orderLines->first()->attributes, true);
+        $storedSize = json_decode($storedAttributes['product_attribute_12'], true);
+        $this->assertSame('900 × 2000 мм', $storedSize['name']['uk']);
+
+        $order->load('products');
+        $groups = ProductBundle::group($order->products);
+        $this->assertCount(1, $groups);
+        $this->assertTrue($groups->first()['is_bundle']);
+        $this->assertSame($door->id, $groups->first()['parent']->id);
+        $this->assertSame($frame->id, $groups->first()['items']->first()->id);
+        $this->assertSame(1, ProductBundle::countUnits($groups));
     }
 
     public function test_an_instalment_period_the_shop_does_not_offer_is_refused(): void

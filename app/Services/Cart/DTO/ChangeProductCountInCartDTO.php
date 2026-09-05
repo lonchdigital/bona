@@ -9,6 +9,7 @@ class ChangeProductCountInCartDTO implements BaseDTO
     public function __construct(
         public readonly int $productCount,
         public readonly ?array $productAttributes,
-        //        public readonly int $productAttributesPrice,
+        public readonly ?int $cartLineId = null,
+        public readonly ?string $bundleKey = null,
     ) {}
 }
