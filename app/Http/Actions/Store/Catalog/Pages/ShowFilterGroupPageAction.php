@@ -2,7 +2,6 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
-use App\DataClasses\ProductStatusDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\FilterGroup;
@@ -84,7 +83,7 @@ class ShowFilterGroupPageAction extends BaseAction
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
-            'productStatuses' => ProductStatusDataClass::getForWeb(),
+            'productStatuses' => $catalogService->getAvailableProductStatuses($productType),
             'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
             'categories' => $categoryService->getProductCategories($productType),

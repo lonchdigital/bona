@@ -34,9 +34,9 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
         $filtersData = $request->toDTO();
 
         $baseCurrency = $currencyService->getBaseCurrency();
-        $colors = $colorService->getAvailableColorsByProductType($productType);
+        $colors = $colorService->getAvailableColorsByProductTypeAndCategory($productType, $category);
         $countries = $countryService->getAvailableCountriesByProductType($productType);
-        $brands = $brandService->getAvailableBrandsByProductType($productType);
+        $brands = $brandService->getAvailableBrandsByProductType($productType, $category);
         $brandsSortedByFirstLetter = $brandService->sortBrandsByFirstLetterByProductType($brands);
 
         $selectedFiltersOptions = $catalogService->getOptionsByFilterData(
@@ -60,15 +60,8 @@ class ShowCatalogRuckyAvailabilityPageAction extends BaseAction
 
         LastModified::set($category->updated_at);
 
-        $allFields = $productType->fields;
-        $allFields->map(function ($field) use ($productType, $category) {
-            $field->options = $field->optionsWithProductsInCategory($productType, $category);
-
-            return $field;
-        });
-
         return view('pages.store.catalog-sort.catalog-sort-rucky-availability', [
-            'filters' => $catalogService->getFiltersByProductType($productType),
+            'filters' => $catalogService->getFiltersByProductType($productType, $category),
             'filtersData' => $filtersData->filters,
             'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,

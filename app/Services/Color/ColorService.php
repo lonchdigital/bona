@@ -2,8 +2,10 @@
 
 namespace App\Services\Color;
 
+use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
+use App\Models\ProductType;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Color\DTO\EditColorDTO;
@@ -37,34 +39,35 @@ class ColorService extends BaseService
         return $query->paginate(config('domain.items_per_page'));
     }
 
-    public function getAvailableColorsByProductType($productType): Collection
+    public function getAvailableColorsByProductType(ProductType $productType): Collection
     {
-        $typeId = $productType->id;
-
-        return Color::whereHas('products', function ($query) use ($typeId) {
-            $query->whereHas('productType', function ($query) use ($typeId) {
-                $query->where('id', $typeId);
+        return Color::whereHas('products', function (Builder $query) use ($productType) {
+            $query->where(function (Builder $query) use ($productType) {
+                $query->where('product_type_id', $productType->id)
+                    ->orWhereHas('productTypes', function (Builder $query) use ($productType) {
+                        $query->where('product_types.id', $productType->id);
+                    });
             });
         })->get();
     }
 
-    public function getAvailableColorsByProductTypeAndCategory($productType, $category): Collection
+    public function getAvailableColorsByProductTypeAndCategory(ProductType $productType, Category $category): Collection
     {
-        $typeId = $productType->id;
-        $categoryId = $category->id;
-
-        return Color::whereHas('products', function ($query) use ($typeId, $categoryId) {
-            $query->whereHas('productType', function ($query) use ($typeId) {
-                $query->where('product_types.id', $typeId);
-            })->whereHas('categories', function ($query) use ($categoryId) {
-                $query->where('categories.id', $categoryId);
+        return Color::whereHas('products', function (Builder $query) use ($productType, $category) {
+            $query->where(function (Builder $query) use ($productType) {
+                $query->where('product_type_id', $productType->id)
+                    ->orWhereHas('productTypes', function (Builder $query) use ($productType) {
+                        $query->where('product_types.id', $productType->id);
+                    });
+            })->whereHas('categories', function (Builder $query) use ($category) {
+                $query->where('categories.id', $category->id);
             });
         })->get();
     }
 
     public function getAllColors(): Collection
     {
-        return Color::all();
+        return Color::whereHas('products')->get();
     }
 
     public function createColor(EditColorDTO $request): ServiceActionResult

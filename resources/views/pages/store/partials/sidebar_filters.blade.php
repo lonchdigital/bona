@@ -26,7 +26,7 @@
     </div>
 </div>
 
-@if(isset($productStatuses))
+@if(isset($productStatuses) && $productStatuses->isNotEmpty())
     <div class="archive-catalog-filter-left filter-box active">
         <div class="title font-title">
             {{ trans('admin.availability_status') }}

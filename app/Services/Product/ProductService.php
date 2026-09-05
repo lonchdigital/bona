@@ -301,8 +301,12 @@ class ProductService extends BaseService
             $query->where('category_id', $category->id);
         });
 
-        return $query->where('product_type_id', $productType->id)
-            ->paginate($perPage, '*', 'page', $page);
+        return $query->where(function (Builder $query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function (Builder $query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->paginate($perPage, '*', 'page', $page);
     }
 
     public function getProductsCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request, int $perPage, int $page): LengthAwarePaginator
@@ -315,8 +319,12 @@ class ProductService extends BaseService
             $query->where('category_id', $category->id);
         });
 
-        return $query->where('product_type_id', $productType->id)
-            ->paginate($perPage, '*', 'page', $page);
+        return $query->where(function (Builder $query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function (Builder $query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->paginate($perPage, '*', 'page', $page);
     }
 
     public function getProductsCountWithCategoryByAvailability(ProductType $productType, Category $category, FilterProductDTO $request): array
@@ -329,7 +337,12 @@ class ProductService extends BaseService
             $query->where('category_id', $category->id);
         });
 
-        $productsCount = $query->where('product_type_id', $productType->id)->count();
+        $productsCount = $query->where(function (Builder $query) use ($productType) {
+            $query->where('product_type_id', $productType->id)
+                ->orWhereHas('productTypes', function (Builder $query) use ($productType) {
+                    $query->where('product_types.id', $productType->id);
+                });
+        })->count();
 
         return ['count' => $productsCount];
     }

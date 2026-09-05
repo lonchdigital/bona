@@ -2,7 +2,6 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
-use App\DataClasses\ProductStatusDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Brand;
@@ -61,17 +60,10 @@ class ShowCatalogPageAction extends BaseAction
         $productType->meta_tags = $this->handleFollowTag($productType->meta_tags);
         LastModified::set($productType->updated_at);
 
-        $allFields = $productType->fields;
-        $allFields->map(function ($field) use ($productType) {
-            $field->options = $field->optionsWithProducts($productType);
-
-            return $field;
-        });
-
         return view($template, [
             'filters' => $catalogService->getFiltersByProductType($productType),
             'filtersData' => $filtersData->filters,
-            'productStatuses' => ProductStatusDataClass::getForWeb(),
+            'productStatuses' => $catalogService->getAvailableProductStatuses($productType),
             //            'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
             'colors' => $colors,

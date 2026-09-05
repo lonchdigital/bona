@@ -51,7 +51,11 @@
                         @foreach($productsPaginated as $product)
                             @include('pages.store.partials.product_item', ['product' => $product, 'baseCurrency' => $baseCurrency])
 
-                            @if($loop->iteration % 9 === 0)
+                            @php
+                                $catalogProductPosition = ($productsPaginated->firstItem() ?? 1) + $loop->index;
+                            @endphp
+
+                            @if($catalogProductPosition % 5 === 0)
                                 @include('pages.store.partials.catalog-consultant-card')
                             @endif
                         @endforeach

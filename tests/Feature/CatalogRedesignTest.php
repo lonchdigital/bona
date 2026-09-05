@@ -91,7 +91,8 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringNotContainsString('search_by_brand', $filters);
         $this->assertStringContainsString('id="art-filter-display"', $toolbar);
         $this->assertStringContainsString('sort-by-option', $toolbar);
-        $this->assertStringContainsString('$loop->iteration % 9 === 0', $content);
+        $this->assertStringContainsString('$productsPaginated->firstItem()', $content);
+        $this->assertStringContainsString('$catalogProductPosition % 5 === 0', $content);
         $this->assertStringNotContainsString('catalog-count-menu', $toolbar);
         $this->assertStringNotContainsString('per_page', $toolbar);
         $this->assertMatchesRegularExpression(
@@ -100,7 +101,7 @@ class CatalogRedesignTest extends TestCase
         );
     }
 
-    public function test_catalog_always_renders_eighteen_products_and_two_consultation_cards(): void
+    public function test_catalog_renders_a_consultation_card_after_every_five_products(): void
     {
         config()->set('constants.ROZSUVNI_DVERI_ID', -1);
         $this->seedCurrency();
@@ -144,10 +145,11 @@ class CatalogRedesignTest extends TestCase
         $consultationCards = array_filter($cards, fn (\DOMElement $card) => str_contains($card->getAttribute('class'), 'bona-catalog__consultant'));
 
         $this->assertCount(18, $productCards);
-        $this->assertCount(2, $consultationCards);
-        $this->assertCount(20, $cards);
-        $this->assertStringContainsString('bona-catalog__consultant', $cards[9]->getAttribute('class'));
-        $this->assertStringContainsString('bona-catalog__consultant', $cards[19]->getAttribute('class'));
+        $this->assertCount(3, $consultationCards);
+        $this->assertCount(21, $cards);
+        $this->assertStringContainsString('bona-catalog__consultant', $cards[5]->getAttribute('class'));
+        $this->assertStringContainsString('bona-catalog__consultant', $cards[11]->getAttribute('class'));
+        $this->assertStringContainsString('bona-catalog__consultant', $cards[17]->getAttribute('class'));
         $this->assertStringNotContainsString('catalog-count-menu', $response->getContent());
     }
 

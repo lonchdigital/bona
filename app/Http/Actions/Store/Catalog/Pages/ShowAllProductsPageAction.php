@@ -2,7 +2,6 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
-use App\DataClasses\ProductStatusDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\ProductType;
@@ -53,7 +52,7 @@ class ShowAllProductsPageAction extends BaseAction
         return view('pages.store.catalog-all-products', [
             'filters' => $allFilters,
             'filtersData' => $filtersData->filters,
-            'productStatuses' => ProductStatusDataClass::getForWeb(),
+            'productStatuses' => $catalogService->getAvailableProductStatuses(),
             //            'productType' => $productType,
             'colors' => $colors,
             'baseCurrency' => $baseCurrency,

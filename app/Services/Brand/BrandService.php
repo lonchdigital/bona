@@ -3,6 +3,7 @@
 namespace App\Services\Brand;
 
 use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\User;
@@ -11,6 +12,7 @@ use App\Services\Base\ServiceActionResult;
 use App\Services\Brand\DTO\EditBrandDTO;
 use App\Services\Brand\DTO\SearchBrandDTO;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -75,10 +77,20 @@ class BrandService extends BaseService
         return $letters;
     }
 
-    public function getAvailableBrandsByProductType(ProductType $productType): Collection
+    public function getAvailableBrandsByProductType(ProductType $productType, ?Category $category = null): Collection
     {
-        // implement with cache
-        return Brand::get();
+        return Brand::whereHas('products', function (Builder $query) use ($productType, $category) {
+            $query->where(function (Builder $query) use ($productType) {
+                $query->where('product_type_id', $productType->id)
+                    ->orWhereHas('productTypes', function (Builder $query) use ($productType) {
+                        $query->where('product_types.id', $productType->id);
+                    });
+            })->when($category, function (Builder $query, Category $category) {
+                $query->whereHas('categories', function (Builder $query) use ($category) {
+                    $query->where('categories.id', $category->id);
+                });
+            });
+        })->get();
     }
 
     public function createBrand(User $creator, EditBrandDTO $request): ServiceActionResult

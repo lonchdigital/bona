@@ -2,7 +2,6 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
-use App\DataClasses\ProductStatusDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
 use App\Models\Category;
@@ -41,7 +40,7 @@ class ShowCatalogCategoryPageAction extends BaseAction
         $baseCurrency = $currencyService->getBaseCurrency();
         $colors = $colorService->getAvailableColorsByProductTypeAndCategory($productType, $category);
         $countries = $countryService->getAvailableCountriesByProductType($productType);
-        $brands = $brandService->getAvailableBrandsByProductType($productType);
+        $brands = $brandService->getAvailableBrandsByProductType($productType, $category);
 
         $selectedFiltersOptions = $catalogService->getOptionsByFilterData(
             $productType,
@@ -64,17 +63,10 @@ class ShowCatalogCategoryPageAction extends BaseAction
 
         LastModified::set($category->updated_at);
 
-        $allFields = $productType->fields;
-        $allFields->map(function ($field) use ($productType, $category) {
-            $field->options = $field->optionsWithProductsInCategory($productType, $category);
-
-            return $field;
-        });
-
         return view('pages.store.catalog-category', [
-            'filters' => $catalogService->getFiltersByProductType($productType),
+            'filters' => $catalogService->getFiltersByProductType($productType, $category),
             'filtersData' => $filtersData->filters,
-            'productStatuses' => ProductStatusDataClass::getForWeb(),
+            'productStatuses' => $catalogService->getAvailableProductStatuses($productType, $category),
             'selectedFiltersOptions' => $selectedFiltersOptions,
             'productType' => $productType,
             //            'categories' => $categoryService->getProductCategories($productType),

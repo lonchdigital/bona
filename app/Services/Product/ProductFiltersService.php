@@ -7,10 +7,13 @@ use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\DataClasses\ProductFilterFullPositionOptionsDataClass;
 use App\DataClasses\ProductSizeTypesDataClass;
 use App\DataClasses\ProductSortOptionsDataClass;
+use App\DataClasses\ProductStatusDataClass;
 use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Color;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\Product;
 use App\Models\ProductType;
 use App\Services\Base\BaseService;
 use App\Support\Search\SearchTerm;
@@ -50,7 +53,7 @@ class ProductFiltersService extends BaseService
         array $filterData,
         Currency $baseCurrency,
         Collection $colors,
-        //        Collection $countries,
+        Collection $countries,
         Collection $brands,
     ): array {
         $options = [];
@@ -151,7 +154,7 @@ class ProductFiltersService extends BaseService
                         $filterValue = [$filterValue];
                     }
 
-                    /*foreach ($filterValue as $value) {
+                    foreach ($filterValue as $value) {
                         $country = $countries->where('code', $value)->first();
 
                         if ($country) {
@@ -161,9 +164,9 @@ class ProductFiltersService extends BaseService
                                 'option_slug' => $value,
                             ];
                         } else {
-                            Log::error('CatalogService@getOptionsByFilterData: error: invalid country slug: ' . $value);
+                            Log::error('CatalogService@getOptionsByFilterData: error: invalid country slug: '.$value);
                         }
-                    }*/
+                    }
                 } elseif ($filterNameSlug === 'brand') {
 
                     if (! is_array($filterValue)) {
@@ -801,9 +804,17 @@ class ProductFiltersService extends BaseService
     //        ];
     //    }
 
-    public function getFiltersByProductType(ProductType $productType): array
+    public function getFiltersByProductType(ProductType $productType, ?Category $category = null): array
     {
-        $allFields = $productType->fields()->distinct()->get(); // TODO:: all magic here
+        $allFields = $productType->fields()
+            ->with('options')
+            ->distinct()
+            ->get();
+
+        $allFields = $this->filterUnavailableFieldOptions(
+            $allFields,
+            $this->catalogProductsQuery($productType, $category)->pluck('custom_fields'),
+        );
 
         $mainFilters = collect();
         $fullFilters = [
@@ -854,7 +865,8 @@ class ProductFiltersService extends BaseService
         // Жадная загрузка связей 'fields' и 'pivot' сразу для всех типов продуктов
         $productTypes = ProductType::with(['fields' => function ($query) {
             $query->wherePivot('show_as_filter', true)
-                ->wherePivot('show_on_main_filters_list', true);
+                ->wherePivot('show_on_main_filters_list', true)
+                ->with('options');
         }])->get();
 
         foreach ($productTypes as $productType) {
@@ -866,8 +878,96 @@ class ProductFiltersService extends BaseService
             }
         }
 
+        $mainFilters = $this->filterUnavailableFieldOptions(
+            $mainFilters,
+            $this->catalogProductsQuery()->pluck('custom_fields'),
+        );
+
         return [
             'main' => $mainFilters,
         ];
+    }
+
+    public function getAvailableProductStatuses(?ProductType $productType = null, ?Category $category = null): Collection
+    {
+        $availableStatusIds = $this->catalogProductsQuery($productType, $category)
+            ->whereIn('availability_status_id', ProductStatusDataClass::getForWeb()->pluck('id'))
+            ->distinct()
+            ->pluck('availability_status_id')
+            ->map(fn ($statusId) => (int) $statusId);
+
+        return ProductStatusDataClass::getForWeb()
+            ->filter(fn (array $status) => $availableStatusIds->contains((int) $status['id']))
+            ->values();
+    }
+
+    private function catalogProductsQuery(?ProductType $productType = null, ?Category $category = null): Builder
+    {
+        return Product::query()
+            ->when($productType, function (Builder $query, ProductType $productType) {
+                $query->where(function (Builder $query) use ($productType) {
+                    $query->where('product_type_id', $productType->id)
+                        ->orWhereHas('productTypes', function (Builder $query) use ($productType) {
+                            $query->where('product_types.id', $productType->id);
+                        });
+                });
+            })
+            ->when($category, function (Builder $query, Category $category) {
+                $query->whereHas('categories', function (Builder $query) use ($category) {
+                    $query->where('categories.id', $category->id);
+                });
+            });
+    }
+
+    private function filterUnavailableFieldOptions(Collection $fields, Collection $customFieldsValues): Collection
+    {
+        $availableOptionIds = [];
+
+        foreach ($customFieldsValues as $customFields) {
+            if (is_string($customFields)) {
+                $customFields = json_decode($customFields, true);
+            }
+
+            if (! is_array($customFields)) {
+                continue;
+            }
+
+            foreach ($customFields as $fieldId => $value) {
+                foreach ($this->normalizeFieldOptionIds($value) as $optionId) {
+                    $availableOptionIds[(string) $fieldId][(string) $optionId] = true;
+                }
+            }
+        }
+
+        return $fields
+            ->map(function ($field) use ($availableOptionIds) {
+                if ($field->field_type_id !== ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION) {
+                    return $field;
+                }
+
+                $fieldOptionIds = $availableOptionIds[(string) $field->id] ?? [];
+                $field->setRelation(
+                    'options',
+                    $field->options
+                        ->filter(fn ($option) => isset($fieldOptionIds[(string) $option->id]))
+                        ->values(),
+                );
+
+                return $field;
+            })
+            ->reject(fn ($field) => $field->field_type_id === ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION
+                && $field->options->isEmpty())
+            ->values();
+    }
+
+    private function normalizeFieldOptionIds(mixed $value): array
+    {
+        if (is_array($value)) {
+            return collect($value)
+                ->flatMap(fn ($item) => $this->normalizeFieldOptionIds($item))
+                ->all();
+        }
+
+        return is_scalar($value) && (string) $value !== '' ? [(string) $value] : [];
     }
 }
