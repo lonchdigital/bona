@@ -45,16 +45,6 @@
         </div>
     </fieldset>
 
-    <fieldset class="bona-lead-fieldset" data-lead-choice-group>
-        <legend>{{ trans('base.lead_consultation_style') }}</legend>
-        <div class="bona-lead-choice">
-            <label><input type="radio" name="style" value="minimal" checked><span>{{ trans('base.lead_style_minimal') }}</span></label>
-            <label><input type="radio" name="style" value="modern"><span>{{ trans('base.lead_style_modern') }}</span></label>
-            <label><input type="radio" name="style" value="neoclassic"><span>{{ trans('base.lead_style_neoclassic') }}</span></label>
-            <label><input type="radio" name="style" value="unsure"><span>{{ trans('base.lead_style_unsure') }}</span></label>
-        </div>
-    </fieldset>
-
     <label class="bona-lead-consent bona-lead-field--agree">
         <input type="checkbox" name="agree" value="1" required>
         <span class="bona-lead-consent__box" aria-hidden="true"></span>

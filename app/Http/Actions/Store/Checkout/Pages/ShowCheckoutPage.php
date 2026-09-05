@@ -12,6 +12,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\Delivery\DeliveryService;
 use App\Services\Pricing\PricingService;
 use App\Services\Region\RegionService;
+use App\Support\Payment\InstallmentPeriods;
 
 class ShowCheckoutPage extends BaseAction
 {
@@ -43,8 +44,8 @@ class ShowCheckoutPage extends BaseAction
             $deliveryType = DeliveryTypesDataClass::ADDRESS_DELIVERY;
         }
 
-        $privatPeriods = array_map('intval', config('payment.privatbank.periods', []));
-        $monoPeriods = array_map('intval', config('payment.monobank.periods', []));
+        $privatPeriods = InstallmentPeriods::for('privatbank');
+        $monoPeriods = InstallmentPeriods::for('monobank');
         $privatPeriod = request()->integer('payment_period');
         $monoPeriod = request()->integer('mono_payment_period');
 

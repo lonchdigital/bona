@@ -4309,6 +4309,18 @@ label.bona-lead-consent > input {
     .bona-footer__brand,
     .bona-footer__stores { grid-column: 1 / -1; }
     .bona-footer__nav { min-width: 0; }
+    .bona-footer__address {
+        gap: 10px;
+        font-size: 14px;
+        line-height: 1.55;
+
+        > strong { font-size: 14px; }
+    }
+    .bona-footer__address-row {
+        grid-template-columns: 78px minmax(0, 1fr);
+
+        > span { font-size: 14px; line-height: 1.4; }
+    }
     .bona-footer__bottom { align-items: center; flex-direction: column; text-align: center; }
     .bona-footer__legal { gap: 9px 16px; }
     .bona-footer__payments { margin-top: 4px; }

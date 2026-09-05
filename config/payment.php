@@ -31,7 +31,7 @@ return [
         | The bank itself takes 2 to 25. What belongs here is what the shop's
         | agreement covers.
         */
-        'periods' => [2, 3, 4, 5, 6],
+        'periods' => [3, 4, 5, 6],
 
     ],
 

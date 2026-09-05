@@ -23,7 +23,7 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("pages['./pages/' + pageToLoad + '.js']", $script);
     }
 
-    public function test_reference_product_interactions_cover_gallery_tabs_installments_and_mobile_cart(): void
+    public function test_reference_product_interactions_cover_gallery_sticky_tabs_installments_and_purchase(): void
     {
         $pageScript = file_get_contents(resource_path('js/store/pages/store.product.page.js'));
         $referenceScript = file_get_contents(resource_path('js/store/pages/store.product.page/product-reference.js'));
@@ -31,23 +31,31 @@ class ProductGalleryTest extends TestCase
         $referenceStyles = file_get_contents(resource_path('scss/storefront/_product-reference.scss'));
         $redesignStyles = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
         $referenceView = file_get_contents(resource_path('views/pages/store/partials/product-reference.blade.php'));
+        $consultationModal = file_get_contents(resource_path('views/components/store/call-consultation-modal.blade.php'));
 
         $this->assertStringContainsString("import('./store.product.page/product-reference')", $pageScript);
         $this->assertStringNotContainsString("import('./store.product.page/swiper')", $pageScript);
         $this->assertStringContainsString("querySelector('[data-product-gallery]')", $referenceScript);
         $this->assertStringContainsString("querySelectorAll('[data-product-tab]')", $referenceScript);
+        $this->assertStringContainsString("querySelector('[data-product-section-nav]')", $referenceScript);
+        $this->assertStringContainsString("querySelector('[data-product-overview]')", $referenceScript);
         $this->assertStringContainsString("querySelector('[data-installment-card]')", $referenceScript);
         $this->assertStringContainsString("querySelector('.product-kit-selections')", $referenceScript);
         $this->assertStringContainsString("className = 'kit-dialog__remove'", $referenceScript);
         $this->assertStringContainsString('draft.delete(choice.dataset.kitCategoryKey)', $referenceScript);
         $this->assertStringNotContainsString('data-kit-choice-clear', $referenceScript);
         $this->assertStringNotContainsString('data-kit-choice-clear', $referenceView);
+        $this->assertStringContainsString('data-product-section-nav', $referenceView);
+        $this->assertStringContainsString("trans('base.purchase')", $referenceView);
+        $this->assertStringNotContainsString('mobile-buybar', $referenceView);
         $this->assertStringContainsString('data-kit-selection-hint', $referenceView);
+        $this->assertStringNotContainsString('name="style"', $consultationModal);
         $this->assertStringContainsString('const trigger = $(this)', $cartScript);
         $this->assertStringContainsString("trigger.data('product-slug') || trigger.attr('id')", $cartScript);
         $this->assertStringContainsString("trigger.attr('data-checkout-redirect')", $cartScript);
         $this->assertStringContainsString("replace(/\\s+/g, '')", $cartScript);
         $this->assertStringContainsString('.product-body .bona-product-page :where(section)', $referenceStyles);
+        $this->assertStringContainsString('.product-section-nav', $referenceStyles);
         $this->assertStringNotContainsString(".product-body .product-kit-dialog {\n    display: none;", $referenceStyles);
         $this->assertStringContainsString('.art-heart-filled { display: none; }', $referenceStyles);
         $this->assertStringContainsString('.art-heart-outline { display: none; }', $referenceStyles);

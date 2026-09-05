@@ -236,7 +236,10 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('class="product-services"', false)
             ->assertSee('class="product-details-grid"', false)
             ->assertSee('class="product-info-tabs"', false)
-            ->assertSee('class="mobile-buybar"', false)
+            ->assertSee('data-product-section-nav', false)
+            ->assertSee('Про товар')
+            ->assertSee('Придбати')
+            ->assertDontSee('class="mobile-buybar"', false)
             ->assertSee('single-product-add-to-cart', false)
             ->assertSee('single-product-wish-list', false)
             ->assertSee('data-product-compare', false)
@@ -276,6 +279,8 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('1 200 грн/міс.')
             ->assertSee('1 000 грн/міс.')
             ->assertSee('data-installment-terms-open', false)
+            ->assertSee("data-periods='[3,6]'", false)
+            ->assertDontSee("data-periods='[2,3,6]'", false)
             ->assertSee('/door-configurator', false);
     }
 

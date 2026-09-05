@@ -73,8 +73,8 @@
     $firstTab = $descriptionAvailable ? 'description' : ($specificationsAvailable ? 'specs' : 'reviews');
     $deliveryUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info');
     $checkoutUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page');
-    $monoPeriods = array_values(array_map('intval', config('payment.monobank.periods', [3])));
-    $privatPeriods = array_values(array_map('intval', config('payment.privatbank.periods', [2])));
+    $monoPeriods = \App\Support\Payment\InstallmentPeriods::for('monobank');
+    $privatPeriods = \App\Support\Payment\InstallmentPeriods::for('privatbank');
     $initialInstallmentPeriod = $monoPeriods[0] ?? 3;
     $catalogLink = $catalogUrl;
 @endphp
@@ -89,7 +89,22 @@
             <span aria-current="page">{{ $product->name }}</span>
         </nav>
 
-        <section class="product-hero" aria-labelledby="product-title">
+        <nav class="product-section-nav" data-product-section-nav aria-label="{{ $isRussian ? 'Разделы товара' : 'Розділи товару' }}">
+            <div class="product-section-nav__list">
+                <button class="is-active" type="button" data-product-overview aria-current="true">
+                    {{ trans('base.product_about') }}
+                </button>
+                @if($descriptionAvailable)
+                    <button id="tab-description" type="button" data-product-tab="description" aria-controls="panel-description" aria-pressed="false">{{ trans('base.description') }}</button>
+                @endif
+                @if($specificationsAvailable)
+                    <button id="tab-specs" type="button" data-product-tab="specs" aria-controls="panel-specs" aria-pressed="false">{{ trans('base.characteristics') }}</button>
+                @endif
+                <button id="tab-reviews" type="button" data-product-tab="reviews" aria-controls="panel-reviews" aria-pressed="false">{{ trans('base.product_reviews_title') }} <span>{{ $displayReviewCount }}</span></button>
+            </div>
+        </nav>
+
+        <section class="product-hero" id="product-overview" aria-labelledby="product-title">
             <div class="product-gallery" data-product-gallery aria-label="{{ $isRussian ? 'Галерея товара' : 'Галерея товару' }}">
                 <div class="product-gallery__main{{ $galleryItems->first()['is_interior'] ? ' is-interior' : '' }}" data-gallery-main>
                     <img
@@ -236,7 +251,7 @@
                     <div class="product-price-row">
                         <div>
                             <span>{{ $isRussian ? 'Стоимость комплекта' : 'Вартість комплекту' }}</span>
-                            <strong><span id="product-price" data-count="1" data-start-price="{{ $numericPrice }}" data-product-price="{{ $numericPrice }}">{{ number_format($numericPrice, 0, '.', ' ') }}</span> <span>{{ $baseCurrency->name_short }}</span></strong>
+                            <strong><span class="product-price-row__amount" id="product-price" data-count="1" data-start-price="{{ $numericPrice }}" data-product-price="{{ $numericPrice }}">{{ number_format($numericPrice, 0, '.', ' ') }}</span> <span class="product-price-row__currency">{{ $baseCurrency->name_short }}</span></strong>
                             @if((float) $product->old_price > $numericPrice)<del>{{ number_format((float) $product->old_price, 0, '.', ' ') }} {{ $baseCurrency->name_short }}</del>@endif
                         </div>
                         <small>{{ $isRussian ? 'Точная сумма после замера' : 'Точна сума після заміру' }}</small>
@@ -267,7 +282,7 @@
                 <div class="product-cta">
                     @if($canPurchase)
                         <button class="product-add single-product-add-to-cart" data-product-slug="{{ $product->slug }}" type="button">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="8" width="14" height="12" rx="2"></rect><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"></path></svg><span>{{ trans('base.add_to_cart') }}</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 5h2l1.5 9.2a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 1.9-1.4L21 8H6.1"></path><circle cx="9.2" cy="19.2" r="1.2"></circle><circle cx="17.2" cy="19.2" r="1.2"></circle></svg><span>{{ trans('base.purchase') }}</span>
                         </button>
                         <button class="product-oneclick btn-one-click" type="button" data-fancybox data-src="#dialog-buy-one-click">{{ trans('base.buy_in_one_click') }}</button>
                     @else
@@ -325,24 +340,14 @@
 
         <section class="product-details-grid" aria-label="{{ $isRussian ? 'Детали товара и консультация' : 'Деталі товару та консультація' }}">
             <section class="product-info-tabs" id="product-details" aria-label="{{ $isRussian ? 'Информация о товаре' : 'Інформація про товар' }}">
-                <div class="product-info-tabs__list" role="tablist" aria-label="{{ $isRussian ? 'Детали товара' : 'Деталі товару' }}">
-                    @if($descriptionAvailable)
-                        <button class="{{ $firstTab === 'description' ? 'is-active' : '' }}" id="tab-description" type="button" role="tab" aria-selected="{{ $firstTab === 'description' ? 'true' : 'false' }}" aria-controls="panel-description" data-product-tab="description">{{ trans('base.description') }}</button>
-                    @endif
-                    @if($specificationsAvailable)
-                        <button class="{{ $firstTab === 'specs' ? 'is-active' : '' }}" id="tab-specs" type="button" role="tab" aria-selected="{{ $firstTab === 'specs' ? 'true' : 'false' }}" aria-controls="panel-specs" data-product-tab="specs">{{ trans('base.characteristics') }}</button>
-                    @endif
-                    <button class="{{ $firstTab === 'reviews' ? 'is-active' : '' }}" id="tab-reviews" type="button" role="tab" aria-selected="{{ $firstTab === 'reviews' ? 'true' : 'false' }}" aria-controls="panel-reviews" data-product-tab="reviews">{{ trans('base.product_reviews_title') }} <span>{{ $displayReviewCount }}</span></button>
-                </div>
-
                 @if($descriptionAvailable)
-                    <div class="product-info-tabs__panel{{ $firstTab === 'description' ? ' is-active' : '' }}" id="panel-description" role="tabpanel" aria-labelledby="tab-description" data-product-panel="description" @if($firstTab !== 'description') hidden @endif>
+                    <div class="product-info-tabs__panel{{ $firstTab === 'description' ? ' is-active' : '' }}" id="panel-description" role="region" aria-labelledby="tab-description" data-product-panel="description" @if($firstTab !== 'description') hidden @endif>
                         <div class="tab-description tab-description--plain bona-content-richtext">{!! $productDescriptionHtml !!}</div>
                     </div>
                 @endif
 
                 @if($specificationsAvailable)
-                    <div class="product-info-tabs__panel{{ $firstTab === 'specs' ? ' is-active' : '' }}" id="panel-specs" role="tabpanel" aria-labelledby="tab-specs" data-product-panel="specs" @if($firstTab !== 'specs') hidden @endif>
+                    <div class="product-info-tabs__panel{{ $firstTab === 'specs' ? ' is-active' : '' }}" id="panel-specs" role="region" aria-labelledby="tab-specs" data-product-panel="specs" @if($firstTab !== 'specs') hidden @endif>
                         <div class="tab-specs">
                             @foreach($characteristics as $characteristic)
                                 @if(filled($characteristic['name']) || filled($characteristic['value']))
@@ -353,7 +358,7 @@
                     </div>
                 @endif
 
-                <div class="product-info-tabs__panel{{ $firstTab === 'reviews' ? ' is-active' : '' }}" id="panel-reviews" role="tabpanel" aria-labelledby="tab-reviews" data-product-panel="reviews" @if($firstTab !== 'reviews') hidden @endif>
+                <div class="product-info-tabs__panel{{ $firstTab === 'reviews' ? ' is-active' : '' }}" id="panel-reviews" role="region" aria-labelledby="tab-reviews" data-product-panel="reviews" @if($firstTab !== 'reviews') hidden @endif>
                     <div class="tab-reviews" id="reviews">
                         <div class="tab-reviews__score">
                             <strong>{{ $displayReviewAverage }}</strong>
@@ -505,12 +510,6 @@
         </div></section>
     @endif
 
-    @if($canPurchase)
-        <div class="mobile-buybar" aria-label="{{ $isRussian ? 'Быстрая покупка' : 'Швидка покупка' }}">
-            <div><span>{{ $product->name }}</span><strong><span data-mobile-price>{{ number_format($numericPrice, 0, '.', ' ') }}</span> {{ $baseCurrency->name_short }}</strong></div>
-            <button class="single-product-add-to-cart" data-product-slug="{{ $product->slug }}" type="button">{{ $isRussian ? 'В корзину' : 'До кошика' }}</button>
-        </div>
-    @endif
 </div>
 
 @if(count($categoryProducts))

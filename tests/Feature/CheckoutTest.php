@@ -362,7 +362,8 @@ class CheckoutTest extends TestCase
 
         $response->assertOk();
         $this->assertSame(PaymentTypesDataClass::CARD_PAYMENT_PAYPART, $response->viewData('checkoutPaymentType'));
-        $this->assertSame(2, $response->viewData('checkoutPrivatPeriod'));
+        $this->assertSame(3, $response->viewData('checkoutPrivatPeriod'));
         $response->assertSee('class="selected-payment-type">'.trans('base.checkout_payment_paypart').'</span>', false);
+        $response->assertDontSee('<option value="2"', false);
     }
 }

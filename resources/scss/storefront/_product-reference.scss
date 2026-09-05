@@ -91,6 +91,11 @@ body.product-body {
     background: #fbfaf7;
 }
 
+body.product-body .wrapper,
+.bona-product-page.product-page {
+    overflow: clip;
+}
+
 html.product-dialog-is-open,
 html.product-dialog-is-open body {
     overflow: hidden;
@@ -120,11 +125,94 @@ html.product-dialog-is-open body {
         }
     }
 
+    .product-section-nav {
+        position: sticky;
+        top: 0;
+        z-index: 70;
+        margin-bottom: 28px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: rgba(251, 250, 247, .97);
+        transition: box-shadow .24s ease, background-color .24s ease;
+
+        &.is-stuck {
+            background: #fbfaf7;
+            box-shadow: 0 14px 30px rgba(35, 32, 27, .08);
+        }
+
+        &__list {
+            display: flex;
+            min-height: 62px;
+            align-items: stretch;
+            gap: 42px;
+            overflow-x: auto;
+            overscroll-behavior-inline: contain;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar { display: none; }
+        }
+
+        button {
+            position: relative;
+            flex: 0 0 auto;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font: 700 11px/1.25 var(--bona-ui);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: color .2s ease;
+
+            &::after {
+                position: absolute;
+                right: 0;
+                bottom: -1px;
+                left: 0;
+                height: 2px;
+                background: var(--gold);
+                content: '';
+                transform: scaleX(0);
+                transform-origin: center;
+                transition: transform .24s cubic-bezier(.19, 1, .22, 1);
+            }
+
+            &:hover,
+            &.is-active { color: var(--ink); }
+
+            &.is-active::after { transform: scaleX(1); }
+
+            &:focus-visible {
+                outline: 2px solid var(--gold);
+                outline-offset: -5px;
+            }
+
+            span {
+                display: inline-grid;
+                min-width: 19px;
+                height: 19px;
+                margin-left: 5px;
+                place-items: center;
+                border-radius: 50%;
+                background: #eee9e0;
+                color: var(--ink);
+                font-size: 8px;
+            }
+        }
+    }
+
+    #product-overview,
+    #product-details { scroll-margin-top: 78px; }
+
     .product-price-row {
-        strong > span:last-child { color: currentColor; font-size: inherit; }
+        strong > span {
+            color: currentColor;
+            font-size: inherit;
+        }
 
         strong {
             font-size: clamp(34px, 2.4vw, 40px);
+            font-variant-numeric: tabular-nums;
             letter-spacing: -.025em;
         }
 
@@ -132,6 +220,23 @@ html.product-dialog-is-open body {
             margin-top: 3px;
             color: var(--muted-2);
             font-size: 11px;
+        }
+    }
+
+    .product-cta {
+        grid-template-columns: minmax(0, 1fr);
+
+        .product-add,
+        .product-oneclick { width: 100%; }
+
+        .product-add {
+            display: flex;
+            min-height: 58px;
+            justify-content: center;
+            gap: 12px;
+            font-size: 12px;
+
+            svg { width: 21px; height: 21px; }
         }
     }
 
@@ -145,6 +250,11 @@ html.product-dialog-is-open body {
         background-size: cover;
 
         img { width: 100%; height: 100%; object-fit: cover; }
+    }
+
+    .color-option::after {
+        display: none;
+        content: none;
     }
 
     .color-option:focus-visible {
@@ -637,8 +747,6 @@ html.product-dialog-is-open body {
     display: block;
 }
 
-.product-body .bona-mobile-bottom-nav { display: none; }
-
 @media (max-width: 900px) {
     .product-body .bona-product-page {
         .related-grid--dynamic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -648,18 +756,80 @@ html.product-dialog-is-open body {
 }
 
 @media (max-width: 640px) {
-    body.product-body { padding-bottom: 72px; }
+    body.product-body { padding-bottom: calc(94px + env(safe-area-inset-bottom)); }
 
     .product-body .bona-product-page {
         .breadcrumbs { padding-top: 24px; }
+
+        .product-section-nav {
+            margin-bottom: 22px;
+
+            &__list {
+                min-height: 54px;
+                gap: 25px;
+            }
+
+            button { font-size: 10px; }
+        }
+
+        #product-overview,
+        #product-details { scroll-margin-top: 70px; }
+
+        .color-options.art-colors-list {
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 0;
+            padding: 4px 2px;
+            overflow-x: auto;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar { display: none; }
+        }
+
+        .color-option,
+        .color-option.has-image {
+            position: relative;
+            display: block;
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            margin: 0;
+            padding: 0;
+            overflow: visible;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: none;
+            transform: none;
+
+            &::before {
+                position: absolute;
+                inset: 5px;
+                width: auto;
+                height: auto;
+                border: 1px solid rgba(35, 32, 27, .17);
+                border-radius: 50%;
+                background-color: var(--swatch, #e7e2d8);
+                background-position: center;
+                background-size: cover;
+                box-shadow: 0 0 0 3px #fbfaf7;
+                content: '';
+                transform: none;
+            }
+
+            &:hover::before { transform: scale(1.06); }
+
+            &.is-active::before,
+            &.color-selected::before {
+                box-shadow: 0 0 0 3px #fbfaf7, 0 0 0 4px var(--ink);
+            }
+        }
 
         .color-option.has-image {
             background-image: none;
 
             &::before {
                 background-image: var(--swatch-image);
-                background-position: center;
-                background-size: cover;
             }
 
             img { display: none; }
@@ -678,7 +848,17 @@ html.product-dialog-is-open body {
             .bona-product-card__media { height: 330px; }
         }
 
-        .product-price-row strong { font-size: 34px; }
+        .product-price-row strong { font-size: clamp(38px, 11vw, 46px); }
+
+        .product-cta {
+            margin-top: 16px;
+
+            .product-add {
+                display: flex;
+                min-height: 58px;
+                font-size: 13px;
+            }
+        }
     }
 
     .product-body .consult-strip__inner > button {
@@ -731,5 +911,4 @@ html.product-dialog-is-open body {
         h2 { font-size: 39px; }
     }
 
-    .product-body .mobile-buybar { bottom: 0; }
 }

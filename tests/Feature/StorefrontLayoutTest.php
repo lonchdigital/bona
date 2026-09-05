@@ -94,16 +94,18 @@ class StorefrontLayoutTest extends TestCase
             ->assertSee('href="/ru/compare"', false);
     }
 
-    public function test_mobile_bottom_navigation_has_directional_scroll_and_menu_contracts(): void
+    public function test_mobile_bottom_navigation_is_persistent_and_yields_to_open_overlays(): void
     {
         $source = file_get_contents(resource_path('js/store/common/mobile-bottom-navigation.js'));
 
         $this->assertStringContainsString("const MOBILE_BREAKPOINT = '(max-width: 960px)'", $source);
-        $this->assertStringContainsString('const MIN_SCROLL_DELTA = 8', $source);
-        $this->assertStringContainsString('setVisible(delta > 0)', $source);
+        $this->assertStringContainsString('const shouldShow = mediaQuery.matches', $source);
         $this->assertStringContainsString("document.body.classList.contains('bona-menu-open')", $source);
+        $this->assertStringContainsString("document.body.classList.contains('bona-cart-drawer-open')", $source);
+        $this->assertStringContainsString('new MutationObserver(setVisible)', $source);
         $this->assertStringContainsString('menuToggle.click()', $source);
-        $this->assertStringContainsString("window.addEventListener('scroll', scheduleUpdate, { passive: true })", $source);
+        $this->assertStringContainsString('setVisible();', $source);
+        $this->assertStringNotContainsString("window.addEventListener('scroll'", $source);
     }
 
     public function test_mobile_footer_places_navigation_and_categories_side_by_side(): void

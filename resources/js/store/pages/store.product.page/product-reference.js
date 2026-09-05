@@ -14,7 +14,7 @@ const parsePeriods = (value, fallback = [3]) => {
     try {
         const periods = JSON.parse(value || '[]')
             .map((period) => Number.parseInt(period, 10))
-            .filter((period) => Number.isInteger(period) && period > 0);
+            .filter((period) => Number.isInteger(period) && period >= 3);
 
         return periods.length ? [...new Set(periods)].sort((left, right) => left - right) : fallback;
     } catch {
@@ -230,55 +230,124 @@ function initGallery(page) {
 }
 
 function initProductTabs(page) {
+    const navigation = page.querySelector('[data-product-section-nav]');
+    const overview = navigation?.querySelector('[data-product-overview]');
     const tabs = Array.from(page.querySelectorAll('[data-product-tab]'));
     const panels = Array.from(page.querySelectorAll('[data-product-panel]'));
+    const details = page.querySelector('#product-details');
+    const controls = [overview, ...tabs].filter(Boolean);
+    let activeDetail = tabs.find((tab) => tab.dataset.productTab === panels.find((panel) => !panel.hidden)?.dataset.productPanel)
+        ?.dataset.productTab || tabs[0]?.dataset.productTab || 'reviews';
+    let activeControlName = null;
+    let navigationLockUntil = 0;
+    let animationFrame = null;
 
-    if (!tabs.length) return;
+    if (!navigation || !overview || !tabs.length) return;
 
-    const activate = (name, moveFocus = false) => {
-        tabs.forEach((tab) => {
-            const isActive = tab.dataset.productTab === name;
-            tab.classList.toggle('is-active', isActive);
-            tab.setAttribute('aria-selected', String(isActive));
-            tab.tabIndex = isActive ? 0 : -1;
-            if (isActive && moveFocus) tab.focus();
+    const markActiveControl = (name, moveFocus = false) => {
+        const activeControlChanged = activeControlName !== name;
+
+        controls.forEach((control) => {
+            const controlName = control === overview ? 'overview' : control.dataset.productTab;
+            const isActive = controlName === name;
+
+            control.classList.toggle('is-active', isActive);
+            control.setAttribute('aria-pressed', String(isActive));
+            if (control === overview) {
+                if (isActive) control.setAttribute('aria-current', 'true');
+                else control.removeAttribute('aria-current');
+            }
+
+            if (isActive && moveFocus) control.focus();
         });
 
+        activeControlName = name;
+
+        if (activeControlChanged) {
+            navigation.querySelector('.is-active')?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    };
+
+    const activate = (name, { moveFocus = false, scroll = false } = {}) => {
+        if (name === 'overview') {
+            markActiveControl('overview', moveFocus);
+
+            if (scroll) {
+                navigationLockUntil = Date.now() + 700;
+                page.querySelector('#product-overview')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            return;
+        }
+
+        activeDetail = name;
         panels.forEach((panel) => {
             const isActive = panel.dataset.productPanel === name;
             panel.classList.toggle('is-active', isActive);
             panel.hidden = !isActive;
         });
+
+        markActiveControl(name, moveFocus);
+
+        if (scroll) {
+            navigationLockUntil = Date.now() + 700;
+            details?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     };
 
-    tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => activate(tab.dataset.productTab));
-        tab.addEventListener('keydown', (event) => {
+    overview.addEventListener('click', () => activate('overview', { scroll: true }));
+    tabs.forEach((tab) => tab.addEventListener('click', () => activate(tab.dataset.productTab, { scroll: true })));
+
+    controls.forEach((control, index) => {
+        control.addEventListener('keydown', (event) => {
             if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
 
             event.preventDefault();
             let nextIndex = index;
-            if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
-            if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+            if (event.key === 'ArrowLeft') nextIndex = (index - 1 + controls.length) % controls.length;
+            if (event.key === 'ArrowRight') nextIndex = (index + 1) % controls.length;
             if (event.key === 'Home') nextIndex = 0;
-            if (event.key === 'End') nextIndex = tabs.length - 1;
-            activate(tabs[nextIndex].dataset.productTab, true);
+            if (event.key === 'End') nextIndex = controls.length - 1;
+
+            const nextControl = controls[nextIndex];
+            activate(nextControl === overview ? 'overview' : nextControl.dataset.productTab, { moveFocus: true, scroll: true });
         });
     });
 
     page.querySelectorAll('[data-open-reviews]').forEach((link) => {
         link.addEventListener('click', (event) => {
             event.preventDefault();
-            activate('reviews');
-            page.querySelector('#product-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            activate('reviews', { scroll: true });
         });
     });
+
+    const syncNavigationWithScroll = () => {
+        animationFrame = null;
+        const stickyOffset = navigation.offsetHeight + 16;
+        const detailsReached = details && details.getBoundingClientRect().top <= stickyOffset;
+
+        if (Date.now() >= navigationLockUntil) {
+            markActiveControl(detailsReached ? activeDetail : 'overview');
+        }
+
+        navigation.classList.toggle('is-stuck', navigation.getBoundingClientRect().top <= 1);
+    };
+
+    const scheduleNavigationSync = () => {
+        if (animationFrame !== null) return;
+        animationFrame = window.requestAnimationFrame(syncNavigationWithScroll);
+    };
+
+    window.addEventListener('scroll', scheduleNavigationSync, { passive: true });
+    window.addEventListener('resize', scheduleNavigationSync, { passive: true });
+    window.addEventListener('pageshow', scheduleNavigationSync);
+    markActiveControl('overview');
+    scheduleNavigationSync();
 }
 
 function initInstallments(page) {
     const card = page.querySelector('[data-installment-card]');
     const price = page.querySelector('#product-price');
-    const mobilePrice = page.querySelector('[data-mobile-price]');
     const monthlyPayment = card?.querySelector('[data-monthly-payment]');
     const monthsValue = card?.querySelector('[data-months-value]');
     const minus = card?.querySelector('[data-months-minus]');
@@ -306,11 +375,9 @@ function initInstallments(page) {
         if (monthsValue) monthsValue.textContent = String(months);
         if (minus) minus.disabled = currentIndex <= 0;
         if (plus) plus.disabled = currentIndex >= periods.length - 1;
-        if (mobilePrice) mobilePrice.textContent = formatNumber(currentPrice);
-
         page.querySelectorAll('[data-installment-example]').forEach((example) => {
             const provider = providerButtons.find((button) => button.dataset.provider === example.dataset.providerExample);
-            const providerPeriods = parsePeriods(provider?.dataset.periods, [1]);
+            const providerPeriods = parsePeriods(provider?.dataset.periods, [3]);
             const maximumPeriod = Math.max(...providerPeriods);
             const prefix = isRussian() ? 'от' : 'від';
             const suffix = isRussian() ? 'мес.' : 'міс.';

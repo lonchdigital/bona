@@ -8,6 +8,7 @@ use App\DataClasses\RecipientTypesDataClass;
 use App\Http\Requests\BaseRequest;
 use App\Rules\PhoneNumberLengthRule;
 use App\Services\Order\DTO\CheckoutConfirmOrderDTO;
+use App\Support\Payment\InstallmentPeriods;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -214,7 +215,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
                 // Only what the shop actually offers: this used to accept any
                 // integer at all, so nothing stopped a request naming twenty
                 // five payments against a form that shows six.
-                Rule::in(config('payment.privatbank.periods')),
+                Rule::in(InstallmentPeriods::for('privatbank')),
             ];
         }
 
@@ -226,7 +227,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
             $rules['mono_payment_period'] = [
                 'required',
                 'integer',
-                Rule::in(config('payment.monobank.periods')),
+                Rule::in(InstallmentPeriods::for('monobank')),
             ];
         }
 
