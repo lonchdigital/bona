@@ -1,5 +1,12 @@
 @extends('layouts.store-main')
 
+@php
+    $servicesUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.services');
+    $measurementUrl = $measurementService
+        ? App\Helpers\MultiLangRoute::getMultiLangRoute('store.service.page', ['serviceSlug' => $measurementService->slug])
+        : $servicesUrl;
+@endphp
+
 @section('body_class', 'bona-commerce-body')
 @section('seo_title', trans('base.cart').' — Bona Doors')
 @section('meta_description', trans('base.cart_meta_description'))
@@ -12,7 +19,7 @@
     <div class="bona-commerce-page bona-cart-page">
         <x-store.content-breadcrumbs :items="[['label' => trans('base.cart')]]" />
 
-        <section class="bona-commerce-hero" aria-labelledby="cart-page-title">
+        <div class="bona-commerce-hero" role="region" aria-labelledby="cart-page-title">
             <div class="bona-shell bona-commerce-hero__grid">
                 <div>
                     <p class="bona-commerce-kicker">{{ trans('base.cart_kicker') }}</p>
@@ -20,12 +27,21 @@
                 </div>
                 <p>{{ trans('base.cart_intro') }}</p>
             </div>
-        </section>
+        </div>
 
         <div class="bona-shell bona-commerce-layout" data-cart-page>
-            <section aria-label="{{ trans('base.products_in_cart_label') }}">
+            <div class="bona-cart-content" role="region" aria-label="{{ trans('base.products_in_cart_label') }}">
                 <div class="bona-cart-list cart-page-products-list" data-cart-list aria-live="polite">
                     <div class="bona-cart-loading" data-cart-loading><span></span><span></span></div>
+                </div>
+
+                <div class="bona-cart-error" data-cart-error hidden>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5m0 3h.01M10.4 4.2 3.1 17a2 2 0 0 0 1.74 3h14.32a2 2 0 0 0 1.74-3L13.6 4.2a1.84 1.84 0 0 0-3.2 0Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div>
+                        <h2>{{ trans('base.cart_load_error_title') }}</h2>
+                        <p>{{ trans('base.cart_load_error_text') }}</p>
+                    </div>
+                    <button class="bona-button bona-button--outline" type="button" data-cart-retry>{{ trans('base.cart_retry') }}</button>
                 </div>
 
                 <div class="bona-cart-empty" data-cart-empty hidden>
@@ -43,9 +59,9 @@
                         <h2>{{ trans('base.cart_measure_title') }}</h2>
                         <p>{{ trans('base.cart_measure_text') }}</p>
                     </div>
-                    <a class="bona-button bona-button--dark" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.service.page', ['serviceSlug' => 'vyklyk-maistra']) }}">{{ trans('base.cart_measure_cta') }}</a>
+                    <a class="bona-button bona-button--outline" href="{{ $measurementUrl }}">{{ trans('base.cart_measure_cta') }}</a>
                 </article>
-            </section>
+            </div>
 
             <aside class="bona-order-summary" data-cart-summary>
                 <p class="bona-commerce-kicker">{{ trans('base.cart_summary') }}</p>
@@ -81,5 +97,48 @@
                 </div>
             </aside>
         </div>
+
+        @if($cartServices->isNotEmpty())
+            <section class="bona-cart-services" aria-labelledby="cart-services-title">
+                <div class="bona-shell">
+                    <header class="bona-cart-services__head">
+                        <div>
+                            <p class="bona-commerce-kicker">{{ trans('base.cart_services_kicker') }}</p>
+                            <h2 id="cart-services-title">{{ trans('base.cart_services_title') }}</h2>
+                        </div>
+                        <a class="bona-arrow-link" href="{{ $servicesUrl }}">
+                            <span>{{ trans('base.cart_services_all') }}</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </header>
+
+                    <div class="bona-cart-services__grid">
+                        @foreach($cartServices as $service)
+                            @php
+                                $serviceDescription = Illuminate\Support\Str::limit(
+                                    trim((string) preg_replace('/\s+/u', ' ', strip_tags((string) $service->description))),
+                                    175
+                                );
+                                $serviceUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.service.page', ['serviceSlug' => $service->slug]);
+                            @endphp
+                            <a class="bona-cart-service-card" href="{{ $serviceUrl }}">
+                                <div class="bona-cart-service-card__meta">
+                                    <span>{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                                    <span>{{ $service->button_text ?: trans('base.cart_service_help_label') }}</span>
+                                </div>
+                                <h3>{{ $service->title }}</h3>
+                                @if($serviceDescription)
+                                    <p>{{ $serviceDescription }}</p>
+                                @endif
+                                <span class="bona-arrow-link bona-cart-service-card__link">
+                                    <span>{{ $service->button_text ?: trans('base.cart_service_details') }}</span>
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
     </div>
 @endsection

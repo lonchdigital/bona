@@ -36,6 +36,16 @@
                                 </thead>
                                 <tbody>
                                 @forelse($promoCodesPaginated as $promoCode)
+                                    @php
+                                        $statusKey = $promoCode->statusKey();
+                                        $statusBadge = match ($statusKey) {
+                                            'active' => 'success',
+                                            'scheduled' => 'info',
+                                            'expired' => 'warning',
+                                            'exhausted' => 'dark',
+                                            default => 'secondary',
+                                        };
+                                    @endphp
                                     <tr>
                                         <td><strong>{{ $promoCode->code }}</strong></td>
                                         <td>
@@ -59,8 +69,8 @@
                                         </td>
                                         <td>{{ $promoCode->usage_count }} / {{ $promoCode->usage_limit ?? '∞' }}</td>
                                         <td>
-                                            <span class="badge badge-{{ $promoCode->is_active && ! $promoCode->is_used ? 'success' : 'secondary' }}">
-                                                {{ $promoCode->is_active && ! $promoCode->is_used ? 'Активний' : 'Неактивний' }}
+                                            <span class="badge badge-{{ $statusBadge }}">
+                                                {{ trans('admin.promo_code_status_'.$statusKey) }}
                                             </span>
                                         </td>
                                         <td class="text-right text-nowrap">

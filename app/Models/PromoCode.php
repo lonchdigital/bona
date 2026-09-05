@@ -53,4 +53,26 @@ class PromoCode extends Model
 
         return $this->usage_limit;
     }
+
+    public function statusKey(): string
+    {
+        if (! $this->is_active) {
+            return 'inactive';
+        }
+
+        $usageLimit = $this->effectiveUsageLimit();
+        if ($this->is_used || ($usageLimit !== null && $this->usage_count >= $usageLimit)) {
+            return 'exhausted';
+        }
+
+        if ($this->starts_at && now()->lt($this->starts_at)) {
+            return 'scheduled';
+        }
+
+        if ($this->expires_at && now()->gt($this->expires_at)) {
+            return 'expired';
+        }
+
+        return 'active';
+    }
 }

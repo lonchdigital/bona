@@ -155,25 +155,13 @@ function syncCartCount(count)
 export default {
     init: async function () {
         initCartDrawer();
+        initCartPageRetry();
 
         getProductsInCart(
-            function (data) {
-                syncCartCount(data.data.products.length);
-
-                if( data.data.products.length > 0 ) {
-                    $art_cart_checkout_button.removeClass('d-none');
-                } else {
-                    $art_cart_checkout_button.addClass('d-none');
-                }
-
-                drawProductsInCartWindowHTML(data);
-
-                if (isCartPage()) {
-                    drawProductsInCartPageHTML(data);
-                }
-            },
+            renderCartData,
             function () {
                 console.error('[Cart]: showProductsInCart: error during getting products from cart.');
+                showCartPageLoadError();
             }
         );
 
@@ -549,6 +537,46 @@ export default {
     }
 };
 
+function renderCartData(data)
+{
+    syncCartCount(data.data.products.length);
+    $art_cart_checkout_button.toggleClass('d-none', data.data.products.length === 0);
+    drawProductsInCartWindowHTML(data);
+
+    if (isCartPage()) {
+        drawProductsInCartPageHTML(data);
+    }
+}
+
+function initCartPageRetry()
+{
+    if (!isCartPage()) return;
+
+    $('[data-cart-retry]').on('click', function () {
+        setCartPageLoading();
+        getProductsInCart(renderCartData, showCartPageLoadError);
+    });
+}
+
+function setCartPageLoading()
+{
+    const cartPage = $('[data-cart-page]');
+    cartPage.find('[data-cart-error], [data-cart-empty]').prop('hidden', true);
+    cartPage.find('[data-cart-list]')
+        .attr('aria-busy', 'true')
+        .html('<div class="bona-cart-loading" data-cart-loading><span></span><span></span></div>');
+}
+
+function showCartPageLoadError()
+{
+    if (!isCartPage()) return;
+
+    const cartPage = $('[data-cart-page]');
+    cartPage.find('[data-cart-list]').empty().attr('aria-busy', 'false');
+    cartPage.find('[data-cart-empty], [data-cart-summary], [data-cart-service-offer]').prop('hidden', true);
+    cartPage.find('[data-cart-error]').prop('hidden', false);
+}
+
 //api
 function addProductToCart(slug, count, selectAttributes, success, fail)
 {
@@ -808,6 +836,7 @@ function drawProductsInCartPageHTML(data)
     const isEmpty = products.length === 0;
 
     list.html(productsToAppend).attr('aria-busy', 'false');
+    cartPage.find('[data-cart-error]').prop('hidden', true);
     cartPage.find('[data-cart-empty]').prop('hidden', !isEmpty);
     cartPage.find('[data-cart-summary]').prop('hidden', isEmpty);
     cartPage.find('[data-cart-service-offer]').prop('hidden', isEmpty);

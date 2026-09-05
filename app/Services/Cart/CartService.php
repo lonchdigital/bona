@@ -355,6 +355,8 @@ class CartService extends BaseService
 
     public function getSummary(Cart $cart, ?WishList $wishList): array
     {
+        $this->discardInvalidPromoCode($cart);
+
         $productsInWishList = $this->wishListService->getWishListProductsId($wishList);
 
         $cart->products->map(function ($product) use ($productsInWishList) {
@@ -376,6 +378,8 @@ class CartService extends BaseService
 
     public function getCartSummary(Cart $cart): array
     {
+        $this->discardInvalidPromoCode($cart);
+
         $totals = $this->pricingService->forCart($cart);
 
         return [
@@ -432,6 +436,20 @@ class CartService extends BaseService
     {
         $cart->update(['promo_code_id' => null]);
         $cart->unsetRelation('promoCode');
+    }
+
+    private function discardInvalidPromoCode(Cart $cart): void
+    {
+        if (! $cart->exists || ! $cart->promo_code_id) {
+            return;
+        }
+
+        $promoCode = $cart->promoCode;
+        if ($promoCode && $this->promoCodeService->validateForCart($promoCode, $cart)->isSuccess()) {
+            return;
+        }
+
+        $this->detachPromoCode($cart);
     }
 
     public function getCartSummaryWithDelivery(GetProductsSummaryWithDeliveryDTO $request, Cart $cart, ?WishList $wishList): array

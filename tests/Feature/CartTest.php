@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Cart;
+use App\Models\ServicesPageSections;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
@@ -131,6 +132,28 @@ class CartTest extends TestCase
         $this->keepCookies($this->getJson(route('store.cart.products-with-summary')))->assertOk();
 
         $this->assertSame(0, Cart::count(), 'Перегляд підсумку не має створювати кошик.');
+    }
+
+    public function test_cart_page_uses_the_reference_layout_and_admin_managed_services(): void
+    {
+        ServicesPageSections::create([
+            'slug' => 'qa-measurement',
+            'title' => ['uk' => 'Замір прорізів', 'ru' => 'Замер проемов'],
+            'description' => ['uk' => 'Перевіримо розміри до виробництва.', 'ru' => 'Проверим размеры до производства.'],
+            'button_text' => ['uk' => 'Додати послугу', 'ru' => 'Добавить услугу'],
+            'button_url' => '/services/qa-measurement',
+            'section_image_path' => 'assets/images/services-measurement.webp',
+            'sort_order' => 0,
+        ]);
+
+        $this->get(route('store.cart.page'))
+            ->assertOk()
+            ->assertSee('data-cart-page', false)
+            ->assertSee('bona-order-summary', false)
+            ->assertSee('bona-cart-services', false)
+            ->assertSee('Замір прорізів');
+
+        $this->assertSame(0, Cart::count(), 'Перегляд сторінки кошика не має створювати порожній кошик.');
     }
 
     public function test_the_wish_list_page_does_not_create_a_cart(): void

@@ -92,6 +92,52 @@ class PromoCodeTest extends TestCase
         $this->assertNull(Cart::first()->promo_code_id);
     }
 
+    public function test_applied_code_is_removed_when_cart_no_longer_meets_its_conditions(): void
+    {
+        $product = $this->makeProduct(['price' => 1000]);
+        PromoCode::create([
+            'code' => 'MINIMUM-1500',
+            'discount' => 10,
+            'discount_type' => PromoCode::TYPE_PERCENT,
+            'discount_value' => 10,
+            'is_active' => true,
+            'all_products' => true,
+            'minimum_order_amount' => 1500,
+        ]);
+
+        $this->keepCookies($this->postJson(route('store.cart.add-product', $product->slug), ['product_count' => 2]))->assertOk();
+        $this->postJson(route('store.cart.add-promo-code'), ['code' => 'MINIMUM-1500'])
+            ->assertOk()
+            ->assertJsonPath('data.summary.discount', 200);
+
+        $this->postJson(route('store.cart.change-product-count', $product->slug), ['product_count' => 1])
+            ->assertOk()
+            ->assertJsonPath('data.summary.discount', 0)
+            ->assertJsonPath('data.promo_code', null);
+
+        $this->assertNull(Cart::first()->fresh()->promo_code_id);
+    }
+
+    public function test_campaign_status_distinguishes_scheduled_expired_and_exhausted_codes(): void
+    {
+        $base = [
+            'discount' => 10,
+            'discount_type' => PromoCode::TYPE_PERCENT,
+            'discount_value' => 10,
+            'is_active' => true,
+            'all_products' => true,
+            'minimum_order_amount' => 0,
+        ];
+
+        $scheduled = PromoCode::create($base + ['code' => 'SCHEDULED', 'starts_at' => now()->addHour()]);
+        $expired = PromoCode::create($base + ['code' => 'EXPIRED', 'expires_at' => now()->subHour()]);
+        $exhausted = PromoCode::create($base + ['code' => 'EXHAUSTED', 'usage_limit' => 2, 'usage_count' => 2]);
+
+        $this->assertSame('scheduled', $scheduled->statusKey());
+        $this->assertSame('expired', $expired->statusKey());
+        $this->assertSame('exhausted', $exhausted->statusKey());
+    }
+
     public function test_admin_can_create_a_reusable_fixed_discount_for_selected_products(): void
     {
         $product = $this->makeProduct();
