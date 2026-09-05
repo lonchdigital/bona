@@ -593,6 +593,8 @@
         &:hover { border-color: #6e5d48; box-shadow: 0 18px 46px rgba(35, 32, 27, .16); transform: translateY(-4px); }
     }
 
+    &__consultant--mobile { display: none; }
+
     &__consultant-top {
         display: flex;
         align-items: center;
@@ -1058,6 +1060,8 @@
             gap: 14px 10px;
         }
         &__consultant { min-height: 420px; grid-column: 1 / -1; }
+        &__consultant--desktop { display: none; }
+        &__consultant--mobile { display: flex; }
         &__pagination-block { margin-top: 50px; }
         &__load-more { width: min(100%, 320px); }
         .pagination-wrapper .pagination { gap: 2px; }
@@ -1112,18 +1116,56 @@
             }
 
             .bona-product-card__actions {
-                top: 8px;
-                right: 8px;
-                gap: 6px;
+                top: 1px;
+                right: 1px;
+                gap: 9px;
             }
 
             .bona-product-card__action,
             .bona-product-card__actions .bona-product-card__wish {
+                position: relative;
                 width: 44px;
                 height: 44px;
+                border-color: transparent;
+                background: transparent;
+                box-shadow: none;
             }
 
-            .bona-product-card__action svg { width: 20px; height: 20px; }
+            .bona-product-card__action::before,
+            .bona-product-card__actions .bona-product-card__wish::before {
+                position: absolute;
+                z-index: 0;
+                top: 50%;
+                left: 50%;
+                width: 30px;
+                height: 30px;
+                border: 1px solid rgba(35, 32, 27, .12);
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .96);
+                box-shadow: 0 5px 14px rgba(35, 32, 27, .09);
+                content: '';
+                pointer-events: none;
+                transform: translate(-50%, -50%);
+            }
+
+            .bona-product-card__action svg {
+                position: relative;
+                z-index: 1;
+                width: 14px;
+                height: 14px;
+            }
+
+            .bona-product-card__wish.link-heart-active,
+            .bona-product-card__compare.is-active {
+                border-color: transparent;
+                background: transparent;
+            }
+
+            .bona-product-card__wish.link-heart-active::before,
+            .bona-product-card__compare.is-active::before {
+                border-color: var(--bona-ink);
+                background: var(--bona-ink);
+            }
 
             .bona-product-card__swatches {
                 min-width: 0;

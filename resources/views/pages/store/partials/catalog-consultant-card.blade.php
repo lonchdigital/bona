@@ -1,4 +1,18 @@
-<article class="bona-catalog__consultant" aria-label="{{ trans('base.catalog_consultation_aria') }}">
+@php
+    $consultantVisibility = in_array($consultantVisibility ?? null, ['desktop', 'mobile'], true)
+        ? $consultantVisibility
+        : 'all';
+@endphp
+
+<article
+    @class([
+        'bona-catalog__consultant',
+        'bona-catalog__consultant--desktop' => $consultantVisibility === 'desktop',
+        'bona-catalog__consultant--mobile' => $consultantVisibility === 'mobile',
+    ])
+    aria-label="{{ trans('base.catalog_consultation_aria') }}"
+    data-catalog-consultant="{{ $consultantVisibility }}"
+>
     <div class="bona-catalog__consultant-top">
         <span>{{ trans('base.catalog_help_kicker') }}</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">

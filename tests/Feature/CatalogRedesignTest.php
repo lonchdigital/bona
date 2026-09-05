@@ -93,6 +93,7 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('sort-by-option', $toolbar);
         $this->assertStringContainsString('$productsPaginated->firstItem()', $content);
         $this->assertStringContainsString('$catalogProductPosition % 5 === 0', $content);
+        $this->assertStringContainsString('$catalogProductPosition % 6 === 0', $content);
         $this->assertStringNotContainsString('catalog-count-menu', $toolbar);
         $this->assertStringNotContainsString('per_page', $toolbar);
         $this->assertMatchesRegularExpression(
@@ -118,7 +119,7 @@ class CatalogRedesignTest extends TestCase
         );
     }
 
-    public function test_catalog_renders_a_consultation_card_after_every_five_products(): void
+    public function test_catalog_renders_separate_desktop_and_mobile_consultation_card_intervals(): void
     {
         config()->set('constants.ROZSUVNI_DVERI_ID', -1);
         $this->seedCurrency();
@@ -159,14 +160,19 @@ class CatalogRedesignTest extends TestCase
         }
 
         $productCards = array_filter($cards, fn (\DOMElement $card) => $card->hasAttribute('data-product-card'));
-        $consultationCards = array_filter($cards, fn (\DOMElement $card) => str_contains($card->getAttribute('class'), 'bona-catalog__consultant'));
+        $desktopConsultationCards = array_filter($cards, fn (\DOMElement $card) => $card->getAttribute('data-catalog-consultant') === 'desktop');
+        $mobileConsultationCards = array_filter($cards, fn (\DOMElement $card) => $card->getAttribute('data-catalog-consultant') === 'mobile');
 
         $this->assertCount(18, $productCards);
-        $this->assertCount(3, $consultationCards);
-        $this->assertCount(21, $cards);
-        $this->assertStringContainsString('bona-catalog__consultant', $cards[5]->getAttribute('class'));
-        $this->assertStringContainsString('bona-catalog__consultant', $cards[11]->getAttribute('class'));
-        $this->assertStringContainsString('bona-catalog__consultant', $cards[17]->getAttribute('class'));
+        $this->assertCount(3, $desktopConsultationCards);
+        $this->assertCount(3, $mobileConsultationCards);
+        $this->assertCount(24, $cards);
+        $this->assertSame('desktop', $cards[5]->getAttribute('data-catalog-consultant'));
+        $this->assertSame('desktop', $cards[12]->getAttribute('data-catalog-consultant'));
+        $this->assertSame('desktop', $cards[19]->getAttribute('data-catalog-consultant'));
+        $this->assertSame('mobile', $cards[7]->getAttribute('data-catalog-consultant'));
+        $this->assertSame('mobile', $cards[15]->getAttribute('data-catalog-consultant'));
+        $this->assertSame('mobile', $cards[23]->getAttribute('data-catalog-consultant'));
         $this->assertStringNotContainsString('catalog-count-menu', $response->getContent());
     }
 
@@ -193,10 +199,18 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('grid-template-columns: repeat(2, minmax(0, 1fr));', $catalogStyles);
         $this->assertStringContainsString('&__consultant-person > div { overflow: hidden; }', $catalogStyles);
         $this->assertStringContainsString('overflow-wrap: anywhere;', $catalogStyles);
+        $this->assertStringContainsString('&__consultant--mobile { display: none; }', $catalogStyles);
+        $this->assertStringContainsString('&__consultant--desktop { display: none; }', $catalogStyles);
+        $this->assertStringContainsString('&__consultant--mobile { display: flex; }', $catalogStyles);
         $this->assertStringContainsString('height: clamp(238px, 52.5vw, 312px);', $catalogStyles);
         $this->assertStringContainsString('width: 125%;', $catalogStyles);
         $this->assertStringContainsString('object-position: center bottom;', $catalogStyles);
         $this->assertStringContainsString('transform: translateX(-50%);', $catalogStyles);
+        $this->assertStringContainsString('gap: 9px;', $catalogStyles);
+        $this->assertStringContainsString('width: 30px;', $catalogStyles);
+        $this->assertStringContainsString('height: 30px;', $catalogStyles);
+        $this->assertStringContainsString('width: 14px;', $catalogStyles);
+        $this->assertStringContainsString('height: 14px;', $catalogStyles);
         $this->assertStringContainsString('-webkit-line-clamp: 3;', $catalogStyles);
         $this->assertStringContainsString('.bona-product-card__price strong { font-size: 14px; }', $catalogStyles);
         $this->assertStringContainsString('.bona-product-card__open { width: 44px; height: 44px; }', $catalogStyles);

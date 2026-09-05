@@ -56,7 +56,11 @@
                             @endphp
 
                             @if($catalogProductPosition % 5 === 0)
-                                @include('pages.store.partials.catalog-consultant-card')
+                                @include('pages.store.partials.catalog-consultant-card', ['consultantVisibility' => 'desktop'])
+                            @endif
+
+                            @if($catalogProductPosition % 6 === 0)
+                                @include('pages.store.partials.catalog-consultant-card', ['consultantVisibility' => 'mobile'])
                             @endif
                         @endforeach
                     </div>
