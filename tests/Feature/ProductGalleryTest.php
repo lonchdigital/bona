@@ -29,6 +29,8 @@ class ProductGalleryTest extends TestCase
         $referenceScript = file_get_contents(resource_path('js/store/pages/store.product.page/product-reference.js'));
         $cartScript = file_get_contents(resource_path('js/store/common/cart.js'));
         $referenceStyles = file_get_contents(resource_path('scss/storefront/_product-reference.scss'));
+        $redesignStyles = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+        $referenceView = file_get_contents(resource_path('views/pages/store/partials/product-reference.blade.php'));
 
         $this->assertStringContainsString("import('./store.product.page/product-reference')", $pageScript);
         $this->assertStringNotContainsString("import('./store.product.page/swiper')", $pageScript);
@@ -36,6 +38,11 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("querySelectorAll('[data-product-tab]')", $referenceScript);
         $this->assertStringContainsString("querySelector('[data-installment-card]')", $referenceScript);
         $this->assertStringContainsString("querySelector('.product-kit-selections')", $referenceScript);
+        $this->assertStringContainsString("className = 'kit-dialog__remove'", $referenceScript);
+        $this->assertStringContainsString('draft.delete(choice.dataset.kitCategoryKey)', $referenceScript);
+        $this->assertStringNotContainsString('data-kit-choice-clear', $referenceScript);
+        $this->assertStringNotContainsString('data-kit-choice-clear', $referenceView);
+        $this->assertStringContainsString('data-kit-selection-hint', $referenceView);
         $this->assertStringContainsString('const trigger = $(this)', $cartScript);
         $this->assertStringContainsString("trigger.data('product-slug') || trigger.attr('id')", $cartScript);
         $this->assertStringContainsString("trigger.attr('data-checkout-redirect')", $cartScript);
@@ -44,5 +51,7 @@ class ProductGalleryTest extends TestCase
         $this->assertStringNotContainsString(".product-body .product-kit-dialog {\n    display: none;", $referenceStyles);
         $this->assertStringContainsString('.art-heart-filled { display: none; }', $referenceStyles);
         $this->assertStringContainsString('.art-heart-outline { display: none; }', $referenceStyles);
+        $this->assertStringContainsString('&::before,', $referenceStyles);
+        $this->assertMatchesRegularExpression('/&__social-icon\s*\{.*?width:\s*16px;.*?height:\s*16px;/s', $redesignStyles);
     }
 }

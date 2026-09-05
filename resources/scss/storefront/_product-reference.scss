@@ -41,6 +41,12 @@
         max-width: 1440px;
         margin-inline: auto;
         padding-inline: 56px;
+
+        &::before,
+        &::after {
+            display: none;
+            content: none;
+        }
     }
 
     .kicker {
@@ -361,6 +367,114 @@ html.product-dialog-is-open body {
     &:hover { background: #f4efe5; color: var(--ink); }
 }
 
+.product-body .kit-dialog__selection-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 5px;
+}
+
+.product-body .kit-dialog__selection-label {
+    margin-bottom: 0;
+}
+
+.product-body .kit-dialog__selection-hint {
+    color: var(--gold-light);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    white-space: nowrap;
+    text-transform: uppercase;
+
+    span {
+        display: inline-block;
+        margin-left: 3px;
+        font-size: 11px;
+    }
+}
+
+.product-body .kit-dialog__summary ul {
+    display: grid;
+    max-height: 88px;
+    min-height: 26px;
+    gap: 0;
+    padding: 6px 10px 2px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-color: var(--gold-light) rgba(255, 255, 255, .12);
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar { width: 7px; }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .12);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: var(--gold-light);
+    }
+}
+
+.product-body .kit-dialog__summary li {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 5px 0;
+
+    + li { border-top: 1px solid rgba(255, 255, 255, .08); }
+
+    &.is-empty {
+        display: block;
+        padding-block: 3px;
+    }
+}
+
+.product-body .kit-dialog__selection-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-body .kit-dialog__selection-price {
+    color: #f4efe5;
+    white-space: nowrap;
+}
+
+.product-body .kit-dialog__summary button.kit-dialog__remove {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    min-height: 30px;
+    flex: 0 0 30px;
+    grid-area: auto;
+    place-items: center;
+    align-self: center;
+    padding: 0;
+    border: 1px solid rgba(244, 239, 229, .28);
+    border-radius: 50%;
+    background: transparent;
+    color: #f4efe5;
+
+    svg { width: 14px; height: 14px; }
+
+    &:hover {
+        border-color: var(--gold-light);
+        background: rgba(200, 166, 114, .14);
+        color: var(--gold-light);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--gold-light);
+        outline-offset: 2px;
+    }
+}
+
 .product-body .product-dialog__close {
     display: grid;
     place-items: center;
@@ -570,6 +684,40 @@ html.product-dialog-is-open body {
     .product-body .consult-strip__inner > button {
         width: 100%;
         justify-self: stretch;
+    }
+
+    .product-body .kit-dialog__summary {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            'selection'
+            'total'
+            'action'
+            'note';
+        gap: 12px;
+    }
+
+    .product-body .kit-dialog__summary ul {
+        max-height: 98px;
+    }
+
+    .product-body .kit-dialog__total {
+        padding: 12px 0 0;
+        border-top: 1px solid rgba(255, 255, 255, .14);
+        border-left: 0;
+    }
+
+    .product-body .kit-dialog__summary button.kit-dialog__remove {
+        width: 36px;
+        height: 36px;
+        min-height: 36px;
+        flex-basis: 36px;
+
+        svg { width: 15px; height: 15px; }
+    }
+
+    .product-body .kit-dialog__summary > small {
+        margin-top: -4px;
+        text-align: left;
     }
 
     .product-body .installment-terms-dialog {

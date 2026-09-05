@@ -392,9 +392,9 @@ function initKitBuilder(page) {
     const price = page.querySelector('#product-price');
     const categoryButtons = Array.from(dialog?.querySelectorAll('[data-kit-category]') || []);
     const choiceButtons = Array.from(dialog?.querySelectorAll('[data-kit-option]') || []);
-    const clearButton = dialog?.querySelector('[data-kit-choice-clear]');
     const saveButton = dialog?.querySelector('[data-kit-save]');
     const selectedList = dialog?.querySelector('[data-kit-dialog-selected]');
+    const selectionHint = dialog?.querySelector('[data-kit-selection-hint]');
     const totalNode = dialog?.querySelector('[data-kit-dialog-total]');
     const categoryTitle = dialog?.querySelector('[data-kit-choice-title]');
     const categoryStep = dialog?.querySelector('[data-kit-choice-step]');
@@ -425,6 +425,19 @@ function initKitBuilder(page) {
         .map((optionKey) => choiceButtons.find((button) => button.dataset.kitOptionKey === optionKey))
         .filter(Boolean);
 
+    const syncSelectionOverflow = () => {
+        if (!selectedList) {
+            return;
+        }
+
+        const isScrollable = selectedList.scrollHeight > selectedList.clientHeight + 1;
+        selectedList.classList.toggle('is-scrollable', isScrollable);
+
+        if (selectionHint) {
+            selectionHint.hidden = !isScrollable;
+        }
+    };
+
     const renderSummary = () => {
         const selected = selectedChoices();
         const extras = selected.reduce((sum, button) => sum + (Number.parseFloat(button.dataset.kitPrice) || 0), 0);
@@ -433,19 +446,36 @@ function initKitBuilder(page) {
             selectedList.replaceChildren();
             if (!selected.length) {
                 const item = document.createElement('li');
+                item.className = 'is-empty';
                 item.textContent = emptySelectionText;
                 selectedList.append(item);
             } else {
-                selected.forEach((button) => {
+                selected.forEach((choice) => {
                     const item = document.createElement('li');
                     const label = document.createElement('span');
+                    const actions = document.createElement('span');
                     const amount = document.createElement('span');
-                    label.textContent = `${button.dataset.kitCategoryName}: ${button.dataset.kitLabel}`;
-                    amount.textContent = `+${formatNumber(button.dataset.kitPrice)} ${currency}`;
-                    item.append(label, amount);
+                    const removeButton = document.createElement('button');
+
+                    actions.className = 'kit-dialog__selection-actions';
+                    amount.className = 'kit-dialog__selection-price';
+                    removeButton.className = 'kit-dialog__remove';
+                    removeButton.type = 'button';
+                    removeButton.setAttribute('aria-label', `${isRussian() ? 'Удалить' : 'Видалити'} ${choice.dataset.kitCategoryName}: ${choice.dataset.kitLabel}`);
+                    removeButton.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="m6.5 7 .8 13h9.4l.8-13"></path><path d="M10 11v5M14 11v5"></path></svg>';
+                    label.textContent = `${choice.dataset.kitCategoryName}: ${choice.dataset.kitLabel}`;
+                    amount.textContent = `+${formatNumber(choice.dataset.kitPrice)} ${currency}`;
+                    removeButton.addEventListener('click', () => {
+                        draft.delete(choice.dataset.kitCategoryKey);
+                        render();
+                    });
+                    actions.append(amount, removeButton);
+                    item.append(label, actions);
                     selectedList.append(item);
                 });
             }
+
+            window.requestAnimationFrame(syncSelectionOverflow);
         }
 
         if (totalNode) {
@@ -481,9 +511,6 @@ function initKitBuilder(page) {
             if (label) label.textContent = isSelected ? (isRussian() ? 'Выбрано' : 'Обрано') : (isRussian() ? 'Выбрать' : 'Обрати');
         });
 
-        const isCategoryEmpty = !draft.has(activeCategory);
-        clearButton?.classList.toggle('is-active', isCategoryEmpty);
-        clearButton?.setAttribute('aria-pressed', String(isCategoryEmpty));
         renderSummary();
     };
 
@@ -532,11 +559,6 @@ function initKitBuilder(page) {
         draft.set(button.dataset.kitCategoryKey, button.dataset.kitOptionKey);
         render();
     }));
-
-    clearButton?.addEventListener('click', () => {
-        draft.delete(activeCategory);
-        render();
-    });
 
     saveButton?.addEventListener('click', save);
     openButton?.addEventListener('click', () => {

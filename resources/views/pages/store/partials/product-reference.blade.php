@@ -537,8 +537,7 @@
                 </nav>
                 <section class="kit-choice-panel" aria-live="polite">
                     <div class="kit-choice-panel__head">
-                        <div><span data-kit-choice-step>{{ $isRussian ? 'Шаг 01' : 'Крок 01' }}</span><h3 data-kit-choice-title>{{ array_key_first($categoryProducts) }}</h3><p>{{ $isRussian ? 'Выберите один совместимый вариант или оставьте категорию без дополнительного элемента.' : 'Оберіть один сумісний варіант або залиште категорію без додаткового елемента.' }}</p></div>
-                        <button type="button" data-kit-choice-clear>{{ $isRussian ? 'Не добавлять' : 'Не додавати' }}</button>
+                        <div><span data-kit-choice-step>{{ $isRussian ? 'Шаг 01' : 'Крок 01' }}</span><h3 data-kit-choice-title>{{ array_key_first($categoryProducts) }}</h3><p>{{ $isRussian ? 'Выберите один совместимый вариант для этой категории.' : 'Оберіть один сумісний варіант для цієї категорії.' }}</p></div>
                     </div>
                     <div class="kit-choice-grid" data-kit-choice-grid>
                         @foreach($categoryProducts as $categoryName => $subProducts)
@@ -557,7 +556,10 @@
         </div>
         <aside class="kit-dialog__summary" aria-label="{{ $isRussian ? 'Итог комплектации' : 'Підсумок комплектації' }}">
             <div class="kit-dialog__selection">
-                <span class="kit-dialog__selection-label">{{ $isRussian ? 'Выбрано' : 'Обрано' }}</span>
+                <div class="kit-dialog__selection-heading">
+                    <span class="kit-dialog__selection-label">{{ $isRussian ? 'Выбрано' : 'Обрано' }}</span>
+                    <span class="kit-dialog__selection-hint" data-kit-selection-hint hidden>{{ $isRussian ? 'Прокрутите список' : 'Прокрутіть список' }} <span aria-hidden="true">↓</span></span>
+                </div>
                 <div class="kit-dialog__selection-base"><strong>{{ $isRussian ? 'Дверное полотно' : 'Дверне полотно' }}</strong><b>{{ number_format($numericPrice, 0, '.', ' ') }} {{ $baseCurrency->name_short }}</b></div>
                 <ul data-kit-dialog-selected><li>{{ $isRussian ? 'Дополнительные элементы не выбраны' : 'Додаткові елементи не обрані' }}</li></ul>
             </div>
