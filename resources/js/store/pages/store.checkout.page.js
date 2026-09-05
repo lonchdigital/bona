@@ -204,8 +204,23 @@ export default async function () {
     });
 
     const deliveryInputs = [...form.querySelectorAll('input[name="delivery_type_id"]')];
+    let expandedDeliveryId = null;
+
+    const setDeliveryPanel = (activeId) => {
+        expandedDeliveryId = activeId || null;
+        showPanel('.accordion-delivery-data', expandedDeliveryId);
+        deliveryInputs.forEach((deliveryInput) => {
+            deliveryInput.setAttribute(
+                'aria-expanded',
+                String(deliveryInput.dataset.accordion === expandedDeliveryId)
+            );
+        });
+    };
+
     const onDeliveryChange = (input, refreshSummary = true) => {
-        showPanel('.accordion-delivery-data', input.dataset.accordion);
+        if (!input.checked) return;
+
+        setDeliveryPanel(input.dataset.accordion);
         const output = form.querySelector('.selected-delivery-type');
         if (output) output.textContent = choiceName(input);
         updateProgress('delivery');
@@ -216,7 +231,28 @@ export default async function () {
             });
         }
     };
-    deliveryInputs.forEach((input) => input.addEventListener('change', () => onDeliveryChange(input)));
+
+    const collapseDelivery = (input) => {
+        input.checked = false;
+        setDeliveryPanel(null);
+
+        const output = form.querySelector('.selected-delivery-type');
+        if (output) output.textContent = form.dataset.deliveryEmptyLabel;
+
+        getSummaryByDeliveryTypeId(null, (response) => {
+            showSummaryWithDelivery(response, form, false);
+            updateInstallments();
+        });
+    };
+
+    deliveryInputs.forEach((input) => {
+        input.addEventListener('click', () => {
+            if (expandedDeliveryId === input.dataset.accordion && input.checked) {
+                collapseDelivery(input);
+            }
+        });
+        input.addEventListener('change', () => onDeliveryChange(input));
+    });
 
     const recipientInputs = [...form.querySelectorAll('input[name="recipient_type_id"]')];
     recipientInputs.forEach((input) => input.addEventListener('change', () => {
@@ -240,7 +276,7 @@ export default async function () {
     const activeRecipient = recipientInputs.find((input) => input.checked);
     const activePayment = paymentInputs.find((input) => input.checked);
     if (activeDelivery) onDeliveryChange(activeDelivery, true);
-    else showPanel('.accordion-delivery-data', null);
+    else setDeliveryPanel(null);
     if (activeRecipient) showPanel('.accordion-recipient-data', activeRecipient.dataset.accordion);
     if (activePayment) onPaymentChange(activePayment);
     updateInstallments();
@@ -295,13 +331,15 @@ function money(value) {
     }).format(amount)} ${store.base_currency_name_short}`;
 }
 
-function showSummaryWithDelivery(response, form) {
+function showSummaryWithDelivery(response, form, hasSelectedDelivery = true) {
     const data = response?.data || response;
     if (!data) return;
 
     document.querySelectorAll('.price-products').forEach((node) => { node.textContent = money(data.products); });
     document.querySelectorAll('.price-delivery').forEach((node) => {
-        node.textContent = data.is_carrier ? translations.cart_delivery_price : money(data.delivery);
+        node.textContent = hasSelectedDelivery
+            ? (data.is_carrier ? translations.cart_delivery_price : money(data.delivery))
+            : form?.dataset.deliveryEmptyLabel;
     });
     document.querySelectorAll('.price-discount').forEach((node) => { node.textContent = `−${money(data.discount)}`; });
     document.querySelectorAll('.total-price-delivery').forEach((node) => { node.textContent = money(data.total); });
@@ -315,7 +353,7 @@ function getSummaryByDeliveryTypeId(deliveryTypeId, success) {
     $.ajax({
         url: routes.cart.summary_with_delivery_route,
         type: 'get',
-        data: { delivery_type_id: deliveryTypeId },
+        data: deliveryTypeId ? { delivery_type_id: deliveryTypeId } : {},
         dataType: 'json',
     }).done(success);
 }

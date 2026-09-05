@@ -12,8 +12,8 @@ class GetProductsSummaryWithDeliveryRequest extends BaseRequest
     {
         return [
             'delivery_type_id' => [
-                'required',
-                'int',
+                'nullable',
+                'integer',
                 'in:'.DeliveryTypesDataClass::get()->pluck('id')->implode(','),
             ],
         ];
@@ -22,7 +22,7 @@ class GetProductsSummaryWithDeliveryRequest extends BaseRequest
     public function toDTO(): GetProductsSummaryWithDeliveryDTO
     {
         return new GetProductsSummaryWithDeliveryDTO(
-            $this->input('delivery_type_id')
+            $this->filled('delivery_type_id') ? $this->integer('delivery_type_id') : null,
         );
     }
 }

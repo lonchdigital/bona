@@ -96,6 +96,9 @@
     gap: 26px;
     padding: 25px 0;
     border-bottom: 1px solid var(--bona-line);
+    transition: opacity .18s ease;
+
+    &.is-updating { opacity: .62; }
 
     &__image {
         display: flex;
@@ -196,6 +199,12 @@
     border: 0 !important;
 }
 
+.basket-sub-menu .cart-item {
+    transition: opacity .18s ease;
+
+    &.is-updating { opacity: .62; }
+}
+
 .bona-qty-control {
     display: inline-grid;
     width: auto;
@@ -247,6 +256,9 @@
             stroke-width: 1.5;
         }
     }
+
+    button:disabled,
+    input:disabled { cursor: wait; opacity: .55; }
 
     input { font-size: 13px; font-weight: 700; appearance: textfield; }
     input::-webkit-inner-spin-button,
@@ -442,6 +454,18 @@
     h2 { margin: 0; font: 400 27px/1.08 var(--bona-display); }
     p { margin: 6px 0 0; color: var(--bona-muted); font-size: 11px; line-height: 1.55; }
     .bona-button { min-height: 44px; padding: 10px 20px; font-size: 12px; }
+}
+
+.bona-cart-mutation-error {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    border: 1px solid #cfaaa5;
+    border-radius: 10px;
+    background: #faf0ee;
+    color: #873b34;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
 }
 
 .bona-service-offer {
@@ -1271,21 +1295,63 @@
 }
 
 .bona-consent {
+    position: relative;
     display: grid;
-    grid-template-columns: 18px minmax(0, 1fr);
-    gap: 10px;
-    margin-top: 20px;
-    color: rgba(247, 244, 238, .58);
-    font-size: 9px;
-    line-height: 1.55;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 11px;
+    margin-top: 22px;
+    color: rgba(247, 244, 238, .76);
+    font-size: 12px;
+    line-height: 1.6;
     cursor: pointer;
 
-    input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: var(--bona-gold-light); }
+    > input[type='checkbox'] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        opacity: 0;
+    }
+
+    &__box {
+        display: grid;
+        width: 22px;
+        height: 22px;
+        align-self: center;
+        border: 1px solid rgba(247, 244, 238, .5);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, .07);
+        color: var(--bona-dark);
+        transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+        place-items: center;
+
+        svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0;
+            transform: scale(.72);
+            transition: opacity .16s ease, transform .16s ease;
+        }
+    }
+
+    &__text { min-width: 0; }
+    input[type='checkbox']:checked + .bona-consent__box { border-color: var(--bona-gold-light); background: var(--bona-gold-light); }
+    input[type='checkbox']:checked + .bona-consent__box svg { opacity: 1; transform: none; }
+    input[type='checkbox']:focus-visible + .bona-consent__box { outline: 2px solid var(--bona-gold-light); outline-offset: 3px; }
+    &:hover &__box { border-color: var(--bona-gold-light); }
     a { color: var(--bona-cream); text-decoration: underline; text-underline-offset: 2px; }
-    &.has-error { color: #f4aaa3; }
+    &.has-error {
+        color: #f4aaa3;
+
+        .bona-consent__box { border-color: #f4aaa3; }
+    }
 }
 
-.bona-consent-error { margin: 7px 0 0; color: #f4aaa3; font-size: 9px; }
+.bona-consent-error { margin: 8px 0 0 33px; color: #f4aaa3; font-size: 11px; line-height: 1.45; }
 .bona-checkout-loader { margin-top: 12px; color: var(--bona-gold-light); font-size: 10px; text-align: center; }
 
 .bona-checkout-success {
@@ -1559,4 +1625,9 @@
 
 @media (prefers-reduced-motion: reduce) {
     .bona-cart-loading span { animation: none; }
+
+    .bona-cart-row,
+    .basket-sub-menu .cart-item,
+    .bona-consent__box,
+    .bona-consent__box svg { transition: none; }
 }

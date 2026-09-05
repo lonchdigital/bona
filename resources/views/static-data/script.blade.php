@@ -82,6 +82,7 @@ const translations = {
     checkout_search_np_department: '@lang('base.checkout_search_np_department')',
     checkout_search_np_department_not_found: '@lang('base.checkout_search_np_department_not_found')',
     promo_code_required: '@lang('base.promo_code_required')',
+    cart_update_error: '@lang('base.cart_update_error')',
     count_of_products: '@lang('base.count_of_products')',
     decrease_quantity: '@lang('base.decrease_quantity')',
     increase_quantity: '@lang('base.increase_quantity')',

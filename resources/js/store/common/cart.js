@@ -1,5 +1,4 @@
 import $ from "jquery";
-import InputCounter from "./input-counter";
 // import wishList from "./wish-list";
 
 const $main_basket_count = $('.art-main-basket-count.count-of-products-in-basket');
@@ -25,6 +24,19 @@ function escapeHTML(value)
 function formatMoney(value)
 {
     return `${Math.round(Number(value) || 0).toLocaleString(locale === 'ru' ? 'ru-RU' : 'uk-UA')} ${store.base_currency_name_short}`;
+}
+
+function responseErrorMessage(response, fallback)
+{
+    const payload = response?.responseJSON || {};
+    const validationMessage = Object.values(payload.errors || {})
+        .flat()
+        .find((message) => typeof message === 'string' && message.trim() !== '');
+
+    return payload.data?.message
+        || validationMessage
+        || payload.message
+        || fallback;
 }
 
 function closeCartDrawer({ restoreFocus = true } = {})
@@ -155,6 +167,7 @@ export default {
     init: async function () {
         initCartDrawer();
         initCartPageRetry();
+        initCartItemInteractions();
 
         getProductsInCart(
             renderCartData,
@@ -500,13 +513,7 @@ export default {
                         drawProductsInCartPageHTML(data);
                     },
                     function (data) {
-                        if(data.hasOwnProperty('responseJSON') && data.responseJSON.hasOwnProperty('message')) {
-                            promoCodeErrorText.text(data.responseJSON.message);
-                        } else if (data.responseJSON?.errors?.code?.[0]) {
-                            promoCodeErrorText.text(data.responseJSON.errors.code[0]);
-                        } else {
-                            promoCodeErrorText.text(translations.action_unexpected_error);
-                        }
+                        promoCodeErrorText.text(responseErrorMessage(data, translations.action_unexpected_error));
 
                         promoCodeSubmitButton.prop('disabled', false).removeAttr('aria-busy');
                     }
@@ -538,6 +545,7 @@ export default {
 
 function renderCartData(data)
 {
+    clearCartMutationError();
     syncCartCount(data.data.products.length);
     $art_cart_checkout_button.toggleClass('d-none', data.data.products.length === 0);
     drawProductsInCartWindowHTML(data);
@@ -557,9 +565,127 @@ function initCartPageRetry()
     });
 }
 
+function initCartItemInteractions()
+{
+    document.addEventListener('click', function (event) {
+        if (!(event.target instanceof Element)) return;
+
+        const counter = event.target.closest('.cart-item .bona-qty-control .counter');
+        if (counter) {
+            event.preventDefault();
+            const input = counter.closest('.bona-qty-control')?.querySelector('.product-count-input');
+            if (!(input instanceof HTMLInputElement) || input.disabled) return;
+
+            const minimum = Number.parseInt(input.min, 10) || 1;
+            const maximum = Number.parseInt(input.max, 10) || 99;
+            const current = Number.parseInt(input.value, 10) || minimum;
+            const direction = counter.classList.contains('plus') ? 1 : -1;
+            const next = Math.min(maximum, Math.max(minimum, current + direction));
+
+            if (next === current) return;
+
+            input.value = String(next);
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            return;
+        }
+
+        const deleteButton = event.target.closest('.cart-item .item-delete, .cart-item .delete-product-from-cart-button');
+        if (deleteButton) {
+            event.preventDefault();
+            deleteCartItem(deleteButton);
+        }
+    });
+
+    document.addEventListener('change', function (event) {
+        if (!(event.target instanceof HTMLInputElement)) return;
+        if (!event.target.matches('.cart-item .product-count-input')) return;
+        updateCartItemQuantity(event.target);
+    });
+}
+
+function setCartItemBusy(cartItem, isBusy)
+{
+    cartItem.classList.toggle('is-updating', isBusy);
+    cartItem.toggleAttribute('aria-busy', isBusy);
+    cartItem.querySelectorAll('.bona-qty-control button, .bona-qty-control input, .item-delete, .delete-product-from-cart-button')
+        .forEach((control) => { control.disabled = isBusy; });
+}
+
+function clearCartMutationError()
+{
+    const message = document.querySelector('[data-cart-mutation-error]');
+    if (!message) return;
+
+    message.hidden = true;
+    message.textContent = '';
+}
+
+function showCartMutationError(message = translations.cart_update_error)
+{
+    const error = document.querySelector('[data-cart-mutation-error]');
+    if (!error) return;
+
+    error.textContent = message || translations.cart_update_error;
+    error.hidden = false;
+}
+
+function updateCartItemQuantity(input)
+{
+    const cartItem = input.closest('.cart-item');
+    const slug = cartItem?.querySelector('.product-slug-input')?.value;
+    if (!cartItem || !slug || input.disabled) return;
+
+    const minimum = Number.parseInt(input.min, 10) || 1;
+    const maximum = Number.parseInt(input.max, 10) || 99;
+    const committed = Number.parseInt(input.dataset.committedValue, 10) || minimum;
+    const requested = Number.parseInt(input.value, 10);
+    const quantity = Number.isFinite(requested)
+        ? Math.min(maximum, Math.max(minimum, requested))
+        : committed;
+
+    input.value = String(quantity);
+    if (quantity === committed) return;
+
+    clearCartMutationError();
+    setCartItemBusy(cartItem, true);
+
+    updateProductInCart(
+        slug,
+        quantity,
+        getAllProductAttributes($(input)),
+        renderCartData,
+        function (response) {
+            if (document.contains(input)) input.value = String(committed);
+            setCartItemBusy(cartItem, false);
+            showCartMutationError(responseErrorMessage(response, translations.cart_update_error));
+        }
+    );
+}
+
+function deleteCartItem(button)
+{
+    const cartItem = button.closest('.cart-item');
+    const slug = cartItem?.querySelector('.product-slug-input')?.value;
+    if (!cartItem || !slug || button.disabled) return;
+
+    clearCartMutationError();
+    setCartItemBusy(cartItem, true);
+
+    deleteProductFromCart(
+        slug,
+        getAllProductAttributes($(button)),
+        renderCartData,
+        function (response) {
+            setCartItemBusy(cartItem, false);
+            showCartMutationError(responseErrorMessage(response, translations.cart_update_error));
+        }
+    );
+}
+
 function setCartPageLoading()
 {
     const cartPage = $('[data-cart-page]');
+    clearCartMutationError();
     cartPage.find('[data-cart-error], [data-cart-empty]').prop('hidden', true);
     cartPage.find('[data-cart-list]')
         .attr('aria-busy', 'true')
@@ -592,8 +718,8 @@ function addProductToCart(slug, count, selectAttributes, success, fail)
         dataType: 'json'
     }).done(function(data) {
         success(data);
-    }).fail(function () {
-        fail();
+    }).fail(function (response) {
+        fail(response);
     });
 }
 function addSubProductToCart(slug, updatedCount, success, fail)
@@ -610,8 +736,8 @@ function addSubProductToCart(slug, updatedCount, success, fail)
         dataType: 'json',
     }).done(function(data) {
         success(data);
-    }).fail(function () {
-        fail();
+    }).fail(function (response) {
+        fail(response);
     });
 
 }
@@ -630,8 +756,8 @@ function getProductsInCart(success, fail)
         }
     }).done(function(data) {
         success(data);
-    }).fail(function () {
-        fail();
+    }).fail(function (response) {
+        fail(response);
     });
 }
 
@@ -649,8 +775,8 @@ function deleteProductFromCart(slug, productAttributes, success, fail)
         dataType: 'json',
     }).done(function(data) {
         success(data);
-    }).fail(function () {
-        fail();
+    }).fail(function (response) {
+        fail(response);
     });
 }
 
@@ -670,8 +796,8 @@ function updateProductInCart(slug, count, productAttributes, success, fail)
         dataType: 'json',
     }).done(function(data) {
         success(data);
-    }).fail(function () {
-        fail();
+    }).fail(function (response) {
+        fail(response);
     });
 }
 
@@ -714,10 +840,6 @@ function drawProductsInCartWindowHTML(data)
     $('.basket-sub-menu .items-total-price').text(formatMoney(data.data.summary.total));
     $('.basket-sub-menu').toggleClass('is-empty', products.length === 0);
     $('.basket-sub-menu .bona-cart-drawer__empty').toggleClass('d-none', products.length > 0);
-    InputCounter.addCounterHandler($('.basket-sub-menu .sub-menu-list .counter'));
-    addChangeProductCountHandlers($('.basket-sub-menu .sub-menu-list .product-count-input'));
-    addDeleteProductFromCartHandlers($('.basket-sub-menu .sub-menu-list .item-delete'));
-
     const freeDeliveryButton = $('.basket-sub-menu .btn-free-shiping');
 
     if (data.data.has_free_delivery && freeDeliveryButton.hasClass('d-none')) {
@@ -750,7 +872,7 @@ function getProductInCartWindowHTML(productData, productAttributesHTML)
                     <div class="item-counts">
                         <div class="custom-control-number custom-control-number--cart bona-qty-control" aria-label="${escapeHTML(translations.count_of_products)}">
                             <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
-                            <input type="number" class="form-control product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
+                            <input type="number" class="form-control product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" data-committed-value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
                             <button class="counter plus" type="button" aria-label="${escapeHTML(translations.increase_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3v10"/></svg></button>
                         </div>
                         <div class="item-price">
@@ -790,9 +912,6 @@ function drawProductsInCartPageHTML(data)
     cartPage.find('[data-summary-discount]').text(`−${formatMoney(data.data.summary.discount)}`);
     cartPage.find('[data-summary-discount-row]').prop('hidden', Number(data.data.summary.discount) <= 0);
 
-    InputCounter.addCounterHandler($('.cart-page-products-list .counter'));
-    addChangeProductCountHandlers($('.cart-page-products-list .product-count-input'));
-    addDeleteProductFromCartHandlers($('.cart-page-products-list .delete-product-from-cart-button'));
     renderPromoCodeState(data.data.promo_code);
 }
 
@@ -816,7 +935,7 @@ function getProductInCartPageHTML(productData, productAttributesHTML)
                 <div class="bona-cart-row__controls">
                     <div class="custom-control-number bona-qty-control" aria-label="${escapeHTML(translations.count_of_products)}">
                         <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
-                        <input type="number" class="product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
+                        <input type="number" class="product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" data-committed-value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
                         <button class="counter plus" type="button" aria-label="${escapeHTML(translations.increase_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3v10"/></svg></button>
                     </div>
                     <button class="bona-remove-link delete-product-from-cart-button" type="button">
@@ -886,9 +1005,7 @@ function getProductAttributesHTML(productData)
 
 function attributeLine(key, id, label)
 {
-    return `<span class="product-attribute-line">
-        <span class="bona-cart-attribute-meta attribute-key">${escapeHTML(key)}</span>
-        <span class="bona-cart-attribute-meta attribute-id">${escapeHTML(id)}</span>
+    return `<span class="product-attribute-line" data-attribute-key="${escapeHTML(key)}" data-attribute-id="${escapeHTML(id)}">
         <span class="attribute-value">${escapeHTML(label)}</span>
     </span>`;
 }
@@ -922,85 +1039,15 @@ function renderPromoCodeState(promoCode)
 }
 
 
-//handlers
-function addChangeProductCountHandlers(elements)
-{
-    elements.change(function (event) {
-        event.preventDefault();
-        const slug = $(this).closest('.cart-item').find('input[name="product_slug"]').val();
-
-        // Get All Product Attributes
-        var productAttributes = {};
-        productAttributes = getAllProductAttributes($(this));
-
-        const subProduct =  $('#' + slug);
-        subProduct.data('count', $(this).val());
-        subProduct.attr('data-count', $(this).val());
-
-        updateProductInCart(
-            slug,
-            $(this).val(),
-            productAttributes,
-            function (data) {
-                drawProductsInCartWindowHTML(data);
-
-                if (isCartPage()) {
-                    drawProductsInCartPageHTML(data);
-                }
-            },
-            function () {
-                console.error('[Cart]: addChangeProductCountHandlers: error during product in cart update.');
-            }
-        )
-    })
-}
-
-function addDeleteProductFromCartHandlers(elements)
-{
-    elements.click(function (event) {
-        event.preventDefault();
-        const slug = $(this).closest('.cart-item').find('input[name="product_slug"]').val();
-
-        const subProduct =  $('#' + slug);
-        subProduct.data('count', 0);
-        subProduct.attr('data-count', 0);
-
-        // Get All Product Attributes
-        var productAttributes = {};
-        productAttributes = getAllProductAttributes($(this));
-
-        deleteProductFromCart(
-            slug,
-            productAttributes,
-            function (data) {
-                syncCartCount(data.data.products.length);
-
-                if( data.data.products.length > 0 ) {
-                    $art_cart_checkout_button.removeClass('d-none');
-                } else {
-                    $art_cart_checkout_button.addClass('d-none');
-                }
-
-                drawProductsInCartWindowHTML(data);
-
-                if (isCartPage()) {
-                    drawProductsInCartPageHTML(data);
-                }
-            },
-            function () {
-                console.error('[Cart]: addDeleteProductFromCartHandlers: error during products in cart update.');
-            }
-        )
-    })
-}
-
 function getAllProductAttributes(art_this)
 {
     var productAttributesLines = art_this.closest('.cart-item').find('.product-attributes').find('.product-attribute-line');
     var productAttributes = {};
     productAttributesLines.each(function(index, element) {
-        var attributeKey = $(element).find('.attribute-key').text();
-        var attributeValue = $(element).find('.attribute-id').text();
+        var attributeKey = element.dataset.attributeKey || $(element).find('.attribute-key').text();
+        var attributeValue = element.dataset.attributeId || $(element).find('.attribute-id').text();
+
+        if (!attributeKey || attributeValue === '') return;
 
         if(attributeValue === 'null') {
             productAttributes[attributeKey] = null;

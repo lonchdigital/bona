@@ -3638,6 +3638,14 @@ body.bona-lead-modal-open {
     }
 }
 
+#dialog-call-measurer {
+    .bona-lead-modal__form-view { padding: 24px 36px 22px; }
+    .bona-lead-modal__intro { margin: 10px 0 16px; }
+    .bona-lead-form { gap: 16px; }
+    .bona-lead-form__grid { gap: 12px 14px; }
+    .bona-lead-field textarea { min-height: 76px; }
+}
+
 .bona-lead-form {
     display: flex;
     flex-direction: column;
@@ -4404,6 +4412,14 @@ label.bona-lead-consent > input {
         &__intro { margin: 14px 0 22px; font-size: 13px; }
         &__close { top: 15px; right: 15px; }
         &__thanks { min-height: 540px; padding: 56px 24px; }
+    }
+
+    #dialog-call-measurer {
+        .bona-lead-modal__form-view { padding: 22px 20px 18px; }
+        .bona-lead-modal__intro { margin: 9px 0 14px; }
+        .bona-lead-form { gap: 14px; }
+        .bona-lead-form__grid { gap: 11px; }
+        .bona-lead-field textarea { min-height: 70px; }
     }
 
     .bona-lead-form {

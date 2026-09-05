@@ -124,6 +124,20 @@ class PromoCodeTest extends TestCase
             ->assertJsonPath('data.promo_code', null);
     }
 
+    public function test_unknown_code_returns_a_specific_recoverable_message(): void
+    {
+        $product = $this->makeProduct(['price' => 1500]);
+        $this->keepCookies($this->postJson(route('store.cart.add-product', $product->slug), ['product_count' => 1]))->assertOk();
+
+        $this->postJson(route('store.cart.add-promo-code'), ['code' => 'NOT-A-REAL-CODE'])
+            ->assertStatus(422)
+            ->assertJsonPath('data.success', false)
+            ->assertJsonPath('data.message', trans('base.promo_code_invalid'));
+
+        $script = file_get_contents(resource_path('js/store/common/cart.js'));
+        $this->assertStringContainsString('payload.data?.message', $script);
+    }
+
     public function test_expired_code_is_rejected_without_being_attached(): void
     {
         $product = $this->makeProduct();

@@ -349,8 +349,21 @@ class CheckoutTest extends TestCase
         $this->assertNull($page->viewData('checkoutDeliveryType'));
         $this->assertSame(0.0, (float) $page->viewData('initialSummary')['delivery']);
         $page->assertSee(trans('base.checkout_delivery_not_selected'));
+        $page->assertSee('data-delivery-empty-label="'.trans('base.checkout_delivery_not_selected').'"', false);
+        $page->assertSee('aria-controls="delivery-1"', false);
+        $page->assertSee('aria-expanded="false"', false);
+        $page->assertSee('class="bona-consent__box"', false);
         $this->assertMatchesRegularExpression('/id="delivery-1"[^>]*hidden/', $page->getContent());
         $this->assertMatchesRegularExpression('/id="delivery-2"[^>]*hidden/', $page->getContent());
+
+        $this->getJson(route('store.cart.summary-with-delivery'))
+            ->assertOk()
+            ->assertJsonPath('data.delivery', 0)
+            ->assertJsonPath('data.total', 5400);
+
+        $script = file_get_contents(resource_path('js/store/pages/store.checkout.page.js'));
+        $this->assertStringContainsString('input.checked = false;', $script);
+        $this->assertStringContainsString('getSummaryByDeliveryTypeId(null', $script);
     }
 
     public function test_checkout_renders_interactive_installment_controls_for_both_banks(): void

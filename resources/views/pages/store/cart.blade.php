@@ -34,6 +34,7 @@
                 <div class="bona-cart-list cart-page-products-list" data-cart-list aria-live="polite">
                     <div class="bona-cart-loading" data-cart-loading><span></span><span></span></div>
                 </div>
+                <p class="bona-cart-mutation-error" data-cart-mutation-error role="alert" hidden>{{ trans('base.cart_update_error') }}</p>
 
                 <div class="bona-cart-error" data-cart-error hidden>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5m0 3h.01M10.4 4.2 3.1 17a2 2 0 0 0 1.74 3h14.32a2 2 0 0 0 1.74-3L13.6 4.2a1.84 1.84 0 0 0-3.2 0Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -59,7 +60,7 @@
                         <h2>{{ trans('base.cart_measure_title') }}</h2>
                         <p>{{ trans('base.cart_measure_text') }}</p>
                     </div>
-                    <a class="bona-button bona-button--outline" href="{{ $measurementUrl }}">{{ trans('base.cart_measure_cta') }}</a>
+                    <a class="bona-button bona-button--outline" href="{{ $measurementUrl }}" data-lead-modal-open="dialog-call-measurer">{{ trans('base.cart_measure_cta') }}</a>
                 </article>
             </div>
 

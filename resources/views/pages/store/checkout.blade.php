@@ -56,7 +56,15 @@
             </div>
         </div>
 
-        <form id="checkout-main" class="bona-shell bona-checkout-layout" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST" data-checkout-total="{{ $initialSummary['total'] }}" novalidate>
+        <form
+            id="checkout-main"
+            class="bona-shell bona-checkout-layout"
+            action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}"
+            method="POST"
+            data-checkout-total="{{ $initialSummary['total'] }}"
+            data-delivery-empty-label="{{ trans('base.checkout_delivery_not_selected') }}"
+            novalidate
+        >
             @csrf
 
             <div class="bona-checkout-form">
@@ -113,7 +121,7 @@
 
                     <div class="bona-choice-list" id="checkout-delivery-accordion">
                         <label class="bona-choice-card">
-                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-address" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}" data-accordion="delivery-1" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) required>
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-address" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}" data-accordion="delivery-1" aria-controls="delivery-1" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) required>
                             <span><b>{{ trans('base.checkout_address_delivery') }}</b><small>{{ trans('base.checkout_address_delivery_note') }}</small></span><strong>{{ $formatPrice(config('domain.delivery_price', 0)) }}</strong>
                         </label>
                         <div id="delivery-1" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)>
@@ -129,7 +137,7 @@
                         </div>
 
                         <label class="bona-choice-card">
-                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-np" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY }}" data-accordion="delivery-2" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)>
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-np" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY }}" data-accordion="delivery-2" aria-controls="delivery-2" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)>
                             <span><b>{{ trans('base.checkout_np_delivery') }}</b><small>{{ trans('base.checkout_np_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
                         </label>
                         <div id="delivery-2" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)>
@@ -140,7 +148,7 @@
                         </div>
 
                         <label class="bona-choice-card">
-                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-sat" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}" data-accordion="delivery-3" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)>
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-sat" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}" data-accordion="delivery-3" aria-controls="delivery-3" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)>
                             <span><b>{{ trans('base.checkout_sat_delivery') }}</b><small>{{ trans('base.checkout_sat_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
                         </label>
                         <div id="delivery-3" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)>
@@ -151,7 +159,7 @@
                         </div>
 
                         <label class="bona-choice-card">
-                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-pickup" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY }}" data-accordion="delivery-4" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY)>
+                            <input class="art-accordion-delivery" type="radio" id="delivery-radio-pickup" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY }}" data-accordion="delivery-4" aria-controls="delivery-4" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY)>
                             <span><b>{{ trans('base.checkout_pickup_from_store') }}</b><small>{{ trans('base.checkout_pickup_note') }}</small></span><strong>{{ trans('base.checkout_free') }}</strong>
                         </label>
                         <div id="delivery-4" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY)><p>{{ trans('base.checkout_pickup_panel') }}</p></div>
@@ -279,8 +287,12 @@
                 </div>
                 <div class="bona-checkout-summary__selection"><p>{{ trans('base.checkout_payment') }}: <span class="selected-payment-type">{{ $selectedPaymentLabel }}</span></p><p>{{ trans('base.delivery') }}: <span class="selected-delivery-type">{{ $selectedDeliveryLabel }}</span></p></div>
                 <label class="bona-consent @error('agreement') has-error @enderror" for="checkout-order-info-form-check">
-                    <input type="hidden" name="agreement" value="0"><input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1" @checked((bool) old('agreement')) required>
-                    <span>{{ trans('base.checkout_by_confirm_i_agree') }} <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ mb_strtolower(trans('base.conditions')) }}</a></span>
+                    <input type="hidden" name="agreement" value="0">
+                    <input type="checkbox" id="checkout-order-info-form-check" name="agreement" value="1" @checked((bool) old('agreement')) required>
+                    <span class="bona-consent__box" aria-hidden="true">
+                        <svg viewBox="0 0 16 16"><path d="m3.5 8.2 2.8 2.8 6.2-6.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span class="bona-consent__text">{{ trans('base.checkout_by_confirm_i_agree') }} <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ mb_strtolower(trans('base.conditions')) }}</a></span>
                 </label>
                 @error('agreement')<p class="bona-consent-error">{{ $message }}</p>@enderror
                 <button type="submit" class="bona-button bona-button--light bona-button--full" id="submit-button"><span>{{ trans('base.checkout_confirm_order') }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>

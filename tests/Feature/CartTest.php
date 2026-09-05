@@ -199,7 +199,15 @@ class CartTest extends TestCase
             ->assertSee('data-cart-page', false)
             ->assertSee('bona-order-summary', false)
             ->assertSee('bona-cart-services', false)
+            ->assertSee('data-lead-modal-open="dialog-call-measurer"', false)
+            ->assertSee('id="dialog-call-measurer"', false)
             ->assertSee('Замір прорізів');
+
+        $cartScript = file_get_contents(resource_path('js/store/common/cart.js'));
+        $this->assertStringContainsString('initCartItemInteractions();', $cartScript);
+        $this->assertStringContainsString('data-committed-value=', $cartScript);
+        $this->assertStringContainsString('data-attribute-key=', $cartScript);
+        $this->assertStringNotContainsString('bona-cart-attribute-meta attribute-key', $cartScript);
 
         $this->assertSame(0, Cart::count(), 'Перегляд сторінки кошика не має створювати порожній кошик.');
     }
