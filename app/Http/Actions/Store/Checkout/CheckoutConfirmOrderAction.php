@@ -53,6 +53,7 @@ class CheckoutConfirmOrderAction extends BaseAction
             ]);
         }
 
+        $cartService->normalizeLegacyBundles($cart);
         $order = $orderService->createOrderByCart($cart, $request->toDTO(), $authUser);
 
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {

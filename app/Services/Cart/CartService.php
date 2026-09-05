@@ -19,6 +19,7 @@ use App\Services\PromoCode\PromoCodeService;
 use App\Services\WishList\WishListService;
 use App\Support\Commerce\ProductBundle;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -165,7 +166,147 @@ class CartService extends BaseService
 
     public function getProductsInCart(Cart $cart): Collection
     {
+        $this->normalizeLegacyBundles($cart);
+
         return $cart->products;
+    }
+
+    /**
+     * Attach the bundle metadata introduced for configured doors to cart rows
+     * that were saved before that metadata existed.
+     *
+     * The old storefront always inserted a door first and its selected
+     * components immediately afterwards. We only upgrade that exact sequence:
+     * every following row must be listed in the door's `sub_products`, and we
+     * stop as soon as another product appears. This keeps genuinely standalone
+     * accessories standalone while making an already-open customer cart render
+     * like carts created by the current configurator.
+     */
+    public function normalizeLegacyBundles(Cart $cart): void
+    {
+        if (! $cart->exists) {
+            return;
+        }
+
+        $lines = CartProducts::query()
+            ->where('cart_id', $cart->id)
+            ->orderBy('id')
+            ->get(['id', 'product_id', 'bundle_key']);
+
+        if ($lines->whereNull('bundle_key')->count() < 2) {
+            return;
+        }
+
+        $products = Product::query()
+            ->select(['id', 'sub_products'])
+            ->with(['categories:id,name'])
+            ->whereIn('id', $lines->pluck('product_id')->unique())
+            ->get()
+            ->keyBy('id');
+        $updates = [];
+        $consumedLineIds = [];
+
+        foreach ($lines as $position => $line) {
+            if ($line->bundle_key !== null || isset($consumedLineIds[$line->id])) {
+                continue;
+            }
+
+            $parentProduct = $products->get($line->product_id);
+            $allowedComponentIds = $this->legacyBundleComponentIds($parentProduct?->sub_products);
+
+            if ($allowedComponentIds->isEmpty()) {
+                continue;
+            }
+
+            $componentLines = collect();
+
+            for ($candidatePosition = $position + 1; $candidatePosition < $lines->count(); $candidatePosition++) {
+                $candidateLine = $lines->get($candidatePosition);
+
+                if ($candidateLine->bundle_key !== null || isset($consumedLineIds[$candidateLine->id])) {
+                    break;
+                }
+
+                if (! $allowedComponentIds->contains((int) $candidateLine->product_id)) {
+                    break;
+                }
+
+                $componentLines->push($candidateLine);
+            }
+
+            if ($componentLines->isEmpty()) {
+                continue;
+            }
+
+            $bundleKey = (string) Str::uuid();
+            $updates[] = [
+                'id' => $line->id,
+                'bundle_key' => $bundleKey,
+                'bundle_role' => ProductBundle::ROLE_PARENT,
+                'bundle_category' => null,
+            ];
+            $consumedLineIds[$line->id] = true;
+
+            foreach ($componentLines as $componentLine) {
+                $updates[] = [
+                    'id' => $componentLine->id,
+                    'bundle_key' => $bundleKey,
+                    'bundle_role' => ProductBundle::ROLE_ITEM,
+                    'bundle_category' => $this->legacyBundleCategory($products->get($componentLine->product_id)),
+                ];
+                $consumedLineIds[$componentLine->id] = true;
+            }
+        }
+
+        if ($updates === []) {
+            return;
+        }
+
+        DB::transaction(function () use ($cart, $updates) {
+            foreach ($updates as $update) {
+                CartProducts::query()
+                    ->whereKey($update['id'])
+                    ->where('cart_id', $cart->id)
+                    ->whereNull('bundle_key')
+                    ->update([
+                        'bundle_key' => $update['bundle_key'],
+                        'bundle_role' => $update['bundle_role'],
+                        'bundle_category' => $update['bundle_category'],
+                    ]);
+            }
+        });
+
+        $cart->unsetRelation('products');
+    }
+
+    private function legacyBundleComponentIds(mixed $value): Collection
+    {
+        if (is_string($value)) {
+            $value = json_decode($value, true);
+        }
+
+        return collect(is_array($value) ? $value : [])
+            ->filter(fn ($id) => is_numeric($id))
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+    }
+
+    private function legacyBundleCategory(?Product $product): string
+    {
+        $rawName = $product?->categories->first()?->getRawOriginal('name');
+        $decodedName = is_string($rawName) ? json_decode($rawName, true) : $rawName;
+
+        if (is_array($decodedName) && $decodedName !== []) {
+            return json_encode($decodedName, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        }
+
+        $fallback = trim((string) $rawName) ?: trans('base.cart_bundle_item');
+
+        return json_encode([
+            'uk' => $fallback,
+            'ru' => $fallback,
+        ], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
     }
 
     public function getAttributesWithOptions(int $product_id, $productType): array
@@ -557,6 +698,7 @@ class CartService extends BaseService
 
     public function getCartSummary(Cart $cart): array
     {
+        $this->normalizeLegacyBundles($cart);
         $this->discardInvalidPromoCode($cart);
 
         $totals = $this->pricingService->forCart($cart);
@@ -639,6 +781,7 @@ class CartService extends BaseService
 
     public function getCartSummaryWithDelivery(GetProductsSummaryWithDeliveryDTO $request, Cart $cart, ?WishList $wishList): array
     {
+        $this->normalizeLegacyBundles($cart);
         $totals = $this->pricingService->forCart($cart, $request->deliveryTypeId);
 
         return [

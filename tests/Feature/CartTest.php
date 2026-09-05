@@ -219,6 +219,85 @@ class CartTest extends TestCase
         $this->assertDatabaseMissing('cart_products', ['bundle_key' => $bundleKey]);
     }
 
+    public function test_a_configured_cart_saved_before_bundle_metadata_is_upgraded_when_it_is_opened(): void
+    {
+        $frame = $this->makeProduct(['name' => ['uk' => 'Короб телескопічний', 'ru' => 'Короб телескопический']]);
+        $trim = $this->makeProduct(['name' => ['uk' => 'Добір 200 мм', 'ru' => 'Добор 200 мм']]);
+        $door = $this->makeProduct([
+            'name' => ['uk' => 'ArtPort New York', 'ru' => 'ArtPort New York'],
+            'sub_products' => json_encode([$frame->id, $trim->id]),
+        ]);
+        $category = Category::create([
+            'creator_id' => $this->author()->id,
+            'product_type_id' => $frame->product_type_id,
+            'name' => ['uk' => 'Комплектація', 'ru' => 'Комплектация'],
+            'slug' => 'legacy-cart-bundle-components',
+            'image_path' => 'test/component.webp',
+        ]);
+        $frame->categories()->attach($category->id);
+        $trim->categories()->attach($category->id);
+
+        $this->addToCart($door->slug, 3)->assertOk();
+        $cart = Cart::firstOrFail();
+        foreach ([$frame, $trim] as $component) {
+            CartProducts::create([
+                'cart_id' => $cart->id,
+                'product_id' => $component->id,
+                'count' => 1,
+                'price' => $component->price,
+                'attributes_price' => 0,
+            ]);
+        }
+
+        $response = $this->keepCookies($this->getJson(route('store.cart.products-with-summary')))
+            ->assertOk();
+        $lines = CartProducts::query()->where('cart_id', $cart->id)->orderBy('id')->get();
+        $bundleKey = $lines->first()->bundle_key;
+
+        $this->assertNotNull($bundleKey);
+        $this->assertSame(ProductBundle::ROLE_PARENT, $lines->first()->bundle_role);
+        $this->assertSame([$bundleKey], $lines->skip(1)->pluck('bundle_key')->unique()->values()->all());
+        $this->assertSame(
+            [ProductBundle::ROLE_ITEM],
+            $lines->skip(1)->pluck('bundle_role')->unique()->values()->all(),
+        );
+        $response->assertJsonFragment([
+            'key' => $bundleKey,
+            'role' => ProductBundle::ROLE_ITEM,
+            'category' => 'Комплектація',
+        ]);
+
+        $this->keepCookies($this->getJson(route('store.cart.products-with-summary')))->assertOk();
+        $this->assertSame(
+            $bundleKey,
+            CartProducts::query()->where('cart_id', $cart->id)->oldest('id')->value('bundle_key'),
+            'Повторне відкриття кошика не повинно створювати новий комплект.',
+        );
+    }
+
+    public function test_legacy_rows_are_not_grouped_across_an_unrelated_cart_item(): void
+    {
+        $frame = $this->makeProduct(['name' => ['uk' => 'Короб', 'ru' => 'Короб']]);
+        $unrelated = $this->makeProduct(['name' => ['uk' => 'Ручка', 'ru' => 'Ручка']]);
+        $door = $this->makeProduct(['sub_products' => json_encode([$frame->id])]);
+
+        $this->addToCart($door->slug)->assertOk();
+        $cart = Cart::firstOrFail();
+        foreach ([$unrelated, $frame] as $product) {
+            CartProducts::create([
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'count' => 1,
+                'price' => $product->price,
+                'attributes_price' => 0,
+            ]);
+        }
+
+        $this->keepCookies($this->getJson(route('store.cart.products-with-summary')))->assertOk();
+
+        $this->assertSame(0, CartProducts::query()->where('cart_id', $cart->id)->whereNotNull('bundle_key')->count());
+    }
+
     public function test_two_visitors_do_not_share_a_cart(): void
     {
         $product = $this->makeProduct();

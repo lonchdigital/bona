@@ -320,6 +320,36 @@ class CheckoutTest extends TestCase
         $this->assertSame(1, ProductBundle::countUnits($groups));
     }
 
+    public function test_checkout_upgrades_a_legacy_configured_cart_before_creating_the_order(): void
+    {
+        $this->seedCurrency();
+        $frame = $this->makeProduct(['name' => ['uk' => 'Короб', 'ru' => 'Короб']]);
+        $door = $this->makeProduct([
+            'name' => ['uk' => 'ArtPort New York', 'ru' => 'ArtPort New York'],
+            'sub_products' => json_encode([$frame->id]),
+        ]);
+
+        $this->addToCart($door->slug)->assertOk();
+        $cart = Cart::firstOrFail();
+        CartProducts::create([
+            'cart_id' => $cart->id,
+            'product_id' => $frame->id,
+            'count' => 2,
+            'price' => $frame->price,
+            'attributes_price' => 0,
+        ]);
+
+        $this->confirm(['email' => 'legacy-bundle-order@example.com'])->assertSessionHasNoErrors();
+
+        $orderLines = OrderProduct::query()->where('order_id', Order::firstOrFail()->id)->orderBy('id')->get();
+        $this->assertCount(2, $orderLines);
+        $this->assertNotNull($orderLines->first()->bundle_key);
+        $this->assertSame($orderLines->first()->bundle_key, $orderLines->last()->bundle_key);
+        $this->assertSame(ProductBundle::ROLE_PARENT, $orderLines->first()->bundle_role);
+        $this->assertSame(ProductBundle::ROLE_ITEM, $orderLines->last()->bundle_role);
+        $this->assertSame(2, (int) $orderLines->last()->count);
+    }
+
     public function test_an_instalment_period_the_shop_does_not_offer_is_refused(): void
     {
         $this->seedCurrency();
