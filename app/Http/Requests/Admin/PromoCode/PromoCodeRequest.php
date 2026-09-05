@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\PromoCode;
 use App\Models\PromoCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class PromoCodeRequest extends FormRequest
 {
@@ -58,9 +59,35 @@ class PromoCodeRequest extends FormRequest
             'minimum_order_amount' => ['required', 'numeric', 'min:0'],
             'maximum_discount_amount' => ['nullable', 'numeric', 'gt:0'],
             'all_products' => ['required', 'boolean'],
-            'product_ids' => ['nullable', 'required_if:all_products,0', 'array'],
+            'product_ids' => ['nullable', 'array'],
             'product_ids.*' => ['integer', 'distinct', 'exists:products,id'],
+            'brand_ids' => ['nullable', 'array'],
+            'brand_ids.*' => ['integer', 'distinct', 'exists:brands,id'],
+            'category_ids' => ['nullable', 'array'],
+            'category_ids.*' => ['integer', 'distinct', 'exists:categories,id'],
+            'product_type_ids' => ['nullable', 'array'],
+            'product_type_ids.*' => ['integer', 'distinct', 'exists:product_types,id'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            if ($this->boolean('all_products')) {
+                return;
+            }
+
+            $hasTarget = collect([
+                $this->input('product_ids', []),
+                $this->input('brand_ids', []),
+                $this->input('category_ids', []),
+                $this->input('product_type_ids', []),
+            ])->flatten()->filter()->isNotEmpty();
+
+            if (! $hasTarget) {
+                $validator->errors()->add('scope', trans('admin.promo_code_scope_required'));
+            }
+        });
     }
 
     public function payload(): array

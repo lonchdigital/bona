@@ -33,6 +33,21 @@ class PromoCode extends Model
         return $this->belongsToMany(Product::class, 'promo_code_product');
     }
 
+    public function brands(): BelongsToMany
+    {
+        return $this->belongsToMany(Brand::class, 'promo_code_brand');
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'promo_code_category');
+    }
+
+    public function productTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(ProductType::class, 'promo_code_product_type');
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

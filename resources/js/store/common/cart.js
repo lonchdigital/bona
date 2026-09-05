@@ -1,5 +1,4 @@
 import $ from "jquery";
-import iconUrl from '$img/icon.svg';
 import InputCounter from "./input-counter";
 // import wishList from "./wish-list";
 
@@ -706,58 +705,15 @@ function removePromoCode(success, fail)
 //html window
 function drawProductsInCartWindowHTML(data)
 {
-    let productsToAppend = '';
-    let productAttributes = '';
-    let productAttributeClass = '';
-    data.data.products.forEach(function (product) {
-
-        let productAttributesHTML = '<div class="product-attributes">';
-
-
-        if( product.attributes !== 'null' && product.attributes !== null ) {
-        // if( product.attributes !== null ) {
-
-            productAttributes = JSON.parse(product.attributes);
-            delete productAttributes.color_id;
-
-            /*console.log('==productAttributes==');
-            console.log(productAttributes);
-            console.log('==productAttributes==');*/
-
-            for (var key in productAttributes) {
-                productAttributeClass = (productAttributes[key] === null) ? ' d-none' : '';
-
-                let productAttribute = productAttributes[key];
-
-                if (typeof productAttribute === 'string') {
-                    try {
-                        let productAttributeLocalName = '';
-                        productAttribute = JSON.parse(productAttribute);
-                        productAttributeLocalName = JSON.parse(productAttribute.name);
-
-                        let productAttributeOptionID = '';
-                        if (productAttribute.id) {
-                            productAttributeOptionID = '<span class="attribute-id">' + productAttribute.id + '</span>';
-                        }
-
-                        productAttributesHTML += '<div class="product-attribute-line'+ productAttributeClass +'">'+ productAttributeOptionID +'<span class="attribute-key">'+ key +'</span><span class="attribute-value">'+ productAttributeLocalName[locale] +'</span></div>';
-                    } catch (e) {
-                        console.error('Cannot parse attribute.');
-                    }
-                }
-            }
-
-        }
-
-        productAttributesHTML += '</div>';
-
-        productsToAppend += getProductInCartWindowHTML(product, productAttributesHTML);
-    });
+    const products = data.data.products || [];
+    const productsToAppend = products.map(function (product) {
+        return getProductInCartWindowHTML(product, getProductAttributesHTML(product));
+    }).join('');
 
     $('.basket-sub-menu .sub-menu-list').html(productsToAppend);
-    $('.basket-sub-menu .items-total-price').text(data.data.summary.total + ' ' + store.base_currency_name_short);
-    $('.basket-sub-menu').toggleClass('is-empty', data.data.products.length === 0);
-    $('.basket-sub-menu .bona-cart-drawer__empty').toggleClass('d-none', data.data.products.length > 0);
+    $('.basket-sub-menu .items-total-price').text(formatMoney(data.data.summary.total));
+    $('.basket-sub-menu').toggleClass('is-empty', products.length === 0);
+    $('.basket-sub-menu .bona-cart-drawer__empty').toggleClass('d-none', products.length > 0);
     InputCounter.addCounterHandler($('.basket-sub-menu .sub-menu-list .counter'));
     addChangeProductCountHandlers($('.basket-sub-menu .sub-menu-list .product-count-input'));
     addDeleteProductFromCartHandlers($('.basket-sub-menu .sub-menu-list .item-delete'));
@@ -775,48 +731,35 @@ function drawProductsInCartWindowHTML(data)
 
 function getProductInCartWindowHTML(productData, productAttributesHTML)
 {
-    let artProductPrice = 0;
-    if(productData.attributes_price > 0) {
-        artProductPrice = (productData.attributes_price * productData.count) + productData.price;
-    } else {
-        artProductPrice = productData.price
-    }
+    const productCurrentImageUrl = productData.current_image_path
+        ? `/storage/${productData.current_image_path}`
+        : productData.main_image_url;
+    const meta = [productData.brand_name, productData.availability].filter(Boolean).join(' · ');
 
-    let productCurrentImageUrl;
-    if( productData.current_image_path !== null) {
-        productCurrentImageUrl = "/storage/" + productData.current_image_path;
-    } else {
-        productCurrentImageUrl = productData.main_image_url;
-    }
-
-    let productNameLocale = JSON.parse(productData.name);
     return `
         <li class="sub-menu-list-item cart-item">
-            <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
+            <input type="hidden" class="product-slug-input" name="product_slug" value="${escapeHTML(productData.slug)}"/>
             <div class="item-link-wrapper">
-                <a href="${productData.link}" class="item-image">
-                    <img src="${productCurrentImageUrl}" alt="">
+                <a href="${escapeHTML(productData.link)}" class="item-image">
+                    <img src="${escapeHTML(productCurrentImageUrl)}" alt="${escapeHTML(productData.display_name)}" loading="lazy" decoding="async">
                 </a>
                 <div class="item-content">
-                    <a href="${productData.link}" class="item-text">
-                        ${productNameLocale[locale]}
-                        ${productAttributesHTML}
-                    </a>
+                    ${meta ? `<p class="item-meta">${escapeHTML(meta)}</p>` : ''}
+                    <a href="${escapeHTML(productData.link)}" class="item-text">${escapeHTML(productData.display_name)}</a>
+                    ${productAttributesHTML}
                     <div class="item-counts">
-                        <div class="custom-control-number custom-control-number--cart">
-                            <span class="counter minus"></span>
-                            <input type="number" class="form-control product-count-input" min="1" value="${productData.count}">
-                            <span class="counter plus"></span>
+                        <div class="custom-control-number custom-control-number--cart bona-qty-control" aria-label="${escapeHTML(translations.count_of_products)}">
+                            <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
+                            <input type="number" class="form-control product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
+                            <button class="counter plus" type="button" aria-label="${escapeHTML(translations.increase_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3v10"/></svg></button>
                         </div>
                         <div class="item-price">
-                            <strong class="item-price-text">${artProductPrice}</strong> ${store.base_currency_name_short}
+                            <strong class="item-price-text">${formatMoney(productData.line_total)}</strong>
                         </div>
                     </div>
                 </div>
-                <button class="item-delete" type="button" aria-label="${translations.delete}">
-                    <svg>
-                        <use href="${iconUrl}#i-item-delete"></use>
-                    </svg>
+                <button class="item-delete" type="button" aria-label="${escapeHTML(translations.delete)}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
         </li>
@@ -862,7 +805,7 @@ function getProductInCartPageHTML(productData, productAttributesHTML)
 
     return `
         <article class="bona-cart-row cart-item">
-            <input type="hidden" class="product-slug-input" name="product_slug" value="${productData.slug}"/>
+            <input type="hidden" class="product-slug-input" name="product_slug" value="${escapeHTML(productData.slug)}"/>
             <a href="${escapeHTML(productData.link)}" class="bona-cart-row__image">
                 <img src="${escapeHTML(productCurrentImageUrl)}" alt="${escapeHTML(productData.display_name)}" loading="lazy" decoding="async">
             </a>
@@ -872,9 +815,9 @@ function getProductInCartPageHTML(productData, productAttributesHTML)
                 ${productAttributesHTML}
                 <div class="bona-cart-row__controls">
                     <div class="custom-control-number bona-qty-control" aria-label="${escapeHTML(translations.count_of_products)}">
-                        <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}">−</button>
+                        <button class="counter minus" type="button" aria-label="${escapeHTML(translations.decrease_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
                         <input type="number" class="product-count-input" min="1" max="99" value="${Number(productData.count) || 1}" inputmode="numeric" aria-label="${escapeHTML(translations.count_of_products)}">
-                        <button class="counter plus" type="button" aria-label="${escapeHTML(translations.increase_quantity)}">+</button>
+                        <button class="counter plus" type="button" aria-label="${escapeHTML(translations.increase_quantity)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3v10"/></svg></button>
                     </div>
                     <button class="bona-remove-link delete-product-from-cart-button" type="button">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -892,6 +835,14 @@ function getProductInCartPageHTML(productData, productAttributesHTML)
 
 function getProductAttributesHTML(productData)
 {
+    if (Array.isArray(productData.configuration)) {
+        const lines = productData.configuration
+            .filter((item) => item && item.label && item.key !== undefined && item.id !== undefined)
+            .map((item) => attributeLine(item.key, item.id, item.label));
+
+        return `<div class="product-attributes bona-cart-row__config">${lines.join('')}</div>`;
+    }
+
     let attributes;
 
     try {

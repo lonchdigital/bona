@@ -7,6 +7,11 @@ use App\Services\Product\DTO\SearchProductDTO;
 
 class SearchProductRequest extends BaseRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['query' => trim((string) $this->input('query'))]);
+    }
+
     public function rules(): array
     {
         return [

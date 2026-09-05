@@ -21,6 +21,7 @@ class CatalogFilterRequest extends BaseRequest
 
         $this->merge([
             'catalog_filters' => $catalogFilters,
+            'query' => trim((string) $this->input('query')) ?: null,
         ]);
     }
 
@@ -29,6 +30,7 @@ class CatalogFilterRequest extends BaseRequest
         return [
             'catalog_filters' => ['nullable', 'string', 'max:2048'],
             'page' => ['nullable', 'integer', 'min:1', 'max:10000'],
+            'query' => ['nullable', 'string', 'min:3', 'max:120'],
         ];
     }
 
@@ -60,6 +62,10 @@ class CatalogFilterRequest extends BaseRequest
 
         if (($page = $this->validated('page')) !== null) {
             $filersArray['page'] = (int) $page;
+        }
+
+        if (($query = $this->validated('query')) !== null) {
+            $filersArray['search'] = trim($query);
         }
 
         return new FilterProductDTO($filersArray);

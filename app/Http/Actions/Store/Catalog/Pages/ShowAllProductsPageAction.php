@@ -10,12 +10,14 @@ use App\Services\Color\ColorService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
 use App\Services\Product\ProductService;
+use App\Services\Search\SearchAnalyticsService;
 
 class ShowAllProductsPageAction extends BaseAction
 {
     public function __invoke(
         //        ProductType $productType,
-        CatalogFilterRequest $request
+        CatalogFilterRequest $request,
+        SearchAnalyticsService $analyticsService,
     ) {
         $catalogService = app()->make(ProductFiltersService::class);
         $colorService = app()->make(ColorService::class);
@@ -41,6 +43,11 @@ class ShowAllProductsPageAction extends BaseAction
             $allFilters
         );
 
+        $searchQuery = trim((string) $request->validated('query', ''));
+        if ($searchQuery !== '') {
+            $analyticsService->record($searchQuery, $productsPaginated->total());
+        }
+
         //        dd($colors);
 
         return view('pages.store.catalog-all-products', [
@@ -52,6 +59,7 @@ class ShowAllProductsPageAction extends BaseAction
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getAllProductsMaxPrice($filtersData),
+            'searchQuery' => $searchQuery,
         ]);
     }
 }

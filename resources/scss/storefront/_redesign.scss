@@ -246,6 +246,19 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
             min-width: 0;
         }
 
+        .item-meta {
+            margin: 1px 0 5px;
+            overflow: hidden;
+            color: var(--bona-gold-text);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .1em;
+            line-height: 1.35;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
         .item-image {
             width: 72px;
             height: 88px;
@@ -273,9 +286,11 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
             font-weight: 650 !important;
             line-height: 1.4 !important;
             text-decoration: none;
+            overflow-wrap: anywhere;
         }
 
-        .product-attributes { margin-top: 6px; line-height: 1.35 !important; }
+        .product-attributes { gap: 5px; margin-top: 7px; line-height: 1.35 !important; }
+        .product-attributes .product-attribute-line { padding: 5px 8px; background: #f1eee8; }
         .product-attributes .attribute-value { color: var(--bona-muted); font-size: 10px !important; }
 
         .item-delete {
@@ -306,8 +321,41 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
             margin: 12px 0 0 !important;
         }
 
-        .custom-control-number--cart { margin-right: 0 !important; }
-        .item-price { font-size: 13px !important; white-space: nowrap; }
+        .custom-control-number--cart {
+            width: 108px;
+            height: 36px;
+            grid-template-columns: 36px 36px 36px;
+            margin-right: 0 !important;
+            background: #fff;
+        }
+
+        .custom-control-number--cart input[type='number'] {
+            height: 36px;
+            padding: 0;
+            background: transparent;
+            font-size: 12px;
+            line-height: 36px;
+        }
+
+        .custom-control-number--cart .minus,
+        .custom-control-number--cart .plus {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            background: transparent;
+        }
+
+        .custom-control-number--cart .counter svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-width: 1.5;
+        }
+
+        .item-price { min-width: 0; font-size: 13px !important; white-space: nowrap; }
+        .item-price strong { font-size: 13px; font-weight: 800; }
     }
 
     &__footer {
@@ -366,6 +414,8 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
 
         &:hover,
         &:focus-visible { background: var(--bona-paper) !important; }
+
+        svg { width: 18px; height: 18px; }
     }
 
     &__shipping {
@@ -428,37 +478,34 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
 
             .item-counts {
                 display: grid;
-                grid-template-columns: 120px minmax(0, 1fr);
+                grid-template-columns: 108px minmax(0, 1fr);
                 align-items: center;
                 gap: 8px;
                 margin-top: 8px !important;
             }
 
             .custom-control-number--cart {
-                width: 120px;
-                height: 44px;
-                overflow: hidden;
-                border: 1px solid var(--bona-line);
-                border-radius: 999px;
-                background: #f3f0ea;
+                width: 108px;
+                height: 38px;
+                grid-template-columns: 36px 36px 36px;
             }
 
             .custom-control-number--cart input[type='number'] {
                 width: 100%;
-                height: 44px;
-                padding: 0 44px;
+                height: 38px;
+                padding: 0;
                 border: 0;
                 background: transparent;
                 color: var(--bona-ink);
                 font-size: 13px;
                 font-weight: 700;
-                line-height: 44px;
+                line-height: 38px;
             }
 
             .custom-control-number--cart .minus,
             .custom-control-number--cart .plus {
-                width: 44px;
-                height: 44px;
+                width: 36px;
+                height: 38px;
                 padding: 0;
                 border-radius: 0;
                 background: transparent;
@@ -1142,12 +1189,13 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
         min-width: 0;
         min-height: 0;
         flex: 1;
-        padding: 0;
+        padding: 0 4px 0 2px;
         border: 0;
         outline: 0;
         background: transparent;
         color: inherit;
         font: 400 13px/1.4 var(--bona-ui);
+        caret-color: var(--bona-gold-light);
 
         &::placeholder {
             color: inherit;
@@ -1221,6 +1269,7 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
     &__item:focus-visible { outline: 0; background: var(--bona-paper); color: var(--bona-ink); }
     &__item--product { grid-template-columns: 54px minmax(0, 1fr) auto; }
     &__item--service { grid-template-columns: 40px minmax(0, 1fr) auto; padding-block: 9px; }
+    &__item--suggestion { grid-template-columns: 40px minmax(0, 1fr) auto; padding-block: 9px; }
     &__image { display: grid; width: 54px; height: 62px; overflow: hidden; place-items: center; border: 1px solid #eeeae2; border-radius: 6px; background: #f6f5f2; }
     &__image img { width: 100%; height: 100%; object-fit: contain; }
     &__copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
@@ -1231,6 +1280,15 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
     &__price { font-size: 10px; font-weight: 800; white-space: nowrap; }
     &__service-icon { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid #ddd7cc; border-radius: 50%; color: var(--bona-gold); }
     &__service-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; }
+    &__suggestion-icon { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 9px; background: var(--bona-paper); color: var(--bona-gold-text); }
+    &__suggestion-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
+    &__arrow { display: grid; width: 24px; height: 24px; flex: 0 0 24px; place-items: center; color: var(--bona-gold-text); }
+    &__arrow svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
+    &__all { display: grid; grid-template-columns: minmax(0, 1fr) auto 24px; align-items: center; gap: 9px; margin: 6px 8px 8px; padding: 13px 15px; border-radius: 10px; background: var(--bona-ink); color: #fff !important; font-size: 12px; font-weight: 700; }
+    &__all:hover,
+    &__all:focus-visible { outline: 0; background: var(--bona-gold-text); color: #fff !important; }
+    &__all strong { display: grid; min-width: 24px; height: 24px; place-items: center; border-radius: 50%; background: rgba(255, 255, 255, .14); font-size: 10px; }
+    &__all .bona-search-results__arrow { color: currentColor; }
     &__state { display: flex; min-height: 116px; align-items: center; justify-content: center; flex-direction: column; gap: 5px; padding: 18px; color: var(--bona-muted); text-align: center; }
     &__state b { color: var(--bona-ink); font: 400 20px/1.2 var(--bona-display); }
 }

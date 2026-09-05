@@ -135,6 +135,7 @@ use App\Http\Actions\Admin\PromoCodes\Pages\ShowPromoCodesListPageAction;
 use App\Http\Actions\Admin\PromoCodes\PromoCodeCreateAction;
 use App\Http\Actions\Admin\PromoCodes\PromoCodeDeleteAction;
 use App\Http\Actions\Admin\PromoCodes\PromoCodeEditAction;
+use App\Http\Actions\Admin\SearchQueries\Pages\ShowSearchQueriesListPageAction;
 use App\Http\Actions\Admin\SEO\FilterGroupCreateAction;
 use App\Http\Actions\Admin\SEO\FilterGroupDeleteAction;
 use App\Http\Actions\Admin\SEO\FilterGroupEditAction;
@@ -437,6 +438,8 @@ Route::prefix('admin')->middleware([
         Route::name('admin.promo-code.edit')->post('/{promoCode}', PromoCodeEditAction::class);
         Route::name('admin.promo-code.delete')->post('/{promoCode}/delete', PromoCodeDeleteAction::class);
     });
+
+    Route::name('admin.search-query.list.page')->get('/search-results', ShowSearchQueriesListPageAction::class);
 
     // Products import
     Route::prefix('products-import')->group(function () {

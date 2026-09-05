@@ -13,6 +13,7 @@ use App\Models\Country;
 use App\Models\Currency;
 use App\Models\ProductType;
 use App\Services\Base\BaseService;
+use App\Support\Search\SearchTerm;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -380,11 +381,7 @@ class ProductFiltersService extends BaseService
             } elseif ($filterNameSlug === 'price_to') {
                 $query->where('price', '<=', floatval($filterValue));
             } elseif ($filterNameSlug === 'search') {
-                $search = mb_strtoupper(is_array($filterValue) ? implode(' ', $filterValue) : (string) $filterValue);
-                $query->where(function (Builder $query) use ($search) {
-                    $query->whereRaw('UPPER(`name`) LIKE ?', ['%'.$search.'%'])
-                        ->orWhereRaw('UPPER(`sku`) LIKE ?', ['%'.$search.'%']);
-                });
+                SearchTerm::applyToProducts($query, is_array($filterValue) ? implode(' ', $filterValue) : (string) $filterValue);
                 // dynamic inputs
             } elseif ($filterNameSlug === 'product_length_from') {
                 $query->where('length', '>=', $filterValue);
@@ -550,11 +547,7 @@ class ProductFiltersService extends BaseService
             } elseif ($filterNameSlug === 'price_to') {
                 $query->where('price', '<=', floatval($filterValue));
             } elseif ($filterNameSlug === 'search') {
-                $search = mb_strtoupper(is_array($filterValue) ? implode(' ', $filterValue) : (string) $filterValue);
-                $query->where(function (Builder $query) use ($search) {
-                    $query->whereRaw('UPPER(`name`) LIKE ?', ['%'.$search.'%'])
-                        ->orWhereRaw('UPPER(`sku`) LIKE ?', ['%'.$search.'%']);
-                });
+                SearchTerm::applyToProducts($query, is_array($filterValue) ? implode(' ', $filterValue) : (string) $filterValue);
                 // dynamic inputs
             } elseif ($filterNameSlug === 'product_length_from') {
                 $query->where('length', '>=', $filterValue);

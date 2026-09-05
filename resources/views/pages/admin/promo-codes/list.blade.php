@@ -56,7 +56,16 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $promoCode->all_products ? 'Усі товари' : 'Обрано: '.$promoCode->products_count }}
+                                            @if($promoCode->all_products)
+                                                <strong>Усі товари</strong>
+                                            @else
+                                                <div class="d-flex flex-wrap" style="gap: 4px">
+                                                    @if($promoCode->product_types_count)<span class="badge badge-light">Групи: {{ $promoCode->product_types_count }}</span>@endif
+                                                    @if($promoCode->categories_count)<span class="badge badge-light">Категорії: {{ $promoCode->categories_count }}</span>@endif
+                                                    @if($promoCode->brands_count)<span class="badge badge-light">Бренди: {{ $promoCode->brands_count }}</span>@endif
+                                                    @if($promoCode->products_count)<span class="badge badge-light">Товари: {{ $promoCode->products_count }}</span>@endif
+                                                </div>
+                                            @endif
                                             @if($promoCode->max_discounted_items)
                                                 <small class="d-block text-muted">До {{ $promoCode->max_discounted_items }} од.</small>
                                             @endif

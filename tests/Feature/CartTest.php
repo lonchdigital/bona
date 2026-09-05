@@ -50,6 +50,16 @@ class CartTest extends TestCase
         $this->assertSame(3, (int) Cart::first()->products->first()->pivot->count);
     }
 
+    public function test_adding_the_same_line_twice_adds_the_requested_quantity(): void
+    {
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug, 2)->assertOk();
+        $this->addToCart($product->slug, 3)->assertOk();
+
+        $this->assertSame(5, (int) Cart::first()->products->first()->pivot->count);
+    }
+
     public function test_the_cart_remembers_the_price_at_the_time_it_was_added(): void
     {
         $product = $this->makeProduct(['price' => 5000]);
@@ -75,6 +85,44 @@ class CartTest extends TestCase
         ))->assertOk();
 
         $this->assertSame(4, (int) Cart::first()->products->first()->pivot->count);
+    }
+
+    public function test_a_configured_cart_line_can_be_changed_and_removed_without_exposing_raw_attributes(): void
+    {
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+
+        $cart = Cart::firstOrFail();
+        $cart->products()->updateExistingPivot($product->id, [
+            'attributes' => json_encode([
+                'color_id' => 148,
+                'color_name' => 'Айворі',
+                'product_attribute_12' => json_encode([
+                    'id' => 55,
+                    'name' => json_encode(['uk' => 'Приховані завіси']),
+                ]),
+            ]),
+        ]);
+
+        $configuration = [
+            'color_name' => '148',
+            'product_attribute_12' => '55',
+        ];
+
+        $this->keepCookies($this->postJson(
+            route('store.cart.change-product-count', ['productSlug' => $product->slug]),
+            ['product_count' => 3, 'product_attributes' => $configuration]
+        ))->assertOk();
+
+        $this->assertSame(3, (int) $cart->fresh()->products->first()->pivot->count);
+
+        $this->keepCookies($this->postJson(
+            route('store.cart.delete-product', ['productSlug' => $product->slug]),
+            ['product_attributes' => $configuration]
+        ))->assertOk();
+
+        $this->assertCount(0, $cart->fresh()->products);
     }
 
     public function test_a_product_can_be_taken_out_of_the_cart(): void

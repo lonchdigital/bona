@@ -54,7 +54,9 @@
             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.page') }}" class="art-cart-checkout-button btn bona-cart-drawer__checkout d-none">{{ trans('base.make_order') }}</a>
             <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page') }}" class="btn btn-go-to-cart bona-cart-drawer__cart-link">
                 {{ trans('base.go_to_cart') }}
-                <span aria-hidden="true">→</span>
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 10h12M11.5 5.5 16 10l-4.5 4.5"></path>
+                </svg>
             </a>
             <button type="button" class="btn btn-light btn-free-shiping bona-cart-drawer__shipping d-none">
                 <img src="{{ Vite::asset('resources/img/gift-box-delivery.png') }}" alt="" width="48" height="48" loading="lazy">

@@ -2,8 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\Role;
+use App\Models\SearchQuery;
 use App\Models\ServicesPageSections;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
 
@@ -36,8 +40,10 @@ class StorefrontSearchTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertJsonCount(3, 'data.products')
+            ->assertJsonCount(4, 'data.products')
             ->assertJsonCount(2, 'data.services')
+            ->assertJsonPath('data.totals.products', 4)
+            ->assertJsonPath('data.totals.services', 3)
             ->assertJsonPath('data.services.0.link', '/services/test-posluha-1');
     }
 
@@ -59,5 +65,63 @@ class StorefrontSearchTest extends TestCase
         $this->postJson(route('store.product.search'), ['query' => 'те'])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('query');
+    }
+
+    public function test_it_matches_ukrainian_word_endings_and_aggregates_search_analytics(): void
+    {
+        $panelType = $this->productType([
+            'slug' => 'wall-panels',
+            'name' => ['uk' => 'Стінові панелі', 'ru' => 'Стеновые панели'],
+        ]);
+        $this->makeProduct([
+            'product_type_id' => $panelType->id,
+            'name' => ['uk' => 'Стінова панель Wood', 'ru' => 'Стеновая панель Wood'],
+            'sku' => 'PANEL-WOOD',
+        ]);
+
+        $this->postJson(route('store.product.search'), ['query' => 'панелі'])
+            ->assertOk()
+            ->assertJsonPath('data.products.0.sku', 'PANEL-WOOD')
+            ->assertJsonPath('data.totals.products', 1)
+            ->assertJsonPath('data.suggestions.0.title', 'Стінові панелі');
+
+        $this->postJson(route('store.product.search'), ['query' => 'ПАНЕЛІ'])->assertOk();
+
+        $search = SearchQuery::where('normalized_query', 'панелі')->firstOrFail();
+        $this->assertSame(2, $search->search_count);
+        $this->assertSame(1, $search->results_count);
+    }
+
+    public function test_admin_can_review_recorded_search_queries(): void
+    {
+        SearchQuery::create([
+            'query' => 'ручки',
+            'normalized_query' => 'ручки',
+            'locale' => 'uk',
+            'search_count' => 7,
+            'results_count' => 12,
+            'first_searched_at' => now()->subDay(),
+            'last_searched_at' => now(),
+        ]);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.search-query.list.page'))
+            ->assertOk()
+            ->assertSee('ручки')
+            ->assertSee('7');
+    }
+
+    private function admin(): User
+    {
+        DB::table('roles')->insertOrIgnore([
+            'id' => Role::ADMIN_ROLE_ID,
+            'role' => 'Admin',
+            'role_slug' => 'admin',
+        ]);
+
+        $admin = User::factory()->create();
+        $admin->update(['role_id' => Role::ADMIN_ROLE_ID]);
+
+        return $admin;
     }
 }

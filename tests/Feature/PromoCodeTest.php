@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Brand;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\PromoCode;
 use App\Models\Role;
 use App\Models\User;
@@ -42,6 +44,58 @@ class PromoCodeTest extends TestCase
         $this->assertSame(4000.0, $totals['products']);
         $this->assertSame(1000.0, $totals['discount']);
         $this->assertSame(3000.0, $totals['total']);
+    }
+
+    public function test_target_groups_are_combined_flexibly_and_only_discount_matching_products(): void
+    {
+        $brand = Brand::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Artporte', 'ru' => 'Artporte'],
+            'slug' => 'artporte-test',
+            'description' => ['uk' => 'Тест', 'ru' => 'Тест'],
+        ]);
+        $panelType = $this->productType([
+            'slug' => 'promo-panels',
+            'name' => ['uk' => 'Стінові панелі', 'ru' => 'Стеновые панели'],
+        ]);
+        $category = Category::create([
+            'creator_id' => $this->author()->id,
+            'product_type_id' => $this->productType()->id,
+            'name' => ['uk' => 'Білі двері', 'ru' => 'Белые двери'],
+            'slug' => 'white-doors-promo',
+        ]);
+
+        $brandProduct = $this->makeProduct(['brand_id' => $brand->id, 'price' => 1000]);
+        $typeProduct = $this->makeProduct(['product_type_id' => $panelType->id, 'price' => 2000]);
+        $categoryProduct = $this->makeProduct(['price' => 3000]);
+        $categoryProduct->categories()->attach($category);
+        $directProduct = $this->makeProduct(['price' => 4000]);
+        $otherProduct = $this->makeProduct(['price' => 5000]);
+
+        $promoCode = PromoCode::create([
+            'code' => 'FLEXIBLE',
+            'discount' => 10,
+            'discount_type' => PromoCode::TYPE_PERCENT,
+            'discount_value' => 10,
+            'is_active' => true,
+            'all_products' => false,
+            'minimum_order_amount' => 0,
+        ]);
+        $promoCode->brands()->sync([$brand->id]);
+        $promoCode->productTypes()->sync([$panelType->id]);
+        $promoCode->categories()->sync([$category->id]);
+        $promoCode->products()->sync([$directProduct->id]);
+
+        $cart = Cart::create(['token' => 'flexible-promo', 'promo_code_id' => $promoCode->id]);
+        foreach ([$brandProduct, $typeProduct, $categoryProduct, $directProduct, $otherProduct] as $product) {
+            $cart->products()->attach($product->id, ['count' => 1, 'price' => $product->price]);
+        }
+
+        $totals = app(PricingService::class)->forCart($cart);
+
+        $this->assertSame(15000.0, $totals['products']);
+        $this->assertSame(1000.0, $totals['discount']);
+        $this->assertSame(14000.0, $totals['total']);
     }
 
     public function test_cart_accepts_codes_case_insensitively_and_can_remove_them(): void
@@ -141,9 +195,22 @@ class PromoCodeTest extends TestCase
     public function test_admin_can_create_a_reusable_fixed_discount_for_selected_products(): void
     {
         $product = $this->makeProduct();
+        $brand = Brand::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Bona brand', 'ru' => 'Bona brand'],
+            'slug' => 'bona-brand-promo',
+            'description' => ['uk' => 'Тест', 'ru' => 'Тест'],
+        ]);
+        $productType = $this->productType(['slug' => 'promo-admin-type']);
+        $category = Category::create([
+            'creator_id' => $this->author()->id,
+            'product_type_id' => $productType->id,
+            'name' => ['uk' => 'Категорія', 'ru' => 'Категория'],
+            'slug' => 'promo-admin-category',
+        ]);
 
         $this->actingAs($this->admin())
-            ->post(route('admin.promo-code.create'), [
+            ->postJson(route('admin.promo-code.create'), [
                 'code' => 'project-500',
                 'discount_type' => PromoCode::TYPE_FIXED,
                 'discount_value' => 500,
@@ -151,6 +218,9 @@ class PromoCodeTest extends TestCase
                 'minimum_order_amount' => 3000,
                 'all_products' => 0,
                 'product_ids' => [$product->id],
+                'brand_ids' => [$brand->id],
+                'category_ids' => [$category->id],
+                'product_type_ids' => [$productType->id],
                 'usage_limit' => 20,
                 'max_discounted_items' => 3,
             ])
@@ -162,6 +232,26 @@ class PromoCodeTest extends TestCase
         $this->assertSame(500.0, $promoCode->effectiveDiscountValue());
         $this->assertSame(20, $promoCode->usage_limit);
         $this->assertSame([$product->id], $promoCode->products()->pluck('products.id')->all());
+        $this->assertSame([$brand->id], $promoCode->brands()->pluck('brands.id')->all());
+        $this->assertSame([$category->id], $promoCode->categories()->pluck('categories.id')->all());
+        $this->assertSame([$productType->id], $promoCode->productTypes()->pluck('product_types.id')->all());
+    }
+
+    public function test_admin_must_choose_a_target_when_a_code_is_not_global(): void
+    {
+        $this->actingAs($this->admin())
+            ->postJson(route('admin.promo-code.create'), [
+                'code' => 'NO-TARGET',
+                'discount_type' => PromoCode::TYPE_PERCENT,
+                'discount_value' => 10,
+                'is_active' => 1,
+                'minimum_order_amount' => 0,
+                'all_products' => 0,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('scope');
+
+        $this->assertDatabaseMissing('promo_codes', ['code' => 'NO-TARGET']);
     }
 
     public function test_editing_a_campaign_keeps_its_usage_count_and_closes_a_reached_limit(): void

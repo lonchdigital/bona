@@ -74,6 +74,8 @@ const translations = {
     storefront_search_loading: '@lang('base.storefront_search_loading')',
     storefront_search_products: '@lang('base.storefront_search_products')',
     storefront_search_services: '@lang('base.storefront_search_services')',
+    storefront_search_suggestions: '@lang('base.storefront_search_suggestions')',
+    storefront_search_show_all: '@lang('base.storefront_search_show_all')',
     storefront_search_hint: '@lang('base.storefront_search_hint')',
     storefront_search_error: '@lang('base.storefront_search_error')',
     storefront_search_retry: '@lang('base.storefront_search_retry')',

@@ -184,7 +184,7 @@ class CartService extends BaseService
             $isRequestedProduct = $this->isRequestedProduct($allProductVariation['attributes'], $requestProductAttributesAlt);
 
             if ($isRequestedProduct) {
-                $count = $allProductVariation->count + 1;
+                $count = $allProductVariation->count + $request->productCount;
                 $allProductVariation->update(['count' => $count]);
 
                 $isProductInCart = true;
@@ -332,7 +332,9 @@ class CartService extends BaseService
         }
 
         $preparedArray = [];
-        $preparedArray['color_name'] = $arr['color_id'] ?? null;
+        if (isset($arr['color_id']) && $arr['color_id'] !== '') {
+            $preparedArray['color_name'] = (string) $arr['color_id'];
+        }
         unset($arr['color_id']);
         unset($arr['color_name']);
 
@@ -349,8 +351,12 @@ class CartService extends BaseService
             $preparedArray[$key] = (string) $decoded['id'];
         }
 
-        //        dd($preparedArray, $requestProductAttributes);
-        return $this->arraysAreEqual($preparedArray, $requestProductAttributes);
+        $normalizedRequestAttributes = collect($requestProductAttributes)
+            ->filter(fn ($value) => $value !== null && (is_scalar($value) || $value instanceof \Stringable))
+            ->mapWithKeys(fn ($value, $key) => [(string) $key => (string) $value])
+            ->all();
+
+        return $this->arraysAreEqual($preparedArray, $normalizedRequestAttributes);
     }
 
     public function getSummary(Cart $cart, ?WishList $wishList): array
@@ -397,6 +403,12 @@ class CartService extends BaseService
     {
         $summary = $this->getCartSummary($cart);
         //        $summary = $this->getSummary($cart, $wishList);
+
+        $cart->loadMissing([
+            'products.brand',
+            'products.colors',
+            'products.productType',
+        ]);
 
         $cart->products->each(function ($product) {
             $product->name = $product->getRawOriginal('name');

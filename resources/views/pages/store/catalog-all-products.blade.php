@@ -1,14 +1,24 @@
 @extends('layouts.store-main')
 
 @php
-    $catalogPageTitle = trans('base.all_products');
+    $searchQuery = trim((string) ($searchQuery ?? ''));
+    $catalogPageTitle = $searchQuery !== ''
+        ? trans('base.storefront_search_results_for', ['query' => $searchQuery])
+        : trans('base.all_products');
     $breadcrumbs = [['url' => null, 'label' => $catalogPageTitle]];
     $currentCatalogPage = max(1, (int) $productsPaginated->currentPage());
     $catalogCanonicalBase = url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page'));
-    $catalogPageUrl = static fn (int $page) => $page > 1
-        ? $catalogCanonicalBase.'?'.http_build_query(['page' => $page])
-        : $catalogCanonicalBase;
-    $catalogCanonicalUrl = $catalogPageUrl($currentCatalogPage);
+    $catalogPageUrl = static function (int $page) use ($catalogCanonicalBase, $searchQuery) {
+        $parameters = array_filter([
+            'query' => $searchQuery !== '' ? $searchQuery : null,
+            'page' => $page > 1 ? $page : null,
+        ]);
+
+        return $parameters === [] ? $catalogCanonicalBase : $catalogCanonicalBase.'?'.http_build_query($parameters);
+    };
+    $catalogCanonicalUrl = $searchQuery !== ''
+        ? $catalogCanonicalBase
+        : $catalogPageUrl($currentCatalogPage);
     $paginationTitleSuffix = $currentCatalogPage > 1
         ? ' — '.trans('base.pagination_page_title', ['page' => $currentCatalogPage])
         : '';
@@ -17,6 +27,9 @@
 @section('canonical', $catalogCanonicalUrl)
 
 @push('head')
+    @if($searchQuery !== '')
+        <meta name="robots" content="noindex, follow">
+    @endif
     @if($currentCatalogPage > 1)
         <link rel="prev" href="{{ $catalogPageUrl($currentCatalogPage - 1) }}">
     @endif

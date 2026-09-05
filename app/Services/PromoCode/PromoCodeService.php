@@ -3,6 +3,7 @@
 namespace App\Services\PromoCode;
 
 use App\Models\Cart;
+use App\Models\Product;
 use App\Models\PromoCode;
 use App\Services\Base\ServiceActionResult;
 use Illuminate\Support\Enumerable;
@@ -14,7 +15,7 @@ class PromoCodeService
     public function paginate()
     {
         return PromoCode::query()
-            ->withCount(['products', 'orders'])
+            ->withCount(['products', 'brands', 'categories', 'productTypes', 'orders'])
             ->latest('id')
             ->paginate(config('domain.items_per_page'));
     }
@@ -22,11 +23,10 @@ class PromoCodeService
     public function create(array $data): PromoCode
     {
         return DB::transaction(function () use ($data) {
-            $productIds = $data['all_products'] ? [] : ($data['product_ids'] ?? []);
-            unset($data['product_ids']);
+            $targets = $this->extractTargets($data);
 
             $promoCode = PromoCode::create($this->normalizePersistenceData($data));
-            $promoCode->products()->sync($productIds);
+            $this->syncTargets($promoCode, $targets);
 
             return $promoCode;
         });
@@ -35,11 +35,10 @@ class PromoCodeService
     public function update(PromoCode $promoCode, array $data): PromoCode
     {
         return DB::transaction(function () use ($promoCode, $data) {
-            $productIds = $data['all_products'] ? [] : ($data['product_ids'] ?? []);
-            unset($data['product_ids']);
+            $targets = $this->extractTargets($data);
 
             $promoCode->update($this->normalizePersistenceData($data, (int) $promoCode->usage_count));
-            $promoCode->products()->sync($productIds);
+            $this->syncTargets($promoCode, $targets);
 
             return $promoCode->refresh();
         });
@@ -139,9 +138,7 @@ class PromoCodeService
 
     private function eligibleSubtotal(PromoCode $promoCode, Enumerable $products): float
     {
-        $eligibleProductIds = $promoCode->all_products
-            ? null
-            : $promoCode->products()->pluck('products.id')->map(fn ($id) => (int) $id)->all();
+        $eligibleProductIds = $this->eligibleProductIds($promoCode, $products);
         $remainingItems = $promoCode->max_discounted_items;
         $subtotal = 0;
 
@@ -164,6 +161,50 @@ class PromoCodeService
         }
 
         return round($subtotal, 2);
+    }
+
+    /** @return array<int, int>|null */
+    private function eligibleProductIds(PromoCode $promoCode, Enumerable $products): ?array
+    {
+        if ($promoCode->all_products) {
+            return null;
+        }
+
+        $promoCode->loadMissing(['products:id', 'brands:id', 'categories:id', 'productTypes:id']);
+
+        $directProductIds = $promoCode->products->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $brandIds = $promoCode->brands->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $categoryIds = $promoCode->categories->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $productTypeIds = $promoCode->productTypes->pluck('id')->map(fn ($id) => (int) $id)->all();
+
+        if ($directProductIds === [] && $brandIds === [] && $categoryIds === [] && $productTypeIds === []) {
+            return [];
+        }
+
+        return Product::query()
+            ->whereIn('id', $products->pluck('id')->map(fn ($id) => (int) $id)->all())
+            ->where(function ($query) use ($directProductIds, $brandIds, $categoryIds, $productTypeIds) {
+                if ($directProductIds !== []) {
+                    $query->orWhereIn('id', $directProductIds);
+                }
+
+                if ($brandIds !== []) {
+                    $query->orWhereIn('brand_id', $brandIds);
+                }
+
+                if ($productTypeIds !== []) {
+                    $query
+                        ->orWhereIn('product_type_id', $productTypeIds)
+                        ->orWhereHas('productTypes', fn ($relation) => $relation->whereIn('product_types.id', $productTypeIds));
+                }
+
+                if ($categoryIds !== []) {
+                    $query->orWhereHas('categories', fn ($relation) => $relation->whereIn('categories.id', $categoryIds));
+                }
+            })
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
     }
 
     private function subtotal(Enumerable $products): float
@@ -191,5 +232,33 @@ class PromoCodeService
             && $usageCount >= (int) $data['usage_limit'];
 
         return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array{products: array<int, int>, brands: array<int, int>, categories: array<int, int>, product_types: array<int, int>}
+     */
+    private function extractTargets(array &$data): array
+    {
+        $allProducts = (bool) ($data['all_products'] ?? false);
+        $targets = [
+            'products' => $allProducts ? [] : array_map('intval', $data['product_ids'] ?? []),
+            'brands' => $allProducts ? [] : array_map('intval', $data['brand_ids'] ?? []),
+            'categories' => $allProducts ? [] : array_map('intval', $data['category_ids'] ?? []),
+            'product_types' => $allProducts ? [] : array_map('intval', $data['product_type_ids'] ?? []),
+        ];
+
+        unset($data['product_ids'], $data['brand_ids'], $data['category_ids'], $data['product_type_ids']);
+
+        return $targets;
+    }
+
+    /** @param array{products: array<int, int>, brands: array<int, int>, categories: array<int, int>, product_types: array<int, int>} $targets */
+    private function syncTargets(PromoCode $promoCode, array $targets): void
+    {
+        $promoCode->products()->sync($targets['products']);
+        $promoCode->brands()->sync($targets['brands']);
+        $promoCode->categories()->sync($targets['categories']);
+        $promoCode->productTypes()->sync($targets['product_types']);
     }
 }

@@ -23,6 +23,7 @@ use App\Services\Product\DTO\EditProductDTO;
 use App\Services\Product\DTO\FilterProductAdminDTO;
 use App\Services\Product\DTO\FilterProductDTO;
 use App\Services\Product\DTO\SearchProductDTO;
+use App\Support\Search\SearchTerm;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
@@ -423,17 +424,24 @@ class ProductService extends BaseService
 
     public function searchAllProducts(SearchProductDTO $request): Collection
     {
-        $query = Product::select(['id', 'name', 'sku'])->limit(10);
+        $query = Product::query()->select(['id', 'name', 'sku']);
 
         if ($request->query) {
-            $query->where(function ($query) use ($request) {
-                return $query->where('name', 'like', '%'.$request->query.'%')
-                    ->orWhereRaw('LOWER(name) LIKE ?', ['%'.strtolower($request->query).'%'])
-                    ->orWhere('sku', 'like', '%'.$request->query.'%');
+            $query->where(function (Builder $query) use ($request) {
+                if (ctype_digit($request->query)) {
+                    $query->where('id', (int) $request->query)
+                        ->orWhere(function (Builder $textQuery) use ($request) {
+                            SearchTerm::applyToProducts($textQuery, $request->query);
+                        });
+
+                    return;
+                }
+
+                SearchTerm::applyToProducts($query, $request->query);
             });
         }
 
-        return $query->get();
+        return $query->orderBy('id')->limit(20)->get();
     }
 
     public function getSubProducts(int $subProductsTypeId): Collection

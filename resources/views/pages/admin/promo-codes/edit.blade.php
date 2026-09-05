@@ -3,7 +3,10 @@
 @section('content')
     @php
         $isEditing = isset($promoCode);
-        $selectedProducts = old('product_ids', $isEditing ? $promoCode->products->pluck('id')->all() : []);
+        $selectedProductIds = old('product_ids', $isEditing ? $promoCode->products->pluck('id')->all() : []);
+        $selectedBrandIds = old('brand_ids', $isEditing ? $promoCode->brands->pluck('id')->all() : []);
+        $selectedCategoryIds = old('category_ids', $isEditing ? $promoCode->categories->pluck('id')->all() : []);
+        $selectedProductTypeIds = old('product_type_ids', $isEditing ? $promoCode->productTypes->pluck('id')->all() : []);
         $allProducts = (bool) old('all_products', $isEditing ? $promoCode->all_products : true);
         $isActive = (bool) old('is_active', $isEditing ? $promoCode->is_active : true);
     @endphp
@@ -89,20 +92,70 @@
                             </div>
 
                             <hr class="my-4">
-                            <h5 class="mb-3">Товари</h5>
+                            <h5 class="mb-2">Область дії промокоду</h5>
+                            <p class="text-muted small mb-3">Групи поєднуються за правилом «АБО»: знижка діятиме на товар, якщо він входить хоча б в одну обрану групу, категорію, бренд або список товарів.</p>
                             <div class="custom-control custom-checkbox mb-3">
                                 <input type="hidden" name="all_products" value="0">
                                 <input class="custom-control-input" type="checkbox" id="all-products" name="all_products" value="1" @checked($allProducts)>
                                 <label class="custom-control-label" for="all-products">Застосовувати до всіх товарів</label>
                             </div>
-                            <div class="form-group" id="product-selection" @if($allProducts) style="display:none" @endif>
-                                <label for="product-ids">Оберіть товари <strong class="text-danger">*</strong></label>
-                                <select id="product-ids" class="form-control select2-multi" name="product_ids[]" multiple>
-                                    @foreach($products as $product)
-                                        <option value="{{ $product->id }}" @selected(in_array($product->id, $selectedProducts))>#{{ $product->id }} — {{ $product->name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="mt-1 text-danger ajaxError" id="error-field-product_ids"></div>
+                            <div id="product-selection" @if($allProducts) style="display:none" @endif>
+                                <div class="alert alert-light border py-2 px-3 mb-3" role="status" data-scope-summary>
+                                    Оберіть потрібні групи нижче. Пошук працює в кожному полі.
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="product-type-ids">Групи товарів</label>
+                                            <select id="product-type-ids" class="form-control scope-select" name="product_type_ids[]" multiple data-placeholder="Знайти групу товарів">
+                                                @foreach($productTypes as $productType)
+                                                    <option value="{{ $productType->id }}" @selected(in_array($productType->id, $selectedProductTypeIds))>{{ $productType->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small class="form-text text-muted">Наприклад: міжкімнатні двері, ручки або стінові панелі.</small>
+                                            <div class="mt-1 text-danger ajaxError" id="error-field-product_type_ids"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="category-ids">Категорії</label>
+                                            <select id="category-ids" class="form-control scope-select" name="category_ids[]" multiple data-placeholder="Знайти категорію">
+                                                @foreach($categories->groupBy('product_type_id') as $typeCategories)
+                                                    <optgroup label="{{ $typeCategories->first()->productType?->name }}">
+                                                        @foreach($typeCategories as $category)
+                                                            <option value="{{ $category->id }}" @selected(in_array($category->id, $selectedCategoryIds))>{{ $category->name }}</option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endforeach
+                                            </select>
+                                            <div class="mt-1 text-danger ajaxError" id="error-field-category_ids"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="brand-ids">Бренди</label>
+                                            <select id="brand-ids" class="form-control scope-select" name="brand_ids[]" multiple data-placeholder="Знайти бренд">
+                                                @foreach($brands as $brand)
+                                                    <option value="{{ $brand->id }}" @selected(in_array($brand->id, $selectedBrandIds))>{{ $brand->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="mt-1 text-danger ajaxError" id="error-field-brand_ids"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="product-ids">Окремі товари</label>
+                                            <select id="product-ids" class="form-control" name="product_ids[]" multiple>
+                                                @foreach($selectedProducts as $product)
+                                                    <option value="{{ $product->id }}" selected>#{{ $product->id }} — {{ $product->name }} · {{ $product->sku }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small class="form-text text-muted">Введіть щонайменше 3 символи назви, SKU або ID.</small>
+                                            <div class="mt-1 text-danger ajaxError" id="error-field-product_ids"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-1 text-danger ajaxError" id="error-field-scope"></div>
                             </div>
 
                             @if($isEditing)
@@ -131,8 +184,56 @@
                 $('#code').val(code).trigger('input');
             });
             $('#code').on('input', function () { this.value = this.value.toUpperCase().replace(/[^A-Z0-9_-]/g, ''); });
-            $('#all-products').on('change', function () { $('#product-selection').toggle(!this.checked); });
-            if ($.fn.select2) $('.select2-multi').select2({ width: '100%', placeholder: 'Пошук товару' });
+            function updateScopeSummary() {
+                var labels = [];
+                var fields = [
+                    ['#product-type-ids', 'груп'],
+                    ['#category-ids', 'категорій'],
+                    ['#brand-ids', 'брендів'],
+                    ['#product-ids', 'товарів']
+                ];
+
+                fields.forEach(function (field) {
+                    var count = ($(field[0]).val() || []).length;
+                    if (count) labels.push(count + ' ' + field[1]);
+                });
+
+                $('[data-scope-summary]').text(labels.length ? 'Обрано: ' + labels.join(' · ') : 'Оберіть хоча б одну групу, категорію, бренд або товар.');
+            }
+
+            $('#all-products').on('change', function () {
+                $('#product-selection').toggle(!this.checked);
+                updateScopeSummary();
+            });
+
+            if ($.fn.select2) {
+                $('.scope-select').each(function () {
+                    $(this).select2({
+                        width: '100%',
+                        placeholder: $(this).data('placeholder'),
+                        closeOnSelect: false
+                    });
+                });
+
+                $('#product-ids').select2({
+                    width: '100%',
+                    placeholder: 'Знайти товар',
+                    minimumInputLength: 3,
+                    closeOnSelect: false,
+                    ajax: {
+                        url: @json(route('admin.product.list.all')),
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) { return { query: params.term }; },
+                        processResults: function (response) { return { results: response.data || [] }; },
+                        cache: true
+                    }
+                });
+
+                $('.scope-select, #product-ids').on('change', updateScopeSummary);
+            }
+
+            updateScopeSummary();
         });
     </script>
 @endpush
