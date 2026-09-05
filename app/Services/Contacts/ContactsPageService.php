@@ -6,7 +6,6 @@ use App\Models\ContactConfig;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Contacts\DTO\ContactsPageEditDTO;
-use Illuminate\Support\Facades\Cache;
 
 class ContactsPageService extends BaseService
 {
@@ -49,8 +48,6 @@ class ContactsPageService extends BaseService
             } else {
                 ContactConfig::create($dataToUpdate);
             }
-
-            Cache::forget('contactsFooter');
 
             return ServiceActionResult::make(true, trans('admin.contacts_edit_success'));
         });

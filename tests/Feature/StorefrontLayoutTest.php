@@ -342,4 +342,28 @@ class StorefrontLayoutTest extends TestCase
         $this->assertSame('Щодня: 10:00–19:00', $contacts->getTranslation('working_hours_one', 'uk'));
         $this->assertSame('Ежедневно: 10:00–19:00', $contacts->getTranslation('working_hours_one', 'ru'));
     }
+
+    public function test_footer_always_reads_the_latest_contact_settings(): void
+    {
+        $contacts = ContactConfig::query()->create([
+            'city_one' => ['uk' => 'Одеса', 'ru' => 'Одесса'],
+            'address_one' => ['uk' => 'Краснова, 12А', 'ru' => 'Краснова, 12А'],
+            'working_hours_one' => ['uk' => 'Старий графік', 'ru' => 'Старый график'],
+        ]);
+
+        // Render once first: this reproduces a storefront process that has
+        // already served and retained the previous footer configuration.
+        $this->get(route('store.home'))
+            ->assertOk()
+            ->assertSee('Старий графік');
+
+        $contacts->update([
+            'working_hours_one' => ['uk' => 'Новий графік', 'ru' => 'Новый график'],
+        ]);
+
+        $this->get(route('store.home'))
+            ->assertOk()
+            ->assertSee('Новий графік')
+            ->assertDontSee('Старий графік');
+    }
 }

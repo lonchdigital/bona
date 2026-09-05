@@ -76,9 +76,12 @@ class AppServiceProvider extends ServiceProvider
 
                 $view->with('productTypes', $productTypes);
                 $view->with('locationService', app()->make(LocaleService::class));
-                $view->with('contactsFooter', Cache::remember('contactsFooter', 43200, function () use ($contactsService) {
-                    return $contactsService->getContactsFooter();
-                }));
+                // Contact details are edited rarely and live in a single row,
+                // so one lightweight query is preferable to showing a stale
+                // address, phone number or schedule for up to twelve hours.
+                // This also keeps every PHP process in sync immediately when
+                // the administrator saves the contacts page.
+                $view->with('contactsFooter', $contactsService->getContactsFooter());
             }
         );
 
