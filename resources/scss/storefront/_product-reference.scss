@@ -232,7 +232,8 @@ html.product-dialog-is-open body {
     }
 
     .product-cta {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
+        gap: 9px;
 
         .product-add,
         .product-oneclick { width: 100%; }
@@ -954,6 +955,7 @@ html.product-dialog-is-open body {
         .product-price-row strong { font-size: clamp(38px, 11vw, 46px); }
 
         .product-cta {
+            grid-template-columns: minmax(0, 1fr);
             margin-top: 16px;
 
             .product-add {

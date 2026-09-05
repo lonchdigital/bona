@@ -65,6 +65,11 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString('.product-section-nav', $referenceStyles);
         $this->assertStringContainsString('.product-gallery__thumbs-shell', $referenceStyles);
         $this->assertStringContainsString('flex: 0 0 calc((100% - 30px) / 4);', $referenceStyles);
+        $this->assertStringContainsString('grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);', $referenceStyles);
+        $this->assertMatchesRegularExpression(
+            '/@media \(max-width: 640px\).*?\.product-cta\s*\{\s*grid-template-columns:\s*minmax\(0, 1fr\);/s',
+            $referenceStyles
+        );
         $this->assertStringNotContainsString(".product-body .product-kit-dialog {\n    display: none;", $referenceStyles);
         $this->assertStringContainsString('.art-heart-filled { display: none; }', $referenceStyles);
         $this->assertStringContainsString('.art-heart-outline { display: none; }', $referenceStyles);
