@@ -14,6 +14,8 @@ class PaymentTypesDataClass implements BaseDataClass
 
     const INVOICE_PAYMENT = 5;
 
+    const MANAGER_CONFIRMATION_PAYMENT = 6;
+
     public static function get(?int $item = null): mixed
     {
         $collection = collect([
@@ -39,6 +41,10 @@ class PaymentTypesDataClass implements BaseDataClass
                 'id' => self::INVOICE_PAYMENT,
                 'name' => trans('base.checkout_payment_invoice'),
                 'internal_name' => 'invoice',
+            ], [
+                'id' => self::MANAGER_CONFIRMATION_PAYMENT,
+                'name' => trans('base.checkout_payment_manager_confirmation'),
+                'internal_name' => 'manager_confirmation',
             ],
         ]);
 

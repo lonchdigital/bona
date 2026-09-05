@@ -92,6 +92,55 @@ class CheckoutTest extends TestCase
         $this->assertSame($user->id, (int) Order::first()->user_id);
     }
 
+    public function test_the_reference_full_name_field_is_split_for_a_guest_order(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+        $this->confirm([
+            'full_name' => 'Олена Коваль',
+            'first_name' => null,
+            'last_name' => null,
+            'email' => 'olena@example.com',
+        ])->assertSessionHasNoErrors();
+
+        $user = User::where('email', 'olena@example.com')->firstOrFail();
+
+        $this->assertSame('Олена', $user->first_name);
+        $this->assertSame('Коваль', $user->last_name);
+    }
+
+    public function test_a_signed_in_customer_sees_their_saved_details_and_can_order_without_retyping_them(): void
+    {
+        $this->seedCurrency();
+        $user = User::factory()->create([
+            'first_name' => 'Оксана',
+            'last_name' => 'Гончар',
+            'phone' => '+38(067)555-44-33',
+            'email' => 'oksana@example.com',
+        ]);
+        $product = $this->makeProduct();
+
+        $this->actingAs($user);
+        $this->addToCart($product->slug)->assertOk();
+
+        $this->get(route('store.checkout.page'))
+            ->assertOk()
+            ->assertSee('Оксана Гончар')
+            ->assertSee('+38(067)555-44-33')
+            ->assertDontSee('name="full_name"', false);
+
+        $this->post(route('store.checkout.confirm'), [
+            'delivery_type_id' => DeliveryTypesDataClass::PICK_UP_DELIVERY,
+            'payment_type_id' => PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT,
+            'recipient_type_id' => RecipientTypesDataClass::RECIPIENT_USER,
+            'agreement' => 1,
+        ])->assertRedirect();
+
+        $this->assertSame($user->id, (int) Order::firstOrFail()->user_id);
+    }
+
     public function test_placing_an_order_empties_the_cart(): void
     {
         $this->seedCurrency();
@@ -236,6 +285,47 @@ class CheckoutTest extends TestCase
         $this->assertStringContainsString('/checkout/'.$order->id.'/thank', $response->headers->get('Location'));
         $this->assertSame(PaymentTypesDataClass::INVOICE_PAYMENT, (int) $order->payment_type_id);
         $this->assertSame(OrderPaymentStatusesDataClass::STATUS_UNPAID, (int) $order->payment_status_id);
+    }
+
+    public function test_manager_confirmation_is_the_checkout_default_and_stays_unpaid(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+
+        $page = $this->get(route('store.checkout.page'));
+        $page->assertOk();
+        $this->assertSame(
+            PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT,
+            $page->viewData('checkoutPaymentType')
+        );
+        $page->assertSee('name="full_name"', false);
+        $page->assertSee(trans('base.checkout_payment_manager_confirmation'));
+        $page->assertSee(trans('base.checkout_payment_cash'));
+
+        $this->confirm([
+            'payment_type_id' => PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT,
+        ])->assertRedirect();
+
+        $order = Order::firstOrFail();
+        $this->assertSame(PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT, (int) $order->payment_type_id);
+        $this->assertSame(OrderPaymentStatusesDataClass::STATUS_UNPAID, (int) $order->payment_status_id);
+    }
+
+    public function test_cash_on_receipt_remains_a_separate_payment_method(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct();
+
+        $this->addToCart($product->slug)->assertOk();
+        $this->confirm([
+            'payment_type_id' => PaymentTypesDataClass::CASH_PAYMENT,
+        ])->assertRedirect();
+
+        $order = Order::firstOrFail();
+        $this->assertSame(PaymentTypesDataClass::CASH_PAYMENT, (int) $order->payment_type_id);
+        $this->assertSame(OrderPaymentStatusesDataClass::STATUS_PAID_AS_RECEIVED, (int) $order->payment_status_id);
     }
 
     public function test_product_page_can_preselect_monobank_and_its_period_in_checkout(): void

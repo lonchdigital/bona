@@ -35,25 +35,27 @@
 }
 
 .bona-commerce-hero {
+    padding: 0;
     border-bottom: 1px solid var(--bona-line);
 
     &__grid {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        gap: 48px;
-        padding-block: 48px 38px;
+        gap: 40px;
+        padding-block: 45px 35px;
 
         h1 {
             margin: 0;
             color: var(--bona-ink);
-            font: 400 clamp(58px, 6vw, 82px)/.94 var(--bona-display);
+            font: 400 clamp(55px, 5vw, 70px)/1 var(--bona-display);
             letter-spacing: -.025em;
+            white-space: nowrap;
         }
 
         > p {
             max-width: 510px;
-            margin: 0 0 4px;
+            margin: 0;
             color: var(--bona-muted);
             font-size: 14px;
             line-height: 1.7;
@@ -61,13 +63,20 @@
     }
 }
 
-.bona-commerce-layout,
-.bona-checkout-layout {
+.bona-commerce-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 410px;
     align-items: start;
     gap: clamp(32px, 4vw, 58px);
     padding-block: 40px 104px;
+}
+
+.bona-checkout-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 410px;
+    align-items: start;
+    gap: 60px;
+    padding-block: 38px 100px;
 }
 
 .bona-cart-list { border-top: 1px solid var(--bona-line); }
@@ -425,30 +434,38 @@
 
 .bona-checkout-progress {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 27px;
+    gap: 0;
+    margin-top: 25px;
+    overflow-x: auto;
 
     span {
-        display: inline-flex;
-        min-height: 33px;
+        display: flex;
         align-items: center;
-        padding: 7px 13px;
-        border: 1px solid var(--bona-line);
-        border-radius: 999px;
         color: #938b80;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: .04em;
-        transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition: color .2s ease;
 
-        &.is-active { border-color: var(--bona-ink); background: var(--bona-ink); color: var(--bona-cream); }
+        & + span::before {
+            width: 45px;
+            height: 1px;
+            margin: 0 13px;
+            background: #ccc5b9;
+            content: '';
+        }
+
+        &.is-active { color: var(--bona-ink); }
     }
 }
 
 .bona-checkout-form {
+    display: flex;
     min-width: 0;
-    border-top: 1px solid var(--bona-line);
+    flex-direction: column;
+    gap: 16px;
 }
 
 .bona-checkout-errors {
@@ -466,33 +483,36 @@
 }
 
 .bona-checkout-step {
-    padding: 32px 0 38px;
-    border-bottom: 1px solid var(--bona-line);
+    padding: 30px;
+    border: 1px solid var(--bona-line);
+    border-radius: 18px;
+    background: #fff;
 
     &__head {
         display: grid;
-        grid-template-columns: 43px minmax(0, 1fr);
+        grid-template-columns: 42px minmax(0, 1fr);
         align-items: center;
-        gap: 15px;
+        gap: 14px;
         margin-bottom: 25px;
 
         > span {
-            display: grid;
-            width: 43px;
-            height: 43px;
-            place-items: center;
-            border: 1px solid #d4ccbf;
+            display: flex;
+            width: 42px;
+            height: 42px;
+            align-items: center;
+            justify-content: center;
             border-radius: 50%;
+            background: var(--bona-paper);
             color: var(--bona-gold-text);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
             letter-spacing: .08em;
         }
 
-        h2 { margin: 0; color: var(--bona-ink); font: 400 clamp(31px, 3.2vw, 42px)/1.05 var(--bona-display); }
+        h2 { margin: 0; color: var(--bona-ink); font: 400 32px/1.05 var(--bona-display); }
     }
 
-    &--comment { padding-bottom: 0; border-bottom: 0; }
+    &--comment { padding: 30px; }
 }
 
 .bona-checkout-auth-prompt {
@@ -581,6 +601,7 @@
     &.has-error select,
     &.has-error textarea,
     &.has-error .fstElement { border-color: #b85c54; }
+    &--wide { grid-column: 1 / -1; }
     &--third { grid-column: span 1; }
 
     .fstElement { display: block; padding: 0; }
@@ -595,12 +616,13 @@
 .bona-choice-list { display: grid; gap: 9px; }
 
 .bona-choice-card {
+    position: relative;
     display: grid;
-    min-height: 79px;
+    min-height: 66px;
     grid-template-columns: 22px minmax(0, 1fr) auto;
     align-items: center;
-    gap: 14px;
-    padding: 15px 17px;
+    gap: 13px;
+    padding: 13px 15px;
     border: 1px solid #ded8ce;
     border-radius: 12px;
     background: #fff;
@@ -624,9 +646,9 @@
 }
 
 .bona-choice-panel {
-    margin: -2px 0 9px;
-    padding: 20px;
-    border-radius: 0 0 12px 12px;
+    margin: 5px 0 9px;
+    padding: 17px;
+    border-radius: 12px;
     background: var(--bona-paper);
 
     > p { margin: 0; color: var(--bona-muted); font-size: 11px; line-height: 1.6; }
@@ -645,7 +667,15 @@
     gap: 9px;
 
     label { cursor: pointer; }
-    input { position: absolute; opacity: 0; pointer-events: none; }
+    input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        opacity: 0;
+        pointer-events: none;
+    }
     span { display: inline-flex; min-height: 39px; align-items: center; padding: 9px 17px; border: 1px solid #d7d0c5; border-radius: 999px; color: var(--bona-muted); font-size: 11px; font-weight: 700; }
     input:checked + span { border-color: var(--bona-ink); background: var(--bona-ink); color: var(--bona-cream); }
     input:focus-visible + span { outline: 2px solid var(--bona-gold); outline-offset: 2px; }
@@ -666,10 +696,10 @@
 }
 
 .bona-payment-brand { color: #70bd44 !important; font-size: 14px !important; }
-.bona-bank-mark { font-size: 13px !important; font-weight: 800 !important; }
-.bona-bank-mark--mono { color: #111 !important; letter-spacing: -.05em; }
-.bona-bank-mark--privat { color: #169b36 !important; }
 .bona-payment-icon { width: 25px; height: 25px; color: var(--bona-gold-text); }
+.bona-payment-logo { display: block; object-fit: contain; }
+.bona-payment-logo--mono { width: 72px; max-height: 28px; }
+.bona-payment-logo--privat { width: 86px; max-height: 30px; }
 
 .bona-checkout-summary {
     &__head {
@@ -765,8 +795,8 @@
 }
 
 @media (max-width: 640px) {
-    .bona-commerce-hero__grid { padding-block: 32px 28px; }
-    .bona-commerce-hero__grid h1 { font-size: 54px; }
+    .bona-commerce-hero__grid { padding-block: 30px 28px; }
+    .bona-commerce-hero__grid h1 { font-size: 55px; }
     .bona-commerce-layout,
     .bona-checkout-layout { gap: 24px; padding-block: 24px 72px; }
 
@@ -789,16 +819,20 @@
     .bona-order-summary { padding: 26px 22px; border-radius: 17px; }
     .bona-service-offer { grid-template-columns: 1fr; gap: 20px; padding: 23px; }
     .bona-service-offer .bona-button { width: 100%; }
-    .bona-checkout-progress { margin-top: 20px; }
-    .bona-checkout-step { padding: 26px 0 31px; }
+    .bona-checkout-progress { width: 100%; margin-top: 20px; }
+    .bona-checkout-progress span + span::before { width: 24px; margin-inline: 10px; }
+    .bona-checkout-step { padding: 23px; }
     .bona-checkout-step__head { grid-template-columns: 38px minmax(0, 1fr); gap: 12px; margin-bottom: 20px; }
     .bona-checkout-step__head > span { width: 38px; height: 38px; }
+    .bona-checkout-step__head h2 { font-size: 28px; }
+    .bona-checkout-step--comment { padding: 23px; }
     .bona-form-grid { grid-template-columns: 1fr; gap: 14px; }
     .bona-checkout-auth-prompt { align-items: stretch; flex-direction: column; gap: 16px; }
     .bona-checkout-auth-prompt .bona-button { width: 100%; }
     .bona-choice-card { min-height: 84px; grid-template-columns: 20px minmax(0, 1fr); padding: 14px; }
     .bona-choice-card > strong,
-    .bona-choice-card > svg { grid-column: 2; justify-self: start; max-width: none; text-align: left; }
+    .bona-choice-card > svg,
+    .bona-choice-card > img { grid-column: 2; justify-self: start; max-width: none; text-align: left; }
     .bona-choice-panel { padding: 16px; }
     .bona-payment-period { align-items: stretch; flex-direction: column; gap: 9px; }
     .bona-payment-period select { width: 100%; }

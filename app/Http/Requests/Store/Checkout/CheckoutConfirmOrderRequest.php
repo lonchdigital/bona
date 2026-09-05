@@ -13,6 +13,22 @@ use Illuminate\Validation\Rule;
 
 class CheckoutConfirmOrderRequest extends BaseRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (Auth::check() || ! $this->filled('full_name')) {
+            return;
+        }
+
+        $fullName = preg_replace('/\s+/u', ' ', trim((string) $this->input('full_name')));
+        [$firstName, $lastName] = array_pad(preg_split('/\s+/u', $fullName, 2) ?: [], 2, '');
+
+        $this->merge([
+            'full_name' => $fullName,
+            'first_name' => $this->filled('first_name') ? $this->input('first_name') : $firstName,
+            'last_name' => $this->filled('last_name') ? $this->input('last_name') : $lastName,
+        ]);
+    }
+
     public function rules(): array
     {
         $isAuthUser = Auth::user();
@@ -49,6 +65,13 @@ class CheckoutConfirmOrderRequest extends BaseRequest
         ];
 
         if (! $isAuthUser) {
+            $rules['full_name'] = [
+                'nullable',
+                'string',
+                'max:201',
+                'regex:/^[\pL\pM\'\x{2019}\-\s]+$/u',
+            ];
+
             $rules['first_name'] = [
                 'required',
                 'string',
@@ -213,6 +236,7 @@ class CheckoutConfirmOrderRequest extends BaseRequest
     public function attributes(): array
     {
         return [
+            'full_name' => mb_strtolower(trans('base.checkout_full_name')),
             'first_name' => mb_strtolower(trans('base.name')),
             'last_name' => mb_strtolower(trans('base.last_name')),
             'phone' => mb_strtolower(trans('base.phone')),

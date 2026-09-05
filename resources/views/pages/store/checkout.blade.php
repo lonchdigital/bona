@@ -13,7 +13,7 @@
         $selectedDeliveryType = (int) old('delivery_type_id', $checkoutDeliveryType);
         $selectedPaymentType = (int) old('payment_type_id', $checkoutPaymentType);
         $selectedRecipientType = (int) old('recipient_type_id', App\DataClasses\RecipientTypesDataClass::RECIPIENT_USER);
-        $selectedPaymentLabel = App\DataClasses\PaymentTypesDataClass::get($selectedPaymentType)['name'] ?? trans('base.checkout_payment_cash');
+        $selectedPaymentLabel = App\DataClasses\PaymentTypesDataClass::get($selectedPaymentType)['name'] ?? trans('base.checkout_payment_manager_confirmation');
         $selectedDeliveryLabel = App\DataClasses\DeliveryTypesDataClass::get($selectedDeliveryType)['name'] ?? trans('base.checkout_address_delivery');
         $currency = $baseCurrency->name_short;
         $formatPrice = fn ($amount) => number_format((float) $amount, 0, ',', ' ').' '.$currency;
@@ -24,14 +24,14 @@
     <div class="bona-commerce-page bona-checkout-page">
         <x-store.content-breadcrumbs :items="[
             ['label' => trans('base.cart'), 'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.cart.page')],
-            ['label' => trans('base.checkout')],
+            ['label' => trans('base.checkout_title_short')],
         ]" />
 
-        <section class="bona-commerce-hero" aria-labelledby="checkout-page-title">
+        <div class="bona-commerce-hero" role="region" aria-labelledby="checkout-page-title">
             <div class="bona-shell bona-commerce-hero__grid">
                 <div>
                     <p class="bona-commerce-kicker">{{ trans('base.checkout_kicker') }}</p>
-                    <h1 id="checkout-page-title">{{ trans('base.checkout') }}</h1>
+                    <h1 id="checkout-page-title">{{ trans('base.checkout_title_short') }}</h1>
                     <div class="bona-checkout-progress" aria-label="{{ trans('base.checkout_progress_label') }}">
                         <span class="is-active" data-checkout-progress="contact">{{ trans('base.checkout_progress_contact') }}</span>
                         <span data-checkout-progress="delivery">{{ trans('base.checkout_progress_delivery') }}</span>
@@ -40,7 +40,7 @@
                 </div>
                 <p>{{ trans('base.checkout_intro') }}</p>
             </div>
-        </section>
+        </div>
 
         <form id="checkout-main" class="bona-shell bona-checkout-layout" action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.checkout.confirm') }}" method="POST" novalidate>
             @csrf
@@ -54,7 +54,7 @@
                 @endif
 
                 <section class="bona-checkout-step" data-checkout-step="contact" aria-labelledby="checkout-contact-title">
-                    <header class="bona-checkout-step__head"><span>01</span><h2 id="checkout-contact-title">{{ trans('base.checkout_contact_title') }}</h2></header>
+                    <header class="bona-checkout-step__head"><span class="bona-checkout-step__num">01</span><h2 id="checkout-contact-title">{{ trans('base.checkout_contact_title') }}</h2></header>
 
                     @guest
                         <div class="bona-checkout-auth-prompt">
@@ -62,10 +62,9 @@
                             <a class="bona-button bona-button--outline" href="{{ $signInUrl }}">{{ trans('base.checkout_signin_action') }}</a>
                         </div>
                         <div class="bona-form-grid">
-                            <div class="bona-field @error('first_name') has-error @enderror"><label for="name">{{ trans('base.name') }}</label><input id="name" name="first_name" type="text" value="{{ old('first_name') }}" autocomplete="given-name" maxlength="100" required>@error('first_name')<small>{{ $message }}</small>@enderror</div>
-                            <div class="bona-field @error('last_name') has-error @enderror"><label for="surname">{{ trans('base.last_name') }}</label><input id="surname" name="last_name" type="text" value="{{ old('last_name') }}" autocomplete="family-name" maxlength="100" required>@error('last_name')<small>{{ $message }}</small>@enderror</div>
-                            <div class="bona-field @error('phone') has-error @enderror"><label for="phone">{{ trans('base.phone') }}</label><input id="phone" name="phone" type="tel" value="{{ old('phone') }}" autocomplete="tel" inputmode="tel" required>@error('phone')<small>{{ $message }}</small>@enderror</div>
-                            <div class="bona-field @error('email') has-error @enderror"><label for="email">{{ trans('base.email') }}</label><input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="email" maxlength="255" required>@error('email')<small>{{ $message }}</small>@enderror</div>
+                            <div class="bona-field @error('full_name') has-error @enderror @error('first_name') has-error @enderror @error('last_name') has-error @enderror"><label for="name">{{ trans('base.checkout_full_name') }}</label><input id="name" name="full_name" type="text" value="{{ old('full_name', trim(old('first_name').' '.old('last_name'))) }}" autocomplete="name" maxlength="201" placeholder="{{ trans('base.checkout_full_name_placeholder') }}" required>@error('full_name')<small>{{ $message }}</small>@enderror @error('first_name')<small>{{ $message }}</small>@enderror @error('last_name')<small>{{ $message }}</small>@enderror</div>
+                            <div class="bona-field @error('phone') has-error @enderror"><label for="phone">{{ trans('base.phone') }}</label><input id="phone" name="phone" type="tel" value="{{ old('phone') }}" autocomplete="tel" inputmode="tel" placeholder="{{ trans('base.checkout_phone_placeholder') }}" required>@error('phone')<small>{{ $message }}</small>@enderror</div>
+                            <div class="bona-field bona-field--wide @error('email') has-error @enderror"><label for="email">{{ trans('base.email') }}</label><input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="email" maxlength="255" placeholder="{{ trans('base.checkout_email_placeholder') }}" required>@error('email')<small>{{ $message }}</small>@enderror</div>
                         </div>
                     @else
                         <div class="bona-checkout-customer">
@@ -76,7 +75,7 @@
                 </section>
 
                 <section class="bona-checkout-step" data-checkout-step="delivery" aria-labelledby="checkout-delivery-title">
-                    <header class="bona-checkout-step__head"><span>02</span><h2 id="checkout-delivery-title">{{ trans('base.checkout_delivery_title') }}</h2></header>
+                    <header class="bona-checkout-step__head"><span class="bona-checkout-step__num">02</span><h2 id="checkout-delivery-title">{{ trans('base.checkout_delivery_title') }}</h2></header>
 
                     <div class="bona-choice-list" id="checkout-delivery-accordion">
                         <label class="bona-choice-card">
@@ -142,14 +141,15 @@
                 </section>
 
                 <section class="bona-checkout-step" data-checkout-step="payment" aria-labelledby="checkout-payment-title">
-                    <header class="bona-checkout-step__head"><span>03</span><h2 id="checkout-payment-title">{{ trans('base.checkout_payment') }}</h2></header>
+                    <header class="bona-checkout-step__head"><span class="bona-checkout-step__num">03</span><h2 id="checkout-payment-title">{{ trans('base.checkout_payment') }}</h2></header>
                     <div class="bona-choice-list bona-payment-choices">
+                        <label class="bona-choice-card"><input type="radio" id="payment-manager-confirmation" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT)><span><b>{{ trans('base.checkout_payment_manager_confirmation') }}</b><small>{{ trans('base.checkout_payment_manager_confirmation_note') }}</small></span><strong>{{ trans('base.checkout_no_commission') }}</strong></label>
                         <label class="bona-choice-card"><input type="radio" id="payment-cash" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT)><span><b>{{ trans('base.checkout_payment_cash') }}</b><small>{{ trans('base.checkout_payment_cash_note') }}</small></span><strong>{{ trans('base.checkout_no_commission') }}</strong></label>
                         <label class="bona-choice-card"><input type="radio" id="payment-card" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT)><span><b>{{ trans('base.checkout_payment_card') }}</b><small>{{ trans('base.checkout_payment_card_note') }}</small></span><strong class="bona-payment-brand">LiqPay</strong></label>
                         <label class="bona-choice-card"><input type="radio" id="payment-invoice" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT)><span><b>{{ trans('base.checkout_payment_invoice') }}</b><small>{{ trans('base.checkout_payment_invoice_note') }}</small></span><svg class="bona-payment-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7V3Zm8 0v5h4M10 12h6M10 16h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
-                        <label class="bona-choice-card"><input type="radio" id="payment-card_paypart-mono-bank" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)><span><b>{{ trans('base.checkout_payment_paypart_mono_bank') }} monobank</b><small>{{ trans('base.checkout_payment_mono_note') }}</small></span><strong class="bona-bank-mark bona-bank-mark--mono">mono</strong></label>
+                        <label class="bona-choice-card"><input type="radio" id="payment-card_paypart-mono-bank" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)><span><b>{{ trans('base.checkout_payment_paypart_mono_bank') }} monobank</b><small>{{ trans('base.checkout_payment_mono_note') }}</small></span><img class="bona-payment-logo bona-payment-logo--mono" src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt="monobank"></label>
                         <div id="collapseMonoPartialPayment" class="bona-payment-period" @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)><label for="mono_payment_period">{{ trans('base.checkout_payment_period_label') }}</label><select id="mono_payment_period" name="mono_payment_period">@foreach(config('payment.monobank.periods', []) as $period)<option value="{{ $period }}" @selected((int) old('mono_payment_period', $checkoutMonoPeriod) === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach</select></div>
-                        <label class="bona-choice-card"><input type="radio" id="payment-card_paypart" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)><span><b>{{ trans('base.checkout_payment_paypart') }} ПриватБанк</b><small>{{ trans('base.checkout_payment_privat_note') }}</small></span><strong class="bona-bank-mark bona-bank-mark--privat">Приват</strong></label>
+                        <label class="bona-choice-card"><input type="radio" id="payment-card_paypart" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)><span><b>{{ trans('base.checkout_payment_paypart') }} ПриватБанк</b><small>{{ trans('base.checkout_payment_privat_note') }}</small></span><img class="bona-payment-logo bona-payment-logo--privat" src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt="ПриватБанк"></label>
                         <div id="collapsePartialPayment" class="bona-payment-period" @hidden($selectedPaymentType !== App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)><label for="payment_period">{{ trans('base.checkout_payment_period_label') }}</label><select id="payment_period" name="payment_period">@foreach(config('payment.privatbank.periods', []) as $period)<option value="{{ $period }}" @selected((int) old('payment_period', $checkoutPrivatPeriod) === (int) $period)>{{ trans_choice('base.checkout_payment_count', $period, ['count' => $period]) }}</option>@endforeach</select></div>
                     </div>
                 </section>

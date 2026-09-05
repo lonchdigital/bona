@@ -35,7 +35,7 @@ class ShowCheckoutPage extends BaseAction
         $allowedPaymentTypes = PaymentTypesDataClass::get()->pluck('id')->map(fn ($id) => (int) $id)->all();
         $paymentType = in_array($paymentType, $allowedPaymentTypes, true)
             ? $paymentType
-            : PaymentTypesDataClass::CASH_PAYMENT;
+            : PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT;
 
         $deliveryType = (int) old('delivery_type_id', DeliveryTypesDataClass::ADDRESS_DELIVERY);
         $allowedDeliveryTypes = DeliveryTypesDataClass::get()->pluck('id')->map(fn ($id) => (int) $id)->all();
