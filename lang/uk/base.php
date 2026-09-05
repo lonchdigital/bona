@@ -370,6 +370,7 @@ return [
     'region' => 'Область',
     'district' => 'Район',
     'city' => 'Місто',
+    'checkout_city_or_village' => 'Місто / село',
     'you_have_to_agree_with_policy' => 'Ви повинні погодитись з правилами використання сайту',
     'user' => 'Користувач',
     'all_brands_of_wallpapers' => 'Усі бренди шпалер',

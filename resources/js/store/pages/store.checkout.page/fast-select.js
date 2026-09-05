@@ -11,6 +11,11 @@ export function init () {
             searchPlaceholder: translations.checkout_search_area,
             placeholder: translations.checkout_search_city,
             noResultsText: translations.checkout_search_city_not_found,
+            onItemSelect: function (event, model, fastselect, fastsearch) {
+                fastsearch.hideResults();
+                fastselect.hide();
+                fastselect.$queryInput.blur();
+            },
         }
     );
 

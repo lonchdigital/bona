@@ -360,6 +360,7 @@ class CheckoutTest extends TestCase
         $page->assertSee('aria-controls="delivery-1"', false);
         $page->assertSee('aria-expanded="false"', false);
         $page->assertSee('class="bona-consent__box"', false);
+        $page->assertSee(trans('base.checkout_city_or_village'));
         $this->assertMatchesRegularExpression('/id="delivery-1"[^>]*hidden/', $page->getContent());
         $this->assertMatchesRegularExpression('/id="delivery-2"[^>]*hidden/', $page->getContent());
 
@@ -371,6 +372,14 @@ class CheckoutTest extends TestCase
         $script = file_get_contents(resource_path('js/store/pages/store.checkout.page.js'));
         $this->assertStringContainsString('input.checked = false;', $script);
         $this->assertStringContainsString('getSummaryByDeliveryTypeId(null', $script);
+
+        $fastSelectScript = file_get_contents(resource_path('js/store/pages/store.checkout.page/fast-select.js'));
+        $this->assertStringContainsString('fastsearch.hideResults();', $fastSelectScript);
+        $this->assertStringContainsString('fastselect.hide();', $fastSelectScript);
+        $this->assertStringContainsString('fastselect.$queryInput.blur();', $fastSelectScript);
+
+        $fastSelectVendor = file_get_contents(base_path('node_modules_local/fastselect/dist/fastselect.standalone.js'));
+        $this->assertStringContainsString('if (originalInput && originalInput.value', $fastSelectVendor);
     }
 
     public function test_checkout_renders_interactive_installment_controls_for_both_banks(): void

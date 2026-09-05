@@ -370,6 +370,7 @@ return [
     'region' => 'Область',
     'district' => 'Район',
     'city' => 'Город',
+    'checkout_city_or_village' => 'Город / село',
     'you_have_to_agree_with_policy' => 'Вы должны согласиться с правилами использования сайта',
     'user' => 'Пользователь',
     'all_brands_of_wallpapers' => 'Все бренды обоев',
