@@ -80,6 +80,8 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('bona-article-configurator', false)
             ->assertSee('bona-article-links', false)
             ->assertSee('bona-article-share', false)
+            ->assertSee('twitter.com/intent/tweet', false)
+            ->assertDontSee(trans('base.article_share_kicker'))
             ->assertSee('Керований матеріал')
             ->assertSee('Умови доставки')
             ->assertSee('Матеріал і конструкція')
@@ -407,6 +409,9 @@ class EditorialCommercePagesTest extends TestCase
         $this->assertStringContainsString('@media (max-width: 640px)', $styles);
         $this->assertStringContainsString('body.bona-article-body', $styles);
         $this->assertStringContainsString('.bona-article-page > .bona-content-breadcrumbs', $styles);
+        $this->assertStringContainsString('width: min(100%, 1440px);', $styles);
+        $this->assertStringContainsString('> .bona-article-links__group { padding: 42px 30px 29px; }', $styles);
+        $this->assertStringContainsString('.bona-article-links > .bona-article-links__group { padding: 34px 24px 25px; }', $styles);
         $this->assertStringContainsString('margin: 0 auto;', $styles);
         $this->assertStringContainsString('padding-top: 0 !important;', $styles);
         $this->assertStringContainsString('ProductContentBlockComponent', $productEditor);

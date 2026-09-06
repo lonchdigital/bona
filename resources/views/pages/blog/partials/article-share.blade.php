@@ -1,8 +1,5 @@
 <section class="bona-article-share" aria-labelledby="article-share-title">
-    <div>
-        <p>{{ trans('base.article_share_kicker') }}</p>
-        <h2 id="article-share-title">{{ trans('base.article_share') }}</h2>
-    </div>
+    <h2 id="article-share-title">{{ trans('base.article_share') }}</h2>
     <div class="bona-article-share__actions">
         <a class="bona-article-share__action" href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($articleUrl) }}" target="_blank" rel="noopener nofollow">
             <span class="bona-article-share__icon" aria-hidden="true">
@@ -15,6 +12,12 @@
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="m21.4 4.2-3 14.2c-.2 1-.8 1.2-1.6.7l-4.6-3.4-2.2 2.1c-.2.3-.5.5-.9.5l.3-4.7 8.6-7.8c.4-.3-.1-.5-.6-.2L6.8 12.3l-4.6-1.4c-1-.3-1-1 .2-1.5l17.8-6.9c.8-.3 1.5.2 1.2 1.7Z"/></svg>
             </span>
             <span>Telegram</span>
+        </a>
+        <a class="bona-article-share__action" href="https://twitter.com/intent/tweet?url={{ urlencode($articleUrl) }}&text={{ urlencode($blogArticle->name) }}" target="_blank" rel="noopener nofollow">
+            <span class="bona-article-share__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.8 7.8L23.2 22H17l-4.9-6.4L6.5 22H3.4l7.3-8.4L3 2h6.3l4.4 5.8L18.9 2Zm-1.1 17.9h1.7L8.4 4H6.6l11.2 15.9Z"/></svg>
+            </span>
+            <span>X</span>
         </a>
         <button type="button" class="bona-article-share__action js-article-share-copy" data-url="{{ $articleUrl }}" data-copied-text="{{ trans('base.article_link_copied') }}">
             <span class="bona-article-share__icon" aria-hidden="true">
