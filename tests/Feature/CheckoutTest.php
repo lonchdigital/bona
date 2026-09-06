@@ -7,11 +7,14 @@ use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\OrderStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\DataClasses\RecipientTypesDataClass;
+use App\DataClasses\StaticPageTypesDataClass;
 use App\Models\Cart;
 use App\Models\CartProducts;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PromoCode;
+use App\Models\StaticPage;
+use App\Models\StaticPageContent;
 use App\Models\User;
 use App\Support\Commerce\ProductBundle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -473,6 +476,12 @@ class CheckoutTest extends TestCase
     {
         $this->seedCurrency();
         $product = $this->makeProduct(['price' => 12000]);
+        $termsPage = StaticPage::create(['type_id' => StaticPageTypesDataClass::PAGE_AGREEMENT]);
+        StaticPageContent::create([
+            'static_page_id' => $termsPage->id,
+            'language' => 'uk',
+            'content' => '<p data-checkout-terms-fixture>Умови тестового договору</p>',
+        ]);
 
         $this->addToCart($product->slug)->assertOk();
 
@@ -485,6 +494,14 @@ class CheckoutTest extends TestCase
         $page->assertSee('data-installment-increase', false);
         $page->assertSee('data-installment-terms="mono"', false);
         $page->assertSee('data-installment-terms="privat"', false);
+        $this->assertSame(2, substr_count($page->getContent(), 'data-installment-choice'));
+        $page->assertSee('aria-controls="collapseMonoPartialPayment"', false);
+        $page->assertSee('aria-controls="collapsePartialPayment"', false);
+        $page->assertDontSee('data-installment-rate', false);
+        $page->assertDontSee('data-checkout-installment-row', false);
+        $page->assertSee('data-checkout-terms-open', false);
+        $page->assertSee('data-checkout-terms-dialog', false);
+        $page->assertSee('<p data-checkout-terms-fixture>Умови тестового договору</p>', false);
     }
 
     public function test_cash_on_receipt_remains_a_separate_payment_method(): void

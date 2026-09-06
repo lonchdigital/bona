@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Inputmask from 'inputmask';
 import {
-    formatInstallmentRate,
     installmentQuote,
     parseInstallmentRates,
 } from '../payment/installment-pricing';
@@ -186,14 +185,12 @@ export default async function () {
         const periodCopy = panel.querySelector('[data-installment-period-copy]');
         const decrease = panel.querySelector('[data-installment-decrease]');
         const increase = panel.querySelector('[data-installment-increase]');
-        const rateCopy = panel.querySelector('[data-installment-rate]');
         const periods = JSON.parse(panel.dataset.periods || '[]').map(Number).filter(Number.isFinite);
         const currentPeriod = Number(select?.value || periods[0] || 1);
         const currentIndex = Math.max(0, periods.indexOf(currentPeriod));
         const quote = currentInstallmentQuote(panel);
 
         if (monthly && quote) monthly.textContent = money(quote.monthly);
-        if (rateCopy && quote) rateCopy.textContent = `+${formatInstallmentRate(quote.rate)}%`;
         if (periodCopy && select) periodCopy.textContent = select.options[select.selectedIndex]?.textContent || currentPeriod;
         if (decrease) decrease.disabled = currentIndex <= 0;
         if (increase) increase.disabled = currentIndex >= periods.length - 1;
@@ -201,14 +198,8 @@ export default async function () {
 
     const updateInstallmentSummary = () => {
         const quote = currentInstallmentQuote(activeInstallmentPanel());
-        const feeRow = form.querySelector('[data-checkout-installment-row]');
-        const fee = form.querySelector('[data-checkout-installment-fee]');
-        const rate = form.querySelector('[data-checkout-installment-rate]');
         const displayedTotal = quote?.total ?? Number(form.dataset.checkoutBaseTotal || 0);
 
-        if (feeRow) feeRow.hidden = !quote || quote.fee <= 0;
-        if (fee) fee.textContent = quote ? money(quote.fee) : money(0);
-        if (rate) rate.textContent = quote ? `(+${formatInstallmentRate(quote.rate)}%)` : '';
         form.querySelectorAll('.total-price-delivery').forEach((node) => { node.textContent = money(displayedTotal); });
     };
 
@@ -305,10 +296,16 @@ export default async function () {
 
     const paymentInputs = [...form.querySelectorAll('input[name="payment_type_id"]')];
     const onPaymentChange = (input) => {
-        const monoPanel = document.querySelector('#collapseMonoPartialPayment');
-        const privatPanel = document.querySelector('#collapsePartialPayment');
+        const monoPanel = form.querySelector('#collapseMonoPartialPayment');
+        const privatPanel = form.querySelector('#collapsePartialPayment');
         if (monoPanel) monoPanel.hidden = input.value !== PAYMENT_MONO;
         if (privatPanel) privatPanel.hidden = input.value !== PAYMENT_PRIVAT;
+        paymentInputs.forEach((paymentInput) => {
+            const controlsInstallment = Boolean(paymentInput.getAttribute('aria-controls'));
+            const isExpanded = paymentInput === input && controlsInstallment;
+            if (controlsInstallment) paymentInput.setAttribute('aria-expanded', String(isExpanded));
+            paymentInput.closest('[data-installment-choice]')?.classList.toggle('is-active', isExpanded);
+        });
 
         const output = form.querySelector('.selected-payment-type');
         if (output) output.textContent = choiceName(input);
@@ -348,6 +345,31 @@ export default async function () {
     termsDialog?.querySelector('[data-installment-terms-close]')?.addEventListener('click', closeTermsDialog);
     termsDialog?.addEventListener('click', (event) => {
         if (event.target === termsDialog) closeTermsDialog();
+    });
+
+    const checkoutTermsDialog = document.querySelector('[data-checkout-terms-dialog]');
+    let checkoutTermsTrigger = null;
+    const closeCheckoutTermsDialog = () => {
+        if (!checkoutTermsDialog) return;
+        if (typeof checkoutTermsDialog.close === 'function') checkoutTermsDialog.close();
+        else checkoutTermsDialog.removeAttribute('open');
+    };
+
+    document.querySelectorAll('[data-checkout-terms-open]').forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+            if (!checkoutTermsDialog) return;
+            checkoutTermsTrigger = trigger;
+            if (typeof checkoutTermsDialog.showModal === 'function') checkoutTermsDialog.showModal();
+            else checkoutTermsDialog.setAttribute('open', '');
+        });
+    });
+    checkoutTermsDialog?.querySelector('[data-checkout-terms-close]')?.addEventListener('click', closeCheckoutTermsDialog);
+    checkoutTermsDialog?.addEventListener('click', (event) => {
+        if (event.target === checkoutTermsDialog) closeCheckoutTermsDialog();
+    });
+    checkoutTermsDialog?.addEventListener('close', () => {
+        checkoutTermsTrigger?.focus();
+        checkoutTermsTrigger = null;
     });
 
     const errors = document.querySelector('[data-checkout-errors]');

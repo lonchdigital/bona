@@ -4,6 +4,7 @@ namespace App\Http\Actions\Store\Checkout\Pages;
 
 use App\DataClasses\DeliveryTypesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
+use App\DataClasses\StaticPageTypesDataClass;
 use App\Helpers\MultiLangRoute;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
@@ -13,6 +14,7 @@ use App\Services\Currency\CurrencyService;
 use App\Services\Delivery\DeliveryService;
 use App\Services\Pricing\PricingService;
 use App\Services\Region\RegionService;
+use App\Services\StaticPage\StaticPageService;
 use App\Support\Commerce\ProductBundle;
 use App\Support\Payment\InstallmentPeriods;
 
@@ -26,6 +28,7 @@ class ShowCheckoutPage extends BaseAction
         CurrencyService $currencyService,
         PricingService $pricingService,
         DeliveryService $deliveryService,
+        StaticPageService $staticPageService,
     ) {
         $cart = $this->getExistingCart($cartService);
         if (! $cart || ! $cart->products()->exists()) {
@@ -118,6 +121,10 @@ class ShowCheckoutPage extends BaseAction
             'satCityInitial' => $satCityInitial ?: null,
             'satDepartmentInitial' => $satDepartmentInitial ?: null,
             'checkoutRegisteredEmail' => $checkoutRegisteredEmail,
+            'checkoutTermsContent' => $staticPageService->getContentByLanguage(
+                StaticPageTypesDataClass::PAGE_AGREEMENT,
+                app()->getLocale(),
+            ),
         ]);
     }
 }
