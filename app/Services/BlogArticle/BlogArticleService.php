@@ -3,6 +3,7 @@
 namespace App\Services\BlogArticle;
 
 use App\DataClasses\BlogArticleBlockTypesDataClass;
+use App\Helpers\MultiLangRoute;
 use App\Models\BlogArticle;
 use App\Models\BlogArticleBlock;
 use App\Models\BlogCategory;
@@ -95,7 +96,10 @@ class BlogArticleService extends BaseService
         libxml_use_internal_errors($previousUseErrors);
 
         if (! $loaded) {
-            return [];
+            // Keep explicitly managed Q&A blocks even if malformed legacy
+            // rich text cannot be parsed. A broken old fragment must not make
+            // a valid FAQ disappear from the page schema.
+            return $faq;
         }
 
         $xpath = new \DOMXPath($document);
@@ -134,6 +138,166 @@ class BlogArticleService extends BaseService
             ->unique(fn (array $entry) => mb_strtolower($entry['question']))
             ->values()
             ->all();
+    }
+
+    /**
+     * Read the editorial link collections that older SerpAgent deliveries
+     * stored at the end of a text block. The page renders them in a stable,
+     * shared layout instead of depending on arbitrary HTML inside the article.
+     *
+     * @return array<int, array{title: string, url: string}>
+     */
+    public function extractEditorialLinks(BlogArticle $article, string $locale, string $type): array
+    {
+        if (! in_array($type, ['related', 'resources'], true) || ! class_exists(\DOMDocument::class)) {
+            return [];
+        }
+
+        $html = $article->blocks
+            ->where('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT)
+            ->map(fn (BlogArticleBlock $block) => (string) ($block->content[$locale] ?? ''))
+            ->filter()
+            ->implode('');
+
+        if ($html === '' || ! str_contains($html, 'article-'.$type)) {
+            return [];
+        }
+
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $previousUseErrors = libxml_use_internal_errors(true);
+        $loaded = $document->loadHTML(
+            '<?xml encoding="UTF-8"?><div data-editorial-links-root="1">'.$html.'</div>',
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD,
+        );
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseErrors);
+
+        if (! $loaded) {
+            return [];
+        }
+
+        $xpath = new \DOMXPath($document);
+        $links = $xpath->query(
+            '//*[contains(concat(" ", normalize-space(@class), " "), " article-'.$type.' ")]//a[@href]'
+        );
+
+        $result = [];
+
+        foreach ($links ?: [] as $link) {
+            $title = trim((string) preg_replace('/\s+/u', ' ', $link->textContent));
+            $url = trim((string) $link->getAttribute('href'));
+
+            if ($title === '' || ! $this->isSafeEditorialUrl($url)) {
+                continue;
+            }
+
+            $result[] = ['title' => $title, 'url' => $url];
+        }
+
+        return collect($result)
+            ->unique(fn (array $link) => mb_strtolower($link['url']))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Remove legacy in-body link collections after extracting them. Otherwise
+     * an article imported before the redesign would show the same links twice.
+     */
+    public function stripEditorialLinkSections(string $html): string
+    {
+        if ($html === '' || (! str_contains($html, 'article-related') && ! str_contains($html, 'article-resources'))) {
+            return $html;
+        }
+
+        if (! class_exists(\DOMDocument::class)) {
+            return (string) preg_replace(
+                '/<section\b[^>]*class=(?:"[^"]*\barticle-(?:related|resources)\b[^"]*"|\'[^\']*\barticle-(?:related|resources)\b[^\']*\')[^>]*>.*?<\/section>/isu',
+                '',
+                $html,
+            );
+        }
+
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $previousUseErrors = libxml_use_internal_errors(true);
+        $loaded = $document->loadHTML(
+            '<?xml encoding="UTF-8"?><div data-editorial-links-root="1">'.$html.'</div>',
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD,
+        );
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseErrors);
+
+        if (! $loaded) {
+            return $html;
+        }
+
+        $xpath = new \DOMXPath($document);
+        $root = $xpath->query('//div[@data-editorial-links-root]')->item(0);
+
+        if (! $root instanceof \DOMElement) {
+            return $html;
+        }
+
+        $sections = $xpath->query(
+            '//*[contains(concat(" ", normalize-space(@class), " "), " article-related ")'
+            .' or contains(concat(" ", normalize-space(@class), " "), " article-resources ")]'
+        );
+
+        foreach (iterator_to_array($sections ?: []) as $section) {
+            $section->parentNode?->removeChild($section);
+        }
+
+        $result = '';
+
+        foreach ($root->childNodes as $child) {
+            $result .= $document->saveHTML($child);
+        }
+
+        return trim($result);
+    }
+
+    /**
+     * Site-wide evergreen links shown when an imported article did not carry
+     * a curated resources collection of its own.
+     *
+     * @return array<int, array{title: string, url: string}>
+     */
+    public function defaultUsefulLinks(string $locale): array
+    {
+        $isRussian = $locale === 'ru';
+
+        return [
+            [
+                'title' => $isRussian ? 'Каталог дверей и комплектующих' : 'Каталог дверей і комплектуючих',
+                'url' => MultiLangRoute::getMultiLangRoute('store.all-products.page'),
+            ],
+            [
+                'title' => $isRussian ? 'Конфигуратор дверей' : 'Конфігуратор дверей',
+                'url' => MultiLangRoute::getMultiLangRoute('store.door-configurator.page'),
+            ],
+            [
+                'title' => $isRussian ? 'Замер, доставка и монтаж' : 'Замір, доставка та монтаж',
+                'url' => MultiLangRoute::getMultiLangRoute('store.services'),
+            ],
+            [
+                'title' => $isRussian ? 'Доставка и оплата' : 'Доставка та оплата',
+                'url' => MultiLangRoute::getMultiLangRoute('store.delivery-info'),
+            ],
+        ];
+    }
+
+    private function isSafeEditorialUrl(string $url): bool
+    {
+        if ($url === '' || str_starts_with($url, '//')) {
+            return false;
+        }
+
+        if (Str::startsWith($url, ['/', '#'])) {
+            return true;
+        }
+
+        return filter_var($url, FILTER_VALIDATE_URL) !== false
+            && in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true);
     }
 
     public function createBlogArticle(EditBlogArticleDTO $request, User $creator): ServiceActionResult

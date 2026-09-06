@@ -1,5 +1,22 @@
 @extends('layouts.store-main')
 
+@php
+    $catalogPageTitle = (string) $productType->name;
+    $breadcrumbs = [['url' => null, 'label' => $catalogPageTitle]];
+    $currentCatalogPage = max(1, (int) $productsPaginated->currentPage());
+    $catalogCanonicalBase = url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+        'productTypeSlug' => $productType->slug,
+    ]));
+    $catalogCanonicalUrl = $currentCatalogPage > 1
+        ? $catalogCanonicalBase.'?'.http_build_query(['page' => $currentCatalogPage])
+        : $catalogCanonicalBase;
+    $catalogMetaDescription = $productType->meta_description;
+@endphp
+
+@section('canonical', $catalogCanonicalUrl)
+
+@include('pages.store.partials.catalog-structured-data')
+
 @section('title')
     @if($productType->meta_title)
         <title>{{ $productType->meta_title }}</title>

@@ -29,6 +29,11 @@ class CatalogAvailableFiltersTest extends TestCase
         ]));
 
         $response->assertOk();
+        $response
+            ->assertSee('"@type":"CollectionPage"', false)
+            ->assertSee('"@type":"ItemList"', false)
+            ->assertSee('"@type":"BreadcrumbList"', false)
+            ->assertSee('"@type":"Product"', false);
 
         $filterHtml = $this->filterHtml($response->getContent());
 
@@ -50,6 +55,10 @@ class CatalogAvailableFiltersTest extends TestCase
         ]));
 
         $response->assertOk();
+        $response
+            ->assertSee('"@type":"CollectionPage"', false)
+            ->assertSee('"@type":"ItemList"', false)
+            ->assertSee('"@type":"BreadcrumbList"', false);
 
         $filterHtml = $this->filterHtml($response->getContent());
 

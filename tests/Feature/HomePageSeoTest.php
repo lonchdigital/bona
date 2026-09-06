@@ -54,7 +54,8 @@ class HomePageSeoTest extends TestCase
 
         $schema = $this->schemaDocuments($response->getContent());
         $homeGraph = collect($schema)->first(fn (array $document) => isset($document['@graph'])
-            && collect($document['@graph'])->contains(fn (array $node) => ($node['@type'] ?? null) === 'WebSite'));
+            && collect($document['@graph'])->contains(fn (array $node) => ($node['@type'] ?? null) === 'WebSite')
+            && collect($document['@graph'])->contains(fn (array $node) => ($node['@type'] ?? null) === 'WebPage'));
 
         $this->assertNotNull($homeGraph);
         $this->assertSame('https://schema.org', $homeGraph['@context']);
@@ -68,6 +69,13 @@ class HomePageSeoTest extends TestCase
 
         $this->assertNotNull($organizationGraph);
         $this->assertCount(2, collect($organizationGraph['@graph'])->where('@type', 'HomeGoodsStore'));
+        $this->assertTrue(collect($organizationGraph['@graph'])->contains(
+            fn (array $node) => ($node['@type'] ?? null) === 'WebSite'
+        ));
+        $this->assertTrue(collect($organizationGraph['@graph'])->contains(
+            fn (array $node) => ($node['@type'] ?? null) === 'MerchantReturnPolicy'
+                && str_ends_with((string) ($node['merchantReturnLink'] ?? ''), '/page/exchange-and-return')
+        ));
     }
 
     public function test_russian_homepage_has_reciprocal_hreflang_and_its_own_webpage_schema(): void

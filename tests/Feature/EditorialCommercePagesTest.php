@@ -49,7 +49,7 @@ class EditorialCommercePagesTest extends TestCase
             'blog_article_id' => $article->id,
             'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
             'content' => [
-                'uk' => '<h2>Матеріал і конструкція</h2><p>Текст українською.</p><table><thead><tr><th>Критерій</th><th>Що перевірити</th></tr></thead><tbody><tr><td>Гарантія</td><td>Умови</td></tr></tbody></table><p><strong>Порада:</strong> Перевірте договір.</p><p><strong>Q: Скільки діє право на обмін?</strong><br><strong>А:</strong> Чотирнадцять днів.</p>',
+                'uk' => '<h2>Матеріал і конструкція</h2><p>Текст українською.</p><table><thead><tr><th>Критерій</th><th>Що перевірити</th></tr></thead><tbody><tr><td>Гарантія</td><td>Умови</td></tr></tbody></table><p><strong>Порада:</strong> Перевірте договір.</p><p><strong>Q: Скільки діє право на обмін?</strong><br><strong>А:</strong> Чотирнадцять днів.</p><section class="article-related"><h2>Читайте також</h2><ul><li><a href="/blog/kerovanyi-material">Керований матеріал</a></li></ul></section><section class="article-resources"><h2>Корисні ресурси</h2><ul><li><a href="/delivery-info">Умови доставки</a></li></ul></section>',
                 'ru' => '<h2>Материал и конструкция</h2><p>Текст на русском.</p><p><strong>Совет:</strong> Проверьте договор.</p><p><strong>Q: Сколько действует право на обмен?</strong><br><strong>A:</strong> Четырнадцать дней.</p>',
             ],
         ]);
@@ -78,6 +78,10 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('bona-article-sidebar', false)
             ->assertSee('bona-article-consultant', false)
             ->assertSee('bona-article-configurator', false)
+            ->assertSee('bona-article-links', false)
+            ->assertSee('bona-article-share', false)
+            ->assertSee('Керований матеріал')
+            ->assertSee('Умови доставки')
             ->assertSee('Матеріал і конструкція')
             ->assertSee('class="article-table"', false)
             ->assertSee('class="article-advice"', false)
@@ -87,16 +91,38 @@ class EditorialCommercePagesTest extends TestCase
             ->assertDontSee('Q: Скільки діє право', false)
             ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"BlogPosting"', false)
+            ->assertSee('"@type":"WebPage"', false)
+            ->assertSee('"wordCount":', false)
             ->assertSee('"@type":"FAQPage"', false)
             ->assertSee('Коли робити замір?')
             ->assertSeeInOrder([
                 'bona-article-faq',
+                'bona-article-links',
+                'bona-article-share',
                 'bona-article-sidebar',
                 'bona-article-author',
             ], false)
             ->assertDontSee('__contextArgs', false);
 
         $this->assertSame(1, substr_count($response->getContent(), 'class="bona-article-sidebar"'));
+        $this->assertSame(1, substr_count($response->getContent(), 'Керований матеріал'));
+
+        $document = new \DOMDocument;
+        $previousErrors = libxml_use_internal_errors(true);
+        $document->loadHTML($response->getContent());
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousErrors);
+        $xpath = new \DOMXPath($document);
+        $this->assertSame(0, $xpath->query('//*[contains(concat(" ", normalize-space(@class), " "), " bona-article-sidebar ")]//*[contains(concat(" ", normalize-space(@class), " "), " bona-article-share ")]')->length);
+
+        $articleSchema = collect($this->schemaDocuments($response->getContent()))
+            ->first(fn (array $document) => isset($document['@graph'])
+                && collect($document['@graph'])->contains(fn (array $node) => ($node['@type'] ?? null) === 'BlogPosting'));
+        $this->assertNotNull($articleSchema);
+        $this->assertTrue(collect($articleSchema['@graph'])->contains(
+            fn (array $node) => ($node['@type'] ?? null) === 'FAQPage'
+                && count($node['mainEntity'] ?? []) === 1
+        ));
 
         $this->get(route('localized.blog.article.page', ['lang' => 'ru', 'blogArticleSlug' => $article->slug]))
             ->assertOk()
@@ -107,6 +133,55 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('Ответ')
             ->assertSee('Когда делать замер?')
             ->assertDontSee('Текст українською.');
+    }
+
+    public function test_legacy_articles_receive_an_editable_faq_without_duplicating_existing_content(): void
+    {
+        $slugs = [
+            'znayomstvo-z-salonom-bonadoors',
+            'yak-obraty-idealni-dveri',
+            'yak-vybraty-dverni-ruchky',
+            'mizhkimnatni-dveri-gid',
+        ];
+
+        foreach ($slugs as $slug) {
+            BlogArticle::create([
+                'creator_id' => $this->author()->id,
+                'name' => ['uk' => $slug, 'ru' => $slug],
+                'preview_text' => ['uk' => '', 'ru' => ''],
+                'slug' => $slug,
+                'hero_image_path' => 'blog/legacy-test.webp',
+                'meta_title' => ['uk' => '', 'ru' => ''],
+                'meta_description' => ['uk' => '', 'ru' => ''],
+                'meta_keywords' => ['uk' => '', 'ru' => ''],
+            ]);
+        }
+
+        $existingArticle = BlogArticle::where('slug', $slugs[0])->firstOrFail();
+        BlogArticleBlock::create([
+            'blog_article_id' => $existingArticle->id,
+            'type_id' => BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS,
+            'content' => ['questions' => [[
+                'question' => ['uk' => 'Власне питання?', 'ru' => 'Собственный вопрос?'],
+                'answer' => ['uk' => 'Власна відповідь.', 'ru' => 'Собственный ответ.'],
+            ]]],
+        ]);
+
+        $migration = require database_path('migrations/2026_09_06_090000_backfill_faq_for_legacy_blog_articles.php');
+        $migration->up();
+        $migration->up();
+
+        foreach ($slugs as $slug) {
+            $article = BlogArticle::where('slug', $slug)->firstOrFail();
+            $blocks = BlogArticleBlock::where('blog_article_id', $article->id)
+                ->where('type_id', BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS)
+                ->get();
+
+            $this->assertCount(1, $blocks);
+            $this->assertNotEmpty($blocks->first()->content['questions']);
+            $this->assertNotEmpty($blocks->first()->content['questions'][0]['question']['uk']);
+            $this->assertNotEmpty($blocks->first()->content['questions'][0]['question']['ru']);
+        }
     }
 
     public function test_service_detail_uses_managed_copy_and_hides_an_empty_content_section(): void
@@ -264,6 +339,8 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('"@context":"https://schema.org"', false)
             ->assertSee('"@type":"Product"', false)
             ->assertSee('"sku":"BD-SEO-01"', false)
+            ->assertSee('"hasMerchantReturnPolicy":{"@id":', false)
+            ->assertSee('"@type":"WebPage"', false)
             ->assertSee('Продумана конструкція')
             ->assertSee('Заповнений блок товару.')
             ->assertDontSee('empty-block')
@@ -272,6 +349,12 @@ class EditorialCommercePagesTest extends TestCase
             ->assertDontSee('__contextArgs', false);
 
         $this->assertSame(1, substr_count($response->getContent(), 'bona-product-editorial--text'));
+
+        $productSchema = collect($this->schemaDocuments($response->getContent()))
+            ->first(fn (array $document) => ($document['@type'] ?? null) === 'Product');
+        $this->assertNotNull($productSchema);
+        $this->assertSame('BD-SEO-01', $productSchema['sku']);
+        $this->assertArrayHasKey('hasMerchantReturnPolicy', $productSchema['offers']);
     }
 
     public function test_default_product_sections_render_from_admin_managed_content_and_keep_dynamic_instalments(): void
@@ -324,6 +407,7 @@ class EditorialCommercePagesTest extends TestCase
         $this->assertStringContainsString('@media (max-width: 640px)', $styles);
         $this->assertStringContainsString('body.bona-article-body', $styles);
         $this->assertStringContainsString('.bona-article-page > .bona-content-breadcrumbs', $styles);
+        $this->assertStringContainsString('margin: 0 auto;', $styles);
         $this->assertStringContainsString('padding-top: 0 !important;', $styles);
         $this->assertStringContainsString('ProductContentBlockComponent', $productEditor);
         $this->assertStringContainsString('moveBlock', $articleEditor);
@@ -341,5 +425,19 @@ class EditorialCommercePagesTest extends TestCase
         $admin->update(['role_id' => Role::ADMIN_ROLE_ID]);
 
         return $admin;
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function schemaDocuments(string $html): array
+    {
+        preg_match_all(
+            '~<script type="application/ld\+json">(.*?)</script>~s',
+            $html,
+            $matches,
+        );
+
+        return collect($matches[1] ?? [])
+            ->map(fn (string $json) => json_decode($json, true, flags: JSON_THROW_ON_ERROR))
+            ->all();
     }
 }

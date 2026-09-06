@@ -21,7 +21,12 @@
     $paginationTitleSuffix = $currentCatalogPage > 1
         ? ' — '.trans('base.pagination_page_title', ['page' => $currentCatalogPage])
         : '';
+    $catalogMetaDescription = isset($seogenData)
+        ? $seogenData->meta_description_tag
+        : (isset($filterGroup) ? $filterGroup->meta_description : $selectedCategory->meta_description);
 @endphp
+
+@include('pages.store.partials.catalog-structured-data')
 
 @section('canonical', $catalogCanonicalUrl)
 

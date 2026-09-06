@@ -55,6 +55,14 @@
             || filled($block['_image_url'])
             || $block['_items']->isNotEmpty();
     })->values();
+    $productWebPageId = $productUrl.'#webpage';
+    $productBreadcrumbId = $productUrl.'#breadcrumb';
+    $productSchemaProperties = collect($characteristics ?? [])->map(fn ($characteristic) => [
+        '@type' => 'PropertyValue',
+        'name' => trim((string) data_get($characteristic, 'name')),
+        'value' => trim((string) data_get($characteristic, 'value')),
+    ])->filter(fn ($property) => filled($property['name']) && filled($property['value']))->values()->all();
+    $productSchemaColors = $product->colors->pluck('name')->filter()->unique()->implode(', ');
     $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
 @endphp
 
@@ -79,13 +87,16 @@
         '@'.'context' => 'https://schema.org',
         '@type' => 'Product',
         '@id' => $productUrl.'#product',
+        'mainEntityOfPage' => ['@id' => $productWebPageId],
         'name' => (string) $product->name,
         'url' => $productUrl,
         'sku' => $product->sku ?: null,
         'image' => $productImages ?: null,
         'description' => $productDescription !== '' ? \Illuminate\Support\Str::limit($productDescription, 900) : null,
         'category' => (string) $product->productType->name,
+        'color' => $productSchemaColors ?: null,
         'brand' => $product->brand ? ['@type' => 'Brand', 'name' => (string) $product->brand->name] : null,
+        'additionalProperty' => $productSchemaProperties ?: null,
         'aggregateRating' => $productRatingSummary ? [
             '@type' => 'AggregateRating',
             'ratingValue' => $productRatingSummary['average'],
@@ -108,17 +119,36 @@
             'availability' => $availabilityMap[$product->availability_status_id] ?? null,
             'itemCondition' => 'https://schema.org/NewCondition',
             'seller' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+            'hasMerchantReturnPolicy' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->merchantReturnPolicyId()],
         ]) : null,
     ]), $schemaFlags) !!}</script>
     <script type="application/ld+json">{!! json_encode([
         '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
+        '@id' => $productBreadcrumbId,
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home'))],
             ['@type' => 'ListItem', 'position' => 2, 'name' => (string) $product->productType->name, 'item' => url($catalogUrl)],
             ['@type' => 'ListItem', 'position' => 3, 'name' => (string) $product->name, 'item' => $productUrl],
         ],
     ], $schemaFlags) !!}</script>
+    <script type="application/ld+json">{!! json_encode(array_filter([
+        '@'.'context' => 'https://schema.org',
+        '@type' => 'WebPage',
+        '@id' => $productWebPageId,
+        'url' => $productUrl,
+        'name' => (string) ($product->meta_title ?: $product->name),
+        'description' => $product->meta_description ?: ($productDescription ?: null),
+        'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
+        'isPartOf' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->websiteId()],
+        'breadcrumb' => ['@id' => $productBreadcrumbId],
+        'primaryImageOfPage' => $productImages ? [
+            '@type' => 'ImageObject',
+            'url' => $productImages[0],
+        ] : null,
+        'mainEntity' => ['@id' => $productUrl.'#product'],
+        'dateModified' => $product->updated_at?->toAtomString(),
+    ]), $schemaFlags) !!}</script>
     @if($faqItems->isNotEmpty())
         <script type="application/ld+json">{!! json_encode([
             '@'.'context' => 'https://schema.org',

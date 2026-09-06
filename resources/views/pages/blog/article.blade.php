@@ -13,6 +13,38 @@
     $authorAvatar = $articleAuthor?->og_image_url ?: (($applicationGlobalOptions['authorAvatar'] ?? null) ? url('/storage/'.$applicationGlobalOptions['authorAvatar']) : null);
     $isRussian = app()->getLocale() === 'ru';
     $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+    $articleWebPageId = $articleUrl.'#webpage';
+    $articleBreadcrumbId = $articleUrl.'#breadcrumb';
+    $articleImageId = $blogArticle->og_image_url ? $articleUrl.'#primaryimage' : null;
+    $articleSchemaParts = collect($articleBlocks ?? [])->flatMap(function ($block) {
+        $content = is_array(data_get($block, 'content')) ? data_get($block, 'content') : [];
+        $locale = app()->getLocale();
+        $parts = [];
+
+        foreach (['quote', 'sponsor_text'] as $key) {
+            if (filled(data_get($content, $key.'.'.$locale))) {
+                $parts[] = data_get($content, $key.'.'.$locale);
+            }
+        }
+
+        if (filled($content[$locale] ?? null)) {
+            $parts[] = $content[$locale];
+        }
+
+        foreach (($content['questions'] ?? []) as $entry) {
+            $parts[] = data_get($entry, 'question.'.$locale, '');
+            $parts[] = data_get($entry, 'answer.'.$locale, '');
+        }
+
+        return $parts;
+    })->push($blogArticle->preview_text)->filter()->map(fn ($part) => strip_tags((string) $part))->implode(' ');
+    $articleSchemaText = trim((string) preg_replace('/\s+/u', ' ', html_entity_decode($articleSchemaParts, ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    $articleWordCount = $articleSchemaText === '' ? null : count(preg_split('/\s+/u', $articleSchemaText, -1, PREG_SPLIT_NO_EMPTY));
+    $articleKeywords = collect(preg_split('/[,;]+/u', (string) $blogArticle->meta_keywords))
+        ->map(fn ($keyword) => trim((string) $keyword))
+        ->filter()
+        ->values()
+        ->all();
 @endphp
 
 @section('body_class', 'bona-content-body bona-article-body')
@@ -34,50 +66,82 @@
 @endpush
 
 @push('structured_data')
-    <script type="application/ld+json">{!! json_encode(array_filter([
-        '@'.'context' => 'https://schema.org',
-        '@type' => 'BlogPosting',
-        '@id' => $articleUrl.'#article',
-        'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleUrl],
-        'url' => $articleUrl,
-        'headline' => (string) $blogArticle->name,
-        'description' => $articleDescription ?: null,
-        'image' => $blogArticle->og_image_url ? [$blogArticle->og_image_url] : null,
-        'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
-        'datePublished' => $blogArticle->created_at?->toAtomString(),
-        'dateModified' => $blogArticle->updated_at?->toAtomString(),
-        'articleSection' => trans('base.blog'),
-        'author' => $authorName ? array_filter([
-            '@type' => 'Person',
-            '@id' => $authorPageUrl ? url($authorPageUrl).'#person' : null,
-            'name' => $authorName,
-            'jobTitle' => $authorJobTitle ?: null,
-            'image' => $authorAvatar ?: null,
-            'url' => $authorPageUrl ? url($authorPageUrl) : null,
-            'sameAs' => $articleAuthor?->sameAsLinks() ?: null,
-        ]) : ['@type' => 'Organization', '@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
-        'publisher' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
-    ]), $schemaFlags) !!}</script>
     <script type="application/ld+json">{!! json_encode([
         '@'.'context' => 'https://schema.org',
-        '@type' => 'BreadcrumbList',
-        'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => trans('base.blog'), 'item' => url($blogUrl)],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => (string) $blogArticle->name, 'item' => $articleUrl],
-        ],
+        '@graph' => array_values(array_filter([
+            $blogArticle->og_image_url ? [
+                '@type' => 'ImageObject',
+                '@id' => $articleImageId,
+                'url' => $blogArticle->og_image_url,
+                'contentUrl' => $blogArticle->og_image_url,
+                'caption' => (string) $blogArticle->name,
+            ] : null,
+            [
+                '@type' => 'BreadcrumbList',
+                '@id' => $articleBreadcrumbId,
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url($homeUrl)],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => trans('base.blog'), 'item' => url($blogUrl)],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => (string) $blogArticle->name, 'item' => $articleUrl],
+                ],
+            ],
+            array_filter([
+                '@type' => 'WebPage',
+                '@id' => $articleWebPageId,
+                'url' => $articleUrl,
+                'name' => (string) ($blogArticle->meta_title ?: $blogArticle->name),
+                'description' => $articleDescription ?: null,
+                'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
+                'isPartOf' => ['@id' => url('/').'#website'],
+                'about' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+                'breadcrumb' => ['@id' => $articleBreadcrumbId],
+                'primaryImageOfPage' => $articleImageId ? ['@id' => $articleImageId] : null,
+                'mainEntity' => ['@id' => $articleUrl.'#article'],
+                'datePublished' => $blogArticle->created_at?->toAtomString(),
+                'dateModified' => $blogArticle->updated_at?->toAtomString(),
+            ]),
+            array_filter([
+                '@type' => 'BlogPosting',
+                '@id' => $articleUrl.'#article',
+                'mainEntityOfPage' => ['@id' => $articleWebPageId],
+                'url' => $articleUrl,
+                'headline' => (string) $blogArticle->name,
+                'description' => $articleDescription ?: null,
+                'image' => $articleImageId ? ['@id' => $articleImageId] : null,
+                'thumbnailUrl' => $blogArticle->og_image_url ?: null,
+                'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
+                'datePublished' => $blogArticle->created_at?->toAtomString(),
+                'dateModified' => $blogArticle->updated_at?->toAtomString(),
+                'articleSection' => trans('base.blog'),
+                'wordCount' => $articleWordCount,
+                'keywords' => $articleKeywords ?: null,
+                'isPartOf' => ['@id' => url($blogUrl).'#blog'],
+                'about' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+                'author' => $authorName ? array_filter([
+                    '@type' => 'Person',
+                    '@id' => $authorPageUrl ? url($authorPageUrl).'#person' : null,
+                    'name' => $authorName,
+                    'jobTitle' => $authorJobTitle ?: null,
+                    'image' => $authorAvatar ?: null,
+                    'url' => $authorPageUrl ? url($authorPageUrl) : null,
+                    'sameAs' => $articleAuthor?->sameAsLinks() ?: null,
+                ]) : ['@type' => 'Organization', '@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+                'publisher' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+                'copyrightHolder' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+            ]),
+            $articleFaq ? [
+                '@type' => 'FAQPage',
+                '@id' => $articleUrl.'#faq',
+                'url' => $articleUrl.'#faq',
+                'isPartOf' => ['@id' => $articleWebPageId],
+                'mainEntity' => array_map(fn ($entry) => [
+                    '@type' => 'Question',
+                    'name' => $entry['question'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $entry['answer']],
+                ], $articleFaq),
+            ] : null,
+        ])),
     ], $schemaFlags) !!}</script>
-    @if($articleFaq)
-        <script type="application/ld+json">{!! json_encode([
-            '@'.'context' => 'https://schema.org',
-            '@type' => 'FAQPage',
-            'mainEntity' => array_map(fn ($entry) => [
-                '@type' => 'Question',
-                'name' => $entry['question'],
-                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $entry['answer']],
-            ], $articleFaq),
-        ], $schemaFlags) !!}</script>
-    @endif
 @endpush
 
 @section('content')
@@ -201,6 +265,8 @@
                     @endforeach
                 </div>
 
+                @include('pages.blog.partials.article-links')
+                @include('pages.blog.partials.article-share')
                 @include('pages.blog.partials.article-utilities')
 
                 @if($authorName)

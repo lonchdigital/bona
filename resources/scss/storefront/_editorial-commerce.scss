@@ -228,7 +228,7 @@ body.bona-article-body {
     top: 0;
     right: 0;
     left: 0;
-    margin: 0;
+    margin: 0 auto;
     border: 0;
     background: transparent;
 
@@ -355,37 +355,46 @@ body.bona-article-body {
 }
 
 .bona-article-share {
-    padding: 4px 3px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: 58px;
+    padding: 27px 0;
+    border-top: 1px solid var(--bona-line);
     border-bottom: 1px solid var(--bona-line);
 
-    h2 {
-        margin: 0 0 15px;
+    > div:first-child > p {
+        margin: 0 0 7px;
         color: var(--bona-gold-text);
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 800;
         letter-spacing: .16em;
         line-height: 1.4;
         text-transform: uppercase;
     }
 
-    &__actions { display: grid; gap: 8px; }
+    h2 { margin: 0; color: var(--bona-ink); font: 400 30px/1.05 var(--bona-display); }
+
+    &__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 
     &__action {
         display: flex;
-        width: 100%;
-        min-height: 38px;
+        min-height: 42px;
         align-items: center;
-        gap: 11px;
-        padding: 0;
-        border: 0;
-        background: transparent;
-        color: #5d584f;
+        gap: 9px;
+        padding: 3px 13px 3px 4px;
+        border: 1px solid #d8d0c4;
+        border-radius: 999px;
+        background: #fff;
+        color: var(--bona-ink);
         cursor: pointer;
-        font: 700 12px/1.35 var(--bona-ui);
+        font: 700 11px/1.35 var(--bona-ui);
         text-align: left;
+        transition: border-color .2s ease, background-color .2s ease, color .2s ease;
 
         &:hover,
-        &:focus-visible { color: var(--bona-ink); }
+        &:focus-visible { border-color: var(--bona-ink); background: var(--bona-ink); color: var(--bona-cream); }
 
         &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 3px; }
     }
@@ -395,17 +404,16 @@ body.bona-article-body {
         width: 34px;
         height: 34px;
         flex: 0 0 34px;
-        border: 1px solid #d8d0c4;
         border-radius: 50%;
         color: var(--bona-gold-text);
         place-items: center;
-        transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+        transition: background-color .2s ease, color .2s ease;
 
         svg { width: 15px; height: 15px; }
     }
 
     &__action:hover &__icon,
-    &__action:focus-visible &__icon { border-color: var(--bona-ink); background: var(--bona-ink); color: var(--bona-cream); }
+    &__action:focus-visible &__icon { color: var(--bona-gold-light); }
 }
 
 .bona-article-consultant {
@@ -816,6 +824,63 @@ body.bona-article-body {
     .art-panel a { color: var(--bona-gold-light); }
 }
 
+.bona-article-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 58px;
+
+    &__group {
+        min-width: 0;
+        padding: 30px 30px 25px;
+        border: 1px solid #ddd4c8;
+        border-radius: 16px;
+        background: #f6f1e8;
+
+        > p {
+            margin: 0 0 10px;
+            color: var(--bona-gold-text);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        h2 { margin: 0; color: var(--bona-ink); font: 400 31px/1.08 var(--bona-display); }
+        ul { margin: 23px 0 0; padding: 0; border-top: 1px solid rgba(35, 32, 27, .14); list-style: none; }
+        li { border-bottom: 1px solid rgba(35, 32, 27, .14); }
+        a {
+            display: flex;
+            min-height: 54px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding-block: 11px;
+            color: var(--bona-ink);
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.5;
+
+            > span:last-child { flex: 0 0 auto; font-size: 16px; transition: transform .2s ease; }
+            &:hover > span:last-child,
+            &:focus-visible > span:last-child { transform: translateX(3px); }
+            &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 3px; }
+        }
+
+        &--useful {
+            border-color: var(--bona-dark);
+            background: var(--bona-dark);
+
+            > p { color: var(--bona-gold-light); }
+            h2,
+            a { color: var(--bona-cream); }
+            ul,
+            li { border-color: rgba(247, 244, 238, .18); }
+        }
+    }
+}
+
 .bona-article-author {
     display: grid;
     grid-template-columns: 112px minmax(0, 1fr);
@@ -1151,9 +1216,6 @@ body.bona-article-body {
     .bona-article-content { grid-column: 1; }
     .bona-article-sidebar { position: static; width: auto; margin-top: 58px; }
     .bona-article-sidebar__sticky { position: static; display: grid; max-height: none; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; padding: 0; }
-    .bona-article-share { grid-column: 1 / -1; padding: 0 0 22px; }
-    .bona-article-share__actions { display: flex; gap: 22px; flex-wrap: wrap; }
-    .bona-article-share__action { width: auto; }
     .bona-article-consultant { padding-inline: 20px; }
     .bona-article-consultant,
     .bona-article-configurator { height: 100%; }
@@ -1231,9 +1293,12 @@ body.bona-article-body {
     .bona-article-layout { gap: 50px; padding-block: 64px 72px; }
     .bona-article-sidebar { margin-top: 48px; }
     .bona-article-sidebar__sticky { grid-template-columns: 1fr; gap: 18px; }
-    .bona-article-share { grid-column: 1; }
-    .bona-article-share__actions { gap: 14px 20px; }
-    .bona-article-share__action { min-height: 36px; font-size: 11px; }
+    .bona-article-links { grid-template-columns: 1fr; gap: 12px; margin-top: 46px; }
+    .bona-article-links__group { padding: 27px 24px 23px; }
+    .bona-article-links__group h2 { font-size: 29px; }
+    .bona-article-share { align-items: flex-start; gap: 22px; margin-top: 42px; flex-direction: column; }
+    .bona-article-share__actions { width: 100%; gap: 8px; }
+    .bona-article-share__action { min-height: 40px; padding-right: 11px; font-size: 10px; }
     .bona-article-consultant,
     .bona-article-configurator { height: auto; }
     .bona-article-consultant { padding: 28px 26px; }

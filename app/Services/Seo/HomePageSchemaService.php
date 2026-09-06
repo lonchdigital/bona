@@ -43,7 +43,7 @@ final class HomePageSchemaService
             'name' => $title,
             'description' => $description,
             'inLanguage' => $language,
-            'isPartOf' => ['@id' => url('/').'#website'],
+            'isPartOf' => ['@id' => $this->organizationSchema->websiteId()],
             'about' => ['@id' => $this->organizationSchema->organizationId()],
             'primaryImageOfPage' => $heroImage ? [
                 '@type' => 'ImageObject',
@@ -59,7 +59,7 @@ final class HomePageSchemaService
         $graph = [
             [
                 '@type' => 'WebSite',
-                '@id' => url('/').'#website',
+                '@id' => $this->organizationSchema->websiteId(),
                 'url' => url('/'),
                 'name' => (string) config('organization.name', 'Bona'),
                 'alternateName' => 'Bona Doors',

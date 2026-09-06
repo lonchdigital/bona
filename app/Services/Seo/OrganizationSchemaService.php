@@ -2,6 +2,7 @@
 
 namespace App\Services\Seo;
 
+use App\Helpers\MultiLangRoute;
 use App\Models\ContactConfig;
 
 /**
@@ -17,6 +18,16 @@ class OrganizationSchemaService
     public function organizationId(): string
     {
         return url('/').'#organization';
+    }
+
+    public function websiteId(): string
+    {
+        return url('/').'#website';
+    }
+
+    public function merchantReturnPolicyId(): string
+    {
+        return url('/').'#merchant-return-policy';
     }
 
     public function build(array $applicationGlobalOptions = []): array
@@ -56,11 +67,31 @@ class OrganizationSchemaService
                 'areaServed' => 'UA',
                 'availableLanguage' => ['uk', 'ru'],
             ]),
+            'hasMerchantReturnPolicy' => ['@id' => $this->merchantReturnPolicyId()],
         ], fn ($value) => $value !== null && $value !== [] && $value !== '');
+
+        $website = [
+            '@type' => 'WebSite',
+            '@id' => $this->websiteId(),
+            'url' => url('/'),
+            'name' => (string) config('organization.name', 'Bona'),
+            'alternateName' => 'Bona Doors',
+            'inLanguage' => ['uk-UA', 'ru-UA'],
+            'publisher' => ['@id' => $this->organizationId()],
+        ];
+
+        $returnPolicy = [
+            '@type' => 'MerchantReturnPolicy',
+            '@id' => $this->merchantReturnPolicyId(),
+            'applicableCountry' => 'UA',
+            'merchantReturnLink' => url(MultiLangRoute::getMultiLangRoute('store.static-page.page', [
+                'staticPageSlug' => 'exchange-and-return',
+            ])),
+        ];
 
         return [
             '@context' => 'https://schema.org',
-            '@graph' => [$organization, ...$showrooms],
+            '@graph' => [$organization, $website, $returnPolicy, ...$showrooms],
         ];
     }
 

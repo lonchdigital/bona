@@ -22,7 +22,10 @@
     $paginationTitleSuffix = $currentCatalogPage > 1
         ? ' — '.trans('base.pagination_page_title', ['page' => $currentCatalogPage])
         : '';
+    $catalogMetaDescription = trans('base.catalog_guidance_text');
 @endphp
+
+@include('pages.store.partials.catalog-structured-data')
 
 @section('canonical', $catalogCanonicalUrl)
 

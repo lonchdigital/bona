@@ -1,5 +1,69 @@
 @extends('layouts.store-main')
 
+@php
+    $slidingProductUrl = url()->current();
+    $slidingCatalogUrl = url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $product->productType->slug]));
+    $slidingDescription = trim((string) preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags((string) data_get($productText, 'content', '')))));
+    $slidingImage = $product->main_image_url ? url($product->main_image_url) : null;
+    $slidingAvailability = [
+        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_STOCK => 'https://schema.org/InStock',
+        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_ORDER => 'https://schema.org/BackOrder',
+        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_OF_STOCK => 'https://schema.org/OutOfStock',
+        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_ASK_MANAGER => 'https://schema.org/LimitedAvailability',
+    ];
+    $slidingSchemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+@endphp
+
+@push('structured_data')
+    <script type="application/ld+json">{!! json_encode([
+        '@'.'context' => 'https://schema.org',
+        '@graph' => [
+            array_filter([
+                '@type' => 'Product',
+                '@id' => $slidingProductUrl.'#product',
+                'mainEntityOfPage' => ['@id' => $slidingProductUrl.'#webpage'],
+                'name' => (string) $product->name,
+                'url' => $slidingProductUrl,
+                'sku' => $product->sku ?: null,
+                'image' => $slidingImage ? [$slidingImage] : null,
+                'description' => $slidingDescription ?: null,
+                'category' => (string) $product->productType->name,
+                'brand' => $product->brand ? ['@type' => 'Brand', 'name' => (string) $product->brand->name] : null,
+                'offers' => is_numeric($product->price) && (float) $product->price > 0 ? [
+                    '@type' => 'Offer',
+                    'url' => $slidingProductUrl,
+                    'priceCurrency' => $baseCurrency->code ?: 'UAH',
+                    'price' => (string) $product->price,
+                    'availability' => $slidingAvailability[$product->availability_status_id] ?? null,
+                    'itemCondition' => 'https://schema.org/NewCondition',
+                    'seller' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
+                    'hasMerchantReturnPolicy' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->merchantReturnPolicyId()],
+                ] : null,
+            ]),
+            [
+                '@type' => 'BreadcrumbList',
+                '@id' => $slidingProductUrl.'#breadcrumb',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => trans('base.home'), 'item' => url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home'))],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => (string) $product->productType->name, 'item' => $slidingCatalogUrl],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => (string) $product->name, 'item' => $slidingProductUrl],
+                ],
+            ],
+            array_filter([
+                '@type' => 'WebPage',
+                '@id' => $slidingProductUrl.'#webpage',
+                'url' => $slidingProductUrl,
+                'name' => (string) ($product->meta_title ?: $product->name),
+                'description' => $product->meta_description ?: ($slidingDescription ?: null),
+                'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
+                'isPartOf' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->websiteId()],
+                'breadcrumb' => ['@id' => $slidingProductUrl.'#breadcrumb'],
+                'mainEntity' => ['@id' => $slidingProductUrl.'#product'],
+            ]),
+        ],
+    ], $slidingSchemaFlags) !!}</script>
+@endpush
+
 @section('title')
     @if($product->meta_title)
         <title>{{ $product->meta_title }}</title>
@@ -28,30 +92,6 @@
 
     <!-- ========================  Product ======================== -->
     <section class="product">
-
-        <script type="application/ld+json">
-            {
-                "@@context": "https://schema.org/",
-                "@type": "Product",
-                "name": "{{ $product->name }}",
-                "image": "{{ url('/') . $product->main_image_url }}",
-                @if( !is_null($productText['content']))
-                "description": "{{ $productText['content'] }}",
-                @endif
-            @if( !is_null($product->brand) )
-                "brand": {
-                    "@type": "Brand",
-                    "name": "{{ $product->brand->name }}"
-                },
-                @endif
-            "offers": {
-                "@type": "Offer",
-                "priceCurrency": "{{ $baseCurrency->name_short }}",
-                    "price": "{{ $product->price }}",
-                    "availability": "{{ ($product->availability_status_id == 2) ? trans('shop.product_status_stock') : trans('shop.product_status_out_of_stock') }}"
-                }
-            }
-        </script>
 
         <div class="main">
             <div class="container">

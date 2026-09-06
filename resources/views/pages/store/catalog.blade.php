@@ -41,7 +41,15 @@
     $paginationTitleSuffix = $currentCatalogPage > 1
         ? ' — '.trans('base.pagination_page_title', ['page' => $currentCatalogPage])
         : '';
+    $catalogMetaDescription = $selectedBrand
+        ? trans('base.catalog_by_manufacturer_meta_description', [
+            'product_type' => $productType->name,
+            'brand' => $selectedBrand->name,
+        ])
+        : (isset($filterGroup) ? $filterGroup->meta_description : $productType->meta_description);
 @endphp
+
+@include('pages.store.partials.catalog-structured-data')
 
 @section('canonical', $catalogCanonicalUrl)
 
