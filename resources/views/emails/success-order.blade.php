@@ -72,7 +72,6 @@
                                             $summary = app(\App\Services\Pricing\PricingService::class)->forOrder($order);
                                             $currency = app(\App\Services\Currency\CurrencyService::class)->getBaseCurrency()->name_short;
                                             $emailPrice = fn ($amount) => number_format((float) $amount, 2, ',', ' ').' '.$currency;
-                                            $emailRate = rtrim(rtrim(number_format((float) $summary['installment_rate'], 2, ',', ''), '0'), ',');
                                         @endphp
                                         <table role="presentation" border="0" cellpadding="8" cellspacing="0" style="max-width: 520px; margin: 28px 0 0 auto;">
                                             <tbody>
@@ -82,7 +81,6 @@
                                                 @endif
                                                 <tr><td style="text-align:left">{{ trans('base.delivery') }}</td><td style="text-align:right"><strong>{{ $emailPrice($summary['delivery']) }}</strong></td></tr>
                                                 @if($summary['installment_fee'] > 0)
-                                                    <tr><td style="text-align:left">{{ trans('base.installment_surcharge') }} (+{{ $emailRate }}%)</td><td style="text-align:right"><strong>{{ $emailPrice($summary['installment_fee']) }}</strong></td></tr>
                                                     <tr><td style="text-align:left">{{ trans('base.checkout_payment_period_label') }}</td><td style="text-align:right"><strong>{{ $summary['installment_period'] }}</strong></td></tr>
                                                 @endif
                                                 <tr><td style="text-align:left; border-top:1px solid #ddd"><strong>{{ trans('base.products_price_total') }}</strong></td><td style="text-align:right; border-top:1px solid #ddd"><strong>{{ $emailPrice($summary['total']) }}</strong></td></tr>

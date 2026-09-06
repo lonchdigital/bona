@@ -1,6 +1,14 @@
 <?php
 
 return [
+    'http' => [
+        'connect_timeout' => (float) env('PAYMENT_CONNECT_TIMEOUT', 5),
+        'timeout' => (float) env('PAYMENT_TIMEOUT', 15),
+        // One retry after the first attempt, and only for a connection error
+        // or a 5xx response. Client errors must never be replayed blindly.
+        'attempts' => (int) env('PAYMENT_HTTP_ATTEMPTS', 2),
+        'retry_delay_ms' => (int) env('PAYMENT_HTTP_RETRY_DELAY_MS', 200),
+    ],
 
     /*
     |--------------------------------------------------------------------------

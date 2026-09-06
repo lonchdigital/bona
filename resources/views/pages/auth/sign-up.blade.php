@@ -1,95 +1,68 @@
 @extends('layouts.store-main')
 
-@section('title')
-    {{-- These pages shared one title with the whole shop and were being
-         indexed alongside it. Each says what it is, and none of them
-         belongs in search results. --}}
-    <title>{{ trans('auth.sign_up_title') }} | {{ config('app.name') }}</title>
-    <meta name="title" content="{{ trans('auth.sign_up_title') }}">
+@section('body_class', 'bona-auth-body')
+@section('seo_title', trans('auth.sign_up_title').' — '.config('app.name'))
+@section('meta_description', trans('auth.sign_up_intro'))
+
+@push('head')
     <meta name="robots" content="noindex, follow">
-@endsection
+@endpush
 
 @section('content')
+    <x-store.auth-shell
+        :title="trans('auth.sign_up_title')"
+        :kicker="trans('auth.account_kicker')"
+        :intro="trans('auth.sign_up_intro')"
+    >
+        <form action="{{ route('auth.sign-up') }}" method="POST" class="bona-auth-form">
+            @csrf
 
-    @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.sign_up_title')]])
-
-    <main class="main pt-5">
-        <div class="content">
-            <section>
-                <div class="container">
-                    <div class="row justify-content-md-center">
-                        <div class="col-lg-6 mb-5">
-                            <h1 class="mt-5 text-center">{{ trans('auth.sign_up_title') }}</h1>
-                                <form action="{{ route('auth.sign-up') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
-                                    @csrf
-
-                                    <div class="w-full d-flex justify-content-lg-between flex-column flex-lg-row">
-                                        <div class="form-group lg-w-45">
-                                            <label class="custom-control-label2" for="first_name">{{ trans('auth.first_name') }}</label>
-                                            <input class="art-form-light-control" placeholder="{{ trans('auth.first_name_placeholder') }}" type="text" name="first_name" value="{{ old('first_name') }}"/>
-                                            @error('first_name')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group lg-w-45">
-                                            <label class="custom-control-label2" for="last_name">{{ trans('auth.last_name') }}</label>
-                                            <input class="art-form-light-control" placeholder="{{ trans('auth.last_name_placeholder') }}" type="text" name="last_name" value="{{ old('last_name') }}"/>
-                                            @error('last_name')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="w-full d-flex justify-content-lg-between flex-column flex-lg-row">
-                                        <div class="form-group lg-w-45">
-                                            <label class="custom-control-label2" for="email">{{ trans('auth.email') }}</label>
-                                            <input id="email" class="art-form-light-control" placeholder="{{ trans('auth.email_placeholder') }}" type="text" name="email" value="{{ old('email') }}"/>
-                                            @error('email')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group lg-w-45">
-                                            <label class="custom-control-label2" for="phone">{{ trans('auth.phone') }}</label>
-                                            <input id="phone" class="art-form-light-control" placeholder="{{ trans('auth.phone_placeholder') }}" type="text" name="phone" value="{{ old('phone') }}"/>
-                                            @error('phone')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="w-full d-flex justify-content-lg-between flex-column flex-lg-row">
-                                        <div class="form-group lg-w-45">
-                                            <label class="custom-control-label2" for="password">{{ trans('auth.password') }}</label>
-                                            <div class="d-flex flex-row align-items-center justify-content-end password-input">
-                                                <input id="password" class="art-form-light-control block w-full" type="password" name="password"/>
-
-                                            </div>
-
-                                            @error('password')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group lg-w-45">
-                                            <label class="custom-control-label2" for="password_confirmation">{{ trans('auth.password_confirmation') }}</label>
-                                            <div class="d-flex flex-row align-items-center justify-content-end password-input">
-                                                <input id="password_confirmation" class="art-form-light-control block w-full" type="password" name="password_confirmation"/>
-
-                                            </div>
-                                            @error('password_confirmation')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <button class="mt-5 btn btn-main" type="submit">{{ trans('auth.sign_up') }}</button>
-                                </form>
-                        </div>
-                    </div>
+            <div class="bona-auth-form__grid">
+                <div class="bona-auth-field">
+                    <label for="first_name">{{ trans('auth.first_name') }}</label>
+                    <input id="first_name" type="text" name="first_name" value="{{ old('first_name') }}" placeholder="{{ trans('auth.first_name_placeholder') }}" autocomplete="given-name" required @error('first_name') aria-invalid="true" aria-describedby="first-name-error" @enderror>
+                    @error('first_name')<p class="bona-auth-error" id="first-name-error">{{ $message }}</p>@enderror
                 </div>
-            </section>
-        </div>
-    </main>
-@stop
+                <div class="bona-auth-field">
+                    <label for="last_name">{{ trans('auth.last_name') }}</label>
+                    <input id="last_name" type="text" name="last_name" value="{{ old('last_name') }}" placeholder="{{ trans('auth.last_name_placeholder') }}" autocomplete="family-name" required @error('last_name') aria-invalid="true" aria-describedby="last-name-error" @enderror>
+                    @error('last_name')<p class="bona-auth-error" id="last-name-error">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <div class="bona-auth-form__grid">
+                <div class="bona-auth-field">
+                    <label for="email">{{ trans('auth.email') }}</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="{{ trans('auth.email_placeholder') }}" autocomplete="email" inputmode="email" required @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
+                    @error('email')<p class="bona-auth-error" id="email-error">{{ $message }}</p>@enderror
+                </div>
+                <div class="bona-auth-field">
+                    <label for="phone">{{ trans('auth.phone') }}</label>
+                    <input id="phone" type="tel" name="phone" value="{{ old('phone') }}" placeholder="{{ trans('auth.phone_placeholder') }}" autocomplete="tel" inputmode="tel" required @error('phone') aria-invalid="true" aria-describedby="phone-error" @enderror>
+                    @error('phone')<p class="bona-auth-error" id="phone-error">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <div class="bona-auth-form__grid">
+                <div class="bona-auth-field">
+                    <label for="password">{{ trans('auth.password') }}</label>
+                    <input id="password" type="password" name="password" autocomplete="new-password" required @error('password') aria-invalid="true" aria-describedby="password-error" @enderror>
+                    @error('password')<p class="bona-auth-error" id="password-error">{{ $message }}</p>@enderror
+                </div>
+                <div class="bona-auth-field">
+                    <label for="password_confirmation">{{ trans('auth.password_confirmation') }}</label>
+                    <input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" required @error('password_confirmation') aria-invalid="true" aria-describedby="password-confirmation-error" @enderror>
+                    @error('password_confirmation')<p class="bona-auth-error" id="password-confirmation-error">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <div class="bona-auth-form__actions">
+                <button class="bona-button bona-button--dark" type="submit">{{ trans('auth.sign_up') }}</button>
+                <span>{{ trans('auth.already_registered') }}</span>
+                <a class="bona-auth-link" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page') }}">
+                    {{ trans('auth.sign_in') }}
+                </a>
+            </div>
+        </form>
+    </x-store.auth-shell>
+@endsection

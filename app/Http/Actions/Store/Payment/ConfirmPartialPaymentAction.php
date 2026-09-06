@@ -41,7 +41,7 @@ class ConfirmPartialPaymentAction extends BaseAction
             in_array($request->paymentState, [PartialPaymentStatusDataClass::CANCELED, PartialPaymentStatusDataClass::FAIL], true)
             && (int) $order->payment_status_id !== OrderPaymentStatusesDataClass::STATUS_PAID
         ) {
-            $result = $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::STATUS_UNPAID);
+            $result = $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::STATUS_DECLINED);
         }
 
         if (! isset($result)) {

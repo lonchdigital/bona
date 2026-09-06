@@ -49,12 +49,25 @@ class ConfirmMonoBankPartialPaymentAction extends BaseAction
         // CLIENT_APPROVED_PUSH
         if ($request->state === 'IN_PROCESS' && $request->order_sub_state === 'WAITING_FOR_STORE_CONFIRM') {
             $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
-        } elseif ($request->state === 'FAIL' && $request->order_sub_state === 'REJECTED_BY_CLIENT'
-            && (int) $order->payment_status_id !== OrderPaymentStatusesDataClass::STATUS_PAID) {
-            $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::REJECTED_BY_CLIENT);
-        } elseif ($request->state === 'FAIL' && $request->order_sub_state === 'CLIENT_PUSH_TIMEOUT'
-            && (int) $order->payment_status_id !== OrderPaymentStatusesDataClass::STATUS_PAID) {
-            $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::CLIENT_PUSH_TIMEOUT);
+        } elseif ($request->state === 'FAIL' && (int) $order->payment_status_id !== OrderPaymentStatusesDataClass::STATUS_PAID) {
+            $failureStatus = match ($request->order_sub_state) {
+                'REJECTED_BY_CLIENT' => OrderPaymentStatusesDataClass::REJECTED_BY_CLIENT,
+                'CLIENT_PUSH_TIMEOUT' => OrderPaymentStatusesDataClass::CLIENT_PUSH_TIMEOUT,
+                default => OrderPaymentStatusesDataClass::STATUS_DECLINED,
+            };
+
+            $orderService->updateOrderPaymentStatusIdWithoutEmail($order, $failureStatus);
+
+            Log::notice('Monobank instalment application failed.', [
+                'order_id' => $order->id,
+                'order_sub_state' => $request->order_sub_state,
+            ]);
+        } else {
+            Log::info('Monobank callback in a state we do not act on.', [
+                'order_id' => $order->id,
+                'state' => $request->state,
+                'order_sub_state' => $request->order_sub_state,
+            ]);
         }
 
         return '';

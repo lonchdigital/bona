@@ -42,19 +42,21 @@ class StaticPageService extends BaseService
     {
         $staticPage = StaticPage::where('type_id', $staticPageTypeId)->first();
 
-        $allData = $staticPage->content;
-
-        if ($staticPage) {
-            return [
-                'meta_title' => $allData->where('language', $language)->first()?->meta_title,
-                'meta_description' => $allData->where('language', $language)->first()?->meta_description,
-                'meta_keywords' => $allData->where('language', $language)->first()?->meta_keywords,
-                'meta_tags' => $allData->where('language', $language)->first()?->meta_tags,
-                'content' => $allData->where('language', $language)->first()?->content,
-            ];
+        if (! $staticPage) {
+            return null;
         }
 
-        return null;
+        $content = $staticPage->content()
+            ->where('language', $language)
+            ->first();
+
+        return [
+            'meta_title' => $content?->meta_title,
+            'meta_description' => $content?->meta_description,
+            'meta_keywords' => $content?->meta_keywords,
+            'meta_tags' => $content?->meta_tags,
+            'content' => $content?->content,
+        ];
     }
 
     public function update(int $staticPageTypeId, StaticPageEditDTO $request): ServiceActionResult

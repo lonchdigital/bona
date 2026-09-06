@@ -1,33 +1,27 @@
 @extends('layouts.store-main')
 
-@section('title')
-    {{-- These pages shared one title with the whole shop and were being
-         indexed alongside it. Each says what it is, and none of them
-         belongs in search results. --}}
-    <title>{{ trans('auth.reset_password_success_title') }} | {{ config('app.name') }}</title>
-    <meta name="title" content="{{ trans('auth.reset_password_success_title') }}">
+@section('body_class', 'bona-auth-body')
+@section('seo_title', trans('auth.reset_password_success_title').' — '.config('app.name'))
+@section('meta_description', trans('auth.reset_password_success_text'))
+
+@push('head')
     <meta name="robots" content="noindex, follow">
-@endsection
+@endpush
 
 @section('content')
-
-    @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.reset_password_success_title')]])
-
-    <main class="main pt-5">
-        <div class="content">
-            <section>
-                <div class="container">
-                    <div class="row d-flex justify-content-md-center">
-                        <div class="col-lg-6 mb-5 d-flex flex-column align-items-center">
-                            <h1 class="mt-5 text-center">{{ trans('auth.reset_password_success_title') }}</h1>
-                            <p class="mt-5 text-center w-75">{{ trans('auth.reset_password_success_text') }}</p>
-                            <p class="text-center">
-                                <a class="btn btn-main" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page') }}">{{ trans('auth.go_to_sign_in') }}</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    <x-store.auth-shell
+        :title="trans('auth.reset_password_success_title')"
+        :kicker="trans('auth.success_kicker')"
+        :intro="trans('auth.reset_password_success_text')"
+        :state="true"
+    >
+        <div class="bona-auth-state">
+            <span class="bona-auth-state__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32"><path d="M4.5 8.5h23v15h-23zM5 9l11 8 11-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="bona-auth-state__actions">
+                <a class="bona-button bona-button--dark" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page') }}">{{ trans('auth.go_to_sign_in') }}</a>
+            </div>
         </div>
-    </main>
-@stop
+    </x-store.auth-shell>
+@endsection

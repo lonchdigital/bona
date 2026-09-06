@@ -207,6 +207,53 @@ class PaymentCallbackTest extends TestCase
         $this->assertSame(OrderPaymentStatusesDataClass::STATUS_PAID, (int) $order->fresh()->payment_status_id);
     }
 
+    public function test_every_documented_monobank_failure_leaves_a_terminal_payment_status(): void
+    {
+        config()->set('payment.monobank', [
+            'api_url' => 'https://u2.monobank.com.ua',
+            'client_secret' => 'mono-secret',
+            'store_id' => 'mono-store',
+            'point_id' => 'point-1',
+        ]);
+
+        $failureStates = [
+            'CLIENT_NOT_FOUND',
+            'EXCEEDED_SUM_LIMIT',
+            'EXISTS_OTHER_OPEN_ORDER',
+            'NOT_ENOUGH_MONEY_FOR_INIT_DEBIT',
+            'PAY_PARTS_ARE_NOT_ACCEPTABLE',
+            'FRAUD_REJECTED',
+            'RESTRICTED_BY_RISKS',
+            'REJECTED_BY_STORE',
+            'FAIL',
+        ];
+
+        foreach ($failureStates as $index => $subState) {
+            $order = $this->makeOrder([
+                'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK,
+                'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_IN_PROGRESS,
+                'mono_order_id' => 'mono-failure-'.$index,
+            ]);
+            $payload = [
+                'order_id' => $order->mono_order_id,
+                'state' => 'FAIL',
+                'order_sub_state' => $subState,
+            ];
+            $body = json_encode($payload);
+            $signature = base64_encode(hash_hmac('sha256', $body, 'mono-secret', true));
+
+            $this->withHeader('signature', $signature)
+                ->postJson(route('store.checkout.partial.mono.bank.payment'), $payload)
+                ->assertOk();
+
+            $this->assertSame(
+                OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                (int) $order->fresh()->payment_status_id,
+                'Sub-state '.$subState.' was left pending.',
+            );
+        }
+    }
+
     public function test_a_privatbank_callback_without_a_valid_signature_is_refused(): void
     {
         $order = $this->makeOrder();

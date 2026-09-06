@@ -41,7 +41,6 @@
         $catalogUrl = $productType
             ? App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug])
             : App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
-        $installmentRateLabel = rtrim(rtrim(number_format((float) $orderSummary['installment_rate'], 2, ',', ''), '0'), ',');
     @endphp
 
     <main class="bona-commerce-page bona-checkout-success">
@@ -58,7 +57,7 @@
                 <div>
                     <p class="bona-commerce-kicker">{{ trans('base.checkout_success_kicker') }}</p>
                     <h1>{{ trans('base.checkout_success_title') }}</h1>
-                    <p>{{ $monoBankPending ? trans('base.checkout_success_mono_intro') : trans('base.checkout_success_intro') }}</p>
+                    <p>{{ $paymentPendingMessage ?: trans('base.checkout_success_intro') }}</p>
                 </div>
             </div>
         </section>
@@ -82,7 +81,7 @@
                         <span>{{ trans('base.checkout_success_payment') }}</span>
                         <strong>{{ $paymentLabel }}</strong>
                         @if($orderSummary['installment_fee'] > 0)
-                            <small>{{ trans('base.installment_order_details', ['count' => $orderSummary['installment_period'], 'rate' => $installmentRateLabel]) }}</small>
+                            <small>{{ trans('base.checkout_payment_period_label') }}: {{ $orderSummary['installment_period'] }}</small>
                         @endif
                     </article>
                 </div>
@@ -119,10 +118,6 @@
                     <div><span>{{ trans('base.products_price_discount') }}</span><b>−{{ $formatPrice($orderSummary['discount']) }}</b></div>
                 @endif
                 <div><span>{{ trans('base.delivery') }}</span><b>{{ $orderSummary['is_carrier'] ? trans('base.cart_delivery_price') : $formatPrice($orderSummary['delivery']) }}</b></div>
-                @if($orderSummary['installment_fee'] > 0)
-                    <div><span>{{ trans('base.installment_surcharge') }} (+{{ $installmentRateLabel }}%)</span><b>{{ $formatPrice($orderSummary['installment_fee']) }}</b></div>
-                @endif
-
                 <div class="bona-checkout-success__next">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v12H9l-4 4V4Zm4 5h6M9 12h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <div><h2>{{ trans('base.checkout_success_next_title') }}</h2><p>{{ trans('base.checkout_success_next_text') }}</p></div>

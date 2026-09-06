@@ -26,12 +26,25 @@ class ShowCheckoutThankYouPageAction extends BaseAction
         // Unpaid is the expected state for an invoice or a manager-confirmed
         // order. It only represents a failed checkout here for an online card
         // payment, where payment is required before confirmation.
+        $onlinePaymentTypes = [
+            PaymentTypesDataClass::CARD_PAYMENT,
+            PaymentTypesDataClass::CARD_PAYMENT_PAYPART,
+            PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK,
+        ];
+        $failedPaymentStatuses = [
+            OrderPaymentStatusesDataClass::STATUS_UNPAID,
+            OrderPaymentStatusesDataClass::STATUS_DECLINED,
+            OrderPaymentStatusesDataClass::REJECTED_BY_CLIENT,
+            OrderPaymentStatusesDataClass::CLIENT_PUSH_TIMEOUT,
+        ];
+
         if (
-            (int) $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT
-            && (int) $order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_UNPAID
+            in_array((int) $order->payment_type_id, $onlinePaymentTypes, true)
+            && in_array((int) $order->payment_status_id, $failedPaymentStatuses, true)
         ) {
             return view('pages.store.payment-failure', [
                 'productType' => ProductType::first(),
+                'order' => $order,
             ]);
         }
 
@@ -44,6 +57,13 @@ class ShowCheckoutThankYouPageAction extends BaseAction
         ]);
 
         $orderProductGroups = ProductBundle::group($order->products);
+        $paymentPendingMessage = match (true) {
+            (int) $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT_PAYPART
+                && (int) $order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_PAYPART => trans('base.checkout_success_privat_intro'),
+            (int) $order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT
+                && (int) $order->payment_status_id === OrderPaymentStatusesDataClass::STATUS_IN_PROGRESS => trans('base.checkout_success_card_pending_intro'),
+            default => null,
+        };
 
         return view('pages.store.checkout-thank-you', [
             'order' => $order,
@@ -52,7 +72,7 @@ class ShowCheckoutThankYouPageAction extends BaseAction
             'baseCurrency' => $currencyService->getBaseCurrency(),
             'productType' => ProductType::first(),
             'orderSummary' => $pricingService->forOrder($order),
-            'monoBankPending' => false,
+            'paymentPendingMessage' => $paymentPendingMessage,
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Actions\Store\Checkout;
 
+use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\DataClasses\PaymentTypesDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
@@ -28,17 +29,33 @@ class CheckoutConfirmOrderAction extends BaseAction
         OrderAccessUrlService $orderAccessUrlService,
     ) {
         $authUser = $this->getAuthUser();
+        $checkout = $request->toDTO();
+        $phone = null;
 
-        if ($request->all()['payment_type_id'] == PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) {
+        if ($checkout->paymentTypeId === PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK) {
             if (is_null($authUser)) {
-                $phone = $request->toDTO()->phone;
+                $phone = $checkout->phone;
             } else {
                 $phone = $authUser->getAttribute('phone');
             }
-            $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
+            $phone = preg_replace('/[\s\-\(\)]/', '', (string) $phone);
 
-            $isValid = $paymentMonoBankService->validateClientMonoBankPhone($phone);
-            if (! $isValid) {
+            if ($phone === '') {
+                return redirect()
+                    ->back()
+                    ->withErrors(['phone' => trans('base.checkout_payment_paypart_mono_bank_unavailable')])
+                    ->withInput();
+            }
+
+            $validation = $paymentMonoBankService->validateClientMonoBankPhone($phone);
+            if (! $validation->successful) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['payment_type_id' => trans('base.checkout_payment_service_temporarily_unavailable')])
+                    ->withInput();
+            }
+
+            if (! ($validation->data['found'] ?? false)) {
                 return redirect()
                     ->back()
                     ->withErrors(['phone' => trans('base.checkout_payment_paypart_mono_bank_unavailable')])
@@ -54,7 +71,7 @@ class CheckoutConfirmOrderAction extends BaseAction
         }
 
         $cartService->normalizeLegacyBundles($cart);
-        $order = $orderService->createOrderByCart($cart, $request->toDTO(), $authUser);
+        $order = $orderService->createOrderByCart($cart, $checkout, $authUser);
 
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return redirect()->to($orderAccessUrlService->liqPay($order));
@@ -67,15 +84,18 @@ class CheckoutConfirmOrderAction extends BaseAction
                 $merchant_type,
             );
 
-            if ($response !== null) {
-                if ($response['state'] === 'SUCCESS') {
-                    $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response['token'];
-                } else {
-                    $message = $response['message'] ?? ($response['errorMessage'] ?? 'Unknown error');
-                    Log::error('Error during creating partial payment order: '.$message);
-                    $route = $orderAccessUrlService->thankYou($order);
-                }
+            if ($response->successful) {
+                $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response->data['token'];
             } else {
+                $orderService->updateOrderPaymentStatusIdWithoutEmail(
+                    $order,
+                    OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                );
+                Log::error('PrivatBank instalment checkout could not be started.', [
+                    'order_id' => $order->id,
+                    'status_code' => $response->statusCode,
+                    'trace_id' => $response->traceId,
+                ]);
                 $route = $orderAccessUrlService->thankYou($order);
             }
 
@@ -86,14 +106,21 @@ class CheckoutConfirmOrderAction extends BaseAction
                 $phone,
                 (string) $order->installment_period,
             );
-            if (! is_null($response)) {
+            if ($response->successful) {
                 return redirect()->to($orderAccessUrlService->monoBankThankYou($order));
-            } else {
-                return redirect()
-                    ->back()
-                    ->withErrors(['unknown_error' => trans('base.something_went_wrong')])
-                    ->withInput();
             }
+
+            $orderService->updateOrderPaymentStatusIdWithoutEmail(
+                $order,
+                OrderPaymentStatusesDataClass::STATUS_DECLINED,
+            );
+            Log::error('Monobank instalment checkout could not be started.', [
+                'order_id' => $order->id,
+                'status_code' => $response->statusCode,
+                'trace_id' => $response->traceId,
+            ]);
+
+            return redirect()->to($orderAccessUrlService->monoBankThankYou($order));
 
         } else {
             return redirect()->to($orderAccessUrlService->thankYou($order));

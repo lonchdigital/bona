@@ -1,47 +1,39 @@
 @extends('layouts.store-main')
 
-@section('title')
-    <title>{{ trans('auth.set_new_password') }} | {{ config('app.name') }}</title>
+@section('body_class', 'bona-auth-body')
+@section('seo_title', trans('auth.set_new_password').' — '.config('app.name'))
+
+@push('head')
     <meta name="robots" content="noindex, nofollow">
-@endsection
+@endpush
 
 @section('content')
-    @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.set_new_password')]])
+    <x-store.auth-shell
+        :title="trans('auth.set_new_password')"
+        :kicker="trans('auth.recovery_kicker')"
+        :intro="trans('auth.reset_password_text')"
+    >
+        <form action="{{ route('auth.reset-password') }}" method="POST" class="bona-auth-form">
+            @csrf
+            <input type="hidden" name="token" value="{{ $token }}">
 
-    <main class="main pt-5">
-        <div class="content">
-            <section>
-                <div class="container">
-                    <div class="row justify-content-md-center">
-                        <div class="col-lg-4 mb-5">
-                            <h1 class="mt-5 text-center">{{ trans('auth.set_new_password') }}</h1>
-                            <form action="{{ route('auth.reset-password') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
-                                @csrf
-                                <input type="hidden" name="token" value="{{ $token }}">
-
-                                <div class="form-group">
-                                    <label for="email">{{ trans('auth.email') }}</label>
-                                    <input id="email" class="art-form-light-control" type="email" name="email" value="{{ old('email', $email) }}" required autocomplete="email">
-                                    @error('email')<div class="text-danger">{{ $message }}</div>@enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="password">{{ trans('auth.password') }}</label>
-                                    <input id="password" class="art-form-light-control" type="password" name="password" required autocomplete="new-password">
-                                    @error('password')<div class="text-danger">{{ $message }}</div>@enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="password_confirmation">{{ trans('auth.password_confirmation') }}</label>
-                                    <input id="password_confirmation" class="art-form-light-control" type="password" name="password_confirmation" required autocomplete="new-password">
-                                </div>
-
-                                <button class="btn btn-main" type="submit">{{ trans('auth.save_new_password') }}</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-@stop
+            <div class="bona-auth-field">
+                <label for="email">{{ trans('auth.email') }}</label>
+                <input id="email" type="email" name="email" value="{{ old('email', $email) }}" autocomplete="email" required @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
+                @error('email')<p class="bona-auth-error" id="email-error">{{ $message }}</p>@enderror
+            </div>
+            <div class="bona-auth-field">
+                <label for="password">{{ trans('auth.password') }}</label>
+                <input id="password" type="password" name="password" autocomplete="new-password" required @error('password') aria-invalid="true" aria-describedby="password-error" @enderror>
+                @error('password')<p class="bona-auth-error" id="password-error">{{ $message }}</p>@enderror
+            </div>
+            <div class="bona-auth-field">
+                <label for="password_confirmation">{{ trans('auth.password_confirmation') }}</label>
+                <input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" required>
+            </div>
+            <div class="bona-auth-form__actions">
+                <button class="bona-button bona-button--dark" type="submit">{{ trans('auth.save_new_password') }}</button>
+            </div>
+        </form>
+    </x-store.auth-shell>
+@endsection

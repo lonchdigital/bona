@@ -7,10 +7,15 @@ use App\DataClasses\OrderPaymentStatusesDataClass;
 use App\Models\Order;
 use App\Services\Base\BaseService;
 use App\Services\Base\ServiceActionResult;
+use App\Services\Payment\DTO\PaymentGatewayResult;
 use App\Services\Pricing\PricingService;
 use App\Support\Payment\InstallmentPaymentLines;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PaymentMonoBankService extends BaseService
 {
@@ -75,58 +80,43 @@ class PaymentMonoBankService extends BaseService
         return hash_equals($expected, $signature);
     }
 
-    public function createMonoBankPartialPaymentOrder(Order $order, string $phone, string $period)
+    public function createMonoBankPartialPaymentOrder(Order $order, string $phone, string $period): PaymentGatewayResult
     {
         if (! $this->isConfigured()) {
-            \Log::error('Monobank instalments are not configured.');
+            Log::error('Monobank instalments are not configured.');
 
-            return null;
+            return PaymentGatewayResult::failure('Monobank instalments are not configured.');
         }
 
-        $client = new Client;
+        $requestArray = $this->createOrderPayload($order, $phone, $period);
 
-        $request_array = $this->createOrderPayload($order, $phone, $period);
-        $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
+        $result = $this->sendSignedRequest('/api/order/create', $requestArray, 'create order');
+        $orderId = $result->data['order_id'] ?? null;
 
-        try {
-            // Send request to Monobank
-            $response = $client->post($this->mono_bank_api_url.'/api/order/create', [
-                'headers' => [
-                    'store-id' => $this->mono_bank_client_store_id,
-                    'signature' => $signature,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'body' => json_encode($request_array, JSON_UNESCAPED_UNICODE),
-            ]);
+        if (! $result->successful || ! is_string($orderId) || trim($orderId) === '') {
+            if ($result->successful) {
+                Log::error('Monobank returned a successful response without an order id.', [
+                    'order_id' => $order->id,
+                    'trace_id' => $result->traceId,
+                ]);
 
-            if (in_array($response->getStatusCode(), [200, 201])) {
-                $data = json_decode($response->getBody(), true);
-
-                $order->mono_order_id = $data['order_id'];
-                $order->payment_status_id = OrderPaymentStatusesDataClass::STATUS_IN_PROGRESS;
-                $order->save();
-
-                return $data;
+                return PaymentGatewayResult::failure(
+                    'Monobank response does not contain an order id.',
+                    $result->statusCode,
+                    $result->traceId,
+                    $result->data,
+                );
             }
 
-            \Log::error('Monobank API Error', [
-                'StatusCode' => $response->getStatusCode(),
-                'response' => $response->getBody()->getContents(),
-                'headers' => $response->getHeaders(),
-            ]);
-
-            return null;
-
-        } catch (\Exception $e) {
-
-            \Log::error('Monobank API Exception', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return null;
+            return $result;
         }
 
+        $order->update([
+            'mono_order_id' => $orderId,
+            'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_IN_PROGRESS,
+        ]);
+
+        return $result;
     }
 
     public function createOrderPayload(Order $order, string $phone, string|int $period): array
@@ -154,152 +144,72 @@ class PaymentMonoBankService extends BaseService
         ];
     }
 
-    public function validateClientMonoBankPhone(string $phone): bool
+    public function validateClientMonoBankPhone(string $phone): PaymentGatewayResult
     {
         if (! $this->isConfigured()) {
-            return false;
+            return PaymentGatewayResult::failure('Monobank instalments are not configured.');
         }
 
-        $client = new Client;
-
-        $request_array = [
+        $requestArray = [
             'phone' => $phone,
         ];
 
-        $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
+        $result = $this->sendSignedRequest('/api/v2/client/validate', $requestArray, 'validate client');
 
-        try {
-            $response = $client->post($this->mono_bank_api_url.'/api/v2/client/validate', [
-                'headers' => [
-                    'store-id' => $this->mono_bank_client_store_id,
-                    'signature' => $signature,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'body' => json_encode($request_array, JSON_UNESCAPED_UNICODE),
+        if ($result->successful && ! is_bool($result->data['found'] ?? null)) {
+            Log::error('Monobank client validation response is malformed.', [
+                'trace_id' => $result->traceId,
             ]);
 
-            $data = json_decode($response->getBody()->getContents(), true);
-
-            return $data['found'];
-
-        } catch (\Exception $e) {
-
-            \Log::error('Monobank API PHONE Exception', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return false;
+            return PaymentGatewayResult::failure(
+                'Monobank response does not contain client eligibility.',
+                $result->statusCode,
+                $result->traceId,
+                $result->data,
+            );
         }
 
+        return $result;
     }
 
     public function rejectOrderMonoBank(Order $order): ServiceActionResult
     {
-        $client = new Client;
-
-        $request_array = [
-            'order_id' => $order->mono_order_id,
-        ];
-        /*$request_array = [
-            "order_id" => "123e4567-e89b-12d3-a456-426614174000"
-        ];*/
-
-        $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
-
-        try {
-            $response = $client->post($this->mono_bank_api_url.'/api/order/reject', [
-                'headers' => [
-                    'store-id' => $this->mono_bank_client_store_id,
-                    'signature' => $signature,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'body' => json_encode($request_array, JSON_UNESCAPED_UNICODE),
-            ]);
-
-            if (in_array($response->getStatusCode(), [200, 201])) {
-                $data = json_decode($response->getBody()->getContents(), true);
-
-                if (isset($data['order_sub_state']) && $data['order_sub_state'] == 'REJECTED_BY_STORE') {
-                    $order->mono_order_state = MonoBankOrderStateStatusesDataClass::STATUS_REJECTED;
-                    $order->save();
-
-                    return ServiceActionResult::make(true, trans('admin.order_rejected'));
-                } else {
-
-                    if (isset($data['message'])) {
-                        return ServiceActionResult::make(false, $data['message']);
-                    }
-
-                }
-            }
-
-            return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
-
-        } catch (\Exception $e) {
-
-            \Log::error('Monobank API reject Exception', [
-                'message' => $e->getMessage(),
-            ]);
-
+        if (! $this->isConfigured() || blank($order->mono_order_id)) {
             return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
         }
 
+        $requestArray = [
+            'order_id' => $order->mono_order_id,
+        ];
+
+        $result = $this->sendSignedRequest('/api/order/reject', $requestArray, 'reject order');
+        if ($result->successful && ($result->data['order_sub_state'] ?? null) === 'REJECTED_BY_STORE') {
+            $order->update(['mono_order_state' => MonoBankOrderStateStatusesDataClass::STATUS_REJECTED]);
+
+            return ServiceActionResult::make(true, trans('admin.order_rejected'));
+        }
+
+        return ServiceActionResult::make(false, $result->message ?: trans('admin.something_went_wrong'));
     }
 
     public function confirmOrderMonoBank(Order $order): ServiceActionResult
     {
-        $client = new Client;
-
-        $request_array = [
-            'order_id' => $order->mono_order_id,
-        ];
-        /*$request_array = [
-            "order_id" => "123e4567-e89b-12d3-a456-426614174000"
-        ];*/
-
-        $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
-
-        try {
-            $response = $client->post($this->mono_bank_api_url.'/api/order/confirm', [
-                'headers' => [
-                    'store-id' => $this->mono_bank_client_store_id,
-                    'signature' => $signature,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'body' => json_encode($request_array, JSON_UNESCAPED_UNICODE),
-            ]);
-
-            if (in_array($response->getStatusCode(), [200, 201])) {
-                $data = json_decode($response->getBody()->getContents(), true);
-
-                if (isset($data['state']) && $data['state'] == 'SUCCESS') {
-                    $order->mono_order_state = MonoBankOrderStateStatusesDataClass::STATUS_CONFIRMED;
-                    $order->save();
-
-                    return ServiceActionResult::make(true, trans('admin.order_confirmed_by_store'));
-                } else {
-
-                    if (isset($data['message'])) {
-                        return ServiceActionResult::make(false, $data['message']);
-                    }
-
-                }
-            }
-
-            return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
-
-        } catch (\Exception $e) {
-
-            \Log::error('Monobank API confirm Exception', [
-                'message' => $e->getMessage(),
-            ]);
-
+        if (! $this->isConfigured() || blank($order->mono_order_id)) {
             return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
         }
 
+        $requestArray = [
+            'order_id' => $order->mono_order_id,
+        ];
+
+        $result = $this->sendSignedRequest('/api/order/confirm', $requestArray, 'confirm order');
+        if ($result->successful && ($result->data['state'] ?? null) === 'SUCCESS') {
+            $order->update(['mono_order_state' => MonoBankOrderStateStatusesDataClass::STATUS_CONFIRMED]);
+
+            return ServiceActionResult::make(true, trans('admin.order_confirmed_by_store'));
+        }
+
+        return ServiceActionResult::make(false, $result->message ?: trans('admin.something_went_wrong'));
     }
 
     public function returnOrderMonoBank(Order $order): ServiceActionResult
@@ -308,59 +218,89 @@ class PaymentMonoBankService extends BaseService
             return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
         }
 
-        $client = new Client;
-
         $amount = $this->pricingService->forOrder($order)['total'];
 
-        $request_array = [
+        if (blank($order->mono_order_id)) {
+            return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
+        }
+
+        $requestArray = [
             'order_id' => $order->mono_order_id,
             'return_money_to_card' => true,
             'store_return_id' => $order->id,
             'sum' => round($amount, 2),
         ];
 
-        $signature = $this->makeMonoBankPartialPaymentSignature($request_array, $this->mono_bank_client_secret);
+        $result = $this->sendSignedRequest('/api/order/return', $requestArray, 'return order');
+        if ($result->successful && ($result->data['status'] ?? null) === 'OK') {
+            $order->update(['mono_order_state' => MonoBankOrderStateStatusesDataClass::STATUS_RETURNED]);
 
-        try {
-            $response = $client->post($this->mono_bank_api_url.'/api/order/return', [
-                'headers' => [
-                    'store-id' => $this->mono_bank_client_store_id,
-                    'signature' => $signature,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'body' => json_encode($request_array, JSON_UNESCAPED_UNICODE),
-            ]);
-
-            if (in_array($response->getStatusCode(), [200])) {
-                $data = json_decode($response->getBody()->getContents(), true);
-
-                if (isset($data['status']) && $data['status'] == 'OK') {
-                    $order->mono_order_state = MonoBankOrderStateStatusesDataClass::STATUS_RETURNED;
-                    $order->save();
-
-                    return ServiceActionResult::make(true, trans('admin.order_returned'));
-                }
-            }
-
-            return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
-
-        } catch (\Exception $e) {
-
-            \Log::error('Monobank API return Exception', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return ServiceActionResult::make(false, trans('admin.something_went_wrong'));
+            return ServiceActionResult::make(true, trans('admin.order_returned'));
         }
 
+        return ServiceActionResult::make(false, $result->message ?: trans('admin.something_went_wrong'));
     }
 
-    private function makeMonoBankPartialPaymentSignature(array $request_array, string $mono_bank_client_secret): string
+    private function makeMonoBankPartialPaymentSignature(string $requestBody, string $monoBankClientSecret): string
     {
-        $request_string = json_encode($request_array, JSON_UNESCAPED_UNICODE);
+        return base64_encode(hash_hmac('sha256', $requestBody, $monoBankClientSecret, true));
+    }
 
-        return base64_encode(hash_hmac('sha256', $request_string, $mono_bank_client_secret, true));
+    private function sendSignedRequest(string $path, array $payload, string $operation): PaymentGatewayResult
+    {
+        try {
+            $body = json_encode(
+                $payload,
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR,
+            );
+            $signature = $this->makeMonoBankPartialPaymentSignature($body, $this->mono_bank_client_secret);
+
+            $response = Http::acceptJson()
+                ->connectTimeout((float) config('payment.http.connect_timeout', 5))
+                ->timeout((float) config('payment.http.timeout', 15))
+                ->retry(
+                    max(1, (int) config('payment.http.attempts', 2)),
+                    max(0, (int) config('payment.http.retry_delay_ms', 200)),
+                    fn (Throwable $exception): bool => $exception instanceof ConnectionException
+                        || ($exception instanceof RequestException && $exception->response->serverError()),
+                    throw: false,
+                )
+                ->withHeaders([
+                    'store-id' => $this->mono_bank_client_store_id,
+                    'signature' => $signature,
+                ])
+                ->withBody($body, 'application/json')
+                ->post(rtrim($this->mono_bank_api_url, '/').$path);
+
+            $data = $response->json();
+            $traceId = $response->header('Trace-Id') ?: $response->header('X-Request-Id');
+
+            if (! $response->successful() || ! is_array($data)) {
+                Log::error('Monobank API request failed.', [
+                    'operation' => $operation,
+                    'status_code' => $response->status(),
+                    'trace_id' => $traceId,
+                    'response' => is_array($data) ? $data : null,
+                ]);
+
+                return PaymentGatewayResult::failure(
+                    is_array($data) ? ($data['message'] ?? null) : null,
+                    $response->status(),
+                    $traceId,
+                    is_array($data) ? $data : [],
+                );
+            }
+
+            return PaymentGatewayResult::success($data, $response->status(), $traceId);
+        } catch (Throwable $exception) {
+            Log::error('Monobank API request raised an exception.', [
+                'operation' => $operation,
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return PaymentGatewayResult::failure($exception->getMessage());
+        }
     }
 
     private function collectAllProductsFromOrder(Order $order): array

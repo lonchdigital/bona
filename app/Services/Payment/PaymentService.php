@@ -5,12 +5,15 @@ namespace App\Services\Payment;
 use App\Models\Order;
 use App\Services\Base\BaseService;
 use App\Services\Order\OrderAccessUrlService;
+use App\Services\Payment\DTO\PaymentGatewayResult;
 use App\Services\Pricing\PricingService;
 use App\Support\Payment\InstallmentPaymentLines;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Throwable;
 
 class PaymentService extends BaseService
 {
@@ -97,29 +100,59 @@ class PaymentService extends BaseService
         return $payload;
     }
 
-    public function createPrivateBankPartialPaymentOrder(Order $order, int $payment_period, string $merchant_type): ?array
-    {
-        $client = new Client;
-        $data = $this->createPrivateBankPartialPaymentPayload($order, $payment_period, $merchant_type);
+    public function createPrivateBankPartialPaymentOrder(
+        Order $order,
+        int $paymentPeriod,
+        string $merchantType,
+    ): PaymentGatewayResult {
+        $data = $this->createPrivateBankPartialPaymentPayload($order, $paymentPeriod, $merchantType);
 
         if ($data === null) {
-            return null;
+            return PaymentGatewayResult::failure('PrivatBank instalments are not configured.');
         }
 
         try {
-            $response = $client->post('https://payparts2.privatbank.ua/ipp/v2/payment/create', [
-                'body' => json_encode($data, JSON_UNESCAPED_UNICODE),
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
+            $response = $this->paymentRequest()
+                ->withBody(
+                    json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
+                    'application/json',
+                )
+                ->post('https://payparts2.privatbank.ua/ipp/v2/payment/create');
+
+            $payload = $response->json();
+            $traceId = $response->header('Trace-Id') ?: $response->header('X-Request-Id');
+
+            if (! $response->successful() || ! is_array($payload)) {
+                $this->logGatewayFailure('PrivatBank', $response->status(), $traceId, $payload);
+
+                return PaymentGatewayResult::failure(
+                    is_array($payload) ? ($payload['message'] ?? $payload['errorMessage'] ?? null) : null,
+                    $response->status(),
+                    $traceId,
+                    is_array($payload) ? $payload : [],
+                );
+            }
+
+            if (($payload['state'] ?? null) !== 'SUCCESS' || blank($payload['token'] ?? null)) {
+                $this->logGatewayFailure('PrivatBank', $response->status(), $traceId, $payload);
+
+                return PaymentGatewayResult::failure(
+                    $payload['message'] ?? $payload['errorMessage'] ?? null,
+                    $response->status(),
+                    $traceId,
+                    $payload,
+                );
+            }
+
+            return PaymentGatewayResult::success($payload, $response->status(), $traceId);
+        } catch (Throwable $exception) {
+            Log::error('PrivatBank order creation failed.', [
+                'order_id' => $order->id,
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
             ]);
 
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (GuzzleException $exception) {
-            Log::error('Error during creating privatbank partial payment order: '.$exception->getMessage());
-
-            return null;
+            return PaymentGatewayResult::failure($exception->getMessage());
         }
     }
 
@@ -216,6 +249,29 @@ class PaymentService extends BaseService
     private function withoutFloating(float $number): string
     {
         return number_format(round($number * 100, 0, PHP_ROUND_HALF_DOWN), 0, '', '');
+    }
+
+    private function paymentRequest()
+    {
+        return Http::acceptJson()
+            ->connectTimeout((float) config('payment.http.connect_timeout', 5))
+            ->timeout((float) config('payment.http.timeout', 15))
+            ->retry(
+                max(1, (int) config('payment.http.attempts', 2)),
+                max(0, (int) config('payment.http.retry_delay_ms', 200)),
+                fn (Throwable $exception): bool => $exception instanceof ConnectionException
+                    || ($exception instanceof RequestException && $exception->response->serverError()),
+                throw: false,
+            );
+    }
+
+    private function logGatewayFailure(string $gateway, int $statusCode, ?string $traceId, mixed $payload): void
+    {
+        Log::error($gateway.' order creation was refused.', [
+            'status_code' => $statusCode,
+            'trace_id' => $traceId,
+            'response' => is_array($payload) ? $payload : null,
+        ]);
     }
 
     public function paypartByCardForm(float $amount, int $orderId): array

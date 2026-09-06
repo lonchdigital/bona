@@ -1,43 +1,29 @@
 @extends('layouts.store-main')
 
-@section('title')
-    {{-- These pages shared one title with the whole shop and were being
-         indexed alongside it. Each says what it is, and none of them
-         belongs in search results. --}}
-    <title>{{ trans('auth.email_confirmation_code_resend_title') }} | {{ config('app.name') }}</title>
-    <meta name="title" content="{{ trans('auth.email_confirmation_code_resend_title') }}">
+@section('body_class', 'bona-auth-body')
+@section('seo_title', trans('auth.email_confirmation_code_resend_title').' — '.config('app.name'))
+
+@push('head')
     <meta name="robots" content="noindex, follow">
-@endsection
+@endpush
 
 @section('content')
-
-    @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.reset_password_title')]])
-
-    <main class="main pt-5">
-        <div class="content">
-            <section>
-                <div class="container">
-                    <div class="row justify-content-md-center">
-                        <div class="col-lg-6 mb-5">
-                            <h1 class="mt-5 text-center">{{ trans('auth.email_confirmation_code_resend_title') }}</h1>
-                            <form action="{{ route('auth.confirm-email-resend.page') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
-                                @csrf
-
-                                <div class="w-full d-flex flex-column">
-                                    <div class="form-group">
-                                        <label class="custom-control-label2" for="email">{{ trans('auth.email') }}</label>
-                                        <input class="art-form-light-control" placeholder="{{ trans('auth.email_placeholder') }}" type="text" name="email" value="{{ old('email') }}" id="email"/>
-                                        @error('email')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <button class="mt-5 btn btn-main" type="submit">{{ trans('auth.email_confirmation_code_resend') }}</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-@stop
+    <x-store.auth-shell
+        :title="trans('auth.email_confirmation_code_resend_title')"
+        :kicker="trans('auth.confirmation_kicker')"
+        :intro="trans('auth.confirm_your_email_to_finish')"
+    >
+        <form action="{{ route('auth.confirm-email-resend') }}" method="POST" class="bona-auth-form">
+            @csrf
+            <div class="bona-auth-field">
+                <label for="email">{{ trans('auth.email') }}</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="{{ trans('auth.email_placeholder') }}" autocomplete="email" inputmode="email" required @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
+                @error('email')<p class="bona-auth-error" id="email-error">{{ $message }}</p>@enderror
+            </div>
+            <div class="bona-auth-form__actions">
+                <button class="bona-button bona-button--dark" type="submit">{{ trans('auth.email_confirmation_code_resend') }}</button>
+                <a class="bona-auth-link" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page') }}">{{ trans('auth.back_to_sign_in') }}</a>
+            </div>
+        </form>
+    </x-store.auth-shell>
+@endsection

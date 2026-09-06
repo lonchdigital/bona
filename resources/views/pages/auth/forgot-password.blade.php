@@ -1,45 +1,30 @@
 @extends('layouts.store-main')
 
-@section('title')
-    {{-- These pages shared one title with the whole shop and were being
-         indexed alongside it. Each says what it is, and none of them
-         belongs in search results. --}}
-    <title>{{ trans('auth.reset_password_title') }} | {{ config('app.name') }}</title>
-    <meta name="title" content="{{ trans('auth.reset_password_title') }}">
+@section('body_class', 'bona-auth-body')
+@section('seo_title', trans('auth.reset_password_title').' — '.config('app.name'))
+@section('meta_description', trans('auth.reset_password_text'))
+
+@push('head')
     <meta name="robots" content="noindex, follow">
-@endsection
+@endpush
 
 @section('content')
-
-    @include('pages.store.partials.page_header', ['links' => ['own' => trans('auth.reset_password_title')]])
-
-    <main class="main pt-5">
-        <div class="content">
-            <section>
-                <div class="container">
-                    <div class="row justify-content-md-center">
-                        <div class="col-lg-4 mb-5">
-                            <h1 class="mt-5 text-center">{{ trans('auth.reset_password_title') }}</h1>
-                            <p class="text-center">{{ trans('auth.reset_password_text') }}</p>
-                            <form action="{{ route('auth.forgot-password') }}" method="POST" class="form-content d-flex justify-content-center m-5 flex-column">
-                                @csrf
-                                <div class="form-group">
-                                    <label class="custom-control-label2" for="email">{{ trans('auth.email') }}</label>
-                                    <input id="email" class="art-form-light-control" placeholder="{{ trans('auth.email_placeholder') }}" type="email" name="email" value="{{ old('email', request('email')) }}" autocomplete="email"/>
-                                    @error('email')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                @error('password')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-
-                                <button class="btn btn-main" type="submit">{{ trans('auth.reset_password_call_to_action') }}</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-@stop
+    <x-store.auth-shell
+        :title="trans('auth.reset_password_title')"
+        :kicker="trans('auth.recovery_kicker')"
+        :intro="trans('auth.reset_password_text')"
+    >
+        <form action="{{ route('auth.forgot-password') }}" method="POST" class="bona-auth-form">
+            @csrf
+            <div class="bona-auth-field">
+                <label for="email">{{ trans('auth.email') }}</label>
+                <input id="email" type="email" name="email" value="{{ old('email', request('email')) }}" placeholder="{{ trans('auth.email_placeholder') }}" autocomplete="email" inputmode="email" required @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
+                @error('email')<p class="bona-auth-error" id="email-error">{{ $message }}</p>@enderror
+            </div>
+            <div class="bona-auth-form__actions">
+                <button class="bona-button bona-button--dark" type="submit">{{ trans('auth.reset_password_call_to_action') }}</button>
+                <a class="bona-auth-link" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('auth.sign-in.page') }}">{{ trans('auth.back_to_sign_in') }}</a>
+            </div>
+        </form>
+    </x-store.auth-shell>
+@endsection
