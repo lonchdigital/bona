@@ -176,6 +176,124 @@ class AdminProductManagementTest extends TestCase
         $this->assertDatabaseHas('products', ['id' => $second->id, 'sort_order' => 2]);
     }
 
+    public function test_optional_filter_field_does_not_block_updating_an_unrelated_accessory(): void
+    {
+        $this->seedCurrency();
+
+        $productType = $this->productType([
+            'slug' => 'accessories-with-handle-filter',
+            'name' => 'Аксесуари',
+        ]);
+        $manufacturerField = ProductField::create([
+            'creator_id' => $this->author()->id,
+            'field_name' => [
+                'uk' => 'Виробник дверних ручок',
+                'ru' => 'Производитель дверных ручек',
+            ],
+            'slug' => 'handle-manufacturer-'.$productType->id,
+            'field_type_id' => ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION,
+            'is_mandatory' => false,
+        ]);
+        $productType->fields()->attach($manufacturerField->id, [
+            'show_as_filter' => true,
+            'show_on_main_filters_list' => true,
+            'filter_name' => json_encode([
+                'uk' => 'Виробник дверних ручок',
+                'ru' => 'Производитель дверных ручек',
+            ], JSON_UNESCAPED_UNICODE),
+        ]);
+        $manufacturer = ProductFieldOption::create([
+            'product_field_id' => $manufacturerField->id,
+            'name' => ['uk' => 'Тестовий бренд', 'ru' => 'Тестовый бренд'],
+            'slug' => 'test-handle-brand-'.$productType->id,
+        ]);
+
+        $handle = $this->makeProduct([
+            'product_type_id' => $productType->id,
+            'name' => ['uk' => 'Дверна ручка', 'ru' => 'Дверная ручка'],
+            'custom_fields' => [(string) $manufacturerField->id => (string) $manufacturer->id],
+        ]);
+        $moulding = $this->makeProduct([
+            'product_type_id' => $productType->id,
+            'name' => ['uk' => 'Комплект коробу', 'ru' => 'Комплект короба'],
+            'price' => 1000,
+            'custom_fields' => null,
+        ]);
+
+        $response = $this->actingAs($this->admin())->post(route('admin.product.edit', [
+            'productType' => $productType,
+            'product' => $moulding,
+        ]), [
+            'name' => $moulding->getTranslations('name'),
+            'slug' => $moulding->slug,
+            'created_at' => $moulding->created_at->format('Y-m-d H:i:s'),
+            'availability_status_id' => 1,
+            'price' => 1250,
+            'currency_id' => 1,
+            'product_short_text' => ['uk' => '', 'ru' => ''],
+            'product_text' => ['uk' => '', 'ru' => ''],
+            'seo_title' => ['uk' => '', 'ru' => ''],
+            'seo_text' => ['uk' => '', 'ru' => ''],
+            'custom_field' => [
+                $manufacturerField->id => [
+                    'field_id' => $manufacturerField->id,
+                    'value' => '',
+                ],
+            ],
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('data.success', true)
+            ->assertJsonPath('data.redirect_to', '');
+
+        $this->assertSame(1250.0, (float) $moulding->fresh()->price);
+        $this->assertSame([], $moulding->fresh()->custom_fields);
+        $this->assertSame(
+            (string) $manufacturer->id,
+            $handle->fresh()->custom_fields[(string) $manufacturerField->id]
+        );
+        $this->assertTrue($productType->fields()->whereKey($manufacturerField->id)->exists());
+    }
+
+    public function test_a_field_explicitly_marked_as_mandatory_still_blocks_an_empty_value(): void
+    {
+        $this->seedCurrency();
+
+        $productType = $this->productType(['slug' => 'products-with-mandatory-field']);
+        $mandatoryField = ProductField::create([
+            'creator_id' => $this->author()->id,
+            'field_name' => ['uk' => 'Обов’язкова ознака', 'ru' => 'Обязательный признак'],
+            'slug' => 'mandatory-field-'.$productType->id,
+            'field_type_id' => ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION,
+            'is_mandatory' => true,
+        ]);
+        $productType->fields()->attach($mandatoryField->id);
+        $product = $this->makeProduct(['product_type_id' => $productType->id]);
+
+        $this->actingAs($this->admin())->postJson(route('admin.product.edit', [
+            'productType' => $productType,
+            'product' => $product,
+        ]), [
+            'name' => $product->getTranslations('name'),
+            'slug' => $product->slug,
+            'created_at' => $product->created_at->format('Y-m-d H:i:s'),
+            'availability_status_id' => 1,
+            'price' => 5000,
+            'currency_id' => 1,
+            'product_short_text' => ['uk' => '', 'ru' => ''],
+            'product_text' => ['uk' => '', 'ru' => ''],
+            'seo_title' => ['uk' => '', 'ru' => ''],
+            'seo_text' => ['uk' => '', 'ru' => ''],
+            'custom_field' => [
+                $mandatoryField->id => [
+                    'field_id' => $mandatoryField->id,
+                    'value' => '',
+                ],
+            ],
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('custom_field.'.$mandatoryField->id.'.value');
+    }
+
     private function styleField($productType, bool $withModern = false): array
     {
         $field = ProductField::create([

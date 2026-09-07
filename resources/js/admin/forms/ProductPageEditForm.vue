@@ -777,7 +777,7 @@ export default {
                         :name="'custom_field['+ productCustomField.id +'][value]'"
 
                         :label="'custom_field['+ productCustomField.id +'][field_id]'"
-                        :is-required="true"
+                        :is-required="productCustomField.is_mandatory === true || productCustomField.is_mandatory === 1"
                         :errors="errors"
                     />
                 </div>

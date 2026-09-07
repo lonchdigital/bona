@@ -564,7 +564,7 @@ class ProductService extends BaseService
                 $productData['main_image_path'] = $storagePath.'/'.$mainImagePath.'.webp';
             }
 
-            if ($request->customFields && count($productType->fields)) {
+            if ($request->customFields !== null && count($productType->fields)) {
                 $productData['custom_fields'] = $this->prepareCustomFieldsToSync($request->customFields);
             }
 
@@ -691,7 +691,7 @@ class ProductService extends BaseService
                 $product->preview_image_path = null;
             }
 
-            if ($request->customFields && count($productType->fields)) {
+            if ($request->customFields !== null && count($productType->fields)) {
                 $dataToUpdate['custom_fields'] = $this->prepareCustomFieldsToSync($request->customFields);
             }
 
@@ -1036,10 +1036,28 @@ class ProductService extends BaseService
 
     private function prepareCustomFieldsToSync(array $rawCustomFieldsArray): array
     {
-        // result should be '$fieldId' => ['value' => ['$value']]
         $result = [];
-        foreach (array_column($rawCustomFieldsArray, 'field_id') as $customField) {
-            $result[$customField] = $rawCustomFieldsArray[$customField]['value'];
+
+        foreach ($rawCustomFieldsArray as $customField) {
+            if (! is_array($customField) || ! isset($customField['field_id'])) {
+                continue;
+            }
+
+            $fieldId = (int) $customField['field_id'];
+            $value = $customField['value'] ?? null;
+
+            if (is_array($value)) {
+                $value = array_values(array_filter(
+                    $value,
+                    static fn ($item): bool => $item !== null && $item !== ''
+                ));
+            }
+
+            if ($fieldId < 1 || $value === null || $value === '' || $value === []) {
+                continue;
+            }
+
+            $result[$fieldId] = $value;
         }
 
         return $result;

@@ -182,42 +182,54 @@ class ProductCreateRequest extends BaseRequest
 
         if (count($this->productType->fields)) {
             $rules['custom_field'] = [
-                'required',
+                $this->productType->fields->contains(
+                    static fn ($field): bool => (bool) $field->is_mandatory
+                ) ? 'required' : 'nullable',
                 'array',
             ];
         }
+
+        $availableCustomFieldIds = $this->productType->fields->pluck('id')->all();
 
         foreach ($this->productType->fields as $customField) {
             $rules['custom_field.*.field_id'] = [
                 'required',
                 'integer',
-                'exists:product_fields,id',
+                Rule::in($availableCustomFieldIds),
             ];
+
+            $presenceRule = $customField->is_mandatory ? 'required' : 'nullable';
 
             switch ($customField->field_type_id) {
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_STRING:
                     $rules['custom_field.'.$customField->id.'.value'] = [
-                        'required',
+                        $presenceRule,
                         'string',
                     ];
                     break;
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_SIZE:
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_NUMBER:
                     $rules['custom_field.'.$customField->id.'.value'] = [
-                        'required',
+                        $presenceRule,
                         'numeric',
                     ];
                     break;
                 case ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION:
                     if ($customField->is_multiselectable) {
                         $rules['custom_field.'.$customField->id.'.value'] = [
-                            'required',
+                            $presenceRule,
                             'array',
+                        ];
+                        $rules['custom_field.'.$customField->id.'.value.*'] = [
+                            'integer',
+                            Rule::exists('product_field_options', 'id')
+                                ->where('product_field_id', $customField->id),
                         ];
                     } else {
                         $rules['custom_field.'.$customField->id.'.value'] = [
-                            'required',
-                            'exists:product_field_options,id',
+                            $presenceRule,
+                            Rule::exists('product_field_options', 'id')
+                                ->where('product_field_id', $customField->id),
                         ];
                     }
                     break;
