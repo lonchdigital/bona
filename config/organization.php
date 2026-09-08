@@ -22,6 +22,19 @@ return [
     'currencies_accepted' => 'UAH',
     'tiktok_url' => $tiktokUrl,
 
+    /*
+     * The storefront brand and the party that enters into the sales contract
+     * are not the same kind of fact. Keep the legal seller explicit so the
+     * contact page, footer, legal documents and structured data cannot drift.
+     */
+    'merchant' => [
+        'legal_name' => 'Фізична особа — підприємець ГОНЧАР ОКСАНА СЕРГІЇВНА',
+        'short_name' => 'ФОП ГОНЧАР ОКСАНА СЕРГІЇВНА',
+        'tax_id' => '3258813661',
+        'iban' => 'UA413052990000026005015020910',
+        'payment_purpose' => 'Поповнення рахунку, ГОНЧАР ОКСАНА СЕРГІЇВНА',
+    ],
+
     'area_served' => [
         'Одеса',
         'Одеська область',

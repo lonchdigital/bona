@@ -2622,6 +2622,29 @@ a.bona-idea-card {
         p { margin: 0; }
     }
 
+    &__merchant {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        padding: 18px 0;
+        border-top: 1px solid rgba(247, 244, 238, .15);
+        color: rgba(247, 244, 238, .62);
+        font-size: 11px;
+        line-height: 1.45;
+
+        strong { color: var(--bona-cream); font-weight: 650; }
+
+        a {
+            margin-left: auto;
+            color: var(--bona-gold-light);
+            font-weight: 700;
+
+            &:hover,
+            &:focus-visible { color: var(--bona-cream); text-decoration: none; }
+        }
+    }
+
     &__legal {
         display: flex;
         align-items: center;
@@ -2629,11 +2652,19 @@ a.bona-idea-card {
         flex-wrap: wrap;
         gap: 9px 22px;
 
-        a {
+        a,
+        button {
             color: rgba(247, 244, 238, .72);
 
             &:hover,
             &:focus-visible { color: var(--bona-cream); text-decoration: none; }
+        }
+
+        button {
+            padding: 0;
+            border: 0;
+            background: none;
+            cursor: pointer;
         }
     }
 
@@ -2654,6 +2685,107 @@ a.bona-idea-card {
         }
 
         img { width: 100%; height: 100%; object-fit: contain; }
+    }
+}
+
+.bona-cookie-consent {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    left: 24px;
+    z-index: 1280;
+    display: grid;
+    width: min(1120px, calc(100% - 48px));
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 34px;
+    margin: 0 auto;
+    padding: 24px 26px;
+    border: 1px solid rgba(247, 244, 238, .15);
+    border-radius: 18px;
+    background: rgba(35, 31, 27, .98);
+    box-shadow: 0 24px 65px rgba(16, 13, 10, .28);
+    color: var(--bona-cream);
+    font-family: var(--bona-ui);
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .22s ease, transform .22s ease;
+    backdrop-filter: blur(14px);
+
+    &.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    &__copy {
+        strong {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--bona-cream);
+            font-size: 16px;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        p {
+            max-width: 760px;
+            margin: 0;
+            color: rgba(247, 244, 238, .72);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 7px;
+            color: var(--bona-gold-light);
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover,
+            &:focus-visible { color: var(--bona-cream); }
+        }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__primary,
+    &__secondary {
+        min-height: 46px;
+        padding: 11px 20px;
+        border: 1px solid var(--bona-gold-light);
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.2;
+        white-space: nowrap;
+        transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+
+        &:focus-visible {
+            outline: 2px solid var(--bona-cream);
+            outline-offset: 3px;
+        }
+    }
+
+    &__primary {
+        background: var(--bona-gold-light);
+        color: var(--bona-dark);
+
+        &:hover { border-color: var(--bona-cream); background: var(--bona-cream); }
+    }
+
+    &__secondary {
+        background: transparent;
+        color: var(--bona-cream);
+
+        &:hover { background: rgba(247, 244, 238, .08); }
     }
 }
 
@@ -2988,6 +3120,72 @@ a.bona-idea-card {
     }
 }
 
+.bona-contact-merchant {
+    padding-block: 88px !important;
+    background: #fff;
+
+    &__card {
+        display: grid;
+        grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+        gap: 72px;
+        padding: 48px 52px;
+        border: 1px solid var(--bona-line);
+        border-radius: 22px;
+        background: var(--bona-paper);
+    }
+
+    &__intro {
+        h2 {
+            margin: 0;
+            color: var(--bona-ink);
+            font: 400 clamp(38px, 3.4vw, 50px)/1.04 var(--bona-display);
+            letter-spacing: normal;
+            text-transform: none;
+        }
+
+        > p:last-child {
+            max-width: 520px;
+            margin: 18px 0 0;
+            color: var(--bona-muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+    }
+
+    &__details {
+        display: grid;
+        align-content: start;
+        margin: 0;
+        border-top: 1px solid var(--bona-line);
+
+        > div {
+            display: grid;
+            grid-template-columns: minmax(130px, .38fr) minmax(0, 1fr);
+            gap: 20px;
+            padding: 17px 0;
+            border-bottom: 1px solid var(--bona-line);
+        }
+
+        dt {
+            color: var(--bona-muted);
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: .06em;
+            line-height: 1.55;
+            text-transform: uppercase;
+        }
+
+        dd {
+            margin: 0;
+            color: var(--bona-ink);
+            font-size: 14px;
+            font-weight: 650;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
+        }
+    }
+}
+
 .bona-contact-measure {
     padding-block: 104px !important;
     background: var(--bona-paper);
@@ -3076,6 +3274,7 @@ a.bona-idea-card {
     .bona-contact-maps { min-height: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 360px; }
     .bona-contact-map { min-height: 360px; }
     .bona-contact-map iframe { min-height: 360px; }
+    .bona-contact-merchant__card { grid-template-columns: 1fr; gap: 36px; padding: 42px; }
     .bona-contact-form-shell { grid-template-columns: 1fr; }
     .bona-contact-form-thanks { grid-column: 1; }
 }
@@ -3104,6 +3303,9 @@ a.bona-idea-card {
     .bona-contact-channels { grid-template-columns: 1fr; }
     .bona-contact-channel { padding: 24px 0; border-bottom: 1px solid var(--bona-line); border-left: 0; }
     .bona-contact-channel:last-child { border-bottom: 0; }
+    .bona-contact-merchant { padding-block: 64px !important; }
+    .bona-contact-merchant__card { gap: 28px; padding: 28px 24px; }
+    .bona-contact-merchant__details > div { grid-template-columns: 1fr; gap: 6px; }
     .bona-contact-measure { padding-block: 72px !important; }
     .bona-contact-form-shell { gap: 35px; padding: 26px; }
     .bona-contact-form-shell__intro h2,
@@ -4589,8 +4791,33 @@ label.bona-lead-consent > input {
         > span { font-size: 14px; line-height: 1.4; }
     }
     .bona-footer__bottom { align-items: center; flex-direction: column; text-align: center; }
+    .bona-footer__merchant { align-items: flex-start; flex-direction: column; }
+    .bona-footer__merchant a { margin-left: 0; }
     .bona-footer__legal { gap: 9px 16px; }
     .bona-footer__payments { margin-top: 4px; }
+
+    .bona-cookie-consent {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        width: calc(100% - 24px);
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 21px 20px;
+        border-radius: 16px;
+    }
+
+    .bona-cookie-consent__actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bona-cookie-consent__primary,
+    .bona-cookie-consent__secondary {
+        width: 100%;
+        padding-inline: 13px;
+        white-space: normal;
+    }
 
     .bona-lead-modal {
         align-items: flex-end;

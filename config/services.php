@@ -42,4 +42,8 @@ return [
         'client_id' => env('FACEBOOK_APP_ID'),
         'client_secret' => env('FACEBOOK_APP_SECRET'),
     ],
+
+    'google' => [
+        'tag_manager_id' => env('GOOGLE_TAG_MANAGER_ID', 'GTM-P9KHGB8T'),
+    ],
 ];

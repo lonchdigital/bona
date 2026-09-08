@@ -39,6 +39,8 @@ class OrganizationSchemaService
             '@type' => 'Organization',
             '@id' => $this->organizationId(),
             'name' => config('organization.name'),
+            'legalName' => config('organization.merchant.legal_name'),
+            'taxID' => config('organization.merchant.tax_id'),
             'alternateName' => 'Bona Doors',
             'url' => url('/'),
             'logo' => $logo ? [

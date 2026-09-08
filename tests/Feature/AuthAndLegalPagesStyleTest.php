@@ -43,10 +43,11 @@ class AuthAndLegalPagesStyleTest extends TestCase
     public function test_each_legal_page_keeps_admin_content_and_uses_the_editorial_design(): void
     {
         foreach (StaticPageTypesDataClass::get() as $type) {
-            $page = StaticPage::create(['type_id' => $type['id']]);
-            StaticPageContent::create([
+            $page = StaticPage::firstOrCreate(['type_id' => $type['id']]);
+            StaticPageContent::updateOrCreate([
                 'static_page_id' => $page->id,
                 'language' => 'uk',
+            ], [
                 'meta_title' => 'SEO '.$type['name'],
                 'meta_description' => 'Короткий опис документа',
                 'meta_keywords' => 'двері, документ',
@@ -68,6 +69,13 @@ class AuthAndLegalPagesStyleTest extends TestCase
 
     public function test_a_known_legal_route_without_admin_content_has_a_safe_empty_state(): void
     {
+        $pageIds = StaticPage::query()
+            ->where('type_id', StaticPageTypesDataClass::PAGE_AGREEMENT)
+            ->pluck('id');
+        StaticPageContent::query()
+            ->whereIn('static_page_id', $pageIds)
+            ->delete();
+
         $this->get(route('store.static-page.page', [
             'staticPageSlug' => 'dogovir-publichnoyi-oferti',
         ]))

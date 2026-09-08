@@ -476,10 +476,11 @@ class CheckoutTest extends TestCase
     {
         $this->seedCurrency();
         $product = $this->makeProduct(['price' => 12000]);
-        $termsPage = StaticPage::create(['type_id' => StaticPageTypesDataClass::PAGE_AGREEMENT]);
-        StaticPageContent::create([
+        $termsPage = StaticPage::firstOrCreate(['type_id' => StaticPageTypesDataClass::PAGE_AGREEMENT]);
+        StaticPageContent::updateOrCreate([
             'static_page_id' => $termsPage->id,
             'language' => 'uk',
+        ], [
             'content' => '<p data-checkout-terms-fixture>Умови тестового договору</p>',
         ]);
 

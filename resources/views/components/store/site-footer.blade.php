@@ -16,6 +16,7 @@
         ['key' => 'facebook', 'label' => 'Facebook'],
     ])->filter(fn (array $social) => filled(data_get($options, $social['key'])));
     $stores = App\Support\Storefront\StoreLocations::from($contacts);
+    $merchant = (array) config('organization.merchant', []);
     $footerMenus = app(App\Services\CatalogMenu\CatalogMenuService::class)
         ->getStorefrontFooterMenus($options, $productTypes, $locale);
 @endphp
@@ -106,12 +107,24 @@
             @endif
         </div>
 
+        @if(filled(data_get($merchant, 'short_name')))
+            <div class="bona-footer__merchant">
+                <span>{{ trans('base.merchant_seller') }}</span>
+                <strong>{{ data_get($merchant, 'short_name') }}</strong>
+                <span>{{ trans('base.merchant_tax_id') }}: {{ data_get($merchant, 'tax_id') }}</span>
+                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">
+                    {{ trans('base.merchant_all_details') }}
+                </a>
+            </div>
+        @endif
+
         <div class="bona-footer__bottom">
             <p>BONA © {{ date('Y') }} {{ trans('base.all_rights_reserved') }}</p>
             <nav class="bona-footer__legal" aria-label="{{ trans('base.home_footer_legal') }}">
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'exchange-and-return']) }}">{{ trans('base.exchange_and_return') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'polityka-konfidencinosti']) }}">{{ trans('base.policy') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.static-page.page', ['staticPageSlug' => 'dogovir-publichnoyi-oferti']) }}">{{ trans('base.agreement') }}</a>
+                <button type="button" data-cookie-settings>{{ trans('base.cookie_settings') }}</button>
             </nav>
             <span class="bona-footer__payments" aria-label="Visa, Mastercard">
                 <span><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa" width="40" height="20" loading="lazy"></span>

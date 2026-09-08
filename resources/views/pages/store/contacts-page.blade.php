@@ -7,6 +7,7 @@
     $primaryPhoneHref = data_get($primaryStore, 'phone_href');
     $primaryEmail = data_get($primaryStore, 'email');
     $telegramUrl = data_get($applicationGlobalOptions, 'telegram');
+    $merchant = (array) config('organization.merchant', []);
     $pageTitle = $contactsConfig?->meta_title ?: trans('base.contacts').' - '.trans('base.site_title');
     $pageDescription = $contactsConfig?->meta_description ?: trans('base.contact_hero_intro');
     $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
@@ -159,6 +160,39 @@
                                 <a href="{{ $telegramUrl }}" target="_blank" rel="noopener noreferrer">Telegram Bona</a>
                             </div>
                         @endif
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        @if(filled(data_get($merchant, 'legal_name')))
+            <section class="bona-contact-merchant" aria-labelledby="contact-merchant-title">
+                <div class="bona-shell">
+                    <div class="bona-contact-merchant__card">
+                        <div class="bona-contact-merchant__intro">
+                            <p class="bona-contact-kicker">{{ trans('base.merchant_details_kicker') }}</p>
+                            <h2 id="contact-merchant-title">{{ trans('base.merchant_details_title') }}</h2>
+                            <p>{{ trans('base.merchant_details_intro') }}</p>
+                        </div>
+
+                        <dl class="bona-contact-merchant__details">
+                            <div>
+                                <dt>{{ trans('base.merchant_seller') }}</dt>
+                                <dd>{{ data_get($merchant, 'legal_name') }}</dd>
+                            </div>
+                            <div>
+                                <dt>{{ trans('base.merchant_tax_id') }}</dt>
+                                <dd>{{ data_get($merchant, 'tax_id') }}</dd>
+                            </div>
+                            <div>
+                                <dt>IBAN</dt>
+                                <dd>{{ data_get($merchant, 'iban') }}</dd>
+                            </div>
+                            <div>
+                                <dt>{{ trans('base.merchant_payment_purpose') }}</dt>
+                                <dd>{{ data_get($merchant, 'payment_purpose') }}</dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
             </section>

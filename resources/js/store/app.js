@@ -22,6 +22,7 @@ import ProductCardColors from './common/product-card-colors';
 import ProductComparison from './common/product-comparison';
 import MobileBottomNavigation from './common/mobile-bottom-navigation';
 import LeadModals from './common/lead-modals';
+import CookieConsent from './common/cookie-consent';
 
 // console.log('1111');
 
@@ -95,7 +96,8 @@ async function init()
         ProductCardColors.init(),
         ProductComparison.init(),
         MobileBottomNavigation.init(),
-        LeadModals.init()
+        LeadModals.init(),
+        CookieConsent.init()
     ]);
 
     // Fancybox and Inputmask are sizeable legacy dependencies. Most pages,
