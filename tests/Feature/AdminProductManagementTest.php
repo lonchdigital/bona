@@ -255,6 +255,41 @@ class AdminProductManagementTest extends TestCase
         $this->assertTrue($productType->fields()->whereKey($manufacturerField->id)->exists());
     }
 
+    public function test_existing_handle_manufacturer_field_is_made_optional_without_removing_its_filter(): void
+    {
+        $productType = $this->productType([
+            'slug' => 'accessories-data-fix',
+            'name' => 'Аксесуари',
+        ]);
+        $manufacturerField = ProductField::create([
+            'creator_id' => $this->author()->id,
+            'field_name' => [
+                'uk' => 'Виробник дверних ручок',
+                'ru' => 'Производитель дверных ручек',
+            ],
+            'slug' => 'handle-manufacturer-data-fix',
+            'field_type_id' => ProductFieldTypeOptionsDataClass::FIELD_TYPE_OPTION,
+            'is_mandatory' => true,
+        ]);
+        $productType->fields()->attach($manufacturerField->id, [
+            'show_as_filter' => true,
+            'show_on_main_filters_list' => true,
+        ]);
+
+        $migration = require database_path(
+            'migrations/2026_09_08_110000_make_door_handle_manufacturer_field_optional.php'
+        );
+        $migration->up();
+
+        $this->assertFalse((bool) $manufacturerField->fresh()->is_mandatory);
+        $this->assertDatabaseHas('product_field_product_type', [
+            'product_type_id' => $productType->id,
+            'product_field_id' => $manufacturerField->id,
+            'show_as_filter' => true,
+            'show_on_main_filters_list' => true,
+        ]);
+    }
+
     public function test_a_field_explicitly_marked_as_mandatory_still_blocks_an_empty_value(): void
     {
         $this->seedCurrency();
