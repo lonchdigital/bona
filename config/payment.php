@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'reconciliation' => [
+        'lookback_hours' => (int) env('PAYMENT_RECONCILIATION_LOOKBACK_HOURS', 72),
+        'batch_size' => (int) env('PAYMENT_RECONCILIATION_BATCH_SIZE', 50),
+        'alert_cooldown_minutes' => (int) env('PAYMENT_ALERT_COOLDOWN_MINUTES', 360),
+    ],
     'http' => [
         'connect_timeout' => (float) env('PAYMENT_CONNECT_TIMEOUT', 5),
         'timeout' => (float) env('PAYMENT_TIMEOUT', 15),

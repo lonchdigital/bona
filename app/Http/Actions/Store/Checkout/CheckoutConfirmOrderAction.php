@@ -13,6 +13,7 @@ use App\Services\Order\OrderAccessUrlService;
 use App\Services\Order\OrderService;
 use App\Services\Payment\PaymentMonoBankService;
 use App\Services\Payment\PaymentService;
+use App\Services\Telegram\TelegramNotificationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
@@ -27,6 +28,7 @@ class CheckoutConfirmOrderAction extends BaseAction
         PaymentService $paymentService,
         PaymentMonoBankService $paymentMonoBankService,
         OrderAccessUrlService $orderAccessUrlService,
+        TelegramNotificationService $telegram,
     ) {
         $authUser = $this->getAuthUser();
         $checkout = $request->toDTO();
@@ -49,6 +51,14 @@ class CheckoutConfirmOrderAction extends BaseAction
 
             $validation = $paymentMonoBankService->validateClientMonoBankPhone($phone);
             if (! $validation->successful) {
+                $telegram->notifyIntegrationIssue(
+                    'monobank',
+                    'Перевірка клієнта перед Покупкою частинами',
+                    $validation->message,
+                    $validation->traceId,
+                    $request->sourceUrl(),
+                );
+
                 return redirect()
                     ->back()
                     ->withErrors(['payment_type_id' => trans('base.checkout_payment_service_temporarily_unavailable')])
@@ -71,7 +81,7 @@ class CheckoutConfirmOrderAction extends BaseAction
         }
 
         $cartService->normalizeLegacyBundles($cart);
-        $order = $orderService->createOrderByCart($cart, $checkout, $authUser);
+        $order = $orderService->createOrderByCart($cart, $checkout, $authUser, $request->sourceUrl());
 
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return redirect()->to($orderAccessUrlService->liqPay($order));
@@ -85,11 +95,20 @@ class CheckoutConfirmOrderAction extends BaseAction
             );
 
             if ($response->successful) {
+                $telegram->notifyPaymentEvent(
+                    $order,
+                    'PrivatBank — Оплата частинами',
+                    'pending',
+                    'Заявку прийнято банком, клієнта перенаправлено на підтвердження.',
+                    $response->traceId,
+                );
                 $route = 'https://payparts2.privatbank.ua/ipp/v2/payment?token='.$response->data['token'];
             } else {
                 $orderService->updateOrderPaymentStatusIdWithoutEmail(
                     $order,
                     OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                    $response->message ?: 'PrivatBank відхилив створення платежу.',
+                    $response->traceId,
                 );
                 Log::error('PrivatBank instalment checkout could not be started.', [
                     'order_id' => $order->id,
@@ -107,12 +126,22 @@ class CheckoutConfirmOrderAction extends BaseAction
                 (string) $order->installment_period,
             );
             if ($response->successful) {
+                $telegram->notifyPaymentEvent(
+                    $order,
+                    'monobank — Покупка частинами',
+                    'pending',
+                    'Заявку прийнято банком, очікуємо підтвердження клієнта.',
+                    $response->traceId,
+                );
+
                 return redirect()->to($orderAccessUrlService->monoBankThankYou($order));
             }
 
             $orderService->updateOrderPaymentStatusIdWithoutEmail(
                 $order,
                 OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                $response->message ?: 'monobank відхилив створення заявки.',
+                $response->traceId,
             );
             Log::error('Monobank instalment checkout could not be started.', [
                 'order_id' => $order->id,

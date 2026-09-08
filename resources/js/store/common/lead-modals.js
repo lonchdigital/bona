@@ -308,20 +308,23 @@ export default {
                 }
 
                 try {
+                    const requestData = new FormData(form);
+                    requestData.set('source_url', window.location.href);
+
                     const response = await fetch(form.action, {
                         method: String(form.method || 'post').toUpperCase(),
-                        body: new FormData(form),
+                        body: requestData,
                         credentials: 'same-origin',
                         headers: {
                             Accept: 'application/json',
                             'X-Requested-With': 'XMLHttpRequest',
                         },
                     });
-                    const payload = await response.json().catch(() => ({}));
+                    const responsePayload = await response.json().catch(() => ({}));
 
                     if (!response.ok) {
-                        if (response.status === 422) renderFieldErrors(form, payload.errors);
-                        else showFormError(form, payload.message || form.dataset.errorLabel);
+                        if (response.status === 422) renderFieldErrors(form, responsePayload.errors);
+                        else showFormError(form, responsePayload.message || form.dataset.errorLabel);
                         return;
                     }
 

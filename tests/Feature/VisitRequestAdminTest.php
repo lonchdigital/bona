@@ -29,6 +29,8 @@ class VisitRequestAdminTest extends TestCase
             'phone' => '+38(067)222-22-22',
             'status_id' => 1,
             'form_title' => 'Виклик майстра',
+            'description' => 'Потрібен замір двох дверей',
+            'source_url' => 'http://localhost/services/measurement',
             'created_at' => '2026-09-05 12:30:00',
             'updated_at' => '2026-09-05 12:30:00',
         ]);
@@ -45,6 +47,13 @@ class VisitRequestAdminTest extends TestCase
             ->assertSee('data-href="'.route('admin.visit-request.details.page', $newerRequest).'"', false)
             ->assertSee('class="visit-request-row__link text-dark"', false)
             ->assertSeeInOrder([$newerRequest->name, $olderRequest->name]);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.visit-request.details.page', $newerRequest))
+            ->assertOk()
+            ->assertSee('Заявка №'.$newerRequest->id)
+            ->assertSee('Потрібен замір двох дверей')
+            ->assertSee('http://localhost/services/measurement');
     }
 
     public function test_empty_request_list_has_an_intentional_empty_state(): void

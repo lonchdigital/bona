@@ -54,9 +54,15 @@ SESSION_SECURE_COOKIE=true
 INSTAGRAM_APP_ID=
 INSTAGRAM_APP_SECRET=
 INSTAGRAM_GRAPH_VERSION=v26.0
+TELEGRAM_NOTIFICATIONS_ENABLED=true
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+TELEGRAM_MESSAGE_THREAD_ID=
 ```
 
 `APP_KEY` та назву `SESSION_COOKIE` треба зберегти з чинного production. Не можна копіювати `.env.example` поверх production `.env`. Перехід `SESSION_SERIALIZATION=json` завершить раніше створені PHP-серіалізовані сесії, тому користувачам доведеться увійти знову.
+
+Перед релізом перевірте бота командою `php artisan telegram:test`. Реліз також виконує `payments:diagnose --strict`: якщо ключі LiqPay, PrivatBank або Monobank відсутні чи змішані між sandbox/live, нова версія не активується.
 
 ## Instagram-стрічка
 

@@ -13,5 +13,6 @@ class OrderCountDoorsDTO implements BaseDTO
         public readonly bool $agree,
         public readonly ?string $currentProductTitle,
         public readonly ?string $currentProductUrl,
+        public readonly ?string $sourceUrl,
     ) {}
 }

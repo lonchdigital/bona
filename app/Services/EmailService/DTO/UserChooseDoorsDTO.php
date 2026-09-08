@@ -12,5 +12,6 @@ class UserChooseDoorsDTO implements BaseDTO
         public readonly string $phone,
         public readonly ?string $description,
         public readonly bool $agree,
+        public readonly ?string $sourceUrl,
     ) {}
 }

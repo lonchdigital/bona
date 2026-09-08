@@ -523,6 +523,7 @@
                 <label><span>{{ trans('base.phone') }}</span><input type="tel" class="art-light-field phone-field" name="phone" placeholder="+380 00 000 00 00" autocomplete="tel" inputmode="tel" required></label>
             </div>
             <input type="hidden" name="agree" value="1"><input type="hidden" name="event" value="submit_form_buy_one_click">
+            <input type="hidden" name="source_url" value="{{ url()->current() }}">
             <button type="submit" class="product-dialog__submit">{{ trans('base.buy_one_click_submit') }}</button>
         </form>
     </div>

@@ -16,6 +16,7 @@ class UserChooseDoorsRequest extends BaseRequest
             'description' => ['nullable', 'string', 'max:2000'],
             'agree' => ['accepted'],
             'website' => ['nullable', 'size:0'],
+            'source_url' => ['nullable', 'url', 'max:2048'],
         ];
     }
 
@@ -39,6 +40,7 @@ class UserChooseDoorsRequest extends BaseRequest
             $this->input('phone'),
             $this->input('description'),
             $this->input('agree'),
+            $this->sourceUrl(),
         );
     }
 }

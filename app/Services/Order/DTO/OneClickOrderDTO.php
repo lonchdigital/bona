@@ -9,5 +9,6 @@ class OneClickOrderDTO implements BaseDTO
     public function __construct(
         public readonly string $name,
         public readonly string $phone,
+        public readonly ?string $sourceUrl,
     ) {}
 }

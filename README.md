@@ -23,6 +23,32 @@ php artisan serve
 
 Заповніть у `.env` підключення до БД, пошти, LiqPay, Instagram OAuth та інших зовнішніх сервісів. Для розстрочки Monobank потрібні `MONOBANK_API_URL`, `MONOBANK_CLIENT_SECRET`, `MONOBANK_CLIENT_STORE_ID` і виданий банком `MONOBANK_POINT_ID`; для PrivatBank — `PRIVATBANK_STORE_ID` та `PRIVATBANK_PASSWORD`. Секрети не повинні потрапляти до Git.
 
+## Telegram-сповіщення
+
+Створіть бота через `@BotFather`, додайте його до робочого чату/групи й заповніть у `.env`:
+
+```dotenv
+TELEGRAM_NOTIFICATIONS_ENABLED=true
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+TELEGRAM_MESSAGE_THREAD_ID=
+```
+
+`TELEGRAM_MESSAGE_THREAD_ID` потрібен лише для конкретної теми форум-групи. Перевірка надсилає одне безпечне тестове повідомлення:
+
+```bash
+php artisan telegram:test
+```
+
+Заявки, замовлення та зміни статусів оплат ставляться в зашифровану чергу. Telegram не може зірвати збереження замовлення, але для доставки повідомлень постійний queue worker має працювати.
+
+Перевірити наявність і узгодженість платіжних налаштувань без показу секретів і без списання коштів:
+
+```bash
+php artisan payments:diagnose --strict
+php artisan payments:reconcile
+```
+
 ## Черги
 
 Листи та фонові завдання використовують database queue. Після міграцій запустіть постійний worker під Supervisor або systemd:

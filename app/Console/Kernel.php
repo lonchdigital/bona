@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
             ->dailyAt('03:10')
             ->timezone('Europe/Kyiv')
             ->withoutOverlapping();
+        $schedule->command('payments:reconcile')
+            ->everyTenMinutes()
+            ->withoutOverlapping();
         $schedule->command('wishlist:prune-guests')->dailyAt('04:15');
     }
 

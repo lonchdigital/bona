@@ -18,7 +18,8 @@ class OrderCountDoorsRequest extends BaseRequest
                 'min:16'],
             'agree' => ['accepted'],
             'current_product_title' => ['nullable', 'string'],
-            'current_product_url' => ['nullable', 'string'],
+            'current_product_url' => ['nullable', 'url', 'max:2048'],
+            'source_url' => ['nullable', 'url', 'max:2048'],
         ];
     }
 
@@ -43,13 +44,16 @@ class OrderCountDoorsRequest extends BaseRequest
 
     public function toDTO(): OrderCountDoorsDTO
     {
+        $sourceUrl = $this->sourceUrl($this->input('current_product_url'));
+
         return new OrderCountDoorsDTO(
             $this->input('title'),
             $this->input('name'),
             $this->input('phone'),
             $this->input('agree'),
             $this->input('current_product_title'),
-            $this->input('current_product_url'),
+            $sourceUrl,
+            $sourceUrl,
         );
     }
 }

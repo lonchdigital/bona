@@ -25,6 +25,7 @@ use App\Services\Order\DTO\OrderFilterDTO;
 use App\Services\Order\DTO\UpdateOrderDTO;
 use App\Services\Pricing\PricingService;
 use App\Services\PromoCode\PromoCodeService;
+use App\Services\Telegram\TelegramNotificationService;
 use App\Support\Payment\InstallmentPricing;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
@@ -35,6 +36,7 @@ class OrderService extends BaseService
         private readonly DeliveryService $deliveryService,
         private readonly PricingService $pricingService,
         private readonly PromoCodeService $promoCodeService,
+        private readonly TelegramNotificationService $telegram,
     ) {}
 
     public function getOrdersPaginated(OrderFilterDTO $request)
@@ -48,10 +50,14 @@ class OrderService extends BaseService
         return $query->orderByDesc('id')->paginate(config('domain.items_per_page'));
     }
 
-    public function createOrderByCart(Cart $cart, CheckoutConfirmOrderDTO $request, ?User $user): Order
-    {
+    public function createOrderByCart(
+        Cart $cart,
+        CheckoutConfirmOrderDTO $request,
+        ?User $user,
+        ?string $sourceUrl = null,
+    ): Order {
 
-        return $this->coverWithDBTransactionWithoutResponse(function () use ($cart, $request, $user) {
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($cart, $request, $user, $sourceUrl) {
             if ($cart->promo_code_id) {
                 $promoCode = PromoCode::query()->lockForUpdate()->find($cart->promo_code_id);
 
@@ -208,6 +214,12 @@ class OrderService extends BaseService
                 }
             }
 
+            $this->telegram->notifyOrderCreated(
+                $order,
+                'Оформлення на сайті',
+                $sourceUrl,
+            );
+
             return $order;
         });
     }
@@ -223,9 +235,14 @@ class OrderService extends BaseService
      * brackets and dashes. There is no address, delivery or payment to record:
      * the shop rings back and settles all of that.
      */
-    public function createOneClickOrder(Product $product, string $name, string $phone, ?User $user = null): Order
-    {
-        return $this->coverWithDBTransactionWithoutResponse(function () use ($product, $name, $phone, $user) {
+    public function createOneClickOrder(
+        Product $product,
+        string $name,
+        string $phone,
+        ?User $user = null,
+        ?string $sourceUrl = null,
+    ): Order {
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($product, $name, $phone, $user, $sourceUrl) {
             $user = $user ?? $this->resolveOneClickCustomer($name, $phone);
 
             $order = Order::create([
@@ -254,6 +271,12 @@ class OrderService extends BaseService
                     ));
                 }
             }
+
+            $this->telegram->notifyOrderCreated(
+                $order,
+                'Покупка в один клік',
+                $sourceUrl ?: route('store.product.page', ['productSlug' => $product->slug]),
+            );
 
             return $order;
         });
@@ -286,9 +309,13 @@ class OrderService extends BaseService
         ]);
     }
 
-    public function updateOrderPaymentStatusId(Order $order, int $newStatusId): ServiceActionResult
-    {
-        return $this->coverWithDBTransactionWithoutResponse(function () use ($order, $newStatusId) {
+    public function updateOrderPaymentStatusId(
+        Order $order,
+        int $newStatusId,
+        ?string $details = null,
+        ?string $traceId = null,
+    ): ServiceActionResult {
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($order, $newStatusId, $details, $traceId) {
             if ((int) $order->payment_status_id === $newStatusId) {
                 return ServiceActionResult::make(true, 'Already updated');
             }
@@ -308,13 +335,25 @@ class OrderService extends BaseService
                 }
             }
 
+            $this->telegram->notifyPaymentEvent(
+                $order,
+                $this->telegram->paymentProvider($order),
+                $newStatusId === OrderPaymentStatusesDataClass::STATUS_PAID ? 'success' : 'updated',
+                $details ?: (OrderPaymentStatusesDataClass::get($newStatusId)['name'] ?? null),
+                $traceId,
+            );
+
             return ServiceActionResult::make(true, 'Success');
         });
     }
 
-    public function updateOrderPaymentStatusIdWithoutEmail(Order $order, int $newStatusId): ServiceActionResult
-    {
-        return $this->coverWithDBTransactionWithoutResponse(function () use ($order, $newStatusId) {
+    public function updateOrderPaymentStatusIdWithoutEmail(
+        Order $order,
+        int $newStatusId,
+        ?string $details = null,
+        ?string $traceId = null,
+    ): ServiceActionResult {
+        return $this->coverWithDBTransactionWithoutResponse(function () use ($order, $newStatusId, $details, $traceId) {
             if ((int) $order->payment_status_id === $newStatusId) {
                 return ServiceActionResult::make(true, 'Already updated');
             }
@@ -322,6 +361,18 @@ class OrderService extends BaseService
             $order->update([
                 'payment_status_id' => $newStatusId,
             ]);
+
+            $this->telegram->notifyPaymentEvent(
+                $order,
+                $this->telegram->paymentProvider($order),
+                in_array($newStatusId, [
+                    OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                    OrderPaymentStatusesDataClass::REJECTED_BY_CLIENT,
+                    OrderPaymentStatusesDataClass::CLIENT_PUSH_TIMEOUT,
+                ], true) ? 'failure' : 'updated',
+                $details ?: (OrderPaymentStatusesDataClass::get($newStatusId)['name'] ?? null),
+                $traceId,
+            );
 
             return ServiceActionResult::make(true, 'Success');
         });
@@ -335,10 +386,31 @@ class OrderService extends BaseService
     public function updateOrder(Order $order, UpdateOrderDTO $request): ServiceActionResult
     {
         return $this->coverWithTryCatch(function () use ($order, $request) {
+            $previousPaymentStatusId = (int) $order->payment_status_id;
+
             $order->update([
                 'status_id' => $request->statusId,
                 'payment_status_id' => $request->orderPaymentStatusId,
             ]);
+
+            if ($previousPaymentStatusId !== $request->orderPaymentStatusId) {
+                $isFailure = in_array($request->orderPaymentStatusId, [
+                    OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                    OrderPaymentStatusesDataClass::REJECTED_BY_CLIENT,
+                    OrderPaymentStatusesDataClass::CLIENT_PUSH_TIMEOUT,
+                ], true);
+
+                $this->telegram->notifyPaymentEvent(
+                    $order,
+                    $this->telegram->paymentProvider($order),
+                    $request->orderPaymentStatusId === OrderPaymentStatusesDataClass::STATUS_PAID
+                        ? 'success'
+                        : ($isFailure ? 'failure' : 'updated'),
+                    'Статус змінено адміністратором: '.(
+                        OrderPaymentStatusesDataClass::get($request->orderPaymentStatusId)['name'] ?? '—'
+                    ),
+                );
+            }
 
             return ServiceActionResult::make(true, trans('admin.order_update_success'));
         });

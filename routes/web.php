@@ -208,7 +208,7 @@ $optionalLanguageRoutes = function () {
     Route::name('store.products-rucky-by-availability.filter.count')->get('/product-category/available-rucky/count/{productTypeSlug}/{categorySlug}/filter/{catalogFiltersString?}', GetAvailabilityProductsCountByFilterWithCategoryAction::class);
 
     Route::name('store.choose.doors')->middleware('throttle:5,10')->post('/user-choose-doors', UserChooseDoorsAction::class);
-    Route::name('store.order.count.doors')->post('/order-count-doors', OrderCountDoorsAction::class);
+    Route::name('store.order.count.doors')->middleware('throttle:5,10')->post('/order-count-doors', OrderCountDoorsAction::class);
 
     Route::prefix('/shop')->group(function () {
         Route::name('store.all-products.page')->get('/', ShowAllProductsPageAction::class);

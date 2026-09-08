@@ -172,6 +172,37 @@ class PaymentMonoBankService extends BaseService
         return $result;
     }
 
+    /**
+     * Poll a previously created order. Monobank only sends callbacks for a
+     * subset of state changes, so this is the fallback required for recovery.
+     */
+    public function getOrderState(string $orderId): PaymentGatewayResult
+    {
+        if (! $this->isConfigured() || trim($orderId) === '') {
+            return PaymentGatewayResult::failure('Monobank instalments are not configured or order id is empty.');
+        }
+
+        $result = $this->sendSignedRequest(
+            '/api/order/state',
+            ['order_id' => $orderId],
+            'read order state',
+        );
+
+        if (
+            $result->successful
+            && isset($result->data['order_id'])
+            && ! hash_equals($orderId, (string) $result->data['order_id'])
+        ) {
+            return PaymentGatewayResult::failure(
+                'Monobank status response does not match the requested order.',
+                $result->statusCode,
+                $result->traceId,
+            );
+        }
+
+        return $result;
+    }
+
     public function rejectOrderMonoBank(Order $order): ServiceActionResult
     {
         if (! $this->isConfigured() || blank($order->mono_order_id)) {

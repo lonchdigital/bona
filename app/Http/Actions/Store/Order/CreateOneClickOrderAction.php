@@ -17,7 +17,8 @@ class CreateOneClickOrderAction extends BaseAction
             $product,
             $dto->name,
             $dto->phone,
-            $this->getAuthUser()
+            $this->getAuthUser(),
+            $dto->sourceUrl,
         );
 
         return response()->json(['data' => ['success' => true]]);

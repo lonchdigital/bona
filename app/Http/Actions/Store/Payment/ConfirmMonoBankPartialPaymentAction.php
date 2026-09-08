@@ -48,7 +48,11 @@ class ConfirmMonoBankPartialPaymentAction extends BaseAction
 
         // CLIENT_APPROVED_PUSH
         if ($request->state === 'IN_PROCESS' && $request->order_sub_state === 'WAITING_FOR_STORE_CONFIRM') {
-            $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
+            $orderService->updateOrderPaymentStatusId(
+                $order,
+                OrderPaymentStatusesDataClass::STATUS_PAID,
+                'monobank: WAITING_FOR_STORE_CONFIRM',
+            );
         } elseif ($request->state === 'FAIL' && (int) $order->payment_status_id !== OrderPaymentStatusesDataClass::STATUS_PAID) {
             $failureStatus = match ($request->order_sub_state) {
                 'REJECTED_BY_CLIENT' => OrderPaymentStatusesDataClass::REJECTED_BY_CLIENT,
@@ -56,7 +60,11 @@ class ConfirmMonoBankPartialPaymentAction extends BaseAction
                 default => OrderPaymentStatusesDataClass::STATUS_DECLINED,
             };
 
-            $orderService->updateOrderPaymentStatusIdWithoutEmail($order, $failureStatus);
+            $orderService->updateOrderPaymentStatusIdWithoutEmail(
+                $order,
+                $failureStatus,
+                'monobank: '.$request->order_sub_state,
+            );
 
             Log::notice('Monobank instalment application failed.', [
                 'order_id' => $order->id,

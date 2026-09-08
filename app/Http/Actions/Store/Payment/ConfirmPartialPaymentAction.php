@@ -36,12 +36,20 @@ class ConfirmPartialPaymentAction extends BaseAction
         }
 
         if (in_array($request->paymentState, [PartialPaymentStatusDataClass::SUCCESS, PartialPaymentStatusDataClass::LOCKED], true)) {
-            $result = $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
+            $result = $orderService->updateOrderPaymentStatusId(
+                $order,
+                OrderPaymentStatusesDataClass::STATUS_PAID,
+                'PrivatBank: '.$request->paymentState,
+            );
         } elseif (
             in_array($request->paymentState, [PartialPaymentStatusDataClass::CANCELED, PartialPaymentStatusDataClass::FAIL], true)
             && (int) $order->payment_status_id !== OrderPaymentStatusesDataClass::STATUS_PAID
         ) {
-            $result = $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::STATUS_DECLINED);
+            $result = $orderService->updateOrderPaymentStatusIdWithoutEmail(
+                $order,
+                OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                'PrivatBank: '.$request->paymentState,
+            );
         }
 
         if (! isset($result)) {

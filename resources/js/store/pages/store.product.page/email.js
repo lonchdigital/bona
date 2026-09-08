@@ -92,7 +92,8 @@ function userChooseDoors(data, success, fail, form)
             phone: data['phone'],
             agree: data['agree'],
             current_product_title: data['current_product_title'],
-            current_product_url: data['current_product_url']
+            current_product_url: data['current_product_url'],
+            source_url: window.location.href
         },
         dataType: 'json'
     }).done(function(data) {

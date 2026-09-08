@@ -38,13 +38,35 @@
                             </p>
 
                             <div class="mb-3">
-                                <striong class="text-dark">{{ trans('admin.visit_request_name') }}</striong>
+                                <strong class="text-dark">{{ trans('admin.visit_request_name') }}</strong>
                                 <div class="mt-1">{{ $visitRequest->name }}</div>
                             </div>
                             <div class="mb-3">
-                                <striong class="text-dark">{{ trans('admin.visit_request_phone') }}</striong>
+                                <strong class="text-dark">{{ trans('admin.visit_request_phone') }}</strong>
                                 <div class="mt-1">{{ $visitRequest->phone }}</div>
                             </div>
+                            <div class="mb-3">
+                                <strong class="text-dark">{{ trans('admin.visit_request_created_at') }}</strong>
+                                <div class="mt-1">{{ $visitRequest->created_at->copy()->timezone('Europe/Kyiv')->format('d.m.Y H:i') }}</div>
+                            </div>
+                            @if(filled($visitRequest->description))
+                                <div class="mb-3">
+                                    <strong class="text-dark">{{ trans('admin.visit_request_description') }}</strong>
+                                    <div class="mt-1" style="white-space: pre-line">{{ $visitRequest->description }}</div>
+                                </div>
+                            @endif
+                            @if(filled($visitRequest->source_url))
+                                <div class="mb-3">
+                                    <strong class="text-dark">{{ trans('admin.visit_request_source') }}</strong>
+                                    <div class="mt-1 text-break">
+                                        @if(in_array(parse_url($visitRequest->source_url, PHP_URL_SCHEME), ['http', 'https'], true))
+                                            <a href="{{ $visitRequest->source_url }}" target="_blank" rel="noopener noreferrer">{{ $visitRequest->source_url }}</a>
+                                        @else
+                                            {{ $visitRequest->source_url }}
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
 
                         </x-admin.reactive-form>
                     </div>

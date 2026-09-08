@@ -20,6 +20,7 @@ class OneClickOrderRequest extends BaseRequest
                 'min:16',
             ],
             'agree' => ['accepted'],
+            'source_url' => ['nullable', 'url', 'max:2048'],
         ];
     }
 
@@ -37,6 +38,7 @@ class OneClickOrderRequest extends BaseRequest
         return new OneClickOrderDTO(
             name: $this->input('name'),
             phone: $this->input('phone'),
+            sourceUrl: $this->sourceUrl(),
         );
     }
 }

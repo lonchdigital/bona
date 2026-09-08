@@ -228,7 +228,8 @@ function userChooseDoors(data, success, fail, form)
             name: data['name'],
             phone: data['phone'],
             description: data['description'],
-            agree: data['agree']
+            agree: data['agree'],
+            source_url: window.location.href
         },
         dataType: 'json'
     }).done(function(data) {

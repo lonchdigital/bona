@@ -156,6 +156,148 @@ class PaymentService extends BaseService
         }
     }
 
+    /**
+     * Read the current LiqPay state without creating or charging anything.
+     */
+    public function getLiqPayPaymentStatus(int|string $orderId): PaymentGatewayResult
+    {
+        $publicKey = trim((string) config('liqpay.public_key'));
+        $privateKey = trim((string) config('liqpay.private_key'));
+
+        if ($publicKey === '' || $privateKey === '') {
+            return PaymentGatewayResult::failure('LiqPay is not configured.');
+        }
+
+        try {
+            $payload = [
+                'public_key' => $publicKey,
+                'version' => 3,
+                'action' => 'status',
+                'order_id' => (string) $orderId,
+            ];
+            $data = base64_encode(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            $signature = base64_encode(sha1($privateKey.$data.$privateKey, true));
+            $response = $this->paymentRequest()
+                ->asForm()
+                ->post('https://www.liqpay.ua/api/request', compact('data', 'signature'));
+            $responsePayload = $response->json();
+
+            if (! $response->successful() || ! is_array($responsePayload)) {
+                $this->logGatewayFailure('LiqPay status', $response->status(), null, $responsePayload);
+
+                return PaymentGatewayResult::failure(
+                    is_array($responsePayload) ? ($responsePayload['err_description'] ?? null) : null,
+                    $response->status(),
+                    null,
+                    is_array($responsePayload) ? $responsePayload : [],
+                );
+            }
+
+            return PaymentGatewayResult::success($responsePayload, $response->status());
+        } catch (Throwable $exception) {
+            Log::error('LiqPay status request failed.', [
+                'order_id' => $orderId,
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return PaymentGatewayResult::failure($exception->getMessage());
+        }
+    }
+
+    /**
+     * Read the current PrivatBank instalment state and authenticate its reply.
+     */
+    public function getPrivateBankPartialPaymentState(int|string $orderId): PaymentGatewayResult
+    {
+        $storeId = trim((string) config('payment.privatbank.store_id'));
+        $password = trim((string) config('payment.privatbank.password'));
+
+        if ($storeId === '' || $password === '') {
+            return PaymentGatewayResult::failure('PrivatBank instalments are not configured.');
+        }
+
+        try {
+            $signature = base64_encode(sha1($password.$storeId.$orderId.$password, true));
+            $requestPayload = [
+                'storeId' => $storeId,
+                'orderId' => (string) $orderId,
+                'showRefund' => 'false',
+                'signature' => $signature,
+            ];
+            $response = $this->paymentRequest()
+                ->withBody(
+                    json_encode($requestPayload, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
+                    'application/json',
+                )
+                ->post('https://payparts2.privatbank.ua/ipp/v2/payment/state');
+            $payload = $response->json();
+            $traceId = $response->header('Trace-Id') ?: $response->header('X-Request-Id');
+
+            if (! $response->successful() || ! is_array($payload)) {
+                $this->logGatewayFailure('PrivatBank status', $response->status(), $traceId, $payload);
+
+                return PaymentGatewayResult::failure(
+                    is_array($payload) ? ($payload['message'] ?? null) : null,
+                    $response->status(),
+                    $traceId,
+                    is_array($payload) ? $payload : [],
+                );
+            }
+
+            if (
+                ! hash_equals($storeId, (string) ($payload['storeId'] ?? ''))
+                || ! hash_equals((string) $orderId, (string) ($payload['orderId'] ?? ''))
+            ) {
+                Log::warning('PrivatBank status response identifies another order or store.', [
+                    'order_id' => $orderId,
+                    'trace_id' => $traceId,
+                ]);
+
+                return PaymentGatewayResult::failure(
+                    'PrivatBank status response does not match the requested order.',
+                    $response->status(),
+                    $traceId,
+                );
+            }
+
+            $responseSignature = (string) ($payload['signature'] ?? '');
+            $expectedSignature = base64_encode(sha1(
+                $password
+                .($payload['state'] ?? '')
+                .($payload['storeId'] ?? '')
+                .($payload['orderId'] ?? '')
+                .($payload['paymentState'] ?? '')
+                .($payload['message'] ?? '')
+                .$password,
+                true,
+            ));
+
+            if ($responseSignature === '' || ! hash_equals($expectedSignature, $responseSignature)) {
+                Log::warning('PrivatBank status response signature did not match.', [
+                    'order_id' => $orderId,
+                    'trace_id' => $traceId,
+                ]);
+
+                return PaymentGatewayResult::failure(
+                    'PrivatBank status response signature did not match.',
+                    $response->status(),
+                    $traceId,
+                );
+            }
+
+            return PaymentGatewayResult::success($payload, $response->status(), $traceId);
+        } catch (Throwable $exception) {
+            Log::error('PrivatBank status request failed.', [
+                'order_id' => $orderId,
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return PaymentGatewayResult::failure($exception->getMessage());
+        }
+    }
+
     public function createPrivateBankPartialPaymentPayload(Order $order, int $paymentPeriod, string $merchantType): ?array
     {
         $redirect_url = $this->orderAccessUrlService->thankYou($order);
@@ -267,7 +409,7 @@ class PaymentService extends BaseService
 
     private function logGatewayFailure(string $gateway, int $statusCode, ?string $traceId, mixed $payload): void
     {
-        Log::error($gateway.' order creation was refused.', [
+        Log::error($gateway.' request was refused.', [
             'status_code' => $statusCode,
             'trace_id' => $traceId,
             'response' => is_array($payload) ? $payload : null,

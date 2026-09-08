@@ -63,12 +63,28 @@ class UpdateOrderPaymentStatusAction extends BaseAction
         }
 
         if (in_array($payload['status'], $successfulStatuses, true)) {
-            $orderService->updateOrderPaymentStatusId($order, OrderPaymentStatusesDataClass::STATUS_PAID);
+            $orderService->updateOrderPaymentStatusId(
+                $order,
+                OrderPaymentStatusesDataClass::STATUS_PAID,
+                'LiqPay: '.$payload['status'],
+                isset($payload['payment_id']) ? (string) $payload['payment_id'] : null,
+            );
         } elseif (
             in_array($payload['status'], ['failure', 'error'], true)
             && (int) $order->payment_status_id !== OrderPaymentStatusesDataClass::STATUS_PAID
         ) {
-            $orderService->updateOrderPaymentStatusIdWithoutEmail($order, OrderPaymentStatusesDataClass::STATUS_DECLINED);
+            $details = collect([
+                $payload['err_code'] ?? null,
+                $payload['err_description'] ?? null,
+                $payload['status'] ?? null,
+            ])->filter()->implode(': ');
+
+            $orderService->updateOrderPaymentStatusIdWithoutEmail(
+                $order,
+                OrderPaymentStatusesDataClass::STATUS_DECLINED,
+                $details ?: 'LiqPay відхилив платіж.',
+                isset($payload['payment_id']) ? (string) $payload['payment_id'] : null,
+            );
         }
 
         return response('ok');
