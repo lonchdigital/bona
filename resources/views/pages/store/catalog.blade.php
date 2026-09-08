@@ -2,6 +2,7 @@
 
 @php
     $selectedBrand = $selectedBrand ?? null;
+    $catalogLandingColor = $catalogLandingColor ?? null;
     $catalogPageTitle = isset($filterGroup)
         ? $filterGroup->name
         : ($selectedBrand
@@ -9,10 +10,14 @@
                 'product_type' => $productType->name,
                 'brand' => $selectedBrand->name,
             ])
-            : $productType->name);
+            : ($catalogLandingColor
+                ? ($catalogLandingColor->id === 7
+                    ? trans('base.white_doors')
+                    : trans('base.color').' '.$catalogLandingColor->name)
+                : $productType->name));
     $breadcrumbs = [];
 
-    if($selectedBrand || isset($filterGroup)) {
+    if($selectedBrand || isset($filterGroup) || $catalogLandingColor) {
         $breadcrumbs[] = [
             'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]),
             'label' => $productType->name,
@@ -21,7 +26,10 @@
 
     $breadcrumbs[] = [
         'url' => null,
-        'label' => $selectedBrand?->name ?? (isset($filterGroup) ? $filterGroup->name : $productType->name),
+        'label' => $selectedBrand?->name
+            ?? (isset($filterGroup)
+                ? $filterGroup->name
+                : ($catalogLandingColor ? $catalogPageTitle : $productType->name)),
     ];
     $currentCatalogPage = max(1, (int) $productsPaginated->currentPage());
     $catalogCanonicalBase = $selectedBrand
@@ -31,9 +39,14 @@
         ]))
         : (isset($filterGroup)
             ? request()->url()
-            : url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
-                'productTypeSlug' => $productType->slug,
-            ])));
+            : ($catalogLandingColor
+                ? url(app(App\Services\Catalog\CatalogColorUrlService::class)->productTypeFilterUrl(
+                    $productType,
+                    $catalogLandingColor,
+                ))
+                : url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+                    'productTypeSlug' => $productType->slug,
+                ]))));
     $catalogPageUrl = static fn (int $page) => $page > 1
         ? $catalogCanonicalBase.'?'.http_build_query(['page' => $page])
         : $catalogCanonicalBase;
@@ -72,6 +85,10 @@
         @if($filterGroup->meta_title)<meta name="title" content="{{ $filterGroup->meta_title }}">@endif
         @if($filterGroup->meta_description)<meta name="description" content="{{ $filterGroup->meta_description }}">@endif
         @if($filterGroup->meta_keywords)<meta name="keywords" content="{{ $filterGroup->meta_keywords }}">@endif
+    @elseif($catalogLandingColor)
+        <title>{{ $catalogPageTitle.' — '.trans('base.site_title').$paginationTitleSuffix }}</title>
+        <meta name="title" content="{{ $catalogPageTitle.' — '.trans('base.site_title') }}">
+        @if($productType->meta_description)<meta name="description" content="{{ $productType->meta_description }}">@endif
     @else
         <title>{{ ($productType->meta_title ?: $catalogPageTitle.' — '.trans('base.site_title')).$paginationTitleSuffix }}</title>
         @if($productType->meta_title)<meta name="title" content="{{ $productType->meta_title }}">@endif

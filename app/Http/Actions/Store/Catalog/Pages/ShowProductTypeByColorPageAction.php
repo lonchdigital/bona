@@ -2,49 +2,31 @@
 
 namespace App\Http\Actions\Store\Catalog\Pages;
 
-use App\Http\Actions\Admin\BaseAction;
-use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
-use App\Models\Color;
 use App\Models\ProductType;
-use App\Services\Currency\CurrencyService;
-use App\Services\Product\ProductService;
+use App\Services\Catalog\CatalogColorUrlService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
-class ShowProductTypeByColorPageAction extends BaseAction
+class ShowProductTypeByColorPageAction
 {
     public function __invoke(
         ProductType $productType,
-        CatalogFilterRequest $request,
-        Color $color
-    ) {
-        $productType->load(['fields', 'fields.options']);
-
-        // get services from service container
-        $currencyService = app()->make(CurrencyService::class);
-        $productService = app()->make(ProductService::class);
-
-        $filtersData = $request->toDTO();
-        $baseCurrency = $currencyService->getBaseCurrency();
-
-        $page = $filtersData->filters['page'] ?? 1;
-
-        $productsPaginated = $productService->getProductTypeByColorPaginated(
-            (int) config('domain.store_catalog_items_per_page'),
-            $page,
+        string $color,
+        Request $request,
+        CatalogColorUrlService $colorUrls,
+    ): RedirectResponse {
+        $target = $colorUrls->productTypeFilterUrl(
             $productType,
-            $color
+            $colorUrls->findOrFail($color),
         );
 
-        $pageTitle = trans('base.color').' '.$color->name;
-        if ($color->id == 7) {
-            $pageTitle = trans('base.white_doors');
-        }
+        return redirect()->to($this->withQuery($target, $request), 301);
+    }
 
-        return view('pages.store.catalog-sort.catalog-sort-by-color', [
-            'productType' => $productType,
-            'color' => $color,
-            'pageTitle' => $pageTitle,
-            'baseCurrency' => $baseCurrency,
-            'productsPaginated' => $productsPaginated,
-        ]);
+    private function withQuery(string $target, Request $request): string
+    {
+        $query = $request->getQueryString();
+
+        return $query ? $target.'?'.$query : $target;
     }
 }

@@ -7,6 +7,7 @@ use App\Models\ApplicationConfig;
 use App\Models\CatalogMenuConfiguration;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Services\Catalog\CatalogColorUrlService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,10 @@ class CatalogMenuService
     public const FOOTER_NAVIGATION_CONFIG = 'footerNavigation';
 
     public const FOOTER_CATEGORIES_CONFIG = 'footerCategories';
+
+    public function __construct(
+        private readonly CatalogColorUrlService $colorUrls,
+    ) {}
 
     /**
      * The reference storefront treats the first mega-menu row as a curated
@@ -507,12 +512,36 @@ class CatalogMenuService
     {
         $path = parse_url($url, PHP_URL_PATH);
 
-        if (! is_string($path) || ! preg_match('#^/(?:ru/)?brands/([a-z0-9-]+)/?$#i', $path, $matches)) {
+        if (! is_string($path)) {
             return $url;
         }
 
-        $prefix = $locale === 'ru' ? '/ru' : '';
+        if (preg_match('#^/(?:ru/)?brands/([a-z0-9-]+)/?$#i', $path, $matches)) {
+            $prefix = $locale === 'ru' ? '/ru' : '';
 
-        return $prefix.'/product-category/'.$productTypeSlug.'/manufacturer/'.mb_strtolower($matches[1]);
+            return $prefix.'/product-category/'.$productTypeSlug.'/manufacturer/'.mb_strtolower($matches[1]);
+        }
+
+        if (! preg_match(
+            '#^/(?:ru/)?product-category/(?:(?<product_type>[a-z0-9-]+)/)?color/(?<color>[a-z0-9-]+)/?$#i',
+            $path,
+            $matches,
+        )) {
+            return $url;
+        }
+
+        $linkedProductType = $matches['product_type'] ?? null;
+
+        if ($linkedProductType && $linkedProductType !== $productTypeSlug) {
+            return $url;
+        }
+
+        $color = $this->colorUrls->find($matches['color']);
+
+        if (! $color) {
+            return $url;
+        }
+
+        return $this->colorUrls->productTypeFilterUrl($productTypeSlug, $color, $locale);
     }
 }

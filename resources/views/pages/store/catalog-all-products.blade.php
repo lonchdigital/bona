@@ -2,12 +2,19 @@
 
 @php
     $searchQuery = trim((string) ($searchQuery ?? ''));
+    $catalogLandingColor = $catalogLandingColor ?? null;
     $catalogPageTitle = $searchQuery !== ''
         ? trans('base.storefront_search_results_for', ['query' => $searchQuery])
-        : trans('base.all_products');
+        : ($catalogLandingColor
+            ? ($catalogLandingColor->id === 7
+                ? trans('base.white_doors')
+                : trans('base.color').' '.$catalogLandingColor->name)
+            : trans('base.all_products'));
     $breadcrumbs = [['url' => null, 'label' => $catalogPageTitle]];
     $currentCatalogPage = max(1, (int) $productsPaginated->currentPage());
-    $catalogCanonicalBase = url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page'));
+    $catalogCanonicalBase = $catalogLandingColor
+        ? url(app(App\Services\Catalog\CatalogColorUrlService::class)->allProductsFilterUrl($catalogLandingColor))
+        : url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page'));
     $catalogPageUrl = static function (int $page) use ($catalogCanonicalBase, $searchQuery) {
         $parameters = array_filter([
             'query' => $searchQuery !== '' ? $searchQuery : null,
@@ -52,6 +59,9 @@
         @if($filterGroup->meta_title)<meta name="title" content="{{ $filterGroup->meta_title }}">@endif
         @if($filterGroup->meta_description)<meta name="description" content="{{ $filterGroup->meta_description }}">@endif
         @if($filterGroup->meta_keywords)<meta name="keywords" content="{{ $filterGroup->meta_keywords }}">@endif
+    @elseif($catalogLandingColor)
+        <title>{{ $catalogPageTitle.' — '.trans('base.site_title').$paginationTitleSuffix }}</title>
+        <meta name="title" content="{{ $catalogPageTitle.' — '.trans('base.site_title') }}">
     @else
         <title>{{ $catalogPageTitle.' — '.trans('base.site_title').$paginationTitleSuffix }}</title>
     @endif

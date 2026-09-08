@@ -4,6 +4,7 @@ namespace App\Http\Actions\Store\Catalog\Pages;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Catalog\CatalogFilterRequest;
+use App\Services\Catalog\CatalogColorUrlService;
 use App\Services\Color\ColorService;
 use App\Services\Currency\CurrencyService;
 use App\Services\Product\ProductFiltersService;
@@ -25,6 +26,10 @@ class ShowAllProductsFilterPageAction extends BaseAction
 
         $baseCurrency = $currencyService->getBaseCurrency();
         $colors = $colorService->getAllColors();
+        $catalogLandingColor = app(CatalogColorUrlService::class)->landingColor(
+            $filtersData->filters,
+            $colors,
+        );
 
         $page = $filtersData->filters['page'] ?? 1;
 
@@ -45,6 +50,7 @@ class ShowAllProductsFilterPageAction extends BaseAction
             'filtersData' => $filtersData->filters,
             'productStatuses' => $catalogService->getAvailableProductStatuses(),
             'colors' => $colors,
+            'catalogLandingColor' => $catalogLandingColor,
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getAllProductsMaxPrice($filtersData),

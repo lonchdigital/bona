@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\ApplicationConfig;
 use App\Models\CatalogMenuConfiguration;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\CatalogMenu\CatalogMenuService;
@@ -124,6 +125,55 @@ class CatalogMenuTest extends TestCase
             ->assertSee('Barausse')
             ->assertSee('/product-category/visible-doors/manufacturer/barausse', false)
             ->assertSee('class="bona-mainnav__direct"', false);
+    }
+
+    public function test_storefront_rewrites_legacy_color_menu_links_to_the_current_catalog_filter(): void
+    {
+        $productType = $this->productType([
+            'slug' => 'interior-doors',
+            'name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери'],
+            'sort_order' => 1,
+        ]);
+        $color = Color::query()->create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Білий', 'ru' => 'Белый'],
+            'slug' => 'white',
+            'display_as_image' => false,
+            'hex' => '#ffffff',
+        ]);
+
+        CatalogMenuConfiguration::query()->create([
+            'product_type_id' => $productType->id,
+            'is_visible' => true,
+            'sort_order' => 0,
+            'show_in_header' => false,
+            'header_order' => 0,
+            'cards' => [],
+            'columns' => [[
+                'title' => ['uk' => 'За кольором', 'ru' => 'По цвету'],
+                'sort_order' => 0,
+                'items' => [[
+                    'category_id' => null,
+                    'label' => ['uk' => 'Білі двері', 'ru' => 'Белые двери'],
+                    'url' => [
+                        'uk' => '/product-category/interior-doors/color/'.$color->id,
+                        'ru' => '/ru/product-category/interior-doors/color/'.$color->id,
+                    ],
+                    'sort_order' => 0,
+                ]],
+            ]],
+        ]);
+        app(CatalogMenuService::class)->forgetCache();
+
+        $this->get(route('store.home'))
+            ->assertOk()
+            ->assertSee('/product-category/interior-doors/filter/color=white', false)
+            ->assertDontSee('/product-category/interior-doors/color/'.$color->id, false);
+
+        $this->get(route('localized.store.home', ['lang' => 'ru']))
+            ->assertOk()
+            ->assertSee('/ru/product-category/interior-doors/filter/color=white', false)
+            ->assertDontSee('/ru/product-category/interior-doors/color/'.$color->id, false);
     }
 
     public function test_interior_doors_menu_uses_the_reference_style_cards_and_real_catalogue_links(): void
