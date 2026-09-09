@@ -28,14 +28,12 @@
                                     <button type="submit" class="btn btn-dark">{{ trans('admin.save') }}</button>
                                 </div>
                             </div>
-                            <p>
-                                <strong>
-                                    {{ trans('admin.visit_request_information') }}:
-                                </strong>
-                                @if( !is_null($visitRequest->form_title) )
-                                    <span>{{ $visitRequest->form_title }}</span>
-                                @endif
-                            </p>
+                            <div class="mb-3">
+                                <strong class="text-dark">{{ trans('admin.visit_request_type') }}</strong>
+                                <div class="mt-1">
+                                    {{ filled($visitRequest->form_title) ? $visitRequest->form_title : trans('admin.visit_request_type_unknown') }}
+                                </div>
+                            </div>
 
                             <div class="mb-3">
                                 <strong class="text-dark">{{ trans('admin.visit_request_name') }}</strong>

@@ -31,7 +31,12 @@ class ShowProductsListPageAction
         });
 
         if ($styleField) {
-            $styleField->setRelation('options', $styleField->optionsWithProducts($productType)->values());
+            $styleField->setRelation(
+                'options',
+                $styleField->options
+                    ->sortBy(fn ($option) => Str::lower((string) $option->name))
+                    ->values(),
+            );
         }
 
         $productsPaginated = $service->getProductsByTypePaginatedAdmin($productType, $dto, $styleField?->id);

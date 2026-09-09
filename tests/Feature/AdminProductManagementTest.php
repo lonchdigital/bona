@@ -4,10 +4,12 @@ namespace Tests\Feature;
 
 use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\Models\Brand;
+use App\Models\Category;
 use App\Models\ProductField;
 use App\Models\ProductFieldOption;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Product\DTO\FilterProductAdminDTO;
 use App\Services\Product\DTO\FilterProductDTO;
 use App\Services\Product\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,6 +30,11 @@ class AdminProductManagementTest extends TestCase
             'has_brand' => true,
         ]);
         [$styleField, $classicStyle] = $this->styleField($productType);
+        ProductFieldOption::create([
+            'product_field_id' => $styleField->id,
+            'name' => ['uk' => 'Хай-тек', 'ru' => 'Хай-тек'],
+            'slug' => 'hi-tech-'.$productType->id,
+        ]);
         $brand = $this->brand('ArtPorte');
 
         foreach (range(1, 31) as $position) {
@@ -54,10 +61,15 @@ class AdminProductManagementTest extends TestCase
             ->assertSee('Фото')
             ->assertSee('Стиль')
             ->assertSee('Класика')
+            ->assertSee('Хай-тек')
             ->assertSee('ArtPorte')
             ->assertSee('data-product-sortable', false)
             ->assertSee('draggable="true"', false)
             ->assertSee('sort=name', false)
+            ->assertSee('sort=id', false)
+            ->assertSee('sort=sku', false)
+            ->assertSee('sort=brand', false)
+            ->assertSee('sort=style', false)
             ->assertSee('sort=created_at', false)
             ->assertDontSee('<th>Автор</th>', false);
 
@@ -99,6 +111,14 @@ class AdminProductManagementTest extends TestCase
             'custom_fields' => [(string) $styleField->id => (string) $modernStyle->id],
             'sort_order' => 3,
         ]);
+        $unstyled = $this->makeProduct([
+            'product_type_id' => $productType->id,
+            'brand_id' => $targetBrand->id,
+            'name' => ['uk' => 'Без стилю', 'ru' => 'Без стиля'],
+            'sku' => 'NO-STYLE',
+            'custom_fields' => null,
+            'sort_order' => 4,
+        ]);
 
         $response = $this->actingAs($this->admin())->get(route('admin.product.list.page', [
             'productType' => $productType->id,
@@ -113,9 +133,77 @@ class AdminProductManagementTest extends TestCase
             ->assertSee('Альфа двері')
             ->assertSee('Бета двері')
             ->assertDontSee('Модерн двері')
+            ->assertDontSee('NO-STYLE')
             ->assertSeeInOrder(['Альфа двері', 'Бета двері'])
             ->assertSee('<option value="50" selected>50</option>', false)
             ->assertSee('Ручний порядок');
+
+        $withoutStyleResponse = $this->actingAs($this->admin())->get(route('admin.product.list.page', [
+            'productType' => $productType->id,
+            'style_option_id' => FilterProductAdminDTO::WITHOUT_STYLE,
+        ]));
+
+        $withoutStyleResponse->assertOk()
+            ->assertSee('<option value="without-style" selected>Без стилю</option>', false);
+        $this->assertSame([$unstyled->id], $this->listedProductIds($withoutStyleResponse->getContent()));
+    }
+
+    public function test_admin_can_sort_every_meaningful_product_table_column(): void
+    {
+        $productType = $this->productType([
+            'slug' => 'sortable-admin-doors',
+            'name' => 'Сортовані двері',
+            'has_brand' => true,
+            'has_category' => true,
+        ]);
+        [$styleField, $classicStyle, $modernStyle] = $this->styleField($productType, true);
+        $zetaBrand = $this->brand('Zeta Brand');
+        $alphaBrand = $this->brand('Alpha Brand');
+        $zetaCategory = $this->category($productType, 'Zeta Category');
+        $alphaCategory = $this->category($productType, 'Alpha Category');
+
+        $first = $this->makeProduct([
+            'product_type_id' => $productType->id,
+            'brand_id' => $alphaBrand->id,
+            'name' => ['uk' => 'Яскраві двері', 'ru' => 'Яркие двери'],
+            'sku' => 'Z-200',
+            'custom_fields' => [(string) $styleField->id => (string) $modernStyle->id],
+            'created_at' => '2026-09-02 10:00:00',
+            'updated_at' => '2026-09-02 10:00:00',
+        ]);
+        $first->categories()->attach($zetaCategory);
+
+        $second = $this->makeProduct([
+            'product_type_id' => $productType->id,
+            'brand_id' => $zetaBrand->id,
+            'name' => ['uk' => 'Акуратні двері', 'ru' => 'Аккуратные двери'],
+            'sku' => 'A-100',
+            'custom_fields' => [(string) $styleField->id => (string) $classicStyle->id],
+            'created_at' => '2026-09-01 10:00:00',
+            'updated_at' => '2026-09-01 10:00:00',
+        ]);
+        $second->categories()->attach($alphaCategory);
+
+        $expectedOrders = [
+            'id' => [$first->id, $second->id],
+            'sku' => [$second->id, $first->id],
+            'name' => [$second->id, $first->id],
+            'category' => [$second->id, $first->id],
+            'brand' => [$first->id, $second->id],
+            'style' => [$second->id, $first->id],
+            'created_at' => [$second->id, $first->id],
+        ];
+
+        foreach ($expectedOrders as $sort => $expectedIds) {
+            $response = $this->actingAs($this->admin())->get(route('admin.product.list.page', [
+                'productType' => $productType->id,
+                'sort' => $sort,
+                'direction' => 'asc',
+            ]));
+
+            $response->assertOk();
+            $this->assertSame($expectedIds, $this->listedProductIds($response->getContent()), $sort);
+        }
     }
 
     public function test_reordering_a_filtered_subset_changes_the_default_storefront_order_without_moving_hidden_products(): void
@@ -369,6 +457,23 @@ class AdminProductManagementTest extends TestCase
             'slug' => str($name)->slug().'-'.uniqid(),
             'description' => ['uk' => $name, 'ru' => $name],
         ]);
+    }
+
+    private function category($productType, string $name): Category
+    {
+        return Category::create([
+            'creator_id' => $this->author()->id,
+            'product_type_id' => $productType->id,
+            'name' => ['uk' => $name, 'ru' => $name],
+            'slug' => str($name)->slug().'-'.uniqid(),
+        ]);
+    }
+
+    private function listedProductIds(string $html): array
+    {
+        preg_match_all('/data-product-row data-product-id="(\d+)"/', $html, $matches);
+
+        return array_map('intval', $matches[1]);
     }
 
     private function admin(): User

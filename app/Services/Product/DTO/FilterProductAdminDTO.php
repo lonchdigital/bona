@@ -6,6 +6,8 @@ use App\Services\Base\DTO\BaseDTO;
 
 class FilterProductAdminDTO implements BaseDTO
 {
+    public const WITHOUT_STYLE = 'without-style';
+
     public function __construct(
         public readonly ?string $search,
         public readonly ?int $brandId,
@@ -14,6 +16,7 @@ class FilterProductAdminDTO implements BaseDTO
         public readonly ?int $countryId,
         public readonly ?int $categoryId,
         public readonly ?int $styleOptionId,
+        public readonly bool $withoutStyle,
         public readonly int $perPage,
         public readonly string $sort,
         public readonly string $direction,

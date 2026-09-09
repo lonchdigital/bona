@@ -42,8 +42,11 @@ class ProductFilterRequest extends BaseRequest
             ],
             'style_option_id' => [
                 'nullable',
-                'integer',
-                'exists:product_field_options,id',
+                Rule::when(
+                    $this->input('style_option_id') === FilterProductAdminDTO::WITHOUT_STYLE,
+                    Rule::in([FilterProductAdminDTO::WITHOUT_STYLE]),
+                    ['integer', 'exists:product_field_options,id'],
+                ),
             ],
             'per_page' => [
                 'nullable',
@@ -53,7 +56,7 @@ class ProductFilterRequest extends BaseRequest
             'sort' => [
                 'nullable',
                 'string',
-                Rule::in(['position', 'name', 'created_at']),
+                Rule::in(['position', 'id', 'sku', 'name', 'category', 'brand', 'style', 'created_at']),
             ],
             'direction' => [
                 'nullable',
@@ -65,6 +68,8 @@ class ProductFilterRequest extends BaseRequest
 
     public function toDTO(): FilterProductAdminDTO
     {
+        $styleFilter = $this->input('style_option_id');
+
         return new FilterProductAdminDTO(
             $this->input('search'),
             $this->input('brand_id'),
@@ -72,7 +77,8 @@ class ProductFilterRequest extends BaseRequest
             $this->input('collection_id'),
             $this->input('country_id'),
             $this->input('category_id'),
-            $this->input('style_option_id'),
+            is_numeric($styleFilter) ? (int) $styleFilter : null,
+            $styleFilter === FilterProductAdminDTO::WITHOUT_STYLE,
             (int) $this->input('per_page', config('domain.admin_products_items_per_page', 30)),
             (string) $this->input('sort', 'position'),
             (string) $this->input('direction', 'asc'),

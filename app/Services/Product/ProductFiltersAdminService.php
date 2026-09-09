@@ -53,6 +53,18 @@ class ProductFiltersAdminService extends BaseService
             $query->whereJsonContains('custom_fields->'.$styleFieldId, (string) $request->styleOptionId);
         }
 
+        if ($styleFieldId && $request->withoutStyle) {
+            $stylePath = '$."'.$styleFieldId.'"';
+
+            $query->where(function (Builder $query) use ($stylePath) {
+                $query->whereNull('custom_fields')
+                    ->orWhereRaw('JSON_EXTRACT(custom_fields, ?) IS NULL', [$stylePath])
+                    ->orWhereRaw("JSON_TYPE(JSON_EXTRACT(custom_fields, ?)) = 'NULL'", [$stylePath])
+                    ->orWhereRaw('JSON_LENGTH(JSON_EXTRACT(custom_fields, ?)) = 0', [$stylePath])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(custom_fields, ?)) = ''", [$stylePath]);
+            });
+        }
+
         return $query;
     }
 

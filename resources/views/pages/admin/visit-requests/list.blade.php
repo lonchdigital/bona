@@ -42,6 +42,7 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>{{ trans('admin.visit_request_created_at') }}</th>
+                                                    <th>{{ trans('admin.visit_request_type') }}</th>
                                                     <th>{{ trans('admin.visit_request_name') }}</th>
                                                     <th>{{ trans('admin.visit_request_phone') }}</th>
                                                     <th class="text-center">{{ trans('admin.status') }}</th>
@@ -55,6 +56,11 @@
                                                         data-href="{{ route('admin.visit-request.details.page', ['visitRequest' => $visitRequest->id]) }}">
                                                         <td>{{ $visitRequest->id }}</td>
                                                         <td class="text-nowrap">{{ $visitRequest->created_at->copy()->timezone('Europe/Kyiv')->format('d.m.Y H:i') }}</td>
+                                                        <td>
+                                                            <span class="badge badge-light border px-2 py-1">
+                                                                {{ filled($visitRequest->form_title) ? $visitRequest->form_title : trans('admin.visit_request_type_unknown') }}
+                                                            </span>
+                                                        </td>
                                                         <td>
                                                             <a class="visit-request-row__link text-dark"
                                                                href="{{ route('admin.visit-request.details.page', ['visitRequest' => $visitRequest->id]) }}"
@@ -75,7 +81,7 @@
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="6" class="py-4 text-center text-muted">{{ trans('admin.visit_requests_empty') }}</td>
+                                                        <td colspan="7" class="py-4 text-center text-muted">{{ trans('admin.visit_requests_empty') }}</td>
                                                     </tr>
                                                 @endforelse
                                                 </tbody>

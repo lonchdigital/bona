@@ -42,6 +42,9 @@ class VisitRequestAdminTest extends TestCase
             ->assertSee('<h2 class="mb-2 page-title">Заявки</h2>', false)
             ->assertDontSee('Список запитів')
             ->assertSee('Дата і час')
+            ->assertSee('Тип заявки')
+            ->assertSee('Виклик майстра')
+            ->assertSee('Консультація')
             ->assertSee('05.09.2026 15:30')
             ->assertSee('data-visit-request-row', false)
             ->assertSee('data-href="'.route('admin.visit-request.details.page', $newerRequest).'"', false)
@@ -52,6 +55,8 @@ class VisitRequestAdminTest extends TestCase
             ->get(route('admin.visit-request.details.page', $newerRequest))
             ->assertOk()
             ->assertSee('Заявка №'.$newerRequest->id)
+            ->assertSee('Тип заявки')
+            ->assertSee('Виклик майстра')
             ->assertSee('Потрібен замір двох дверей')
             ->assertSee('http://localhost/services/measurement');
     }

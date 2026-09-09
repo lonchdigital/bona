@@ -9,7 +9,9 @@
         || filled($searchData->brandId)
         || filled($searchData->countryId)
         || filled($searchData->categoryId)
-        || filled($searchData->styleOptionId);
+        || filled($searchData->styleOptionId)
+        || $searchData->withoutStyle;
+    $withoutStyleValue = App\Services\Product\DTO\FilterProductAdminDTO::WITHOUT_STYLE;
     $manualOrderUrl = route($listRoute, array_merge(
         $baseRouteParameters,
         request()->except(['page', 'sort', 'direction']),
@@ -91,6 +93,7 @@
                                     <label for="style_option_id">{{ trans('admin.product_style') }}</label>
                                     <select class="form-control select2" name="style_option_id" id="style_option_id">
                                         <option value="">{{ trans('admin.select_style') }}</option>
+                                        <option value="{{ $withoutStyleValue }}" @selected($searchData->withoutStyle)>{{ trans('admin.products_without_style') }}</option>
                                         @foreach($styleField->options as $styleOption)
                                             <option value="{{ $styleOption->id }}" @selected($searchData->styleOptionId === $styleOption->id)>{{ $styleOption->name }}</option>
                                         @endforeach
@@ -166,9 +169,19 @@
                                 <thead>
                                     <tr>
                                         <th class="admin-products-table__drag"><span class="sr-only">{{ trans('admin.product_manual_order') }}</span></th>
-                                        <th>#</th>
+                                        <th aria-sort="{{ $searchData->sort === 'id' ? ($searchData->direction === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                            <a class="admin-product-sort {{ $searchData->sort === 'id' ? 'is-active' : '' }}" href="{{ $sortUrl('id') }}">
+                                                <span>#</span>
+                                                <svg viewBox="0 0 12 14" aria-hidden="true"><path d="M3 1v11m0 0L1 10m2 2 2-2M9 13V2m0 0L7 4m2-2 2 2"/></svg>
+                                            </a>
+                                        </th>
                                         <th>{{ trans('admin.product_image') }}</th>
-                                        <th>{{ trans('admin.sku') }}</th>
+                                        <th aria-sort="{{ $searchData->sort === 'sku' ? ($searchData->direction === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                            <a class="admin-product-sort {{ $searchData->sort === 'sku' ? 'is-active' : '' }}" href="{{ $sortUrl('sku') }}">
+                                                <span>{{ trans('admin.sku') }}</span>
+                                                <svg viewBox="0 0 12 14" aria-hidden="true"><path d="M3 1v11m0 0L1 10m2 2 2-2M9 13V2m0 0L7 4m2-2 2 2"/></svg>
+                                            </a>
+                                        </th>
                                         <th aria-sort="{{ $searchData->sort === 'name' ? ($searchData->direction === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                             <a class="admin-product-sort {{ $searchData->sort === 'name' ? 'is-active' : '' }}" href="{{ $sortUrl('name') }}">
                                                 <span>{{ trans('admin.name') }}</span>
@@ -176,13 +189,28 @@
                                             </a>
                                         </th>
                                         @if($productType->has_category)
-                                            <th>{{ trans('admin.category') }}</th>
+                                            <th aria-sort="{{ $searchData->sort === 'category' ? ($searchData->direction === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                                <a class="admin-product-sort {{ $searchData->sort === 'category' ? 'is-active' : '' }}" href="{{ $sortUrl('category') }}">
+                                                    <span>{{ trans('admin.category') }}</span>
+                                                    <svg viewBox="0 0 12 14" aria-hidden="true"><path d="M3 1v11m0 0L1 10m2 2 2-2M9 13V2m0 0L7 4m2-2 2 2"/></svg>
+                                                </a>
+                                            </th>
                                         @endif
                                         @if($productType->has_brand)
-                                            <th>{{ trans('admin.brand') }}</th>
+                                            <th aria-sort="{{ $searchData->sort === 'brand' ? ($searchData->direction === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                                <a class="admin-product-sort {{ $searchData->sort === 'brand' ? 'is-active' : '' }}" href="{{ $sortUrl('brand') }}">
+                                                    <span>{{ trans('admin.brand') }}</span>
+                                                    <svg viewBox="0 0 12 14" aria-hidden="true"><path d="M3 1v11m0 0L1 10m2 2 2-2M9 13V2m0 0L7 4m2-2 2 2"/></svg>
+                                                </a>
+                                            </th>
                                         @endif
                                         @if($styleField)
-                                            <th>{{ trans('admin.product_style') }}</th>
+                                            <th aria-sort="{{ $searchData->sort === 'style' ? ($searchData->direction === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                                <a class="admin-product-sort {{ $searchData->sort === 'style' ? 'is-active' : '' }}" href="{{ $sortUrl('style') }}">
+                                                    <span>{{ trans('admin.product_style') }}</span>
+                                                    <svg viewBox="0 0 12 14" aria-hidden="true"><path d="M3 1v11m0 0L1 10m2 2 2-2M9 13V2m0 0L7 4m2-2 2 2"/></svg>
+                                                </a>
+                                            </th>
                                         @endif
                                         <th aria-sort="{{ $searchData->sort === 'created_at' ? ($searchData->direction === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                             <a class="admin-product-sort {{ $searchData->sort === 'created_at' ? 'is-active' : '' }}" href="{{ $sortUrl('created_at') }}">

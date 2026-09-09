@@ -2,6 +2,7 @@
 
 namespace App\Services\Product;
 
+use App\Models\Brand;
 use App\Models\CartProducts;
 use App\Models\Category;
 use App\Models\Color;
@@ -12,6 +13,7 @@ use App\Models\HomePageNewProducts;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\ProductField;
+use App\Models\ProductFieldOption;
 use App\Models\ProductSeoText;
 use App\Models\ProductText;
 use App\Models\ProductType;
@@ -57,17 +59,62 @@ class ProductService extends BaseService
 
         $query = $this->filtersAdminService->handleProductFilters($request, $query, $styleFieldId);
 
-        if ($request->sort === 'name') {
-            $query->orderBy('name->'.app()->getLocale(), $request->direction)
-                ->orderBy('id', $request->direction);
-        } elseif ($request->sort === 'created_at') {
-            $query->orderBy('created_at', $request->direction)
-                ->orderBy('id', $request->direction);
-        } else {
-            $query->orderByCatalogPosition();
-        }
+        $this->applyAdminProductSorting($query, $request, $styleFieldId);
 
         return $query->paginate($request->perPage);
+    }
+
+    private function applyAdminProductSorting(Builder $query, FilterProductAdminDTO $request, ?int $styleFieldId): void
+    {
+        $direction = $request->direction === 'desc' ? 'desc' : 'asc';
+        $locale = app()->getLocale();
+
+        if ($request->sort === 'position') {
+            $query->orderByCatalogPosition();
+
+            return;
+        }
+
+        if ($request->sort === 'category') {
+            $categoryName = Category::query()
+                ->select('categories.name->'.$locale)
+                ->join('product_categories', 'product_categories.category_id', '=', 'categories.id')
+                ->whereColumn('product_categories.product_id', 'products.id')
+                ->orderBy('categories.name->'.$locale)
+                ->limit(1);
+
+            $query->orderBy($categoryName, $direction);
+        } elseif ($request->sort === 'brand') {
+            $brandName = Brand::query()
+                ->select('brands.name->'.$locale)
+                ->whereColumn('brands.id', 'products.brand_id')
+                ->limit(1);
+
+            $query->orderBy($brandName, $direction);
+        } elseif ($request->sort === 'style' && $styleFieldId) {
+            $stylePath = '$."'.$styleFieldId.'"';
+            $firstStylePath = $stylePath.'[0]';
+            $styleName = ProductFieldOption::query()
+                ->select('product_field_options.name->'.$locale)
+                ->where('product_field_options.product_field_id', $styleFieldId)
+                ->whereRaw(
+                    'product_field_options.id = CAST(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(products.custom_fields, ?)), JSON_UNQUOTE(JSON_EXTRACT(products.custom_fields, ?))) AS UNSIGNED)',
+                    [$firstStylePath, $stylePath],
+                )
+                ->limit(1);
+
+            $query->orderBy($styleName, $direction);
+        } elseif (in_array($request->sort, ['id', 'sku', 'created_at'], true)) {
+            $query->orderBy('products.'.$request->sort, $direction);
+        } elseif ($request->sort === 'name') {
+            $query->orderBy('products.name->'.$locale, $direction);
+        } else {
+            $query->orderByCatalogPosition();
+
+            return;
+        }
+
+        $query->orderBy('products.id', $direction);
     }
 
     public function reorderProducts(ProductType $productType, array $orderedProductIds): ServiceActionResult
