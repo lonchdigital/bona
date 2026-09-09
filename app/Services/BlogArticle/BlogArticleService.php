@@ -26,23 +26,37 @@ class BlogArticleService extends BaseService
         // Newest first. Without an explicit order the database returns the rows
         // by primary key, which put every freshly published article last.
         return BlogArticle::latest()
+            ->availableInLocale()
+            ->orderByDesc('id')
+            ->paginate(config('domain.blog_items_per_page'));
+    }
+
+    public function getAdminBlogArticlesListPaginated()
+    {
+        return BlogArticle::latest()
             ->orderByDesc('id')
             ->paginate(config('domain.blog_items_per_page'));
     }
 
     public function getLatestArticlesExceptCurrent(int $currentArticleId)
     {
-        return BlogArticle::latest()->limit(3)->whereNot('id', $currentArticleId)->get();
+        return BlogArticle::latest()
+            ->availableInLocale()
+            ->limit(3)
+            ->whereNot('id', $currentArticleId)
+            ->get();
     }
 
     public function getLatestArticles(int $count)
     {
-        return BlogArticle::latest()->limit($count)->get();
+        return BlogArticle::latest()->availableInLocale()->limit($count)->get();
     }
 
     public function getBlogArticlesByCategoryListPaginated(BlogCategory $blogCategory)
     {
-        return BlogArticle::where('blog_category_id', $blogCategory->id)->paginate(config('domain.items_per_page'));
+        return BlogArticle::availableInLocale()
+            ->where('blog_category_id', $blogCategory->id)
+            ->paginate(config('domain.items_per_page'));
     }
 
     /**

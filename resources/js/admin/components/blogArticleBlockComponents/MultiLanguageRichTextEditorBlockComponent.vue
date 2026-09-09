@@ -60,6 +60,7 @@ export default {
                         :title="$t('admin.blog_article_text')"
                         :content="content"
                         :errors="errors"
+                        :allow-html-source="true"
                     />
                 </div>
             </div>

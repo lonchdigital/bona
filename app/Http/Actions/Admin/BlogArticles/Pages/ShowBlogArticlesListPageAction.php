@@ -10,7 +10,7 @@ class ShowBlogArticlesListPageAction extends BaseAction
     public function __invoke(BlogArticleService $blogArticleService)
     {
         return view('pages.admin.blog-articles.list', [
-            'blogArticlesPaginated' => $blogArticleService->getBlogArticlesListPaginated(),
+            'blogArticlesPaginated' => $blogArticleService->getAdminBlogArticlesListPaginated(),
         ]);
     }
 }

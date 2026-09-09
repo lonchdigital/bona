@@ -17,6 +17,21 @@
             ? $canonicalUrl
             : url($canonicalUrl);
         $alternateLinks = App\Services\Locale\LocaleService::alternateLinks($canonicalUrl);
+        if (isset($seoAlternateLocales) && is_array($seoAlternateLocales)) {
+            $localeHreflangs = ['uk' => 'uk-UA', 'ru' => 'ru-UA'];
+            $allowedHreflangs = collect($seoAlternateLocales)
+                ->map(fn ($locale) => $localeHreflangs[$locale] ?? null)
+                ->filter()
+                ->values();
+            $alternateLinks = collect($alternateLinks)
+                ->only($allowedHreflangs)
+                ->all();
+
+            if ($allowedHreflangs->isNotEmpty()) {
+                $defaultHreflang = $allowedHreflangs->contains('uk-UA') ? 'uk-UA' : $allowedHreflangs->first();
+                $alternateLinks['x-default'] = $alternateLinks[$defaultHreflang];
+            }
+        }
         $pageTitle = trim($__env->yieldContent('seo_title'))
             ?: config('app.name').' - '.trans('base.site_title');
         $pageDescription = trim($__env->yieldContent('meta_description'));
@@ -35,6 +50,12 @@
             : url($socialImage);
         $ogLocale = app()->getLocale() === 'ru' ? 'ru_UA' : 'uk_UA';
         $ogAlternateLocale = app()->getLocale() === 'ru' ? 'uk_UA' : 'ru_UA';
+        if (isset($seoAlternateLocales) && is_array($seoAlternateLocales)) {
+            $alternateLocaleCode = app()->getLocale() === 'ru' ? 'uk' : 'ru';
+            $ogAlternateLocale = in_array($alternateLocaleCode, $seoAlternateLocales, true)
+                ? $ogAlternateLocale
+                : null;
+        }
     @endphp
 
     @hasSection('seo_title')
@@ -64,7 +85,9 @@
     @endforeach
 
     <meta property="og:locale" content="{{ $ogLocale }}">
-    <meta property="og:locale:alternate" content="{{ $ogAlternateLocale }}">
+    @if($ogAlternateLocale)
+        <meta property="og:locale:alternate" content="{{ $ogAlternateLocale }}">
+    @endif
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:title" content="{{ $ogTitle }}">
     @if($ogDescription !== '')

@@ -31,17 +31,10 @@ return [
     'author_email' => env('SERP_AGENT_AUTHOR_EMAIL'),
 
     /*
-     * Locale the incoming articles are written in when the payload carries
-     * no explicit "locale" field.
+     * Locale used only by connection checks and translation-link events.
+     * A delivery that contains an article must declare its locale explicitly.
      */
     'default_locale' => env('SERP_AGENT_DEFAULT_LOCALE', 'uk'),
-
-    /*
-     * Copy the received text into every other site language as well. The blog
-     * renders article blocks per locale without a fallback, so with this off
-     * an article received in "uk" would show an empty body on /ru.
-     */
-    'mirror_to_other_locales' => (bool) env('SERP_AGENT_MIRROR_LOCALES', true),
 
     /*
      * blog_articles.hero_image_path is NOT NULL. When a payload carries no

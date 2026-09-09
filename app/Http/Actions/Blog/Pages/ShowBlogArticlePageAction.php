@@ -26,6 +26,8 @@ class ShowBlogArticlePageAction extends BaseAction
         LastModified::set($blogArticle->updated_at);
 
         $locale = app()->getLocale();
+        abort_unless($blogArticle->hasLocaleVersion($locale), 404);
+
         $latestArticles = $blogArticleService->getLatestArticlesExceptCurrent($blogArticle->id);
         $articleRecommendedLinks = $blogArticleService->extractEditorialLinks($blogArticle, $locale, 'related');
         $articleUsefulLinks = $blogArticleService->extractEditorialLinks($blogArticle, $locale, 'resources');
@@ -70,6 +72,7 @@ class ShowBlogArticlePageAction extends BaseAction
             // then falls back to the loose author fields in the global config.
             'articleAuthor' => $authorService->getDefaultAuthor(),
             'articleFaq' => $blogArticleService->extractFaq($blogArticle, app()->getLocale()),
+            'seoAlternateLocales' => $blogArticle->availableLocales(),
         ]);
     }
 }

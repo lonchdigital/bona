@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Helpers\PreviewImage;
+use App\Services\Application\ApplicationConfigService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -58,12 +60,45 @@ class BlogArticle extends Model implements Sitemapable
         return $array;
     }
 
+    public function scopeAvailableInLocale(Builder $query, ?string $locale = null): Builder
+    {
+        $locale ??= app()->getLocale();
+
+        return $query
+            ->whereNotNull("name->{$locale}")
+            ->where("name->{$locale}", '<>', '');
+    }
+
+    public function hasLocaleVersion(string $locale): bool
+    {
+        $name = $this->getTranslations('name')[$locale] ?? null;
+
+        return is_string($name) && trim($name) !== '';
+    }
+
+    /** @return array<int, string> */
+    public function availableLocales(): array
+    {
+        return collect(app(ApplicationConfigService::class)->getAvailableLanguages())
+            ->filter(fn (string $locale) => $this->hasLocaleVersion($locale))
+            ->values()
+            ->all();
+    }
+
     public function toSitemapTag(): Url|string|array
     {
-        $urls = [];
-        $urls[] = route('blog.article.page', ['blogArticleSlug' => $this->slug]);
-        $urls[] = '/ru'.route('blog.article.page', ['blogArticleSlug' => $this->slug], false);
+        return collect($this->availableLocales())
+            ->map(function (string $locale) {
+                if ($locale === config('app.fallback_locale')) {
+                    return route('blog.article.page', ['blogArticleSlug' => $this->slug]);
+                }
 
-        return $urls;
+                return route('localized.blog.article.page', [
+                    'lang' => $locale,
+                    'blogArticleSlug' => $this->slug,
+                ]);
+            })
+            ->values()
+            ->all();
     }
 }

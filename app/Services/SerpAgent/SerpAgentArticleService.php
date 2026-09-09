@@ -40,7 +40,12 @@ class SerpAgentArticleService extends BaseService
     public function storeArticle(SerpAgentArticleDTO $dto): array
     {
         $languages = $this->applicationConfigService->getAvailableLanguages();
-        $locale = in_array($dto->locale, $languages, true) ? $dto->locale : (string) config('app.fallback_locale');
+
+        if (! in_array($dto->locale, $languages, true)) {
+            throw new SerpAgentException('The payload contains an unsupported locale.', 422);
+        }
+
+        $locale = $dto->locale;
 
         if ($dto->isTranslationsUpdate) {
             return $this->applyTranslationsUpdate($dto);
@@ -99,9 +104,9 @@ class SerpAgentArticleService extends BaseService
 
         try {
             return $this->coverWithDBTransactionWithoutResponse(
-                function () use ($dto, $existingArticle, $slug, $locale, $languages, $heading, $body, $author, $heroImage) {
+                function () use ($dto, $existingArticle, $slug, $locale, $heading, $body, $author, $heroImage) {
                     $article = $this->persistArticle(
-                        $dto, $existingArticle, $slug, $locale, $languages, $heading, $body, $author, $heroImage['path']
+                        $dto, $existingArticle, $slug, $locale, $heading, $body, $author, $heroImage['path']
                     );
 
                     return [
@@ -163,7 +168,6 @@ class SerpAgentArticleService extends BaseService
         ?BlogArticle $existingArticle,
         string $slug,
         string $locale,
-        array $languages,
         string $heading,
         string $body,
         User $author,
@@ -174,8 +178,8 @@ class SerpAgentArticleService extends BaseService
         $fields = [
             'slug' => $slug,
             'external_source' => self::EXTERNAL_SOURCE,
-            'name' => $this->mergeTranslations($existingArticle, 'name', $heading, $locale, $languages),
-            'preview_text' => $this->mergeTranslations($existingArticle, 'preview_text', $previewText, $locale, $languages),
+            'name' => $this->mergeTranslations($existingArticle, 'name', $heading, $locale),
+            'preview_text' => $this->mergeTranslations($existingArticle, 'preview_text', $previewText, $locale),
         ];
 
         if ($dto->externalId) {
@@ -191,7 +195,7 @@ class SerpAgentArticleService extends BaseService
             'meta_description' => $dto->metaDescription,
             'meta_keywords' => $dto->metaKeywords,
         ] as $attribute => $value) {
-            $translations = $this->mergeTranslations($existingArticle, $attribute, $value, $locale, $languages);
+            $translations = $this->mergeTranslations($existingArticle, $attribute, $value, $locale);
 
             if ($translations) {
                 $fields[$attribute] = $translations;
@@ -222,7 +226,7 @@ class SerpAgentArticleService extends BaseService
             $article = BlogArticle::create($fields);
         }
 
-        $this->syncTextBlock($article, $body, $locale, $languages);
+        $this->syncTextBlock($article, $body, $locale);
 
         return $article;
     }
@@ -233,7 +237,7 @@ class SerpAgentArticleService extends BaseService
      * therefore lives in a single text block, which is reused on updates so
      * that image or video blocks added by hand survive.
      */
-    private function syncTextBlock(BlogArticle $article, string $body, string $locale, array $languages): void
+    private function syncTextBlock(BlogArticle $article, string $body, string $locale): void
     {
         $textBlock = $article->blocks()
             ->where('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT)
@@ -251,18 +255,6 @@ class SerpAgentArticleService extends BaseService
         }
 
         $content[$locale] = $body;
-
-        if (config('serp-agent.mirror_to_other_locales')) {
-            foreach ($languages as $language) {
-                if ($language === $locale) {
-                    continue;
-                }
-
-                if (! isset($content[$language]) || trim((string) $content[$language]) === '') {
-                    $content[$language] = $body;
-                }
-            }
-        }
 
         if ($textBlock) {
             $textBlock->update(['content' => $content]);
@@ -372,7 +364,6 @@ class SerpAgentArticleService extends BaseService
         string $attribute,
         ?string $value,
         string $locale,
-        array $languages,
     ): array {
         $translations = [];
 
@@ -391,18 +382,6 @@ class SerpAgentArticleService extends BaseService
         }
 
         $translations[$locale] = $value;
-
-        if (config('serp-agent.mirror_to_other_locales')) {
-            foreach ($languages as $language) {
-                if ($language === $locale) {
-                    continue;
-                }
-
-                if (! isset($translations[$language]) || trim($translations[$language]) === '') {
-                    $translations[$language] = $value;
-                }
-            }
-        }
 
         return $translations;
     }

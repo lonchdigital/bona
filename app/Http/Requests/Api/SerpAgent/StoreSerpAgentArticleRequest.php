@@ -6,6 +6,7 @@ use App\Http\Requests\BaseRequest;
 use App\Services\SerpAgent\DTO\SerpAgentArticleDTO;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class StoreSerpAgentArticleRequest extends BaseRequest
 {
@@ -67,7 +68,12 @@ class StoreSerpAgentArticleRequest extends BaseRequest
             'external_id' => ['nullable', 'string', 'max:191'],
             'translation_group_id' => ['nullable', 'string', 'max:191'],
             'serp_event' => ['nullable', 'string', 'max:64'],
-            'locale' => ['nullable', 'string', 'in:'.implode(',', $this->availableLanguages)],
+            'locale' => [
+                Rule::requiredIf(fn () => $this->articleDeliveryRequiresLocale()),
+                'nullable',
+                'string',
+                Rule::in($this->availableLanguages),
+            ],
             'title' => ['nullable', 'string', 'max:255'],
             'h1' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:191'],
@@ -299,5 +305,29 @@ class StoreSerpAgentArticleRequest extends BaseRequest
         }
 
         return in_array($locale, $this->availableLanguages, true) ? $locale : null;
+    }
+
+    /**
+     * A real article must never silently fall back to Ukrainian: that is how
+     * a Russian publication previously reached the Ukrainian storefront.
+     * Bare connectivity checks and the panel's known demo event do not create
+     * content, so they remain usable without a locale.
+     */
+    private function articleDeliveryRequiresLocale(): bool
+    {
+        if (strtolower((string) $this->input('serp_event')) === 'translations_updated') {
+            return false;
+        }
+
+        $slug = strtolower(trim((string) $this->input('slug')));
+        $testSlugs = collect((array) config('serp-agent.test_slugs'))
+            ->map(fn ($testSlug) => strtolower(trim((string) $testSlug)));
+
+        if ($slug !== '' && $testSlugs->contains($slug)) {
+            return false;
+        }
+
+        return collect(['title', 'h1', 'content'])
+            ->contains(fn (string $field) => trim((string) $this->input($field)) !== '');
     }
 }
