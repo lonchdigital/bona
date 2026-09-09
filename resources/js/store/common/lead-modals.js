@@ -1,3 +1,5 @@
+import { trackGoogleEvent } from './cookie-consent';
+
 const PHONE_PREFIX = '+38 (0';
 const PHONE_PREFIX_LENGTH = PHONE_PREFIX.length;
 
@@ -337,9 +339,8 @@ export default {
                         thanks.focus();
                     }
 
-                    window.dataLayer = window.dataLayer || [];
                     const eventName = form.elements.namedItem('event')?.value;
-                    if (eventName) window.dataLayer.push({ event: eventName });
+                    trackGoogleEvent(eventName);
                 } catch (error) {
                     showFormError(form, form.dataset.errorLabel);
                 } finally {

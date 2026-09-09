@@ -44,6 +44,6 @@ return [
     ],
 
     'google' => [
-        'tag_manager_id' => env('GOOGLE_TAG_MANAGER_ID', 'GTM-P9KHGB8T'),
+        'analytics_id' => env('GOOGLE_ANALYTICS_ID', 'G-0863474309'),
     ],
 ];

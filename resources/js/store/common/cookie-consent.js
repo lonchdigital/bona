@@ -21,22 +21,19 @@ function setGoogleConsent(value) {
     });
 }
 
-function loadTagManager(containerId) {
-    if (!containerId || document.querySelector('script[data-bona-gtm]')) {
+function loadGoogleAnalytics(measurementId) {
+    if (!measurementId || document.querySelector('script[data-bona-google-analytics]')) {
         return;
     }
 
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'gtm.start': Date.now(),
-        event: 'gtm.js',
-    });
-
     const script = document.createElement('script');
     script.async = true;
-    script.dataset.bonaGtm = 'true';
-    script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(containerId)}`;
+    script.dataset.bonaGoogleAnalytics = 'true';
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
     document.head.appendChild(script);
+
+    window.gtag('js', new Date());
+    window.gtag('config', measurementId);
 }
 
 function readChoice() {
@@ -70,11 +67,11 @@ function hideBanner(banner) {
     }, 220);
 }
 
-function applyChoice(choice, containerId) {
+function applyChoice(choice, measurementId) {
     setGoogleConsent(choice);
 
     if (choice === ACCEPTED) {
-        loadTagManager(containerId);
+        loadGoogleAnalytics(measurementId);
     }
 
     window.dispatchEvent(new CustomEvent('bona:cookie-consent', {
@@ -89,21 +86,21 @@ function init() {
         return;
     }
 
-    const containerId = banner.dataset.gtmId || '';
+    const measurementId = banner.dataset.googleAnalyticsId || '';
     const existingChoice = readChoice();
 
     // Establish a denied default before any optional tag is allowed to load.
     setGoogleConsent(NECESSARY);
 
     if (existingChoice) {
-        applyChoice(existingChoice, containerId);
+        applyChoice(existingChoice, measurementId);
     } else {
         showBanner(banner);
     }
 
     banner.querySelector('[data-cookie-consent-accept]')?.addEventListener('click', () => {
         saveChoice(ACCEPTED);
-        applyChoice(ACCEPTED, containerId);
+        applyChoice(ACCEPTED, measurementId);
         hideBanner(banner);
     });
 
@@ -111,10 +108,10 @@ function init() {
         const hadOptionalTags = readChoice() === ACCEPTED;
 
         saveChoice(NECESSARY);
-        applyChoice(NECESSARY, containerId);
+        applyChoice(NECESSARY, measurementId);
         hideBanner(banner);
 
-        // Scripts already loaded by GTM cannot be reliably unloaded. Reload
+        // A Google tag that is already loaded cannot be reliably unloaded. Reload
         // once after a withdrawal so the new denied choice takes effect fully.
         if (hadOptionalTags) {
             window.location.reload();
@@ -127,6 +124,14 @@ function init() {
             banner.querySelector('button')?.focus();
         });
     });
+}
+
+export function trackGoogleEvent(eventName, parameters = {}) {
+    if (readChoice() !== ACCEPTED || typeof window.gtag !== 'function' || !eventName) {
+        return;
+    }
+
+    window.gtag('event', eventName, parameters);
 }
 
 export default { init };

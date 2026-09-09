@@ -2100,7 +2100,10 @@ body .bona-site-header .bona-header__actions li.basket-list.is-open .basket-sub-
             inset: 4px;
             border: 2px solid #fbfaf7;
             border-radius: inherit;
-            background: var(--bona-swatch);
+            background-color: var(--bona-swatch);
+            background-image: var(--bona-swatch-image, none);
+            background-position: center;
+            background-size: cover;
             box-shadow: 0 0 0 1px #d9d4ca;
             content: '';
         }

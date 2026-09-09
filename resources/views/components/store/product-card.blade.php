@@ -2,17 +2,47 @@
     'product',
     'baseCurrency' => null,
     'variant' => 'catalog',
+    'selectedColorSlugs' => [],
 ])
 
 @php
     $productUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.product.page', ['productSlug' => $product->slug]);
-    $colors = $product->relationLoaded('colors')
-        ? $product->colors->sortByDesc(fn ($color) => $color->id === $product->main_color_id)->values()
-        : collect();
+    $requestedColorSlugs = collect(is_array($selectedColorSlugs) ? $selectedColorSlugs : [$selectedColorSlugs])
+        ->flatten()
+        ->map(fn ($slug) => trim((string) $slug))
+        ->filter()
+        ->unique()
+        ->values();
+    $productColors = $product->relationLoaded('colors') ? $product->colors->values() : collect();
+    $selectedColor = $requestedColorSlugs
+        ->map(fn ($slug) => $productColors->first(fn ($color) => (string) $color->slug === $slug))
+        ->filter()
+        ->first();
+    $mainColor = $productColors->first(fn ($color) => (int) $color->id === (int) $product->main_color_id);
+    $priorityColorIds = collect([$selectedColor, $mainColor])
+        ->filter()
+        ->map(fn ($color) => (int) $color->id)
+        ->unique()
+        ->values();
+    $colors = collect([$selectedColor, $mainColor])
+        ->filter()
+        ->unique(fn ($color) => (int) $color->id)
+        ->concat($productColors->reject(fn ($color) => $priorityColorIds->contains((int) $color->id)))
+        ->values();
     $galleries = $product->relationLoaded('galleries') ? $product->galleries : collect();
     $visibleColors = $colors->take(4)->values();
-    $activeColor = $visibleColors->firstWhere('id', $product->main_color_id) ?? $visibleColors->first();
+    $activeColor = $selectedColor ?? $mainColor ?? $visibleColors->first();
     $defaultImage = $product->main_image_url ?: $product->preview_image_url;
+    $colorImage = static function ($color) use ($galleries, $defaultImage) {
+        if (! $color) {
+            return $defaultImage;
+        }
+
+        $gallery = $galleries->first(fn ($item) => (int) $item->color_id === (int) $color->id);
+
+        return $gallery && filled($gallery->image_path) ? $gallery->gallery_image_url : $defaultImage;
+    };
+    $activeImage = $selectedColor ? $colorImage($selectedColor) : $defaultImage;
     $activeAdjustment = (float) ($activeColor?->pivot?->price ?? 0);
     $basePrice = (float) ($product->price ?? 0);
     $baseOldPrice = (float) ($product->old_price ?? 0);
@@ -38,11 +68,12 @@
     data-base-price="{{ $basePrice }}"
     data-base-old-price="{{ $baseOldPrice }}"
     data-currency="{{ $currency }}"
+    @if($activeColor) data-active-color-slug="{{ $activeColor->slug }}" @endif
 >
     <div class="bona-product-card__media">
         <a href="{{ $productUrl }}">
             <img
-                src="{{ $defaultImage }}"
+                src="{{ $activeImage }}"
                 data-product-card-image
                 data-default-image="{{ $defaultImage }}"
                 data-default-alt="{{ $product->name }}"
@@ -118,17 +149,20 @@
         <div class="bona-product-card__swatches" aria-label="{{ trans('base.home_available_colors') }}">
             @foreach($visibleColors as $color)
                 @php
-                    $colorGallery = $galleries->firstWhere('color_id', $color->id);
-                    $isActive = $activeColor?->id === $color->id;
+                    $isActive = (int) $activeColor?->id === (int) $color->id;
+                    $swatchImage = $color->display_as_image && filled($color->main_image)
+                        ? $color->image_url
+                        : null;
                 @endphp
                 <button
                     class="bona-product-card__swatch {{ $isActive ? 'is-active' : '' }}"
                     type="button"
-                    style="--bona-swatch: {{ $color->hex ?: '#d7d1c5' }}; @if($variant === 'catalog' && $color->display_as_image && $color->image_url) --bona-swatch-image: url('{{ $color->image_url }}'); @endif"
+                    style="--bona-swatch: {{ $color->hex ?: '#d7d1c5' }}; @if($swatchImage) --bona-swatch-image: url('{{ $swatchImage }}'); @endif"
                     data-product-card-swatch
                     data-color-id="{{ $color->id }}"
+                    data-color-slug="{{ $color->slug }}"
                     data-color-name="{{ $color->name }}"
-                    data-image="{{ $isActive ? '' : $colorGallery?->gallery_image_url }}"
+                    data-image="{{ $colorImage($color) }}"
                     data-price-adjustment="{{ (float) ($color->pivot?->price ?? 0) }}"
                     aria-label="{{ trans('base.catalog_select_color', ['color' => $color->name]) }}"
                     aria-pressed="{{ $isActive ? 'true' : 'false' }}"

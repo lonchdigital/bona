@@ -58,6 +58,7 @@ TELEGRAM_NOTIFICATIONS_ENABLED=true
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 TELEGRAM_MESSAGE_THREAD_ID=
+GOOGLE_ANALYTICS_ID=G-0863474309
 ```
 
 `APP_KEY` та назву `SESSION_COOKIE` треба зберегти з чинного production. Не можна копіювати `.env.example` поверх production `.env`. Перехід `SESSION_SERIALIZATION=json` завершить раніше створені PHP-серіалізовані сесії, тому користувачам доведеться увійти знову.

@@ -77,6 +77,8 @@ function selectColor(swatch)
         colorName.textContent = swatch.dataset.colorName || '';
     }
 
+    card.dataset.activeColorSlug = swatch.dataset.colorSlug || '';
+
     const adjustment = Number.parseFloat(swatch.dataset.priceAdjustment || '0');
     updateCardPrice(card, Number.isFinite(adjustment) ? adjustment : 0);
     updateCardImage(card, swatch);

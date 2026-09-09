@@ -1,13 +1,11 @@
 import $ from "jquery";
+import { trackGoogleEvent } from './cookie-consent';
 // import iconUrl from '$img/icon.svg';
 // import InputCounter from "./input-counter";
 
 
 export default {
     init: async function () {
-
-        // get GTM
-        window.dataLayer = window.dataLayer || [];
 
         // User Choose Doors
         const $userChooseDoorsForm =  $('#user-choose-doors');
@@ -39,9 +37,7 @@ export default {
 
                     $userChooseDoorsForm.find('.field-error').remove();
 
-                    window.dataLayer.push({
-                        'event': $userChooseDoorsForm.find('input[name="event"]').val()
-                    });
+                    trackGoogleEvent($userChooseDoorsForm.find('input[name="event"]').val());
                 },
                 function (xhr) {
                     if (xhr.status === 422) {
@@ -99,9 +95,7 @@ export default {
 
                     $('button.is-close-btn').click();
 
-                    window.dataLayer.push({
-                        'event': formTag.find('input[name="event"]').val()
-                    });
+                    trackGoogleEvent(formTag.find('input[name="event"]').val());
                 },
                 function(xhr) {
                     if (xhr.status === 422) {
@@ -145,9 +139,7 @@ export default {
                 $('button.is-close-btn').click();
                 document.getElementById('user-choose-doors-success').click();
 
-                window.dataLayer.push({
-                    'event': $form.find('input[name="event"]').val()
-                });
+                trackGoogleEvent($form.find('input[name="event"]').val());
             }).fail(function (xhr) {
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors;

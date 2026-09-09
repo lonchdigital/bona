@@ -538,6 +538,7 @@ return [
     'merchant_details_intro' => 'Bona Doors — коммерческое наименование продавца. Ниже приведены официальные реквизиты лица, с которым покупатель заключает договор.',
     'merchant_seller' => 'Продавец',
     'merchant_tax_id' => 'РНОКПП/ЕГРПОУ',
+    'merchant_registered_address' => 'Адрес регистрации',
     'merchant_payment_purpose' => 'Назначение платежа',
     'merchant_all_details' => 'Все реквизиты',
     'cookie_settings' => 'Настройки cookies',

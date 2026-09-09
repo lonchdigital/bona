@@ -1,10 +1,8 @@
 import $ from "jquery";
+import { trackGoogleEvent } from '../../common/cookie-consent';
 
 
 export function init () {
-
-        // get GTM
-        window.dataLayer = window.dataLayer || [];
 
         // User Choose Doors
 
@@ -49,9 +47,7 @@ export function init () {
 
                     $orderCountForm.find('.field-error').remove();
 
-                    window.dataLayer.push({
-                        'event': $orderCountForm.find('input[name="event"]').val()
-                    });
+                    trackGoogleEvent($orderCountForm.find('input[name="event"]').val());
                 },
                 function (xhr) {
                     if (xhr.status === 422) {

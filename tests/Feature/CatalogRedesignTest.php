@@ -38,6 +38,7 @@ class CatalogRedesignTest extends TestCase
 
         $color = new Color([
             'name' => ['uk' => 'Графіт', 'ru' => 'Графит'],
+            'slug' => 'graphite',
             'hex' => '#343638',
         ]);
         $color->id = 8;
@@ -45,7 +46,10 @@ class CatalogRedesignTest extends TestCase
 
         $alternateColor = new Color([
             'name' => ['uk' => 'Білий', 'ru' => 'Белый'],
+            'slug' => 'white',
             'hex' => '#f4f3f0',
+            'display_as_image' => true,
+            'main_image' => 'colors/white.webp',
         ]);
         $alternateColor->id = 9;
         $alternateColor->setRelation('pivot', new Pivot(['price' => 800]));
@@ -69,10 +73,63 @@ class CatalogRedesignTest extends TestCase
         $this->assertStringContainsString('data-image="/storage/products/new-york-white.webp"', $html);
         $this->assertStringContainsString('data-price-adjustment="800"', $html);
         $this->assertStringContainsString('data-price-adjustment="1250"', $html);
+        $this->assertStringContainsString("--bona-swatch-image: url('/storage/colors/white.webp')", $html);
         $this->assertStringContainsString('11 250 грн', $html);
         $this->assertStringContainsString('13 250 грн', $html);
         $this->assertStringContainsString('bona-product-card__actions', $html);
         $this->assertStringContainsString('data-product-compare', $html);
+    }
+
+    public function test_filtered_color_is_kept_visible_active_and_uses_its_product_gallery(): void
+    {
+        $product = new Product([
+            'name' => ['uk' => 'Двері з фільтром', 'ru' => 'Двери с фильтром'],
+            'slug' => 'filtered-door',
+            'price' => 10000,
+            'main_image_path' => 'products/default.webp',
+            'availability_status_id' => 2,
+            'main_color_id' => 1,
+        ]);
+        $product->id = 20;
+        $product->setRelation('brand', new Brand(['name' => ['uk' => 'ArtPorte', 'ru' => 'ArtPorte']]));
+        $product->setRelation('productType', new ProductType(['name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери']]));
+
+        $colors = collect(range(1, 6))->map(function (int $id) {
+            $color = new Color([
+                'name' => ['uk' => $id === 6 ? 'Дуб крафт' : "Колір {$id}", 'ru' => $id === 6 ? 'Дуб крафт' : "Цвет {$id}"],
+                'slug' => $id === 6 ? 'dub-kraft' : "color-{$id}",
+                'hex' => '#cccccc',
+            ]);
+            $color->id = $id;
+            $color->setRelation('pivot', new Pivot(['price' => $id === 6 ? 600 : 0]));
+
+            return $color;
+        });
+
+        $gallery = new ProductGalleries([
+            'product_id' => 20,
+            'color_id' => 6,
+            'image_path' => 'products/filtered-door-oak.webp',
+        ]);
+
+        $product->setRelation('colors', $colors);
+        $product->setRelation('galleries', collect([$gallery]));
+
+        $html = view('components.store.product-card', [
+            'product' => $product,
+            'baseCurrency' => (object) ['name_short' => 'грн'],
+            'selectedColorSlugs' => ['dub-kraft'],
+        ])->render();
+
+        $this->assertStringContainsString('data-active-color-slug="dub-kraft"', $html);
+        $this->assertStringContainsString('src="/storage/products/filtered-door-oak.webp"', $html);
+        $this->assertStringContainsString('data-color-name="Дуб крафт"', $html);
+        $this->assertMatchesRegularExpression(
+            '/class="bona-product-card__swatch is-active"[^>]*data-color-id="6"[^>]*aria-pressed="true"/s',
+            $html,
+        );
+        $this->assertStringContainsString('10 600 грн', $html);
+        $this->assertStringNotContainsString('data-color-id="5"', $html);
     }
 
     public function test_catalog_keeps_the_existing_filter_contract_inside_the_new_layout(): void
@@ -180,11 +237,14 @@ class CatalogRedesignTest extends TestCase
     {
         $home = file_get_contents(resource_path('views/components/store/home-popular-products.blade.php'));
         $catalog = file_get_contents(resource_path('views/pages/store/partials/product_item.blade.php'));
+        $redesignStyles = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
 
         $this->assertStringContainsString('x-store.product-card', $home);
         $this->assertStringContainsString('x-store.product-card', $catalog);
         $this->assertStringContainsString('variant="slider"', $home);
         $this->assertStringContainsString('variant="catalog"', $catalog);
+        $this->assertStringContainsString('selected-color-slugs', $catalog);
+        $this->assertStringContainsString('background-image: var(--bona-swatch-image, none);', $redesignStyles);
     }
 
     public function test_mobile_catalog_cards_keep_a_compact_two_column_layout(): void

@@ -41,6 +41,7 @@ class OrganizationSchemaService
             'name' => config('organization.name'),
             'legalName' => config('organization.merchant.legal_name'),
             'taxID' => config('organization.merchant.tax_id'),
+            'address' => $this->address((array) config('organization.merchant.registered_address', [])),
             'alternateName' => 'Bona Doors',
             'url' => url('/'),
             'logo' => $logo ? [

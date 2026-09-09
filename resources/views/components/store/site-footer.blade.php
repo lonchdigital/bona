@@ -112,6 +112,7 @@
                 <span>{{ trans('base.merchant_seller') }}</span>
                 <strong>{{ data_get($merchant, 'short_name') }}</strong>
                 <span>{{ trans('base.merchant_tax_id') }}: {{ data_get($merchant, 'tax_id') }}</span>
+                <span>{{ trans('base.merchant_registered_address') }}: {{ data_get($merchant, 'registered_address.formatted') }}</span>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">
                     {{ trans('base.merchant_all_details') }}
                 </a>

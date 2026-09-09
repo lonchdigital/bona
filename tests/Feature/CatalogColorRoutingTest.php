@@ -88,7 +88,8 @@ class CatalogColorRoutingTest extends TestCase
             'product_type_id' => $productType->id,
             'name' => ['uk' => 'Чорні двері Тест', 'ru' => 'Черные двери Тест'],
         ]);
-        $whiteDoor->colors()->attach($white);
+        $whiteDoor->update(['main_color_id' => $black->id]);
+        $whiteDoor->colors()->attach([$black->id, $white->id]);
         $blackDoor->colors()->attach($black);
 
         $targetPath = route('store.catalog.filter.page', [
@@ -103,6 +104,7 @@ class CatalogColorRoutingTest extends TestCase
             ->assertSee('Білі двері Тест')
             ->assertDontSee('Чорні двері Тест')
             ->assertSee('value="white"', false)
+            ->assertSee('data-active-color-slug="white"', false)
             ->assertSee('<link rel="canonical" href="'.url($targetPath).'">', false);
 
         $allProductsTarget = route('store.all-products.filter.page', [

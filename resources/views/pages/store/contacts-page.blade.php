@@ -185,6 +185,10 @@
                                 <dd>{{ data_get($merchant, 'tax_id') }}</dd>
                             </div>
                             <div>
+                                <dt>{{ trans('base.merchant_registered_address') }}</dt>
+                                <dd>{{ data_get($merchant, 'registered_address.formatted') }}</dd>
+                            </div>
+                            <div>
                                 <dt>IBAN</dt>
                                 <dd>{{ data_get($merchant, 'iban') }}</dd>
                             </div>

@@ -1,11 +1,11 @@
 @php
-    $tagManagerId = (string) config('services.google.tag_manager_id', '');
+    $googleAnalyticsId = (string) config('services.google.analytics_id', '');
 @endphp
 
 <aside
     class="bona-cookie-consent"
     data-cookie-consent
-    data-gtm-id="{{ $tagManagerId }}"
+    data-google-analytics-id="{{ $googleAnalyticsId }}"
     aria-labelledby="bona-cookie-consent-title"
     hidden
 >
