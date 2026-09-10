@@ -85,14 +85,17 @@ class SerpAgentLanguageIsolationTest extends TestCase
             ->assertOk()
             ->assertDontSee('Русская статья');
 
-        $this->get(route('blog.article.page', ['blogArticleSlug' => $article->slug]))
+        $this->get(route('blog.article.page', ['blogArticleSlug' => $article->slugForLocale('ru')]))
             ->assertNotFound();
 
         $this->get(route('localized.blog.main.page', ['lang' => 'ru']))
             ->assertOk()
             ->assertSee('Русская статья');
 
-        $this->get(route('localized.blog.article.page', ['lang' => 'ru', 'blogArticleSlug' => $article->slug]))
+        $this->get(route('localized.blog.article.page', [
+            'lang' => 'ru',
+            'blogArticleSlug' => $article->slugForLocale('ru'),
+        ]))
             ->assertOk()
             ->assertSee('Текст только на русском языке.')
             ->assertSee('hreflang="ru-UA"', false)
@@ -104,6 +107,87 @@ class SerpAgentLanguageIsolationTest extends TestCase
 
         $this->assertCount(1, $sitemapUrls);
         $this->assertStringContainsString('/ru/blog/russkaya-statya', $sitemapUrls[0]);
+    }
+
+    public function test_new_russian_delivery_gets_its_own_transliterated_slug(): void
+    {
+        $this->configureSerpAgent();
+
+        $headers = ['Authorization' => 'Bearer test-serp-secret'];
+
+        $this->withHeaders($headers)
+            ->postJson(route('api.serp-agent.articles.store'), [
+                'externalId' => 'serp-pair-uk',
+                'translationGroupId' => 'serp-pair-1',
+                'locale' => 'uk-UA',
+                'title' => 'Як вибрати міжкімнатні двері',
+                'slug' => 'yak-vybraty-mizhkimnatni-dveri',
+                'content' => '<p>Український матеріал.</p>',
+            ])
+            ->assertCreated();
+
+        $this->withHeaders($headers)
+            ->postJson(route('api.serp-agent.articles.store'), [
+                'externalId' => 'serp-pair-ru',
+                'translationGroupId' => 'serp-pair-1',
+                'locale' => 'ru-RU',
+                'title' => 'Как выбрать межкомнатные двери',
+                // This is the bad legacy payload we need to correct: Serp
+                // Agent sent the Ukrainian URL for the Russian translation.
+                'slug' => 'yak-vybraty-mizhkimnatni-dveri',
+                'content' => '<p>Русский материал.</p>',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.slug', 'kak-vybrat-mezhkomnatnye-dveri')
+            ->assertJsonPath('data.url', route('localized.blog.article.page', [
+                'lang' => 'ru',
+                'blogArticleSlug' => 'kak-vybrat-mezhkomnatnye-dveri',
+            ]));
+
+        $article = BlogArticle::where('translation_group_id', 'serp-pair-1')->firstOrFail();
+
+        $this->assertSame('yak-vybraty-mizhkimnatni-dveri', $article->slugForLocale('uk'));
+        $this->assertSame('kak-vybrat-mezhkomnatnye-dveri', $article->slugForLocale('ru'));
+        $this->assertSame(1, BlogArticle::where('translation_group_id', 'serp-pair-1')->count());
+
+    }
+
+    public function test_existing_shared_urls_stay_valid_until_an_editor_changes_one(): void
+    {
+        $article = $this->createArticle([
+            'name' => ['uk' => 'Наявна стаття', 'ru' => 'Существующая статья'],
+            'slug' => 'existing-indexed-url',
+            'slugs' => ['uk' => 'existing-indexed-url', 'ru' => 'existing-indexed-url'],
+        ]);
+
+        BlogArticleBlock::create([
+            'blog_article_id' => $article->id,
+            'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
+            'content' => [
+                'uk' => '<p>Українська версія.</p>',
+                'ru' => '<p>Русская версия.</p>',
+            ],
+        ]);
+
+        $this->get('/blog/existing-indexed-url')->assertOk();
+        $this->get('/ru/blog/existing-indexed-url')->assertOk();
+
+        $previousRussianSlug = $article->slugForLocale('ru');
+        $article->update([
+            'slugs' => [
+                'uk' => 'existing-indexed-url',
+                'ru' => 'sushchestvuyushchaya-statya',
+            ],
+        ]);
+        $article->rememberPreviousSlug('ru', $previousRussianSlug);
+
+        $this->get('/ru/blog/existing-indexed-url')
+            ->assertRedirect('/ru/blog/sushchestvuyushchaya-statya')
+            ->assertStatus(301);
+
+        $this->get('/ru/blog/article/existing-indexed-url')
+            ->assertRedirect('/ru/blog/sushchestvuyushchaya-statya')
+            ->assertStatus(301);
     }
 
     public function test_cleanup_migration_separates_only_exact_serp_agent_mirrors(): void

@@ -41,7 +41,7 @@
         'blogPost' => $articles->map(fn ($article) => array_filter([
             '@type' => 'BlogPosting',
             'headline' => (string) $article->name,
-            'url' => url(App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug])),
+            'url' => $article->urlForLocale(app()->getLocale(), true),
             'datePublished' => $article->created_at?->toAtomString(),
             'dateModified' => $article->updated_at?->toAtomString(),
             'image' => $article->og_image_url ?: null,
@@ -75,7 +75,7 @@
         </section>
 
         @if($featuredArticle)
-            @php($featuredUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $featuredArticle->slug]))
+            @php($featuredUrl = $featuredArticle->urlForLocale(app()->getLocale()))
             <section class="bona-blog-index__featured" aria-labelledby="featured-article-title">
                 <div class="bona-shell bona-blog-feature">
                     <a class="bona-blog-feature__media" href="{{ $featuredUrl }}">

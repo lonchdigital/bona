@@ -9,7 +9,7 @@ class EditBlogArticleDTO implements BaseDTO
 {
     public function __construct(
         public readonly array $name,
-        public readonly string $slug,
+        public readonly array $slugs,
         public readonly array $previewText,
         public readonly ?array $metaTitle,
         public readonly ?array $metaDescription,

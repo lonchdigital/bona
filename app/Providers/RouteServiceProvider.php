@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Http\Actions\HealthCheckAction;
 use App\Models\Author;
-use App\Models\BlogArticle;
 use App\Models\BlogCategory;
 use App\Models\Brand;
 use App\Models\Category;
@@ -69,7 +68,6 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('blogCategorySlug', fn (string $slug) => BlogCategory::where('slug', $slug)->firstOrFail());
         Route::bind('workSlug', fn (string $slug) => Work::where('slug', $slug)->firstOrFail());
         Route::bind('authorSlug', fn (string $slug) => Author::where('slug', $slug)->firstOrFail());
-        Route::bind('blogArticleSlug', fn (string $slug) => BlogArticle::where('slug', $slug)->firstOrFail());
         Route::bind('filterGroupSlug', fn (string $slug) => FilterGroup::where('slug', $slug)->firstOrFail());
         Route::bind('lang', fn (string $lang) => $lang);
     }

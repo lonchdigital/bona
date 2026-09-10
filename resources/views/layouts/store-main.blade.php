@@ -16,8 +16,10 @@
         $canonicalUrl = Illuminate\Support\Str::startsWith($canonicalUrl, ['http://', 'https://'])
             ? $canonicalUrl
             : url($canonicalUrl);
-        $alternateLinks = App\Services\Locale\LocaleService::alternateLinks($canonicalUrl);
-        if (isset($seoAlternateLocales) && is_array($seoAlternateLocales)) {
+        $alternateLinks = isset($seoAlternateLinks) && is_array($seoAlternateLinks)
+            ? $seoAlternateLinks
+            : App\Services\Locale\LocaleService::alternateLinks($canonicalUrl);
+        if (! isset($seoAlternateLinks) && isset($seoAlternateLocales) && is_array($seoAlternateLocales)) {
             $localeHreflangs = ['uk' => 'uk-UA', 'ru' => 'ru-UA'];
             $allowedHreflangs = collect($seoAlternateLocales)
                 ->map(fn ($locale) => $localeHreflangs[$locale] ?? null)

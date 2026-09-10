@@ -45,6 +45,9 @@ class EditorialCommercePagesTest extends TestCase
             'meta_keywords' => ['uk' => 'двері', 'ru' => 'двери'],
         ]);
 
+        $this->assertSame('yak-vybraty-dveri', $article->slugForLocale('uk'));
+        $this->assertSame('kak-vybrat-dveri', $article->slugForLocale('ru'));
+
         BlogArticleBlock::create([
             'blog_article_id' => $article->id,
             'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
@@ -126,7 +129,12 @@ class EditorialCommercePagesTest extends TestCase
                 && count($node['mainEntity'] ?? []) === 1
         ));
 
-        $this->get(route('localized.blog.article.page', ['lang' => 'ru', 'blogArticleSlug' => $article->slug]))
+        $russianResponse = $this->get(route('localized.blog.article.page', [
+            'lang' => 'ru',
+            'blogArticleSlug' => $article->slugForLocale('ru'),
+        ]));
+
+        $russianResponse
             ->assertOk()
             ->assertSee('Материал и конструкция')
             ->assertSee('class="article-advice"', false)
@@ -134,7 +142,18 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('Вопрос')
             ->assertSee('Ответ')
             ->assertSee('Когда делать замер?')
-            ->assertDontSee('Текст українською.');
+            ->assertDontSee('Текст українською.')
+            ->assertSee('href="'.$article->urlForLocale('uk', true).'"', false)
+            ->assertSee('href="'.$article->urlForLocale('ru', true).'"', false);
+
+        $response
+            ->assertSee('href="'.route('blog.article.page', [
+                'blogArticleSlug' => $article->slugForLocale('uk'),
+            ]).'"', false)
+            ->assertSee('href="'.route('localized.blog.article.page', [
+                'lang' => 'ru',
+                'blogArticleSlug' => $article->slugForLocale('ru'),
+            ]).'"', false);
     }
 
     public function test_legacy_articles_receive_an_editable_faq_without_duplicating_existing_content(): void
@@ -184,6 +203,59 @@ class EditorialCommercePagesTest extends TestCase
             $this->assertNotEmpty($blocks->first()->content['questions'][0]['question']['uk']);
             $this->assertNotEmpty($blocks->first()->content['questions'][0]['question']['ru']);
         }
+    }
+
+    public function test_admin_preserves_existing_shared_slugs_and_redirects_only_after_an_explicit_change(): void
+    {
+        $article = BlogArticle::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Наявна стаття', 'ru' => 'Существующая статья'],
+            'preview_text' => ['uk' => 'Опис.', 'ru' => 'Описание.'],
+            'slug' => 'existing-indexed-url',
+            'slugs' => ['uk' => 'existing-indexed-url', 'ru' => 'existing-indexed-url'],
+            'hero_image_path' => 'blog/test.webp',
+            'meta_title' => ['uk' => '', 'ru' => ''],
+            'meta_description' => ['uk' => '', 'ru' => ''],
+            'meta_keywords' => ['uk' => '', 'ru' => ''],
+        ]);
+
+        $payload = [
+            'name' => $article->getTranslations('name'),
+            'slug' => $article->localizedSlugs(),
+            'preview_text' => $article->getTranslations('preview_text'),
+            'meta_title' => ['uk' => '', 'ru' => ''],
+            'meta_description' => ['uk' => '', 'ru' => ''],
+            'meta_keywords' => ['uk' => '', 'ru' => ''],
+            'meta_tags' => null,
+            'hero_image_deleted' => false,
+            'block' => [],
+        ];
+
+        $this->actingAs($this->admin())
+            ->postJson(route('admin.blog-article.edit', ['blogArticle' => $article]), $payload)
+            ->assertOk()
+            ->assertJsonPath('data.success', true);
+
+        $this->assertEqualsCanonicalizing(
+            ['uk' => 'existing-indexed-url', 'ru' => 'existing-indexed-url'],
+            $article->fresh()->localizedSlugs(),
+        );
+
+        $payload['slug']['ru'] = 'sushchestvuyushchaya-statya';
+
+        $this->postJson(route('admin.blog-article.edit', ['blogArticle' => $article]), $payload)
+            ->assertOk()
+            ->assertJsonPath('data.success', true);
+
+        $this->assertDatabaseHas('blog_article_slug_redirects', [
+            'blog_article_id' => $article->id,
+            'locale' => 'ru',
+            'slug' => 'existing-indexed-url',
+        ]);
+
+        $this->get('/ru/blog/existing-indexed-url')
+            ->assertStatus(301)
+            ->assertRedirect('/ru/blog/sushchestvuyushchaya-statya');
     }
 
     public function test_service_detail_uses_managed_copy_and_hides_an_empty_content_section(): void

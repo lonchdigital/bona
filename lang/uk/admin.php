@@ -306,6 +306,8 @@ return [
     'country_delete' => 'Видалити країну',
     'country_delete_confirm_text' => 'Ви підтверджуєте видалення країни ":COUNTRY_NAME"?',
     'slug' => 'SLUG',
+    'blog_article_slug_already_exists' => 'Ця URL-адреса вже використовується іншою статтею.',
+    'blog_article_slug_must_differ' => 'URL-адреси української та російської версій мають відрізнятися.',
     'oops' => 'Отакої',
     'page_404' => 'Сторінку не знайдено :(',
     'go_to_main' => 'На головну',

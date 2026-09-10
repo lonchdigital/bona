@@ -1,5 +1,5 @@
 @php
-    $articleUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]);
+    $articleUrl = $article->urlForLocale(app()->getLocale());
 @endphp
 
 <article class="bona-editorial-card">

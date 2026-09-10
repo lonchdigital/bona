@@ -3,7 +3,6 @@
 namespace App\Http\Actions\Blog\Pages;
 
 use App\DataClasses\BlogArticleBlockTypesDataClass;
-use App\Helpers\MultiLangRoute;
 use App\Http\Actions\Admin\BaseAction;
 use App\Models\BlogArticle;
 use App\Services\Author\AuthorService;
@@ -15,18 +14,27 @@ use App\Support\LastModified;
 class ShowBlogArticlePageAction extends BaseAction
 {
     public function __invoke(
-        BlogArticle $blogArticle,
+        string $blogArticleSlug,
         CurrencyService $currencyService,
         BlogArticleService $blogArticleService,
         AuthorService $authorService,
         SerpAgentHtmlService $htmlService,
     ) {
+        $locale = app()->getLocale();
+        $resolvedArticle = BlogArticle::resolveLocalizedSlug($blogArticleSlug, $locale);
+
+        abort_unless($resolvedArticle, 404);
+
+        $blogArticle = $resolvedArticle['article'];
+        abort_unless($blogArticle->hasLocaleVersion($locale), 404);
+
+        if ($resolvedArticle['should_redirect']) {
+            return redirect($blogArticle->urlForLocale($locale), 301);
+        }
+
         $blogArticle->meta_tags = $this->handleFollowTag($blogArticle->meta_tags);
         $blogArticle->loadMissing('blocks');
         LastModified::set($blogArticle->updated_at);
-
-        $locale = app()->getLocale();
-        abort_unless($blogArticle->hasLocaleVersion($locale), 404);
 
         $latestArticles = $blogArticleService->getLatestArticlesExceptCurrent($blogArticle->id);
         $articleRecommendedLinks = $blogArticleService->extractEditorialLinks($blogArticle, $locale, 'related');
@@ -35,9 +43,7 @@ class ShowBlogArticlePageAction extends BaseAction
         if ($articleRecommendedLinks === []) {
             $articleRecommendedLinks = $latestArticles->map(fn (BlogArticle $article) => [
                 'title' => (string) $article->name,
-                'url' => MultiLangRoute::getMultiLangRoute('blog.article.page', [
-                    'blogArticleSlug' => $article->slug,
-                ]),
+                'url' => $article->urlForLocale($locale),
             ])->values()->all();
         }
 
@@ -73,6 +79,7 @@ class ShowBlogArticlePageAction extends BaseAction
             'articleAuthor' => $authorService->getDefaultAuthor(),
             'articleFaq' => $blogArticleService->extractFaq($blogArticle, app()->getLocale()),
             'seoAlternateLocales' => $blogArticle->availableLocales(),
+            'seoAlternateLinks' => $blogArticle->alternateLinks(),
         ]);
     }
 }

@@ -10,6 +10,15 @@
     };
     $blogUrl = trim((string) ($section['link_url'] ?? ''))
         ?: App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page');
+    $articleUrl = static function ($article): string {
+        if ($article instanceof App\Models\BlogArticle) {
+            return $article->urlForLocale(app()->getLocale());
+        }
+
+        return App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', [
+            'blogArticleSlug' => $article->slug,
+        ]);
+    };
 @endphp
 
 @if(($section['enabled'] ?? true) && count($articles) > 0)
@@ -30,7 +39,7 @@
             <div class="bona-blog__grid">
                 @foreach($articles as $article)
                     <article class="bona-post-card">
-                        <a class="bona-post-card__image" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]) }}">
+                        <a class="bona-post-card__image" href="{{ $articleUrl($article) }}">
                             @if($article->hero_image_url)
                                 <img src="{{ $article->hero_image_url }}" alt="{{ $article->name }}" loading="lazy" decoding="async" width="560" height="320">
                             @endif
@@ -40,7 +49,7 @@
                         </a>
                         <div class="bona-post-card__body">
                             <h3>
-                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $article->slug]) }}">
+                                <a href="{{ $articleUrl($article) }}">
                                     {{ $article->name }}
                                 </a>
                             </h3>

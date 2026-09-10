@@ -24,15 +24,15 @@ export default {
         },
         articleName: {
             type: Object,
-            default: {},
+            default: () => ({}),
         },
-        articleSlug: {
-            type: String,
-            default: '',
+        articleSlugs: {
+            type: Object,
+            default: () => ({}),
         },
         articlePreviewText: {
             type: Object,
-            default: {},
+            default: () => ({}),
         },
         heroImage: {
             type: String,
@@ -40,15 +40,15 @@ export default {
         },
         metaTitle: {
             type: Object,
-            default: {}
+            default: () => ({}),
         },
         metaDescription: {
             type: Object,
-            default: {}
+            default: () => ({}),
         },
         metaKeywords: {
             type: Object,
-            default: {}
+            default: () => ({}),
         },
         blogMetaTags: {
             type: String,
@@ -58,31 +58,41 @@ export default {
 
         dynamicContent: {
             type: Array,
-            default: [],
+            default: () => [],
         },
     },
     data() {
         return {
             selectedLanguage: this.baseLanguage,
-            slugData: '',
-            articleNameData: {},
+            slugData: {},
+            articleNameData: {...this.articleName},
             errors: {},
         }
     },
     beforeMount() {
-        this.slugData = this.articleSlug;
-    },
-    computed: {
-        articleNameOnBaseLanguage() {
-            return this.articleNameData[this.baseLanguage];
-        }
-    },
-    watch: {
-        articleNameOnBaseLanguage(newArticleName, oldArticleName) {
-            this.slugData = slug(newArticleName, {locale: this.baseLanguage});
+        this.slugData = {...this.articleSlugs};
+
+        for (const availableLanguage of this.availableLanguages) {
+            if (!Object.prototype.hasOwnProperty.call(this.slugData, availableLanguage)) {
+                this.slugData[availableLanguage] = '';
+            }
         }
     },
     methods: {
+        handleArticleNameUpdate(updatedNames) {
+            for (const availableLanguage of this.availableLanguages) {
+                if (!this.articleSlugs[availableLanguage]
+                    && updatedNames[availableLanguage] !== this.articleNameData[availableLanguage]) {
+                    this.slugData[availableLanguage] = slug(updatedNames[availableLanguage] || '', {
+                        locale: availableLanguage,
+                    });
+                }
+            }
+
+            // Keep a separate object from the child input. Otherwise the next
+            // keystroke mutates both values before they can be compared.
+            this.articleNameData = {...updatedNames};
+        },
         handleSubmit(event) {
             this.errors = [];
 
@@ -125,20 +135,23 @@ export default {
                     :selected-language="selectedLanguage"
                     :available-languages="availableLanguages"
                     :init-data="articleName"
-                    v-model="articleNameData"
+                    :model-value="articleNameData"
+                    @update:model-value="handleArticleNameUpdate"
                     :key="'article-name'"
                     :errors="errors"
                 />
 
-                <div class="form-group mb-3">
-                    <input-component
-                        :title="$t('admin.slug')"
-                        name="slug"
-                        :is-required="true"
-                        :errors="errors"
-                        v-model="slugData"
-                    />
-                </div>
+                <multi-language-input-component
+                    :title="$t('admin.slug')"
+                    name="slug"
+                    :is-required="true"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :init-data="slugData"
+                    v-model="slugData"
+                    :key="'article-slug'"
+                    :errors="errors"
+                />
 
                 <multi-language-text-area-component
                     :title="$t('admin.blog_article_preview_text')"

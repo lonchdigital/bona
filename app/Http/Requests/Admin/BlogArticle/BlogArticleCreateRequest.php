@@ -4,10 +4,40 @@ namespace App\Http\Requests\Admin\BlogArticle;
 
 use App\DataClasses\BlogArticleBlockTypesDataClass;
 use App\Http\Requests\BaseRequest;
+use App\Models\BlogArticle;
+use App\Models\BlogArticleSlugRedirect;
 use App\Services\BlogArticle\DTO\EditBlogArticleDTO;
 
 class BlogArticleCreateRequest extends BaseRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $submittedSlugs = $this->input('slug', []);
+        $currentArticle = $this->route('blogArticle');
+
+        // Accept the old scalar payload during a rolling deployment, but save
+        // every article with one explicit URL slug per storefront language.
+        if (! is_array($submittedSlugs)) {
+            $submittedSlugs = [config('app.fallback_locale') => $submittedSlugs];
+        }
+
+        $slugs = [];
+
+        foreach ($this->availableLanguages as $locale) {
+            $submittedSlug = trim((string) ($submittedSlugs[$locale] ?? ''));
+            $title = trim((string) $this->input('name.'.$locale, ''));
+            $currentSlug = $currentArticle instanceof BlogArticle
+                ? $currentArticle->slugForLocale($locale)
+                : null;
+
+            $slugs[$locale] = $currentSlug !== null && $submittedSlug === $currentSlug
+                ? $currentSlug
+                : BlogArticle::slugFromTitle($submittedSlug !== '' ? $submittedSlug : $title, $locale);
+        }
+
+        $this->merge(['slug' => $slugs]);
+    }
+
     public function baseRules(): array
     {
         $rules = [
@@ -15,7 +45,7 @@ class BlogArticleCreateRequest extends BaseRequest
                 'array',
             ],
             'slug' => [
-                'string',
+                'array',
                 'required',
             ],
             'preview_text' => [
@@ -65,6 +95,52 @@ class BlogArticleCreateRequest extends BaseRequest
             $rules['preview_text.'.$availableLanguage] = [
                 'required',
                 'string',
+            ];
+            $rules['slug.'.$availableLanguage] = [
+                'required',
+                'string',
+                function (string $attribute, mixed $value, \Closure $fail) use ($availableLanguage): void {
+                    $currentArticle = $this->route('blogArticle');
+                    $currentArticleId = $currentArticle instanceof BlogArticle ? $currentArticle->getKey() : null;
+                    $isUnchangedCurrentSlug = $currentArticle instanceof BlogArticle
+                        && $currentArticle->slugForLocale($availableLanguage) === $value;
+
+                    if (! $isUnchangedCurrentSlug && mb_strlen((string) $value) > 180) {
+                        $fail(trans('validation.max.string', [
+                            'attribute' => $this->prepareAttribute(trans('admin.slug'), $availableLanguage),
+                            'max' => 180,
+                        ]));
+                    }
+
+                    $duplicateArticle = BlogArticle::query()
+                        ->where("slugs->{$availableLanguage}", $value)
+                        ->when($currentArticleId, fn ($query) => $query->whereKeyNot($currentArticleId))
+                        ->exists();
+
+                    $duplicateRedirect = BlogArticleSlugRedirect::query()
+                        ->where('locale', $availableLanguage)
+                        ->where('slug', $value)
+                        ->when($currentArticleId, fn ($query) => $query->where('blog_article_id', '!=', $currentArticleId))
+                        ->exists();
+
+                    if ($duplicateArticle || $duplicateRedirect) {
+                        $fail(trans('admin.blog_article_slug_already_exists'));
+                    }
+
+                    $otherSlugs = collect($this->input('slug', []))
+                        ->except($availableLanguage)
+                        ->filter();
+
+                    $isUnchangedLegacyPair = $currentArticle instanceof BlogArticle
+                        && $currentArticle->slugForLocale($availableLanguage) === $value
+                        && collect($currentArticle->localizedSlugs())
+                            ->except($availableLanguage)
+                            ->containsStrict($value);
+
+                    if ($otherSlugs->containsStrict($value) && ! $isUnchangedLegacyPair) {
+                        $fail(trans('admin.blog_article_slug_must_differ'));
+                    }
+                },
             ];
             $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
@@ -243,6 +319,7 @@ class BlogArticleCreateRequest extends BaseRequest
 
         foreach ($this->availableLanguages as $availableLanguage) {
             $attributes['name.'.$availableLanguage] = $this->prepareAttribute(trans('admin.name'), $availableLanguage);
+            $attributes['slug.'.$availableLanguage] = $this->prepareAttribute(trans('admin.slug'), $availableLanguage);
             $attributes['preview_text.'.$availableLanguage] = $this->prepareAttribute(trans('admin.blog_article_preview_text'), $availableLanguage);
         }
 

@@ -20,7 +20,7 @@
                     :categories="{{ json_encode(\App\Models\BlogCategory::select(['id', 'name'])->get()->map(function($category) { return ['id' => $category->id, 'name' => $category->name]; } )) }}"
                     @if (isset($blogArticle))
                         :selected-category="{{ $blogArticle->blog_category_id }}"
-                        article-slug="{{ $blogArticle->slug }}"
+                        :article-slugs="{{ json_encode($blogArticle->localizedSlugs()) }}"
                     @endif
                     :article-name="{{ json_encode(isset($blogArticle) ? $blogArticle->getTranslations('name') : []) }}"
                     :article-preview-text="{{ json_encode(isset($blogArticle) ? $blogArticle->getTranslations('preview_text') : []) }}"
@@ -38,4 +38,3 @@
 @section('vue')
     <vue/>
 @endsection
-

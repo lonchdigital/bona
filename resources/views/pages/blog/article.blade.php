@@ -48,6 +48,7 @@
 @endphp
 
 @section('body_class', 'bona-content-body bona-article-body')
+@section('canonical', $articleUrl)
 @section('seo_title', $blogArticle->meta_title ?: $blogArticle->name.' — '.trans('base.site_title'))
 @section('meta_description', $articleDescription)
 @section('meta_keywords', $blogArticle->meta_keywords ?: '')

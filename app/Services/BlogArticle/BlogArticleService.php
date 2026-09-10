@@ -325,7 +325,9 @@ class BlogArticleService extends BaseService
             $article = BlogArticle::create([
                 'creator_id' => $creator->id,
                 'name' => $request->name,
-                'slug' => $request->slug,
+                'slug' => $request->slugs[(string) config('app.fallback_locale')]
+                    ?? Arr::first($request->slugs),
+                'slugs' => $request->slugs,
                 'preview_text' => $request->previewText,
                 'hero_image_path' => $heroImagePath.'.webp',
                 'meta_title' => $request->metaTitle,
@@ -363,10 +365,13 @@ class BlogArticleService extends BaseService
         return $this->coverWithDBTransaction(function () use ($article, $request) {
             $existingBlocks = $article->blocks;
             $imagesToDelete = [];
+            $previousSlugs = $article->localizedSlugs();
 
             $fieldsToUpdate = [
                 'name' => $request->name,
-                'slug' => $request->slug,
+                'slug' => $request->slugs[(string) config('app.fallback_locale')]
+                    ?? Arr::first($request->slugs),
+                'slugs' => $request->slugs,
                 'preview_text' => $request->previewText,
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
@@ -385,6 +390,14 @@ class BlogArticleService extends BaseService
             }
 
             $article->update($fieldsToUpdate);
+
+            foreach ($previousSlugs as $locale => $previousSlug) {
+                if (($request->slugs[$locale] ?? null) !== $previousSlug) {
+                    $article->rememberPreviousSlug($locale, $previousSlug);
+                }
+            }
+
+            $article->forgetCurrentSlugRedirects();
 
             if ($request->blocks) {
                 foreach ($request->blocks as $blockData) {

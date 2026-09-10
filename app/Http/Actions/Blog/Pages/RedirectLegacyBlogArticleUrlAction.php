@@ -2,7 +2,7 @@
 
 namespace App\Http\Actions\Blog\Pages;
 
-use App\Helpers\MultiLangRoute;
+use App\Models\BlogArticle;
 use Illuminate\Http\RedirectResponse;
 
 class RedirectLegacyBlogArticleUrlAction
@@ -18,9 +18,11 @@ class RedirectLegacyBlogArticleUrlAction
      */
     public function __invoke(string $legacyBlogArticleSlug): RedirectResponse
     {
-        return redirect(
-            MultiLangRoute::getMultiLangRoute('blog.article.page', ['blogArticleSlug' => $legacyBlogArticleSlug]),
-            301
-        );
+        $locale = app()->getLocale();
+        $resolvedArticle = BlogArticle::resolveLocalizedSlug($legacyBlogArticleSlug, $locale);
+
+        abort_unless($resolvedArticle && $resolvedArticle['article']->hasLocaleVersion($locale), 404);
+
+        return redirect($resolvedArticle['article']->urlForLocale($locale), 301);
     }
 }
