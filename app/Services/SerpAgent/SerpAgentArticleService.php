@@ -113,7 +113,7 @@ class SerpAgentArticleService extends BaseService
                         'action' => $existingArticle ? 'updated' : 'created',
                         'id' => $article->id,
                         'slug' => $article->slug,
-                        'url' => route('blog.article.page', ['blogArticleSlug' => $article->slug]),
+                        'url' => $this->articleUrl($article, $locale),
                     ];
                 }
             );
@@ -159,8 +159,25 @@ class SerpAgentArticleService extends BaseService
             'action' => 'translations_acknowledged',
             'id' => $article->id,
             'slug' => $article->slug,
-            'url' => route('blog.article.page', ['blogArticleSlug' => $article->slug]),
+            'url' => $this->articleUrl(
+                $article,
+                $article->hasLocaleVersion($dto->locale)
+                    ? $dto->locale
+                    : ($article->availableLocales()[0] ?? (string) config('app.fallback_locale')),
+            ),
         ];
+    }
+
+    private function articleUrl(BlogArticle $article, string $locale): string
+    {
+        if ($locale === (string) config('app.fallback_locale')) {
+            return route('blog.article.page', ['blogArticleSlug' => $article->slug]);
+        }
+
+        return route('localized.blog.article.page', [
+            'lang' => $locale,
+            'blogArticleSlug' => $article->slug,
+        ]);
     }
 
     private function persistArticle(

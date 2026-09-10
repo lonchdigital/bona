@@ -48,7 +48,11 @@ class SerpAgentLanguageIsolationTest extends TestCase
                 'content' => '<h2>Практические советы</h2><p>Текст только на русском языке.</p>',
             ])
             ->assertCreated()
-            ->assertJsonPath('success', true);
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.url', route('localized.blog.article.page', [
+                'lang' => 'ru',
+                'blogArticleSlug' => 'kak-vybrat-dveri',
+            ]));
 
         $article = BlogArticle::where('external_id', 'serp-ru-1')->firstOrFail();
         $textBlock = $article->blocks()
