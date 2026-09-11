@@ -13,7 +13,7 @@
 
         <ol class="breadcrumb breadcrumb-inverted font-two" itemscope itemtype="https://schema.org/BreadcrumbList">
             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                <a itemprop="item" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">
+                <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home')) }}">
                     <span class="icon icon-home"></span>
                     <span itemprop="name" class="sr-only">{{ trans('base.home') }}</span>
                 </a>
@@ -28,7 +28,7 @@
                     </li>
                 @else
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a class="{{ $loop->last ? 'active' : '' }}" itemprop="item" href="{{ $url }}">
+                        <a class="{{ $loop->last ? 'active' : '' }}" itemprop="item" href="{{ url($url) }}">
                             <span itemprop="name">{{ $value }}</span>
                         </a>
                         <meta itemprop="position" content="{{ $breadcrumbPosition++ }}">

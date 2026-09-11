@@ -15,9 +15,9 @@ final class CatalogPageSchemaService
 
     /**
      * Describe the visible catalogue result set and its navigation path. The
-     * list intentionally links to Product entities instead of duplicating
-     * incomplete offers on a multi-product page; full merchant data lives on
-     * each product detail page.
+     * list intentionally links to the product pages without declaring partial
+     * Product entities on a multi-product page. Full merchant data lives on
+     * each product detail page, where price and availability can be complete.
      *
      * @param  array<int, array{label: mixed, url?: mixed}>  $breadcrumbs
      */
@@ -69,17 +69,9 @@ final class CatalogPageSchemaService
                 return array_filter([
                     '@type' => 'ListItem',
                     'position' => ($products->firstItem() ?? 1) + $index,
-                    'item' => array_filter([
-                        '@type' => 'Product',
-                        '@id' => $productUrl.'#product',
-                        'url' => $productUrl,
-                        'name' => (string) $product->name,
-                        'image' => $image ? $this->absoluteUrl($image) : null,
-                        'brand' => $product->brand ? [
-                            '@type' => 'Brand',
-                            'name' => (string) $product->brand->name,
-                        ] : null,
-                    ], fn (mixed $value) => $value !== null && $value !== ''),
+                    'url' => $productUrl,
+                    'name' => (string) $product->name,
+                    'image' => $image ? $this->absoluteUrl($image) : null,
                 ], fn (mixed $value) => $value !== null && $value !== '');
             })
             ->all();

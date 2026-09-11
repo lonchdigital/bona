@@ -45,7 +45,7 @@
                 '@type' => 'ListItem',
                 'position' => 1,
                 'name' => trans('base.home'),
-                'item' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.home'),
+                'item' => url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home')),
             ],
             [
                 '@type' => 'ListItem',

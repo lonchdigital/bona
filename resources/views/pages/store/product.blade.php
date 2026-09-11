@@ -22,12 +22,6 @@
         ->unique()
         ->values()
         ->all();
-    $availabilityMap = [
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_STOCK => 'https://schema.org/InStock',
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_ORDER => 'https://schema.org/BackOrder',
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_OF_STOCK => 'https://schema.org/OutOfStock',
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_ASK_MANAGER => 'https://schema.org/LimitedAvailability',
-    ];
     $availability = \App\DataClasses\ProductStatusDataClass::get($product->availability_status_id);
     $faqItems = collect($productFaqs ?? [])->filter(fn ($item) => filled(strip_tags((string) $item->question)) && filled(strip_tags((string) $item->answer)));
     $seoSectionTitle = trim((string) data_get($productSeoData, 'title.'.app()->getLocale(), ''));
@@ -62,8 +56,18 @@
         'name' => trim((string) data_get($characteristic, 'name')),
         'value' => trim((string) data_get($characteristic, 'value')),
     ])->filter(fn ($property) => filled($property['name']) && filled($property['value']))->values()->all();
-    $productSchemaColors = $product->colors->pluck('name')->filter()->unique()->implode(', ');
     $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+    $productSchema = app(\App\Services\Seo\ProductPageSchemaService::class)->build(
+        product: $product,
+        currency: $baseCurrency,
+        url: $productUrl,
+        webPageId: $productWebPageId,
+        images: $productImages,
+        description: $productDescription,
+        additionalProperties: $productSchemaProperties,
+        reviews: $productReviews,
+        ratingSummary: $productRatingSummary,
+    );
 @endphp
 
 @section('body_class', 'bona-content-body product-body product-v1')
@@ -83,45 +87,9 @@
 @endpush
 
 @push('structured_data')
-    <script type="application/ld+json">{!! json_encode(array_filter([
-        '@'.'context' => 'https://schema.org',
-        '@type' => 'Product',
-        '@id' => $productUrl.'#product',
-        'mainEntityOfPage' => ['@id' => $productWebPageId],
-        'name' => (string) $product->name,
-        'url' => $productUrl,
-        'sku' => $product->sku ?: null,
-        'image' => $productImages ?: null,
-        'description' => $productDescription !== '' ? \Illuminate\Support\Str::limit($productDescription, 900) : null,
-        'category' => (string) $product->productType->name,
-        'color' => $productSchemaColors ?: null,
-        'brand' => $product->brand ? ['@type' => 'Brand', 'name' => (string) $product->brand->name] : null,
-        'additionalProperty' => $productSchemaProperties ?: null,
-        'aggregateRating' => $productRatingSummary ? [
-            '@type' => 'AggregateRating',
-            'ratingValue' => $productRatingSummary['average'],
-            'reviewCount' => $productRatingSummary['count'],
-            'bestRating' => $productRatingSummary['best'],
-            'worstRating' => $productRatingSummary['worst'],
-        ] : null,
-        'review' => $productReviews->take(10)->map(fn ($item) => [
-            '@type' => 'Review',
-            'author' => ['@type' => 'Person', 'name' => $item->author_name],
-            'datePublished' => optional($item->publishedDate())->toDateString(),
-            'reviewRating' => ['@type' => 'Rating', 'ratingValue' => $item->rating, 'bestRating' => 5, 'worstRating' => 1],
-            'reviewBody' => $item->review,
-        ])->values()->all() ?: null,
-        'offers' => is_numeric($product->price) && (float) $product->price > 0 ? array_filter([
-            '@type' => 'Offer',
-            'url' => $productUrl,
-            'price' => (string) $product->price,
-            'priceCurrency' => $baseCurrency->code ?: 'UAH',
-            'availability' => $availabilityMap[$product->availability_status_id] ?? null,
-            'itemCondition' => 'https://schema.org/NewCondition',
-            'seller' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
-            'hasMerchantReturnPolicy' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->merchantReturnPolicyId()],
-        ]) : null,
-    ]), $schemaFlags) !!}</script>
+    @if($productSchema)
+        <script type="application/ld+json">{!! json_encode($productSchema, $schemaFlags) !!}</script>
+    @endif
     <script type="application/ld+json">{!! json_encode([
         '@'.'context' => 'https://schema.org',
         '@type' => 'BreadcrumbList',
@@ -146,7 +114,7 @@
             '@type' => 'ImageObject',
             'url' => $productImages[0],
         ] : null,
-        'mainEntity' => ['@id' => $productUrl.'#product'],
+        'mainEntity' => $productSchema ? ['@id' => $productUrl.'#product'] : null,
         'dateModified' => $product->updated_at?->toAtomString(),
     ]), $schemaFlags) !!}</script>
     @if($faqItems->isNotEmpty())

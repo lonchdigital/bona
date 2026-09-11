@@ -16,11 +16,11 @@
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb mb-0" id="breadcrumblist" itemscope itemtype="https://schema.org/BreadcrumbList">
                                         <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">{{ trans('base.home') }}</a>
+                                            <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home')) }}"><span itemprop="name">{{ trans('base.home') }}</span></a>
                                             <meta itemprop="position" content="1"/>
                                         </li>
                                         <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
-                                            {{ trans('base.brands') }}
+                                            <span itemprop="name">{{ trans('base.brands') }}</span>
                                             <meta itemprop="position" content="2"/>
                                         </li>
                                     </ul>

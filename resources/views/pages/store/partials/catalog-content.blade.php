@@ -10,13 +10,13 @@
         <nav class="bona-catalog__breadcrumbs" aria-label="{{ trans('base.breadcrumbs') }}">
             <ol itemscope itemtype="https://schema.org/BreadcrumbList">
                 <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                    <a itemprop="item" href="{{ $homeUrl }}"><span itemprop="name">{{ trans('base.home') }}</span></a>
+                    <a itemprop="item" href="{{ url($homeUrl) }}"><span itemprop="name">{{ trans('base.home') }}</span></a>
                     <meta itemprop="position" content="1">
                 </li>
                 @foreach($breadcrumbs as $breadcrumb)
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                         @if(filled($breadcrumb['url'] ?? null) && ! $loop->last)
-                            <a itemprop="item" href="{{ $breadcrumb['url'] }}"><span itemprop="name">{{ $breadcrumb['label'] }}</span></a>
+                            <a itemprop="item" href="{{ url($breadcrumb['url']) }}"><span itemprop="name">{{ $breadcrumb['label'] }}</span></a>
                         @else
                             <span itemprop="name" aria-current="{{ $loop->last ? 'page' : 'false' }}">{{ $breadcrumb['label'] }}</span>
                         @endif

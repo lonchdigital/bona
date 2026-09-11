@@ -33,7 +33,9 @@ class CatalogAvailableFiltersTest extends TestCase
             ->assertSee('"@type":"CollectionPage"', false)
             ->assertSee('"@type":"ItemList"', false)
             ->assertSee('"@type":"BreadcrumbList"', false)
-            ->assertSee('"@type":"Product"', false);
+            ->assertDontSee('"@type":"Product"', false)
+            ->assertSee('"position":1,"url":"', false)
+            ->assertSee('"name":"Тестові двері"', false);
 
         $filterHtml = $this->filterHtml($response->getContent());
 

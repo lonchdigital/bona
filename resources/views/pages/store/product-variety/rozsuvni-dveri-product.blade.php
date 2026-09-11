@@ -5,41 +5,31 @@
     $slidingCatalogUrl = url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $product->productType->slug]));
     $slidingDescription = trim((string) preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags((string) data_get($productText, 'content', '')))));
     $slidingImage = $product->main_image_url ? url($product->main_image_url) : null;
-    $slidingAvailability = [
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_STOCK => 'https://schema.org/InStock',
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_ORDER => 'https://schema.org/BackOrder',
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_OF_STOCK => 'https://schema.org/OutOfStock',
-        \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_OUT_ASK_MANAGER => 'https://schema.org/LimitedAvailability',
-    ];
+    $slidingWebPageId = $slidingProductUrl.'#webpage';
+    $slidingSchemaProperties = collect($characteristics ?? [])->map(fn ($characteristic) => [
+        '@type' => 'PropertyValue',
+        'name' => trim((string) data_get($characteristic, 'name')),
+        'value' => trim((string) data_get($characteristic, 'value')),
+    ])->filter(fn ($property) => filled($property['name']) && filled($property['value']))->values()->all();
+    $slidingProductSchema = app(\App\Services\Seo\ProductPageSchemaService::class)->build(
+        product: $product,
+        currency: $baseCurrency,
+        url: $slidingProductUrl,
+        webPageId: $slidingWebPageId,
+        images: $slidingImage ? [$slidingImage] : [],
+        description: $slidingDescription,
+        additionalProperties: $slidingSchemaProperties,
+        reviews: $productReviews,
+        ratingSummary: $productRatingSummary,
+    );
     $slidingSchemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
 @endphp
 
 @push('structured_data')
     <script type="application/ld+json">{!! json_encode([
         '@'.'context' => 'https://schema.org',
-        '@graph' => [
-            array_filter([
-                '@type' => 'Product',
-                '@id' => $slidingProductUrl.'#product',
-                'mainEntityOfPage' => ['@id' => $slidingProductUrl.'#webpage'],
-                'name' => (string) $product->name,
-                'url' => $slidingProductUrl,
-                'sku' => $product->sku ?: null,
-                'image' => $slidingImage ? [$slidingImage] : null,
-                'description' => $slidingDescription ?: null,
-                'category' => (string) $product->productType->name,
-                'brand' => $product->brand ? ['@type' => 'Brand', 'name' => (string) $product->brand->name] : null,
-                'offers' => is_numeric($product->price) && (float) $product->price > 0 ? [
-                    '@type' => 'Offer',
-                    'url' => $slidingProductUrl,
-                    'priceCurrency' => $baseCurrency->code ?: 'UAH',
-                    'price' => (string) $product->price,
-                    'availability' => $slidingAvailability[$product->availability_status_id] ?? null,
-                    'itemCondition' => 'https://schema.org/NewCondition',
-                    'seller' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->organizationId()],
-                    'hasMerchantReturnPolicy' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->merchantReturnPolicyId()],
-                ] : null,
-            ]),
+        '@graph' => array_values(array_filter([
+            $slidingProductSchema,
             [
                 '@type' => 'BreadcrumbList',
                 '@id' => $slidingProductUrl.'#breadcrumb',
@@ -51,16 +41,16 @@
             ],
             array_filter([
                 '@type' => 'WebPage',
-                '@id' => $slidingProductUrl.'#webpage',
+                '@id' => $slidingWebPageId,
                 'url' => $slidingProductUrl,
                 'name' => (string) ($product->meta_title ?: $product->name),
                 'description' => $product->meta_description ?: ($slidingDescription ?: null),
                 'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
                 'isPartOf' => ['@id' => app(\App\Services\Seo\OrganizationSchemaService::class)->websiteId()],
                 'breadcrumb' => ['@id' => $slidingProductUrl.'#breadcrumb'],
-                'mainEntity' => ['@id' => $slidingProductUrl.'#product'],
+                'mainEntity' => $slidingProductSchema ? ['@id' => $slidingProductUrl.'#product'] : null,
             ]),
-        ],
+        ])),
     ], $slidingSchemaFlags) !!}</script>
 @endpush
 

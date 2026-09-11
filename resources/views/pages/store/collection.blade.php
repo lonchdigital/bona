@@ -14,21 +14,21 @@
                             <div class="row">
                                 <div class="col mt-4 mt-md-0 mb-4">
                                     <nav aria-label="breadcrumb">
-                                        <ul class="breadcrumb mb-0" id="breadcrumblist" itemscope itemtype="http://schema.org/BreadcrumbList">
-                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}">{{ trans('base.home') }}</a>
+                                        <ul class="breadcrumb mb-0" id="breadcrumblist" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                                <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home')) }}"><span itemprop="name">{{ trans('base.home') }}</span></a>
                                                 <meta itemprop="position" content="1"/>
                                             </li>
-                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brands.list.page') }}">{{ trans('base.brands') }}</a>
+                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                                <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.brands.list.page')) }}"><span itemprop="name">{{ trans('base.brands') }}</span></a>
                                                 <meta itemprop="position" content="2"/>
                                             </li>
-                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                                <a href="{{ app(App\Services\Brand\BrandCatalogUrlService::class)->storefrontUrl($collection->brand) }}">{{ $collection->brand->name }}</a>
+                                            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                                <a itemprop="item" href="{{ url(app(App\Services\Brand\BrandCatalogUrlService::class)->storefrontUrl($collection->brand)) }}"><span itemprop="name">{{ $collection->brand->name }}</span></a>
                                                 <meta itemprop="position" content="3"/>
                                             </li>
-                                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" aria-current="page">
-                                                {{ $collection->name }}
+                                            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
+                                                <span itemprop="name">{{ $collection->name }}</span>
                                                 <meta itemprop="position" content="4"/>
                                             </li>
                                         </ul>

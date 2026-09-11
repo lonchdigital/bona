@@ -4,11 +4,16 @@
     <div class="container">
         <ol class="breadcrumb breadcrumb-inverted font-two" itemscope itemtype="https://schema.org/BreadcrumbList">
             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.home') }}"><span class="icon icon-home"></span></a>
+                <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home')) }}">
+                    <span class="icon icon-home"></span>
+                    <span itemprop="name" class="sr-only">{{ trans('base.home') }}</span>
+                </a>
+                <meta itemprop="position" content="1">
             </li>
             @foreach ($data as $key => $value)
                 <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                     <span class="active" itemprop="name">{{trans('base.' . $value)}}</span>
+                    <meta itemprop="position" content="{{ $loop->iteration + 1 }}">
                 </li>
             @endforeach
         </ol>
