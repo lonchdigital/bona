@@ -11,6 +11,14 @@ on:
         required: true
         type: boolean
         default: false
+      payment_config_mode:
+        description: Block deployment on incomplete optional payment credentials
+        required: true
+        type: choice
+        options:
+          - strict
+          - advisory
+        default: strict
 
 permissions:
   contents: read
@@ -167,6 +175,7 @@ jobs:
           PHP_BIN: ${{ secrets.PRODUCTION_PHP_BIN }}
           HEALTHCHECK_URL: ${{ secrets.PRODUCTION_HEALTHCHECK_URL }}
           RELEASE_ID: ${{ github.run_number }}-${{ github.sha }}
+          PAYMENT_CONFIG_MODE: ${{ inputs.payment_config_mode }}
         run: |
           test -n "$SSH_HOST"
           test -n "$SSH_USER"
@@ -175,6 +184,8 @@ jobs:
           [[ "$DEPLOY_PATH" != *[[:space:]]* ]]
           [[ "$DEPLOY_PATH" != "/" ]]
           PHP_BIN="${PHP_BIN:-/usr/bin/php8.4}"
+          PAYMENT_CONFIG_MODE="${PAYMENT_CONFIG_MODE:-strict}"
+          [[ "$PAYMENT_CONFIG_MODE" == "strict" || "$PAYMENT_CONFIG_MODE" == "advisory" ]]
 
           archive_path="$(find "$RUNNER_TEMP/bona-release" -maxdepth 1 -type f -name '*.tar.gz' -print -quit)"
           checksum_path="$archive_path.sha256"
@@ -192,7 +203,7 @@ jobs:
           remote_checksum="$DEPLOY_PATH/incoming/$(basename "$checksum_path")"
           remote_script="$DEPLOY_PATH/incoming/release.sh"
 
-          printf -v remote_command 'PHP_BIN=%q bash %q %q %q %q %q %q' \
+          printf -v remote_command 'PHP_BIN=%q bash %q %q %q %q %q %q %q' \
             "$PHP_BIN" "$remote_script" "$DEPLOY_PATH" "$RELEASE_ID" \
-            "$remote_archive" "$remote_checksum" "$HEALTHCHECK_URL"
+            "$remote_archive" "$remote_checksum" "$HEALTHCHECK_URL" "$PAYMENT_CONFIG_MODE"
           ssh "$ssh_target" "$remote_command"

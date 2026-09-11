@@ -7,6 +7,7 @@ RELEASE_ID="${2:-}"
 ARCHIVE_PATH="${3:-}"
 CHECKSUM_PATH="${4:-}"
 HEALTHCHECK_URL="${5:-}"
+PAYMENT_CONFIG_MODE="${6:-strict}"
 PHP_BIN="${PHP_BIN:-/usr/bin/php8.4}"
 
 if [[ -z "$DEPLOY_PATH" || "$DEPLOY_PATH" != /* || "$DEPLOY_PATH" == "/" ]]; then
@@ -16,6 +17,11 @@ fi
 
 if [[ ! "$RELEASE_ID" =~ ^[A-Za-z0-9._-]+$ ]]; then
     echo "Invalid release id." >&2
+    exit 1
+fi
+
+if [[ "$PAYMENT_CONFIG_MODE" != "strict" && "$PAYMENT_CONFIG_MODE" != "advisory" ]]; then
+    echo "Payment config mode must be strict or advisory." >&2
     exit 1
 fi
 
@@ -127,7 +133,11 @@ cd "$RELEASE_PATH"
 "$PHP_BIN" artisan optimize:clear
 "$PHP_BIN" artisan migrate --force
 "$PHP_BIN" artisan optimize
-"$PHP_BIN" artisan payments:diagnose --strict
+if [[ "$PAYMENT_CONFIG_MODE" == "strict" ]]; then
+    "$PHP_BIN" artisan payments:diagnose --strict
+else
+    "$PHP_BIN" artisan payments:diagnose
+fi
 "$PHP_BIN" artisan generate:sitemap
 
 ln -s "$RELEASE_PATH" "$NEXT_LINK"
