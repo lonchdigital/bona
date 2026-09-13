@@ -1,0 +1,489 @@
+{
+  "products": [
+    {
+      "id": "new-york",
+      "short": {
+        "uk": "Нью-Йорк",
+        "ru": "Нью-Йорк"
+      },
+      "brand": "ARTPORTE",
+      "category": "interior",
+      "slug": "mizhkimnatni-dveri-artporte-nyu-york",
+      "crop": [
+        201,
+        0,
+        397,
+        837
+      ],
+      "handle": [
+        0.166,
+        0.543
+      ],
+      "colors": [
+        {
+          "id": "ivory",
+          "name": {
+            "uk": "Айворі",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#e6dcc7",
+          "image": "new-york-ivory.jpg",
+          "colorId": 148
+        },
+        {
+          "id": "white",
+          "name": {
+            "uk": "Білий",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#eeece8",
+          "image": "new-york-white.jpg",
+          "colorId": 155
+        },
+        {
+          "id": "anthracite",
+          "name": {
+            "uk": "Антрацит",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#555756",
+          "image": "new-york-anthracite.jpg",
+          "colorId": 149
+        }
+      ]
+    },
+    {
+      "id": "ostin",
+      "short": {
+        "uk": "Остін",
+        "ru": "Остин"
+      },
+      "brand": "ARTPORTE",
+      "category": "interior",
+      "slug": "mizhkimnatni-dveri-artporte-ostin",
+      "crop": [
+        201,
+        0,
+        397,
+        837
+      ],
+      "handle": [
+        0.163,
+        0.549
+      ],
+      "colors": [
+        {
+          "id": "white",
+          "name": {
+            "uk": "Білий",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#ececed",
+          "image": "ostin.webp",
+          "colorId": 155
+        }
+      ]
+    },
+    {
+      "id": "molding",
+      "short": {
+        "uk": "Molding 1B",
+        "ru": "Molding 1B"
+      },
+      "brand": "BONA DOORS",
+      "category": "interior",
+      "slug": "mizhkimnatni-dveri-molding-1b",
+      "crop": [
+        201,
+        0,
+        403,
+        837
+      ],
+      "handle": [
+        0.178,
+        0.571
+      ],
+      "colors": [
+        {
+          "id": "light",
+          "name": {
+            "uk": "Світлий із золотом",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#dddcd9",
+          "image": "molding.webp",
+          "colorId": 166
+        }
+      ]
+    },
+    {
+      "id": "glasso",
+      "short": {
+        "uk": "Glasso",
+        "ru": "Glasso"
+      },
+      "brand": "BONA DOORS",
+      "category": "interior",
+      "slug": "mizhkimnatni-dveri-glasso",
+      "crop": [
+        204,
+        0,
+        398,
+        837
+      ],
+      "handle": [
+        0.155,
+        0.528
+      ],
+      "colors": [
+        {
+          "id": "gray",
+          "name": {
+            "uk": "Світло-сірий",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#b0b2bc",
+          "image": "glasso.webp",
+          "colorId": 168
+        }
+      ]
+    },
+    {
+      "id": "hidden-primed",
+      "short": {
+        "uk": "Без обкладу",
+        "ru": "Без обклада"
+      },
+      "brand": "DANAPRIS",
+      "category": "interior",
+      "types": [
+        "hidden"
+      ],
+      "flush": true,
+      "slug": "dveri-prihovanogo-montazhu-gruntovani-bez-obkladu",
+      "crop": [
+        275,
+        78,
+        306,
+        686
+      ],
+      "handle": [
+        0.925,
+        0.53
+      ],
+      "handleSide": "right",
+      "colors": [
+        {
+          "id": "primed",
+          "name": {
+            "uk": "Під фарбування · фото-приклад",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#dcd0c7",
+          "image": "hidden-primed.webp",
+          "colorId": 7
+        }
+      ]
+    },
+    {
+      "id": "hidden-black-edge",
+      "short": {
+        "uk": "Чорний обклад",
+        "ru": "Чёрный обклад"
+      },
+      "brand": "DANAPRIS",
+      "category": "interior",
+      "types": [
+        "hidden"
+      ],
+      "flush": true,
+      "slug": "dveri-prihovanogo-montazhu-gruntovani-z-chornim-alyuminiievim-obkladom",
+      "crop": [
+        249,
+        196,
+        246,
+        549
+      ],
+      "face": [
+        249,
+        225,
+        409,
+        196,
+        409,
+        745,
+        249,
+        707
+      ],
+      "handle": [
+        0.91,
+        0.515
+      ],
+      "handleSide": "right",
+      "colors": [
+        {
+          "id": "primed-black",
+          "name": {
+            "uk": "Під фарбування · чорний обклад",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#cfcbc5",
+          "image": "hidden-black-edge.webp",
+          "colorId": 7
+        }
+      ]
+    },
+    {
+      "id": "mirror-silver",
+      "short": {
+        "uk": "Дзеркало срібло",
+        "ru": "Зеркало серебро"
+      },
+      "brand": "BONA DOORS",
+      "category": "interior",
+      "types": [
+        "hidden",
+        "mirror"
+      ],
+      "flush": true,
+      "slug": "dveri-prihovanogo-montazhu-dzerkalo-sriblo",
+      "crop": [
+        252,
+        21,
+        307,
+        781
+      ],
+      "face": [
+        252,
+        45,
+        559,
+        21,
+        559,
+        802,
+        252,
+        787
+      ],
+      "handle": [
+        0.94,
+        0.54
+      ],
+      "handleSide": "right",
+      "colors": [
+        {
+          "id": "silver",
+          "name": {
+            "uk": "Дзеркало срібло",
+            "ru": "Зеркало серебро"
+          },
+          "hex": "#bfc3c1",
+          "image": "mirror-silver.webp",
+          "colorId": null
+        }
+      ]
+    },
+    {
+      "id": "mirror-bronze",
+      "short": {
+        "uk": "Дзеркало бронза",
+        "ru": "Зеркало бронза"
+      },
+      "brand": "BONA DOORS",
+      "category": "interior",
+      "types": [
+        "hidden",
+        "mirror"
+      ],
+      "flush": true,
+      "slug": "dveri-prihovanogo-montazhu-dzerkalo-bronza",
+      "crop": [
+        252,
+        21,
+        307,
+        781
+      ],
+      "face": [
+        252,
+        45,
+        559,
+        21,
+        559,
+        802,
+        252,
+        787
+      ],
+      "handle": [
+        0.94,
+        0.54
+      ],
+      "handleSide": "right",
+      "colors": [
+        {
+          "id": "bronze",
+          "name": {
+            "uk": "Дзеркало бронза",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#78604b",
+          "image": "mirror-bronze.webp",
+          "colorId": null
+        }
+      ]
+    },
+    {
+      "id": "classic-milan",
+      "short": {
+        "uk": "Мілан ПГ",
+        "ru": "Милан ПГ"
+      },
+      "brand": "OMEGA",
+      "category": "interior",
+      "types": [
+        "classic"
+      ],
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-milan-pg",
+      "crop": [
+        203,
+        0,
+        394,
+        837
+      ],
+      "handle": [
+        0.855,
+        0.52
+      ],
+      "handleSide": "right",
+      "colors": [
+        {
+          "id": "catalog-blue",
+          "name": {
+            "uk": "Блакитний · як на фото",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#a4b7c5",
+          "image": "classic-milan.webp",
+          "colorId": 171
+        }
+      ]
+    },
+    {
+      "id": "classic-nice",
+      "short": {
+        "uk": "Ніцца ПГ",
+        "ru": "Ницца ПГ"
+      },
+      "brand": "OMEGA",
+      "category": "interior",
+      "types": [
+        "classic"
+      ],
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-nicca-pg",
+      "crop": [
+        205,
+        0,
+        390,
+        837
+      ],
+      "handle": [
+        0.845,
+        0.522
+      ],
+      "handleSide": "right",
+      "colors": [
+        {
+          "id": "catalog-ivory",
+          "name": {
+            "uk": "Кремовий · як на фото",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#d6c8a8",
+          "image": "classic-nice.webp",
+          "colorId": 176
+        }
+      ]
+    },
+    {
+      "id": "pride",
+      "short": {
+        "uk": "Прайд Strong",
+        "ru": "Прайд Strong"
+      },
+      "brand": "STRONG",
+      "category": "exterior",
+      "slug": "prayd-strong-dveri-na-vulicyu",
+      "crop": [
+        182,
+        0,
+        436,
+        837
+      ],
+      "colors": [
+        {
+          "id": "graphite",
+          "name": {
+            "uk": "Графіт",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#4a515b",
+          "image": "pride.webp",
+          "colorId": 33
+        }
+      ]
+    },
+    {
+      "id": "art-v2",
+      "short": {
+        "uk": "Арт v2 Стріт 3K",
+        "ru": "Арт v2 Стрит 3K"
+      },
+      "brand": "QDOORS",
+      "category": "exterior",
+      "slug": "art-v2-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu",
+      "crop": [
+        184,
+        0,
+        432,
+        837
+      ],
+      "colors": [
+        {
+          "id": "anthracite",
+          "name": {
+            "uk": "Антрацит",
+            "ru": "Зеркало бронза"
+          },
+          "hex": "#393d42",
+          "image": "art-v2.webp",
+          "colorId": 85
+        }
+      ]
+    }
+  ],
+  "handles": [
+    {
+      "id": "black",
+      "image": "handle-black.webp",
+      "color": "#272929",
+      "accent": "#5b5d59",
+      "shape": "square",
+      "slug": "z-1814-chorniy",
+      "colorId": 8
+    },
+    {
+      "id": "nickel",
+      "image": "handle-nickel.webp",
+      "color": "#979789",
+      "accent": "#ececdf",
+      "shape": "square",
+      "slug": "z-1814-mn-satin-nikel",
+      "colorId": 297
+    },
+    {
+      "id": "rounded",
+      "image": "handle-rounded.webp",
+      "color": "#96958e",
+      "accent": "#eae9e0",
+      "shape": "round",
+      "slug": "z-1813-mn-satin-nikel",
+      "colorId": 297
+    }
+  ]
+}

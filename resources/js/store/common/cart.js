@@ -1221,7 +1221,7 @@ function getAllProductAttributes(art_this)
     });
 }*/
 
-function handleBasket(data)
+export function handleBasket(data)
 {
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');

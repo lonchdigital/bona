@@ -380,7 +380,10 @@ class CartService extends BaseService
 
                 if ($isRequestedProduct) {
                     $count = $allProductVariation->count + $request->productCount;
-                    $allProductVariation->update(['count' => $count]);
+                    $allProductVariation->update(array_merge(
+                        $this->prepareProductLine($product, $requestProductAttributes),
+                        ['count' => $count]
+                    ));
 
                     $isProductInCart = true;
                     break;

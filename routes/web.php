@@ -24,6 +24,7 @@ use App\Http\Actions\Store\Author\ShowAuthorPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandSearchPageAction;
 use App\Http\Actions\Store\Brand\Pages\ShowBrandsListPageAction;
+use App\Http\Actions\Store\Cart\AddConfiguratorSelectionAction;
 use App\Http\Actions\Store\Cart\AddProductToCartAction;
 use App\Http\Actions\Store\Cart\AddPromoCodeToCartAction;
 use App\Http\Actions\Store\Cart\AddSubProductToCartAction;
@@ -57,9 +58,9 @@ use App\Http\Actions\Store\Checkout\Pages\ShowCheckoutThankYouPageAction;
 use App\Http\Actions\Store\Comparison\Pages\ShowComparisonPageAction;
 use App\Http\Actions\Store\Contacts\Pages\ShowContactsPageAction;
 use App\Http\Actions\Store\CustomerReview\SubmitCustomerReviewAction;
-use App\Http\Actions\Store\Delivery\GetNPCitiesAction;
 // use App\Http\Actions\Store\Delivery\GetMeestCitiesAction;
 // use App\Http\Actions\Store\Delivery\GetMeestDepartmentsAction;
+use App\Http\Actions\Store\Delivery\GetNPCitiesAction;
 use App\Http\Actions\Store\Delivery\GetNpDepartmentsAction;
 use App\Http\Actions\Store\Delivery\GetSATCitiesAction;
 use App\Http\Actions\Store\Delivery\GetSATDepartmentsAction;
@@ -189,6 +190,7 @@ $optionalLanguageRoutes = function () {
     Route::name('store.home')->get('/', ShowHomePageAction::class);
     Route::name('store.comparison.page')->get('/compare', ShowComparisonPageAction::class);
     Route::name('store.door-configurator.page')->get('/door-configurator', ShowDoorConfiguratorPageAction::class);
+    Route::name('store.door-configurator.cart')->post('/door-configurator/cart', AddConfiguratorSelectionAction::class)->middleware('throttle:30,1');
 
     Route::name('store.services')->get('/services', ShowServicesPageAction::class);
     Route::name('store.service.page')->get('/services/{serviceSlug}', ShowServicePageAction::class);

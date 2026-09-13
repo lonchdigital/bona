@@ -66,6 +66,11 @@ class SitemapService extends BaseService
         $urls->push($this->withLastModified(Url::create('/'), $homePageChangedAt));
         $urls->push($this->withLastModified(Url::create('/ru'), $homePageChangedAt));
 
+        // The visual configurator has its own stable, localized landing pages.
+        foreach (['/door-configurator', '/ru/door-configurator'] as $configuratorUrl) {
+            $urls->push(Url::create($configuratorUrl));
+        }
+
         // FAQ hub
         $faqChangedAt = Faqs::query()->latest('updated_at')->value('updated_at');
 

@@ -92,4 +92,6 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Build frontend assets
-        run: npm run build
+        run: |
+          node --test tests/js/*.test.mjs
+          npm run build
