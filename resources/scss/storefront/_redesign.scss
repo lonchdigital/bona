@@ -2625,27 +2625,19 @@ a.bona-idea-card {
         p { margin: 0; }
     }
 
-    &__merchant {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px 14px;
-        padding: 18px 0;
-        border-top: 1px solid rgba(247, 244, 238, .15);
-        color: rgba(247, 244, 238, .62);
-        font-size: 11px;
-        line-height: 1.45;
+    &__credit {
+        flex: 0 0 auto;
+        font: inherit;
+        white-space: nowrap;
+    }
 
-        strong { color: var(--bona-cream); font-weight: 650; }
+    &__credit,
+    &__legal a,
+    &__legal button {
+        color: rgba(247, 244, 238, .72);
 
-        a {
-            margin-left: auto;
-            color: var(--bona-gold-light);
-            font-weight: 700;
-
-            &:hover,
-            &:focus-visible { color: var(--bona-cream); text-decoration: none; }
-        }
+        &:hover,
+        &:focus-visible { color: var(--bona-cream); text-decoration: none; }
     }
 
     &__legal {
@@ -2654,14 +2646,6 @@ a.bona-idea-card {
         justify-content: center;
         flex-wrap: wrap;
         gap: 9px 22px;
-
-        a,
-        button {
-            color: rgba(247, 244, 238, .72);
-
-            &:hover,
-            &:focus-visible { color: var(--bona-cream); text-decoration: none; }
-        }
 
         button {
             padding: 0;
@@ -4794,8 +4778,6 @@ label.bona-lead-consent > input {
         > span { font-size: 14px; line-height: 1.4; }
     }
     .bona-footer__bottom { align-items: center; flex-direction: column; text-align: center; }
-    .bona-footer__merchant { align-items: flex-start; flex-direction: column; }
-    .bona-footer__merchant a { margin-left: 0; }
     .bona-footer__legal { gap: 9px 16px; }
     .bona-footer__payments { margin-top: 4px; }
 

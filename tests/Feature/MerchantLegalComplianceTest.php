@@ -31,11 +31,35 @@ class MerchantLegalComplianceTest extends TestCase
 
         $this->get(route('store.home'))
             ->assertOk()
-            ->assertSee('ФОП ГОНЧАР ОКСАНА СЕРГІЇВНА')
-            ->assertSee('РНОКПП/ЄДРПОУ: 3258813661')
-            ->assertSee('Адреса реєстрації: 03170, м. Київ, вул. Професора Ейхельмана, 21')
+            ->assertDontSee('bona-footer__merchant', false)
+            ->assertSee('Powered by Lonch')
             ->assertSee('data-google-analytics-id="G-0863474309"', false)
             ->assertSee('data-cookie-settings', false);
+    }
+
+    public function test_footer_omits_duplicate_seller_details_and_places_credit_before_payment_marks(): void
+    {
+        foreach (['uk', 'ru'] as $locale) {
+            app()->setLocale($locale);
+            $footer = view('components.store.site-footer', ['productTypes' => collect(), 'options' => []])->render();
+            $this->assertStringNotContainsString('ГОНЧАР ОКСАНА СЕРГІЇВНА', $footer);
+            $this->assertStringNotContainsString('3258813661', $footer);
+            $this->assertStringNotContainsString('bona-footer__merchant', $footer);
+
+            $document = new \DOMDocument;
+            @$document->loadHTML('<?xml encoding="utf-8" ?>'.$footer);
+            $columns = (new \DOMXPath($document))->query('//div[@class="bona-footer__bottom"]/*');
+            $this->assertCount(4, $columns);
+            $this->assertSame('p', $columns->item(0)->nodeName);
+            $this->assertSame('bona-footer__legal', $columns->item(1)->getAttribute('class'));
+            $credit = $columns->item(2);
+            $this->assertSame('a', $credit->nodeName);
+            $this->assertSame('Powered by Lonch', $credit->textContent);
+            $this->assertSame('https://lonch.digital', $credit->getAttribute('href'));
+            $this->assertSame('noopener noreferrer', $credit->getAttribute('rel'));
+            $this->assertSame('bona-footer__payments', $columns->item(3)->getAttribute('class'));
+            $this->assertStringContainsString(trans('base.exchange_and_return'), $columns->item(1)->textContent);
+        }
     }
 
     public function test_organization_schema_exposes_legal_name_and_tax_identifier(): void
