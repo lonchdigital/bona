@@ -133,6 +133,12 @@
     .bona-mega__aside .bona-configurator-menu-link__arrow { display: none; }
 }
 
+// Leave room for the real logo, search and basket just above the mobile breakpoint.
+// The remaining categories stay accessible in the catalog menu.
+@media (min-width: 961px) and (max-width: 1050px) {
+    .bona-mainnav__direct:nth-of-type(n + 2) { display: none; }
+}
+
 @media (max-width: 960px) {
     .bona-configurator-promo {
         margin-top: 90px;
