@@ -58,6 +58,44 @@ class ConfiguratorDiscoveryTest extends TestCase
         }
     }
 
+    public function test_catalog_guidance_opens_the_localized_configurator_instead_of_consultation(): void
+    {
+        $this->seedCurrency();
+        $types = collect(['interior-doors', 'entrance-doors'])->map(function (string $slug) {
+            $type = $this->productType(['slug' => $slug]);
+            $this->makeProduct(['product_type_id' => $type->id]);
+
+            return $type;
+        });
+
+        foreach (['uk', 'ru'] as $locale) {
+            $prefix = $locale === 'uk' ? '' : 'localized.';
+            $params = $locale === 'uk' ? [] : ['lang' => $locale];
+            $target = route($prefix.'store.door-configurator.page', $params, false);
+            $urls = [route($prefix.'store.all-products.page', $params)];
+            foreach ($types as $type) {
+                $catalogParams = [...$params, 'productTypeSlug' => $type->slug];
+                $urls[] = route($prefix.'store.catalog.page', $catalogParams);
+                $urls[] = route($prefix.'store.catalog.filter.page', [...$catalogParams, 'catalogFiltersString' => 'per_page=48']);
+            }
+
+            foreach ($urls as $url) {
+                $response = $this->get($url)->assertOk();
+                $xpath = $this->xpath($response->getContent());
+                $guidance = $xpath->query('//div[@class="bona-catalog__guidance"]')->item(0);
+                $this->assertNotNull($guidance);
+                $this->assertStringContainsString(trans('base.catalog_guidance_text', [], $locale), $guidance->textContent);
+                $links = $xpath->query('.//a', $guidance);
+                $this->assertCount(1, $links);
+                $link = $links->item(0);
+                $this->assertSame($target, $link->getAttribute('href'));
+                $this->assertStringContainsString(trans('base.catalog_guidance_action', [], $locale), $link->textContent);
+                $this->assertFalse($link->hasAttribute('data-lead-modal-open'));
+                $this->assertFalse($link->hasAttribute('data-toggle'));
+            }
+        }
+    }
+
     private function xpath(string $html): \DOMXPath
     {
         $document = new \DOMDocument;

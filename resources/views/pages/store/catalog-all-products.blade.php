@@ -29,7 +29,7 @@
     $paginationTitleSuffix = $currentCatalogPage > 1
         ? ' — '.trans('base.pagination_page_title', ['page' => $currentCatalogPage])
         : '';
-    $catalogMetaDescription = trans('base.catalog_guidance_text');
+    $catalogMetaDescription = trans('base.catalog_meta_description');
 @endphp
 
 @include('pages.store.partials.catalog-structured-data')
