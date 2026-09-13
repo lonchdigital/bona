@@ -19,6 +19,14 @@
     $merchant = (array) config('organization.merchant', []);
     $footerMenus = app(App\Services\CatalogMenu\CatalogMenuService::class)
         ->getStorefrontFooterMenus($options, $productTypes, $locale);
+    $configuratorUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.door-configurator.page');
+    // Existing custom footer menus remain intact; do not add a second copy of this route.
+    $hasConfiguratorLink = collect($footerMenus['navigation'])->contains(
+        fn (array $item) => preg_match('~^/(?:uk/|ru/)?door-configurator/?$~', parse_url($item['url'], PHP_URL_PATH) ?? '') === 1
+    );
+    if (!$hasConfiguratorLink) {
+        $footerMenus['navigation'][] = ['url' => $configuratorUrl, 'label' => trans('configurator.nav_label')];
+    }
 @endphp
 
 <footer class="bona-footer">

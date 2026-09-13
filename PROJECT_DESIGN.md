@@ -34,6 +34,13 @@ Bona Doors is a premium, approachable door showroom for homeowners and interior 
 - Optional sections disappear when their corresponding content is empty.
 - Ukrainian and Russian storefronts receive equivalent structure and translated interface labels.
 
+## Configurator discovery (September 2026)
+
+- Replace the homepage style-selection presentation at its existing position with a dark editorial configurator feature: explanatory copy, one clear action, and a room/product composite using the live configurator's assets and proportions.
+- Preserve legacy style copy and photos in the homepage editor; a presentation selector can restore them without a content migration.
+- Use a pale warm-gold catalog-menu entry, a compact gold topbar link between works and contacts, and a footer navigation link. Match UA/RU destinations and avoid duplicate configured footer links.
+- On phones, place the example image after the introduction and before the features/action. Keep all copy legible and the image fully proportioned; no pretend controls or heavy configurator JavaScript on the homepage.
+
 ## Admin operational surfaces
 
 - Keep the existing Bootstrap/Overpass admin shell, but make editing screens calm, compact, and task-led rather than decorative.

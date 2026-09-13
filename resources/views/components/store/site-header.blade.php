@@ -68,6 +68,7 @@
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{ trans('base.blog') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{ trans('base.services') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{ trans('base.our_works') }}</a>
+                <a class="bona-topbar__configurator" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.door-configurator.page') }}">{{ trans('configurator.nav_label') }}</a>
                 <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{ trans('base.contacts') }}</a>
             </nav>
             <div class="bona-topbar__meta">
@@ -121,6 +122,7 @@
                         @empty
                             <small>{{ trans('base.storefront_catalog_empty') }}</small>
                         @endforelse
+                        <x-store.configurator-menu-link />
                         <a class="bona-mobile-nav__all" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}">
                             {{ trans('base.all_products') }} <span aria-hidden="true">→</span>
                         </a>
@@ -131,6 +133,7 @@
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{ trans('base.blog') }}</a>
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{ trans('base.services') }}</a>
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{ trans('base.our_works') }}</a>
+                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.door-configurator.page') }}">{{ trans('configurator.nav_label') }}</a>
                         <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{ trans('base.contacts') }}</a>
                     </div>
                 </div>

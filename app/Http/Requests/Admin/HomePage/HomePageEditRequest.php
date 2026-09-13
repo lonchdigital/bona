@@ -88,6 +88,7 @@ class HomePageEditRequest extends BaseRequest
                 'nullable',
                 'boolean',
             ],
+            'style_section.presentation' => ['nullable', 'in:configurator,styles'],
             'style_section.cta_url' => [
                 'nullable',
                 'string',

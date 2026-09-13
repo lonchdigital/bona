@@ -74,6 +74,7 @@ class HomePageStyleSectionTest extends TestCase
                 'seo_text' => ['uk' => '', 'ru' => ''],
                 'style_section' => [
                     'enabled' => 1,
+                    'presentation' => 'styles',
                     'kicker' => ['uk' => 'Підбір за стилем', 'ru' => 'Подбор по стилю'],
                     'title' => ['uk' => 'Підберемо двері до вашого інтерʼєру', 'ru' => 'Подберем двери к вашему интерьеру'],
                     'description' => ['uk' => 'Оберіть стиль', 'ru' => 'Выберите стиль'],
@@ -514,6 +515,60 @@ class HomePageStyleSectionTest extends TestCase
         foreach (['hero', 'catalog', 'popular', 'numbers', 'ideas', 'steps', 'works', 'reviews', 'instagram', 'blog', 'faq', 'partners', 'seo'] as $section) {
             $response->assertSee('&quot;'.$section.'&quot;:', false);
         }
+    }
+
+    public function test_configurator_presentation_is_the_non_destructive_default_in_both_languages(): void
+    {
+        $config = $this->homePageConfig();
+        $legacy = ['enabled' => true, 'title' => ['uk' => 'Попередній блок'], 'items' => []];
+        $config->update(['style_section' => $legacy]);
+
+        foreach (['/' => 'Приміряйте двері до інтер’єру', '/ru' => 'Примерьте двери к интерьеру'] as $url => $title) {
+            $response = $this->get($url)->assertOk()->assertSee($title)
+                ->assertSee('data-home-configurator', false)->assertDontSee('data-home-style-selector', false);
+            $this->assertSame(1, substr_count($response->getContent(), 'data-home-configurator'));
+        }
+
+        $this->assertEquals($legacy, $config->fresh()->style_section);
+    }
+
+    public function test_switching_to_configurator_preserves_legacy_copy_and_images(): void
+    {
+        Storage::fake(config('app.images_disk_default'));
+        Storage::disk(config('app.images_disk_default'))->put('home-styles/old.webp', 'saved-image');
+        $config = $this->homePageConfig();
+        $legacy = [
+            'enabled' => true, 'presentation' => 'styles',
+            'title' => ['uk' => 'Попередній блок', 'ru' => 'Предыдущий блок'],
+            'items' => [['name' => ['uk' => 'Мінімалізм', 'ru' => 'Минимализм'], 'image_path' => 'home-styles/old.webp', 'sort_order' => 0]],
+        ];
+        $config->update(['style_section' => $legacy]);
+
+        $this->actingAs($this->admin())->post(route('admin.home-page.edit'), [
+            'selected_product_types' => '', 'selected_products_id' => '',
+            'selected_best_sales_products_id' => '', 'selected_brands_id' => '',
+            'seo_title' => ['uk' => '', 'ru' => ''], 'seo_text' => ['uk' => '', 'ru' => ''],
+            'style_section' => ['enabled' => 1, 'presentation' => 'configurator'],
+        ])->assertOk()->assertJsonPath('data.success', true);
+
+        $this->assertEquals(array_replace($legacy, ['presentation' => 'configurator']), $config->fresh()->style_section);
+        Storage::disk(config('app.images_disk_default'))->assertExists('home-styles/old.webp');
+
+        $this->get('/')->assertSee('data-home-configurator', false);
+        $config->update(['style_section' => array_replace($legacy, ['enabled' => false])]);
+        HomePageService::forgetStorefrontCache();
+        $this->get('/')->assertDontSee('data-home-configurator', false)->assertDontSee('data-home-style-selector', false);
+        $config->update(['style_section' => $legacy]);
+        HomePageService::forgetStorefrontCache();
+        $this->get('/')->assertSee('data-home-style-selector', false)->assertSee('Попередній блок');
+    }
+
+    public function test_style_presentation_rejects_unknown_values(): void
+    {
+        $this->homePageConfig();
+        $this->actingAs($this->admin())->postJson(route('admin.home-page.edit'), [
+            'style_section' => ['presentation' => 'unknown'],
+        ])->assertUnprocessable()->assertJsonValidationErrors('style_section.presentation');
     }
 
     private function homePageConfig(): HomePageConfig

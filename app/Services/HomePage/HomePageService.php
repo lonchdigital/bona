@@ -158,6 +158,16 @@ class HomePageService extends BaseService
     private function syncStyleSection(?array $section, array $existingSection): array
     {
         $section ??= [];
+        $presentation = $section['presentation'] ?? $existingSection['presentation'] ?? 'configurator';
+
+        // Switching the presentation must not delete the previous copy or photos.
+        if ($presentation === 'configurator') {
+            return array_replace($existingSection, [
+                'enabled' => (bool) ($section['enabled'] ?? false),
+                'presentation' => $presentation,
+            ]);
+        }
+
         $existingImagePaths = collect($existingSection['items'] ?? [])
             ->pluck('image_path')
             ->filter()
@@ -191,6 +201,7 @@ class HomePageService extends BaseService
 
         return [
             'enabled' => (bool) ($section['enabled'] ?? false),
+            'presentation' => $presentation,
             'kicker' => $this->normalizeTranslations($section['kicker'] ?? []),
             'title' => $this->normalizeTranslations($section['title'] ?? []),
             'description' => $this->normalizeTranslations($section['description'] ?? []),
@@ -210,6 +221,7 @@ class HomePageService extends BaseService
     public function getHomePageStyleSection(): array
     {
         $section = $this->getHomePageConfig()?->style_section ?? [];
+        $section += ['enabled' => true, 'presentation' => 'configurator'];
         $section['items'] = collect($section['items'] ?? [])->map(function (array $item) {
             $item['image_url'] = filled($item['image_path'] ?? null)
                 ? Storage::url($item['image_path'])

@@ -26,7 +26,8 @@
 
 <div class="bona-mega" id="bona-catalog-menu" data-mega-menu>
     <div class="bona-shell bona-mega__inner">
-        <div class="bona-mega__aside" role="tablist" aria-label="{{ trans('base.storefront_catalog') }}">
+        <div class="bona-mega__aside">
+            <div class="bona-mega__tabs" role="tablist" aria-orientation="vertical" aria-label="{{ trans('base.storefront_catalog') }}">
             @forelse($menuTypes as $productType)
                 @php $isDefaultMenuType = $productType->id === $defaultMenuTypeId; @endphp
                 <button
@@ -44,6 +45,9 @@
             @empty
                 <span class="bona-mega__empty">{{ trans('base.storefront_catalog_empty') }}</span>
             @endforelse
+
+            </div>
+            <x-store.configurator-menu-link />
 
             <a class="bona-mega__all" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}">
                 {{ trans('base.all_products') }}

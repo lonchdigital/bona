@@ -1,0 +1,161 @@
+.bona-configurator-promo {
+    margin-top: 110px;
+    padding-block: 88px;
+    background: var(--bona-dark);
+    color: var(--bona-cream);
+
+    &__grid {
+        display: grid;
+        grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr);
+        align-items: center;
+        gap: 56px;
+    }
+
+    &__kicker {
+        margin: 0 0 24px;
+        color: var(--bona-gold-light);
+        font: 700 12px/1.5 var(--bona-ui);
+        letter-spacing: .14em;
+        text-transform: uppercase;
+    }
+
+    h2 {
+        max-width: 440px;
+        margin: 0 0 24px;
+        color: inherit;
+        font: 400 clamp(38px, 3.8vw, 56px)/1.04 var(--bona-display);
+        letter-spacing: -.02em;
+        text-transform: none;
+    }
+
+    &__description {
+        max-width: 400px;
+        margin: 0 0 28px;
+        color: #d2cbc1;
+        font: 400 15px/1.7 var(--bona-ui);
+    }
+
+    &__features {
+        display: grid;
+        gap: 12px;
+        margin: 0 0 34px;
+        padding: 0;
+        list-style: none;
+        font: 500 13px/1.5 var(--bona-ui);
+
+        li { display: flex; align-items: flex-start; gap: 10px; }
+        svg { flex: 0 0 18px; margin-top: 1px; color: var(--bona-gold-light); }
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+        min-height: 56px;
+        padding: 15px 24px;
+        border: 1px solid var(--bona-cream);
+        border-radius: 999px;
+        background: var(--bona-cream);
+        color: var(--bona-ink);
+        font: 700 14px/1.4 var(--bona-ui);
+        transition: background .2s, border-color .2s;
+
+        svg { flex: 0 0 24px; }
+        &:hover { background: var(--bona-gold-light); border-color: var(--bona-gold-light); color: var(--bona-ink); text-decoration: none; }
+        &:focus-visible { outline: 2px solid var(--bona-gold-light); outline-offset: 5px; }
+    }
+
+    &__note { margin: 14px 0 0; color: #c2b9ac; font: 400 12px/1.5 var(--bona-ui); }
+    &__preview { min-width: 0; margin: 0; }
+    &__scene { position: relative; overflow: hidden; aspect-ratio: 3 / 2; border-radius: 16px; background: #b8aea3; }
+    &__room { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    // Match drawDoor()'s 397/837 product crop and 523px height in the 1536x1024 room.
+    &__door {
+        position: absolute;
+        left: 41.925%;
+        top: 20.01953125%;
+        width: 16.15%;
+        height: 51.07421875%;
+        overflow: hidden;
+
+        img { position: absolute; top: 0; left: -50.62972292%; width: 201.511335%; max-width: none; height: 100%; }
+    }
+
+    figcaption {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px 20px;
+        padding-top: 16px;
+        color: #c2b9ac;
+        font: 400 11px/1.5 var(--bona-ui);
+    }
+}
+
+.bona-mega__tabs { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+
+.bona-mega__aside .bona-configurator-menu-link,
+.bona-mobile-nav__catalog .bona-configurator-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 88px;
+    margin-block: 20px 4px;
+    padding: 18px 14px;
+    border: 1px solid #d6c4a9;
+    border-radius: 10px;
+    background: var(--bona-cream);
+    color: var(--bona-ink);
+    text-decoration: none;
+    transition: background .2s, border-color .2s;
+
+    > span { flex: 1; min-width: 0; }
+    strong { display: block; font: 700 14px/1.4 var(--bona-ui); }
+    small { display: block; margin-top: 6px; color: var(--bona-muted); font: 400 11px/1.4 var(--bona-ui); }
+    .bona-configurator-menu-link__icon { flex: 0 0 26px; color: var(--bona-gold-text); }
+    .bona-configurator-menu-link__arrow { flex: 0 0 20px; }
+    &:hover { background: #ece3d5; border-color: var(--bona-gold); }
+    &:focus-visible { outline: 2px solid var(--bona-gold); outline-offset: 4px; }
+}
+
+.bona-topbar {
+    &__nav, &__meta { gap: clamp(12px, 1.4vw, 22px); white-space: nowrap; }
+    &__nav .bona-topbar__configurator { color: var(--bona-gold-light); opacity: 1; }
+}
+
+@media (max-width: 1180px) {
+    .bona-topbar__meta > span { display: none; }
+    .bona-configurator-promo__grid { gap: 32px; }
+    .bona-mega__aside .bona-configurator-menu-link { flex-wrap: wrap; gap: 8px; }
+    .bona-mega__aside .bona-configurator-menu-link__arrow { display: none; }
+}
+
+@media (max-width: 960px) {
+    .bona-configurator-promo {
+        margin-top: 90px;
+        padding-block: 64px;
+        &__grid { grid-template-columns: 1fr 1.15fr; gap: 28px; }
+        h2 { font-size: 38px; }
+        &__description { font-size: 14px; }
+        &__cta { padding-inline: 20px; gap: 16px; }
+    }
+}
+
+@media (max-width: 700px) {
+    .bona-configurator-promo {
+        margin-top: 72px;
+        &__grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+        &__content { display: contents; }
+        &__kicker { margin-bottom: -16px; }
+        h2 { max-width: 340px; margin: -8px 0; font-size: 42px; }
+        &__description { max-width: 480px; margin: -8px 0 0; font-size: 15px; }
+        &__preview { grid-row: 4; }
+        &__features { margin: -4px 0 0; font-size: 14px; }
+        &__cta { justify-self: start; margin-top: -8px; }
+        &__note { margin: -18px 0 0; }
+        figcaption { font-size: 11px; }
+    }
+}

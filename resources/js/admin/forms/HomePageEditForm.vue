@@ -135,6 +135,7 @@ export default {
             selectedBestSalesProductsShow: [],
             selectedBrandsShow: [],
             styleItems: [],
+            stylePresentation: this.styleSection.presentation || 'configurator',
             numberItems: [],
             ideaItems: [],
             stepItems: [],
@@ -360,6 +361,15 @@ export default {
                 </home-page-section-card-component>
 
                 <home-page-section-card-component :title="$t('admin.home_style_section')" :help="$t('admin.home_style_section_help')" name="style_section" :enabled="Boolean(styleSection.enabled)">
+                    <div class="form-group">
+                        <label for="home-style-presentation">{{ $t('admin.home_style_presentation') }}</label>
+                        <select id="home-style-presentation" class="form-control" name="style_section[presentation]" v-model="stylePresentation">
+                            <option value="configurator">{{ $t('admin.home_style_configurator') }}</option>
+                            <option value="styles">{{ $t('admin.home_style_legacy') }}</option>
+                        </select>
+                    </div>
+                    <p v-if="stylePresentation === 'configurator'" class="text-muted mb-0">{{ $t('admin.home_style_configurator_help') }}</p>
+                    <div v-show="stylePresentation === 'styles'">
                     <multi-language-input-component :title="$t('admin.home_style_kicker')" name="style_section[kicker]" :selected-language="selectedLanguage" :available-languages="availableLanguages" :is-required="false" :init-data="styleSection.kicker || {}" :errors="errors" />
                     <multi-language-input-component :title="$t('admin.home_style_title')" name="style_section[title]" :selected-language="selectedLanguage" :available-languages="availableLanguages" :is-required="false" :init-data="styleSection.title || {}" :errors="errors" />
                     <multi-language-text-area-component :title="$t('admin.home_style_description')" name="style_section[description]" :selected-language="selectedLanguage" :available-languages="availableLanguages" :is-required="false" :init-data="styleSection.description || {}" :errors="errors" />
@@ -369,6 +379,7 @@ export default {
                     </div>
                     <div class="d-flex align-items-center justify-content-between mt-3 mb-3"><strong>{{ $t('admin.home_style_items') }}</strong><button type="button" class="btn btn-sm btn-secondary" @click="addStyleItem"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.home_style_add') }}</button></div>
                     <home-page-style-item-component v-for="(item, index) in styleItems" :key="item._editorKey" :item="item" :index="index" :selected-language="selectedLanguage" :available-languages="availableLanguages" :errors="errors" :is-first="index === 0" :is-last="index === styleItems.length - 1" @delete="deleteStyleItem(index)" @move-up="moveStyleItem(index, -1)" @move-down="moveStyleItem(index, 1)" />
+                    </div>
                 </home-page-section-card-component>
 
                 <input type="hidden" name="selected_products_id" value="">

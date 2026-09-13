@@ -18,7 +18,9 @@
     $items = collect($section['items'] ?? [])->filter(fn ($item) => filled($item['image_url'] ?? null));
 @endphp
 
-@if(($section['enabled'] ?? false) && $items->isNotEmpty())
+@if(($section['enabled'] ?? true) && ($section['presentation'] ?? 'configurator') === 'configurator')
+    <x-store.home-configurator />
+@elseif(($section['enabled'] ?? false) && $items->isNotEmpty())
     <section class="bona-style-band" data-home-style-selector aria-labelledby="home-style-title">
         <div class="bona-shell bona-style-band__grid">
             <div class="bona-style-band__content">
