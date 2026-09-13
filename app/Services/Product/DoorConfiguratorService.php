@@ -59,8 +59,10 @@ class DoorConfiguratorService
 
     private function products(array $slugs, bool $lock = false): Collection
     {
+        // The legacy admin writes is_active=0 even for published products;
+        // storefront availability is controlled by availability_status_id.
         $query = Product::query()->with(['colors', 'brand', 'productType'])->whereIn('slug', $slugs)
-            ->where('is_active', true)->where('price', '>', 0)->whereIn('availability_status_id', [ProductStatusDataClass::PRODUCT_STATUS_STOCK, ProductStatusDataClass::PRODUCT_STATUS_ORDER]);
+            ->whereHas('productType')->where('price', '>', 0)->whereIn('availability_status_id', [ProductStatusDataClass::PRODUCT_STATUS_STOCK, ProductStatusDataClass::PRODUCT_STATUS_ORDER]);
         if ($lock) {
             $query->lockForUpdate();
         }

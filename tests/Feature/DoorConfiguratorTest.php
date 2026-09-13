@@ -17,7 +17,8 @@ class DoorConfiguratorTest extends TestCase
     private function door(array $overrides = [])
     {
         $this->seedCurrency();
-        $door = $this->makeProduct(array_merge(['slug' => 'mizhkimnatni-dveri-artporte-nyu-york', 'price' => 5000, 'availability_status_id' => 2], $overrides));
+        // Match ProductService::createProduct/productEdit and the live legacy catalog.
+        $door = $this->makeProduct(array_merge(['slug' => 'mizhkimnatni-dveri-artporte-nyu-york', 'price' => 5000, 'availability_status_id' => 2, 'is_active' => 0], $overrides));
         $color = Color::create(['id' => 148, 'slug' => 'ivory', 'hex' => '#eeeedd', 'display_as_image' => false, 'name' => ['uk' => 'Айворі', 'ru' => 'Айвори'], 'creator_id' => $this->author()->id]);
         $door->colors()->attach($color->id, ['price' => 250]);
 
@@ -48,9 +49,9 @@ class DoorConfiguratorTest extends TestCase
         }
     }
 
-    public function test_empty_catalog_remains_useful_and_does_not_expose_inactive_products(): void
+    public function test_empty_catalog_remains_useful_and_does_not_offer_out_of_stock_products(): void
     {
-        $this->door(['is_active' => false]);
+        $this->door(['availability_status_id' => 4]);
         $this->get('/door-configurator')->assertOk()->assertSee('Наразі моделі для примірки недоступні')->assertDontSee('data-door-studio', false);
         $this->assertSame([], app(DoorConfiguratorService::class)->catalog()['products']);
     }
