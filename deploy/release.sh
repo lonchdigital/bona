@@ -126,19 +126,26 @@ recover_on_error() {
 }
 trap recover_on_error ERR
 
-"$PHP_BIN" "$previous_release/artisan" down --retry=60
-maintenance_started=1
-
 cd "$RELEASE_PATH"
+
+# Everything that does not change the shared database runs while the previous
+# release keeps serving visitors. Crawlers that hit maintenance mode receive a
+# 503, which Search Console reports as a server error.
 "$PHP_BIN" artisan optimize:clear
-"$PHP_BIN" artisan migrate --force
 "$PHP_BIN" artisan optimize
 if [[ "$PAYMENT_CONFIG_MODE" == "strict" ]]; then
     "$PHP_BIN" artisan payments:diagnose --strict
 else
     "$PHP_BIN" artisan payments:diagnose
 fi
-"$PHP_BIN" artisan generate:sitemap
+
+# Captured first: with pipefail an early-exiting grep would fail the pipeline.
+pending_migrations="$("$PHP_BIN" artisan migrate:status --pending --no-ansi)"
+if grep -Eq 'Pending[[:space:]]*$' <<<"$pending_migrations"; then
+    "$PHP_BIN" "$previous_release/artisan" down --retry=60
+    maintenance_started=1
+    "$PHP_BIN" artisan migrate --force
+fi
 
 ln -s "$RELEASE_PATH" "$NEXT_LINK"
 mv -Tf "$NEXT_LINK" "$CURRENT_LINK"
@@ -149,8 +156,14 @@ ln -s "$previous_release" "$previous_next"
 mv -Tf "$previous_next" "$PREVIOUS_LINK"
 
 "$PHP_BIN" artisan reload
-"$PHP_BIN" artisan up
-maintenance_started=0
+if (( maintenance_started == 1 )); then
+    "$PHP_BIN" artisan up
+    maintenance_started=0
+fi
+
+# The sitemap is rebuilt after the site is live again; a failure here must not
+# roll back an otherwise healthy release.
+"$PHP_BIN" artisan generate:sitemap || echo "Sitemap generation failed; the previous sitemap stays in use." >&2
 
 if [[ -n "$HEALTHCHECK_URL" ]]; then
     curl --fail --silent --show-error --retry 5 --retry-delay 2 "$HEALTHCHECK_URL" >/dev/null

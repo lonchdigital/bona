@@ -84,6 +84,21 @@ class ThinPageGuardsTest extends TestCase
             ->assertRedirect(url('/ru/product-category/aksessuar/category/zamok'));
     }
 
+    public function test_malformed_page_and_query_parameters_render_the_listing_instead_of_redirecting_home(): void
+    {
+        $this->seedCurrency();
+        $type = $this->productType(['slug' => 'interior-doors']);
+        $this->makeProduct(['product_type_id' => $type->id]);
+
+        foreach (['?page=abc', '?page=-1', '?page=0', '?page=99999999', '?query=a', '?page[]=2'] as $suffix) {
+            $this->get('/product-category/interior-doors'.$suffix)
+                ->assertOk()
+                ->assertSee('<link rel="canonical" href="'.url('/product-category/interior-doors').'"', false);
+        }
+
+        $this->get('/product-category/interior-doors?page=2')->assertOk()->assertHeader('X-Robots-Tag', 'noindex, follow');
+    }
+
     public function test_ukraine_typo_is_fixed_in_stored_meta_without_touching_other_text(): void
     {
         $product = $this->makeProduct([

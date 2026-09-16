@@ -396,7 +396,7 @@
     RewriteRule ^shop/avrora/$ https://bona-doors.com.ua/product-category/interior-doors [R=301,L]
 
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R]
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
 
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]

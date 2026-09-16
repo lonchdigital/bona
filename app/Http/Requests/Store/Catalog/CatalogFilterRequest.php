@@ -19,9 +19,21 @@ class CatalogFilterRequest extends BaseRequest
             $catalogFilters = 'brand='.$manufacturer;
         }
 
+        // Malformed ?page= or ?query= values come from crawlers and old links.
+        // A failed validation would redirect them to the homepage (a redirect
+        // error in Search Console), so they fall back to the first page.
+        $page = $this->input('page');
+        if ($page !== null && ! (is_scalar($page) && preg_match('/^[1-9]\d{0,4}$/', (string) $page) && (int) $page <= 10000)) {
+            $this->query->remove('page');
+            $this->request->remove('page');
+        }
+
+        $query = is_scalar($this->input('query')) ? trim((string) $this->input('query')) : '';
+        $query = mb_strlen($query) >= 3 ? mb_substr($query, 0, 120) : null;
+
         $this->merge([
-            'catalog_filters' => $catalogFilters,
-            'query' => trim((string) $this->input('query')) ?: null,
+            'catalog_filters' => is_string($catalogFilters) ? mb_substr($catalogFilters, 0, 2048) : $catalogFilters,
+            'query' => $query,
         ]);
     }
 
