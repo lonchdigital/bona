@@ -7,6 +7,7 @@ use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckLocale;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\HandleLastModified;
+use App\Http\Middleware\NoindexEmptyListings;
 use App\Http\Middleware\PreventRequestForgery;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
             PreventRequestForgery::class,
             SubstituteBindings::class,
             HandleLastModified::class,
+            NoindexEmptyListings::class,
         ],
 
         'api' => [

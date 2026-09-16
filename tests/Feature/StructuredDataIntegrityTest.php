@@ -81,8 +81,12 @@ class StructuredDataIntegrityTest extends TestCase
 
         config()->set('constants.ROZSUVNI_DVERI_ID', $product->product_type_id);
 
+        // Sliding doors share the maintained product page and never advertise a zero price.
         $this->get(route('store.product.page', ['productSlug' => $product->slug]))
             ->assertOk()
+            ->assertSee('data-product-reference', false)
+            ->assertSee('Ціна за запитом')
+            ->assertDontSee('0.00 грн')
             ->assertDontSee('"@type":"Product"', false)
             ->assertSee('"@type":"WebPage"', false)
             ->assertSee('"@type":"BreadcrumbList"', false);

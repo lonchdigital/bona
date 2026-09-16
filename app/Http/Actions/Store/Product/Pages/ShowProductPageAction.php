@@ -58,15 +58,13 @@ class ShowProductPageAction extends BaseAction
             $productService->replaceTagsWithData($product->meta_description, $product) :
             $productService->replaceTagsWithData($product->productType->meta_product_description, $product);
 
-        $template = 'pages.store.product';
-        if ($product->productType->id == config('constants.ROZSUVNI_DVERI_ID')) {
-            $template = 'pages.store.product-variety.rozsuvni-dveri-product';
-        }
-
         $product->meta_tags = $this->handleFollowTag($product->meta_tags);
         LastModified::set($product->updated_at);
 
-        return view($template, [
+        // Every product type, sliding doors included, uses the maintained
+        // product page: it keeps the gallery, specs and a request CTA working
+        // when a product has no price yet.
+        return view('pages.store.product', [
             'product' => $product,
             //            'categoryProducts' => $categoryProducts,
             'categoryProducts' => $productService->getSelectedSubItemsWithCategories($sub_products),

@@ -231,6 +231,11 @@ html.product-dialog-is-open body {
         }
     }
 
+    .product-price-row.product-price-row--on-request strong {
+        font-size: clamp(26px, 2vw, 32px);
+        font-variant-numeric: normal;
+    }
+
     .product-cta {
         grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
         gap: 9px;

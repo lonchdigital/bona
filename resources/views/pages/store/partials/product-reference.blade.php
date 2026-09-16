@@ -301,6 +301,13 @@
                         </div>
                     </div>
                 @else
+                    <div class="product-price-row product-price-row--on-request">
+                        <div>
+                            <span>{{ $isRussian ? 'Стоимость' : 'Вартість' }}</span>
+                            <strong>{{ $isRussian ? 'Цена по запросу' : 'Ціна за запитом' }}</strong>
+                        </div>
+                        <small>{{ $isRussian ? 'Рассчитаем под ваш проём и комплектацию' : 'Розрахуємо під ваш проріз і комплектацію' }}</small>
+                    </div>
                     <span id="product-price" data-count="1" data-start-price="0" data-product-price="0" hidden>0</span>
                 @endif
 

@@ -61,6 +61,25 @@ class ShowCatalogCategoryPageAction extends BaseAction
             $page,
         );
 
+        // A category requested under a type it does not belong to renders an
+        // empty duplicate. Send visitors and crawlers to its real address
+        // instead of a 404, but only when this type genuinely has nothing to
+        // show: products assigned to several types keep their extra URLs.
+        if (
+            $productsPaginated->total() === 0
+            && $category->product_type_id !== null
+            && (int) $category->product_type_id !== (int) $productType->id
+            && $category->productType !== null
+        ) {
+            $route = request()->route();
+
+            return redirect()->route(
+                (string) $route->getName(),
+                array_merge($route->originalParameters(), ['productTypeSlug' => $category->productType->slug], request()->query()),
+                301,
+            );
+        }
+
         LastModified::set($category->updated_at);
 
         return view('pages.store.catalog-category', [

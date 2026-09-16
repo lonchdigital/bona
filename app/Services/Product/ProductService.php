@@ -836,13 +836,26 @@ class ProductService extends BaseService
 
     public function replaceTagsWithData(?string $text, Product $product): string
     {
+        $text = (string) $text;
+
+        // A missing price must never reach a title or snippet as "0.00 грн".
+        if (! is_numeric($product->price) || (float) $product->price <= 0) {
+            $onRequest = app()->getLocale() === 'ru' ? 'цена по запросу' : 'ціна за запитом';
+            $text = preg_replace(
+                '/\s*(?:по|за)\s+(?:(?:найкращою|лучшей)\s+)?(?:ціні|ціною|цене)\s*:?\s*%price%\s*(?:грн\.?|₴|uah)?/iu',
+                ' ('.$onRequest.')',
+                $text,
+            ) ?? $text;
+            $text = preg_replace('/%price%\s*(?:грн\.?|₴|uah)?/iu', $onRequest, $text) ?? $text;
+        }
+
         $allTags = [
             '%title%' => $product->name,
             '%price%' => $product->price,
             '%product_type%' => $product->productType->name,
         ];
 
-        return str_replace(array_keys($allTags), array_values($allTags), (string) $text);
+        return str_replace(array_keys($allTags), array_values($allTags), $text);
     }
 
     private function encodeSubProductIds(?array $ids): ?string

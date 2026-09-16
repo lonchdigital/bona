@@ -56,6 +56,19 @@ class SitemapService extends BaseService
             ->exists();
     }
 
+    private function categoryHasProducts(Category $category): bool
+    {
+        return Product::query()
+            ->whereHas('categories', fn ($query) => $query->where('category_id', $category->id))
+            ->where(function ($query) use ($category) {
+                $query->where('product_type_id', $category->product_type_id)
+                    ->orWhereHas('productTypes', function ($query) use ($category) {
+                        $query->where('product_types.id', $category->product_type_id);
+                    });
+            })
+            ->exists();
+    }
+
     public function buildSitemap(): Sitemap
     {
         $urls = new Collection;
@@ -118,7 +131,12 @@ class SitemapService extends BaseService
         } while ($products->hasMorePages());
 
         // Categories
-        foreach (Category::all() as $category) {
+        foreach (Category::with('productType')->get() as $category) {
+            // An empty category answers "nothing found" and is noindexed.
+            if ($category->productType === null || ! $this->categoryHasProducts($category)) {
+                continue;
+            }
+
             $allLangUrls = $category->toSitemapTag();
 
             foreach ($allLangUrls as $langUrl) {

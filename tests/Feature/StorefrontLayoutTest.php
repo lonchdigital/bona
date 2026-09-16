@@ -211,7 +211,6 @@ class StorefrontLayoutTest extends TestCase
         $storefrontStyles = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
         $mobileNavigationStyles = file_get_contents(resource_path('scss/storefront/_mobile-bottom-navigation.scss'));
         $productTemplate = file_get_contents(resource_path('views/pages/store/product.blade.php'));
-        $slidingDoorTemplate = file_get_contents(resource_path('views/pages/store/product-variety/rozsuvni-dveri-product.blade.php'));
 
         $this->assertStringContainsString('data-cart-drawer-open', $markup);
         $this->assertStringContainsString('id="bona-cart-drawer"', $markup);
@@ -226,7 +225,6 @@ class StorefrontLayoutTest extends TestCase
         $this->assertStringContainsString('openCartDrawer();', $cartScript);
         $this->assertStringNotContainsString('productAddedToCartButton', $cartScript);
         $this->assertStringNotContainsString('product-added-to-cart', $productTemplate);
-        $this->assertStringNotContainsString('product-added-to-cart', $slidingDoorTemplate);
         $this->assertStringNotContainsString("$('.bona-header__actions .basket-basket-list .basket-link')", $legacyMenuScript);
         $this->assertStringContainsString('grid-template-columns: 64px minmax(0, 1fr) 44px;', $storefrontStyles);
         $this->assertStringContainsString("min-width: 0;\n            width: 100%;\n            height: auto;", $storefrontStyles);

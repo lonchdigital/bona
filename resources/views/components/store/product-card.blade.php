@@ -203,6 +203,12 @@
                     <span class="bona-product-card__unit">/ {{ $product->productType->product_point_name }}</span>
                 @endif
             </div>
+        @else
+            <div class="bona-product-card__pricing">
+                <span class="bona-product-card__price bona-product-card__price--on-request">
+                    <strong>{{ app()->getLocale() === 'ru' ? 'Цена по запросу' : 'Ціна за запитом' }}</strong>
+                </span>
+            </div>
         @endif
 
         <a class="bona-product-card__open" href="{{ $productUrl }}" aria-label="{{ trans('base.home_view_model', ['MODEL' => $product->name]) }}">

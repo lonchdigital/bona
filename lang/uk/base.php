@@ -642,6 +642,8 @@ return [
     'pagination_current_page' => 'Поточна сторінка :page',
     'pagination_go_to_page' => 'Перейти на сторінку :page',
     'pagination_page_title' => 'Сторінка :page',
+    'category_fallback_title' => ':name — купити в Одесі | Bona Doors',
+    'category_fallback_description' => ':name в Bona Doors: підбір під вашу модель дверей, консультація, доставка по Україні та монтаж в Одесі.',
     'catalog_help_kicker' => 'Допомога з вибором',
     'catalog_consultation_aria' => 'Безкоштовна консультація з вибору дверей',
     'catalog_consultant_photo_alt' => 'Консультантка Bona Doors Оксана',
