@@ -24,7 +24,7 @@
           "id": "ivory",
           "name": {
             "uk": "Айворі",
-            "ru": "Зеркало бронза"
+            "ru": "Айвори"
           },
           "hex": "#e6dcc7",
           "image": "new-york-ivory.jpg",
@@ -34,7 +34,7 @@
           "id": "white",
           "name": {
             "uk": "Білий",
-            "ru": "Зеркало бронза"
+            "ru": "Белый"
           },
           "hex": "#eeece8",
           "image": "new-york-white.jpg",
@@ -44,7 +44,7 @@
           "id": "anthracite",
           "name": {
             "uk": "Антрацит",
-            "ru": "Зеркало бронза"
+            "ru": "Антрацит"
           },
           "hex": "#555756",
           "image": "new-york-anthracite.jpg",
@@ -76,7 +76,7 @@
           "id": "white",
           "name": {
             "uk": "Білий",
-            "ru": "Зеркало бронза"
+            "ru": "Белый"
           },
           "hex": "#ececed",
           "image": "ostin.webp",
@@ -108,7 +108,7 @@
           "id": "light",
           "name": {
             "uk": "Світлий із золотом",
-            "ru": "Зеркало бронза"
+            "ru": "Светлый с золотом"
           },
           "hex": "#dddcd9",
           "image": "molding.webp",
@@ -140,7 +140,7 @@
           "id": "gray",
           "name": {
             "uk": "Світло-сірий",
-            "ru": "Зеркало бронза"
+            "ru": "Светло-серый"
           },
           "hex": "#b0b2bc",
           "image": "glasso.webp",
@@ -177,7 +177,7 @@
           "id": "primed",
           "name": {
             "uk": "Під фарбування · фото-приклад",
-            "ru": "Зеркало бронза"
+            "ru": "Под покраску · фото-пример"
           },
           "hex": "#dcd0c7",
           "image": "hidden-primed.webp",
@@ -224,7 +224,7 @@
           "id": "primed-black",
           "name": {
             "uk": "Під фарбування · чорний обклад",
-            "ru": "Зеркало бронза"
+            "ru": "Под покраску · чёрная окантовка"
           },
           "hex": "#cfcbc5",
           "image": "hidden-black-edge.webp",
@@ -356,7 +356,7 @@
           "id": "catalog-blue",
           "name": {
             "uk": "Блакитний · як на фото",
-            "ru": "Зеркало бронза"
+            "ru": "Голубой · как на фото"
           },
           "hex": "#a4b7c5",
           "image": "classic-milan.webp",
@@ -392,7 +392,7 @@
           "id": "catalog-ivory",
           "name": {
             "uk": "Кремовий · як на фото",
-            "ru": "Зеркало бронза"
+            "ru": "Кремовый · как на фото"
           },
           "hex": "#d6c8a8",
           "image": "classic-nice.webp",
@@ -420,7 +420,7 @@
           "id": "graphite",
           "name": {
             "uk": "Графіт",
-            "ru": "Зеркало бронза"
+            "ru": "Графит"
           },
           "hex": "#4a515b",
           "image": "pride.webp",
@@ -448,7 +448,7 @@
           "id": "anthracite",
           "name": {
             "uk": "Антрацит",
-            "ru": "Зеркало бронза"
+            "ru": "Антрацит"
           },
           "hex": "#393d42",
           "image": "art-v2.webp",
