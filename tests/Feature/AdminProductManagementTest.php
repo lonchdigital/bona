@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\ProductCharacteristics;
 use App\Models\ProductField;
 use App\Models\ProductFieldOption;
+use App\Models\ProductText;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Product\DTO\FilterProductAdminDTO;
@@ -474,6 +476,29 @@ class AdminProductManagementTest extends TestCase
         preg_match_all('/data-product-row data-product-id="(\d+)"/', $html, $matches);
 
         return array_map('intval', $matches[1]);
+    }
+
+    public function test_edit_page_warns_about_gaps_that_hurt_the_live_product_page(): void
+    {
+        $this->seedCurrency();
+        $thin = $this->makeProduct(['price' => 0, 'availability_status_id' => 1]);
+        $complete = $this->makeProduct(['main_image_path' => 'products/door.webp', 'availability_status_id' => 2]);
+        ProductText::query()->create(['product_id' => $complete->id, 'language' => 'uk', 'content' => str_repeat('Детальний опис дверей. ', 20)]);
+        ProductCharacteristics::query()->create(['product_id' => $complete->id, 'name' => ['uk' => 'Висота', 'ru' => 'Высота'], 'value' => ['uk' => '2000 мм', 'ru' => '2000 мм']]);
+
+        $this->actingAs($admin = $this->admin())
+            ->get(route('admin.product.edit.page', ['productType' => $thin->product_type_id, 'product' => $thin->id]))
+            ->assertOk()
+            ->assertSee('data-product-content-gaps', false)
+            ->assertSee(trans('admin.product_gap_price'))
+            ->assertSee(trans('admin.product_gap_image'))
+            ->assertSee(trans('admin.product_gap_description'))
+            ->assertSee(trans('admin.product_gap_availability'));
+
+        $this->actingAs($admin)
+            ->get(route('admin.product.edit.page', ['productType' => $complete->product_type_id, 'product' => $complete->id]))
+            ->assertOk()
+            ->assertDontSee('data-product-content-gaps', false);
     }
 
     private function admin(): User

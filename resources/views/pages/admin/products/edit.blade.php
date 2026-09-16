@@ -25,6 +25,25 @@
                 @endif
 
                 @if(isset($product))
+                    @php
+                        // What a shopper and a search engine will miss on the live page.
+                        $descriptionWords = count(preg_split('/\s+/u', trim(html_entity_decode(strip_tags((string) data_get($productText, 'content.uk', '')))), -1, PREG_SPLIT_NO_EMPTY));
+                        $contentGaps = array_values(array_filter([
+                            ! (is_numeric($product->price) && (float) $product->price > 0) ? trans('admin.product_gap_price') : null,
+                            blank($product->main_image_path) ? trans('admin.product_gap_image') : null,
+                            $descriptionWords < 40 ? trans('admin.product_gap_description') : null,
+                            $characteristics->isEmpty() ? trans('admin.product_gap_characteristics') : null,
+                            (int) $product->availability_status_id === \App\DataClasses\ProductStatusDataClass::PRODUCT_STATUS_NONE ? trans('admin.product_gap_availability') : null,
+                        ]));
+                    @endphp
+                    @if($contentGaps !== [])
+                        <div class="alert alert-warning" role="status" data-product-content-gaps>
+                            <strong>{{ trans('admin.product_gaps_title') }}</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach($contentGaps as $gap)<li>{{ $gap }}</li>@endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <h2 class="page-title">{{ trans('admin.product_edit') }}</h2>
                 @else
                     <h2 class="page-title">{{ trans('admin.product_new') }}</h2>
