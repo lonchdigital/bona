@@ -34,7 +34,7 @@ class PaymentGatewayFlowTest extends TestCase
             'api_url' => 'https://mono.test',
             'client_secret' => 'mono-secret',
             'store_id' => 'mono-store',
-            'point_id' => 'point-1',
+            'point_id' => '',
             'minimum_period' => 3,
             'periods' => [3, 4],
             'installment_surcharges' => [3 => 2.9, 4 => 4.1],
@@ -56,6 +56,9 @@ class PaymentGatewayFlowTest extends TestCase
             if (str_ends_with($request->url(), '/api/v2/client/validate')) {
                 return Http::response(['found' => true], 200, ['Trace-Id' => 'trace-validation']);
             }
+
+            $payload = json_decode($request->body(), true, flags: JSON_THROW_ON_ERROR);
+            $this->assertArrayNotHasKey('point_id', $payload['invoice']);
 
             return Http::response(['order_id' => 'mono-order-123'], 201, ['Trace-Id' => 'trace-create']);
         });

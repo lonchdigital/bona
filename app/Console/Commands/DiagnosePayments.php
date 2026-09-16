@@ -46,7 +46,6 @@ class DiagnosePayments extends Command
         $monoCredentials = [
             config('payment.monobank.client_secret'),
             config('payment.monobank.store_id'),
-            config('payment.monobank.point_id'),
         ];
 
         $appUrl = trim((string) config('app.url'));
@@ -81,8 +80,8 @@ class DiagnosePayments extends Command
                     && parse_url($monoUrl, PHP_URL_SCHEME) === 'https'
                     && (! app()->environment('production') || $monoHost === 'u2.monobank.com.ua'),
                 'details' => collect($monoCredentials)->every(fn ($value) => filled($value))
-                    ? 'Credentials are present; API URL is '.($monoUrl === '' ? 'missing.' : 'configured.')
-                    : 'Client secret, store ID or point ID is missing.',
+                    ? 'Store ID and signing key are present; API URL is '.($monoUrl === '' ? 'missing.' : 'configured.').' Point ID is optional.'
+                    : 'Signing key or store ID is missing.',
             ],
             [
                 'name' => 'Public callback URL',

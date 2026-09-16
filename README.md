@@ -21,7 +21,7 @@ npm run build
 php artisan serve
 ```
 
-Заповніть у `.env` підключення до БД, пошти, LiqPay, Instagram OAuth та інших зовнішніх сервісів. Для розстрочки Monobank потрібні `MONOBANK_API_URL`, `MONOBANK_CLIENT_SECRET`, `MONOBANK_CLIENT_STORE_ID` і виданий банком `MONOBANK_POINT_ID`; для PrivatBank — `PRIVATBANK_STORE_ID` та `PRIVATBANK_PASSWORD`. Секрети не повинні потрапляти до Git.
+Заповніть у `.env` підключення до БД, пошти, LiqPay, Instagram OAuth та інших зовнішніх сервісів. Для «Покупки Частинами» Monobank потрібні `MONOBANK_API_URL`, `MONOBANK_CLIENT_SECRET` (signKey) і `MONOBANK_CLIENT_STORE_ID` (storeID). `MONOBANK_POINT_ID` необов’язковий і має залишатися порожнім, якщо Monobank окремо не видав ID торгової точки. Для PrivatBank потрібні `PRIVATBANK_STORE_ID` та `PRIVATBANK_PASSWORD`. Секрети не повинні потрапляти до Git.
 
 ## Telegram-сповіщення
 

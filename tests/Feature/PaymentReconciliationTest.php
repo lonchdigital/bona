@@ -225,7 +225,7 @@ class PaymentReconciliationTest extends TestCase
             'api_url' => 'https://u2.monobank.com.ua',
             'client_secret' => 'mono-secret',
             'store_id' => 'mono-store',
-            'point_id' => 'point-1',
+            'point_id' => '',
             'periods' => [3],
             'installment_surcharges' => [3 => 2.9],
         ]);

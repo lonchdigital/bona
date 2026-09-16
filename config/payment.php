@@ -73,6 +73,8 @@ return [
         'api_url' => env('MONOBANK_API_URL', ''),
         'client_secret' => env('MONOBANK_CLIENT_SECRET', ''),
         'store_id' => env('MONOBANK_CLIENT_STORE_ID', ''),
+        // Optional sales-point identifier. Monobank does not issue it as a
+        // third credential for every internet store.
         'point_id' => env('MONOBANK_POINT_ID', ''),
 
         // The bank itself takes 3 to 25.

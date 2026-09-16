@@ -53,8 +53,7 @@ class PaymentMonoBankService extends BaseService
     {
         return $this->mono_bank_api_url !== ''
             && $this->mono_bank_client_secret !== ''
-            && $this->mono_bank_client_store_id !== ''
-            && $this->mono_bank_point_id !== '';
+            && $this->mono_bank_client_store_id !== '';
     }
 
     /**
@@ -123,16 +122,24 @@ class PaymentMonoBankService extends BaseService
     {
         $data = $this->collectAllProductsFromOrder($order);
 
+        $invoice = [
+            'date' => Carbon::now()->format('Y-m-d'),
+            'number' => 'INV-'.$order->id,
+            'source' => 'INTERNET',
+        ];
+
+        // Monobank authenticates Purchase in Parts requests with store-id and
+        // signature. A separate point ID is not issued for every internet
+        // store, so include it only when the merchant explicitly has one.
+        if (trim($this->mono_bank_point_id) !== '') {
+            $invoice['point_id'] = $this->mono_bank_point_id;
+        }
+
         return [
             'store_order_id' => (string) $order->id,
             'client_phone' => $phone,
             'total_sum' => $data['amount'],
-            'invoice' => [
-                'date' => Carbon::now()->format('Y-m-d'),
-                'number' => 'INV-'.$order->id,
-                'point_id' => $this->mono_bank_point_id,
-                'source' => 'INTERNET',
-            ],
+            'invoice' => $invoice,
             'available_programs' => [
                 [
                     'available_parts_count' => [(int) $period],
