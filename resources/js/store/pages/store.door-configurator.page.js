@@ -1,4 +1,5 @@
 import { handleBasket } from '../common/cart';
+import { createSceneImageLoader } from '../common/door-configurator-images';
 
 export default function initDoorConfigurator() {
 const root = document.querySelector('[data-door-studio]');
@@ -17,18 +18,18 @@ const ROOMS = [
 ];
 // Clean imagegen-edited copies are only for the scene/detail/export. Keep catalog photos intact.
 const HANDLE_FREE_IMAGES = {
-  'new-york-ivory.jpg': 'new-york-ivory-no-handle.webp',
-  'new-york-white.jpg': 'new-york-white-no-handle.webp',
-  'new-york-anthracite.jpg': 'new-york-anthracite-no-handle.webp',
-  'ostin.webp': 'ostin-no-handle.webp',
-  'molding.webp': 'molding-no-handle.webp',
-  'glasso.webp': 'glasso-no-handle.webp',
-  'hidden-primed.webp': 'hidden-primed-no-handle.webp',
-  'hidden-black-edge.webp': 'hidden-black-edge-no-handle.webp',
-  'mirror-silver.webp': 'mirror-silver-no-handle.webp',
-  'mirror-bronze.webp': 'mirror-bronze-no-handle.webp',
-  'classic-milan.webp': 'classic-milan-no-handle.webp',
-  'classic-nice.webp': 'classic-nice-no-handle.webp',
+  'new-york-ivory.jpg': 'new-york-ivory-no-handle-v2.webp',
+  'new-york-white.jpg': 'new-york-white-no-handle-v2.webp',
+  'new-york-anthracite.jpg': 'new-york-anthracite-no-handle-v2.webp',
+  'ostin.webp': 'ostin-no-handle-v2.webp',
+  'molding.webp': 'molding-no-handle-v2.webp',
+  'glasso.webp': 'glasso-no-handle-v2.webp',
+  'hidden-primed.webp': 'hidden-primed-no-handle-v2.webp',
+  'hidden-black-edge.webp': 'hidden-black-edge-no-handle-v2.webp',
+  'mirror-silver.webp': 'mirror-silver-no-handle-v2.webp',
+  'mirror-bronze.webp': 'mirror-bronze-no-handle-v2.webp',
+  'classic-milan.webp': 'classic-milan-no-handle-v2.webp',
+  'classic-nice.webp': 'classic-nice-no-handle-v2.webp',
 };
 function previewDoorImage(p, f) {
   // Never fall back to a photo with baked-in hardware for an interchangeable interior handle.
@@ -96,7 +97,9 @@ if (!productsForType(product().category, state.doorType).some(p => p.id === stat
 const $ = id => root.querySelector(`#studio-${id}`);
 const canvas = $('room-canvas');
 const ctx = canvas.getContext('2d');
-const images = new Map();
+const imageLoader = createSceneImageLoader({ base: ASSETS });
+const frame = document.createElement('canvas'); frame.width = canvas.width; frame.height = canvas.height;
+const frameContext = frame.getContext('2d');
 const wallBases = new Map();
 const wallTints = new Map();
 const mobileLayout = matchMedia('(max-width: 900px)');
@@ -104,6 +107,9 @@ let renderVersion = 0;
 let toastTimer;
 let colorFrame;
 let rendered = false;
+let hasScene = false;
+let cartPending = false;
+let sceneStatusTimer;
 function room() { return ROOMS.find(r => r.id === state.room); }
 function product() { return PRODUCTS.find(p => p.id === state.product); }
 function finish() { return product().colors.find(c => c.id === state.color) || product().colors[0]; }
@@ -112,15 +118,24 @@ function money(value) { return new Intl.NumberFormat(config.locale === 'ru' ? 'r
 function remember() { try { localStorage.setItem(STORAGE, JSON.stringify(state)); } catch (_) {} }
 function checkIcon() { return '<span class="selected-check"><svg aria-hidden="true"><use href="#studio-i-check"/></svg></span>'; }
 function loadImage(file) {
-  if (!images.has(file)) {
-    images.set(file, new Promise((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = () => { images.delete(file); reject(new Error(t("Не вдалося завантажити зображення"))); };
-      image.src = ASSETS + file;
-    }));
+  return imageLoader.load(file);
+}
+function preloadNearbyDoors() {
+  const connection = navigator.connection;
+  if (connection?.saveData || ['slow-2g', '2g'].includes(connection?.effectiveType)) return;
+  const available = productsForType(product().category, state.doorType);
+  const index = available.findIndex(p => p.id === state.product);
+  const neighbors = [];
+  for (let step = 1; step < available.length; step++) {
+    neighbors.push(available[(index + step) % available.length], available[(index - step + available.length) % available.length]);
   }
-  return images.get(file);
+  const files = neighbors.map(p => previewDoorImage(p, p.colors[0]));
+  files.splice(2, 0, ...product().colors.map(f => previewDoorImage(product(), f)));
+  imageLoader.preload(files);
+}
+function syncSceneActions() {
+  $('save').disabled = $('zoom').disabled = !rendered;
+  $('order-selection').disabled = !rendered || cartPending;
 }
 function toast(message) { clearTimeout(toastTimer); $('toast').textContent = message; $('toast').classList.add('visible'); toastTimer = setTimeout(() => $('toast').classList.remove('visible'), 4200); }
 
@@ -171,7 +186,6 @@ function syncUI() {
   const available = productsForType(p.category, state.doorType);
   $('door-counter').textContent = `${available.findIndex(item => item.id === p.id) + 1} / ${available.length}`;
   $('previous-door').disabled = $('next-door').disabled = available.length < 2;
-  canvas.setAttribute('aria-label', `${r.name}. ${t("Двері")}: ${p.name}, ${c.name}. ${t("Колір стін")}: ${$('wall-name').textContent}. ${h ? h.name : t("Без додаткової ручки")}.`);
   $('handle-notice').textContent = interior ? t("Ці ручки доступні для візуальної примірки. У кошику це окремі товари, не готовий комплект. Сумісність, розміри та комплектацію уточніть із менеджером.") : t("У цих вхідних дверях уже є штатна ручка. Щоб приміряти змінні ручки, оберіть міжкімнатні двері.");
   remember();
 }
@@ -319,35 +333,51 @@ function drawDoor(context, p, img, h, x, y, height) {
 }
 async function renderScene() {
   const version = ++renderVersion;
-  const r = room(), p = product(), f = finish(), h = handle(), wall = state.wall;
-  rendered = false; $('save').disabled = true; $('zoom').disabled = true; $('scene-loading').hidden = false; $('scene-loading').textContent = t('Готуємо ваш простір…');
+  const r = room(), p = product(), f = finish(), h = handle(), wall = state.wall, type = state.doorType;
+  rendered = false; syncSceneActions();
+  $('scene').setAttribute('aria-busy', 'true');
+  // The initial placeholder never covers a previously completed scene.
+  $('scene-loading').hidden = hasScene;
+  $('scene-error').hidden = true;
+  clearTimeout(sceneStatusTimer);
+  $('scene-status').hidden = true;
+  sceneStatusTimer = setTimeout(() => { if (version === renderVersion && hasScene) $('scene-status').hidden = false; }, 600);
   try {
     const [background, doorImage] = await Promise.all([loadImage(r.image), loadImage(previewDoorImage(p, f))]);
     if (version !== renderVersion) return;
-    ctx.putImageData(tintedRoom(r, background, wall), 0, 0);
+    frameContext.putImageData(tintedRoom(r, background, wall), 0, 0);
     const width = r.door[2] * p.crop[2] / p.crop[3];
     const x = r.id === 'living' ? (1536 - width) / 2 : r.door[0];
-    drawDoor(ctx, p, doorImage, h, x, r.door[1], r.door[2]);
+    drawDoor(frameContext, p, doorImage, h, x, r.door[1], r.door[2]);
+    // Commit the complete frame at once. Even a failed render leaves the last scene intact.
+    ctx.drawImage(frame, 0, 0);
     $('scene-loading').hidden = true;
-    rendered = true; $('save').disabled = false; $('zoom').disabled = false;
-    canvas.dataset.room = r.id; canvas.dataset.product = p.id; canvas.dataset.type = state.doorType; canvas.dataset.color = f.id; canvas.dataset.wall = wall; canvas.dataset.handle = h?.id || (p.category === 'interior' ? 'none' : 'integrated');
+    hasScene = rendered = true; syncSceneActions();
+    clearTimeout(sceneStatusTimer); $('scene-status').hidden = true;
+    $('scene').setAttribute('aria-busy', 'false');
+    canvas.dataset.room = r.id; canvas.dataset.product = p.id; canvas.dataset.type = type; canvas.dataset.color = f.id; canvas.dataset.wall = wall; canvas.dataset.handle = h?.id || (p.category === 'interior' ? 'none' : 'integrated');
+    canvas.setAttribute('aria-label', `${r.name}. ${t("Двері")}: ${p.name}, ${f.name}. ${t("Колір стін")}: ${$('wall-name').textContent}. ${h ? h.name : t("Без додаткової ручки")}.`);
     if ($('detail-dialog').open) renderDetail(doorImage);
+    preloadNearbyDoors();
   } catch (error) {
     if (version !== renderVersion) return;
-    $('scene-loading').hidden = false;
-    $('scene-loading').textContent = t("Зображення недоступне. Спробуйте обрати іншу модель або оновити сторінку.");
-    toast(error.message);
+    clearTimeout(sceneStatusTimer); $('scene-status').hidden = true;
+    $('scene-loading').hidden = true;
+    $('scene').setAttribute('aria-busy', 'false');
+    $('scene-error').hidden = false;
   }
 }
 async function renderDetail(loaded) {
-  const p = product(), f = finish(), h = handle();
+  const version = renderVersion, p = product(), f = finish(), h = handle();
   const img = loaded || await loadImage(previewDoorImage(p, f));
+  if (version !== renderVersion || !rendered) return false;
   const dc = $('detail-canvas').getContext('2d');
   dc.fillStyle = state.wall === 'original' ? '#b0afaa' : state.wall; dc.fillRect(0, 0, 800, 1000);
   const height = 900, width = height * p.crop[2] / p.crop[3];
   drawDoor(dc, p, img, h, (800 - width) / 2, 60, height);
   $('detail-title').textContent = p.name;
   $('detail-caption').textContent = f.name + ' · ' + (h ? h.name + ', ' + h.finish + '. ' + t('Примірка ручки схематична.') : p.category === 'interior' ? t("Без ручки. Оберіть її у вкладці «Ручки».") : t("Штатна ручка моделі."));
+  return true;
 }
 
 $('rooms').addEventListener('click', event => {
@@ -399,7 +429,8 @@ for (const name of ['doors', 'handles']) {
   });
 }
 $('reset').addEventListener('click', () => { state = { ...DEFAULT }; selectTab('doors'); renderProducts(); syncUI(); renderScene(); toast("Повернули початковий образ"); });
-$('zoom').addEventListener('click', async () => { if (!rendered) return; await renderDetail(); $('detail-dialog').showModal(); });
+$('zoom').addEventListener('click', async () => { if (rendered && await renderDetail()) $('detail-dialog').showModal(); });
+$('retry-scene').addEventListener('click', renderScene);
 $('close-detail').addEventListener('click', () => $('detail-dialog').close());
 $('detail-dialog').addEventListener('click', event => { if (event.target === $('detail-dialog')) { const bounds = $('detail-dialog').getBoundingClientRect(); if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) $('detail-dialog').close(); } });
 $('save').addEventListener('click', async () => {
@@ -427,7 +458,7 @@ $('order-selection').addEventListener('click', async () => {
  const selection = { product: product().id, color: finish().id, handle: handle()?.id || null };
  const signature = JSON.stringify(selection);
  if (pendingSelection?.signature !== signature) pendingSelection = { signature, id: globalThis.crypto?.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const n = Math.floor(Math.random()*16); return (c === 'x' ? n : (n&3)|8).toString(16); }) };
- button.disabled = true; button.setAttribute('aria-busy', 'true'); $('order-label').textContent = t('Додаємо…'); $('cart-error').hidden = true;
+ cartPending = true; syncSceneActions(); button.setAttribute('aria-busy', 'true'); $('order-label').textContent = t('Додаємо…'); $('cart-error').hidden = true;
  const controller = new AbortController();
  const timeout = setTimeout(() => controller.abort(), 30000);
  try {
@@ -441,7 +472,7 @@ $('order-selection').addEventListener('click', async () => {
   toast(t('Позиції додано до кошика. Кількість можна змінити в кошику.'));
  } catch(error) {
   $('cart-error-message').textContent = error.name === 'AbortError' || error instanceof TypeError ? t('Не вдалося додати товари. Перевірте з’єднання та повторіть спробу.') : error.message || t('Не вдалося додати товари. Перевірте з’єднання та повторіть спробу.'); $('cart-error').hidden = false;
- } finally { clearTimeout(timeout); button.disabled = false; button.removeAttribute('aria-busy'); $('order-label').textContent = t('Замовити'); }
+ } finally { clearTimeout(timeout); cartPending = false; syncSceneActions(); button.removeAttribute('aria-busy'); $('order-label').textContent = t('Замовити'); }
 });
 $('reload').addEventListener('click', () => window.location.reload());
 initControls();

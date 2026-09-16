@@ -221,7 +221,9 @@
 
 </div>
 
-<x-store.mobile-bottom-navigation />
+@unless(request()->routeIs('store.door-configurator.page', 'localized.store.door-configurator.page'))
+    <x-store.mobile-bottom-navigation />
+@endunless
 <x-store.comparison-dock />
 <x-store.cookie-consent />
 

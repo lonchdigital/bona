@@ -14,10 +14,12 @@
         <div class="room-toolbar"><div class="room-control"><span class="step-label">{{ $ui['Ваш простір'] }}</span><div class="room-options" id="studio-rooms" role="group" aria-label="{{ $ui['Тип кімнати'] }}"></div></div><div id="studio-wall-toolbar"><div class="wall-control"><div class="wall-title"><span class="step-label">{{ $ui['Колір стін'] }}</span><span id="studio-wall-name" hidden>{{ $ui['Білий'] }}</span></div><div class="palette-row"><div class="palette" id="studio-wall-palette" role="group" aria-label="{{ $ui['Колір стін'] }}"></div><div class="custom-color"><label for="studio-custom-color" title="{{ $ui['Свій відтінок'] }}"><span aria-hidden="true">+</span><input id="studio-custom-color" type="color" value="#ffffff" aria-label="{{ $ui['Свій відтінок'] }}" aria-describedby="studio-wall-hex"></label><span id="studio-wall-hex" class="sr-only">#FFFFFF</span></div></div></div></div></div>
         <div class="scene" id="studio-scene">
           <canvas id="studio-room-canvas" width="1536" height="1024" role="img" aria-label="{{ $ui['Візуалізація обраних дверей в інтер’єрі'] }}"></canvas>
-          <div id="studio-scene-loading" class="scene-loading">{{ $ui['Готуємо ваш простір…'] }}</div>
+          <div id="studio-scene-loading" class="scene-loading" role="status">{{ $ui['Готуємо ваш простір…'] }}</div>
+          <span id="studio-scene-status" class="scene-status" role="status" hidden>{{ $ui['Оновлюємо ескіз…'] }}</span>
           <div class="scene-topline"><button class="scene-zoom icon-button" id="studio-zoom" aria-label="{{ $ui['Розглянути двері зблизька'] }}" title="{{ $ui['Розглянути двері зблизька'] }}"><svg><use href="#studio-i-zoom"/></svg></button></div>
           <div class="scene-navigation" aria-label="{{ $ui['Швидка зміна дверей'] }}"><button id="studio-previous-door" aria-label="{{ $ui['Попередня модель дверей'] }}"><svg><use href="#studio-i-arrow"/></svg></button><span><strong id="studio-door-counter">1 / 4</strong><small>{{ $ui['Гортайте двері'] }}</small></span><button id="studio-next-door" aria-label="{{ $ui['Наступна модель дверей'] }}"><svg><use href="#studio-i-arrow"/></svg></button></div>
         </div>
+        <div class="studio-error" id="studio-scene-error" role="alert" hidden><p>{{ $ui['Зображення не завантажилося. Перевірте з’єднання або оберіть іншу модель.'] }}</p><button id="studio-retry-scene">{{ $ui['Спробувати ще раз'] }}</button></div>
         <p class="scene-note" id="studio-scene-note">{{ $ui['Візуальна примірка, не точний 3D-проєкт. Відтінки, масштаб і вигляд ручки — орієнтовні.'] }}</p>
       </section>
       <aside class="selection-panel" aria-label="{{ $ui['Налаштування дверей'] }}">

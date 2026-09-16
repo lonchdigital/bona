@@ -34,7 +34,9 @@ class DoorConfiguratorTest extends TestCase
     {
         $door = $this->door(['name' => ['uk' => 'Двері з каталогу', 'ru' => 'Дверь из каталога']]);
         foreach (['uk' => '/door-configurator', 'ru' => '/ru/door-configurator'] as $locale => $path) {
-            $response = $this->get($path)->assertOk()->assertSee('data-door-studio', false)->assertDontSee('Локальний прототип');
+            $response = $this->get($path)->assertOk()->assertSee('data-door-studio', false)->assertDontSee('Локальний прототип')
+                ->assertDontSee('data-mobile-bottom-navigation', false)
+                ->assertSee('id="studio-retry-scene"', false);
             $html = $response->getContent();
             preg_match('/<script type="application\/json" id="door-studio-data">(.*?)<\/script>/s', $html, $matches);
             $data = json_decode($matches[1], true, 512, JSON_THROW_ON_ERROR);
@@ -52,7 +54,8 @@ class DoorConfiguratorTest extends TestCase
     public function test_empty_catalog_remains_useful_and_does_not_offer_out_of_stock_products(): void
     {
         $this->door(['availability_status_id' => 4]);
-        $this->get('/door-configurator')->assertOk()->assertSee('Наразі моделі для примірки недоступні')->assertDontSee('data-door-studio', false);
+        $this->get('/door-configurator')->assertOk()->assertSee('Наразі моделі для примірки недоступні')->assertDontSee('data-door-studio', false)
+            ->assertDontSee('data-mobile-bottom-navigation', false);
         $this->assertSame([], app(DoorConfiguratorService::class)->catalog()['products']);
     }
 
