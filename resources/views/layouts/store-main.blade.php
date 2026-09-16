@@ -182,6 +182,9 @@
     ) !!}</script>
     @stack('structured_data')
 
+    {{-- SERP Agent conversion tracker: which blog articles bring calls, emails,
+         form submissions and bookings. No cookies and no personal data. --}}
+    <script async src="https://app.serp-agent.com/api/tracker/script" data-project="{{ env('SERP_AGENT_TRACKING_PROJECT_ID', 'cmt2pz3ou0004b0i29eg5zca1') }}"></script>
 </head>
 
 <body class="@yield('body_class')">
