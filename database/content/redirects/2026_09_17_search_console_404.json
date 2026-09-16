@@ -1,0 +1,509 @@
+{
+  "art-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu": {
+    "product": "art-v1-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "avangard-bakardi": {
+    "product": "bakardi-avangard-qdoors-vhidni"
+  },
+  "avangard-bosfor-ak": {
+    "product": "bosfor-ak-avangard-qdoors-vhidni"
+  },
+  "avangard-galant-ak": {
+    "product": "galant-ak-avangard-qdoors-vhidni"
+  },
+  "avangard-gorizont-al": {
+    "product": "gorizont-al-avangard-qdoors-vhidni"
+  },
+  "avangard-konvers-ak": {
+    "product": "konvers-ak-avangard-qdoors-vhidni"
+  },
+  "avangard-tiffani": {
+    "product": "tiffani-avangard-qdoors-vhidni"
+  },
+  "avangard-trino": {
+    "product": "trino-avangard-qdoors-vhidni"
+  },
+  "dveri-prihovanogo-montazhu-phoenix-cl-35": {
+    "path": "/product-category/hidden-doors"
+  },
+  "dveri-prihovanogo-montazhu-phoenix-cl-4": {
+    "path": "/product-category/hidden-doors"
+  },
+  "elegant-dveri-na-vulicyu": {
+    "product": "elegant-strit-qdoors-dveri-na-vulicyu"
+  },
+  "elegant-v1-dovga-ruchka-strit-3k-dveri-na-vulicyu": {
+    "product": "elegant-v1-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "elegant-v1-strit-3k-dveri-na-vulicyu": {
+    "product": "elegant-v1-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "elegant-v2-strit-3k-dveri-na-vulicyu": {
+    "product": "elegant-v2-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "elegant-vulicya-dveri-na-vulicyu": {
+    "product": "elegant-strit-qdoors-dveri-na-vulicyu"
+  },
+  "ergon-living-t.e": {
+    "product": "ergon-living-t.e."
+  },
+  "flay-dovga-ruchka-strit-3k-dveri-na-vulicyu": {
+    "product": "flay-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "fokus": {
+    "product": "fokus-fort-m-vhidni"
+  },
+  "fort-m-lyuks-frida-dveri-na-vulicyu": {
+    "product": "frida-lyuks-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-lyuks-galiciya-dveri-na-vulicyu": {
+    "product": "galiciya-lyuks-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-lyuks-vega-1200mm-dveri-na-vulicyu": {
+    "product": "vega-1200mm-lyuks-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-lyuks-vega-dveri-na-vulicyu": {
+    "product": "vega-lyuks-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-premium-bolonya-dveri-na-vulicyu": {
+    "product": "bolonya-premium-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-premium-milan-1200mm-dveri-na-vulicyu": {
+    "product": "milan-1200mm-premium-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-premium-milan-dveri-na-vulicyu": {
+    "product": "milan-premium-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-premium-nicca-dveri-na-vulicyu": {
+    "product": "nicca-premium-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-premium-nicca-z-dovgoyu-ruchkoyu-dveri-na-vulicyu": {
+    "product": "nicca-premium-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-premium-trek-1200mm-dveri-na-vulicyu": {
+    "product": "trek-1200mm-premium-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-premium-trek-dveri-na-vulicyu": {
+    "product": "trek-premium-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-termo-delta-dveri-na-vulicyu": {
+    "product": "delta-dovga-ruchka-termo-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-termo-lino-dveri-na-vulicyu": {
+    "product": "lino-termo-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "fort-m-termo-tokio-dveri-na-vulicyu": {
+    "product": "tokio-termo-metal-mdf-fort-m-dveri-na-vulicyu"
+  },
+  "gorizontal-dveri-na-vulicyu": {
+    "product": "trio-gorizontal-fort-m-dveri-na-vulicyu"
+  },
+  "gorizontal-v1-strit-3k-dveri-na-vulicyu": {
+    "product": "gorizontal-v1-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "gorizontal-v2-strit-3k-dveri-na-vulicyu": {
+    "product": "gorizontal-v2-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "greciya-polutorni-dveri-na-vulicyu": {
+    "product": "trio-greciya-1200mm-fort-m-dveri-na-vulicyu"
+  },
+  "greciya-zi-sklom-dveri-na-vulicyu": {
+    "product": "trio-greciya-zi-sklom-fort-m-dveri-na-vulicyu"
+  },
+  "greciya-zi-sklom-polutorni-dveri-na-vulicyu": {
+    "product": "trio-greciya-1200mm-zi-sklom-fort-m-dveri-na-vulicyu"
+  },
+  "klasik-dveri-na-vulicyu": {
+    "product": "trio-klasik-fort-m-dveri-na-vulicyu"
+  },
+  "komplekt-komplanarnoyi-lishtvi-10-94-2150mm-estet-doors": {
+    "path": "/product-category/aksessuar/category/nalycnyk"
+  },
+  "komplekt-teleskopichnoyi-lishtvi-10-70-2150mm-estet-doors": {
+    "path": "/product-category/aksessuar/category/nalycnyk"
+  },
+  "loft-dveri-na-vulicyu": {
+    "path": "/product-category/dvery-na-ulycu"
+  },
+  "loft-polutorni-dveri-na-vulicyu": {
+    "path": "/product-category/dvery-na-ulycu"
+  },
+  "mizhkimnatni-dveri-omega-a3": {
+    "product": "mizhkimnatni-dveri-omega-seriya-art-vision-a3"
+  },
+  "mizhkimnatni-dveri-omega-a5": {
+    "product": "mizhkimnatni-dveri-omega-seriya-art-vision-a5"
+  },
+  "mizhkimnatni-dveri-omega-allure-nicca-pg": {
+    "product": "mizhkimnatni-dveri-omega-seriya-allure-nicca-pg"
+  },
+  "mizhkimnatni-dveri-omega-f1": {
+    "product": "mizhkimnatni-dveri-omega-seriya-lines-f1"
+  },
+  "mizhkimnatni-dveri-omega-f2": {
+    "product": "mizhkimnatni-dveri-omega-seriya-lines-f2"
+  },
+  "mizhkimnatni-dveri-omega-f4": {
+    "product": "mizhkimnatni-dveri-omega-seriya-lines-f4"
+  },
+  "mizhkimnatni-dveri-omega-f5": {
+    "product": "mizhkimnatni-dveri-omega-seriya-lines-f5"
+  },
+  "mizhkimnatni-dveri-omega-f6": {
+    "product": "mizhkimnatni-dveri-omega-seriya-lines-f6"
+  },
+  "mizhkimnatni-dveri-omega-f9": {
+    "product": "mizhkimnatni-dveri-omega-seriya-lines-f9"
+  },
+  "mizhkimnatni-dveri-omega-london-pg": {
+    "product": "mizhkimnatni-dveri-omega-seriya-amore-classic-london-pg"
+  },
+  "mizhkimnatni-dveri-omega-london-po": {
+    "product": "mizhkimnatni-dveri-omega-seriya-amore-classic-london-po"
+  },
+  "mizhkimnatni-dveri-omega-nicca-pg": {
+    "product": "mizhkimnatni-dveri-omega-seriya-allure-nicca-pg"
+  },
+  "mizhkimnatni-dveri-omega-nicca-poo": {
+    "product": "mizhkimnatni-dveri-omega-seriya-amore-classic-nicca-poo"
+  },
+  "mizhkimnatni-dveri-omega-omega-rim-pg": {
+    "product": "mizhkimnatni-dveri-omega-seriya-amore-classic-omega-rim-pg"
+  },
+  "mizhkimnatni-dveri-omega-rim-poo": {
+    "product": "mizhkimnatni-dveri-omega-seriya-amore-classic-rim-poo"
+  },
+  "mizhkimnatni-dveri-omega-rim-veneciano-pg": {
+    "product": "mizhkimnatni-dveri-omega-seriya-amore-classic-rim-veneciano-pg"
+  },
+  "mizhkimnatni-dveri-sanvito-sv-001-korfad": {
+    "product": "mizhkimnatni-dveri-sanvito-sv-01-korfad"
+  },
+  "mokka": {
+    "product": "mokka-fort-m-vhidni"
+  },
+  "musson": {
+    "product": "musson-fort-m-vhidni"
+  },
+  "plintus-pidlogoviy-80h12x2060-mdf-ps-loft-korfad": {
+    "path": "/product-category/plintus"
+  },
+  "premium-akcent": {
+    "product": "akcent-premium-qdoors-vhidni"
+  },
+  "premium-boston-m": {
+    "product": "boston-m-premium-qdoors-vhidni"
+  },
+  "premium-gorizontal": {
+    "product": "gorizontal-v1-premium-qdoors-vhidni"
+  },
+  "premium-gorizontal-v2": {
+    "product": "gorizontal-v2-premium-qdoors-vhidni"
+  },
+  "premium-kombi-ak-glad": {
+    "product": "kombi-ak-glad-premium-qdoors-vhidni"
+  },
+  "premium-lyuksor": {
+    "product": "lyuksor-premium-qdoors-vhidni"
+  },
+  "premium-nekst": {
+    "product": "nekst-premium-qdoors-vhidni"
+  },
+  "premium-provans": {
+    "product": "provans-premium-qdoors-vhidni"
+  },
+  "premium-stil-m": {
+    "product": "stil-m-v1-premium-qdoors-vhidni"
+  },
+  "premium-stil-m-v2": {
+    "product": "stil-m-v2-premium-qdoors-vhidni"
+  },
+  "premium-trioni-ak": {
+    "product": "trioni-ak-premium-qdoors-vhidni"
+  },
+  "premium-vertikal": {
+    "product": "vertikal-premium-qdoors-vhidni"
+  },
+  "speys-dovga-ruchka-strit-3k-dveri-na-vulicyu": {
+    "product": "speys-dovga-ruchka-strit-3k-qdoors-dveri-na-vulicyu"
+  },
+  "spot-bronza": {
+    "product": "spot-matova-bronza"
+  },
+  "spot-z-nakladkoyu-pid-cilindr-bronza": {
+    "product": "spot-z-nakladkoyu-pid-cilindr-matova-bronza"
+  },
+  "spot-z-nakladkoyu-pid-wc-bronza": {
+    "product": "spot-z-nakladkoyu-pid-wc-matova-bronza"
+  },
+  "stinova-panel-mdf-vudlayn-117-104-x-12-h-2800-1sht": {
+    "product": "stinova-panel-mdf-vudlayn-krem-117-104-x-12-h-2800-1sht"
+  },
+  "straj-4-k-florence": {
+    "product": "florence-4-k-straj-vhidni"
+  },
+  "straj-4-k-fusion-vertical": {
+    "product": "fusion-vertical-4-k-straj-vhidni"
+  },
+  "straj-4-k-tira": {
+    "product": "tira-4-k-straj-vhidni"
+  },
+  "straj-hardy-loft-dveri-na-vulicyu": {
+    "product": "loft-hardy-straj-dveri-na-vulicyu"
+  },
+  "straj-prestige-delica-al-mono": {
+    "product": "delica-al-mono-prestige-straj-vhidni"
+  },
+  "straj-prestige-matrix": {
+    "product": "matrix-prestige-straj-vhidni"
+  },
+  "straj-prestige-plaza-rail": {
+    "product": "plaza-rail-prestige-straj-vhidni"
+  },
+  "straj-prestige-terra-s-new": {
+    "product": "terra-s-new-prestige-straj-vhidni"
+  },
+  "straj-prestige-valencia": {
+    "product": "valencia-prestige-straj-vhidni"
+  },
+  "straj-proof-nominal-dveri-na-vulicyu": {
+    "product": "nominal-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-party-d-v1-1220-dveri-na-vulicyu": {
+    "product": "party-d-v1-1220mm-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-party-d-v1-dveri-na-vulicyu": {
+    "product": "party-d-v1-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-party-d-v2-dveri-na-vulicyu": {
+    "product": "party-d-v2-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-rio-s-loft-v1-1220-dveri-na-vulicyu": {
+    "product": "rio-s-loft-v1-1220mm-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-rio-s-loft-v1-dveri-na-vulicyu": {
+    "product": "rio-s-loft-v1-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-rio-s-loft-v1-z-dovgoyu-ruchkoyu-dveri-na-vulicyu": {
+    "product": "rio-s-loft-v1-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-rio-s-loft-v2-dveri-na-vulicyu": {
+    "product": "rio-s-loft-v2-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-rio-s-loft-v2-z-dovgoyu-ruchkoyu-dveri-na-vulicyu": {
+    "product": "rio-s-loft-v2-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-rio-s-loft-v3-z-dovgoyu-ruchkoyu-dveri-na-vulicyu": {
+    "product": "rio-s-loft-v3-dovga-ruchka-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-slim-s-1220-dveri-na-vulicyu": {
+    "product": "slim-s-1220mm-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-slim-s-dveri-na-vulicyu": {
+    "product": "slim-s-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-vega-maxi-v1-z-dovgoyu-ruchkoyu-dveri-na-vulicyu": {
+    "product": "vega-maxi-v1-dovga-ruchka-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-proof-vega-maxi-v2-z-dovgoyu-ruchkoyu-dveri-na-vulicyu": {
+    "product": "vega-maxi-v2-dovga-ruchka-proof-straj-dveri-na-vulicyu"
+  },
+  "straj-smart-street-pf-rio-s-v2-dveri-na-vulicyu": {
+    "product": "smart-street-pf-rio-s-v2-berez-straj-dveri-na-vulicyu"
+  },
+  "straj-standard-delica-al-mono": {
+    "product": "delica-al-mono-standard-straj-vhidni"
+  },
+  "straj-standard-mirage": {
+    "product": "mirage-standard-straj-vhidni"
+  },
+  "straj-standard-piramis": {
+    "product": "piramis-standard-straj-vhidni"
+  },
+  "straj-standard-slim-s-glass-a": {
+    "product": "slim-s-glass-a-standard-straj-vhidni"
+  },
+  "straj-techno-door": {
+    "product": "straj-techno-door-ral-9975"
+  },
+  "straj-techno-door-1200": {
+    "product": "straj-techno-door-1200-ral-9975"
+  },
+  "strim-4k-z-dzerkalom-strong-vhidni": {
+    "path": "/product-category/entrance-doors/manufacturer/strong"
+  },
+  "strong-ayron-1200mm-grafit-g1298-dveri-na-vulicyu": {
+    "product": "ayron-v1-1200mm-strong-dveri-na-vulicyu"
+  },
+  "strong-ayron-1200mm-ral-8019-dveri-na-vulicyu": {
+    "product": "ayron-v1-1200mm-strong-dveri-na-vulicyu"
+  },
+  "strong-ayron-grafit-g1298-dveri-na-vulicyu": {
+    "product": "ayron-v1-strong-dveri-na-vulicyu"
+  },
+  "strong-ayron-ral-8019-dveri-na-vulicyu": {
+    "product": "ayron-v1-strong-dveri-na-vulicyu"
+  },
+  "strong-braun-1200-dveri-na-vulicyu": {
+    "product": "braun-strong-dveri-na-vulicyu"
+  },
+  "strong-braun-dveri-na-vulicyu": {
+    "product": "braun-strong-dveri-na-vulicyu"
+  },
+  "strong-kuper-dveri-na-vulicyu": {
+    "product": "kuper-strong-dveri-na-vulicyu"
+  },
+  "strong-oskar-dveri-na-vulicyu": {
+    "product": "oskar-strong-dveri-na-vulicyu"
+  },
+  "strong-perfekt-4k-z-dzerkalom": {
+    "product": "perfekt-4k-z-dzerkalom-strong-vhidni"
+  },
+  "strong-plaza-dveri-na-vulicyu": {
+    "product": "plaza-strong-dveri-na-vulicyu"
+  },
+  "strong-referens-dveri-na-vulicyu": {
+    "product": "referens-strong-dveri-na-vulicyu"
+  },
+  "strong-stoun-4k": {
+    "product": "stoun-4k-strong-vhidni"
+  },
+  "strong-strim-4k-z-dzerkalom": {
+    "path": "/product-category/entrance-doors/manufacturer/strong"
+  },
+  "strong-termiks-dovga-ruchka-dveri-na-vulicyu": {
+    "product": "termiks-dovga-ruchka-strong-dveri-na-vulicyu"
+  },
+  "strong-termiks-dveri-na-vulicyu": {
+    "product": "termiks-strong-dveri-na-vulicyu"
+  },
+  "strong-vest-1200mm-mod.1-dveri-na-vulicyu": {
+    "product": "vest-v1-1200mm-strong-dveri-na-vulicyu"
+  },
+  "strong-vest-mod.1-dveri-na-vulicyu": {
+    "product": "vest-v1-strong-dveri-na-vulicyu"
+  },
+  "strong-vest-mod.2-dveri-na-vulicyu": {
+    "product": "vest-v2-strong-dveri-na-vulicyu"
+  },
+  "strong-vest-mod.3-dveri-na-vulicyu": {
+    "product": "vest-v3-strong-dveri-na-vulicyu"
+  },
+  "tehnichni-ei-60-2070-1200": {
+    "product": "tehnichni-ei-60-2070-1200-shagren-ral-7035"
+  },
+  "tehnichni-ei-60-2070-870": {
+    "product": "tehnichni-ei-60-2070-870-shagren-ral-7035"
+  },
+  "tehno-1-antracit-2050-1200": {
+    "product": "tehno-1-2050-1200-antracit-7024"
+  },
+  "tehno-1-antracit-2050-860": {
+    "product": "tehno-1-2050-860-antracit-7024"
+  },
+  "tehno-1-korichneva-shagren-2050-860": {
+    "product": "tehno-1-2050-860-korichneva-shagren-ral-8017"
+  },
+  "tehno-1-korichneva-shagren-2050-960": {
+    "product": "tehno-1-2050-960-korichneva-shagren-ral-8017"
+  },
+  "tehno-3-standart-plyus-antracit-2050-1200": {
+    "product": "tehno-3-2050-1200-antracit-7024"
+  },
+  "tehno-3-standart-plyus-antracit-2050-860": {
+    "product": "tehno-3-2050-860-antracit-7024"
+  },
+  "tehno-3-standart-plyus-antracit-2050-960": {
+    "product": "tehno-3-2050-960-antracit-7024"
+  },
+  "tehno-baza-antracit-2070-860": {
+    "product": "tehno-baza-2070-860-antracit-ral-7024"
+  },
+  "tehno-baza-antracit-2070-960": {
+    "product": "tehno-baza-2070-960-antracit-ral-7024"
+  },
+  "tehno-baza-korichneva-shagren-2070-860": {
+    "product": "tehno-baza-2070-860-korichneva-shagren-ral-8017"
+  },
+  "tehno-baza-korichneva-shagren-2070-960": {
+    "product": "tehno-baza-2070-960-korichneva-shagren-ral-8017"
+  },
+  "trio--siti-dveri-na-vulicyu": {
+    "product": "trio-siti-fort-m-dveri-na-vulicyu"
+  },
+  "trio-avalon-dveri-na-vulicyu": {
+    "product": "trio-avalon-fort-m-dveri-na-vulicyu"
+  },
+  "trio-gorizontal": {
+    "product": "gorizontal-trio-fort-m-vhidni"
+  },
+  "trio-gorizontal-dveri-na-vulicyu": {
+    "product": "trio-gorizontal-fort-m-dveri-na-vulicyu"
+  },
+  "trio-kanzas": {
+    "product": "kanzas-trio-fort-m-vhidni"
+  },
+  "trio-kvadro": {
+    "product": "kvadro-trio-fort-m-vhidni"
+  },
+  "trio-malta": {
+    "product": "malta-trio-fort-m-vhidni"
+  },
+  "trio-paralel": {
+    "product": "paralel-trio-fort-m-vhidni"
+  },
+  "trio-simetriya": {
+    "product": "simetriya-trio-fort-m-vhidni"
+  },
+  "ultra-akkord-ak": {
+    "product": "akkord-ak-ultra-qdoors-vhidni"
+  },
+  "ultra-flesh": {
+    "product": "flesh-ultra-qdoors-vhidni"
+  },
+  "ultra-frost": {
+    "product": "frost-ultra-qdoors-vhidni"
+  },
+  "ultra-kros-ak": {
+    "product": "kros-ak-ultra-qdoors-vhidni"
+  },
+  "ultra-launzh-ak": {
+    "product": "launzh-ak-ultra-qdoors-vhidni"
+  },
+  "ultra-mirou": {
+    "product": "mirou-ultra-qdoors-vhidni"
+  },
+  "vhidni-dveri-accura-strimeh": {
+    "product": "accura-strimeh-vhidni"
+  },
+  "vhidni-dveri-duality-strimeh": {
+    "product": "duality-strimeh-vhidni"
+  },
+  "vhidni-dveri-lama-bau-v.1-1200mm-strimeh-vulichni": {
+    "product": "bau-v1-1200mm-lama-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-lama-bau-v.1-strimeh-vulichni": {
+    "product": "bau-v1-lama-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-lama-bau-v.2-strimeh-vulichni": {
+    "product": "bau-v2-lama-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-lama-venezia-v.1-strimeh-vulichni": {
+    "product": "venezia-v1-lama-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-lama-venezia-v.2-strimeh-vulichni": {
+    "product": "venezia-v2-lama-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-nautilus-1200-v.1-strimeh-vulichni": {
+    "product": "nautilus-v1-1200mm-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-nautilus-1200mm-v.2-strimeh-vulichni": {
+    "product": "nautilus-v2-1200mm-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-nautilus-v.1-strimeh-vulichni": {
+    "product": "nautilus-v1-strimeh-dveri-na-vulicyu"
+  },
+  "vhidni-dveri-nautilus-v.2-strimeh-vulichni": {
+    "product": "nautilus-v2-strimeh-dveri-na-vulicyu"
+  }
+}

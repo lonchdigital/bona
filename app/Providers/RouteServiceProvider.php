@@ -10,12 +10,15 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\FilterGroup;
 use App\Models\Product;
+use App\Models\ProductSlugRedirect;
 use App\Models\ProductType;
 use App\Models\ServicesPageSections;
 use App\Models\WishList;
 use App\Models\Work;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
@@ -59,7 +62,23 @@ class RouteServiceProvider extends ServiceProvider
     protected function configureRouteBindings(): void
     {
         Route::bind('productTypeSlug', fn (string $slug) => ProductType::where('slug', $slug)->firstOrFail());
-        Route::bind('productSlug', fn (string $slug) => Product::where('slug', $slug)->firstOrFail());
+        Route::bind('productSlug', function (string $slug) {
+            $product = Product::where('slug', $slug)->first();
+            if ($product) {
+                return $product;
+            }
+
+            // Renamed or removed products keep their search traffic.
+            $target = ProductSlugRedirect::targetPathFor($slug);
+            if ($target !== null && request()->isMethod('GET')) {
+                $prefix = request()->segment(1) === 'ru' ? '/ru' : '';
+                $query = request()->getQueryString();
+
+                throw new HttpResponseException(redirect()->to(url($prefix.$target).($query ? '?'.$query : ''), 301));
+            }
+
+            throw (new ModelNotFoundException)->setModel(Product::class, [$slug]);
+        });
         Route::bind('serviceSlug', fn (string $slug) => ServicesPageSections::where('slug', $slug)->firstOrFail());
         Route::bind('wishListAccessToken', fn (string $token) => WishList::where('access_token', $token)->firstOrFail());
         Route::bind('categorySlug', fn (string $slug) => Category::where('slug', $slug)->firstOrFail());

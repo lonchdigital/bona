@@ -28,11 +28,10 @@ class UpdateCountOfProductsByCategoryJob implements ShouldQueue
      */
     public function handle(CategoryService $categoryService): void
     {
-        if ($this->productId) {
-            $categories = Product::findOrFail($this->productId)->categories;
-        } else {
-            $categories = Category::get();
-        }
+        // A deleted product has already left its categories, so every count is
+        // recalculated rather than failing on the missing row.
+        $product = $this->productId ? Product::find($this->productId) : null;
+        $categories = $product ? $product->categories : Category::get();
 
         $result = $categoryService->updateCountOfProductsByCategory($categories);
         Log::info(($result->isSuccess() ? '[SUCCESS] ' : '[FAIL] ').$result->getMessage());

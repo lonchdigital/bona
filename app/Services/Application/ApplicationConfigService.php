@@ -80,6 +80,16 @@ class ApplicationConfigService extends BaseService
         // stale copies rather than serving several conflicting directives.
         $content = trim((string) preg_replace('/^\s*Sitemap\s*:.*$/mi', '', $content));
 
+        // Catalog counters are JSON endpoints for the filter UI. Crawlers find
+        // them in scripts and report them as 404s, so keep them out regardless
+        // of what the editor saved.
+        if (! str_contains($content, 'filtered-count')) {
+            $counterRules = 'Disallow: /*filtered-count';
+            $content = preg_match('/^\s*User-agent\s*:\s*\*\s*$/mi', $content)
+                ? (string) preg_replace('/^(\s*User-agent\s*:\s*\*\s*)$/mi', "$1\n".$counterRules, $content, 1)
+                : "User-agent: *\n".$counterRules."\n\n".$content;
+        }
+
         return $content."\n\nSitemap: ".url('/sitemap.xml')."\n";
     }
 
