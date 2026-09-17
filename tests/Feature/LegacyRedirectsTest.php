@@ -60,6 +60,12 @@ class LegacyRedirectsTest extends TestCase
         $this->get('/ru/product/tehno-1-2050-860-antracit-7024/similar')->assertStatus(301)->assertRedirect('/ru/product/tehno-1-2050-860-antracit-7024');
         $this->get('/blog/doborni-planky-ta-nalychnyky')->assertStatus(301)->assertRedirect('/product-category/aksessuar/category/dobir');
         $this->get('/ru/nashi-roboty/testoviy')->assertStatus(301)->assertRedirect('/ru/nashi-roboty');
+        $this->get('/ru/product-category/aksessuar/category/dobir-estet')->assertStatus(301)->assertRedirect('/ru/product-category/aksessuar/category/dobir');
+
+        $this->seedCurrency();
+        $product = $this->makeProduct(['slug' => 'tehno-1-antracit-2050-860']);
+        $product->update(['slug' => 'tehno-1-2050-860-antracit-7024']);
+        $this->get('/ru/product/tehno-1-antracit-2050-860/similar')->assertStatus(301)->assertRedirect('/ru/product/tehno-1-2050-860-antracit-7024');
 
         $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /*filtered-count');
     }

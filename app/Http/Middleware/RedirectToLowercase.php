@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\ProductSlugRedirect;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +12,7 @@ class RedirectToLowercase
     private const LEGACY_PATHS = [
         '/blog/doborni-planky-ta-nalychnyky' => '/product-category/aksessuar/category/dobir',
         '/nashi-roboty/testoviy' => '/nashi-roboty',
+        '/product-category/aksessuar/category/dobir-estet' => '/product-category/aksessuar/category/dobir',
     ];
 
     /**
@@ -38,7 +40,8 @@ class RedirectToLowercase
         $legacyTarget = self::LEGACY_PATHS[$unprefixed] ?? null;
 
         if ($legacyTarget === null && preg_match('#^/product/([^/]+)/similar$#', $unprefixed, $matches)) {
-            $legacyTarget = '/product/'.$matches[1];
+            // Resolve renamed products here as well, so the old endpoint needs a single hop.
+            $legacyTarget = ProductSlugRedirect::targetPathFor($matches[1]) ?? '/product/'.$matches[1];
         }
 
         if ($legacyTarget !== null) {
