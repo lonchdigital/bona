@@ -26,10 +26,17 @@ class RedirectToLowercase
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $url = strtolower($request->url());
+        // Compare the decoded path: lowercasing the percent-encoded URL only
+        // flipped hex digits of Cyrillic characters (%D0%9C -> %d0%9c), which
+        // bounced crawlers between two spellings of the same address.
+        $decodedPath = rawurldecode($request->getPathInfo());
+        $lowerPath = mb_strtolower($decodedPath);
 
-        if ($url !== $request->url()) {
-            return redirect($url, 301);
+        if ($lowerPath !== $decodedPath) {
+            $encodedPath = implode('/', array_map('rawurlencode', explode('/', $lowerPath)));
+            $query = $request->getQueryString();
+
+            return redirect($request->getSchemeAndHttpHost().$encodedPath.($query !== null ? '?'.$query : ''), 301);
         }
 
         // Specific redirect rule

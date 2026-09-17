@@ -124,6 +124,13 @@ class LegacyRedirectsTest extends TestCase
         $this->get('/ru/brands/list/s')->assertStatus(301)->assertRedirect('/ru/brands/list/all');
     }
 
+    public function test_lowercase_redirect_handles_cyrillic_and_keeps_the_query_string(): void
+    {
+        $this->get('/brands/list/%D0%9C')->assertStatus(301)->assertRedirect('/brands/list/%D0%BC');
+        $this->get('/brands/list/%d0%bc')->assertStatus(301)->assertRedirect('/brands/list/all');
+        $this->get('/Product-Category/Interior-Doors?page=2')->assertStatus(301)->assertRedirect('/product-category/interior-doors?page=2');
+    }
+
     public function test_search_console_map_points_only_to_valid_targets(): void
     {
         $map = json_decode(file_get_contents(database_path('content/redirects/2026_09_17_search_console_404.json')), true);
