@@ -175,10 +175,24 @@ class SitemapService extends BaseService
         // BlogArticle
         foreach (BlogArticle::all() as $blogArticle) {
             $allLangUrls = $blogArticle->toSitemapTag();
+            $articleUrls = collect($allLangUrls)
+                ->map(fn (string $langUrl) => $this->withLastModified(Url::create($langUrl), $blogArticle->updated_at));
 
-            foreach ($allLangUrls as $langUrl) {
-                $urls->push($this->withLastModified(Url::create($langUrl), $blogArticle->updated_at));
+            // Articles translated under their own Russian slug cannot be paired
+            // by path later on, so declare their language pair here.
+            $locales = $blogArticle->availableLocales();
+            if (in_array('uk', $locales, true) && in_array('ru', $locales, true)
+                && $blogArticle->slugForLocale('uk') !== $blogArticle->slugForLocale('ru')) {
+                $ukUrl = $blogArticle->urlForLocale('uk', true);
+                $ruUrl = $blogArticle->urlForLocale('ru', true);
+
+                $articleUrls->each(fn (Url $url) => $url
+                    ->addAlternate($ukUrl, 'uk-UA')
+                    ->addAlternate($ruUrl, 'ru-UA')
+                    ->addAlternate($ukUrl, 'x-default'));
             }
+
+            $articleUrls->each(fn (Url $url) => $urls->push($url));
         }
 
         // Works

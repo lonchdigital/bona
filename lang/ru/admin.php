@@ -467,6 +467,7 @@ return [
     'order_delete_success' => 'Заказ успешно удален',
     'products_import' => 'Импорт товаров',
     'products_import_description' => 'Здесь вы можете импортировать товары типа ":PRODUCT_TYPE"',
+    'products_import_patter_image_exists' => 'Есть изображение узора',
     'products_import_title' => 'Импортировать :PRODUCT_TYPE',
     'products_import_download_example' => 'Скачать пример',
     'products_import_file_for_import' => 'Файл для импорта',

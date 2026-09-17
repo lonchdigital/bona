@@ -10,6 +10,7 @@ use App\Models\ProductText;
 use App\Models\Role;
 use App\Models\ServicesPageSections;
 use App\Models\User;
+use App\Services\Sitemap\SitemapService;
 use App\Support\Product\ProductPageDefaults;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +48,12 @@ class EditorialCommercePagesTest extends TestCase
 
         $this->assertSame('yak-vybraty-dveri', $article->slugForLocale('uk'));
         $this->assertSame('kak-vybrat-dveri', $article->slugForLocale('ru'));
+
+        // The sitemap pairs the two localized slugs explicitly.
+        $sitemap = app(SitemapService::class)->buildSitemap()->render();
+        preg_match('#<url>\s*<loc>[^<]*/blog/yak-vybraty-dveri</loc>.*?</url>#s', $sitemap, $ukEntry);
+        $this->assertNotEmpty($ukEntry);
+        $this->assertStringContainsString('hreflang="ru-UA" href="'.url('/ru/blog/kak-vybrat-dveri').'"', $ukEntry[0]);
 
         BlogArticleBlock::create([
             'blog_article_id' => $article->id,

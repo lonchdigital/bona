@@ -259,6 +259,8 @@ return [
     'select' => 'Выбрать',
     'checkout_delivery_time' => 'Время',
     'checkout_np_delivery' => 'Доставка в отделение Новой Почты',
+    'checkout_select_np_department' => 'Выберите отделение',
+    'checkout_search_np_department' => 'Поиск отделения',
     'np_city' => 'Город',
     'np_department' => 'Отделение',
     'checkout_ukr_p_delivery' => 'Доставка в отделение Meest Express',
