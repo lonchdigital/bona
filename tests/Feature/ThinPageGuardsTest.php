@@ -99,6 +99,25 @@ class ThinPageGuardsTest extends TestCase
         $this->get('/product-category/interior-doors?page=2')->assertOk()->assertHeader('X-Robots-Tag', 'noindex, follow');
     }
 
+    public function test_filtered_catalog_pages_canonicalise_to_the_catalog_and_paginate_within_the_filter(): void
+    {
+        $this->seedCurrency();
+        $type = $this->productType(['slug' => 'interior-doors']);
+        for ($i = 0; $i < (int) config('domain.store_catalog_items_per_page') * 2 + 1; $i++) {
+            $this->makeProduct(['product_type_id' => $type->id]);
+        }
+
+        $this->get('/product-category/interior-doors/filter/price=1-999999?page=2')
+            ->assertOk()
+            ->assertSee('<link rel="canonical" href="'.url('/product-category/interior-doors').'"', false)
+            ->assertSee('<link rel="prev" href="'.url('/product-category/interior-doors/filter/price=1-999999').'"', false)
+            ->assertSee('<link rel="next" href="'.url('/product-category/interior-doors/filter/price=1-999999?page=3').'"', false);
+
+        $this->get('/product-category/interior-doors?page=2')
+            ->assertOk()
+            ->assertSee('<link rel="canonical" href="'.url('/product-category/interior-doors?page=2').'"', false);
+    }
+
     public function test_ukraine_typo_is_fixed_in_stored_meta_without_touching_other_text(): void
     {
         $product = $this->makeProduct([

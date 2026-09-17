@@ -17,7 +17,13 @@
     $catalogPageUrl = static fn (int $page) => $page > 1
         ? $catalogCanonicalBase.'?'.http_build_query(['page' => $page])
         : $catalogCanonicalBase;
-    $catalogCanonicalUrl = $catalogPageUrl($currentCatalogPage);
+    // Same rule as the product type catalog: a filtered category view points
+    // canonically at the category, pagination links stay within the filter.
+    $isAdHocFilter = filled(request()->route('catalogFiltersString')) && ! isset($filterGroup) && ! isset($seogenData);
+    $paginationPageUrl = $isAdHocFilter
+        ? static fn (int $page) => $page > 1 ? request()->url().'?'.http_build_query(['page' => $page]) : request()->url()
+        : $catalogPageUrl;
+    $catalogCanonicalUrl = $isAdHocFilter ? $catalogCanonicalBase : $catalogPageUrl($currentCatalogPage);
     $paginationTitleSuffix = $currentCatalogPage > 1
         ? ' — '.trans('base.pagination_page_title', ['page' => $currentCatalogPage])
         : '';
@@ -32,10 +38,10 @@
 
 @push('head')
     @if($currentCatalogPage > 1)
-        <link rel="prev" href="{{ $catalogPageUrl($currentCatalogPage - 1) }}">
+        <link rel="prev" href="{{ $paginationPageUrl($currentCatalogPage - 1) }}">
     @endif
     @if($productsPaginated->hasMorePages())
-        <link rel="next" href="{{ $catalogPageUrl($currentCatalogPage + 1) }}">
+        <link rel="next" href="{{ $paginationPageUrl($currentCatalogPage + 1) }}">
     @endif
 @endpush
 
