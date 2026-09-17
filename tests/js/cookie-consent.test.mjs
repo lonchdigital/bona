@@ -18,7 +18,7 @@ async function boot(savedChoice) {
 
     globalThis.window = {
         localStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
-        location: { hostname: 'bona-doors.com.ua', reload() { throw new Error('no reload expected'); } },
+        location: { hostname: 'bona-doors.com.ua', href: globalThis.__href || 'https://bona-doors.com.ua/', reload() { throw new Error('no reload expected'); } },
         requestAnimationFrame: (callback) => callback(),
         setTimeout: () => 0,
         dispatchEvent() {},
@@ -80,4 +80,13 @@ test('choosing necessary cookies only denies storage and removes existing GA coo
     const last = commands().at(-1);
     assert.deepEqual([last[0], last[1], last[2].analytics_storage], ['consent', 'update', 'denied']);
     assert.deepEqual(cookies, ['bona_session=keep']);
+});
+
+test('signed payment links reach GA without their signature', async () => {
+    globalThis.__href = 'https://bona-doors.com.ua/payment/275?expires=1789&signature=abc&utm_source=mail';
+    const { commands } = await boot(null);
+    globalThis.__href = undefined;
+
+    const config = commands().find((c) => c[0] === 'config');
+    assert.equal(config[2].page_location, 'https://bona-doors.com.ua/payment/275?utm_source=mail');
 });

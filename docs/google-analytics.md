@@ -29,11 +29,13 @@
 
 ## Що налаштувати в адмінці GA4 (один раз)
 
+> Стан на 17.09.2026 (аудит Cowork): ключовими позначені лише `purchase`, `close_convert_lead`, `qualify_lead` за замовчуванням; зберігання подій 2 місяці; unwanted referrals порожній; фільтр внутрішнього трафіку в стані «Тестування» без правил; Search Console і Google Ads не прив'язані; Enhanced measurement «Взаємодії з формою» увімкнено.
+
 1. **Admin → Events → Key events.** Позначити ключовими:
-   - `purchase`
+   - `purchase` (уже позначена)
    - `generate_lead`
 
-   Якщо ключовими вже позначені `submit_form_*`, зняти позначку з них — інакше заявки рахуватимуться двічі.
+   Зняти позначку з `close_convert_lead` і `qualify_lead`: сайт їх не надсилає. `submit_form_*` ключовими не позначати, інакше заявки рахуватимуться двічі.
 
 2. **Admin → Data streams → потік сайту → Configure tag settings → List unwanted referrals.** Додати домени платіжних сервісів, щоб замовлення не приписувались їм як джерелу трафіку:
    - `liqpay.ua` (у проєкті використовується `www.liqpay.ua`)
@@ -50,9 +52,15 @@
 
 5. **Admin → Data display → Reporting identity:** обрати **Blended**. Без цього GA4 не показуватиме змодельовані дані відвідувачів, які не погодились на cookies.
 
-6. **Admin → Data filters:** увімкнути фільтр внутрішнього трафіку та вказати IP салонів і офісу, щоб співробітники не спотворювали статистику.
+6. **Внутрішній трафік.** Admin → Data streams → потік → Configure tag settings → **Define internal traffic**: додати правила з IP салонів, офісу та розробників (у звіті помітна частка трафіку з Німеччини: Bielefeld, Bonn, Wuppertal — перевірити, чи це свої). Потім Admin → **Data filters** → «Internal Traffic» перевести зі стану «Тестування» в **«Активний»**.
 
-7. **Admin → Product links → Search Console links:** прив'язати Search Console, якщо ще не прив'язано.
+   Локальні та тестові копії сайту більше не надсилають дані в цей ресурс: ID підставляється лише при `APP_ENV=production`.
+
+7. **Admin → Product links → Search Console links:** прив'язати Search Console (зараз не прив'язано) — без цього не видно пошукових запитів.
+
+8. **Admin → Data streams → потік → Enhanced measurement → «Взаємодії з формою»: вимкнути.** Вони дублюють `generate_lead` / `submit_form_*` і рахують інакше (form_start 6, form_submit 1 проти 2 реальних заявок).
+
+9. **Admin → Data streams → потік → Redact data → «Параметри запиту URL»: увімкнути** та додати `signature`, `expires`, `token`. Сайт уже прибирає ці параметри з `page_location`, це додатковий захист на боці Google.
 
 ## Як перевірити, що події приходять
 

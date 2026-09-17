@@ -1,5 +1,6 @@
 @php
-    $googleAnalyticsId = (string) config('services.google.analytics_id', '');
+    // Local and staging copies must not report into the production property.
+    $googleAnalyticsId = app()->environment('production') ? (string) config('services.google.analytics_id', '') : '';
 @endphp
 
 <aside

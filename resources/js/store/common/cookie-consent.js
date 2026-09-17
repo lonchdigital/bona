@@ -48,7 +48,25 @@ function loadGoogleAnalytics(measurementId) {
     document.head.appendChild(script);
 
     window.gtag('js', new Date());
-    window.gtag('config', measurementId);
+    window.gtag('config', measurementId, safePageLocation());
+}
+
+// Signed links (payment pages, e-mail links) must not leave their signature
+// in analytics reports.
+const SENSITIVE_QUERY_PARAMETERS = ['signature', 'expires', 'token', 'hash'];
+
+function safePageLocation() {
+    try {
+        const url = new URL(window.location.href);
+        const sensitive = SENSITIVE_QUERY_PARAMETERS.filter((name) => url.searchParams.has(name));
+        if (!sensitive.length) return {};
+
+        sensitive.forEach((name) => url.searchParams.delete(name));
+
+        return { page_location: url.toString() };
+    } catch (error) {
+        return {};
+    }
 }
 
 function removeGoogleAnalyticsCookies() {

@@ -33,8 +33,13 @@ class MerchantLegalComplianceTest extends TestCase
             ->assertOk()
             ->assertDontSee('bona-footer__merchant', false)
             ->assertSee('Powered by Lonch')
-            ->assertSee('data-google-analytics-id="G-0863474309"', false)
+            ->assertSee('data-google-analytics-id=""', false)
             ->assertSee('data-cookie-settings', false);
+
+        // Only production reports into the GA4 property.
+        $this->app['env'] = 'production';
+        $this->get(route('store.home'))->assertSee('data-google-analytics-id="G-0863474309"', false);
+        $this->app['env'] = 'testing';
     }
 
     public function test_footer_omits_duplicate_seller_details_and_places_credit_before_payment_marks(): void
@@ -135,9 +140,11 @@ class MerchantLegalComplianceTest extends TestCase
         $this->assertStringContainsString("value === ACCEPTED ? 'granted' : 'denied'", $script);
         $this->assertStringContainsString('removeGoogleAnalyticsCookies()', $script);
         $this->assertStringContainsString('googletagmanager.com/gtag/js', $script);
-        $this->assertStringContainsString("window.gtag('config', measurementId)", $script);
+        $this->assertStringContainsString("window.gtag('config', measurementId, safePageLocation())", $script);
         $this->assertStringContainsString("window.gtag('event', eventName, parameters)", $script);
         $this->assertStringContainsString('без cookies', trans('base.cookie_text', [], 'uk'));
+        $this->assertStringContainsString("app()->environment('production')", $component);
+        $this->assertStringContainsString("'signature', 'expires'", $script);
         $this->assertStringNotContainsString('GTM-P9KHGB8T', $component.$script);
         $this->assertStringContainsString('GOOGLE_ANALYTICS_ID', $services.$environmentExample);
         $this->assertStringNotContainsString('GOOGLE_TAG_MANAGER_ID', $services.$environmentExample);
