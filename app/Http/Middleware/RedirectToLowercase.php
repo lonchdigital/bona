@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\BlogArticle;
 use App\Models\ProductSlugRedirect;
 use Closure;
 use Illuminate\Http\Request;
@@ -13,7 +14,6 @@ class RedirectToLowercase
     private const LEGACY_QUERY_KEYS = ['filter_style', 'filter_brand', 'orderby', 'add_to_wishlist', ''];
 
     private const LEGACY_PATHS = [
-        '/blog/doborni-planky-ta-nalychnyky' => '/product-category/aksessuar/category/dobir',
         '/nashi-roboty/testoviy' => '/nashi-roboty',
         '/product-category/aksessuar/category/dobir-estet' => '/product-category/aksessuar/category/dobir',
         '/blog/yak-doglyadaty-za-dveryma-comeo' => '/blog/yak-dohlyadaty-za-dveryma-comeo-praktychni-porady',
@@ -49,6 +49,13 @@ class RedirectToLowercase
         $prefix = preg_match('#^/ru(?=/)#', $path) ? '/ru' : '';
         $unprefixed = substr($path, strlen($prefix));
         $legacyTarget = self::LEGACY_PATHS[$unprefixed] ?? null;
+
+        if ($legacyTarget !== null && preg_match('#^/blog/([^/]+)$#', $unprefixed, $matches)) {
+            // An address the Search Console report called dead can be taken by
+            // a new article later. A published article always outranks the
+            // cleanup rule, otherwise the blog links into the catalog.
+            $legacyTarget = BlogArticle::ownsSlug($matches[1]) ? null : $legacyTarget;
+        }
 
         if ($legacyTarget === null && preg_match('#^/product/([^/]+)/similar$#', $unprefixed, $matches)) {
             // Resolve renamed products here as well, so the old endpoint needs a single hop.

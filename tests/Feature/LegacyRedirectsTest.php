@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\BlogArticle;
 use App\Models\Brand;
 use App\Models\ProductSlugRedirect;
 use App\Models\ProductText;
@@ -61,7 +62,6 @@ class LegacyRedirectsTest extends TestCase
     public function test_search_console_legacy_paths_redirect_and_counters_are_disallowed(): void
     {
         $this->get('/ru/product/tehno-1-2050-860-antracit-7024/similar')->assertStatus(301)->assertRedirect('/ru/product/tehno-1-2050-860-antracit-7024');
-        $this->get('/blog/doborni-planky-ta-nalychnyky')->assertStatus(301)->assertRedirect('/product-category/aksessuar/category/dobir');
         $this->get('/ru/nashi-roboty/testoviy')->assertStatus(301)->assertRedirect('/ru/nashi-roboty');
         $this->get('/ru/product-category/aksessuar/category/dobir-estet')->assertStatus(301)->assertRedirect('/ru/product-category/aksessuar/category/dobir');
 
@@ -71,6 +71,21 @@ class LegacyRedirectsTest extends TestCase
         $this->get('/ru/product/tehno-1-antracit-2050-860/similar')->assertStatus(301)->assertRedirect('/ru/product/tehno-1-2050-860-antracit-7024');
 
         $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /*filtered-count');
+    }
+
+    public function test_published_article_outranks_a_legacy_redirect_on_the_same_address(): void
+    {
+        $article = BlogArticle::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Доборні планки та наличники', 'ru' => 'Доборные планки и наличники'],
+            'preview_text' => ['uk' => 'Як встановити добір.', 'ru' => 'Как установить добор.'],
+            'slug' => 'doborni-planky-ta-nalychnyky',
+            'hero_image_path' => 'blog/test.webp',
+        ]);
+
+        $this->assertTrue(BlogArticle::ownsSlug('doborni-planky-ta-nalychnyky'));
+        $this->get('/blog/doborni-planky-ta-nalychnyky')->assertOk();
+        $this->get('/ru/blog/'.$article->slugForLocale('ru'))->assertOk();
     }
 
     public function test_old_woocommerce_query_links_and_old_articles_redirect_to_clean_addresses(): void

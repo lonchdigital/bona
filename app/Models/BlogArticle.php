@@ -168,6 +168,16 @@ class BlogArticle extends Model implements Sitemapable
         return $links;
     }
 
+    /** Whether any language of any article answers to this slug. */
+    public static function ownsSlug(string $slug): bool
+    {
+        return static::query()
+            ->where('slug', $slug)
+            ->orWhere('slugs->uk', $slug)
+            ->orWhere('slugs->ru', $slug)
+            ->exists();
+    }
+
     public function scopeWhereLocalizedSlug(Builder $query, string $slug, string $locale): Builder
     {
         return $query->where("slugs->{$locale}", $slug);
