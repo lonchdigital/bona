@@ -33,6 +33,41 @@ class EditorialCommercePagesTest extends TestCase
             ->assertDontSee('__contextArgs', false);
     }
 
+    public function test_english_advice_label_and_root_calls_to_action_are_repaired(): void
+    {
+        $article = BlogArticle::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Підбір дверей', 'ru' => 'Подбор дверей'],
+            'preview_text' => ['uk' => 'Коротко про підбір.', 'ru' => 'Коротко о подборе.'],
+            'slug' => 'pidbir-dverey-cta',
+            'hero_image_path' => 'blog/test.webp',
+        ]);
+
+        BlogArticleBlock::create([
+            'blog_article_id' => $article->id,
+            'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
+            'content' => [
+                'uk' => '<blockquote><p><strong>Pro Tip:</strong> Безкоштовна доставка.</p></blockquote>'
+                    .'<p><strong>Спробуйте замір на місці:</strong> Майстер приїде й зніме розміри. <a href="'.url('/').'">Почати →</a></p>'
+                    .'<p><strong>Bona Doors допоможе:</strong> Зберемо двері під ключ. <a href="'.url('/').'/">Дізнатися більше →</a></p>',
+            ],
+        ]);
+
+        $response = $this->get('/blog/pidbir-dverey-cta');
+
+        $response->assertOk()
+            // The English label is replaced, not merely styled.
+            ->assertDontSee('Pro Tip', false)
+            ->assertSee('Порада:', false)
+            ->assertSee('class="article-advice"', false)
+            // A measurement offer opens the dialog the storefront already ships.
+            ->assertSee('href="#dialog-call-measurer" data-lead-modal-open="dialog-call-measurer"', false)
+            // Everything else lands on the catalogue instead of the front page.
+            ->assertSee('href="/shop"', false)
+            ->assertDontSee('<a href="'.url('/').'">', false)
+            ->assertDontSee('<a href="'.url('/').'/">', false);
+    }
+
     public function test_article_renders_managed_blocks_and_valid_faq_schema_in_both_languages(): void
     {
         $article = BlogArticle::create([

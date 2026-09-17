@@ -56,7 +56,7 @@ class SerpAgentHtmlService
         'code' => ['class'],
         'pre' => ['class'],
         'blockquote' => ['class', 'cite'],
-        'a' => ['href', 'title', 'target', 'rel', 'class'],
+        'a' => ['href', 'title', 'target', 'rel', 'class', 'data-lead-modal-open'],
         'img' => ['src', 'alt', 'title', 'width', 'height', 'loading', 'class'],
         'figure' => ['class'],
         'figcaption' => ['class'],
@@ -406,7 +406,27 @@ class SerpAgentHtmlService
         'порада',
         'совет',
         'tip',
+        'pro tip',
+        'pro-tip',
     ];
+
+    /** The advice label a reader sees, whatever the delivery called it. */
+    private const ADVICE_LABEL_TEXT = [
+        'uk' => 'Порада',
+        'ru' => 'Совет',
+    ];
+
+    /**
+     * Calls to action Serp Agent writes into the body point at the site root,
+     * which drops a reader who asked about a measurement on the front page.
+     * Copy mentioning a visit opens the measurement dialog; everything else
+     * goes to the catalogue.
+     */
+    private const MEASUREMENT_CTA_MARKERS = [
+        'замір', 'заміру', 'замер', 'замера', 'вимір', 'измер', 'майстер приїде', 'мастер приедет',
+    ];
+
+    private const MEASUREMENT_DIALOG_ID = 'dialog-call-measurer';
 
     /**
      * Adds presentation hooks to both newly imported and older saved bodies.
@@ -420,7 +440,7 @@ class SerpAgentHtmlService
     {
         $html = $this->styleInlineQa($html, $locale);
 
-        return $this->styleArticleElements($html);
+        return $this->styleArticleElements($html, $locale);
     }
 
     /**
@@ -462,13 +482,13 @@ class SerpAgentHtmlService
      * to know implementation class names. DOM parsing also lets this repair
      * older tables that were saved before the responsive wrapper was added.
      */
-    private function styleArticleElements(string $html): string
+    private function styleArticleElements(string $html, string $locale): string
     {
         $html = trim($html);
 
         if ($html === '' || ! class_exists(DOMDocument::class)) {
             return preg_replace(
-                '~<p(?![^>]*\bclass=)([^>]*)>\s*(<strong\b[^>]*>\s*(?:Порада|Совет|Tip)\s*:?\s*</strong>)~ui',
+                '~<p(?![^>]*\bclass=)([^>]*)>\s*(<strong\b[^>]*>\s*(?:Порада|Совет|Pro\s*-?\s*Tip|Tip)\s*:?\s*</strong>)~ui',
                 '<p class="article-advice"$1>$2',
                 $html
             ) ?? $html;
@@ -527,6 +547,13 @@ class SerpAgentHtmlService
                 continue;
             }
 
+            // "Pro Tip" arrives in English in otherwise Ukrainian copy.
+            $localizedLabel = self::ADVICE_LABEL_TEXT[$locale] ?? self::ADVICE_LABEL_TEXT['uk'];
+
+            if (mb_strtolower($localizedLabel) !== $label) {
+                $strong->textContent = $localizedLabel.':';
+            }
+
             $classes = array_filter(preg_split('/\s+/', trim($paragraph->getAttribute('class'))) ?: []);
 
             if (! in_array('article-advice', $classes, true)) {
@@ -534,6 +561,8 @@ class SerpAgentHtmlService
                 $paragraph->setAttribute('class', implode(' ', $classes));
             }
         }
+
+        $this->retargetRootLinks($xpath, $root, $locale);
 
         foreach ($xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " accordion ")]', $root) as $trigger) {
             if (! $trigger instanceof DOMElement) {
@@ -554,6 +583,77 @@ class SerpAgentHtmlService
         }
 
         return trim($result);
+    }
+
+    /**
+     * Sends the body's calls to action somewhere they answer the sentence
+     * that carries them.
+     *
+     * Serp Agent writes "Дізнатися більше" and "Почати" as links to the site
+     * root, so a paragraph offering an on-site measurement landed the reader
+     * on the front page. A measurement offer now opens the measurement
+     * dialog, which the storefront delegates from the document, and every
+     * other root link goes to the catalogue.
+     */
+    private function retargetRootLinks(DOMXPath $xpath, DOMElement $root, string $locale): void
+    {
+        $roots = $this->siteRootHrefs();
+
+        foreach ($xpath->query('.//a[@href]', $root) as $link) {
+            if (! $link instanceof DOMElement) {
+                continue;
+            }
+
+            $href = rtrim(trim($link->getAttribute('href')), '/');
+
+            if (! in_array($href === '' ? '/' : $href, $roots, true)) {
+                continue;
+            }
+
+            $carrier = $link->parentNode instanceof DOMElement ? $link->parentNode : $link;
+            $context = mb_strtolower(trim((string) preg_replace('/\s+/u', ' ', $carrier->textContent)));
+            $wantsMeasurement = false;
+
+            foreach (self::MEASUREMENT_CTA_MARKERS as $marker) {
+                if (str_contains($context, $marker)) {
+                    $wantsMeasurement = true;
+
+                    break;
+                }
+            }
+
+            if ($wantsMeasurement) {
+                $link->setAttribute('href', '#'.self::MEASUREMENT_DIALOG_ID);
+                $link->setAttribute('data-lead-modal-open', self::MEASUREMENT_DIALOG_ID);
+
+                continue;
+            }
+
+            $link->setAttribute('href', $this->catalogPath($locale));
+            $link->removeAttribute('data-lead-modal-open');
+        }
+    }
+
+    /** @return list<string> */
+    private function siteRootHrefs(): array
+    {
+        $base = rtrim((string) url('/'), '/');
+        $roots = ['/', $base];
+
+        foreach (['http://', 'https://'] as $scheme) {
+            $host = preg_replace('~^https?://~', '', $base);
+            $roots[] = $scheme.$host;
+            $roots[] = $scheme.'www.'.ltrim((string) preg_replace('~^www\.~', '', (string) $host), '.');
+        }
+
+        return array_values(array_unique(array_filter($roots)));
+    }
+
+    private function catalogPath(string $locale): string
+    {
+        return $locale === (string) config('app.fallback_locale')
+            ? route('store.all-products.page', [], false)
+            : route('localized.store.all-products.page', ['lang' => $locale], false);
     }
 
     private function buildQaCard(string $questionLabel, string $question, string $answerLabel, string $answer): string
