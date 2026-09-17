@@ -5,7 +5,6 @@ import fs from 'node:fs';
 const sent = [];
 const listeners = {};
 const storage = new Map();
-let consent = true;
 
 globalThis.window = {
     localStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, String(value)) },
@@ -14,10 +13,8 @@ globalThis.window = {
 globalThis.document = { querySelectorAll: () => [], querySelector: () => null };
 
 const stubConsent = `
-    export function hasAnalyticsConsent() { return globalThis.__consent(); }
     export function trackGoogleEvent(name, parameters) { globalThis.__sent.push([name, parameters]); }
 `;
-globalThis.__consent = () => consent;
 globalThis.__sent = sent;
 
 const consentUrl = 'data:text/javascript;base64,' + Buffer.from(stubConsent).toString('base64');
@@ -47,15 +44,9 @@ test('first cart load is only a baseline; later changes become add_to_cart and r
     assert.equal(sent.filter(([name]) => name === 'view_cart').length, 1);
 });
 
-test('events raised before consent are replayed once consent is given, and once-events never repeat', () => {
+test('page events are sent without waiting for consent, and once-events never repeat', () => {
     sent.length = 0;
-    consent = false;
     analytics.sendEcommerceEvent('purchase', { transaction_id: 'BD-000042' }, 'purchase-42');
-    assert.equal(sent.length, 0);
-
-    analytics.default.init();
-    consent = true;
-    listeners['bona:cookie-consent']({ detail: { choice: 'all' } });
     assert.deepEqual(sent.map(([name]) => name), ['purchase']);
 
     analytics.sendEcommerceEvent('purchase', { transaction_id: 'BD-000042' }, 'purchase-42');

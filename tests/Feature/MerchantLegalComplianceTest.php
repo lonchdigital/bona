@@ -108,7 +108,7 @@ class MerchantLegalComplianceTest extends TestCase
         }
     }
 
-    public function test_optional_tracking_waits_for_an_explicit_cookie_choice(): void
+    public function test_analytics_uses_consent_mode_and_cookies_wait_for_an_explicit_choice(): void
     {
         $layout = file_get_contents(resource_path('views/layouts/store-main.blade.php'));
         $component = file_get_contents(resource_path('views/components/store/cookie-consent.blade.php'));
@@ -123,11 +123,21 @@ class MerchantLegalComplianceTest extends TestCase
         $this->assertStringContainsString('data-google-analytics-id', $component);
         $this->assertStringContainsString('data-cookie-consent-necessary', $component);
         $this->assertStringContainsString('data-cookie-consent-accept', $component);
-        $this->assertStringContainsString('setGoogleConsent(NECESSARY)', $script);
-        $this->assertStringContainsString('choice === ACCEPTED', $script);
+
+        // Denied consent is declared before the tag loads; only "accept all"
+        // grants storage, and a withdrawal removes existing GA cookies.
+        $defaultAt = strpos($script, 'setDefaultGoogleConsent();');
+        $loadAt = strpos($script, 'loadGoogleAnalytics(measurementId);');
+        $this->assertNotFalse($defaultAt);
+        $this->assertNotFalse($loadAt);
+        $this->assertLessThan($loadAt, $defaultAt);
+        $this->assertStringContainsString("window.gtag('consent', 'default'", $script);
+        $this->assertStringContainsString("value === ACCEPTED ? 'granted' : 'denied'", $script);
+        $this->assertStringContainsString('removeGoogleAnalyticsCookies()', $script);
         $this->assertStringContainsString('googletagmanager.com/gtag/js', $script);
         $this->assertStringContainsString("window.gtag('config', measurementId)", $script);
         $this->assertStringContainsString("window.gtag('event', eventName, parameters)", $script);
+        $this->assertStringContainsString('без cookies', trans('base.cookie_text', [], 'uk'));
         $this->assertStringNotContainsString('GTM-P9KHGB8T', $component.$script);
         $this->assertStringContainsString('GOOGLE_ANALYTICS_ID', $services.$environmentExample);
         $this->assertStringNotContainsString('GOOGLE_TAG_MANAGER_ID', $services.$environmentExample);

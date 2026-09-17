@@ -2,23 +2,38 @@ const STORAGE_KEY = 'bona_cookie_consent_v1';
 const ACCEPTED = 'all';
 const NECESSARY = 'necessary';
 
-function setGoogleConsent(value) {
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = window.gtag || function gtag() {
-        window.dataLayer.push(arguments);
-    };
-
+// Google Consent Mode v2 ("advanced"): the Google tag always loads so GA4 can
+// receive cookieless, identifier-free pings and model visitors who decline.
+// Analytics and advertising cookies are only allowed after "Accept all".
+function consentState(value) {
     const granted = value === ACCEPTED ? 'granted' : 'denied';
 
-    window.gtag('consent', value === ACCEPTED ? 'update' : 'default', {
+    return {
         ad_storage: granted,
         ad_user_data: granted,
         ad_personalization: granted,
         analytics_storage: granted,
         functionality_storage: 'granted',
         security_storage: 'granted',
-        wait_for_update: 500,
-    });
+    };
+}
+
+function ensureGtag() {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function gtag() {
+        window.dataLayer.push(arguments);
+    };
+}
+
+function setDefaultGoogleConsent() {
+    ensureGtag();
+    window.gtag('consent', 'default', { ...consentState(NECESSARY), wait_for_update: 500 });
+    window.gtag('set', 'ads_data_redaction', true);
+}
+
+function updateGoogleConsent(value) {
+    ensureGtag();
+    window.gtag('consent', 'update', consentState(value));
 }
 
 function loadGoogleAnalytics(measurementId) {
@@ -34,6 +49,19 @@ function loadGoogleAnalytics(measurementId) {
 
     window.gtag('js', new Date());
     window.gtag('config', measurementId);
+}
+
+function removeGoogleAnalyticsCookies() {
+    const host = window.location.hostname;
+    const domains = ['', host, `.${host}`, `.${host.split('.').slice(-3).join('.')}`, `.${host.split('.').slice(-2).join('.')}`];
+
+    document.cookie.split(';').map((cookie) => cookie.split('=')[0].trim())
+        .filter((name) => /^_ga(_|$)|^_gid$|^_gat/.test(name))
+        .forEach((name) => {
+            domains.forEach((domain) => {
+                document.cookie = `${name}=; Max-Age=0; path=/${domain ? `; domain=${domain}` : ''}`;
+            });
+        });
 }
 
 function readChoice() {
@@ -67,11 +95,11 @@ function hideBanner(banner) {
     }, 220);
 }
 
-function applyChoice(choice, measurementId) {
-    setGoogleConsent(choice);
+function applyChoice(choice) {
+    updateGoogleConsent(choice);
 
-    if (choice === ACCEPTED) {
-        loadGoogleAnalytics(measurementId);
+    if (choice !== ACCEPTED) {
+        removeGoogleAnalyticsCookies();
     }
 
     window.dispatchEvent(new CustomEvent('bona:cookie-consent', {
@@ -89,33 +117,28 @@ function init() {
     const measurementId = banner.dataset.googleAnalyticsId || '';
     const existingChoice = readChoice();
 
-    // Establish a denied default before any optional tag is allowed to load.
-    setGoogleConsent(NECESSARY);
+    // Denied by default before the tag loads; an earlier "Accept all" is
+    // restored straight away so the first page view carries cookies.
+    setDefaultGoogleConsent();
+    if (existingChoice === ACCEPTED) {
+        updateGoogleConsent(ACCEPTED);
+    }
+    loadGoogleAnalytics(measurementId);
 
-    if (existingChoice) {
-        applyChoice(existingChoice, measurementId);
-    } else {
+    if (!existingChoice) {
         showBanner(banner);
     }
 
     banner.querySelector('[data-cookie-consent-accept]')?.addEventListener('click', () => {
         saveChoice(ACCEPTED);
-        applyChoice(ACCEPTED, measurementId);
+        applyChoice(ACCEPTED);
         hideBanner(banner);
     });
 
     banner.querySelector('[data-cookie-consent-necessary]')?.addEventListener('click', () => {
-        const hadOptionalTags = readChoice() === ACCEPTED;
-
         saveChoice(NECESSARY);
-        applyChoice(NECESSARY, measurementId);
+        applyChoice(NECESSARY);
         hideBanner(banner);
-
-        // A Google tag that is already loaded cannot be reliably unloaded. Reload
-        // once after a withdrawal so the new denied choice takes effect fully.
-        if (hadOptionalTags) {
-            window.location.reload();
-        }
     });
 
     document.querySelectorAll('[data-cookie-settings]').forEach((button) => {
@@ -130,8 +153,10 @@ export function hasAnalyticsConsent() {
     return readChoice() === ACCEPTED;
 }
 
+// Sent regardless of the cookie choice: under denied consent gtag strips
+// identifiers and transmits a cookieless ping instead.
 export function trackGoogleEvent(eventName, parameters = {}) {
-    if (readChoice() !== ACCEPTED || typeof window.gtag !== 'function' || !eventName) {
+    if (typeof window.gtag !== 'function' || !eventName) {
         return;
     }
 

@@ -1,14 +1,14 @@
-import { hasAnalyticsConsent, trackGoogleEvent } from './cookie-consent';
+import { trackGoogleEvent } from './cookie-consent';
 
 // GA4 recommended e-commerce events. Payload items come from the server
 // (App\Support\Analytics\GoogleAnalyticsCommerce) so both storefront languages
-// report the same product names, prices and categories.
+// report the same product names, prices and categories. Events are sent for
+// every visitor; Consent Mode decides whether gtag may use cookies.
 
 const CURRENCY = 'UAH';
 const ONCE_PREFIX = 'bona_ga_once_';
 
 let cartLines = null;
-let pendingEvents = [];
 let cartPageViewed = false;
 
 function round(value) {
@@ -48,13 +48,6 @@ function markSent(key) {
 export function sendEcommerceEvent(name, parameters, once = null) {
     const key = onceKey(once);
     if (alreadySent(key)) return;
-
-    // Events raised before the visitor accepts cookies on this page are kept
-    // and sent if consent is given before leaving it.
-    if (!hasAnalyticsConsent()) {
-        pendingEvents.push([name, parameters, key]);
-        return;
-    }
 
     trackGoogleEvent(name, parameters);
     markSent(key);
@@ -114,18 +107,6 @@ function initPageEvents() {
     document.querySelectorAll('script[type="application/json"][data-ga-event]').forEach((script) => {
         const payload = readPagePayload(script.dataset.gaEvent);
         if (payload) sendEcommerceEvent(script.dataset.gaEvent, payload, script.dataset.gaOnce || null);
-    });
-
-    window.addEventListener('bona:cookie-consent', (event) => {
-        if (event.detail?.choice !== 'all' || !pendingEvents.length) return;
-
-        const queued = pendingEvents;
-        pendingEvents = [];
-        queued.forEach(([name, parameters, key]) => {
-            if (alreadySent(key)) return;
-            trackGoogleEvent(name, parameters);
-            markSent(key);
-        });
     });
 }
 
