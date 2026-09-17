@@ -446,4 +446,9 @@
             </dialog>
         @endguest
     </div>
+    <x-store.analytics-event
+        event="begin_checkout"
+        :payload="App\Support\Analytics\GoogleAnalyticsCommerce::beginCheckout(collect($productsInCart), (float) $initialSummary['products'] - (float) $initialSummary['discount'], $promoCode?->code)"
+    />
+    <script type="application/json" data-ga-checkout-keys>{!! json_encode(['payment' => App\Support\Analytics\GoogleAnalyticsCommerce::paymentTypeKeys(), 'delivery' => App\Support\Analytics\GoogleAnalyticsCommerce::deliveryTypeKeys()], JSON_HEX_TAG) !!}</script>
 @endsection

@@ -1,3 +1,4 @@
+import { syncCartAnalytics, trackViewCart } from './analytics';
 import $ from "jquery";
 // import wishList from "./wish-list";
 
@@ -129,6 +130,7 @@ function initCartDrawer()
             closeCartDrawer();
         } else {
             openCartDrawer();
+            trackViewCart();
         }
     });
 
@@ -265,6 +267,7 @@ export default {
             mainRequest.done(function (data) {
                 addSelectedSubProducts(0, data, function (latestResponse) {
                     if (checkoutRedirect) {
+                        syncCartAnalytics(latestResponse.data.products);
                         window.location.assign(checkoutRedirect);
                         return;
                     }
@@ -563,6 +566,7 @@ export default {
 
 function renderCartData(data)
 {
+    syncCartAnalytics(data.data.products);
     clearCartMutationError();
     syncCartCount(data.data.products.length);
     $art_cart_checkout_button.toggleClass('d-none', data.data.products.length === 0);
@@ -570,6 +574,7 @@ function renderCartData(data)
 
     if (isCartPage()) {
         drawProductsInCartPageHTML(data);
+        trackViewCart({ cartPage: true });
     }
 }
 
@@ -1223,6 +1228,8 @@ function getAllProductAttributes(art_this)
 
 export function handleBasket(data)
 {
+    syncCartAnalytics(data.data.products);
+
     const basketSubMenu = $('.basket-sub-menu');
     const basketSubMenuSuccess = basketSubMenu.find('.sub-menu-success');
 

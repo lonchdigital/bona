@@ -132,6 +132,7 @@
 
 @section('content')
     @include('pages.store.partials.product-reference')
+    <x-store.analytics-event event="view_item" :payload="App\Support\Analytics\GoogleAnalyticsCommerce::viewItem($product)" />
 
     @if(false)
     <div class="bona-content-page bona-product-page product">

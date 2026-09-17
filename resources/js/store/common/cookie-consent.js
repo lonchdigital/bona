@@ -126,12 +126,22 @@ function init() {
     });
 }
 
+export function hasAnalyticsConsent() {
+    return readChoice() === ACCEPTED;
+}
+
 export function trackGoogleEvent(eventName, parameters = {}) {
     if (readChoice() !== ACCEPTED || typeof window.gtag !== 'function' || !eventName) {
         return;
     }
 
     window.gtag('event', eventName, parameters);
+
+    // Lead forms keep their historical event names and also report the GA4
+    // recommended generate_lead, so one key event covers every form.
+    if (String(eventName).startsWith('submit_form_')) {
+        window.gtag('event', 'generate_lead', { lead_source: eventName });
+    }
 }
 
 export default { init };

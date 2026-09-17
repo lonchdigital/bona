@@ -4,6 +4,7 @@ namespace App\Http\Resources\Store\Cart;
 
 use App\DataClasses\ProductStatusDataClass;
 use App\Http\Resources\BaseProductResource;
+use App\Support\Analytics\GoogleAnalyticsCommerce;
 use App\Support\Commerce\ProductBundle;
 use App\Support\Commerce\ProductConfiguration;
 use Illuminate\Http\Request;
@@ -41,6 +42,7 @@ class CartProductResource extends BaseProductResource
         // the storefront label from that source explicitly so the cart page
         // never prints the JSON payload when the resource is serialized.
         $existingMapping['display_name'] = (string) $displayName;
+        $existingMapping['analytics'] = GoogleAnalyticsCommerce::lineItem($this->resource);
         $existingMapping['brand_name'] = $this->resource->brand?->name;
         $existingMapping['availability'] = ProductStatusDataClass::get((int) $this->resource->availability_status_id)['name'] ?? null;
         $existingMapping['line_total'] = round(

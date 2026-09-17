@@ -23,6 +23,7 @@ import ProductComparison from './common/product-comparison';
 import MobileBottomNavigation from './common/mobile-bottom-navigation';
 import LeadModals from './common/lead-modals';
 import CookieConsent from './common/cookie-consent';
+import PageAnalytics from './common/analytics';
 
 // console.log('1111');
 
@@ -97,7 +98,8 @@ async function init()
         ProductComparison.init(),
         MobileBottomNavigation.init(),
         LeadModals.init(),
-        CookieConsent.init()
+        CookieConsent.init(),
+        PageAnalytics.init(),
     ]);
 
     // Fancybox and Inputmask are sizeable legacy dependencies. Most pages,

@@ -130,4 +130,5 @@
             </aside>
         </section>
     </main>
+    <x-store.analytics-event event="purchase" :once="'purchase-'.$order->id" :payload="App\Support\Analytics\GoogleAnalyticsCommerce::purchase($order, $orderSummary)" />
 @endsection

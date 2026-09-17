@@ -1,3 +1,4 @@
+import { readPagePayload, sendEcommerceEvent } from '../common/analytics';
 import $ from 'jquery';
 import Inputmask from 'inputmask';
 import {
@@ -384,6 +385,8 @@ export default async function () {
             return;
         }
 
+        trackCheckoutStepsBeforeSubmit(form);
+
         const submit = document.querySelector('#submit-button');
         const loader = document.querySelector('#loader');
         if (submit) submit.disabled = true;
@@ -423,4 +426,22 @@ function getSummaryByDeliveryTypeId(deliveryTypeId, success) {
         data: deliveryTypeId ? { delivery_type_id: deliveryTypeId } : {},
         dataType: 'json',
     }).done(success);
+}
+
+function trackCheckoutStepsBeforeSubmit(form) {
+    const checkout = readPagePayload('begin_checkout');
+    if (!checkout) return;
+
+    let keys = {};
+    try {
+        keys = JSON.parse(document.querySelector('script[data-ga-checkout-keys]')?.textContent || '{}');
+    } catch (error) {
+        keys = {};
+    }
+
+    const deliveryId = form.querySelector('input[name="delivery_type_id"]:checked')?.value;
+    const paymentId = form.querySelector('input[name="payment_type_id"]:checked')?.value;
+
+    if (deliveryId) sendEcommerceEvent('add_shipping_info', { ...checkout, shipping_tier: keys.delivery?.[deliveryId] || String(deliveryId) });
+    if (paymentId) sendEcommerceEvent('add_payment_info', { ...checkout, payment_type: keys.payment?.[paymentId] || String(paymentId) });
 }

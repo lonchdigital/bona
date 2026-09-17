@@ -174,6 +174,39 @@ class CheckoutTest extends TestCase
         $this->assertSame($promoCode->id, (int) Order::first()->promo_code_id);
     }
 
+    public function test_google_analytics_receives_the_whole_commerce_funnel(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct(['price' => 4200, 'slug' => 'analytics-door', 'name' => ['uk' => 'Двері Аналітика', 'ru' => 'Дверь Аналитика']]);
+
+        $this->get('/ru/product/analytics-door')
+            ->assertOk()
+            ->assertSee('data-ga-event="view_item"', false)
+            ->assertSee('"item_id":"analytics-door","item_name":"Двері Аналітика"', false)
+            ->assertSee('"currency":"UAH","value":4200', false);
+
+        $this->addToCart($product->slug, 2)->assertOk();
+        $cart = $this->keepCookies($this->getJson(route('store.cart.products-with-summary')))->assertOk();
+        $this->assertSame(2, $cart->json('data.products.0.analytics.quantity'));
+        $this->assertEquals(4200, $cart->json('data.products.0.analytics.price'));
+        $this->assertSame('Двері Аналітика', $cart->json('data.products.0.analytics.item_name'));
+
+        $this->keepCookies($this->get(route('store.checkout.page')))
+            ->assertOk()
+            ->assertSee('data-ga-event="begin_checkout"', false)
+            ->assertSee('"currency":"UAH","value":8400', false)
+            ->assertSee('data-ga-checkout-keys', false);
+
+        $response = $this->confirm(['payment_type_id' => PaymentTypesDataClass::INVOICE_PAYMENT]);
+        $order = Order::firstOrFail();
+
+        $this->keepCookies($this->get($response->headers->get('Location')))
+            ->assertOk()
+            ->assertSee('data-ga-event="purchase" data-ga-once="purchase-'.$order->id.'"', false)
+            ->assertSee('"transaction_id":"BD-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT).'","currency":"UAH","value":8400', false)
+            ->assertSee('"payment_type":"invoice"', false);
+    }
+
     public function test_an_order_is_refused_without_agreement(): void
     {
         $this->seedCurrency();
