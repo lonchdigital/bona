@@ -48,6 +48,21 @@ test('production uses server checkout and protects the base wall and mobile layo
     assert.ok(source.includes('X-CSRF-TOKEN'));
     assert.ok(source.includes('request_id:pendingSelection.id'));
     assert.ok(!source.includes('bona-door-studio-cart'));
-    assert.ok(source.includes("const DEFAULT_WALL = '#ffffff'"));
+    assert.ok(source.includes("const DEFAULT_WALL = '#c2b8a8'"));
+    assert.ok(!source.includes('#868c76\' }'), 'the olive wall colour stays out of the palette');
     assert.ok(source.includes("$('mobile-selection-footer').append($('intro-download'), $('scene-note'))"));
+});
+
+test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
+    const start = source.indexOf('const DEFAULT_WALL =');
+    const end = source.indexOf('const DEFAULT = {');
+    const context = vm.createContext({ t: text => text });
+    vm.runInContext(source.slice(start, end) + ';globalThis.restoredWall = restoredWall; globalThis.PALETTE = PALETTE;', context);
+    assert.equal(context.restoredWall({ wall: '#FFFFFF', wallPaletteVersion: 1 }), '#c2b8a8');
+    assert.equal(context.restoredWall({ wall: '#868c76' }), '#c2b8a8');
+    assert.equal(context.restoredWall({ wall: '#b38974', wallPaletteVersion: 1 }), '#b38974');
+    assert.equal(context.restoredWall({ wall: '#ffffff', wallPaletteVersion: 2 }), '#ffffff');
+    assert.equal(context.restoredWall({}), '#c2b8a8');
+    assert.ok(!context.PALETTE.some(color => color.hex === '#868c76'));
+    assert.equal(context.PALETTE.length, 6);
 });

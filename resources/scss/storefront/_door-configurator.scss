@@ -32,12 +32,12 @@
     .room-option { font-size: 14px; min-height: 44px; border-radius: 5px; padding: 7px 2px; line-height: 1.3; }.room-option[aria-pressed=true] { background: #fff; }
     .palette-row { display: flex; gap: 5px; align-items: center; padding: 4px; border-radius: 8px; background: #eeece6; min-width: 0; }
     .palette { display: flex; flex: 1; justify-content: space-between; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
-    .swatch { position: relative; flex: 0 0 auto; width: 44px; height: 44px; border: 1px solid transparent; border-radius: 50%; }
-    .swatch::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: var(--swatch); border: 1px solid #28241e12; }
+    .swatch { position: relative; flex: 0 0 auto; width: 36px; height: 36px; border: 1px solid transparent; border-radius: 50%; }
+    .swatch::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: var(--swatch); border: 1px solid #28241e12; }
     .swatch[aria-pressed=true] { border-color: var(--gold); }.swatch:hover { border-color: #b5a58e; }
-    .original-swatch span { position: relative; z-index: 1; font-size: 20px; color: white; }
+    .original-swatch span { position: relative; z-index: 1; font-size: 16px; color: white; }
     .custom-color { border-left: 1px solid var(--line); padding-left: 4px; }
-    .custom-color label { margin: 0; position: relative; display: grid; place-items: center; border: 1px dashed #b9ae9e; width: 42px; height: 42px; border-radius: 50%; overflow: hidden; font-size: 24px; }
+    .custom-color label { margin: 0; position: relative; display: grid; place-items: center; border: 1px dashed #b9ae9e; width: 34px; height: 34px; border-radius: 50%; overflow: hidden; font-size: 20px; }
     .custom-color input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
     .scene { position: relative; aspect-ratio: 3/2; border-radius: 12px; overflow: hidden; background: #e6e0d5; isolation: isolate; }
     .scene canvas { display: block; width: 100%; height: 100%; object-fit: contain; touch-action: pan-y pinch-zoom; }

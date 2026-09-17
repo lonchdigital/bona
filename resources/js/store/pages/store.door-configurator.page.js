@@ -64,19 +64,24 @@ function withDoorType(current, type) {
   const color = previous?.product === selected.id ? previous.color : current.product === selected.id ? current.color : null;
   return { ...current, doorType: type, [category]: selected.id, product: selected.id, color: selected.colors.some(c => c.id === color) ? color : selected.colors[0].id, typeSelections: choices };
 }
-const DEFAULT_WALL = '#ffffff';
-const WALL_PALETTE_VERSION = 1;
+const DEFAULT_WALL = '#c2b8a8';
+const WALL_PALETTE_VERSION = 2;
+// Colours that palette v2 replaced: the former white default and the removed olive.
+const RETIRED_DEFAULT_WALLS = ['#ffffff', '#868c76'];
 const PALETTE = [
-  { name: t("Білий"), hex: DEFAULT_WALL },
-  { name: t("Теплий кашемір"), hex: '#c2b8a8' },
+  { name: t("Білий"), hex: '#ffffff' },
+  { name: t("Теплий кашемір"), hex: DEFAULT_WALL },
   { name: t("Молочний"), hex: '#e8e3d9' },
   { name: t("Темно-сірий"), hex: '#494949' },
-  { name: t("Пилова олива"), hex: '#868c76' },
   { name: t("Теракота"), hex: '#b38974' },
   { name: t("Димчасто-синій"), hex: '#8e9aa2' },
 ];
 function restoredWall(saved) {
-  if (/^#[0-9a-f]{6}$/i.test(saved?.wall)) return saved.wall.toLowerCase();
+  if (/^#[0-9a-f]{6}$/i.test(saved?.wall)) {
+    const wall = saved.wall.toLowerCase();
+    // Move visitors from an older palette to the new default once; later choices are kept.
+    return (saved.wallPaletteVersion || 0) < WALL_PALETTE_VERSION && RETIRED_DEFAULT_WALLS.includes(wall) ? DEFAULT_WALL : wall;
+  }
   // Upgrade the old photo-colored default once, without losing a deliberately selected color.
   if (saved?.wall === 'original' && saved.wallPaletteVersion === WALL_PALETTE_VERSION) return 'original';
   return DEFAULT_WALL;
