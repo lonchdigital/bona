@@ -30,6 +30,13 @@ class ProductContentImporterTest extends TestCase
         ProductText::query()->create(['product_id' => $written->id, 'language' => 'uk', 'content' => $longText]);
         ProductFaqs::query()->create(['product_id' => $written->id, 'question' => ['uk' => 'Q', 'ru' => 'Q'], 'answer' => ['uk' => 'A', 'ru' => 'A']]);
 
+        $boilerplate = $this->makeProduct(['slug' => 'replace-me']);
+        ProductText::query()->create(['product_id' => $boilerplate->id, 'language' => 'uk', 'content' => $longText]);
+        $replacePath = tempnam(sys_get_temp_dir(), 'content').'.json';
+        file_put_contents($replacePath, json_encode([['slug' => 'replace-me', 'replace_content' => true, 'content' => ['uk' => '<p>Новий унікальний опис.</p>']]], JSON_UNESCAPED_UNICODE));
+        app(ProductContentImporter::class)->importFile($replacePath);
+        $this->assertSame('<p>Новий унікальний опис.</p>', ProductText::query()->where(['product_id' => $boilerplate->id, 'language' => 'uk'])->value('content'));
+
         $path = database_path('content/products/2026_09_17_hidden_doors.json');
         $importer = app(ProductContentImporter::class);
         $importer->importFile($path);

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\ProductSlugRedirect;
+use App\Models\ProductText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
@@ -68,6 +69,31 @@ class LegacyRedirectsTest extends TestCase
         $this->get('/ru/product/tehno-1-antracit-2050-860/similar')->assertStatus(301)->assertRedirect('/ru/product/tehno-1-2050-860-antracit-7024');
 
         $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /*filtered-count');
+    }
+
+    public function test_old_woocommerce_query_links_and_old_articles_redirect_to_clean_addresses(): void
+    {
+        $this->get('/product-category/interior-doors?filter_style=milano')->assertStatus(301)->assertRedirect(url('/product-category/interior-doors'));
+        $this->get('/product-category/hidden-doors?orderby=date&add_to_wishlist=2663')->assertStatus(301)->assertRedirect(url('/product-category/hidden-doors'));
+        $this->get('/product-category/interior-doors?orderby=price-desc&page=2')->assertStatus(301)->assertRedirect(url('/product-category/interior-doors?page=2'));
+        $this->get('/ru/blog/yak-doglyadaty-za-dveryma-comeo')->assertStatus(301)->assertRedirect('/ru/blog/yak-dohlyadaty-za-dveryma-comeo-praktychni-porady');
+        $this->get('/robots.txt')->assertSee('Disallow: /*/count/');
+    }
+
+    public function test_techno_slugs_and_korfad_typos_are_fixed_by_migration(): void
+    {
+        $this->seedCurrency();
+        $door = $this->makeProduct(['slug' => 'tehno-1-2050-960-antracit-7024']);
+        $korfad = $this->makeProduct(['slug' => 'mizhkimnatni-dveri-porto-pr-01-korfad']);
+        ProductText::query()->create(['product_id' => $korfad->id, 'language' => 'uk', 'content' => '<p>Виробник міжкімнатних дверей ТМ МKorfad г. Корюківка.</p><p>Двері покриваються плівкой Sincrolam.</p>']);
+        ProductText::query()->create(['product_id' => $korfad->id, 'language' => 'ru', 'content' => '<p>Производитель ТМ МKorfad г. Корюковка.</p>']);
+
+        (require database_path('migrations/2026_09_17_120000_fix_korfad_copy_and_tehno_redirects.php'))->up();
+
+        $this->get('/product/tehno-1-antracit-2050-960')->assertStatus(301)->assertRedirect(url('/product/tehno-1-2050-960-antracit-7024'));
+        $this->assertSame('<p>Виробник міжкімнатних дверей ТМ Korfad м. Корюківка.</p><p>Двері покриваються плівкою Sincrolam.</p>', ProductText::query()->where(['product_id' => $korfad->id, 'language' => 'uk'])->value('content'));
+        $this->assertSame('<p>Производитель ТМ Korfad г. Корюковка.</p>', ProductText::query()->where(['product_id' => $korfad->id, 'language' => 'ru'])->value('content'));
+        $this->assertNotNull($door);
     }
 
     public function test_search_console_map_points_only_to_valid_targets(): void

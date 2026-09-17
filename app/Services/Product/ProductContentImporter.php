@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * existing products.
  *
  * It only fills gaps: a description is written when the stored one is empty
- * or a one-line stub, characteristics are added only under names the product
+ * or a one-line stub (or the entry sets "replace_content": true), characteristics are added only under names the product
  * does not have yet, FAQ only when the product has none and meta only when it
  * is blank. Anything a manager has written in the admin is left untouched, so
  * the import is safe to run again.
@@ -78,7 +78,9 @@ class ProductContentImporter
             $text = ProductText::query()->firstOrNew(['product_id' => $product->id, 'language' => $locale]);
             $values = [];
 
-            if ($content !== '' && $this->isThin($text->content)) {
+            // "replace_content": true is for shared boilerplate that is long
+            // enough to look written but identical across a whole brand.
+            if ($content !== '' && ($this->isThin($text->content) || ($entry['replace_content'] ?? false) === true)) {
                 $values['content'] = $content;
             }
             if ($short !== '' && blank(strip_tags((string) $text->short_content))) {

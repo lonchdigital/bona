@@ -9,10 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectToLowercase
 {
+    /** Query parameters of the former WooCommerce store; the Laravel catalog ignores them. */
+    private const LEGACY_QUERY_KEYS = ['filter_style', 'filter_brand', 'orderby', 'add_to_wishlist', ''];
+
     private const LEGACY_PATHS = [
         '/blog/doborni-planky-ta-nalychnyky' => '/product-category/aksessuar/category/dobir',
         '/nashi-roboty/testoviy' => '/nashi-roboty',
         '/product-category/aksessuar/category/dobir-estet' => '/product-category/aksessuar/category/dobir',
+        '/blog/yak-doglyadaty-za-dveryma-comeo' => '/blog/yak-dohlyadaty-za-dveryma-comeo-praktychni-porady',
     ];
 
     /**
@@ -46,6 +50,16 @@ class RedirectToLowercase
 
         if ($legacyTarget !== null) {
             return redirect($prefix.$legacyTarget, 301);
+        }
+
+        // Old WooCommerce sorting/filter/wishlist links render the same listing
+        // and waste crawl budget; send them to the clean address.
+        $query = $request->query();
+        $legacyKeys = array_intersect(array_map('strval', array_keys($query)), self::LEGACY_QUERY_KEYS);
+        if ($request->isMethod('GET') && ($legacyKeys !== [] || str_contains((string) $request->server('QUERY_STRING'), '?=') || str_starts_with((string) $request->server('QUERY_STRING'), '='))) {
+            $clean = array_diff_key($query, array_flip($legacyKeys), ['' => true]);
+
+            return redirect($request->url().($clean ? '?'.http_build_query($clean) : ''), 301);
         }
 
         return $next($request);

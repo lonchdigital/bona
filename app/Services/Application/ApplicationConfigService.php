@@ -84,7 +84,7 @@ class ApplicationConfigService extends BaseService
         // them in scripts and report them as 404s, so keep them out regardless
         // of what the editor saved.
         if (! str_contains($content, 'filtered-count')) {
-            $counterRules = 'Disallow: /*filtered-count';
+            $counterRules = "Disallow: /*filtered-count\nDisallow: /*/count/";
             $content = preg_match('/^\s*User-agent\s*:\s*\*\s*$/mi', $content)
                 ? (string) preg_replace('/^(\s*User-agent\s*:\s*\*\s*)$/mi', "$1\n".$counterRules, $content, 1)
                 : "User-agent: *\n".$counterRules."\n\n".$content;
