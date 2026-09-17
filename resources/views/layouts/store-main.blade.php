@@ -182,6 +182,10 @@
     ) !!}</script>
     @stack('structured_data')
 
+    {{-- SERP Agent ties search rankings to the calls, letters and forms the
+         storefront actually produces. --}}
+    <script async src="https://app.serp-agent.com/api/tracker/script" data-project="cmt2pz3ou0004b0i29eg5zca1"></script>
+
 </head>
 
 <body class="@yield('body_class')">
