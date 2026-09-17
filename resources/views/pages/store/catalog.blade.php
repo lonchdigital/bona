@@ -11,9 +11,9 @@
                 'brand' => $selectedBrand->name,
             ])
             : ($catalogLandingColor
-                ? ($catalogLandingColor->id === 7
+                ? ($catalogLandingColor->id === 7 && $productType->slug === 'interior-doors'
                     ? trans('base.white_doors')
-                    : trans('base.color').' '.$catalogLandingColor->name)
+                    : trans('base.catalog_color_heading', ['product_type' => $productType->name, 'color' => $catalogLandingColor->name]))
                 : $productType->name));
     $breadcrumbs = [];
 
@@ -93,9 +93,9 @@
         @if($filterGroup->meta_description)<meta name="description" content="{{ $filterGroup->meta_description }}">@endif
         @if($filterGroup->meta_keywords)<meta name="keywords" content="{{ $filterGroup->meta_keywords }}">@endif
     @elseif($catalogLandingColor)
-        <title>{{ $catalogPageTitle.' — '.trans('base.site_title').$paginationTitleSuffix }}</title>
-        <meta name="title" content="{{ $catalogPageTitle.' — '.trans('base.site_title') }}">
-        @if($productType->meta_description)<meta name="description" content="{{ $productType->meta_description }}">@endif
+        <title>{{ trans('base.category_fallback_title', ['name' => $catalogPageTitle]).$paginationTitleSuffix }}</title>
+        <meta name="title" content="{{ trans('base.category_fallback_title', ['name' => $catalogPageTitle]) }}">
+        <meta name="description" content="{{ trans('base.catalog_color_description', ['name' => $catalogPageTitle]) }}">
     @else
         <title>{{ ($productType->meta_title ?: $catalogPageTitle.' — '.trans('base.site_title')).$paginationTitleSuffix }}</title>
         @if($productType->meta_title)<meta name="title" content="{{ $productType->meta_title }}">@endif
@@ -103,7 +103,7 @@
         @if($productType->meta_keywords)<meta name="keywords" content="{{ $productType->meta_keywords }}">@endif
         @if($productType->meta_tags){!! $productType->meta_tags !!}@endif
     @endif
-    <meta property="og:title" content="{{ $catalogPageTitle.' — '.trans('base.site_title').$paginationTitleSuffix }}">
+    <meta property="og:title" content="{{ ($catalogLandingColor ? trans('base.category_fallback_title', ['name' => $catalogPageTitle]) : $catalogPageTitle.' — '.trans('base.site_title')).$paginationTitleSuffix }}">
 @endsection
 
 @section('content')

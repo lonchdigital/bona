@@ -643,6 +643,8 @@ return [
     'pagination_go_to_page' => 'Перейти на сторінку :page',
     'pagination_page_title' => 'Сторінка :page',
     'category_fallback_title' => ':name — купити в Одесі | Bona Doors',
+    'catalog_color_heading' => ':product_type кольору «:color»',
+    'catalog_color_description' => ':name у Bona Doors: моделі в наявності та під замовлення, підбір фурнітури, доставка по Україні, замір і монтаж в Одесі.',
     'brands_page_title' => 'Виробники',
     'brands_page_seo_title' => 'Виробники дверей і фурнітури — Bona Doors',
     'brands_page_description' => 'Двері, фурнітура та погонаж виробників, з якими працює Bona Doors: оберіть бренд, щоб переглянути його моделі, ціни й наявність у салонах в Одесі.',

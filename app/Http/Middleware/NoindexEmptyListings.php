@@ -10,11 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * A catalog listing without products (an empty category, an over-filtered
- * result or a page past the last one) still answers 200 so visitors and old
+ * result, a page past the last one or a colour landing with a handful of models) still answers 200 so visitors and old
  * links keep working, but it must not be indexed as a thin page.
  */
 class NoindexEmptyListings
 {
+    private const MIN_COLOR_LANDING_PRODUCTS = 6;
+
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
@@ -34,7 +36,11 @@ class NoindexEmptyListings
         }
 
         $isEmpty = $paginator->total() === 0 || $paginator->currentPage() > max(1, $paginator->lastPage());
-        if (! $isEmpty) {
+        // A colour landing page is only worth indexing with a real selection.
+        $isThinColorLanding = ($view->getData()['catalogLandingColor'] ?? null) !== null
+            && $paginator->total() < self::MIN_COLOR_LANDING_PRODUCTS;
+
+        if (! $isEmpty && ! $isThinColorLanding) {
             return $response;
         }
 

@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\ApplicationConfig;
 use App\Models\Category;
+use App\Models\Color;
 use App\Services\Product\ProductService;
 use App\Services\Sitemap\SitemapService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -116,6 +118,34 @@ class ThinPageGuardsTest extends TestCase
         $this->get('/product-category/interior-doors?page=2')
             ->assertOk()
             ->assertSee('<link rel="canonical" href="'.url('/product-category/interior-doors?page=2').'"', false);
+    }
+
+    public function test_colour_landings_are_crawlable_titled_and_noindexed_only_when_thin(): void
+    {
+        ApplicationConfig::query()->create([
+            'config_name' => 'ROBOTS_TXT',
+            'config_data' => "User-agent: *\nDisallow: */cart\nDisallow: */color\nDisallow: /?",
+        ]);
+        (require database_path('migrations/2026_09_17_130000_allow_colour_landings_in_robots.php'))->up();
+        $this->get('/robots.txt')->assertOk()->assertDontSee('/color')->assertSee('Disallow: */cart');
+
+        $this->seedCurrency();
+        $type = $this->productType(['slug' => 'interior-doors', 'name' => 'Міжкімнатні двері']);
+        $grey = Color::query()->create(['creator_id' => $this->author()->id, 'name' => ['uk' => 'Сірий', 'ru' => 'Серый'], 'slug' => 'siry', 'hex' => '#999999', 'display_as_image' => false]);
+        $blue = Color::query()->create(['creator_id' => $this->author()->id, 'name' => ['uk' => 'Синій', 'ru' => 'Синий'], 'slug' => 'syniy', 'hex' => '#0000ff', 'display_as_image' => false]);
+        for ($i = 0; $i < 6; $i++) {
+            $this->makeProduct(['product_type_id' => $type->id])->colors()->attach($grey->id, ['price' => 0]);
+        }
+        $this->makeProduct(['product_type_id' => $type->id])->colors()->attach($blue->id, ['price' => 0]);
+
+        $this->get('/product-category/interior-doors/filter/color=siry')
+            ->assertOk()
+            ->assertHeaderMissing('X-Robots-Tag')
+            ->assertSee('<title>Міжкімнатні двері кольору «Сірий» — купити в Одесі | Bona Doors</title>', false);
+
+        $this->get('/product-category/interior-doors/filter/color=syniy')
+            ->assertOk()
+            ->assertHeader('X-Robots-Tag', 'noindex, follow');
     }
 
     public function test_ukraine_typo_is_fixed_in_stored_meta_without_touching_other_text(): void
