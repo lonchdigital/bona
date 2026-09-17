@@ -25,7 +25,7 @@ class ShowBrandsListPageAction extends BaseAction
             ->sortBy(fn (array $item) => mb_strtolower((string) $item['brand']->name))
             ->map(fn (array $item) => [
                 'name' => (string) $item['brand']->name,
-                'logo' => $item['brand']->logo_image_url,
+                'logo' => filled($item['brand']->logo_image_path) ? $item['brand']->logo_image_url : null,
                 'type' => (string) $item['type']->name,
                 'url' => $urls->storefrontUrl($item['brand']),
             ])

@@ -115,7 +115,8 @@ class LegacyRedirectsTest extends TestCase
             ->assertSee('/product-category/interior-doors/manufacturer/korfad', false)
             ->assertSee('Korfad')
             ->assertDontSee('Порожній')
-            ->assertDontSee('шпалер');
+            ->assertDontSee('шпалер')
+            ->assertDontSee('src="/storage/"', false);
 
         $this->assertStringContainsString('/brands/list/all', app(SitemapService::class)->buildSitemap()->render());
 
