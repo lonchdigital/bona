@@ -159,6 +159,10 @@ class SitemapService extends BaseService
             }
         }
 
+        // Manufacturers hub
+        $urls->push(Url::create(route('store.brands.list.page', ['letter' => 'all'])));
+        $urls->push(Url::create('/ru'.route('store.brands.list.page', ['letter' => 'all'], false)));
+
         // Brands
         foreach (Brand::all() as $brand) {
             $allLangUrls = $brand->toSitemapTag();

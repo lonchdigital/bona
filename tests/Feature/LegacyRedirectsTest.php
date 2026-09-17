@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Brand;
 use App\Models\ProductSlugRedirect;
 use App\Models\ProductText;
+use App\Services\Sitemap\SitemapService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MakesShopData;
 use Tests\TestCase;
@@ -94,6 +96,31 @@ class LegacyRedirectsTest extends TestCase
         $this->assertSame('<p>Виробник міжкімнатних дверей ТМ Korfad м. Корюківка.</p><p>Двері покриваються плівкою Sincrolam.</p>', ProductText::query()->where(['product_id' => $korfad->id, 'language' => 'uk'])->value('content'));
         $this->assertSame('<p>Производитель ТМ Korfad г. Корюковка.</p>', ProductText::query()->where(['product_id' => $korfad->id, 'language' => 'ru'])->value('content'));
         $this->assertNotNull($door);
+    }
+
+    public function test_brand_letter_pages_fold_into_a_real_manufacturers_hub(): void
+    {
+        $this->seedCurrency();
+        $type = $this->productType(['slug' => 'interior-doors', 'name' => 'Міжкімнатні двері']);
+        $withProducts = Brand::query()->create(['creator_id' => $this->author()->id, 'name' => ['uk' => 'Korfad', 'ru' => 'Korfad'], 'slug' => 'korfad', 'description' => ['uk' => '', 'ru' => '']]);
+        Brand::query()->create(['creator_id' => $this->author()->id, 'name' => ['uk' => 'Порожній', 'ru' => 'Пустой'], 'slug' => 'empty-brand', 'description' => ['uk' => '', 'ru' => '']]);
+        $this->makeProduct(['product_type_id' => $type->id, 'brand_id' => $withProducts->id]);
+
+        foreach (['/brands/list/k', '/brands/list/zzz', '/brands/list'] as $letterPage) {
+            $this->get($letterPage)->assertStatus(301)->assertRedirect('/brands/list/all');
+        }
+        $this->get('/brands/list/all')
+            ->assertOk()
+            ->assertSee('<title>Виробники дверей і фурнітури — Bona Doors</title>', false)
+            ->assertSee('/product-category/interior-doors/manufacturer/korfad', false)
+            ->assertSee('Korfad')
+            ->assertDontSee('Порожній')
+            ->assertDontSee('шпалер');
+
+        $this->assertStringContainsString('/brands/list/all', app(SitemapService::class)->buildSitemap()->render());
+
+        // Russian last: the test client keeps the locale of the previous request.
+        $this->get('/ru/brands/list/s')->assertStatus(301)->assertRedirect('/ru/brands/list/all');
     }
 
     public function test_search_console_map_points_only_to_valid_targets(): void

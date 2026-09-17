@@ -31,7 +31,7 @@
                                             <meta itemprop="position" content="1"/>
                                         </li>
                                         <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                            <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.brands.list.page')) }}"><span itemprop="name">{{ trans('base.brands') }}</span></a>
+                                            <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.brands.list.page', ['letter' => 'all'])) }}"><span itemprop="name">{{ trans('base.brands') }}</span></a>
                                             <meta itemprop="position" content="2"/>
                                         </li>
                                         <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">

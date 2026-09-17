@@ -1,73 +1,67 @@
 @extends('layouts.store-main')
 
-@section('title')
-    <title>{{ config('app.name') . ' - ' . trans('base.all_brands_of_wallpapers') }}</title>
-    <meta name="robots" content="index, follow">
-@endsection
+@php
+    $pageTitle = trans('base.brands_page_seo_title');
+    $pageDescription = trans('base.brands_page_description');
+    $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
+@endphp
+
+@section('seo_title', $pageTitle)
+@section('meta_description', $pageDescription)
+@section('og_title', $pageTitle)
+@section('og_description', $pageDescription)
+
+@push('structured_data')
+    <script type="application/ld+json">{!! json_encode([
+        '@'.'context' => 'https://schema.org',
+        '@type' => 'CollectionPage',
+        '@id' => url()->current().'#brands',
+        'url' => url()->current(),
+        'name' => $pageTitle,
+        'description' => $pageDescription,
+        'inLanguage' => app()->getLocale() === 'ru' ? 'ru-UA' : 'uk-UA',
+        'mainEntity' => [
+            '@type' => 'ItemList',
+            'itemListElement' => $brands->values()->map(fn ($brand, $index) => [
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'name' => $brand['name'],
+                'url' => url($brand['url']),
+            ])->all(),
+        ],
+    ], $schemaFlags) !!}</script>
+@endpush
 
 @section('content')
-    <main class="main brands">
-        <div class="content">
-            <div class="entry-content">
-                <div id="b-breadcrumbs" class="b-breadcrumbs">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col mt-4 mt-md-0 mb-4">
-                                <nav aria-label="breadcrumb">
-                                    <ul class="breadcrumb mb-0" id="breadcrumblist" itemscope itemtype="https://schema.org/BreadcrumbList">
-                                        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                            <a itemprop="item" href="{{ url(App\Helpers\MultiLangRoute::getMultiLangRoute('store.home')) }}"><span itemprop="name">{{ trans('base.home') }}</span></a>
-                                            <meta itemprop="position" content="1"/>
-                                        </li>
-                                        <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
-                                            <span itemprop="name">{{ trans('base.brands') }}</span>
-                                            <meta itemprop="position" content="2"/>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
+    <div class="bona-content-page bona-brands-page">
+        <x-store.content-breadcrumbs :items="[['label' => trans('base.brands_page_title')]]" />
+
+        <section class="bona-content-hero" aria-labelledby="brands-page-title">
+            <div class="bona-shell bona-content-hero__grid">
+                <div class="bona-content-hero__copy">
+                    <p class="bona-content-kicker">Bona Doors</p>
+                    <h1 id="brands-page-title">{{ trans('base.brands_page_title') }}</h1>
                 </div>
-                <div></div>
-                <section class="all-brands mb-16">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col text-center">
-                                <h1 class="head mb-3 mt-10 mt-lg-5">{{ trans('base.all_brands_of_wallpapers') }}</h1>
-                                <div class="subhead mb-6">{{ trans('base.all_brands_of_wallpapers_available_online') }}</div>
-                            </div>
-                            <div class="w-100"></div>
-                            <div class="col col-xxl-10 mx-auto">
-                                <div class="d-flex flex-column flex-xxl-row align-items-lg-center justify-content-xxl-center mb-10 mb-lg-14">
-                                    <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brands.list.page', ['letter' => 'all']) }}" class="btn btn-outline-black-custom btn-all-brands py-1 px-5 mb-5 mb-xxl-0 mr-xxl-5">{{ trans('base.all') }}</a>
-                                    <ul class="all-brands-list list-unstyled d-flex flex-wrap align-items-center mb-0">
-                                        @foreach($brandLetters as $brandLetter => $brands)
-                                            <li class="stock @if($brandLetter == $selectedBrandLetter) active @endif"><a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.brands.list.page', ['letter' => $brandLetter]) }}">{{ $brandLetter }}</a></li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="w-100"></div>
-                            <div class="col">
-                                <div class="all-brands-content d-flex flex-wrap">
-                                    @foreach($brandsSorted as $brand)
-                                        <div class="all-brands-item text-center">
-                                            <div class="all-brands-item-inner">
-                                                <img src="{{ $brand->logo_image_url }}" alt="{{ $brand->name }}">
-                                                <a href="{{ app(App\Services\Brand\BrandCatalogUrlService::class)->storefrontUrl($brand) }}" class="btn btn-outline-black-custom py-1 px-1 px-xl-5">{{ trans('base.all_collections_of_brand') }}</a>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    <div class="all-brands-item text-center d-none"></div>
-                                    <div class="all-brands-item text-center d-none"></div>
-                                    <div class="all-brands-item text-center d-none"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <p class="bona-content-hero__lead">{{ $pageDescription }}</p>
             </div>
-        </div>
-    </main>
+        </section>
+
+        <section class="bona-brands-list" aria-label="{{ trans('base.brands_page_title') }}">
+            <div class="bona-shell">
+                <ul class="bona-brands-list__grid">
+                    @foreach($brands as $brand)
+                        <li class="bona-brand-card">
+                            <a href="{{ $brand['url'] }}">
+                                @if($brand['logo'])
+                                    <img src="{{ $brand['logo'] }}" alt="" width="160" height="80" loading="lazy" decoding="async">
+                                @endif
+                                <strong>{{ $brand['name'] }}</strong>
+                                <span>{{ $brand['type'] }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    </div>
 @endsection
