@@ -72,4 +72,18 @@ return [
      * already prints the article name as the page <h1>.
      */
     'demote_h1' => (bool) env('SERP_AGENT_DEMOTE_H1', true),
+
+    /*
+     * Created orders, reported from the server.
+     *
+     * The tracker in the page sees a form leave the browser; only we know it
+     * became an order. Without an API key nothing is reported at all, which
+     * is what keeps local and staging copies out of the statistics. The key
+     * is created by the project owner: Serp Agent -> Settings -> API keys.
+     */
+    'conversions' => [
+        'project_id' => env('SERP_AGENT_PROJECT_ID', 'cmt2pz3ou0004b0i29eg5zca1'),
+        'api_key' => env('SERP_AGENT_API_KEY'),
+        'base_url' => env('SERP_AGENT_BASE_URL', 'https://serp-agent.com'),
+    ],
 ];

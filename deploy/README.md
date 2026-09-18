@@ -59,7 +59,10 @@ TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 TELEGRAM_MESSAGE_THREAD_ID=
 GOOGLE_ANALYTICS_ID=G-0863474309
+SERP_AGENT_API_KEY=
 ```
+
+`SERP_AGENT_API_KEY` власник проєкту створює в кабінеті SERP Agent → Налаштування → API-ключі. Поки ключа немає, створені замовлення просто не надсилаються: браузерний трекер далі бачить надіслані форми, а серверні конверсії мовчать. Черга має працювати (`QUEUE_CONNECTION=database` і Supervisor), бо запит іде окремим job і ніколи не затримує оформлення замовлення.
 
 `APP_KEY` та назву `SESSION_COOKIE` треба зберегти з чинного production. Не можна копіювати `.env.example` поверх production `.env`. Перехід `SESSION_SERIALIZATION=json` завершить раніше створені PHP-серіалізовані сесії, тому користувачам доведеться увійти знову.
 

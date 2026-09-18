@@ -215,6 +215,86 @@ class BlogArticleService extends BaseService
     }
 
     /**
+     * Gives the two link blocks a job each.
+     *
+     * Serp Agent files the catalogue, the configurator and the services page
+     * under "related" alongside real articles, and the resources block falls
+     * back to a list holding those very pages. Read one after the other, the
+     * page offered the same three addresses twice. Further reading keeps the
+     * articles, the resource block keeps the destinations, and nothing is
+     * printed in both.
+     *
+     * @param  list<array{title: string, url: string}>  $recommended
+     * @param  list<array{title: string, url: string}>  $useful
+     * @return array{0: list<array{title: string, url: string}>, 1: list<array{title: string, url: string}>}
+     */
+    public function splitEditorialLinks(array $recommended, array $useful, string $locale): array
+    {
+        $articles = [];
+        $destinations = $useful;
+
+        foreach ($recommended as $link) {
+            if ($this->isArticleLink((string) $link['url'], $locale)) {
+                $articles[] = $link;
+
+                continue;
+            }
+
+            $destinations[] = $link;
+        }
+
+        if ($destinations === []) {
+            $destinations = $this->defaultUsefulLinks($locale);
+        }
+
+        $taken = array_map(fn (array $link) => $this->comparableUrl((string) $link['url']), $articles);
+
+        $destinations = collect($destinations)
+            ->unique(fn (array $link) => $this->comparableUrl((string) $link['url']))
+            ->reject(fn (array $link) => in_array($this->comparableUrl((string) $link['url']), $taken, true))
+            ->values()
+            ->all();
+
+        return [$articles, $destinations];
+    }
+
+    /** Whether a set of links already offers this article. */
+    public function linksCoverArticle(array $links, BlogArticle $article, string $locale): bool
+    {
+        $articleUrl = $this->comparableUrl($article->urlForLocale($locale));
+
+        foreach ($links as $link) {
+            if ($this->comparableUrl((string) ($link['url'] ?? '')) === $articleUrl) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isArticleLink(string $url, string $locale): bool
+    {
+        $path = $this->comparableUrl($url);
+        $blogPath = rtrim($locale === (string) config('app.fallback_locale') ? '/blog' : '/'.$locale.'/blog', '/');
+
+        return str_starts_with($path, $blogPath.'/');
+    }
+
+    /** Host and trailing slash carry no meaning when two links are compared. */
+    private function comparableUrl(string $url): string
+    {
+        $path = (string) parse_url(trim($url), PHP_URL_PATH);
+
+        if ($path === '') {
+            $path = trim($url);
+        }
+
+        $path = '/'.ltrim($path, '/');
+
+        return mb_strtolower(rtrim($path, '/')) ?: '/';
+    }
+
+    /**
      * Remove legacy in-body link collections after extracting them. Otherwise
      * an article imported before the redesign would show the same links twice.
      */

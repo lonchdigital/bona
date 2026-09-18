@@ -493,6 +493,8 @@
             </div>
             <input type="hidden" name="agree" value="1"><input type="hidden" name="event" value="submit_form_buy_one_click">
             <input type="hidden" name="source_url" value="{{ url()->current() }}">
+            {{-- Filled from the tracker's sessionStorage: the page the visit started on. --}}
+            <input type="hidden" name="sa_landing" value="">
             <button type="submit" class="product-dialog__submit">{{ trans('base.buy_one_click_submit') }}</button>
         </form>
     </div>

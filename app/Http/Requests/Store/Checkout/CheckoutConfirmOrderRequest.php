@@ -54,6 +54,8 @@ class CheckoutConfirmOrderRequest extends BaseRequest
                 'nullable',
                 'string',
             ],
+            // Carried by the form from the tracker, never typed by a buyer.
+            'sa_landing' => ['nullable', 'url', 'max:2048'],
             'agreement' => [
                 'bool',
                 'required',

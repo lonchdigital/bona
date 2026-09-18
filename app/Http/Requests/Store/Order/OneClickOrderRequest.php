@@ -21,6 +21,7 @@ class OneClickOrderRequest extends BaseRequest
             ],
             'agree' => ['accepted'],
             'source_url' => ['nullable', 'url', 'max:2048'],
+            'sa_landing' => ['nullable', 'url', 'max:2048'],
         ];
     }
 

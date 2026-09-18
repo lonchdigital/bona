@@ -7,6 +7,7 @@ use App\DataClasses\PaymentTypesDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
 use App\Http\Requests\Store\Checkout\CheckoutConfirmOrderRequest;
+use App\Jobs\ReportSerpAgentConversion;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Cart\CartService;
 use App\Services\Order\OrderAccessUrlService;
@@ -82,6 +83,15 @@ class CheckoutConfirmOrderAction extends BaseAction
 
         $cartService->normalizeLegacyBundles($cart);
         $order = $orderService->createOrderByCart($cart, $checkout, $authUser, $request->sourceUrl());
+
+        // Queued, so a slow or unreachable Serp Agent cannot hold up or break
+        // a paid order.
+        dispatch(ReportSerpAgentConversion::forOrder(
+            $order->id,
+            $request->sourceUrl() ?: $request->fullUrl(),
+            $request->landingUrl(),
+            $order->created_at,
+        ));
 
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return redirect()->to($orderAccessUrlService->liqPay($order));

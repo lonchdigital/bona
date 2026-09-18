@@ -32,8 +32,13 @@ abstract class BaseRequest extends FormRequest
      */
     public function sourceUrl(?string $fallback = null): ?string
     {
-        $candidate = trim((string) ($this->input('source_url') ?: $fallback ?: $this->headers->get('referer')));
+        return $this->sanitizeOwnUrl(
+            trim((string) ($this->input('source_url') ?: $fallback ?: $this->headers->get('referer')))
+        );
+    }
 
+    private function sanitizeOwnUrl(string $candidate): ?string
+    {
         if ($candidate === '' || filter_var($candidate, FILTER_VALIDATE_URL) === false) {
             return null;
         }
@@ -53,6 +58,23 @@ abstract class BaseRequest extends FormRequest
         }
 
         return mb_substr($candidate, 0, 2048);
+    }
+
+    /**
+     * The page a visit started on, which is what tells Serp Agent which
+     * article produced the order. The browser tracker keeps it in
+     * sessionStorage and the form carries it back as "sa_landing"; a value
+     * pointing anywhere but this site is dropped.
+     */
+    public function landingUrl(): ?string
+    {
+        $candidate = trim((string) $this->input('sa_landing'));
+
+        if ($candidate === '') {
+            return null;
+        }
+
+        return $this->sanitizeOwnUrl($candidate);
     }
 
     abstract public function toDTO(): BaseDTO;

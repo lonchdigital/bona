@@ -37,19 +37,20 @@ class ShowBlogArticlePageAction extends BaseAction
         LastModified::set($blogArticle->updated_at);
 
         $latestArticles = $blogArticleService->getLatestArticlesExceptCurrent($blogArticle->id);
-        $articleRecommendedLinks = $blogArticleService->extractEditorialLinks($blogArticle, $locale, 'related');
-        $articleUsefulLinks = $blogArticleService->extractEditorialLinks($blogArticle, $locale, 'resources');
 
-        if ($articleRecommendedLinks === []) {
-            $articleRecommendedLinks = $latestArticles->map(fn (BlogArticle $article) => [
-                'title' => (string) $article->name,
-                'url' => $article->urlForLocale($locale),
-            ])->values()->all();
-        }
+        // Further reading lists articles, the resource block lists
+        // destinations, and neither repeats what the other already shows.
+        [$articleRecommendedLinks, $articleUsefulLinks] = $blogArticleService->splitEditorialLinks(
+            $blogArticleService->extractEditorialLinks($blogArticle, $locale, 'related'),
+            $blogArticleService->extractEditorialLinks($blogArticle, $locale, 'resources'),
+            $locale,
+        );
 
-        if ($articleUsefulLinks === []) {
-            $articleUsefulLinks = $blogArticleService->defaultUsefulLinks($locale);
-        }
+        // The grid at the foot of the page is the fallback for further
+        // reading, so an article named there is not named twice.
+        $latestArticles = $latestArticles->reject(
+            fn (BlogArticle $article) => $blogArticleService->linksCoverArticle($articleRecommendedLinks, $article, $locale)
+        )->values();
 
         $articleBlocks = $blogArticle->blocks->map(function ($block) use ($blogArticleService, $htmlService, $locale) {
             $content = is_array($block->content) ? $block->content : [];

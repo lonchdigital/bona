@@ -33,6 +33,57 @@ class EditorialCommercePagesTest extends TestCase
             ->assertDontSee('__contextArgs', false);
     }
 
+    public function test_link_blocks_do_not_repeat_each_other(): void
+    {
+        $article = BlogArticle::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Вибір фурнітури', 'ru' => 'Выбор фурнитуры'],
+            'preview_text' => ['uk' => 'Про фурнітуру.', 'ru' => 'О фурнитуре.'],
+            'slug' => 'vybir-furnitury',
+            'hero_image_path' => 'blog/test.webp',
+        ]);
+
+        $alsoLinked = BlogArticle::create([
+            'creator_id' => $this->author()->id,
+            'name' => ['uk' => 'Плінтус МДФ', 'ru' => 'Плинтус МДФ'],
+            'preview_text' => ['uk' => 'Про плінтус.', 'ru' => 'О плинтусе.'],
+            'slug' => 'plintus-mdf',
+            'hero_image_path' => 'blog/test.webp',
+        ]);
+
+        BlogArticleBlock::create([
+            'blog_article_id' => $article->id,
+            'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
+            'content' => [
+                'uk' => '<p>Текст.</p><section class="article-related"><ul>'
+                    .'<li><a href="/blog/plintus-mdf">Плінтус МДФ</a></li>'
+                    .'<li><a href="/shop">Каталог дверей</a></li>'
+                    .'<li><a href="/services">Замір і монтаж</a></li>'
+                    .'</ul></section>',
+            ],
+        ]);
+
+        $response = $this->get('/blog/vybir-furnitury');
+        $html = $response->assertOk()->getContent();
+
+        // Count inside the two link blocks only: the header and the footer
+        // link to the catalogue on every page.
+        preg_match('~<div class="bona-article-links".*?</div>\s*</div>~s', $html, $blocks);
+        $linkBlocks = $blocks[0] ?? '';
+
+        $this->assertNotSame('', $linkBlocks);
+        // The catalogue and the services page moved to the resource block and
+        // appear once between the two blocks, not once in each.
+        $this->assertSame(1, substr_count($linkBlocks, 'href="/shop"'));
+        $this->assertSame(1, substr_count($linkBlocks, 'href="/services"'));
+        $this->assertStringContainsString(trans('base.article_recommended_links'), $linkBlocks);
+
+        // Named in further reading, the article is not repeated by the grid
+        // at the foot of the page.
+        $this->assertSame(1, substr_count($html, '/blog/plintus-mdf'));
+        $this->assertTrue($alsoLinked->exists);
+    }
+
     public function test_english_advice_label_and_root_calls_to_action_are_repaired(): void
     {
         $article = BlogArticle::create([

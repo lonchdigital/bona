@@ -81,6 +81,9 @@
             novalidate
         >
             @csrf
+            {{-- Filled from the tracker's sessionStorage: the page the visit
+                 started on, which names the article that produced the order. --}}
+            <input type="hidden" name="sa_landing" value="">
 
             <div class="bona-checkout-form">
                 @if($checkoutRegisteredEmail)

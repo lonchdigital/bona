@@ -24,6 +24,7 @@ import MobileBottomNavigation from './common/mobile-bottom-navigation';
 import LeadModals from './common/lead-modals';
 import CookieConsent from './common/cookie-consent';
 import PageAnalytics from './common/analytics';
+import SerpLanding from './common/serp-landing';
 
 // console.log('1111');
 
@@ -100,6 +101,7 @@ async function init()
         LeadModals.init(),
         CookieConsent.init(),
         PageAnalytics.init(),
+        SerpLanding.init(),
     ]);
 
     // Fancybox and Inputmask are sizeable legacy dependencies. Most pages,
