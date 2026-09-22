@@ -219,4 +219,53 @@ class ProductContentImporterTest extends TestCase
 
         $this->assertCount(4, array_unique($descriptions));
     }
+
+    public function test_it_imports_classico_content_and_keeps_every_description_unique(): void
+    {
+        $models = collect(['CL-02', 'CL-05', 'CL-07', 'CL-08', 'CL-09']);
+        $products = $models->mapWithKeys(function (string $model) {
+            $slug = 'mizhkimnatni-dveri-classico-'.strtolower($model).'-korfad';
+            $product = $this->makeProduct(['slug' => $slug]);
+
+            foreach (['uk', 'ru'] as $language) {
+                ProductText::query()->create([
+                    'product_id' => $product->id,
+                    'language' => $language,
+                    'content' => str_repeat('Спільний опис Korfad Classico. ', 20),
+                ]);
+            }
+
+            return [$model => $product];
+        });
+
+        $path = database_path('content/products/2026_09_22_korfad_classico_batch_01.json');
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(5, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        $descriptions = [];
+        foreach ($products as $model => $product) {
+            foreach (['uk', 'ru'] as $language) {
+                $content = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $language])
+                    ->value('content');
+
+                $this->assertStringContainsString("Korfad Classico {$model}", $content);
+                $this->assertSame(1, substr_count($content, '<h2>'));
+                $this->assertSame(3, substr_count($content, '<h3>'));
+            }
+
+            $this->assertSame(12, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(4, ProductFaqs::query()->where('product_id', $product->id)->count());
+            $descriptions[] = ProductText::query()
+                ->where(['product_id' => $product->id, 'language' => 'uk'])
+                ->value('content');
+        }
+
+        $this->assertCount(5, array_unique($descriptions));
+    }
 }

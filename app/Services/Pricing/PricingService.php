@@ -74,10 +74,11 @@ class PricingService
         $hasFreeDelivery = $freeDeliveryThresholdInCents > 0
             && $productsInCents >= $freeDeliveryThresholdInCents;
 
-        $standardDeliveryInCents = $this->toCents((float) config('domain.delivery_price', 0));
         $isAddressDelivery = $deliveryTypeId === DeliveryTypesDataClass::ADDRESS_DELIVERY;
-        $deliveryInCents = $isAddressDelivery && ! $hasFreeDelivery ? $standardDeliveryInCents : 0;
-        $deliveryOldInCents = $isAddressDelivery && $hasFreeDelivery ? $standardDeliveryInCents : 0;
+        // Address delivery is quoted by the manager after the order is placed.
+        // It must not be included in the checkout or payment amount beforehand.
+        $deliveryInCents = 0;
+        $deliveryOldInCents = 0;
 
         $isCarrier = in_array($deliveryTypeId, [
             DeliveryTypesDataClass::NP_DELIVERY,
@@ -95,6 +96,7 @@ class PricingService
             'total' => $this->fromCents($totalInCents),
             'has_free_delivery' => $hasFreeDelivery,
             'is_carrier' => $isCarrier,
+            'is_address_delivery' => $isAddressDelivery,
             'total_in_cents' => $totalInCents,
         ];
     }

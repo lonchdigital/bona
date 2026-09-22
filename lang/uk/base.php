@@ -299,6 +299,7 @@ return [
     'checkout_phone_placeholder' => '+380 __ ___ __ __',
     'checkout_email_placeholder' => 'Для чека й статусу замовлення',
     'checkout_address_delivery_note' => 'Одеса та область, дату й час узгодить менеджер',
+    'checkout_address_delivery_price' => 'Вартість уточнить менеджер',
     'checkout_np_delivery_note' => 'Пошук міста й відділення через API перевізника',
     'checkout_sat_delivery_note' => 'Вантажна доставка по Україні',
     'checkout_pickup_note' => 'З одного з наших салонів в Одесі',

@@ -412,7 +412,9 @@ function showSummaryWithDelivery(response, form, hasSelectedDelivery = true) {
     document.querySelectorAll('.price-products').forEach((node) => { node.textContent = money(data.products); });
     document.querySelectorAll('.price-delivery').forEach((node) => {
         node.textContent = hasSelectedDelivery
-            ? (data.is_carrier ? translations.cart_delivery_price : money(data.delivery))
+            ? (data.is_carrier
+                ? translations.cart_delivery_price
+                : (data.is_address_delivery ? translations.checkout_address_delivery_price : money(data.delivery)))
             : form?.dataset.deliveryEmptyLabel;
     });
     document.querySelectorAll('.price-discount').forEach((node) => { node.textContent = `−${money(data.discount)}`; });

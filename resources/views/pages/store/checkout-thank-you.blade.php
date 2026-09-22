@@ -117,7 +117,7 @@
                 @if($orderSummary['discount'] > 0)
                     <div><span>{{ trans('base.products_price_discount') }}</span><b>−{{ $formatPrice($orderSummary['discount']) }}</b></div>
                 @endif
-                <div><span>{{ trans('base.delivery') }}</span><b>{{ $orderSummary['is_carrier'] ? trans('base.cart_delivery_price') : $formatPrice($orderSummary['delivery']) }}</b></div>
+                <div><span>{{ trans('base.delivery') }}</span><b>{{ $orderSummary['is_carrier'] ? trans('base.cart_delivery_price') : ($orderSummary['is_address_delivery'] ? trans('base.checkout_address_delivery_price') : $formatPrice($orderSummary['delivery'])) }}</b></div>
                 <div class="bona-checkout-success__next">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v12H9l-4 4V4Zm4 5h6M9 12h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <div><h2>{{ trans('base.checkout_success_next_title') }}</h2><p>{{ trans('base.checkout_success_next_text') }}</p></div>

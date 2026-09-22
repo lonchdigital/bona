@@ -52,6 +52,7 @@ const translations = {
     checkout_search_city: '@lang('base.checkout_search_city')',
     checkout_search_city_not_found: '@lang('base.checkout_search_city_not_found')',
     cart_delivery_price: '@lang('base.cart_delivery_price')',
+    checkout_address_delivery_price: '@lang('base.checkout_address_delivery_price')',
     read_more: '@lang('base.read_more')',
     hide: '@lang('base.hide')',
     select2_error_loading: '@lang('base.select2_error_loading')',

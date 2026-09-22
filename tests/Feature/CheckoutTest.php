@@ -480,6 +480,8 @@ class CheckoutTest extends TestCase
         $this->assertNull($page->viewData('checkoutDeliveryType'));
         $this->assertSame(0.0, (float) $page->viewData('initialSummary')['delivery']);
         $page->assertSee(trans('base.checkout_delivery_not_selected'));
+        $page->assertSee(trans('base.checkout_address_delivery_price'));
+        $page->assertDontSee('595');
         $page->assertSee('data-delivery-empty-label="'.trans('base.checkout_delivery_not_selected').'"', false);
         $page->assertSee('aria-controls="delivery-1"', false);
         $page->assertSee('aria-expanded="false"', false);
@@ -493,9 +495,18 @@ class CheckoutTest extends TestCase
             ->assertJsonPath('data.delivery', 0)
             ->assertJsonPath('data.total', 5400);
 
+        $this->getJson(route('store.cart.summary-with-delivery', [
+            'delivery_type_id' => DeliveryTypesDataClass::ADDRESS_DELIVERY,
+        ]))
+            ->assertOk()
+            ->assertJsonPath('data.is_address_delivery', true)
+            ->assertJsonPath('data.delivery', 0)
+            ->assertJsonPath('data.total', 5400);
+
         $script = file_get_contents(resource_path('js/store/pages/store.checkout.page.js'));
         $this->assertStringContainsString('input.checked = false;', $script);
         $this->assertStringContainsString('getSummaryByDeliveryTypeId(null', $script);
+        $this->assertStringContainsString('translations.checkout_address_delivery_price', $script);
 
         $fastSelectScript = file_get_contents(resource_path('js/store/pages/store.checkout.page/fast-select.js'));
         $this->assertStringContainsString('fastsearch.hideResults();', $fastSelectScript);

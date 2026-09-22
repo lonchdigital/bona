@@ -8,6 +8,5 @@ return [
     'works_per_page' => 12,
     'wallpaper_product_type_slug' => 'spalery',
     'free_delivery_from_price' => 5000,
-    'delivery_price' => 595,
     'admin_notification_emails' => env('ADMIN_NOTIFICATION_EMAILS', null),
 ];

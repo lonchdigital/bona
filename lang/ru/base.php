@@ -301,6 +301,7 @@ return [
     'checkout_phone_placeholder' => '+380 __ ___ __ __',
     'checkout_email_placeholder' => 'Для чека и статуса заказа',
     'checkout_address_delivery_note' => 'Одесса и область, дату и время согласует менеджер',
+    'checkout_address_delivery_price' => 'Стоимость уточнит менеджер',
     'checkout_np_delivery_note' => 'Поиск города и отделения через API перевозчика',
     'checkout_sat_delivery_note' => 'Грузовая доставка по Украине',
     'checkout_pickup_note' => 'Из одного из наших салонов в Одессе',

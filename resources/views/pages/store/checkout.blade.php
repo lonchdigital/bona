@@ -127,7 +127,7 @@
                     <div class="bona-choice-list" id="checkout-delivery-accordion">
                         <label class="bona-choice-card">
                             <input class="art-accordion-delivery" type="radio" id="delivery-radio-address" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}" data-accordion="delivery-1" aria-controls="delivery-1" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) required>
-                            <span><b>{{ trans('base.checkout_address_delivery') }}</b><small>{{ trans('base.checkout_address_delivery_note') }}</small></span><strong>{{ $formatPrice(config('domain.delivery_price', 0)) }}</strong>
+                            <span><b>{{ trans('base.checkout_address_delivery') }}</b><small>{{ trans('base.checkout_address_delivery_note') }}</small></span><strong>{{ trans('base.checkout_address_delivery_price') }}</strong>
                         </label>
                         <div id="delivery-1" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)>
                             <div class="bona-form-grid">
@@ -312,7 +312,7 @@
                 </div>
                 <div class="bona-summary-lines">
                     <div class="bona-summary-line"><span>{{ trans('base.products_price') }}</span><strong class="price-products">{{ $formatPrice($initialSummary['products']) }}</strong></div>
-                    <div class="bona-summary-line"><span>{{ trans('base.delivery') }}</span><strong class="price-delivery">{{ $initialSummary['is_carrier'] ? trans('base.cart_delivery_price') : $formatPrice($initialSummary['delivery']) }}</strong></div>
+                    <div class="bona-summary-line"><span>{{ trans('base.delivery') }}</span><strong class="price-delivery">{{ $initialSummary['is_carrier'] ? trans('base.cart_delivery_price') : ($initialSummary['is_address_delivery'] ? trans('base.checkout_address_delivery_price') : $formatPrice($initialSummary['delivery'])) }}</strong></div>
                     <div class="bona-summary-line bona-summary-line--discount" data-checkout-discount-row @hidden($initialSummary['discount'] <= 0)><span>{{ trans('base.products_price_discount') }}@if($promoCode) · {{ $promoCode->code }}@endif</span><strong class="price-discount">−{{ $formatPrice($initialSummary['discount']) }}</strong></div>
                     <div class="bona-summary-line bona-summary-line--total"><span>{{ trans('base.products_price_total') }}</span><strong class="total-price-delivery">{{ $formatPrice($initialSummary['total']) }}</strong></div>
                 </div>

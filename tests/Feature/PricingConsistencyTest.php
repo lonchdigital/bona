@@ -22,7 +22,7 @@ class PricingConsistencyTest extends TestCase
     use MakesShopData;
     use RefreshDatabase;
 
-    public function test_cart_order_and_payment_total_share_one_cent_accurate_calculation(): void
+    public function test_address_delivery_is_excluded_from_cart_order_and_payment_totals(): void
     {
         config()->set('domain.delivery_price', 50);
         config()->set('domain.free_delivery_from_price', 10_000);
@@ -56,10 +56,11 @@ class PricingConsistencyTest extends TestCase
 
         $this->assertSame(300.0, $cartTotals['products']);
         $this->assertSame(30.0, $cartTotals['discount']);
-        $this->assertSame(50.0, $cartTotals['delivery']);
-        $this->assertSame(320.0, $cartTotals['total']);
+        $this->assertTrue($cartTotals['is_address_delivery']);
+        $this->assertSame(0.0, $cartTotals['delivery']);
+        $this->assertSame(270.0, $cartTotals['total']);
         $this->assertSame($cartTotals['total_in_cents'], $orderTotals['total_in_cents']);
-        $this->assertSame(32_000, $orderTotals['total_in_cents']);
+        $this->assertSame(27_000, $orderTotals['total_in_cents']);
     }
 
     public function test_free_delivery_threshold_uses_the_pre_discount_product_total(): void
@@ -106,7 +107,7 @@ class PricingConsistencyTest extends TestCase
             'installment_provider' => 'monobank',
             'installment_period' => 3,
             'installment_surcharge_percent' => 2.9,
-            'installment_surcharge_amount' => 9.28,
+            'installment_surcharge_amount' => 7.83,
         ]);
         $order->products()->attach($product->id, [
             'count' => 3,
@@ -117,12 +118,11 @@ class PricingConsistencyTest extends TestCase
         $payload = app(PaymentMonoBankService::class)
             ->createOrderPayload($order, '+380501234567', 3);
 
-        $this->assertSame(329.28, $payload['total_sum']);
+        $this->assertSame(277.83, $payload['total_sum']);
         $this->assertSame(90.0, $payload['products'][0]['sum']);
         $this->assertSame(3, $payload['products'][0]['count']);
-        $this->assertSame(50.0, $payload['products'][1]['sum']);
-        $this->assertSame(trans('base.delivery'), $payload['products'][1]['name']);
-        $this->assertSame(9.28, $payload['products'][2]['sum']);
+        $this->assertSame(7.83, $payload['products'][1]['sum']);
+        $this->assertStringNotContainsString(trans('base.delivery'), collect($payload['products'])->pluck('name')->implode(' '));
         $this->assertSame(
             $payload['total_sum'],
             collect($payload['products'])->sum(fn (array $line) => $line['sum'] * $line['count']),

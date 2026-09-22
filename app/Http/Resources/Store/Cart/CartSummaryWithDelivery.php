@@ -14,6 +14,7 @@ class CartSummaryWithDelivery extends JsonResource
             'total' => $this->resource['summary']['total'],
             'discount' => $this->resource['summary']['discount'],
             'is_carrier' => $this->resource['summary']['is_carrier'],
+            'is_address_delivery' => $this->resource['summary']['is_address_delivery'],
             'delivery_old' => $this->resource['summary']['delivery_old'],
             'delivery' => $this->resource['summary']['delivery'],
         ];
