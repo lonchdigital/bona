@@ -76,6 +76,12 @@ class HomePageSeoTest extends TestCase
             fn (array $node) => ($node['@type'] ?? null) === 'MerchantReturnPolicy'
                 && str_ends_with((string) ($node['merchantReturnLink'] ?? ''), '/page/exchange-and-return')
         ));
+        $this->assertStringNotContainsString('"aggregateRating"', $response->getContent());
+        $this->assertFalse(collect($schema)->contains(function (array $document) {
+            return isset($document['@graph']) && collect($document['@graph'])->contains(
+                fn (array $node) => ($node['@type'] ?? null) === 'Review'
+            );
+        }), 'Self-serving business reviews must not be marked up as review rich results.');
     }
 
     public function test_russian_homepage_has_reciprocal_hreflang_and_its_own_webpage_schema(): void

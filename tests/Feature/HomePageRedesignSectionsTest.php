@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Brand;
+use App\Models\CustomerReview;
 use App\Models\Product;
 use App\Models\ProductType;
 use Illuminate\Support\Carbon;
@@ -39,6 +40,8 @@ class HomePageRedesignSectionsTest extends TestCase
                 'rating' => 5,
                 'date' => '2026-08-31',
                 'url' => 'https://example.com/review',
+                'source' => CustomerReview::SOURCE_GOOGLE,
+                'author_avatar_url' => 'https://lh3.googleusercontent.com/test-avatar',
             ],
         ]);
 
@@ -47,6 +50,8 @@ class HomePageRedesignSectionsTest extends TestCase
         $this->assertStringContainsString('data-reviews-slider', $html);
         $this->assertStringContainsString('bona-review-card', $html);
         $this->assertStringContainsString('Тестовий відгук про сервіс.', $html);
+        $this->assertStringContainsString('https://lh3.googleusercontent.com/test-avatar', $html);
+        $this->assertStringContainsString('Google Maps', $html);
         $this->assertStringNotContainsString('art-quote-carousel-home', $html);
     }
 

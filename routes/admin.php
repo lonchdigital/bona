@@ -59,8 +59,12 @@ use App\Http\Actions\Admin\Currencies\Pages\ShowCurrenciesListPageAction;
 use App\Http\Actions\Admin\Currencies\Pages\ShowCurrencyCreatePageAction;
 use App\Http\Actions\Admin\Currencies\Pages\ShowCurrencyEditPageAction;
 use App\Http\Actions\Admin\CustomerReviews\CustomerReviewApproveAction;
+use App\Http\Actions\Admin\CustomerReviews\CustomerReviewCreateAction;
 use App\Http\Actions\Admin\CustomerReviews\CustomerReviewDeleteAction;
+use App\Http\Actions\Admin\CustomerReviews\CustomerReviewEditAction;
 use App\Http\Actions\Admin\CustomerReviews\CustomerReviewRejectAction;
+use App\Http\Actions\Admin\CustomerReviews\Pages\ShowCustomerReviewCreatePageAction;
+use App\Http\Actions\Admin\CustomerReviews\Pages\ShowCustomerReviewEditPageAction;
 use App\Http\Actions\Admin\CustomerReviews\Pages\ShowCustomerReviewsListPageAction;
 use App\Http\Actions\Admin\Dashboard\Pages\ShowDashboardPageAction;
 use App\Http\Actions\Admin\Delivery\DeliveryEditAction;
@@ -268,9 +272,15 @@ Route::prefix('admin')->middleware([
         Route::name('admin.product-review.delete')->post('{productReview}/delete', ProductReviewDeleteAction::class);
     });
 
-    // Reviews about the overall Bona experience, submitted from the homepage.
+    // Unified reviews about the overall Bona experience, from the site and external sources.
     Route::prefix('customer-review')->group(function () {
         Route::name('admin.customer-review.list.page')->get('/', ShowCustomerReviewsListPageAction::class);
+
+        Route::name('admin.customer-review.create.page')->get('create', ShowCustomerReviewCreatePageAction::class);
+        Route::name('admin.customer-review.create')->post('create', CustomerReviewCreateAction::class);
+
+        Route::name('admin.customer-review.edit.page')->get('{customerReview}', ShowCustomerReviewEditPageAction::class);
+        Route::name('admin.customer-review.edit')->post('{customerReview}', CustomerReviewEditAction::class);
 
         Route::name('admin.customer-review.approve')->post('{customerReview}/approve', CustomerReviewApproveAction::class);
         Route::name('admin.customer-review.reject')->post('{customerReview}/reject', CustomerReviewRejectAction::class);

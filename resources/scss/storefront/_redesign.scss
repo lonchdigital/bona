@@ -3841,14 +3841,30 @@ body.bona-instagram-lightbox-open {
 
     &__meta {
         display: flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: space-between;
         gap: 18px;
         margin-top: auto;
         padding-top: 10px;
     }
 
+    &__identity {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__avatar {
+        width: 44px;
+        height: 44px;
+        flex: 0 0 44px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
     &__author {
+        display: block;
         color: var(--bona-ink);
         font-size: 14px;
         font-weight: 700;
@@ -3856,6 +3872,14 @@ body.bona-instagram-lightbox-open {
 
         &:hover,
         &:focus-visible { color: var(--bona-gold); text-decoration: none; }
+    }
+
+    &__source {
+        display: block;
+        margin-top: 2px;
+        color: #756f65;
+        font-size: 11px;
+        line-height: 1.3;
     }
 
     &__date {

@@ -12,11 +12,10 @@
                     product-search-route="{{ route('admin.product.list.all') }}"
                     brand-search-route="{{ route('admin.brand.list.all') }}"
                     instagram-auth-route="{{ route('admin.instagram.auth') }}"
+                    customer-reviews-route="{{ route('admin.customer-review.list.page') }}"
                     submit-route="{{ route('admin.home-page.edit') }}"
                     :style-section="{{ json_encode($styleSection) }}"
                     :content-sections="{{ json_encode($contentSections) }}"
-
-                    :testimonials-rating-options="{{ json_encode( \App\DataClasses\TestimonialsRatingDataClass::getArray() ) }}"
 
                     @if($config)
                         :page-meta-title="{{ json_encode($config->getTranslations('meta_title')) }}"
@@ -42,10 +41,6 @@
 
                     @if(count($slides))
                         :slider-slides="{{ json_encode($slides) }}"
-                    @endif
-
-                    @if(count($testimonials))
-                        :testimonial-list="{{ json_encode($testimonials) }}"
                     @endif
 
                     @if(count($faqs))

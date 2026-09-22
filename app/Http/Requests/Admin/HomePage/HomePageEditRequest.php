@@ -33,21 +33,6 @@ class HomePageEditRequest extends BaseRequest
             'slides.*.id' => [
                 'nullable',
             ],
-            'testimonials.*.id' => [
-                'nullable',
-            ],
-            'testimonials.*.rating' => [
-                'integer',
-                'required',
-            ],
-            'testimonials.*.date' => [
-                'string',
-                'nullable',
-            ],
-            'testimonials.*.url' => [
-                'string',
-                'nullable',
-            ],
             'selected_product_types' => [
                 'nullable',
                 'string',
@@ -236,15 +221,6 @@ class HomePageEditRequest extends BaseRequest
             }
         }
 
-        if ($this->input('testimonials')) {
-            foreach ($this->input('testimonials') as $index => $testimonial) {
-                $rules['testimonials.'.$index.'.image'] = [
-                    (isset($testimonial['id']) && $testimonial['id']) ? 'nullable' : 'required',
-                    'image',
-                ];
-            }
-        }
-
         foreach ($this->availableLanguages as $availableLanguage) {
             $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
@@ -267,15 +243,6 @@ class HomePageEditRequest extends BaseRequest
                 'string',
             ];
             $rules['slides.*.button_text.'.$availableLanguage] = [
-                'required',
-                'string',
-            ];
-
-            $rules['testimonials.*.name.'.$availableLanguage] = [
-                'required',
-                'string',
-            ];
-            $rules['testimonials.*.review.'.$availableLanguage] = [
                 'required',
                 'string',
             ];
@@ -432,7 +399,6 @@ class HomePageEditRequest extends BaseRequest
             $this->commaSeparatedValues('selected_products_id'),
             $this->commaSeparatedValues('selected_best_sales_products_id'),
             $this->commaSeparatedValues('selected_brands_id'),
-            $this->validated('testimonials'),
             $this->validated('faqs'),
             $this->input('seo_title'),
             $this->input('seo_text'),

@@ -29,7 +29,6 @@ class ShowHomePageEditPageAction extends BaseAction
             'selectedBestSalesProducts' => $selectedPopularProducts,
             'slides' => $homePageService->getHomePageSlides(),
             'brands' => $homePageService->getHomePageBrands(),
-            'testimonials' => $homePageService->getHomePageTestimonials(),
             'faqs' => $homePageService->getHomePageFaqs(),
             'seoText' => $homePageService->getHomePageSeoText(),
         ]);

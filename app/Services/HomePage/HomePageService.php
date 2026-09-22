@@ -14,7 +14,6 @@ use App\Models\HomePageConfig;
 use App\Models\HomePageNewProducts;
 use App\Models\HomePageProductOptions;
 use App\Models\HomePageSlides;
-use App\Models\HomePageTestimonials;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\SeoText;
@@ -78,7 +77,6 @@ class HomePageService extends BaseService
             }
 
             $this->syncSlides($request->slides);
-            $this->syncTestimonials($request->testimonials);
             $this->syncFaqs(config('constants.HOMEPAGE_TYPE'), $request->faqs);
             [$seoTitle, $seoText] = $this->preserveExistingSeoText(
                 $request->seoTitle,
@@ -494,7 +492,7 @@ class HomePageService extends BaseService
             ],
             'reviews' => [
                 'enabled' => true,
-                'kicker' => ['uk' => 'Google Maps', 'ru' => 'Google Maps'],
+                'kicker' => ['uk' => 'Досвід клієнтів', 'ru' => 'Опыт клиентов'],
                 'title' => $this->translations('base.client_testimonials'),
                 'link_label' => $this->translations('base.google_reviews'),
                 'link_url' => (string) config('organization.map_url', ''),
@@ -675,66 +673,6 @@ class HomePageService extends BaseService
             $imagesToDelete[] = $slideToDelete->slide_image_path;
             $imagesToDelete[] = $slideToDelete->slide_image_path_mobile;
             $slideToDelete->delete();
-        }
-
-        foreach ($imagesToDelete as $imageToDelete) {
-            $this->deleteImage($imageToDelete);
-        }
-
-    }
-
-    private function syncTestimonials(?array $testimonials): void
-    {
-        $imagesToDelete = [];
-
-        $existingTestimonials = HomePageTestimonials::get();
-
-        if ($testimonials) {
-            foreach ($testimonials as $testimonial) {
-                $dataToUpdate = [
-                    'name' => $testimonial['name'],
-                    'review' => $testimonial['review'],
-                    'rating' => $testimonial['rating'],
-                    'date' => $testimonial['date'],
-                    'url' => $testimonial['url'],
-                ];
-
-                if (isset($testimonial['image'])) {
-                    //                    dd($testimonial['image']);
-                    $testimonialImagePath = self::HOME_PAGE_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10);
-
-                    $this->storeImage($testimonialImagePath, $testimonial['image'], 'webp');
-                    $this->storeImage($testimonialImagePath, $testimonial['image'], 'jpg');
-
-                    $dataToUpdate['testimonial_image_path'] = $testimonialImagePath.'.webp';
-                }
-
-                if (isset($testimonial['id']) && $testimonial['id']) {
-                    $existingTestimonial = $existingTestimonials->where('id', $testimonial['id'])->first();
-                    if (! $existingTestimonial) {
-                        throw new \Exception('Incorrect testimonial id: '.$testimonial['id']);
-                    }
-
-                    if (isset($testimonial['image'])) {
-                        $imagesToDelete[] = $existingTestimonial->testimonial_image_path;
-                    }
-
-                    $existingTestimonial->update($dataToUpdate);
-                } else {
-                    HomePageTestimonials::create($dataToUpdate);
-                }
-            }
-        }
-
-        $existingTestimonialsInRequest = $testimonials ? array_filter(array_column($testimonials, 'id'), function ($item) {
-            return $item !== null;
-        }) : [];
-
-        $testimonialsToDelete = $existingTestimonials->whereNotIn('id', $existingTestimonialsInRequest);
-
-        foreach ($testimonialsToDelete as $testimonialToDelete) {
-            $imagesToDelete[] = $testimonialToDelete->testimonial_image_path;
-            $testimonialToDelete->delete();
         }
 
         foreach ($imagesToDelete as $imageToDelete) {
@@ -951,22 +889,12 @@ class HomePageService extends BaseService
         return HomePageSlides::get();
     }
 
-    public function getHomePageTestimonials(): Collection
-    {
-        return HomePageTestimonials::get();
-    }
-
-    /**
-     * Approved reviews submitted by customers lead the slider; editorial
-     * Google reviews managed inside the homepage editor remain available too.
-     */
     public function getStorefrontTestimonials(): Collection
     {
         return CustomerReview::approved()
-            ->orderByDesc('published_at')
+            ->orderByRaw('COALESCE(reviewed_at, published_at, created_at) DESC')
             ->orderByDesc('id')
-            ->get()
-            ->concat($this->getHomePageTestimonials());
+            ->get();
     }
 
     public function getHomePageFaqs(): Collection

@@ -81,6 +81,75 @@ class CustomerReviewTest extends TestCase
             ->assertSee('+38 (067) 123 45 67');
     }
 
+    public function test_admin_can_add_and_edit_a_google_review_in_the_unified_section(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)
+            ->post(route('admin.customer-review.create'), [
+                'source' => CustomerReview::SOURCE_GOOGLE,
+                'source_url' => 'https://g.co/kgs/example',
+                'author_avatar_url' => 'https://lh3.googleusercontent.com/avatar-example',
+                'author_name' => 'Олена Клієнтка',
+                'author_name_translations' => [
+                    'uk' => 'Олена Клієнтка',
+                    'ru' => 'Елена Клиентка',
+                ],
+                'rating' => 5,
+                'review' => 'Дуже задоволена якістю дверей і роботою команди.',
+                'review_translations' => [
+                    'uk' => 'Дуже задоволена якістю дверей і роботою команди.',
+                    'ru' => 'Очень довольна качеством дверей и работой команды.',
+                ],
+                'status_id' => ProductReviewStatusesDataClass::STATUS_APPROVED,
+                'reviewed_at' => '2026-09-20',
+                'source_published_label' => '3 дні тому',
+                'locale' => 'uk',
+            ])
+            ->assertOk()
+            ->assertJson([
+                'data' => [
+                    'success' => true,
+                    'redirect_to' => route('admin.customer-review.list.page'),
+                ],
+            ]);
+
+        $review = CustomerReview::query()->sole();
+        $this->assertSame(CustomerReview::SOURCE_GOOGLE, $review->source);
+        $this->assertSame('https://lh3.googleusercontent.com/avatar-example', $review->author_avatar_url);
+        $this->assertSame('3 дні тому', $review->source_published_label);
+        $this->assertNull($review->phone);
+        $this->assertNotNull($review->published_at);
+        $this->assertSame('Елена Клиентка', tap($review, fn () => app()->setLocale('ru'))->name);
+        $this->assertSame('Очень довольна качеством дверей и работой команды.', $review->display_review);
+
+        app()->setLocale('uk');
+        $this->actingAs($admin)
+            ->get(route('admin.customer-review.list.page'))
+            ->assertOk()
+            ->assertSee('Олена Клієнтка')
+            ->assertSee('Google')
+            ->assertSee('https://g.co/kgs/example');
+
+        $this->actingAs($admin)
+            ->post(route('admin.customer-review.edit', $review), [
+                'source' => CustomerReview::SOURCE_GOOGLE,
+                'source_url' => 'https://g.co/kgs/example',
+                'author_avatar_url' => 'https://lh3.googleusercontent.com/avatar-example',
+                'author_name' => 'Олена Клієнтка',
+                'rating' => 4,
+                'review' => 'Оновлений чесний текст Google-відгуку для перевірки.',
+                'status_id' => ProductReviewStatusesDataClass::STATUS_APPROVED,
+                'reviewed_at' => '2026-09-20',
+                'source_published_label' => '3 дні тому',
+                'locale' => 'uk',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.success', true);
+
+        $this->assertSame(4, $review->refresh()->rating);
+    }
+
     public function test_home_review_modal_uses_shared_flow_in_both_languages(): void
     {
         foreach (['uk', 'ru'] as $locale) {

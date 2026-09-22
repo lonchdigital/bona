@@ -47,25 +47,39 @@
                         @foreach($testimonials as $testimonial)
                         @php
                             $rating = max(0, min(5, (int) $testimonial->rating));
+                            $isGoogleReview = ($testimonial->source ?? null) === \App\Models\CustomerReview::SOURCE_GOOGLE;
                         @endphp
                         <article class="swiper-slide bona-review-card">
                             <div class="bona-review-card__stars" aria-label="{{ trans_choice('base.review_rating', $rating, ['rating' => $rating]) }}">
                                 <span>{{ str_repeat('★', $rating) }}</span><span class="bona-review-card__stars-muted">{{ str_repeat('★', 5 - $rating) }}</span>
                             </div>
-                            <p class="bona-review-card__text">{{ $testimonial->review }}</p>
+                            <p class="bona-review-card__text">{{ $testimonial->display_review ?? $testimonial->review }}</p>
                             <div class="bona-review-card__meta">
-                                @if(filled($testimonial->url))
-                                    <a class="bona-review-card__author" href="{{ $testimonial->url }}" target="_blank" rel="noopener noreferrer nofollow">
-                                        {{ $testimonial->name }}
-                                    </a>
-                                @else
-                                    <span class="bona-review-card__author">{{ $testimonial->name }}</span>
-                                @endif
+                                <div class="bona-review-card__identity">
+                                    @if(filled($testimonial->author_avatar_url ?? null))
+                                        <img class="bona-review-card__avatar" src="{{ $testimonial->author_avatar_url }}" alt="" width="44" height="44" loading="lazy" referrerpolicy="no-referrer">
+                                    @endif
+                                    <div>
+                                        @if(filled($testimonial->url))
+                                            <a class="bona-review-card__author" href="{{ $testimonial->url }}" target="_blank" rel="noopener noreferrer nofollow">
+                                                {{ $testimonial->name }}
+                                            </a>
+                                        @else
+                                            <span class="bona-review-card__author">{{ $testimonial->name }}</span>
+                                        @endif
+
+                                        @if($isGoogleReview)
+                                            <span class="bona-review-card__source">Google Maps</span>
+                                        @endif
+                                    </div>
+                                </div>
 
                                 @if(filled($testimonial->date))
                                     <time class="bona-review-card__date" datetime="{{ $testimonial->date }}">
                                         {{ \Illuminate\Support\Carbon::parse($testimonial->date)->format('d.m.Y') }}
                                     </time>
+                                @elseif(filled($testimonial->source_published_label ?? null))
+                                    <span class="bona-review-card__date">{{ $testimonial->source_published_label }}</span>
                                 @endif
                             </div>
                         </article>

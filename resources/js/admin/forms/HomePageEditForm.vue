@@ -2,7 +2,6 @@
 
 import axios from "axios";
 import HomePageSlideComponent from "../components/HomePageSlideComponent.vue";
-import HomePageTestimonialComponent from "../components/HomePageTestimonialComponent.vue";
 import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
 import MultiLanguageInputComponent from "../components/MultiLanguageInputComponent.vue";
@@ -17,7 +16,6 @@ import HomePageVisualItemComponent from "../components/HomePageVisualItemCompone
 export default {
     components: {MultiLanguageRichTextEditorComponent,
         HomePageSlideComponent,
-        HomePageTestimonialComponent,
         HomePageFaqComponent,
         MultiLanguageInputComponent,
         TextAreaComponent,
@@ -49,6 +47,10 @@ export default {
             type: String,
             default: '',
         },
+        customerReviewsRoute: {
+            type: String,
+            default: '',
+        },
         availableLanguages: {
             type: Array,
             default: ['uk', 'ru'],
@@ -77,10 +79,6 @@ export default {
             type: Array,
             default: [],
         },
-        testimonialList: {
-            type: Array,
-            default: [],
-        },
         faqList: {
             type: Array,
             default: [],
@@ -100,10 +98,6 @@ export default {
         selectedBrands: {
             type: Array,
             default: [],
-        },
-        testimonialsRatingOptions: {
-            type: Object,
-            default: {},
         },
         seoTitle: {
             type: Object,
@@ -125,7 +119,6 @@ export default {
     data() {
         return {
             slides: [],
-            testimonials: [],
             faqs: [],
             faqDeleted: false,
             selectedLanguage: '',
@@ -148,10 +141,6 @@ export default {
 
         if (this.sliderSlides) {
             this.slides = this.sliderSlides;
-        }
-
-        if (this.testimonialList) {
-            this.testimonials = this.testimonialList;
         }
 
         if (this.faqList) {
@@ -211,12 +200,6 @@ export default {
         },
         deleteSlide(index) {
             this.slides.splice(index, 1);
-        },
-        addTestimonial() {
-            this.testimonials.push({});
-        },
-        deleteTestimonial(index) {
-            this.testimonials.splice(index, 1);
         },
         addFaq() {
             this.faqs.push({});
@@ -424,8 +407,8 @@ export default {
                     <multi-language-input-component :title="$t('admin.home_section_kicker')" name="content_sections[reviews][kicker]" :selected-language="selectedLanguage" :available-languages="availableLanguages" :is-required="false" :init-data="contentSections.reviews?.kicker || {}" :errors="errors" />
                     <multi-language-input-component :title="$t('admin.home_section_title')" name="content_sections[reviews][title]" :selected-language="selectedLanguage" :available-languages="availableLanguages" :is-required="false" :init-data="contentSections.reviews?.title || {}" :errors="errors" />
                     <div class="row"><div class="col-md-7"><multi-language-input-component :title="$t('admin.home_link_label')" name="content_sections[reviews][link_label]" :selected-language="selectedLanguage" :available-languages="availableLanguages" :is-required="false" :init-data="contentSections.reviews?.link_label || {}" :errors="errors" /></div><div class="col-md-5"><input-component :title="$t('admin.home_link_url')" name="content_sections[reviews][link_url]" :model-value="contentSections.reviews?.link_url || ''" :errors="errors" :is-required="false" /></div></div>
-                    <div class="form-group mb-3 art-admin-repeater-four-width"><home-page-testimonial-component v-for="(testimonial, index) in testimonials" :key="testimonial.id || `testimonial-${index}`" :testimonial-id="testimonial.hasOwnProperty('id') ? testimonial.id : null" :testimonial="testimonial" :index="index" :base-language="baseLanguage" :selected-language="selectedLanguage" :available-languages="availableLanguages" :rating-options="testimonialsRatingOptions" :errors="errors" @delete-testimonial="deleteTestimonial(index)" /></div>
-                    <button type="button" class="btn btn-secondary" @click="addTestimonial"><span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.testimonial_add') }}</button>
+                    <p class="text-muted mb-3">{{ $t('admin.home_reviews_managed_separately') }}</p>
+                    <a v-if="customerReviewsRoute" :href="customerReviewsRoute" class="btn btn-secondary">{{ $t('admin.customer_reviews') }}</a>
                 </home-page-section-card-component>
 
                 <home-page-section-card-component :title="$t('admin.home_instagram_section')" :help="$t('admin.home_instagram_section_help')" name="content_sections[instagram]" :enabled="contentSections.instagram ? Boolean(contentSections.instagram.enabled) : true">
