@@ -69,6 +69,13 @@
     $displayReviewCount = $reviewCount ?: 3;
     $displayReviewAverage = $reviewAverage ?: 4.9;
     $descriptionAvailable = filled(strip_tags($productDescriptionHtml));
+    // The editorial layout expects a predictable heading/paragraph rhythm.
+    // Keep every older or custom admin description on the legacy renderer so
+    // tables, images and one-off markup cannot be rearranged unexpectedly.
+    $usesEditorialDescriptionLayout = preg_match(
+        '/^\s*<h2\b[^>]*>.*?<\/h2>\s*<p\b[^>]*>.*?<\/p>(?:\s*<h3\b[^>]*>.*?<\/h3>\s*<p\b[^>]*>.*?<\/p>){2,}\s*$/isu',
+        $productDescriptionHtml,
+    ) === 1;
     $specificationsAvailable = $characteristics->isNotEmpty();
     $firstTab = $descriptionAvailable ? 'description' : ($specificationsAvailable ? 'specs' : 'reviews');
     $deliveryUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info');
@@ -380,19 +387,19 @@
             <section class="product-info-tabs" id="product-details" aria-label="{{ $isRussian ? 'Информация о товаре' : 'Інформація про товар' }}">
                 @if($descriptionAvailable)
                     <div class="product-info-tabs__panel{{ $firstTab === 'description' ? ' is-active' : '' }}" id="panel-description" role="region" aria-labelledby="tab-description" data-product-panel="description" @if($firstTab !== 'description') hidden @endif>
-                        <div class="tab-description tab-description--plain bona-content-richtext">{!! $productDescriptionHtml !!}</div>
+                        <div class="tab-description tab-description--plain {{ $usesEditorialDescriptionLayout ? 'tab-description--editorial' : 'tab-description--legacy' }} bona-content-richtext">{!! $productDescriptionHtml !!}</div>
                     </div>
                 @endif
 
                 @if($specificationsAvailable)
                     <div class="product-info-tabs__panel{{ $firstTab === 'specs' ? ' is-active' : '' }}" id="panel-specs" role="region" aria-labelledby="tab-specs" data-product-panel="specs" @if($firstTab !== 'specs') hidden @endif>
-                        <div class="tab-specs">
+                        <dl class="tab-specs">
                             @foreach($characteristics as $characteristic)
                                 @if(filled($characteristic['name']) || filled($characteristic['value']))
-                                    <div><span>{{ $characteristic['name'] }}</span><strong>{{ $characteristic['value'] }}</strong></div>
+                                    <div><dt>{{ $characteristic['name'] }}</dt><dd>{{ $characteristic['value'] }}</dd></div>
                                 @endif
                             @endforeach
-                        </div>
+                        </dl>
                     </div>
                 @endif
 

@@ -212,6 +212,102 @@ html.product-dialog-is-open body {
     #product-overview,
     #product-details { scroll-margin-top: 78px; }
 
+    .product-info-tabs__panel {
+        padding-top: 44px;
+        padding-bottom: 48px;
+    }
+
+    /* Only descriptions with a complete editorial heading rhythm receive the
+       split layout. Older admin HTML keeps the legacy renderer untouched. */
+    .tab-description--editorial {
+        display: grid;
+        max-width: none;
+        grid-template-columns: minmax(210px, .72fr) minmax(0, 1.28fr);
+        column-gap: clamp(40px, 5.5vw, 72px);
+
+        > h2,
+        > h3 {
+            grid-column: 1;
+        }
+
+        > p {
+            grid-column: 2;
+        }
+
+        > h2 {
+            max-width: 330px;
+            margin: 0;
+            font-size: clamp(38px, 3.4vw, 48px);
+            line-height: 1.04;
+            text-wrap: balance;
+        }
+
+        > h2 + p {
+            margin: 0 0 46px;
+            color: var(--ink);
+            font-size: 17px;
+            line-height: 1.75;
+        }
+
+        > h3 {
+            margin: 0;
+            padding-top: 28px;
+            border-top: 1px solid var(--line);
+            font-size: 25px;
+            line-height: 1.15;
+            text-wrap: balance;
+        }
+
+        > h3 + p {
+            margin: 0;
+            padding-top: 28px;
+            padding-bottom: 34px;
+            border-top: 1px solid var(--line);
+            color: #625d54;
+            font-size: 15.5px;
+            line-height: 1.8;
+        }
+    }
+
+    .tab-specs {
+        display: grid;
+        margin: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border: 0;
+        border-top: 1px solid var(--line);
+
+        > div {
+            display: flex;
+            min-height: 116px;
+            flex-direction: column;
+            gap: 10px;
+            padding: 22px 30px 24px 0;
+            border: 0;
+            border-bottom: 1px solid var(--line);
+
+            &:nth-child(even) {
+                padding-right: 0;
+                padding-left: 30px;
+                border-left: 1px solid var(--line);
+            }
+        }
+
+        dt {
+            color: var(--muted-2);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        dd {
+            margin: 0;
+            color: var(--ink);
+            font-size: 15.5px;
+            font-weight: 650;
+            line-height: 1.55;
+        }
+    }
+
     .product-price-row {
         strong > span {
             color: currentColor;
@@ -942,6 +1038,38 @@ html.product-dialog-is-open body {
         .product-gallery__main { height: 520px; }
         .related-grid--dynamic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .product-reference-utility { padding: 72px 0; }
+
+        .tab-description--editorial {
+            grid-template-columns: minmax(0, 1fr);
+
+            > h2,
+            > h3,
+            > p { grid-column: 1; }
+
+            > h2 {
+                max-width: 620px;
+                margin-bottom: 18px;
+            }
+
+            > h2 + p { margin-bottom: 42px; }
+
+            > h3 { padding-top: 26px; }
+
+            > h3 + p {
+                padding-top: 12px;
+                padding-bottom: 32px;
+                border-top: 0;
+            }
+        }
+
+        .tab-specs { grid-template-columns: minmax(0, 1fr); }
+
+        .tab-specs > div,
+        .tab-specs > div:nth-child(even) {
+            min-height: 0;
+            padding: 19px 0 21px;
+            border-left: 0;
+        }
     }
 
 }
@@ -978,6 +1106,23 @@ html.product-dialog-is-open body {
 
         #product-overview,
         #product-details { scroll-margin-top: 70px; }
+
+        .product-info-tabs__panel {
+            padding-top: 34px;
+            padding-bottom: 38px;
+        }
+
+        .tab-description--editorial {
+            > h2 { font-size: 34px; }
+            > h2 + p { font-size: 16.5px; line-height: 1.72; }
+            > h3 { font-size: 24px; }
+            > h3 + p { font-size: 16px; line-height: 1.75; }
+        }
+
+        .tab-specs {
+            dt { font-size: 13px; }
+            dd { font-size: 16px; }
+        }
 
         .color-options.art-colors-list {
             align-items: center;

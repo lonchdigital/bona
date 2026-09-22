@@ -6,6 +6,7 @@ use App\DataClasses\BlogArticleBlockTypesDataClass;
 use App\Models\Author;
 use App\Models\BlogArticle;
 use App\Models\BlogArticleBlock;
+use App\Models\ProductCharacteristics;
 use App\Models\ProductText;
 use App\Models\Role;
 use App\Models\ServicesPageSections;
@@ -483,6 +484,12 @@ class EditorialCommercePagesTest extends TestCase
             'content' => '<h2>Про модель</h2><p>Повний опис.</p>',
         ]);
 
+        ProductCharacteristics::create([
+            'product_id' => $product->id,
+            'name' => ['uk' => 'Покриття', 'ru' => 'Покрытие'],
+            'value' => ['uk' => 'Super PET', 'ru' => 'Super PET'],
+        ]);
+
         $response = $this->get(route('store.product.page', ['productSlug' => $product->slug]));
         $response
             ->assertOk()
@@ -494,6 +501,10 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('class="product-services"', false)
             ->assertSee('class="product-details-grid"', false)
             ->assertSee('class="product-info-tabs"', false)
+            ->assertSee('tab-description--legacy', false)
+            ->assertDontSee('tab-description--editorial', false)
+            ->assertSee('<dl class="tab-specs">', false)
+            ->assertSee('<dt>Покриття</dt><dd>Super PET</dd>', false)
             ->assertSee('data-product-section-nav', false)
             ->assertSee('Про товар')
             ->assertSee('Придбати')
@@ -522,6 +533,27 @@ class EditorialCommercePagesTest extends TestCase
         $this->assertNotNull($productSchema);
         $this->assertSame('BD-SEO-01', $productSchema['sku']);
         $this->assertArrayHasKey('hasMerchantReturnPolicy', $productSchema['offers']);
+    }
+
+    public function test_complete_semantic_product_description_uses_editorial_layout(): void
+    {
+        $this->seedCurrency();
+
+        $product = $this->makeProduct(['slug' => 'editorial-description-door']);
+        ProductText::create([
+            'product_id' => $product->id,
+            'language' => 'uk',
+            'short_content' => '<p>Короткий опис.</p>',
+            'content' => '<h2>Міжкімнатні двері</h2><p>Короткий вступ про модель.</p>'
+                .'<h3>Декори та скління</h3><p>Варіанти оздоблення.</p>'
+                .'<h3>Розміри та конструкція</h3><p>Технічні деталі.</p>',
+        ]);
+
+        $this->get(route('store.product.page', ['productSlug' => $product->slug]))
+            ->assertOk()
+            ->assertSee('tab-description--editorial', false)
+            ->assertDontSee('tab-description--legacy', false)
+            ->assertSee('Короткий вступ про модель.');
     }
 
     public function test_default_product_sections_render_from_admin_managed_content_and_keep_dynamic_instalments(): void
