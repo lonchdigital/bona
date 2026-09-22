@@ -139,4 +139,29 @@ class WishListTest extends TestCase
             'Список збережених ідентифікаторів має містити сам товар, а не порожнечі.'
         );
     }
+
+    public function test_header_counts_follow_unique_saved_products_and_return_to_zero(): void
+    {
+        $first = $this->makeProduct();
+        $second = $this->makeProduct();
+        $slugsRoute = route('store.wishlist.products-slugs');
+
+        $this->getJson($slugsRoute)->assertOk()->assertJsonPath('data.count', 0);
+        $this->save($first->slug)->assertOk();
+        $this->save($first->slug)->assertOk();
+        $this->save($second->slug)->assertOk();
+        $this->getJson($slugsRoute)->assertOk()
+            ->assertJsonPath('data.count', 2)
+            ->assertJsonCount(2, 'data.slugs');
+
+        foreach ([$first, $second] as $index => $product) {
+            $this->keepCookies($this->postJson(route('store.wishlist.private.delete-product', [
+                'productSlug' => $product->slug,
+            ])))->assertOk()->assertJsonPath('data.success', true);
+
+            $this->getJson($slugsRoute)->assertOk()->assertJsonPath('data.count', 1 - $index);
+        }
+
+        $this->getJson($slugsRoute)->assertJsonPath('data.slugs', []);
+    }
 }

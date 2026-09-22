@@ -1,12 +1,13 @@
 import $ from 'jquery';
-import iconUrl from '$img/icon.svg';
 
 const WISH_LIST_ACTIVE_CLASS = 'link-heart-active';
+const HEART_SELECTOR = '.link-heart[id], .product-wish-list-button[id]';
+const pendingProducts = new Set();
+let wishListReadVersion = 0;
 
 export default {
     init: async function () {
         markActiveHearts();
-        updateHeaderWishListCount();
 
         $(document).on('click', '.link-heart, .product-wish-list-button', function (event) {
             event.preventDefault();
@@ -33,41 +34,48 @@ export default {
 function handleHeartClick($heart)
 {
     const productSlug = $heart.attr('id');
-    const isActive = $heart.hasClass(WISH_LIST_ACTIVE_CLASS);
 
-    if (!isActive) {
-        setHeartState($heart, true);
-
-        addToWishList(productSlug, function (data) {
-            if (!isRequestSuccessful(data)) {
-                setHeartState($heart, false);
-                return;
-            }
-
-            incrementHeaderWishListCount();
-        }, function () {
-            setHeartState($heart, false);
-        });
-    } else {
-        setHeartState($heart, false);
-
-        removeFromWishList(productSlug, function (data) {
-            if (!isRequestSuccessful(data)) {
-                setHeartState($heart, true);
-                return;
-            }
-
-            decrementHeaderWishListCount();
-            dropCardFromOwnWishList($heart);
-        }, function () {
-            setHeartState($heart, true);
-        });
+    if (!productSlug || pendingProducts.has(productSlug)) {
+        return;
     }
+
+    const isActive = $heart.hasClass(WISH_LIST_ACTIVE_CLASS);
+    const $matchingHearts = $(HEART_SELECTOR).filter(function () {
+        return $(this).attr('id') === productSlug;
+    });
+
+    pendingProducts.add(productSlug);
+    // A GET started before this click must not restore an outdated state.
+    wishListReadVersion++;
+    $matchingHearts.attr('aria-busy', 'true').prop('disabled', true);
+    $matchingHearts.each(function () {
+        setHeartState($(this), !isActive);
+    });
+
+    const finish = function (successful) {
+        $matchingHearts.each(function () {
+            setHeartState($(this), successful ? !isActive : isActive);
+        });
+        $matchingHearts.removeAttr('aria-busy').prop('disabled', false);
+        pendingProducts.delete(productSlug);
+
+        if (successful && isActive) {
+            dropCardFromOwnWishList($heart);
+        }
+
+        if (!pendingProducts.size) {
+            markActiveHearts();
+        }
+    };
+
+    const request = isActive ? removeFromWishList : addToWishList;
+    request(productSlug, data => finish(isRequestSuccessful(data)), () => finish(false));
 }
 
 function setHeartState($heart, active)
 {
     $heart.toggleClass(WISH_LIST_ACTIVE_CLASS, active);
+    $heart.toggleClass('is-active', active);
     $heart.attr('aria-pressed', active ? 'true' : 'false');
 
     const label = active
@@ -77,6 +85,7 @@ function setHeartState($heart, active)
     if (label) {
         $heart.attr('aria-label', label);
         $heart.attr('title', label);
+        $heart.find('[data-wish-list-label]').text(label);
     }
 }
 
@@ -114,18 +123,21 @@ function dropCardFromOwnWishList($heart)
 
 function markActiveHearts()
 {
-    getWishListProductSlugs(function (slugs) {
-        $('.link-heart[id], .product-wish-list-button[id]').each(function () {
-            const $heart = $(this);
-            setHeartState($heart, slugs.indexOf($heart.attr('id')) !== -1);
-        });
-    });
-}
+    const version = ++wishListReadVersion;
 
-function updateHeaderWishListCount()
-{
     getWishListProductSlugs(function (slugs) {
-        setHeaderWishListCount(slugs.length);
+        if (version !== wishListReadVersion || pendingProducts.size) {
+            return;
+        }
+
+        const savedProducts = new Set(slugs);
+        $(HEART_SELECTOR).each(function () {
+            const $heart = $(this);
+            setHeartState($heart, savedProducts.has($heart.attr('id')));
+        });
+        // Count the actual saved products, never the concatenated text of the
+        // desktop and mobile badges ("1" + "1" used to become eleven).
+        setHeaderWishListCount(savedProducts.size);
     });
 }
 
@@ -138,29 +150,6 @@ function setHeaderWishListCount(count)
     } else {
         $countElement.addClass('d-none').text('');
     }
-}
-
-function incrementHeaderWishListCount()
-{
-    changeHeaderWishListCount(1);
-}
-
-function decrementHeaderWishListCount()
-{
-    changeHeaderWishListCount(-1);
-}
-
-function changeHeaderWishListCount(delta)
-{
-    const $countElement = $('.art-main-wishlist-count');
-
-    let currentCount = parseInt($countElement.text());
-
-    if (isNaN(currentCount)) {
-        currentCount = 0;
-    }
-
-    setHeaderWishListCount(currentCount + delta);
 }
 
 function isRequestSuccessful(data)
@@ -176,9 +165,11 @@ function getWishListProductSlugs(success)
         type: 'get',
         dataType: 'json',
     }).done(function (data) {
-        success(data.data.slugs || []);
-    }).fail(function () {
-        success([]);
+        const slugs = data?.data?.slugs;
+
+        if (Array.isArray(slugs) && slugs.every(slug => typeof slug === 'string' && slug.length > 0)) {
+            success(slugs);
+        }
     });
 }
 
