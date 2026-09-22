@@ -125,9 +125,10 @@
                     <header class="bona-checkout-step__head"><span class="bona-checkout-step__num">02</span><h2 id="checkout-delivery-title">{{ trans('base.checkout_delivery_title') }}</h2></header>
 
                     <div class="bona-choice-list" id="checkout-delivery-accordion">
-                        <label class="bona-choice-card">
+                        <label class="bona-choice-card bona-choice-card--visual">
                             <input class="art-accordion-delivery" type="radio" id="delivery-radio-address" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY }}" data-accordion="delivery-1" aria-controls="delivery-1" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY) required>
-                            <span><b>{{ trans('base.checkout_address_delivery') }}</b><small>{{ trans('base.checkout_address_delivery_note') }}</small></span><strong>{{ trans('base.checkout_address_delivery_price') }}</strong>
+                            <span class="bona-choice-card__visual bona-choice-card__visual--icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 10 8-6 8 6v9.5H5.8a1.8 1.8 0 0 1-1.8-1.8V10Z"/><path d="M9 19.5v-6h6v6"/></svg></span>
+                            <span class="bona-choice-card__copy"><b>{{ trans('base.checkout_address_delivery') }}</b><small>{{ trans('base.checkout_address_delivery_note') }}</small></span><strong>{{ trans('base.checkout_address_delivery_price') }}</strong>
                         </label>
                         <div id="delivery-1" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::ADDRESS_DELIVERY)>
                             <div class="bona-form-grid">
@@ -141,9 +142,10 @@
                             </div>
                         </div>
 
-                        <label class="bona-choice-card">
+                        <label class="bona-choice-card bona-choice-card--visual">
                             <input class="art-accordion-delivery" type="radio" id="delivery-radio-np" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY }}" data-accordion="delivery-2" aria-controls="delivery-2" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)>
-                            <span><b>{{ trans('base.checkout_np_delivery') }}</b><small>{{ trans('base.checkout_np_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
+                            <span class="bona-choice-card__visual bona-choice-card__visual--brand bona-choice-card__visual--nova" aria-hidden="true"><img src="{{ Vite::asset('resources/img/delivery/nova-poshta.svg') }}" alt=""></span>
+                            <span class="bona-choice-card__copy"><b>{{ trans('base.checkout_np_delivery') }}</b><small>{{ trans('base.checkout_np_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
                         </label>
                         <div id="delivery-2" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::NP_DELIVERY)>
                             <div class="bona-form-grid">
@@ -152,9 +154,10 @@
                             </div>
                         </div>
 
-                        <label class="bona-choice-card">
+                        <label class="bona-choice-card bona-choice-card--visual">
                             <input class="art-accordion-delivery" type="radio" id="delivery-radio-sat" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY }}" data-accordion="delivery-3" aria-controls="delivery-3" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)>
-                            <span><b>{{ trans('base.checkout_sat_delivery') }}</b><small>{{ trans('base.checkout_sat_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
+                            <span class="bona-choice-card__visual bona-choice-card__visual--brand bona-choice-card__visual--sat" aria-hidden="true"><img src="{{ Vite::asset('resources/img/delivery/sat.svg') }}" alt=""></span>
+                            <span class="bona-choice-card__copy"><b>{{ trans('base.checkout_sat_delivery') }}</b><small>{{ trans('base.checkout_sat_delivery_note') }}</small></span><strong>{{ trans('base.cart_delivery_price') }}</strong>
                         </label>
                         <div id="delivery-3" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::SAT_DELIVERY)>
                             <div class="bona-form-grid">
@@ -163,9 +166,10 @@
                             </div>
                         </div>
 
-                        <label class="bona-choice-card">
+                        <label class="bona-choice-card bona-choice-card--visual">
                             <input class="art-accordion-delivery" type="radio" id="delivery-radio-pickup" name="delivery_type_id" value="{{ App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY }}" data-accordion="delivery-4" aria-controls="delivery-4" aria-expanded="{{ $selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY ? 'true' : 'false' }}" @checked($selectedDeliveryType === App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY)>
-                            <span><b>{{ trans('base.checkout_pickup_from_store') }}</b><small>{{ trans('base.checkout_pickup_note') }}</small></span><strong>{{ trans('base.checkout_free') }}</strong>
+                            <span class="bona-choice-card__visual bona-choice-card__visual--icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 10.5v9h14v-9M4 9l1.5-5h13L20 9"/><path d="M4 9c0 1.3 1 2.3 2.3 2.3S8.7 10.3 8.7 9c0 1.3 1 2.3 2.3 2.3s2.3-1 2.3-2.3c0 1.3 1 2.3 2.4 2.3S20 10.3 20 9M9 19.5v-5h6v5"/></svg></span>
+                            <span class="bona-choice-card__copy"><b>{{ trans('base.checkout_pickup_from_store') }}</b><small>{{ trans('base.checkout_pickup_note') }}</small></span><strong>{{ trans('base.checkout_free') }}</strong>
                         </label>
                         <div id="delivery-4" class="bona-choice-panel accordion-delivery-data" @hidden($selectedDeliveryType !== App\DataClasses\DeliveryTypesDataClass::PICK_UP_DELIVERY)><p>{{ trans('base.checkout_pickup_panel') }}</p></div>
                     </div>
@@ -190,15 +194,15 @@
                 <section class="bona-checkout-step" data-checkout-step="payment" aria-labelledby="checkout-payment-title">
                     <header class="bona-checkout-step__head"><span class="bona-checkout-step__num">03</span><h2 id="checkout-payment-title">{{ trans('base.checkout_payment') }}</h2></header>
                     <div class="bona-choice-list bona-payment-choices">
-                        <label class="bona-choice-card"><input type="radio" id="payment-manager-confirmation" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT)><span><b>{{ trans('base.checkout_payment_manager_confirmation') }}</b><small>{{ trans('base.checkout_payment_manager_confirmation_note') }}</small></span><strong>{{ trans('base.checkout_no_commission') }}</strong></label>
-                        <label class="bona-choice-card"><input type="radio" id="payment-cash" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT)><span><b>{{ trans('base.checkout_payment_cash') }}</b><small>{{ trans('base.checkout_payment_cash_note') }}</small></span><strong>{{ trans('base.checkout_no_commission') }}</strong></label>
-                        <label class="bona-choice-card"><input type="radio" id="payment-card" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT)><span><b>{{ trans('base.checkout_payment_card') }}</b><small>{{ trans('base.checkout_payment_card_note') }}</small></span><strong class="bona-payment-brand">LiqPay</strong></label>
-                        <label class="bona-choice-card"><input type="radio" id="payment-invoice" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT)><span><b>{{ trans('base.checkout_payment_invoice') }}</b><small>{{ trans('base.checkout_payment_invoice_note') }}</small></span><svg class="bona-payment-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7V3Zm8 0v5h4M10 12h6M10 16h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+                        <label class="bona-choice-card bona-choice-card--visual"><input type="radio" id="payment-manager-confirmation" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::MANAGER_CONFIRMATION_PAYMENT)><span class="bona-choice-card__visual bona-choice-card__visual--icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 4.5h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H12l-4.5 4v-4h-1a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z"/><path d="M8 9h8M8 12h5"/></svg></span><span class="bona-choice-card__copy"><b>{{ trans('base.checkout_payment_manager_confirmation') }}</b><small>{{ trans('base.checkout_payment_manager_confirmation_note') }}</small></span><strong>{{ trans('base.checkout_no_commission') }}</strong></label>
+                        <label class="bona-choice-card bona-choice-card--visual"><input type="radio" id="payment-cash" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CASH_PAYMENT)><span class="bona-choice-card__visual bona-choice-card__visual--icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v11H4zM7 7V5h10v2M8 12h8M8 15h5"/></svg></span><span class="bona-choice-card__copy"><b>{{ trans('base.checkout_payment_cash') }}</b><small>{{ trans('base.checkout_payment_cash_note') }}</small></span><strong>{{ trans('base.checkout_no_commission') }}</strong></label>
+                        <label class="bona-choice-card bona-choice-card--visual"><input type="radio" id="payment-card" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT)><span class="bona-choice-card__visual bona-choice-card__visual--brand bona-choice-card__visual--liqpay" aria-hidden="true"><img src="{{ Vite::asset('resources/img/payment/liqpay.svg') }}" alt=""></span><span class="bona-choice-card__copy"><b>{{ trans('base.checkout_payment_card') }}</b><small>{{ trans('base.checkout_payment_card_note') }}</small></span></label>
+                        <label class="bona-choice-card bona-choice-card--visual"><input type="radio" id="payment-invoice" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::INVOICE_PAYMENT)><span class="bona-choice-card__visual bona-choice-card__visual--icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7V3Zm8 0v5h4M10 12h6M10 16h6"/></svg></span><span class="bona-choice-card__copy"><b>{{ trans('base.checkout_payment_invoice') }}</b><small>{{ trans('base.checkout_payment_invoice_note') }}</small></span></label>
                         <div @class(['bona-installment-choice', 'is-active' => $selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK]) data-installment-choice>
-                            <label class="bona-choice-card bona-installment-choice__trigger">
+                            <label class="bona-choice-card bona-choice-card--visual bona-installment-choice__trigger">
                                 <input type="radio" id="payment-card_paypart-mono-bank" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK }}" aria-controls="collapseMonoPartialPayment" aria-expanded="{{ $selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK ? 'true' : 'false' }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART_MONO_BANK)>
-                                <span><b>{{ trans('base.checkout_payment_paypart_mono_bank') }} monobank</b><small>{{ trans('base.checkout_payment_mono_note') }}</small></span>
-                                <img class="bona-payment-logo bona-payment-logo--mono" src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt="monobank">
+                                <span class="bona-choice-card__visual bona-choice-card__visual--brand bona-choice-card__visual--mono" aria-hidden="true"><img src="{{ Vite::asset('bona-html/monobank-logo.svg') }}" alt=""></span>
+                                <span class="bona-choice-card__copy"><b>{{ trans('base.checkout_payment_paypart_mono_bank') }} monobank</b><small>{{ trans('base.checkout_payment_mono_note') }}</small></span>
                             </label>
                             <div
                                 id="collapseMonoPartialPayment"
@@ -237,10 +241,10 @@
                             </div>
                         </div>
                         <div @class(['bona-installment-choice', 'is-active' => $selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART]) data-installment-choice>
-                            <label class="bona-choice-card bona-installment-choice__trigger">
+                            <label class="bona-choice-card bona-choice-card--visual bona-installment-choice__trigger">
                                 <input type="radio" id="payment-card_paypart" name="payment_type_id" value="{{ App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART }}" aria-controls="collapsePartialPayment" aria-expanded="{{ $selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART ? 'true' : 'false' }}" @checked($selectedPaymentType === App\DataClasses\PaymentTypesDataClass::CARD_PAYMENT_PAYPART)>
-                                <span><b>{{ trans('base.checkout_payment_paypart') }} ПриватБанк</b><small>{{ trans('base.checkout_payment_privat_note') }}</small></span>
-                                <img class="bona-payment-logo bona-payment-logo--privat" src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt="ПриватБанк">
+                                <span class="bona-choice-card__visual bona-choice-card__visual--brand bona-choice-card__visual--privat" aria-hidden="true"><img src="{{ Vite::asset('bona-html/privatbank-chastyny.svg') }}" alt=""></span>
+                                <span class="bona-choice-card__copy"><b>{{ trans('base.checkout_payment_paypart') }} ПриватБанк</b><small>{{ trans('base.checkout_payment_privat_note') }}</small></span>
                             </label>
                             <div
                                 id="collapsePartialPayment"

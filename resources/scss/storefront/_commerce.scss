@@ -1081,6 +1081,61 @@
     b { display: block; color: var(--bona-ink); font-size: 13px; line-height: 1.35; }
     small { display: block; margin-top: 4px; color: var(--bona-muted); font-size: 10px; line-height: 1.45; }
     > strong { max-width: 125px; color: #635d53; font-size: 10px; font-weight: 700; line-height: 1.35; text-align: right; }
+
+    &--visual {
+        grid-template-columns: 22px 74px minmax(0, 1fr) auto;
+        gap: 12px;
+    }
+
+    &__copy { min-width: 0; }
+
+    &__visual {
+        display: grid;
+        width: 74px;
+        height: 40px;
+        flex: 0 0 auto;
+        place-items: center;
+
+        img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        &--icon {
+            width: 40px;
+            border: 1px solid #ded8ce;
+            border-radius: 10px;
+            background: var(--bona-paper);
+            color: #6f6559;
+            transition: border-color .18s ease, background-color .18s ease, color .18s ease;
+
+            svg {
+                width: 22px;
+                height: 22px;
+                fill: none;
+                stroke: currentColor;
+                stroke-width: 1.55;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+        }
+
+        &--nova img { width: 72px; }
+        &--sat {
+            width: 62px;
+            height: 34px;
+            border-radius: 8px;
+            background: var(--bona-ink);
+
+            img { width: 50px; height: 24px; }
+        }
+        &--liqpay img { width: 70px; }
+        &--mono img,
+        &--privat img { width: 34px; height: 34px; }
+    }
+
+    &:has(input:checked) &__visual--icon {
+        border-color: #b9aa97;
+        background: #fff;
+        color: var(--bona-ink);
+    }
 }
 
 .bona-choice-panel {
@@ -1417,12 +1472,6 @@
         td { padding: 9px 11px; border: 1px solid var(--bona-line); text-align: left; }
     }
 }
-
-.bona-payment-brand { color: #70bd44 !important; font-size: 14px !important; }
-.bona-payment-icon { width: 25px; height: 25px; color: var(--bona-gold-text); }
-.bona-payment-logo { display: block; object-fit: contain; }
-.bona-payment-logo--mono { width: 72px; max-height: 28px; }
-.bona-payment-logo--privat { width: 86px; max-height: 30px; }
 
 .bona-checkout-summary {
     max-height: calc(100dvh - 44px);
@@ -2045,10 +2094,17 @@
     .bona-choice-card > strong,
     .bona-choice-card > svg,
     .bona-choice-card > img { grid-column: 2; justify-self: start; max-width: none; text-align: left; }
-    .bona-installment-choice__trigger { grid-template-columns: 20px minmax(0, 1fr) auto; }
-    .bona-installment-choice__trigger > img { grid-column: 3; grid-row: 1; justify-self: end; }
-    .bona-installment-choice__trigger .bona-payment-logo--mono { width: 40px; }
-    .bona-installment-choice__trigger .bona-payment-logo--privat { width: 46px; }
+    .bona-choice-card--visual,
+    .bona-installment-choice__trigger { grid-template-columns: 20px 54px minmax(0, 1fr); gap: 10px; }
+    .bona-choice-card--visual > strong { grid-column: 3; justify-self: start; margin-top: -3px; text-align: left; }
+    .bona-choice-card__visual { width: 54px; height: 38px; }
+    .bona-choice-card__visual--icon { width: 38px; }
+    .bona-choice-card__visual--nova img { width: 52px; }
+    .bona-choice-card__visual--sat { width: 50px; height: 30px; }
+    .bona-choice-card__visual--sat img { width: 42px; height: 21px; }
+    .bona-choice-card__visual--liqpay img { width: 52px; }
+    .bona-choice-card__visual--mono img,
+    .bona-choice-card__visual--privat img { width: 32px; height: 32px; }
     .bona-choice-panel { padding: 16px; }
     .bona-installment-option { grid-template-columns: 1fr; gap: 19px; padding: 18px 16px; }
     .bona-installment-option__terms { grid-column: auto; }

@@ -543,6 +543,12 @@ class CheckoutTest extends TestCase
         $this->assertSame(2, substr_count($page->getContent(), 'data-installment-choice'));
         $page->assertSee('aria-controls="collapseMonoPartialPayment"', false);
         $page->assertSee('aria-controls="collapsePartialPayment"', false);
+        $page->assertSee('bona-choice-card__visual--nova', false);
+        $page->assertSee('bona-choice-card__visual--sat', false);
+        $page->assertSee('bona-choice-card__visual--liqpay', false);
+        $page->assertSee('bona-choice-card__visual--mono', false);
+        $page->assertSee('bona-choice-card__visual--privat', false);
+        $this->assertSame(10, substr_count($page->getContent(), 'bona-choice-card bona-choice-card--visual'));
         $page->assertDontSee('data-installment-rate', false);
         $page->assertDontSee('data-checkout-installment-row', false);
         $page->assertSee('data-checkout-terms-open', false);
