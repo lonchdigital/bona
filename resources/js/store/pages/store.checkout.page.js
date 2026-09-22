@@ -87,6 +87,10 @@ export default async function () {
     });
     authEmail?.addEventListener('input', updateForgotPasswordLink);
 
+    if (authDialog?.dataset.checkoutAuthAutoOpen === 'true') {
+        openAuthDialog(authDialog.dataset.checkoutAuthEmail || '');
+    }
+
     authForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
 

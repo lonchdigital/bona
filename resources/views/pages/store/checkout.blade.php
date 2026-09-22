@@ -87,25 +87,12 @@
 
             <div class="bona-checkout-form">
                 @if($checkoutRegisteredEmail)
-                    <div class="bona-checkout-errors bona-checkout-errors--account" role="alert" tabindex="-1" data-checkout-errors data-checkout-account-error>
-                        <svg viewBox="0 0 32 32" aria-hidden="true">
-                            <circle cx="16" cy="12" r="5"></circle>
-                            <path d="M7.5 26c1.6-5 4.5-7.5 8.5-7.5S22.9 21 24.5 26"></path>
-                        </svg>
-                        <div>
-                            <strong>{{ trans('base.checkout_registered_account_title') }}</strong>
-                            <p>{{ trans('base.checkout_registered_account_text') }}</p>
-                            @if($otherCheckoutErrors->isNotEmpty())
-                                <ul>@foreach($otherCheckoutErrors as $error)<li>{{ $error }}</li>@endforeach</ul>
-                            @endif
+                    @if($otherCheckoutErrors->isNotEmpty())
+                        <div class="bona-checkout-errors" role="alert" tabindex="-1" data-checkout-errors>
+                            <strong>{{ trans('base.checkout_order_error') }}</strong>
+                            <ul>@foreach($otherCheckoutErrors as $error)<li>{{ $error }}</li>@endforeach</ul>
                         </div>
-                        <a
-                            class="bona-button bona-button--dark"
-                            href="{{ $signInUrl }}"
-                            data-checkout-auth-open
-                            data-auth-email="{{ $checkoutRegisteredEmail }}"
-                        >{{ trans('base.checkout_registered_account_action') }}</a>
-                    </div>
+                    @endif
                 @elseif($errors->any())
                     <div class="bona-checkout-errors" role="alert" tabindex="-1" data-checkout-errors>
                         <strong>{{ trans('base.checkout_order_error') }}</strong>
@@ -399,17 +386,26 @@
         </dialog>
 
         @guest
-            <dialog class="bona-checkout-dialog bona-checkout-auth-dialog" data-checkout-auth-dialog aria-labelledby="checkout-auth-title">
+            <dialog
+                class="bona-checkout-dialog bona-checkout-auth-dialog"
+                data-checkout-auth-dialog
+                data-checkout-auth-auto-open="{{ $checkoutRegisteredEmail ? 'true' : 'false' }}"
+                data-checkout-auth-email="{{ $checkoutRegisteredEmail }}"
+                aria-labelledby="checkout-auth-title"
+                aria-describedby="checkout-auth-intro"
+            >
                 <div class="bona-checkout-dialog__head">
                     <div>
-                        <h2 id="checkout-auth-title">{{ trans('base.checkout_auth_title') }}</h2>
+                        <h2 id="checkout-auth-title">{{ $checkoutRegisteredEmail ? trans('base.checkout_registered_account_title') : trans('base.checkout_auth_title') }}</h2>
                     </div>
                     <button type="button" data-checkout-auth-close aria-label="{{ trans('base.checkout_auth_close') }}">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
                     </button>
                 </div>
                 <div class="bona-checkout-dialog__content bona-checkout-auth-dialog__content">
-                    <p class="bona-checkout-auth-dialog__intro">{{ trans('base.checkout_auth_intro') }}</p>
+                    <p class="bona-checkout-auth-dialog__intro" id="checkout-auth-intro">
+                        {{ $checkoutRegisteredEmail ? ($registeredEmailError ?: trans('base.checkout_registered_account_text')) : trans('base.checkout_auth_intro') }}
+                    </p>
                     <form
                         action="{{ $signInActionUrl }}"
                         method="POST"

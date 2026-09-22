@@ -3,6 +3,7 @@ import {
     installmentQuote,
     parseInstallmentRates,
 } from '../../payment/installment-pricing';
+import $ from 'jquery';
 
 const formatNumber = (value) => new Intl.NumberFormat('uk-UA', {
     maximumFractionDigits: 0,
@@ -534,7 +535,7 @@ function initKitBuilder(page) {
     const openButton = page.querySelector('[data-product-dialog-open="product-kit-dialog"]');
     const price = page.querySelector('#product-price');
     const categoryButtons = Array.from(dialog?.querySelectorAll('[data-kit-category]') || []);
-    const choiceButtons = Array.from(dialog?.querySelectorAll('[data-kit-option]') || []);
+    const choiceCards = Array.from(dialog?.querySelectorAll('[data-kit-option]') || []);
     const saveButton = dialog?.querySelector('[data-kit-save]');
     const selectedList = dialog?.querySelector('[data-kit-dialog-selected]');
     const selectionHint = dialog?.querySelector('[data-kit-selection-hint]');
@@ -553,7 +554,7 @@ function initKitBuilder(page) {
     let committed = new Map();
     let draft = new Map();
 
-    if (!dialog || !price || !categoryButtons.length || !choiceButtons.length) return;
+    if (!dialog || !price || !categoryButtons.length || !choiceCards.length) return;
 
     const calculateOptionSurcharge = () => {
         const attributePrice = [...page.querySelectorAll('select.art-select-attribute')]
@@ -564,9 +565,30 @@ function initKitBuilder(page) {
 
     const currentQuantity = () => Math.max(Number.parseInt(price.dataset.count || '1', 10) || 1, 1);
 
+    const normalizeKitQuantity = (value) => Math.min(
+        Math.max(Number.parseInt(value, 10) || 1, 1),
+        99,
+    );
+
+    const cloneSelections = (values) => new Map(
+        [...values].map(([categoryKey, selection]) => [categoryKey, { ...selection }]),
+    );
+
     const selectedChoices = (values = draft) => [...values.values()]
-        .map((optionKey) => choiceButtons.find((button) => button.dataset.kitOptionKey === optionKey))
+        .map((selection) => {
+            const choice = choiceCards.find((card) => card.dataset.kitOptionKey === selection.optionKey);
+
+            return choice ? { choice, quantity: normalizeKitQuantity(selection.quantity) } : null;
+        })
         .filter(Boolean);
+
+    const syncCarrierQuantity = (carrier, count, added) => {
+        if (!carrier) return;
+
+        carrier.setAttribute('data-count', String(count));
+        carrier.setAttribute('data-added', String(added));
+        $(carrier).data('count', count).data('added', added);
+    };
 
     const syncSelectionOverflow = () => {
         if (!selectedList) {
@@ -583,7 +605,10 @@ function initKitBuilder(page) {
 
     const renderSummary = () => {
         const selected = selectedChoices();
-        const extras = selected.reduce((sum, button) => sum + (Number.parseFloat(button.dataset.kitPrice) || 0), 0);
+        const extras = selected.reduce(
+            (sum, { choice, quantity }) => sum + ((Number.parseFloat(choice.dataset.kitPrice) || 0) * quantity),
+            0,
+        );
 
         if (selectedList) {
             selectedList.replaceChildren();
@@ -593,7 +618,7 @@ function initKitBuilder(page) {
                 item.textContent = emptySelectionText;
                 selectedList.append(item);
             } else {
-                selected.forEach((choice) => {
+                selected.forEach(({ choice, quantity }) => {
                     const item = document.createElement('li');
                     const label = document.createElement('span');
                     const actions = document.createElement('span');
@@ -606,8 +631,8 @@ function initKitBuilder(page) {
                     removeButton.type = 'button';
                     removeButton.setAttribute('aria-label', `${isRussian() ? 'Удалить' : 'Видалити'} ${choice.dataset.kitCategoryName}: ${choice.dataset.kitLabel}`);
                     removeButton.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="m6.5 7 .8 13h9.4l.8-13"></path><path d="M10 11v5M14 11v5"></path></svg>';
-                    label.textContent = `${choice.dataset.kitCategoryName}: ${choice.dataset.kitLabel}`;
-                    amount.textContent = `+${formatNumber(choice.dataset.kitPrice)} ${currency}`;
+                    label.textContent = `${choice.dataset.kitCategoryName}: ${choice.dataset.kitLabel} × ${quantity}`;
+                    amount.textContent = `+${formatNumber((Number.parseFloat(choice.dataset.kitPrice) || 0) * quantity)} ${currency}`;
                     removeButton.addEventListener('click', () => {
                         draft.delete(choice.dataset.kitCategoryKey);
                         render();
@@ -628,15 +653,19 @@ function initKitBuilder(page) {
 
     const render = () => {
         categoryButtons.forEach((button, index) => {
-            const selectedKey = draft.get(button.dataset.kitCategory);
-            const selected = choiceButtons.find((choice) => choice.dataset.kitOptionKey === selectedKey);
+            const selection = draft.get(button.dataset.kitCategory);
+            const selected = choiceCards.find((choice) => choice.dataset.kitOptionKey === selection?.optionKey);
             const isActive = button.dataset.kitCategory === activeCategory;
             const summary = button.querySelector('[data-kit-category-summary]');
             const state = button.querySelector('.kit-builder__state');
             button.classList.toggle('is-active', isActive);
             button.classList.toggle('is-complete', Boolean(selected));
             button.setAttribute('aria-current', isActive ? 'step' : 'false');
-            if (summary) summary.textContent = selected?.dataset.kitLabel || (isRussian() ? 'Выберите подходящий элемент' : 'Оберіть потрібний елемент');
+            if (summary) {
+                summary.textContent = selected
+                    ? `${selected.dataset.kitLabel} × ${normalizeKitQuantity(selection.quantity)}`
+                    : (isRussian() ? 'Выберите подходящий элемент' : 'Оберіть потрібний елемент');
+            }
             if (state) state.textContent = selected ? '✓' : '→';
             if (isActive) {
                 if (categoryTitle) categoryTitle.textContent = button.querySelector('.kit-builder__copy b')?.textContent || '';
@@ -644,48 +673,58 @@ function initKitBuilder(page) {
             }
         });
 
-        choiceButtons.forEach((button) => {
-            const isVisible = button.dataset.kitCategoryKey === activeCategory;
-            const isSelected = draft.get(activeCategory) === button.dataset.kitOptionKey;
-            button.hidden = !isVisible;
-            button.classList.toggle('is-selected', isSelected);
-            button.setAttribute('aria-pressed', String(isSelected));
-            const label = button.querySelector('.kit-choice-card__copy em');
-            if (label) label.textContent = isSelected ? (isRussian() ? 'Выбрано' : 'Обрано') : (isRussian() ? 'Выбрать' : 'Обрати');
+        choiceCards.forEach((choice) => {
+            const selection = draft.get(choice.dataset.kitCategoryKey);
+            const isVisible = choice.dataset.kitCategoryKey === activeCategory;
+            const isSelected = selection?.optionKey === choice.dataset.kitOptionKey;
+            const quantityInput = choice.querySelector('[data-kit-quantity]');
+            const addButton = choice.querySelector('[data-kit-add]');
+
+            choice.hidden = !isVisible;
+            choice.classList.toggle('is-selected', isSelected);
+            if (isSelected && quantityInput) quantityInput.value = String(normalizeKitQuantity(selection.quantity));
+            if (addButton) {
+                addButton.setAttribute('aria-pressed', String(isSelected));
+                addButton.textContent = isSelected ? (isRussian() ? 'Добавлено' : 'Додано') : (isRussian() ? 'Добавить' : 'Додати');
+            }
         });
 
         renderSummary();
     };
 
     const save = () => {
-        committed = new Map(draft);
+        committed = cloneSelections(draft);
         const selected = selectedChoices(committed);
-        const extras = selected.reduce((sum, button) => sum + (Number.parseFloat(button.dataset.kitPrice) || 0), 0);
+        const extras = selected.reduce(
+            (sum, { choice, quantity }) => sum + ((Number.parseFloat(choice.dataset.kitPrice) || 0) * quantity),
+            0,
+        );
 
         document.querySelectorAll('.product-kit-cart-data .single-sub-product-add-to-cart').forEach((carrier) => {
-            carrier.setAttribute('data-count', '0');
-            carrier.setAttribute('data-added', '0');
+            syncCarrierQuantity(carrier, 0, 0);
         });
 
         const quantity = currentQuantity();
 
-        selected.forEach((button) => {
-            const carrier = document.getElementById(button.dataset.kitCarrier);
-            carrier?.setAttribute('data-count', String(quantity));
-            carrier?.setAttribute('data-added', '1');
+        selected.forEach(({ choice, quantity: kitQuantity }) => {
+            const carrier = document.getElementById(choice.dataset.kitCarrier);
+            syncCarrierQuantity(carrier, quantity * kitQuantity, kitQuantity);
         });
 
         const kitPrice = (basePrice + extras) * quantity;
         price.dataset.productPrice = String(kitPrice);
         price.textContent = formatNumber(kitPrice + (calculateOptionSurcharge() * quantity));
 
-        if (countNode) countNode.textContent = selected.length ? `${selected.length} ${countNode.dataset.selectedLabel || 'обрано'}` : emptyCount;
-        if (summaryNode) summaryNode.textContent = selected.length ? selected.map((button) => button.dataset.kitLabel).join(' · ') : emptySummary;
+        const selectedQuantity = selected.reduce((sum, selection) => sum + selection.quantity, 0);
+        if (countNode) countNode.textContent = selected.length ? `${selectedQuantity} ${countNode.dataset.selectedLabel || 'обрано'}` : emptyCount;
+        if (summaryNode) summaryNode.textContent = selected.length
+            ? selected.map(({ choice, quantity: kitQuantity }) => `${choice.dataset.kitLabel} × ${kitQuantity}`).join(' · ')
+            : emptySummary;
         if (selectionChips) {
-            selectionChips.replaceChildren(...selected.map((button) => {
+            selectionChips.replaceChildren(...selected.map(({ choice, quantity: kitQuantity }) => {
                 const chip = document.createElement('span');
                 chip.className = 'product-kit-selection';
-                chip.textContent = `${button.dataset.kitCategoryName}: ${button.dataset.kitLabel}`;
+                chip.textContent = `${choice.dataset.kitCategoryName}: ${choice.dataset.kitLabel} × ${kitQuantity}`;
                 return chip;
             }));
         }
@@ -698,14 +737,56 @@ function initKitBuilder(page) {
         render();
     }));
 
-    choiceButtons.forEach((button) => button.addEventListener('click', () => {
-        draft.set(button.dataset.kitCategoryKey, button.dataset.kitOptionKey);
-        render();
-    }));
+    choiceCards.forEach((choice) => {
+        const quantityInput = choice.querySelector('[data-kit-quantity]');
+        const addButton = choice.querySelector('[data-kit-add]');
+        const minusButton = choice.querySelector('[data-kit-quantity-minus]');
+        const plusButton = choice.querySelector('[data-kit-quantity-plus]');
+
+        const readQuantity = () => {
+            const quantity = normalizeKitQuantity(quantityInput?.value);
+            if (quantityInput) quantityInput.value = String(quantity);
+            return quantity;
+        };
+
+        const updateSelectedQuantity = () => {
+            const selection = draft.get(choice.dataset.kitCategoryKey);
+            if (selection?.optionKey !== choice.dataset.kitOptionKey) return;
+
+            draft.set(choice.dataset.kitCategoryKey, {
+                optionKey: choice.dataset.kitOptionKey,
+                quantity: readQuantity(),
+            });
+            render();
+        };
+
+        addButton?.addEventListener('click', () => {
+            draft.set(choice.dataset.kitCategoryKey, {
+                optionKey: choice.dataset.kitOptionKey,
+                quantity: readQuantity(),
+            });
+            render();
+        });
+
+        minusButton?.addEventListener('click', () => {
+            if (quantityInput) quantityInput.value = String(normalizeKitQuantity(Number(quantityInput.value) - 1));
+            updateSelectedQuantity();
+        });
+
+        plusButton?.addEventListener('click', () => {
+            if (quantityInput) quantityInput.value = String(normalizeKitQuantity(Number(quantityInput.value) + 1));
+            updateSelectedQuantity();
+        });
+
+        quantityInput?.addEventListener('change', updateSelectedQuantity);
+        quantityInput?.addEventListener('blur', () => {
+            readQuantity();
+        });
+    });
 
     saveButton?.addEventListener('click', save);
     openButton?.addEventListener('click', () => {
-        draft = new Map(committed);
+        draft = cloneSelections(committed);
         render();
     });
 

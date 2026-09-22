@@ -154,3 +154,17 @@ button,
 @import 'storefront/door-configurator';
 @import 'storefront/home-configurator';
 @import 'storefront/commerce';
+
+/*
+ * iOS Safari zooms the viewport when a focused form control renders below
+ * 16px. Keep the user's pinch zoom available while preventing that automatic
+ * jump across checkout, account, search, and configurator forms.
+ */
+@media (max-width: 767px) {
+    input:not([type='button']):not([type='checkbox']):not([type='color']):not([type='file']):not([type='hidden']):not([type='image']):not([type='radio']):not([type='range']):not([type='reset']):not([type='submit']),
+    select,
+    textarea,
+    [contenteditable='true'] {
+        font-size: 16px !important;
+    }
+}

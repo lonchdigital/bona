@@ -73,4 +73,23 @@ class OrderAccessSecurityTest extends TestCase
             ->assertOk()
             ->assertViewIs('pages.store.payment-failure');
     }
+
+    public function test_the_signed_liqpay_page_uses_the_current_storefront_shell(): void
+    {
+        config()->set('liqpay.public_key', 'test-public-key');
+        config()->set('liqpay.private_key', 'test-private-key');
+
+        $order = $this->order();
+        $order->update([
+            'payment_type_id' => PaymentTypesDataClass::CARD_PAYMENT,
+            'payment_status_id' => OrderPaymentStatusesDataClass::STATUS_UNPAID,
+        ]);
+
+        $this->get(app(OrderAccessUrlService::class)->liqPay($order))
+            ->assertOk()
+            ->assertViewIs('pages.store.payment')
+            ->assertSee('bona-commerce-page bona-liqpay-page', false)
+            ->assertSee('data-liqpay-card', false)
+            ->assertDontSee('class="main-header"', false);
+    }
 }

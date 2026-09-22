@@ -22,6 +22,7 @@ class ShowLiqPayPaymentPaypartPageAction extends BaseAction
         $data = $paymentService->paypartByCardForm($order->summary, $order->id);
 
         return view('pages.store.payment', [
+            'order' => $order,
             'data' => $data['data'],
             'signature' => $data['signature'],
         ]);

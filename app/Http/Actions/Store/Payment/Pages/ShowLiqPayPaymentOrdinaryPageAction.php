@@ -24,6 +24,7 @@ class ShowLiqPayPaymentOrdinaryPageAction extends BaseAction
         $data = $paymentService->payByCardForm($orderService->getOrderSummary($order)['total'], $order->id);
 
         return view('pages.store.payment', [
+            'order' => $order,
             'data' => $data['data'],
             'signature' => $data['signature'],
         ]);

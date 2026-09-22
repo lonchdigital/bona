@@ -89,6 +89,7 @@ class CheckoutAuthenticationTest extends TestCase
             ->assertSee('data-checkout-auth-open', false)
             ->assertSee('data-checkout-auth-dialog', false)
             ->assertSee('aria-labelledby="checkout-auth-title"', false)
+            ->assertSee('aria-describedby="checkout-auth-intro"', false)
             ->assertSee('autocomplete="current-password"', false);
     }
 }

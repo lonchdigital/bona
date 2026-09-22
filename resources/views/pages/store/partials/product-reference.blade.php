@@ -557,7 +557,7 @@
             <div class="kit-dialog__intro">
                 <div class="kicker">{{ $isRussian ? 'Комплектация дверей' : 'Комплектація дверей' }}</div>
                 <h2>{{ $isRussian ? 'Соберите свой комплект' : 'Зберіть свій комплект' }}</h2>
-                <p>{{ $isRussian ? 'Выберите по одному совместимому элементу в каждой категории. Итоговая стоимость обновится автоматически.' : 'Оберіть по одному сумісному елементу в кожній категорії. Підсумкова вартість оновиться автоматично.' }}</p>
+                <p>{{ $isRussian ? 'Добавьте нужный вариант в каждой категории и укажите количество. Итоговая стоимость обновится автоматически.' : 'Додайте потрібний варіант у кожній категорії та вкажіть кількість. Підсумкова вартість оновиться автоматично.' }}</p>
             </div>
         </div>
         <div class="kit-dialog__layout">
@@ -574,17 +574,30 @@
                 </nav>
                 <section class="kit-choice-panel" aria-live="polite">
                     <div class="kit-choice-panel__head">
-                        <div><span data-kit-choice-step>{{ $isRussian ? 'Шаг 01' : 'Крок 01' }}</span><h3 data-kit-choice-title>{{ array_key_first($categoryProducts) }}</h3><p>{{ $isRussian ? 'Выберите один совместимый вариант для этой категории.' : 'Оберіть один сумісний варіант для цієї категорії.' }}</p></div>
+                        <div><span data-kit-choice-step>{{ $isRussian ? 'Шаг 01' : 'Крок 01' }}</span><h3 data-kit-choice-title>{{ array_key_first($categoryProducts) }}</h3><p>{{ $isRussian ? 'Добавьте совместимый вариант и укажите нужное количество.' : 'Додайте сумісний варіант і вкажіть потрібну кількість.' }}</p></div>
                     </div>
                     <div class="kit-choice-grid" data-kit-choice-grid>
                         @foreach($categoryProducts as $categoryName => $subProducts)
                             @php($kitCategoryKey = (\Illuminate\Support\Str::slug((string) $categoryName) ?: 'group').'-'.$loop->index)
                             @foreach($subProducts as $subProduct)
                                 @php($carrierId = 'kit-carrier-'.$kitCategoryKey.'-'.$subProduct->id)
-                                <button class="kit-choice-card" type="button" data-kit-option="{{ $subProduct->id }}" data-kit-option-key="{{ $carrierId }}" data-kit-category-key="{{ $kitCategoryKey }}" data-kit-category-name="{{ $categoryName }}" data-kit-label="{{ $subProduct->name }}" data-kit-price="{{ (float) $subProduct->price }}" data-kit-carrier="{{ $carrierId }}" aria-pressed="false" @if(!$loop->parent->first) hidden @endif>
+                                <article class="kit-choice-card" data-kit-option="{{ $subProduct->id }}" data-kit-option-key="{{ $carrierId }}" data-kit-category-key="{{ $kitCategoryKey }}" data-kit-category-name="{{ $categoryName }}" data-kit-label="{{ $subProduct->name }}" data-kit-price="{{ (float) $subProduct->price }}" data-kit-carrier="{{ $carrierId }}" @if(!$loop->parent->first) hidden @endif>
                                     <span class="kit-choice-card__image"><img src="{{ $subProduct->preview_image_url ?: asset('assets/images/no-image.png') }}" alt="{{ $subProduct->name }}" width="300" height="225" loading="lazy" decoding="async"><i aria-hidden="true">✓</i></span>
-                                    <span class="kit-choice-card__copy"><b>{{ $subProduct->name }}</b><small>{{ collect([$subProduct->sku, $subProduct->brand?->name])->filter()->join(' · ') ?: $categoryName }}</small><strong>+{{ number_format((float) $subProduct->price, 0, '.', ' ') }} {{ $baseCurrency->name_short }}</strong><em>{{ $isRussian ? 'Выбрать' : 'Обрати' }}</em></span>
-                                </button>
+                                    <div class="kit-choice-card__copy">
+                                        <b>{{ $subProduct->name }}</b>
+                                        <small>{{ collect([$subProduct->sku, $subProduct->brand?->name])->filter()->join(' · ') ?: $categoryName }}</small>
+                                        <strong>+{{ number_format((float) $subProduct->price, 0, '.', ' ') }} {{ $baseCurrency->name_short }}</strong>
+                                        <div class="kit-choice-card__actions">
+                                            <span>{{ $isRussian ? 'Количество' : 'Кількість' }}</span>
+                                            <div class="kit-choice-quantity" role="group" aria-label="{{ $isRussian ? 'Количество' : 'Кількість' }}: {{ $subProduct->name }}">
+                                                <button type="button" data-kit-quantity-minus aria-label="{{ $isRussian ? 'Уменьшить количество' : 'Зменшити кількість' }}">−</button>
+                                                <input type="number" value="1" min="1" max="99" step="1" inputmode="numeric" data-kit-quantity aria-label="{{ $isRussian ? 'Количество' : 'Кількість' }}: {{ $subProduct->name }}">
+                                                <button type="button" data-kit-quantity-plus aria-label="{{ $isRussian ? 'Увеличить количество' : 'Збільшити кількість' }}">+</button>
+                                            </div>
+                                            <button class="kit-choice-card__add" type="button" data-kit-add aria-pressed="false">{{ $isRussian ? 'Добавить' : 'Додати' }}</button>
+                                        </div>
+                                    </div>
+                                </article>
                             @endforeach
                         @endforeach
                     </div>

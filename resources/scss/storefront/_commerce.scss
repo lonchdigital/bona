@@ -1804,6 +1804,121 @@
     }
 }
 
+.bona-liqpay-page {
+    min-height: 70vh;
+
+    &__section {
+        padding: 34px 0 96px;
+        border-top: 1px solid var(--bona-line);
+    }
+
+    &__layout {
+        display: grid;
+        grid-template-columns: minmax(260px, 340px) minmax(0, 700px);
+        align-items: start;
+        justify-content: center;
+        gap: clamp(48px, 7vw, 104px);
+    }
+
+    &__intro {
+        padding-top: 25px;
+
+        h1 {
+            margin: 0;
+            color: var(--bona-ink);
+            font: 400 clamp(45px, 5vw, 64px)/.98 var(--bona-display);
+            letter-spacing: -.025em;
+        }
+
+        > p:not(.bona-commerce-kicker):not(.bona-liqpay-page__security) {
+            margin: 20px 0 0;
+            color: var(--bona-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+    }
+
+    &__order {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 29px;
+        padding: 15px 0;
+        border-block: 1px solid var(--bona-line);
+
+        span {
+            color: var(--bona-muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        strong {
+            color: var(--bona-ink);
+            font-size: 14px;
+            letter-spacing: .04em;
+        }
+    }
+
+    &__security {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 17px 0 0;
+        color: var(--bona-muted);
+        font-size: 10px;
+        line-height: 1.55;
+
+        svg { width: 19px; height: 19px; flex: 0 0 19px; color: var(--bona-gold-text); }
+    }
+}
+
+.bona-liqpay-card {
+    position: relative;
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--bona-line);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(35, 32, 27, .07);
+
+    &:not(.is-ready) { min-height: 520px; }
+
+    &__loading {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 14px;
+        padding: 28px;
+        color: var(--bona-muted);
+        text-align: center;
+
+        > span {
+            width: 31px;
+            height: 31px;
+            border: 2px solid var(--bona-line);
+            border-top-color: var(--bona-gold-text);
+            border-radius: 50%;
+            animation: bona-liqpay-spin .75s linear infinite;
+        }
+
+        p { max-width: 420px; margin: 0; font-size: 12px; line-height: 1.6; }
+
+        &.is-error > span { display: none; }
+    }
+
+    &__error { margin: 0; padding: 30px; color: #873b34; text-align: center; }
+
+    #liqpay_checkout { width: 100%; }
+    #liqpay_checkout iframe { width: 100% !important; border: 0 !important; }
+}
+
+@keyframes bona-liqpay-spin { to { transform: rotate(360deg); } }
+
 @media (max-width: 1180px) {
     .bona-commerce-layout { grid-template-columns: minmax(0, 1fr) 350px; gap: 30px; }
     .bona-checkout-layout { grid-template-columns: minmax(0, 1fr) minmax(292px, 340px); gap: 24px; }
@@ -1815,6 +1930,9 @@
 }
 
 @media (max-width: 900px) {
+    .bona-liqpay-page__layout { grid-template-columns: minmax(0, 700px); gap: 32px; }
+    .bona-liqpay-page__intro { max-width: 620px; padding-top: 0; }
+
     .bona-commerce-layout { grid-template-columns: 1fr; }
     .bona-checkout-layout { grid-template-columns: 1fr; }
     .bona-checkout-summary { position: static; max-height: none; overflow: visible; }
@@ -1833,6 +1951,12 @@
 }
 
 @media (max-width: 640px) {
+    .bona-liqpay-page__section { padding: 22px 0 76px; }
+    .bona-liqpay-page__layout { gap: 24px; }
+    .bona-liqpay-page__intro h1 { font-size: 43px; }
+    .bona-liqpay-card { padding: 8px; border-radius: 13px; box-shadow: 0 10px 30px rgba(35, 32, 27, .06); }
+    .bona-liqpay-card:not(.is-ready) { min-height: 470px; }
+
     .bona-commerce-hero__grid { padding-block: 30px 28px; }
     .bona-commerce-hero__grid h1 { font-size: 55px; }
     .bona-commerce-layout,

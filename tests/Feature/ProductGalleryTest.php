@@ -29,6 +29,7 @@ class ProductGalleryTest extends TestCase
         $referenceScript = file_get_contents(resource_path('js/store/pages/store.product.page/product-reference.js'));
         $cartScript = file_get_contents(resource_path('js/store/common/cart.js'));
         $referenceStyles = file_get_contents(resource_path('scss/storefront/_product-reference.scss'));
+        $storefrontStyles = file_get_contents(resource_path('scss/storefront.scss'));
         $redesignStyles = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
         $referenceView = file_get_contents(resource_path('views/pages/store/partials/product-reference.blade.php'));
         $consultationModal = file_get_contents(resource_path('views/components/store/call-consultation-modal.blade.php'));
@@ -47,6 +48,10 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString("querySelector('.product-kit-selections')", $referenceScript);
         $this->assertStringContainsString("className = 'kit-dialog__remove'", $referenceScript);
         $this->assertStringContainsString('draft.delete(choice.dataset.kitCategoryKey)', $referenceScript);
+        $this->assertStringContainsString('syncCarrierQuantity(carrier, quantity * kitQuantity, kitQuantity)', $referenceScript);
+        $this->assertStringContainsString('data-kit-quantity', $referenceView);
+        $this->assertStringContainsString('data-kit-add', $referenceView);
+        $this->assertStringContainsString('kit-choice-card__add', $referenceStyles);
         $this->assertStringNotContainsString('data-kit-choice-clear', $referenceScript);
         $this->assertStringNotContainsString('data-kit-choice-clear', $referenceView);
         $this->assertStringContainsString('data-product-section-nav', $referenceView);
@@ -75,5 +80,9 @@ class ProductGalleryTest extends TestCase
         $this->assertStringContainsString('.art-heart-outline { display: none; }', $referenceStyles);
         $this->assertStringContainsString('&::before,', $referenceStyles);
         $this->assertMatchesRegularExpression('/&__social-icon\s*\{.*?width:\s*16px;.*?height:\s*16px;/s', $redesignStyles);
+        $this->assertMatchesRegularExpression(
+            "/@media \(max-width: 767px\).*?input:not\(\[type='button'\]\).*?font-size: 16px !important;/s",
+            $storefrontStyles
+        );
     }
 }

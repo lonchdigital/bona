@@ -267,9 +267,10 @@ class CheckoutTest extends TestCase
         $this->get(route('store.checkout.page'))
             ->assertOk()
             ->assertSee(trans('base.checkout_registered_account_title'))
-            ->assertSee(trans('base.checkout_registered_account_action'))
-            ->assertSee('data-checkout-account-error', false)
-            ->assertSee('data-auth-email="'.$existingUser->email.'"', false);
+            ->assertSee(trans('auth.forgot_password'))
+            ->assertSee('data-checkout-auth-auto-open="true"', false)
+            ->assertSee('data-checkout-auth-email="'.$existingUser->email.'"', false)
+            ->assertDontSee('data-checkout-account-error', false);
     }
 
     public function test_an_order_is_refused_with_an_unusable_phone(): void

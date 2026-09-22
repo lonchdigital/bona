@@ -564,6 +564,101 @@ html.product-dialog-is-open body {
     &:hover { background: #f4efe5; color: var(--ink); }
 }
 
+.product-body .kit-choice-card {
+    min-height: 445px;
+    cursor: default;
+}
+
+.product-body .kit-choice-card__copy {
+    min-height: 220px;
+
+    strong {
+        margin-top: 12px;
+        padding-top: 0;
+    }
+}
+
+.product-body .kit-choice-card__actions {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: 7px 9px;
+    margin-top: auto;
+    padding-top: 13px;
+
+    > span {
+        grid-column: 1 / -1;
+        color: var(--muted-2);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+}
+
+.product-body .kit-choice-quantity {
+    display: grid;
+    grid-template-columns: 36px 40px 36px;
+    height: 46px;
+    overflow: hidden;
+    border: 1px solid #d8d1c6;
+    border-radius: 999px;
+    background: #fff;
+
+    button,
+    input {
+        width: 100%;
+        min-width: 0;
+        height: 44px;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--ink);
+        font: 700 13px/1 var(--bona-ui);
+        text-align: center;
+    }
+
+    button {
+        cursor: pointer;
+
+        &:hover { background: #eeeae2; }
+        &:focus-visible { box-shadow: inset 0 0 0 2px var(--gold); }
+    }
+
+    input {
+        border-inline: 1px solid #e5dfd5;
+        appearance: textfield;
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button { margin: 0; appearance: none; }
+
+        &:focus { box-shadow: inset 0 0 0 2px var(--gold); }
+    }
+}
+
+.product-body .kit-choice-card__add {
+    min-width: 0;
+    min-height: 46px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: #eeeae2;
+    color: var(--ink);
+    font: 800 10.5px/1 var(--bona-ui);
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease;
+
+    &:hover { background: #e1dbd0; }
+    &:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+}
+
+.product-body .kit-choice-card.is-selected .kit-choice-card__add {
+    background: var(--ink);
+    color: #fff;
+}
+
 .product-body .kit-dialog__selection-heading {
     display: flex;
     align-items: center;
