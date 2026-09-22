@@ -519,6 +519,8 @@ return [
     'product_reviews_empty' => 'Про цей товар ще немає відгуків. Будьте першим.',
     'product_review_about_hint' => 'Розкажіть саме про ці двері: як виглядають, як стали, як тримаються в користуванні.',
     'product_review_based_on' => 'на основі :COUNT відгуків',
+    'product_description_fallback' => ':PRODUCT — товар категорії «:CATEGORY». Актуальна ціна вказана на сторінці. Замовлення доступне онлайн із доставкою по Україні.',
+    'product_description_fallback_with_brand' => ':PRODUCT — товар категорії «:CATEGORY» від бренду :BRAND. Актуальна ціна вказана на сторінці. Замовлення доступне онлайн із доставкою по Україні.',
     'llms_categories' => 'Підкатегорії',
     'llms_brands' => 'Бренди',
     'home' => 'Головна',

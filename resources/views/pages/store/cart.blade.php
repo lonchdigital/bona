@@ -94,7 +94,7 @@
                 <div class="bona-payment-marks" aria-label="{{ trans('base.payments_methods') }}">
                     <img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa">
                     <img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard">
-                    <span>LiqPay</span>
+                    <img class="bona-payment-marks__liqpay" src="{{ Vite::asset('resources/img/payment/liqpay-method.svg') }}" alt="LiqPay">
                 </div>
             </aside>
         </div>

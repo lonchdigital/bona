@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\AboutUsConfig;
 use App\Models\Brand;
+use App\Models\DeliveryConfig;
 use App\Models\ServicesConfig;
 use App\Models\User;
 use App\Models\Work;
@@ -82,6 +83,31 @@ class ContentPagesRedesignTest extends TestCase
             'Текст, відредагований в адмінці.',
             $config->fresh()->getTranslation('meta_description', 'uk'),
         );
+    }
+
+    public function test_delivery_copy_is_consistent_and_uses_the_current_city_tariff(): void
+    {
+        $config = DeliveryConfig::create([
+            'title' => ['uk' => 'Доставка', 'ru' => 'Доставка'],
+            'meta_description' => [
+                'uk' => 'Замовити доставку дверей от Bona-doors по Одессе и всей Украине',
+                'ru' => 'Заказать доставку дверей от Bona-doors по Одессе и всей Украине',
+            ],
+            'description' => [
+                'uk' => '<p>Ви можете забрати замовлення зі складу м.Одеса та м.Київ самостійно, або замовити доставку.</p><p>Тариф доставки по м.Одеса та м.Київ - 1000 грн (підйом сплачується окремо).</p><p>Доставити замовлення до інших населених пунктів України ми зможемо службою доставки «Нова Пошта» та SAT.</p><p>Перед відправкою Ви маєте здійснити 100% оплату вартості замовлення.</p><p>Доставка службою перевезення "Нова Пошта" та SAT здійснюється до під\'їзду.</p>',
+                'ru' => '<p>Вы можете забрать заказ со склада г.Одесса и г.Киев самостоятельно или заказать доставку.</p><p>Тариф доставки по г.Одесса и г.Киев – 800 грн (подъем оплачивается отдельно).</p><p>Доставить заказ в другие населенные пункты Украины мы сможем службой доставки «Новая Почта» и SAT.</p><p>Перед отправкой Вы должны произвести 100% оплату стоимости заказа.</p><p>Доставка службой перевозки Новая Почта и SAT осуществляется до подъезда.</p>',
+            ],
+        ]);
+
+        $migration = require database_path('migrations/2026_09_22_120000_clean_delivery_compliance_copy.php');
+        $migration->up();
+
+        $config->refresh();
+        $this->assertStringContainsString('Bona Doors в Одесі, Києві та по Україні', $config->getTranslation('meta_description', 'uk'));
+        $this->assertStringContainsString('Вартість доставки в межах Одеси та Києва — 1000 грн.', $config->getTranslation('description', 'uk'));
+        $this->assertStringContainsString('Стоимость доставки в пределах Одессы и Киева — 1000 грн.', $config->getTranslation('description', 'ru'));
+        $this->assertStringNotContainsString('по Одессе', $config->getTranslation('meta_description', 'uk'));
+        $this->assertStringNotContainsString('800 грн', $config->getTranslation('description', 'ru'));
     }
 
     public function test_about_page_section_headings_are_translatable(): void

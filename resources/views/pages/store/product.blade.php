@@ -14,6 +14,22 @@
 
     $productDescriptionHtml = trim((string) ($productText['content'] ?? ''));
     $productShortHtml = trim((string) ($productText['short_content'] ?? ''));
+
+    if (! filled(strip_tags($productDescriptionHtml)) && filled(strip_tags($productShortHtml))) {
+        $productDescriptionHtml = $productShortHtml;
+    }
+
+    if (! filled(strip_tags($productDescriptionHtml))) {
+        $fallbackKey = filled($product->brand?->name)
+            ? 'base.product_description_fallback_with_brand'
+            : 'base.product_description_fallback';
+        $productDescriptionHtml = '<p>'.e(trans($fallbackKey, [
+            'PRODUCT' => trim((string) $product->name),
+            'CATEGORY' => trim((string) $product->productType->name),
+            'BRAND' => trim((string) $product->brand?->name),
+        ])).'</p>';
+    }
+
     $productDescription = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($productDescriptionHtml ?: $productShortHtml))));
     $productImages = collect([$product->main_image_path])
         ->merge($productGallery->pluck('image_path'))

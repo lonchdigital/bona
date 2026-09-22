@@ -519,6 +519,8 @@ return [
     'product_reviews_empty' => 'Об этом товаре ещё нет отзывов. Будьте первым.',
     'product_review_about_hint' => 'Расскажите именно об этих дверях: как выглядят, как встали, как держатся в использовании.',
     'product_review_based_on' => 'на основе :COUNT отзывов',
+    'product_description_fallback' => ':PRODUCT — товар категории «:CATEGORY». Актуальная цена указана на странице. Заказ доступен онлайн с доставкой по Украине.',
+    'product_description_fallback_with_brand' => ':PRODUCT — товар категории «:CATEGORY» бренда :BRAND. Актуальная цена указана на странице. Заказ доступен онлайн с доставкой по Украине.',
     'llms_categories' => 'Подкатегории',
     'llms_brands' => 'Бренды',
     'home' => 'Главная',

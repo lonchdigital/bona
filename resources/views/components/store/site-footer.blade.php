@@ -123,9 +123,10 @@
                 <button type="button" data-cookie-settings>{{ trans('base.cookie_settings') }}</button>
             </nav>
             <a class="bona-footer__credit" href="https://lonch.digital" target="_blank" rel="noopener noreferrer">Powered by Lonch</a>
-            <span class="bona-footer__payments" aria-label="Visa, Mastercard">
+            <span class="bona-footer__payments" aria-label="Visa, Mastercard, LiqPay">
                 <span><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa" width="40" height="20" loading="lazy"></span>
                 <span><img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard" width="40" height="20" loading="lazy"></span>
+                <span class="bona-footer__payment--liqpay"><img src="{{ Vite::asset('resources/img/payment/liqpay.svg') }}" alt="LiqPay" width="68" height="14" loading="lazy"></span>
             </span>
         </div>
     </div>

@@ -556,6 +556,44 @@ class EditorialCommercePagesTest extends TestCase
             ->assertSee('Короткий вступ про модель.');
     }
 
+    public function test_product_without_admin_copy_gets_a_visible_localized_description(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct([
+            'slug' => 'product-without-description',
+            'name' => ['uk' => 'Ручка Nova', 'ru' => 'Ручка Nova'],
+            'meta_description' => ['uk' => '', 'ru' => ''],
+        ]);
+
+        $this->get(route('store.product.page', ['productSlug' => $product->slug]))
+            ->assertOk()
+            ->assertSee('Ручка Nova — товар категорії')
+            ->assertSee('data-product-tab="description"', false)
+            ->assertSee('"description":"Ручка Nova — товар категорії', false);
+
+        $this->get('/ru/product/'.$product->slug)
+            ->assertOk()
+            ->assertSee('Ручка Nova — товар категории');
+    }
+
+    public function test_product_short_copy_is_used_when_the_full_description_is_empty(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct(['slug' => 'product-with-short-description']);
+        ProductText::create([
+            'product_id' => $product->id,
+            'language' => 'uk',
+            'short_content' => '<p>Короткий опис від менеджера.</p>',
+            'content' => '',
+        ]);
+
+        $this->get(route('store.product.page', ['productSlug' => $product->slug]))
+            ->assertOk()
+            ->assertSee('Короткий опис від менеджера.')
+            ->assertSee('"description":"Короткий опис від менеджера."', false)
+            ->assertDontSee('— товар категорії');
+    }
+
     public function test_default_product_sections_render_from_admin_managed_content_and_keep_dynamic_instalments(): void
     {
         $this->seedCurrency();

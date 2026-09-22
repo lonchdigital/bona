@@ -332,7 +332,7 @@
                 <button type="submit" class="bona-button bona-button--light bona-button--full" id="submit-button"><span>{{ trans('base.checkout_confirm_order') }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <div id="loader" class="bona-checkout-loader" role="status" hidden>{{ trans('base.checkout_processing') }}</div>
                 <p class="bona-summary-note">{{ trans('base.checkout_summary_note') }}</p>
-                <div class="bona-payment-marks" aria-label="{{ trans('base.payments_methods') }}"><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa"><img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard"><span>LiqPay</span></div>
+                <div class="bona-payment-marks" aria-label="{{ trans('base.payments_methods') }}"><img src="{{ Vite::asset('resources/img/payment/visa.svg') }}" alt="Visa"><img src="{{ Vite::asset('resources/img/payment/mastercard.svg') }}" alt="Mastercard"><img class="bona-payment-marks__liqpay" src="{{ Vite::asset('resources/img/payment/liqpay-method.svg') }}" alt="LiqPay"></div>
             </aside>
         </form>
 
