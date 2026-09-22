@@ -63,4 +63,59 @@ class ProductContentImporterTest extends TestCase
             ->assertSee('"@type":"FAQPage"', false)
             ->assertSee('Оздоблення: натуральний шпон', false);
     }
+
+    public function test_it_imports_the_first_korfad_batch_and_is_idempotent(): void
+    {
+        $products = collect([
+            'mizhkimnatni-dveri-aliano-al-01-korfad',
+            'mizhkimnatni-dveri-aliano-al-02-korfad',
+        ])->mapWithKeys(function (string $slug) {
+            $product = $this->makeProduct(['slug' => $slug]);
+
+            foreach (['uk', 'ru'] as $language) {
+                ProductText::query()->create([
+                    'product_id' => $product->id,
+                    'language' => $language,
+                    'content' => str_repeat('Спільний опис Korfad. ', 20),
+                ]);
+            }
+
+            return [$slug => $product];
+        });
+
+        $path = database_path('content/products/2026_09_22_korfad_aliano_batch_01.json');
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(2, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        foreach ($products as $slug => $product) {
+            $model = str_contains($slug, 'al-01') ? 'AL-01' : 'AL-02';
+
+            foreach (['uk', 'ru'] as $language) {
+                $content = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $language])
+                    ->value('content');
+
+                $this->assertStringContainsString('<h2>', $content);
+                $this->assertStringContainsString($model, $content);
+            }
+
+            $this->assertSame(12, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(4, ProductFaqs::query()->where('product_id', $product->id)->count());
+
+            $this->get("/product/{$slug}")
+                ->assertOk()
+                ->assertSee($model)
+                ->assertSee('"@type":"FAQPage"', false);
+        }
+
+        $this->assertNotSame(
+            ProductText::query()->where(['product_id' => $products->first()->id, 'language' => 'uk'])->value('content'),
+            ProductText::query()->where(['product_id' => $products->last()->id, 'language' => 'uk'])->value('content'),
+        );
+    }
 }

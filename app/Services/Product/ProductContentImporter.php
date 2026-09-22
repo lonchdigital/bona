@@ -80,7 +80,10 @@ class ProductContentImporter
 
             // "replace_content": true is for shared boilerplate that is long
             // enough to look written but identical across a whole brand.
-            if ($content !== '' && ($this->isThin($text->content) || ($entry['replace_content'] ?? false) === true)) {
+            if ($content !== ''
+                && ($this->isThin($text->content) || ($entry['replace_content'] ?? false) === true)
+                && (string) $text->content !== $content
+            ) {
                 $values['content'] = $content;
             }
             if ($short !== '' && blank(strip_tags((string) $text->short_content))) {

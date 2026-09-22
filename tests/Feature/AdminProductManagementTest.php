@@ -13,6 +13,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\Product\DTO\FilterProductAdminDTO;
 use App\Services\Product\DTO\FilterProductDTO;
+use App\Services\Product\ProductContentImporter;
 use App\Services\Product\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -499,6 +500,49 @@ class AdminProductManagementTest extends TestCase
             ->get(route('admin.product.edit.page', ['productType' => $complete->product_type_id, 'product' => $complete->id]))
             ->assertOk()
             ->assertDontSee('data-product-content-gaps', false);
+    }
+
+    public function test_imported_product_content_is_editable_in_admin_and_rendered_on_the_storefront(): void
+    {
+        $this->seedCurrency();
+        $product = $this->makeProduct(['slug' => 'mizhkimnatni-dveri-aliano-al-01-korfad']);
+
+        foreach (['uk', 'ru'] as $language) {
+            ProductText::query()->create([
+                'product_id' => $product->id,
+                'language' => $language,
+                'content' => str_repeat('Спільний опис Korfad. ', 20),
+            ]);
+        }
+
+        app(ProductContentImporter::class)->importFile(
+            database_path('content/products/2026_09_22_korfad_aliano_batch_01.json'),
+        );
+
+        $adminResponse = $this->actingAs($this->admin())
+            ->get(route('admin.product.edit.page', [
+                'productType' => $product->product_type_id,
+                'product' => $product->id,
+            ]));
+
+        $adminResponse
+            ->assertOk()
+            ->assertViewHas('productText', fn (array $text) => str_contains(
+                data_get($text, 'content.uk', ''),
+                'Міжкімнатні двері Korfad Aliano AL-01',
+            ))
+            ->assertViewHas('characteristics', fn ($items) => $items->contains(
+                fn ($item) => $item->getTranslation('name', 'uk') === 'Дизайн',
+            ))
+            ->assertViewHas('productFaqs', fn ($items) => $items->contains(
+                fn ($item) => $item->getTranslation('question', 'uk') === 'Чим вирізняється дизайн Aliano AL-01?',
+            ));
+
+        $this->get('/product/mizhkimnatni-dveri-aliano-al-01-korfad')
+            ->assertOk()
+            ->assertSee('Міжкімнатні двері Korfad Aliano AL-01')
+            ->assertSee('Декори та скління')
+            ->assertSee('Чим вирізняється дизайн Aliano AL-01?');
     }
 
     private function admin(): User
