@@ -406,7 +406,7 @@ class ProductContentImporterTest extends TestCase
                     ->where(['product_id' => $product->id, 'language' => $language])
                     ->value('content');
 
-                $this->assertStringContainsString("Korfad Exellence ".ucfirst(strtolower($model)), $content);
+                $this->assertStringContainsString('Korfad Exellence '.ucfirst(strtolower($model)), $content);
                 $this->assertSame(1, substr_count($content, '<h2>'));
                 $this->assertSame(3, substr_count($content, '<h3>'));
             }
