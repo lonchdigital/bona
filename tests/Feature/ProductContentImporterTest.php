@@ -31,11 +31,19 @@ class ProductContentImporterTest extends TestCase
         ProductFaqs::query()->create(['product_id' => $written->id, 'question' => ['uk' => 'Q', 'ru' => 'Q'], 'answer' => ['uk' => 'A', 'ru' => 'A']]);
 
         $boilerplate = $this->makeProduct(['slug' => 'replace-me']);
+        $boilerplate->update(['meta_title' => ['uk' => 'Повторюваний title', 'ru' => 'Повторяющийся title']]);
         ProductText::query()->create(['product_id' => $boilerplate->id, 'language' => 'uk', 'content' => $longText]);
         $replacePath = tempnam(sys_get_temp_dir(), 'content').'.json';
-        file_put_contents($replacePath, json_encode([['slug' => 'replace-me', 'replace_content' => true, 'content' => ['uk' => '<p>Новий унікальний опис.</p>']]], JSON_UNESCAPED_UNICODE));
+        file_put_contents($replacePath, json_encode([[
+            'slug' => 'replace-me',
+            'replace_content' => true,
+            'replace_meta' => true,
+            'content' => ['uk' => '<p>Новий унікальний опис.</p>'],
+            'meta_title' => ['uk' => 'Новий title'],
+        ]], JSON_UNESCAPED_UNICODE));
         app(ProductContentImporter::class)->importFile($replacePath);
         $this->assertSame('<p>Новий унікальний опис.</p>', ProductText::query()->where(['product_id' => $boilerplate->id, 'language' => 'uk'])->value('content'));
+        $this->assertSame('Новий title', $boilerplate->fresh()->getTranslation('meta_title', 'uk'));
 
         $path = database_path('content/products/2026_09_17_hidden_doors.json');
         $importer = app(ProductContentImporter::class);
@@ -117,5 +125,49 @@ class ProductContentImporterTest extends TestCase
             ProductText::query()->where(['product_id' => $products->first()->id, 'language' => 'uk'])->value('content'),
             ProductText::query()->where(['product_id' => $products->last()->id, 'language' => 'uk'])->value('content'),
         );
+    }
+
+    public function test_it_imports_the_second_korfad_batch_and_keeps_every_description_unique(): void
+    {
+        $slugs = collect(range(3, 7))->map(
+            fn (int $model) => sprintf('mizhkimnatni-dveri-aliano-al-%02d-korfad', $model),
+        );
+        $products = $slugs->mapWithKeys(function (string $slug) {
+            $product = $this->makeProduct(['slug' => $slug]);
+
+            foreach (['uk', 'ru'] as $language) {
+                ProductText::query()->create([
+                    'product_id' => $product->id,
+                    'language' => $language,
+                    'content' => str_repeat('Спільний опис Korfad. ', 20),
+                ]);
+            }
+
+            return [$slug => $product];
+        });
+
+        $path = database_path('content/products/2026_09_22_korfad_aliano_batch_02.json');
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(5, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        $descriptions = [];
+        foreach ($products as $slug => $product) {
+            $model = strtoupper(str_replace(['mizhkimnatni-dveri-aliano-', '-korfad'], '', $slug));
+            $content = ProductText::query()
+                ->where(['product_id' => $product->id, 'language' => 'uk'])
+                ->value('content');
+
+            $this->assertStringContainsString("Korfad Aliano {$model}", $content);
+            $this->assertSame(12, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(4, ProductFaqs::query()->where('product_id', $product->id)->count());
+            $descriptions[] = $content;
+        }
+
+        $this->assertCount(5, array_unique($descriptions));
     }
 }

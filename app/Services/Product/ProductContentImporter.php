@@ -16,8 +16,8 @@ use InvalidArgumentException;
  * It only fills gaps: a description is written when the stored one is empty
  * or a one-line stub (or the entry sets "replace_content": true), characteristics are added only under names the product
  * does not have yet, FAQ only when the product has none and meta only when it
- * is blank. Anything a manager has written in the admin is left untouched, so
- * the import is safe to run again.
+ * is blank. A reviewed batch can explicitly replace duplicated legacy meta via
+ * "replace_meta": true. Otherwise manager-written values stay untouched.
  */
 class ProductContentImporter
 {
@@ -147,11 +147,14 @@ class ProductContentImporter
     private function applyMeta(Product $product, array $entry): bool
     {
         $changed = false;
+        $replace = ($entry['replace_meta'] ?? false) === true;
 
         foreach (['meta_title', 'meta_description'] as $field) {
             foreach (self::LOCALES as $locale) {
                 $value = trim((string) data_get($entry, "{$field}.{$locale}", ''));
-                if ($value !== '' && blank($product->getTranslation($field, $locale, false))) {
+                $stored = (string) $product->getTranslation($field, $locale, false);
+
+                if ($value !== '' && ($replace || blank($stored)) && $stored !== $value) {
                     $product->setTranslation($field, $locale, $value);
                     $changed = true;
                 }

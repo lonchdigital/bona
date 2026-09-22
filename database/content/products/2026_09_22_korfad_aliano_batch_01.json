@@ -2,6 +2,7 @@
   {
     "slug": "mizhkimnatni-dveri-aliano-al-01-korfad",
     "replace_content": true,
+    "replace_meta": true,
     "short_content": {
       "uk": "<p>Korfad Aliano AL-01 — міжкімнатні двері з двома вузькими вертикальними вставками зі скла або дзеркала.</p>",
       "ru": "<p>Korfad Aliano AL-01 — межкомнатные двери с двумя узкими вертикальными вставками из стекла или зеркала.</p>"
@@ -90,6 +91,7 @@
   {
     "slug": "mizhkimnatni-dveri-aliano-al-02-korfad",
     "replace_content": true,
+    "replace_meta": true,
     "short_content": {
       "uk": "<p>Korfad Aliano AL-02 — міжкімнатні двері з широкою центральною вставкою зі скла або дзеркала.</p>",
       "ru": "<p>Korfad Aliano AL-02 — межкомнатные двери с широкой центральной вставкой из стекла или зеркала.</p>"
