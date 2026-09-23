@@ -931,7 +931,17 @@ class ProductContentImporterTest extends TestCase
 
     public function test_it_imports_the_mvm_z1220_batch_and_keeps_every_variant_unique(): void
     {
-        $path = database_path('content/products/2026_09_23_mvm_z1220_batch_01.json');
+        $this->assertMvmBatchImports('2026_09_23_mvm_z1220_batch_01.json', 9);
+    }
+
+    public function test_it_imports_the_mvm_z1259_to_z1319_batch_and_keeps_every_variant_unique(): void
+    {
+        $this->assertMvmBatchImports('2026_09_23_mvm_z1259_z1319_batch_01.json', 20);
+    }
+
+    private function assertMvmBatchImports(string $filename, int $expectedProducts): void
+    {
+        $path = database_path("content/products/{$filename}");
         $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
         $products = $entries->mapWithKeys(function (array $entry) {
             $product = $this->makeProduct(['slug' => $entry['slug']]);
@@ -943,7 +953,7 @@ class ProductContentImporterTest extends TestCase
         $first = $importer->importFile($path);
         $second = $importer->importFile($path);
 
-        $this->assertSame(9, $first['products']);
+        $this->assertSame($expectedProducts, $first['products']);
         $this->assertSame([], $first['missing']);
         $this->assertSame(0, $second['products']);
 
@@ -973,6 +983,6 @@ class ProductContentImporterTest extends TestCase
                 ->value('content');
         }
 
-        $this->assertCount(9, array_unique($descriptions));
+        $this->assertCount($expectedProducts, array_unique($descriptions));
     }
 }
