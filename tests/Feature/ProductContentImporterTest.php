@@ -928,4 +928,51 @@ class ProductContentImporterTest extends TestCase
 
         $this->assertCount(3, array_unique($descriptions));
     }
+
+    public function test_it_imports_the_mvm_z1220_batch_and_keeps_every_variant_unique(): void
+    {
+        $path = database_path('content/products/2026_09_23_mvm_z1220_batch_01.json');
+        $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
+        $products = $entries->mapWithKeys(function (array $entry) {
+            $product = $this->makeProduct(['slug' => $entry['slug']]);
+
+            return [$entry['slug'] => $product];
+        });
+
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(9, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        $descriptions = [];
+        foreach ($entries as $entry) {
+            $product = $products[$entry['slug']];
+            $model = collect($entry['characteristics'])
+                ->firstWhere('name.uk', 'Модель')['value']['uk'];
+
+            foreach (['uk', 'ru'] as $language) {
+                $text = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $language])
+                    ->firstOrFail();
+
+                $this->assertStringContainsString($model, $text->content);
+                $this->assertNotEmpty($text->short_content);
+                $this->assertNotEmpty($product->fresh()->getTranslation('meta_title', $language, false));
+                $this->assertNotEmpty($product->fresh()->getTranslation('meta_description', $language, false));
+                $this->assertSame(1, substr_count($text->content, '<h2>'));
+                $this->assertSame(3, substr_count($text->content, '<h3>'));
+            }
+
+            $this->assertSame(6, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(3, ProductFaqs::query()->where('product_id', $product->id)->count());
+            $descriptions[] = ProductText::query()
+                ->where(['product_id' => $product->id, 'language' => 'uk'])
+                ->value('content');
+        }
+
+        $this->assertCount(9, array_unique($descriptions));
+    }
 }
