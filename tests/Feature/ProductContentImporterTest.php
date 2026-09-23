@@ -954,6 +954,11 @@ class ProductContentImporterTest extends TestCase
         $this->assertMvmBatchImports('2026_09_23_mvm_z1809e20_z1810_batch_01.json', 24);
     }
 
+    public function test_it_imports_the_mvm_z1811_to_z1812_batch_and_keeps_every_variant_unique(): void
+    {
+        $this->assertMvmBatchImports('2026_09_23_mvm_z1811_z1812_batch_01.json', 21);
+    }
+
     private function assertMvmBatchImports(string $filename, int $expectedProducts): void
     {
         $path = database_path("content/products/{$filename}");
