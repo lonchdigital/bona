@@ -870,4 +870,62 @@ class ProductContentImporterTest extends TestCase
 
         $this->assertCount(3, array_unique($descriptions));
     }
+
+    public function test_it_imports_the_mvm_z1210_batch_and_keeps_every_variant_unique(): void
+    {
+        $variants = collect([
+            'HANDLE' => [
+                'slug' => 'z-1210-sn-cp-matoviy-nikel-polirovaniy-hrom',
+                'heading' => 'Z-1210',
+            ],
+            'CYLINDER' => [
+                'slug' => 'z-1210-sn-cp-z-nakladkoyu-pid-cilindr-matoviy-nikel-polirovaniy-hrom',
+                'heading' => 'Z-1210',
+            ],
+            'WC' => [
+                'slug' => 'z-1210-sn-cp-z-nakladkoyu-pid-wc-matoviy-nikel-polirovaniy-hrom',
+                'heading' => 'Z-1210',
+            ],
+        ]);
+        $products = $variants->mapWithKeys(function (array $details, string $variant) {
+            $product = $this->makeProduct(['slug' => $details['slug']]);
+
+            return [$variant => ['product' => $product, 'heading' => $details['heading']]];
+        });
+
+        $path = database_path('content/products/2026_09_23_mvm_z1210_batch_01.json');
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(3, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        $descriptions = [];
+        foreach ($products as $details) {
+            $product = $details['product'];
+
+            foreach (['uk', 'ru'] as $language) {
+                $text = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $language])
+                    ->firstOrFail();
+
+                $this->assertStringContainsString($details['heading'], $text->content);
+                $this->assertNotEmpty($text->short_content);
+                $this->assertNotEmpty($product->fresh()->getTranslation('meta_title', $language, false));
+                $this->assertNotEmpty($product->fresh()->getTranslation('meta_description', $language, false));
+                $this->assertSame(1, substr_count($text->content, '<h2>'));
+                $this->assertSame(3, substr_count($text->content, '<h3>'));
+            }
+
+            $this->assertSame(6, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(3, ProductFaqs::query()->where('product_id', $product->id)->count());
+            $descriptions[] = ProductText::query()
+                ->where(['product_id' => $product->id, 'language' => 'uk'])
+                ->value('content');
+        }
+
+        $this->assertCount(3, array_unique($descriptions));
+    }
 }
