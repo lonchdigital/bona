@@ -594,4 +594,75 @@ class ProductContentImporterTest extends TestCase
 
         $this->assertCount(5, array_unique($descriptions));
     }
+
+    public function test_it_imports_the_first_porto_group_batch_and_keeps_every_description_unique(): void
+    {
+        $models = collect([
+            'PARMA PM-10' => [
+                'slug' => 'mizhkimnatni-dveri-parma-pm-10-korfad',
+                'heading' => 'Korfad Parma PM-10',
+            ],
+            'PIANO DELUXE PND-01' => [
+                'slug' => 'mizhkimnatni-dveri-piano-deluxe-pnd-01-korfad',
+                'heading' => 'Korfad Piano Deluxe PND-01',
+            ],
+            'PORTO DELUXE PD-01' => [
+                'slug' => 'mizhkimnatni-dveri-porto-deluxe-pd-01-korfad',
+                'heading' => 'Korfad Porto Deluxe PD-01',
+            ],
+            'PORTO DELUXE PD-03' => [
+                'slug' => 'mizhkimnatni-dveri-porto-deluxe-pd-03-korfad',
+                'heading' => 'Korfad Porto Deluxe PD-03',
+            ],
+            'PORTO PR-01' => [
+                'slug' => 'mizhkimnatni-dveri-porto-pr-01-korfad',
+                'heading' => 'Korfad Porto PR-01',
+            ],
+        ]);
+        $products = $models->mapWithKeys(function (array $details, string $model) {
+            $product = $this->makeProduct(['slug' => $details['slug']]);
+
+            foreach (['uk', 'ru'] as $language) {
+                ProductText::query()->create([
+                    'product_id' => $product->id,
+                    'language' => $language,
+                    'content' => str_repeat('Спільний опис Korfad. ', 20),
+                ]);
+            }
+
+            return [$model => ['product' => $product, 'heading' => $details['heading']]];
+        });
+
+        $path = database_path('content/products/2026_09_23_korfad_porto_batch_01.json');
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(5, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        $descriptions = [];
+        foreach ($products as $details) {
+            $product = $details['product'];
+
+            foreach (['uk', 'ru'] as $language) {
+                $content = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $language])
+                    ->value('content');
+
+                $this->assertStringContainsString($details['heading'], $content);
+                $this->assertSame(1, substr_count($content, '<h2>'));
+                $this->assertSame(3, substr_count($content, '<h3>'));
+            }
+
+            $this->assertSame(12, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(4, ProductFaqs::query()->where('product_id', $product->id)->count());
+            $descriptions[] = ProductText::query()
+                ->where(['product_id' => $product->id, 'language' => 'uk'])
+                ->value('content');
+        }
+
+        $this->assertCount(5, array_unique($descriptions));
+    }
 }
