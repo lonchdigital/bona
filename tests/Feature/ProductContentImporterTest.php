@@ -807,4 +807,67 @@ class ProductContentImporterTest extends TestCase
 
         $this->assertCount(5, array_unique($descriptions));
     }
+
+    public function test_it_imports_the_venecia_batch_and_keeps_every_description_unique(): void
+    {
+        $models = collect([
+            'VENECIA DELUXE VND-02' => [
+                'slug' => 'mizhkimnatni-dveri-venecia-deluxe-vnd-02-korfad',
+                'heading' => 'Korfad Venecia Deluxe VND-02',
+            ],
+            'VENECIA DELUXE VND-04' => [
+                'slug' => 'mizhkimnatni-dveri-venecia-deluxe-vnd-04-korfad',
+                'heading' => 'Korfad Venecia Deluxe VND-04',
+            ],
+            'VENECIA DELUXE VND-05' => [
+                'slug' => 'mizhkimnatni-dveri-venecia-deluxe-vnd-05-korfad',
+                'heading' => 'Korfad Venecia Deluxe VND-05',
+            ],
+        ]);
+        $products = $models->mapWithKeys(function (array $details, string $model) {
+            $product = $this->makeProduct(['slug' => $details['slug']]);
+
+            foreach (['uk', 'ru'] as $language) {
+                ProductText::query()->create([
+                    'product_id' => $product->id,
+                    'language' => $language,
+                    'content' => str_repeat('Спільний опис Korfad. ', 20),
+                ]);
+            }
+
+            return [$model => ['product' => $product, 'heading' => $details['heading']]];
+        });
+
+        $path = database_path('content/products/2026_09_23_korfad_venecia_batch_01.json');
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(3, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        $descriptions = [];
+        foreach ($products as $details) {
+            $product = $details['product'];
+
+            foreach (['uk', 'ru'] as $language) {
+                $content = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $language])
+                    ->value('content');
+
+                $this->assertStringContainsString($details['heading'], $content);
+                $this->assertSame(1, substr_count($content, '<h2>'));
+                $this->assertSame(3, substr_count($content, '<h3>'));
+            }
+
+            $this->assertSame(12, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(4, ProductFaqs::query()->where('product_id', $product->id)->count());
+            $descriptions[] = ProductText::query()
+                ->where(['product_id' => $product->id, 'language' => 'uk'])
+                ->value('content');
+        }
+
+        $this->assertCount(3, array_unique($descriptions));
+    }
 }
