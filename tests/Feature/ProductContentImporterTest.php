@@ -1019,6 +1019,30 @@ class ProductContentImporterTest extends TestCase
         $this->assertComponentBatchImports('2026_09_25_korfad_exellence_components_batch_01.json', 10, 'Korfad');
     }
 
+    public function test_it_imports_the_standard_korfad_components_batch_and_keeps_every_description_unique(): void
+    {
+        $this->assertComponentBatchImports('2026_09_25_korfad_standard_components_batch_01.json', 14, 'Korfad');
+    }
+
+    public function test_the_standard_korfad_components_migration_repairs_the_duplicated_russian_profile_name(): void
+    {
+        $profile = $this->makeProduct([
+            'slug' => 'h-podibniy-z-iednuvalniy-profil-38h2070-mdf-korfad',
+            'name' => [
+                'uk' => 'H-подібний з’єднувальний профіль 38х2070 МДФ Korfad',
+                'ru' => 'H-образный соединительный профиль 38х2070 МДФ Korfad H-образный соединительный профиль 38х2070 МДФ Korfad',
+            ],
+        ]);
+
+        $migration = require database_path('migrations/2026_09_25_121300_fill_korfad_standard_components_batch_01_content.php');
+        $migration->up();
+
+        $this->assertSame(
+            'H-образный соединительный профиль 38х2070 МДФ Korfad',
+            $profile->fresh()->getTranslation('name', 'ru', false),
+        );
+    }
+
     public function test_it_replaces_only_the_legacy_status_size_and_color_characteristics(): void
     {
         $path = database_path('content/products/2026_09_25_status_components_batch_01.json');
