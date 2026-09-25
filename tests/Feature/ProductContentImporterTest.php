@@ -1009,6 +1009,64 @@ class ProductContentImporterTest extends TestCase
         $this->assertComponentBatchImports('2026_09_25_status_components_batch_01.json', 5, 'Status');
     }
 
+    public function test_it_replaces_only_the_legacy_status_size_and_color_characteristics(): void
+    {
+        $path = database_path('content/products/2026_09_25_status_components_batch_01.json');
+        $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
+        $legacySizes = [
+            'komplekt-teleskopichnogo-korobu-ral-9003-2150h80mm-status' => '2150х80мм',
+            'komplekt-teleskopichnoyi-lishtvi-ral-9003-2200h80mm-status' => '2200х80мм',
+            'komplekt-doboru-ral-9003-2200h90mm-status' => '2200х90мм',
+            'komplekt-doboru-ral-9003-2200h180mm-status' => '2200х180мм',
+            'komplekt-doboru-ral-9003-2200h400mm-status' => '2200х400мм',
+        ];
+        $products = $entries->mapWithKeys(function (array $entry) use ($legacySizes) {
+            $product = $this->makeProduct(['slug' => $entry['slug']]);
+            ProductCharacteristics::query()->create([
+                'product_id' => $product->id,
+                'name' => ['uk' => 'Розмір:', 'ru' => 'Размер:'],
+                'value' => ['uk' => $legacySizes[$entry['slug']], 'ru' => $legacySizes[$entry['slug']]],
+            ]);
+            ProductCharacteristics::query()->create([
+                'product_id' => $product->id,
+                'name' => ['uk' => 'Колір:', 'ru' => 'Цвет:'],
+                'value' => ['uk' => 'Ral 9003 (білий)', 'ru' => 'Ral 9003 (белый)'],
+            ]);
+
+            return [$entry['slug'] => $product];
+        });
+
+        app(ProductContentImporter::class)->importFile($path);
+        foreach ($products as $product) {
+            $this->assertSame(7, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+        }
+
+        $migration = require database_path('migrations/2026_09_25_121000_cleanup_status_component_characteristics.php');
+        $migration->up();
+        $migration->up();
+
+        foreach ($entries as $entry) {
+            $characteristics = ProductCharacteristics::query()
+                ->where('product_id', $products[$entry['slug']]->id)
+                ->get();
+
+            $this->assertCount(6, $characteristics);
+            $this->assertFalse($characteristics->contains(
+                fn (ProductCharacteristics $row): bool => in_array(
+                    $row->getTranslation('name', 'uk', false),
+                    ['Розмір:', 'Колір:'],
+                    true,
+                ),
+            ));
+            $this->assertTrue($characteristics->contains(function (ProductCharacteristics $row): bool {
+                return $row->getTranslation('name', 'uk', false) === 'Колір'
+                    && $row->getTranslation('name', 'ru', false) === 'Цвет'
+                    && $row->getTranslation('value', 'uk', false) === 'RAL 9003, білий'
+                    && $row->getTranslation('value', 'ru', false) === 'RAL 9003, белый';
+            }));
+        }
+    }
+
     public function test_it_removes_only_the_estet_color_characteristics_duplicated_by_the_first_import(): void
     {
         $product = $this->makeProduct(['slug' => 'komplekt-doboru-100mm-estet']);
