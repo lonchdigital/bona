@@ -996,16 +996,57 @@ class ProductContentImporterTest extends TestCase
 
     public function test_it_imports_the_first_estet_components_batch_and_keeps_every_description_unique(): void
     {
-        $this->assertComponentBatchImports('2026_09_25_estet_components_batch_01.json', 9, 'Estet');
+        $this->assertComponentBatchImports('2026_09_25_estet_components_batch_01.json', 9, 'Estet', true);
     }
 
-    private function assertComponentBatchImports(string $filename, int $expectedProducts, string $brand): void
+    public function test_it_removes_only_the_estet_color_characteristics_duplicated_by_the_first_import(): void
+    {
+        $product = $this->makeProduct(['slug' => 'komplekt-doboru-100mm-estet']);
+        ProductCharacteristics::query()->create([
+            'product_id' => $product->id,
+            'name' => ['uk' => 'Кольори:', 'ru' => 'Цвета:'],
+            'value' => [
+                'uk' => 'біла емаль,  емаль ral 7036, 9001, 1015, 1013, 7016',
+                'ru' => 'эмаль белая, эмаль ral 7036, 9001, 1015, 1013, 7016',
+            ],
+        ]);
+        ProductCharacteristics::query()->create([
+            'product_id' => $product->id,
+            'name' => ['uk' => 'Оздоблення та кольори', 'ru' => 'Отделка и цвета'],
+            'value' => [
+                'uk' => 'біла емаль, емаль RAL 7036, 9001, 1015, 1013, 7016',
+                'ru' => 'белая эмаль, эмаль RAL 7036, 9001, 1015, 1013, 7016',
+            ],
+        ]);
+
+        $migration = require database_path('migrations/2026_09_25_120700_cleanup_estet_component_color_characteristics.php');
+        $migration->up();
+
+        $characteristics = ProductCharacteristics::query()->where('product_id', $product->id)->get();
+        $this->assertCount(1, $characteristics);
+        $this->assertSame('Кольори:', $characteristics->first()->getTranslation('name', 'uk', false));
+    }
+
+    private function assertComponentBatchImports(string $filename, int $expectedProducts, string $brand, bool $hasLegacyEstetColors = false): void
     {
         $path = database_path("content/products/{$filename}");
         $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
         $products = $entries->mapWithKeys(function (array $entry) {
             return [$entry['slug'] => $this->makeProduct(['slug' => $entry['slug']])];
         });
+
+        if ($hasLegacyEstetColors) {
+            foreach ($products as $product) {
+                ProductCharacteristics::query()->create([
+                    'product_id' => $product->id,
+                    'name' => ['uk' => 'Кольори:', 'ru' => 'Цвета:'],
+                    'value' => [
+                        'uk' => 'біла емаль,  емаль ral 7036, 9001, 1015, 1013, 7016',
+                        'ru' => 'эмаль белая, эмаль ral 7036, 9001, 1015, 1013, 7016',
+                    ],
+                ]);
+            }
+        }
 
         $importer = app(ProductContentImporter::class);
         $first = $importer->importFile($path);
