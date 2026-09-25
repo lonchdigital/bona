@@ -989,6 +989,49 @@ class ProductContentImporterTest extends TestCase
         $this->assertMvmBatchImports('2026_09_25_mvm_a2024_a2030_z1319_batch_01.json', 31);
     }
 
+    public function test_it_imports_the_first_artporte_components_batch_and_keeps_every_description_unique(): void
+    {
+        $path = database_path('content/products/2026_09_25_artporte_components_batch_01.json');
+        $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
+        $products = $entries->mapWithKeys(function (array $entry) {
+            return [$entry['slug'] => $this->makeProduct(['slug' => $entry['slug']])];
+        });
+
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertSame(8, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        $descriptions = [];
+        foreach ($entries as $entry) {
+            $product = $products[$entry['slug']];
+
+            foreach (['uk', 'ru'] as $language) {
+                $text = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $language])
+                    ->firstOrFail();
+
+                $this->assertStringContainsString('ArtPorte', $text->content);
+                $this->assertNotEmpty($text->short_content);
+                $this->assertNotEmpty($product->fresh()->getTranslation('meta_title', $language, false));
+                $this->assertNotEmpty($product->fresh()->getTranslation('meta_description', $language, false));
+                $this->assertSame(1, substr_count($text->content, '<h2>'));
+                $this->assertSame(3, substr_count($text->content, '<h3>'));
+            }
+
+            $this->assertSame(6, ProductCharacteristics::query()->where('product_id', $product->id)->count());
+            $this->assertSame(3, ProductFaqs::query()->where('product_id', $product->id)->count());
+            $descriptions[] = ProductText::query()
+                ->where(['product_id' => $product->id, 'language' => 'uk'])
+                ->value('content');
+        }
+
+        $this->assertCount(8, array_unique($descriptions));
+    }
+
     private function assertMvmBatchImports(string $filename, int $expectedProducts): void
     {
         $path = database_path("content/products/{$filename}");
