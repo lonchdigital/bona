@@ -991,7 +991,17 @@ class ProductContentImporterTest extends TestCase
 
     public function test_it_imports_the_first_artporte_components_batch_and_keeps_every_description_unique(): void
     {
-        $path = database_path('content/products/2026_09_25_artporte_components_batch_01.json');
+        $this->assertComponentBatchImports('2026_09_25_artporte_components_batch_01.json', 8, 'ArtPorte');
+    }
+
+    public function test_it_imports_the_first_estet_components_batch_and_keeps_every_description_unique(): void
+    {
+        $this->assertComponentBatchImports('2026_09_25_estet_components_batch_01.json', 9, 'Estet');
+    }
+
+    private function assertComponentBatchImports(string $filename, int $expectedProducts, string $brand): void
+    {
+        $path = database_path("content/products/{$filename}");
         $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
         $products = $entries->mapWithKeys(function (array $entry) {
             return [$entry['slug'] => $this->makeProduct(['slug' => $entry['slug']])];
@@ -1001,7 +1011,7 @@ class ProductContentImporterTest extends TestCase
         $first = $importer->importFile($path);
         $second = $importer->importFile($path);
 
-        $this->assertSame(8, $first['products']);
+        $this->assertSame($expectedProducts, $first['products']);
         $this->assertSame([], $first['missing']);
         $this->assertSame(0, $second['products']);
 
@@ -1014,7 +1024,7 @@ class ProductContentImporterTest extends TestCase
                     ->where(['product_id' => $product->id, 'language' => $language])
                     ->firstOrFail();
 
-                $this->assertStringContainsString('ArtPorte', $text->content);
+                $this->assertStringContainsString($brand, $text->content);
                 $this->assertNotEmpty($text->short_content);
                 $this->assertNotEmpty($product->fresh()->getTranslation('meta_title', $language, false));
                 $this->assertNotEmpty($product->fresh()->getTranslation('meta_description', $language, false));
@@ -1029,7 +1039,7 @@ class ProductContentImporterTest extends TestCase
                 ->value('content');
         }
 
-        $this->assertCount(8, array_unique($descriptions));
+        $this->assertCount($expectedProducts, array_unique($descriptions));
     }
 
     private function assertMvmBatchImports(string $filename, int $expectedProducts): void
