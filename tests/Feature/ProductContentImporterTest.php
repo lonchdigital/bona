@@ -1004,6 +1004,11 @@ class ProductContentImporterTest extends TestCase
         $this->assertComponentBatchImports('2026_09_25_estet_doors_components_batch_01.json', 7, 'Estet Doors');
     }
 
+    public function test_it_imports_the_status_components_batch_and_keeps_every_description_unique(): void
+    {
+        $this->assertComponentBatchImports('2026_09_25_status_components_batch_01.json', 5, 'Status');
+    }
+
     public function test_it_removes_only_the_estet_color_characteristics_duplicated_by_the_first_import(): void
     {
         $product = $this->makeProduct(['slug' => 'komplekt-doboru-100mm-estet']);
