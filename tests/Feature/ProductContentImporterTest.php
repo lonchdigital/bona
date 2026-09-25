@@ -1009,6 +1009,11 @@ class ProductContentImporterTest extends TestCase
         $this->assertComponentBatchImports('2026_09_25_status_components_batch_01.json', 5, 'Status');
     }
 
+    public function test_it_imports_the_maxi_components_batch_and_keeps_every_description_unique(): void
+    {
+        $this->assertComponentBatchImports('2026_09_25_maxi_components_batch_01.json', 11, 'Maxi');
+    }
+
     public function test_it_replaces_only_the_legacy_status_size_and_color_characteristics(): void
     {
         $path = database_path('content/products/2026_09_25_status_components_batch_01.json');
