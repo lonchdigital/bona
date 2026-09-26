@@ -260,6 +260,16 @@ test('CL-09 covers all eight finishes with full-height white satin diamond-patte
     }
 });
 
+test('CL-08 covers all eight finishes as solid classic doors', () => {
+    const cl = catalog.products.find(product => product.id === 'korfad-classico-cl-08');
+    assert.deepEqual(cl.colors.map(color => color.colorId).sort((a, b) => a - b), [254, 255, 256, 257, 258, 259, 260, 266]);
+    assert.deepEqual(cl.types, ['classic']);
+    for (const color of cl.colors) {
+        assert.deepEqual(color.optionIds, [16380], `CL-08/${color.colorId}: solid panel`);
+        assert.ok(color.preview.includes(`korfad-classico-cl-08-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

@@ -4,6 +4,83 @@
   "mode": "built-in imagegen, individual edits",
   "assets": [
     {
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "colorId": 266,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/8c8d87be84e49c1fe048fd94d9c1939db04f2d20_qz8Xqg6xK6.webp",
+      "sourceSha256": "d31ab31a5ed1ae4ca23e4c9ebad9535c35b2f7b8d9cd621f559c2709a39664eb",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-d1e66d86-26ff-4838-bcf5-b1c3e3274c10.png",
+      "preview": "interior/korfad-classico-cl-08-266-clean-v1.webp",
+      "review": "Original source and normalized 800×837 WebP visually compared 2026-09-27. Silver lever, square rose, local shadow and lower KORFAD logo removed. Original oak/paint tone, grain, frame, seams and right hinges retained. Exactly three recessed solid panels preserved: tall top, short middle and medium bottom, with original bevels and shadows. No glass or extra panels. Crop [205,0,389,837], handle [0.137,0.522]. All eight finishes use solid option 16380. Existing 254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset: accurate catalog door for a door configurator. Image 1 is the only edit target: Korfad CLASSICO CL-08, color 266, smooth pearl-white painted surface, no wood grain. Remove ONLY the silver lever, its rose and small local shadow at x248..310,y425..450 in the original 800x837 image; reconstruct the same left stile and small interrupted section of panel bevel and panel behind the lever. Also remove ONLY the KORFAD logo at x300..501,y799..833 from the lower rail and continue the original surface. Preserve original exact tone, material, grain pattern and direction, frame, stiles, rails, thin seams, two right hinges and existing light/shadow. CRITICAL: keep EXACTLY THREE solid recessed panels: tall top x285..516,y80..500, short horizontal middle y541..598 and medium bottom y642..790, with identical beveled borders, proportions and positions. No glass, mirror, additional panels, lines or moldings. Keep full 800:837 composition, door frame at x205..594, white side margins, scale and alignment. Do not crop, recenter, restyle, recolor, add hardware, holes or text. Local cleanup only.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed 2026-09-27."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "colorId": 258,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/eb79634c9a0d37bc8fffb53bc3a3cf6a46b40d6d_hlZv19U5UE.webp",
+      "sourceSha256": "c47c0d8d60f454b5e3c11810115a39594a414932a935848ab06bfdc02d16fb7e",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-71622944-260a-4f26-bfa4-aef122959358.png",
+      "preview": "interior/korfad-classico-cl-08-258-clean-v1.webp",
+      "review": "Original source and normalized 800×837 WebP visually compared 2026-09-27. Silver lever, square rose, local shadow and lower KORFAD logo removed. Original oak/paint tone, grain, frame, seams and right hinges retained. Exactly three recessed solid panels preserved: tall top, short middle and medium bottom, with original bevels and shadows. No glass or extra panels. Crop [205,0,389,837], handle [0.137,0.522]. All eight finishes use solid option 16380. Existing 254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset: accurate catalog door for a door configurator. Image 1 is the only edit target: Korfad CLASSICO CL-08, color 258, pale cool Nordic oak with knots and dark streaks. Remove ONLY the silver lever, its rose and small local shadow at x248..310,y425..450 in the original 800x837 image; reconstruct the same left stile and small interrupted section of panel bevel and panel behind the lever. Also remove ONLY the KORFAD logo at x300..501,y799..833 from the lower rail and continue the original surface. Preserve original exact tone, material, grain pattern and direction, frame, stiles, rails, thin seams, two right hinges and existing light/shadow. CRITICAL: keep EXACTLY THREE solid recessed panels: tall top x285..516,y80..500, short horizontal middle y541..598 and medium bottom y642..790, with identical beveled borders, proportions and positions. No glass, mirror, additional panels, lines or moldings. Keep full 800:837 composition, door frame at x205..594, white side margins, scale and alignment. Do not crop, recenter, restyle, recolor, add hardware, holes or text. Local cleanup only.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed 2026-09-27."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "colorId": 259,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/eb79634c9a0d37bc8fffb53bc3a3cf6a46b40d6d_Kjw2KzSmOl.webp",
+      "sourceSha256": "e1129ac03099431afbf2d58363f6e9e77a0397efb9ae7e9be677f471c15c9d22",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-90d62792-89ba-4759-9c95-1a809db224e8.png",
+      "preview": "interior/korfad-classico-cl-08-259-clean-v1.webp",
+      "review": "Original source and normalized 800×837 WebP visually compared 2026-09-27. Silver lever, square rose, local shadow and lower KORFAD logo removed. Original oak/paint tone, grain, frame, seams and right hinges retained. Exactly three recessed solid panels preserved: tall top, short middle and medium bottom, with original bevels and shadows. No glass or extra panels. Crop [205,0,389,837], handle [0.137,0.522]. All eight finishes use solid option 16380. Existing 254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset: accurate catalog door for a door configurator. Image 1 is the only edit target: Korfad CLASSICO CL-08, color 259, pale warm Tobacco oak with knots and dark streaks. Remove ONLY the silver lever, its rose and small local shadow at x248..310,y425..450 in the original 800x837 image; reconstruct the same left stile and small interrupted section of panel bevel and panel behind the lever. Also remove ONLY the KORFAD logo at x300..501,y799..833 from the lower rail and continue the original surface. Preserve original exact tone, material, grain pattern and direction, frame, stiles, rails, thin seams, two right hinges and existing light/shadow. CRITICAL: keep EXACTLY THREE solid recessed panels: tall top x285..516,y80..500, short horizontal middle y541..598 and medium bottom y642..790, with identical beveled borders, proportions and positions. No glass, mirror, additional panels, lines or moldings. Keep full 800:837 composition, door frame at x205..594, white side margins, scale and alignment. Do not crop, recenter, restyle, recolor, add hardware, holes or text. Local cleanup only.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed 2026-09-27."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "colorId": 260,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/eb79634c9a0d37bc8fffb53bc3a3cf6a46b40d6d_74A8ue11iw.webp",
+      "sourceSha256": "b0f94b36a8eca063e7b0a46803b8422a44f319a23f24fb0e571d5d2b90c9f039",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-f68366b9-2abb-41b6-95f9-ef217e465ec3.png",
+      "preview": "interior/korfad-classico-cl-08-260-clean-v1.webp",
+      "review": "Original source and normalized 800×837 WebP visually compared 2026-09-27. Silver lever, square rose, local shadow and lower KORFAD logo removed. Original oak/paint tone, grain, frame, seams and right hinges retained. Exactly three recessed solid panels preserved: tall top, short middle and medium bottom, with original bevels and shadows. No glass or extra panels. Crop [205,0,389,837], handle [0.137,0.522]. All eight finishes use solid option 16380. Existing 254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset: accurate catalog door for a door configurator. Image 1 is the only edit target: Korfad CLASSICO CL-08, color 260, muted gray-beige ash oak grain. Remove ONLY the silver lever, its rose and small local shadow at x248..310,y425..450 in the original 800x837 image; reconstruct the same left stile and small interrupted section of panel bevel and panel behind the lever. Also remove ONLY the KORFAD logo at x300..501,y799..833 from the lower rail and continue the original surface. Preserve original exact tone, material, grain pattern and direction, frame, stiles, rails, thin seams, two right hinges and existing light/shadow. CRITICAL: keep EXACTLY THREE solid recessed panels: tall top x285..516,y80..500, short horizontal middle y541..598 and medium bottom y642..790, with identical beveled borders, proportions and positions. No glass, mirror, additional panels, lines or moldings. Keep full 800:837 composition, door frame at x205..594, white side margins, scale and alignment. Do not crop, recenter, restyle, recolor, add hardware, holes or text. Local cleanup only.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed 2026-09-27."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "colorId": 255,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/eb79634c9a0d37bc8fffb53bc3a3cf6a46b40d6d_T5Nlj3DCLJ.webp",
+      "sourceSha256": "f4ea1408457c36e9da9f5c307b7a88f6122a54995f0f8801f4752316d15e813c",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-b638f6c9-d482-46d2-a8cf-e543f18eec75.png",
+      "preview": "interior/korfad-classico-cl-08-255-clean-v1.webp",
+      "review": "Original source and normalized 800×837 WebP visually compared 2026-09-27. Silver lever, square rose, local shadow and lower KORFAD logo removed. Original oak/paint tone, grain, frame, seams and right hinges retained. Exactly three recessed solid panels preserved: tall top, short middle and medium bottom, with original bevels and shadows. No glass or extra panels. Crop [205,0,389,837], handle [0.137,0.522]. All eight finishes use solid option 16380. Existing 254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset: accurate catalog door for a door configurator. Image 1 is the only edit target: Korfad CLASSICO CL-08, color 255, warm medium tan Brash oak. Remove ONLY the silver lever, its rose and small local shadow at x248..310,y425..450 in the original 800x837 image; reconstruct the same left stile and small interrupted section of panel bevel and panel behind the lever. Also remove ONLY the KORFAD logo at x300..501,y799..833 from the lower rail and continue the original surface. Preserve original exact tone, material, grain pattern and direction, frame, stiles, rails, thin seams, two right hinges and existing light/shadow. CRITICAL: keep EXACTLY THREE solid recessed panels: tall top x285..516,y80..500, short horizontal middle y541..598 and medium bottom y642..790, with identical beveled borders, proportions and positions. No glass, mirror, additional panels, lines or moldings. Keep full 800:837 composition, door frame at x205..594, white side margins, scale and alignment. Do not crop, recenter, restyle, recolor, add hardware, holes or text. Local cleanup only.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed 2026-09-27."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "colorId": 257,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/31aec1ddf664041035047df0104cedeb38c2f04c_SMslTqXnOM.webp",
+      "sourceSha256": "9297f469f354ceac122d298dd60ba0534c2cdb307d40a08acc5fbe800957d8b2",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-eed88efb-ffbd-4424-95de-cc09e15b29b9.png",
+      "preview": "interior/korfad-classico-cl-08-257-clean-v1.webp",
+      "review": "Original source and normalized 800×837 WebP visually compared 2026-09-27. Silver lever, square rose, local shadow and lower KORFAD logo removed. Original oak/paint tone, grain, frame, seams and right hinges retained. Exactly three recessed solid panels preserved: tall top, short middle and medium bottom, with original bevels and shadows. No glass or extra panels. Crop [205,0,389,837], handle [0.137,0.522]. All eight finishes use solid option 16380. Existing 254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset: accurate catalog door for a door configurator. Image 1 is the only edit target: Korfad CLASSICO CL-08, color 257, dark brown Marsala oak with lighter grain. Remove ONLY the silver lever, its rose and small local shadow at x248..310,y425..450 in the original 800x837 image; reconstruct the same left stile and small interrupted section of panel bevel and panel behind the lever. Also remove ONLY the KORFAD logo at x300..501,y799..833 from the lower rail and continue the original surface. Preserve original exact tone, material, grain pattern and direction, frame, stiles, rails, thin seams, two right hinges and existing light/shadow. CRITICAL: keep EXACTLY THREE solid recessed panels: tall top x285..516,y80..500, short horizontal middle y541..598 and medium bottom y642..790, with identical beveled borders, proportions and positions. No glass, mirror, additional panels, lines or moldings. Keep full 800:837 composition, door frame at x205..594, white side margins, scale and alignment. Do not crop, recenter, restyle, recolor, add hardware, holes or text. Local cleanup only.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed 2026-09-27."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "colorId": 256,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/eb79634c9a0d37bc8fffb53bc3a3cf6a46b40d6d_bcmq9CqcC9.webp",
+      "sourceSha256": "e87c751b86354a4fef39ed391751ecc2c86806b6d51b33781d30c2ef8c6e0bef",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-d26922fe-1e8f-4f91-b35a-d0dc1db44b18.png",
+      "preview": "interior/korfad-classico-cl-08-256-clean-v1.webp",
+      "review": "Original source and normalized 800×837 WebP visually compared 2026-09-27. Silver lever, square rose, local shadow and lower KORFAD logo removed. Original oak/paint tone, grain, frame, seams and right hinges retained. Exactly three recessed solid panels preserved: tall top, short middle and medium bottom, with original bevels and shadows. No glass or extra panels. Crop [205,0,389,837], handle [0.137,0.522]. All eight finishes use solid option 16380. Existing 254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset: accurate catalog door for a door configurator. Image 1 is the only edit target: Korfad CLASSICO CL-08, color 256, medium brown-gray oak with vertical grain. Remove ONLY the silver lever, its rose and small local shadow at x248..310,y425..450 in the original 800x837 image; reconstruct the same left stile and small interrupted section of panel bevel and panel behind the lever. Also remove ONLY the KORFAD logo at x300..501,y799..833 from the lower rail and continue the original surface. Preserve original exact tone, material, grain pattern and direction, frame, stiles, rails, thin seams, two right hinges and existing light/shadow. CRITICAL: keep EXACTLY THREE solid recessed panels: tall top x285..516,y80..500, short horizontal middle y541..598 and medium bottom y642..790, with identical beveled borders, proportions and positions. No glass, mirror, additional panels, lines or moldings. Keep full 800:837 composition, door frame at x205..594, white side margins, scale and alignment. Do not crop, recenter, restyle, recolor, add hardware, holes or text. Local cleanup only.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed 2026-09-27."
+    },
+    {
       "slug": "mizhkimnatni-dveri-classico-cl-09-korfad",
       "colorId": 266,
       "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/2abe08833cd5db321af3f51861160a069ad5494e_xpV2wKzeBa.webp",
