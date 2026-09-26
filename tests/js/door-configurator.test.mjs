@@ -236,6 +236,20 @@ test('SANVITO mirror SV-01 covers eighteen finishes with the photographed silver
     }
 });
 
+test('SANVITO satin SV-01 covers all eighteen finishes without inheriting mirror options', () => {
+    const sv = catalog.products.find(product => product.id === 'korfad-sanvito-sv-01');
+    assert.deepEqual(sv.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 252, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 266, 268, 269, 270, 271, 272]);
+    assert.ok(!sv.types?.includes('mirror'));
+    for (const color of sv.colors) {
+        assert.deepEqual(color.optionIds, [16366], `SANVITO satin/${color.colorId}: white satin 8 mm`);
+        assert.ok(color.preview.includes(`korfad-sanvito-sv-01-${color.colorId}-clean`));
+    }
+    const provenance = JSON.parse(fs.readFileSync('docs/door-configurator-interior-assets.json', 'utf8')).assets;
+    const black = provenance.find(asset => asset.slug === sv.slug && asset.colorId === 272);
+    assert.match(black.sourceMapping, /^Inference:/, 'unmapped main photo inference stays explicit');
+    assert.match(black.sourceUrl, /_main\.webp$/);
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
