@@ -1223,6 +1223,112 @@ class ProductContentImporterTest extends TestCase
         }
     }
 
+    public function test_it_imports_the_first_short_description_product_batch_with_complete_unique_copy(): void
+    {
+        $path = database_path('content/products/2026_09_26_short_description_products_batch_01.json');
+        $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
+        $products = $entries->mapWithKeys(function (array $entry) {
+            $product = $this->makeProduct([
+                'slug' => $entry['slug'],
+                'meta_title' => ['uk' => 'Старий спільний title', 'ru' => 'Старый общий title'],
+                'meta_description' => ['uk' => 'Старий спільний опис', 'ru' => 'Старое общее описание'],
+            ]);
+
+            if ($entry['slug'] === 'mizhkimnatni-dveri-elegance-wood') {
+                foreach (range(1, 2) as $_) {
+                    ProductCharacteristics::query()->create([
+                        'product_id' => $product->id,
+                        'name' => ['uk' => 'Кольори:', 'ru' => 'Цвета:'],
+                        'value' => ['uk' => 'Біла емаль - RAL 9003.', 'ru' => 'Белая эмаль - RAL 9003.'],
+                    ]);
+                    ProductCharacteristics::query()->create([
+                        'product_id' => $product->id,
+                        'name' => ['uk' => 'Розмір полотна:', 'ru' => 'Размер полотна:'],
+                        'value' => ['uk' => '2000*600/700/800/900мм.', 'ru' => '2000*600/700/800/900мм.'],
+                    ]);
+                }
+            }
+
+            return [$entry['slug'] => $product];
+        });
+
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertCount(10, $entries);
+        $this->assertSame(10, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        foreach (['uk', 'ru'] as $locale) {
+            $contents = [];
+            $shortDescriptions = [];
+            $titles = [];
+            $descriptions = [];
+
+            foreach ($entries as $entry) {
+                $product = $products[$entry['slug']]->fresh();
+                $text = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $locale])
+                    ->firstOrFail();
+                $wordCount = count(preg_split(
+                    '/\s+/u',
+                    trim(preg_replace('/\s+/u', ' ', strip_tags($text->short_content.' '.$text->content))),
+                    -1,
+                    PREG_SPLIT_NO_EMPTY,
+                ));
+                $title = $product->getTranslation('meta_title', $locale, false);
+                $description = $product->getTranslation('meta_description', $locale, false);
+
+                $this->assertSame($entry['short_content'][$locale], $text->short_content);
+                $this->assertSame($entry['content'][$locale], $text->content);
+                $this->assertSame(1, substr_count($text->content, '<h2>'));
+                $this->assertGreaterThanOrEqual(2, substr_count($text->content, '<h3>'));
+                $this->assertLessThanOrEqual(4, substr_count($text->content, '<h3>'));
+                $this->assertGreaterThanOrEqual(200, $wordCount);
+                $this->assertLessThanOrEqual(300, $wordCount);
+                $this->assertSame($entry['meta_title'][$locale], $title);
+                $this->assertSame($entry['meta_description'][$locale], $description);
+                $this->assertLessThanOrEqual(65, mb_strlen($title));
+                $this->assertGreaterThanOrEqual(130, mb_strlen($description));
+                $this->assertLessThanOrEqual(165, mb_strlen($description));
+
+                $contents[] = $text->content;
+                $shortDescriptions[] = $text->short_content;
+                $titles[] = $title;
+                $descriptions[] = $description;
+            }
+
+            $this->assertCount(10, array_unique($contents));
+            $this->assertCount(10, array_unique($shortDescriptions));
+            $this->assertCount(10, array_unique($titles));
+            $this->assertCount(10, array_unique($descriptions));
+        }
+
+        foreach ($entries as $entry) {
+            $product = $products[$entry['slug']];
+            $expectedCharacteristics = $entry['slug'] === 'mizhkimnatni-dveri-elegance-wood' ? 9 : 7;
+
+            $this->assertSame(
+                $expectedCharacteristics,
+                ProductCharacteristics::query()->where('product_id', $product->id)->count(),
+            );
+            $this->assertSame(4, ProductFaqs::query()->where('product_id', $product->id)->count());
+        }
+
+        $migration = require database_path('migrations/2026_09_26_095000_fill_short_description_products_batch_01_content.php');
+        $migration->up();
+        $migration->up();
+
+        $this->assertSame(
+            7,
+            ProductCharacteristics::query()
+                ->where('product_id', $products['mizhkimnatni-dveri-elegance-wood']->id)
+                ->count(),
+        );
+    }
+
     public function test_the_gorgania_faq_migration_repairs_only_the_legacy_number_agreement(): void
     {
         $product = $this->makeProduct(['slug' => 'dverna-korobka-teleskop-80-gorgania']);
