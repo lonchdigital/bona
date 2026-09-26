@@ -291,6 +291,15 @@ test('PIANO PND-01 covers all nineteen catalog finishes with the pictured glass 
     }
 });
 
+test('VALENTINO VLD-03 covers all six catalog finishes with the photographed glass', () => {
+    const valentino = catalog.products.find(product => product.id === 'korfad-valentino-vld-03');
+    assert.deepEqual(valentino.colors.map(color => color.colorId).sort((a, b) => a - b), [252, 254, 255, 257, 258, 259]);
+    for (const color of valentino.colors) {
+        assert.deepEqual(color.optionIds, [color.colorId === 252 ? 16306 : 16307], `VLD-03/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-valentino-vld-03-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

@@ -1,8 +1,63 @@
 {
   "date": "2026-09-22",
-  "updatedAt": "2026-09-26",
+  "updatedAt": "2026-09-27",
   "mode": "built-in imagegen, individual edits",
   "assets": [
+    {
+      "slug": "mizhkimnatni-dveri-valentino-deluxe-vld-03-korfad",
+      "colorId": 258,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/3c0ee6af40659abe366cc5adc731634fd4211a7a_LRgmcdf0hE.webp",
+      "sourceSha256": "7414827a201094836f13c29773f3dbd5a8ddc61440c2b672306c966cf822c22b",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-fc172bbb-36c4-405c-9e40-15a64c464994.png",
+      "preview": "interior/korfad-valentino-vld-03-258-clean-v1.webp",
+      "review": "Original source and selected built-in edit visually compared 2026-09-27. Lever, square rose, local shadow and lower KORFAD logo removed. Both full-height narrow side glass strips, nine thin horizontal glass strips, ten solid central panels, original woodgrain/tone/knots, frame, joints, bevels and right hinges retained. Crop [205,0,389,837], handle [0.137,0.522]. Wenge252 black glass16306; other finishes bronze satin16307. Existing254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: accurate door configurator catalog asset. Image 1 is the only edit target: Korfad VALENTINO DELUXE VLD-03, color 258, pale gray Nordic oak with gray knots and grain, bronze satin glass. Change ONLY two small local areas of original 800x837 composition: remove silver lever, square rose and their local shadow x248..310,y422..455, rebuilding the left wooden stile and underlying left glass strip seamlessly; remove lower KORFAD logo x300..504,y798..836, continuing original woodgrain. Keep BOTH full-height narrow glass strips x284..306 and x494..516,y80..790, and ALL NINE thin horizontal glass strips x318..480 at y142,215,288,360,433,506,579,651,724. Preserve their exact count, width, length, spacing, thickness and bronze satin color. Keep ten solid central panels, vertical stiles, bevels, original woodgrain/knots/tone/lighting, all joints, original frame x205..594, two right hinges, white side margins and full 800:837 framing unchanged. Do not crop, recenter, recolor, change proportions, add/delete or thicken strips, invent a new design, add hardware, holes, or text. Only local handle and logo removal.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed. Photographed glass identified visually and matched to the catalog option."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-valentino-deluxe-vld-03-korfad",
+      "colorId": 259,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/3c0ee6af40659abe366cc5adc731634fd4211a7a_DLXS90PPlh.webp",
+      "sourceSha256": "e1f22cd2fcbd760969ada7aa03492efe1435a940bd56fd113d81998eb24ea56a",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-bda71f4e-465b-4040-aebc-c69b3422d9d4.png",
+      "preview": "interior/korfad-valentino-vld-03-259-clean-v1.webp",
+      "review": "Original source and selected built-in edit visually compared 2026-09-27. Lever, square rose, local shadow and lower KORFAD logo removed. Both full-height narrow side glass strips, nine thin horizontal glass strips, ten solid central panels, original woodgrain/tone/knots, frame, joints, bevels and right hinges retained. Crop [205,0,389,837], handle [0.137,0.522]. Wenge252 black glass16306; other finishes bronze satin16307. Existing254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: accurate door configurator catalog asset. Image 1 is the only edit target: Korfad VALENTINO DELUXE VLD-03, color 259, light warm tobacco oak with knots and grain, bronze satin glass. Change ONLY two small local areas of original 800x837 composition: remove silver lever, square rose and their local shadow x248..310,y422..455, rebuilding the left wooden stile and underlying left glass strip seamlessly; remove lower KORFAD logo x300..504,y798..836, continuing original woodgrain. Keep BOTH full-height narrow glass strips x284..306 and x494..516,y80..790, and ALL NINE thin horizontal glass strips x318..480 at y142,215,288,360,433,506,579,651,724. Preserve their exact count, width, length, spacing, thickness and bronze satin color. Keep ten solid central panels, vertical stiles, bevels, original woodgrain/knots/tone/lighting, all joints, original frame x205..594, two right hinges, white side margins and full 800:837 framing unchanged. Do not crop, recenter, recolor, change proportions, add/delete or thicken strips, invent a new design, add hardware, holes, or text. Only local handle and logo removal.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed. Photographed glass identified visually and matched to the catalog option."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-valentino-deluxe-vld-03-korfad",
+      "colorId": 255,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/1cfc5666aab5c04cc350743f0027408ed979b54b_zwowSUdAs9.webp",
+      "sourceSha256": "47d226619f5ff996b2e31b72d198955bff2aedd118ac7c98795ae35530236a27",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-3ff5f690-5d07-45bb-8924-2a7447d7874d.png",
+      "preview": "interior/korfad-valentino-vld-03-255-clean-v1.webp",
+      "review": "Original source and selected built-in edit visually compared 2026-09-27. Lever, square rose, local shadow and lower KORFAD logo removed. Both full-height narrow side glass strips, nine thin horizontal glass strips, ten solid central panels, original woodgrain/tone/knots, frame, joints, bevels and right hinges retained. Crop [205,0,389,837], handle [0.137,0.522]. Wenge252 black glass16306; other finishes bronze satin16307. Existing254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: accurate door configurator catalog asset. Image 1 is the only edit target: Korfad VALENTINO DELUXE VLD-03, color 255, warm golden brushed oak with horizontal center grain, bronze satin glass. Change ONLY two small local areas of original 800x837 composition: remove silver lever, square rose and their local shadow x248..310,y422..455, rebuilding the left wooden stile and underlying left glass strip seamlessly; remove lower KORFAD logo x300..504,y798..836, continuing original woodgrain. Keep BOTH full-height narrow glass strips x284..306 and x494..516,y80..790, and ALL NINE thin horizontal glass strips x318..480 at y142,215,288,360,433,506,579,651,724. Preserve their exact count, width, length, spacing, thickness and bronze satin color. Keep ten solid central panels, vertical stiles, bevels, original woodgrain/knots/tone/lighting, all joints, original frame x205..594, two right hinges, white side margins and full 800:837 framing unchanged. Do not crop, recenter, recolor, change proportions, add/delete or thicken strips, invent a new design, add hardware, holes, or text. Only local handle and logo removal.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed. Photographed glass identified visually and matched to the catalog option."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-valentino-deluxe-vld-03-korfad",
+      "colorId": 257,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/3c0ee6af40659abe366cc5adc731634fd4211a7a_Ul5PFUcNsv.webp",
+      "sourceSha256": "9f431013a834f44b6b1740a5e87950fe91e2e979b96a6b2282c4ac46399828b8",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-7edde12b-edde-4356-96ea-e29626bb8b6c.png",
+      "preview": "interior/korfad-valentino-vld-03-257-clean-v1.webp",
+      "review": "Original source and selected built-in edit visually compared 2026-09-27. Lever, square rose, local shadow and lower KORFAD logo removed. Both full-height narrow side glass strips, nine thin horizontal glass strips, ten solid central panels, original woodgrain/tone/knots, frame, joints, bevels and right hinges retained. Crop [205,0,389,837], handle [0.137,0.522]. Wenge252 black glass16306; other finishes bronze satin16307. Existing254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: accurate door configurator catalog asset. Image 1 is the only edit target: Korfad VALENTINO DELUXE VLD-03, color 257, dark Marsala oak with pale sweeping grain, bronze satin glass. Change ONLY two small local areas of original 800x837 composition: remove silver lever, square rose and their local shadow x248..310,y422..455, rebuilding the left wooden stile and underlying left glass strip seamlessly; remove lower KORFAD logo x300..504,y798..836, continuing original woodgrain. Keep BOTH full-height narrow glass strips x284..306 and x494..516,y80..790, and ALL NINE thin horizontal glass strips x318..480 at y142,215,288,360,433,506,579,651,724. Preserve their exact count, width, length, spacing, thickness and bronze satin color. Keep ten solid central panels, vertical stiles, bevels, original woodgrain/knots/tone/lighting, all joints, original frame x205..594, two right hinges, white side margins and full 800:837 framing unchanged. Do not crop, recenter, recolor, change proportions, add/delete or thicken strips, invent a new design, add hardware, holes, or text. Only local handle and logo removal.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed. Photographed glass identified visually and matched to the catalog option."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-valentino-deluxe-vld-03-korfad",
+      "colorId": 252,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/bebeaf952f3d21b492cd397fddeeb859f0686794_2R8qlY4CeF.webp",
+      "sourceSha256": "3f237c701070a4dc282d274b8aae12615b646806f42b701c024609849e1c483f",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-873bb418-cf68-43db-a3c7-9ba1224a096f.png",
+      "preview": "interior/korfad-valentino-vld-03-252-clean-v1.webp",
+      "review": "Original source and selected built-in edit visually compared 2026-09-27. Lever, square rose, local shadow and lower KORFAD logo removed. Both full-height narrow side glass strips, nine thin horizontal glass strips, ten solid central panels, original woodgrain/tone/knots, frame, joints, bevels and right hinges retained. Crop [205,0,389,837], handle [0.137,0.522]. Wenge252 black glass16306; other finishes bronze satin16307. Existing254 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: accurate door configurator catalog asset. Image 1 is the only edit target: Korfad VALENTINO DELUXE VLD-03, color 252, dark brown Wenge with subtle grain, black glass. Change ONLY two small local areas of original 800x837 composition: remove silver lever, square rose and their local shadow x248..310,y422..455, rebuilding the left wooden stile and underlying left glass strip seamlessly; remove lower KORFAD logo x300..504,y798..836, continuing original woodgrain. Keep BOTH full-height narrow glass strips x284..306 and x494..516,y80..790, and ALL NINE thin horizontal glass strips x318..480 at y142,215,288,360,433,506,579,651,724. Preserve their exact count, width, length, spacing, thickness and black color. Keep ten solid central panels, vertical stiles, bevels, original woodgrain/knots/tone/lighting, all joints, original frame x205..594, two right hinges, white side margins and full 800:837 framing unchanged. Do not crop, recenter, recolor, change proportions, add/delete or thicken strips, invent a new design, add hardware, holes, or text. Only local handle and logo removal.",
+      "sourceMapping": "First catalog photo explicitly linked to this color; original individually viewed. Photographed glass identified visually and matched to the catalog option."
+    },
     {
       "slug": "mizhkimnatni-dveri-piano-deluxe-pnd-01-korfad",
       "colorId": 266,

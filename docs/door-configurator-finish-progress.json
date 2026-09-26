@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-26T22:53:57+00:00",
+    "asOf": "2026-09-26T23:20:41+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 240,
-        "prepared": 765,
+        "prepared": 770,
         "needs-model-clarification": 7,
-        "needs-source-review": 273,
+        "needs-source-review": 268,
         "not-orderable": 30
     },
     "finishes": [
@@ -8657,7 +8657,7 @@
                 "uk": "Венге Korfad",
                 "ru": "Венге Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 135,
@@ -8667,7 +8667,7 @@
                 "uk": "Дуб марсала Korfad",
                 "ru": "Дуб марсала Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 135,
@@ -8677,7 +8677,7 @@
                 "uk": "Дуб браш Korfad",
                 "ru": "Дуб браш Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 135,
@@ -8687,7 +8687,7 @@
                 "uk": "Дуб тобакко Korfad",
                 "ru": "Дуб тобакко Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 135,
@@ -8697,7 +8697,7 @@
                 "uk": "Дуб нордік Korfad",
                 "ru": "Дуб нордик Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 136,

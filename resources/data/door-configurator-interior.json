@@ -15800,6 +15800,76 @@
           "optionIds": [
             16307
           ]
+        },
+        {
+          "id": "color-252",
+          "name": {
+            "uk": "Венге Korfad",
+            "ru": "Венге Korfad"
+          },
+          "hex": "#412819",
+          "image": "interior/korfad-valentino-vld-03-252-catalog-v1.webp",
+          "preview": "interior/korfad-valentino-vld-03-252-clean-v1.webp",
+          "colorId": 252,
+          "optionIds": [
+            16306
+          ]
+        },
+        {
+          "id": "color-257",
+          "name": {
+            "uk": "Дуб марсала Korfad",
+            "ru": "Дуб марсала Korfad"
+          },
+          "hex": "#665247",
+          "image": "interior/korfad-valentino-vld-03-257-catalog-v1.webp",
+          "preview": "interior/korfad-valentino-vld-03-257-clean-v1.webp",
+          "colorId": 257,
+          "optionIds": [
+            16307
+          ]
+        },
+        {
+          "id": "color-255",
+          "name": {
+            "uk": "Дуб браш Korfad",
+            "ru": "Дуб браш Korfad"
+          },
+          "hex": "#a77952",
+          "image": "interior/korfad-valentino-vld-03-255-catalog-v1.webp",
+          "preview": "interior/korfad-valentino-vld-03-255-clean-v1.webp",
+          "colorId": 255,
+          "optionIds": [
+            16307
+          ]
+        },
+        {
+          "id": "color-259",
+          "name": {
+            "uk": "Дуб тобакко Korfad",
+            "ru": "Дуб тобакко Korfad"
+          },
+          "hex": "#d4b599",
+          "image": "interior/korfad-valentino-vld-03-259-catalog-v1.webp",
+          "preview": "interior/korfad-valentino-vld-03-259-clean-v1.webp",
+          "colorId": 259,
+          "optionIds": [
+            16307
+          ]
+        },
+        {
+          "id": "color-258",
+          "name": {
+            "uk": "Дуб нордік Korfad",
+            "ru": "Дуб нордик Korfad"
+          },
+          "hex": "#d2c6c3",
+          "image": "interior/korfad-valentino-vld-03-258-catalog-v1.webp",
+          "preview": "interior/korfad-valentino-vld-03-258-clean-v1.webp",
+          "colorId": 258,
+          "optionIds": [
+            16307
+          ]
         }
       ]
     },
