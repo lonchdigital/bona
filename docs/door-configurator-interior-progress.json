@@ -4,7 +4,7 @@
   "newPrepared": 172,
   "originalInteriorPresets": 6,
   "sourceCatalogModels": 190,
-  "deployment": "Release204 /98cb6b86de7255dab4d49b5ea8669f6937a5d502 succeeded; run36275510224 verify/package/deploy successful.465PHP tests/15947assertions. Added/published7 CL08 shades, all8 complete,187entries preserved. Main interior743, allDoorFinishes749,184doors3handles. UA/RU live bindings,prices,localized URLs,shared media checked;all8 previews decoded,solid16380 confirmed. All8 colors switched in production UI,black handle,enabled order. Pearlwhite zoom:one handle,three original panels/frame,no console errors or real orders. Admin checked locally,not authenticated production admin. Whole interior category remains incomplete; four VENECIA shades are locally ready but not yet deployed.",
+  "deployment": "Release 205 / 410100708a655aadfb089efa091774058393a3a4 succeeded; run 36276369758 verify/package/deploy successful. 465 PHP tests / 15955 assertions. Added and published 4 VENECIA VND-05 shades, all 5 complete; 187 existing entries preserved. Main interior 747, all door finishes 753, 184 doors and 3 handles. UA/RU live bindings, prices, localized URLs and shared media checked; all 5 previews decoded. Glass: 255/258/259 bronze 15988, 260 black 15987, 266 white 15986. All 5 colors switched in production UI with matching canvas, black handle and enabled order. Ash/black glass zoom checked: one handle, original staggered glass geometry and frame. No console errors or real orders. Admin checked locally, not authenticated production admin. Whole interior category remains incomplete: 568 of 1315 pairs unfinished.",
   "models": [
     {
       "number": 1,
