@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-26T22:05:06+00:00",
+    "asOf": "2026-09-26T22:19:35+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 240,
-        "prepared": 743,
+        "prepared": 747,
         "needs-model-clarification": 7,
-        "needs-source-review": 295,
+        "needs-source-review": 291,
         "not-orderable": 30
     },
     "finishes": [
@@ -8297,7 +8297,7 @@
                 "uk": "Еш-вайт Korfad",
                 "ru": "Эш-вайт Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 131,
@@ -8307,7 +8307,7 @@
                 "uk": "Дуб тобакко Korfad",
                 "ru": "Дуб тобакко Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 131,
@@ -8317,7 +8317,7 @@
                 "uk": "Дуб нордік Korfad",
                 "ru": "Дуб нордик Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 131,
@@ -8327,7 +8327,7 @@
                 "uk": "Білий перламутр Korfad",
                 "ru": "Белый перламутр"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 132,

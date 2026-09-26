@@ -270,6 +270,16 @@ test('CL-08 covers all eight finishes as solid classic doors', () => {
     }
 });
 
+test('VENECIA VND-05 covers all five finishes with the photographed glass', () => {
+    const vnd = catalog.products.find(product => product.id === 'korfad-venecia-vnd-05');
+    assert.deepEqual(vnd.colors.map(color => color.colorId).sort((a, b) => a - b), [255, 258, 259, 260, 266]);
+    const options = {255:15988, 258:15988, 259:15988, 260:15987, 266:15986};
+    for (const color of vnd.colors) {
+        assert.deepEqual(color.optionIds, [options[color.colorId]], `VND-05/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-venecia-vnd-05-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

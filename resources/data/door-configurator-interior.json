@@ -15420,6 +15420,62 @@
           "optionIds": [
             15988
           ]
+        },
+        {
+          "id": "color-260",
+          "name": {
+            "uk": "Еш-вайт Korfad",
+            "ru": "Эш-вайт Korfad"
+          },
+          "hex": "#ac9c8b",
+          "image": "interior/korfad-venecia-vnd-05-260-catalog-v1.webp",
+          "preview": "interior/korfad-venecia-vnd-05-260-clean-v1.webp",
+          "colorId": 260,
+          "optionIds": [
+            15987
+          ]
+        },
+        {
+          "id": "color-259",
+          "name": {
+            "uk": "Дуб тобакко Korfad",
+            "ru": "Дуб тобакко Korfad"
+          },
+          "hex": "#d4b599",
+          "image": "interior/korfad-venecia-vnd-05-259-catalog-v1.webp",
+          "preview": "interior/korfad-venecia-vnd-05-259-clean-v1.webp",
+          "colorId": 259,
+          "optionIds": [
+            15988
+          ]
+        },
+        {
+          "id": "color-258",
+          "name": {
+            "uk": "Дуб нордік Korfad",
+            "ru": "Дуб нордик Korfad"
+          },
+          "hex": "#d2c6c3",
+          "image": "interior/korfad-venecia-vnd-05-258-catalog-v1.webp",
+          "preview": "interior/korfad-venecia-vnd-05-258-clean-v1.webp",
+          "colorId": 258,
+          "optionIds": [
+            15988
+          ]
+        },
+        {
+          "id": "color-266",
+          "name": {
+            "uk": "Білий перламутр Korfad",
+            "ru": "Белый перламутр"
+          },
+          "hex": "#eeeae6",
+          "image": "interior/korfad-venecia-vnd-05-266-catalog-v1.webp",
+          "preview": "interior/korfad-venecia-vnd-05-266-clean-v1.webp",
+          "colorId": 266,
+          "optionIds": [
+            15986
+          ]
         }
       ]
     },
