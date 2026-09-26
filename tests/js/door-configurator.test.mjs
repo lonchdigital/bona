@@ -186,6 +186,15 @@ test('GLP-01 and DLP-01 cover their full palettes with the pictured glass or met
     }
 });
 
+test('LP-01 covers all seven catalog finishes without inventing glass or molding options', () => {
+    const lp = catalog.products.find(product => product.id === 'korfad-lp-01');
+    assert.deepEqual(lp.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 254, 260, 261, 262, 263, 268]);
+    for (const color of lp.colors) {
+        assert.deepEqual(color.optionIds || [], [], `LP-01/${color.colorId}: plain slab`);
+        assert.ok(color.preview.includes(`korfad-lp-01-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

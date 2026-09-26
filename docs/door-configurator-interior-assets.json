@@ -5,6 +5,61 @@
   "assets": [
     {
       "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
+      "colorId": 262,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/922f532bdb1f0c3af48937097d628fc03cad8e88_uwOXCn1kVn_main.webp",
+      "sourceSha256": "d8244ed5e5b7f9fa0f5491ec0b459db37b8440f2bd267b5e6681417b81c85f8f",
+      "generatedFile": "exec-00aa2cc3-bf94-430f-be70-d19d3c464a87.png",
+      "preview": "interior/korfad-lp-01-262-clean-v1.webp",
+      "review": "Visually checked original and 800×837 WebP 2026-09-26: original dark gray concrete, plain slab, frame and edge seams retained; lever, rose, shadow and bottom logo removed. Geometry [205,0,389,837], handle [0.137,0.522].",
+      "prompt": "Use case: precise-object-edit. Asset: original main catalog photograph of Korfad LOFT PLATO LP-01, dark gray mottled concrete. This referenced photo is the ONLY edit target. Remove ONLY the silver left lever, its square rose, their local shadow near x252–308,y425–448, and the pale KORFAD logo at the bottom. Fill these small regions with seamless continuation of the exact existing dark gray mottled concrete texture. Preserve original hue, texture and lighting outside edited regions. Preserve plain slab, straight fine border seams, outer frame and top header. No decorative stripes or glass. Keep original 800:837 canvas, front-on view, door/frame at x206–594 y0–837, white side margins. No crop, zoom, recentering, redesign, recoloring, new hardware or text.",
+      "sourceMapping": "Inference: unlinked main photo matched to Лофт бетон (262) after comparing the gray mottled material with catalog swatch 262 and the directly linked brown Арт бетон (251), pale Лайт бетон (261), orange Сталь кортен (263), white 268, ash 260 and bleached oak 254. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
+      "colorId": 263,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/922f532bdb1f0c3af48937097d628fc03cad8e88_v1bx9noym5.webp",
+      "sourceSha256": "6039df0a16a9fd4ac364f520aa42052b99ea7676b1acaace1f4c63edeea71c60",
+      "generatedFile": "exec-497c8611-2292-40ed-81c7-3ad9240853e1.png",
+      "preview": "interior/korfad-lp-01-263-clean-v1.webp",
+      "review": "Visually compared to the original 2026-09-26, including normalized WebP: lever, rose, shadow and logo removed. Original tone, surface texture, frame and edge seams retained. Plain slab unchanged, no new decoration. Geometry [205,0,389,837], handle [0.137,0.522].",
+      "prompt": "Use case: precise-object-edit.\nAsset type: faithful door product photo for Bona Doors configurator.\nInput: the referenced photograph is the ONLY edit target: Korfad LOFT PLATO LP-01, Сталь кортен.\nChange ONLY: remove the silver lever, its square rose, and their local shadow at x≈252–308,y≈425–448. Remove the pale KORFAD word/logo at the very bottom. Fill both removed regions with seamless continuation of the existing mottled surface texture.\nKeep unchanged: exact original color, mottled concrete/corten material, all texture outside the tiny edit areas, slab rectangle, side/top frame and fine edge seams. This is a plain slab with NO decorative strips, grooves or glass. Keep exactly that.\nComposition: same full original 800:837 canvas ratio, original x206–594 door/frame bounds and full-height y0–837 framing, frontal camera, white side margins. Do not crop, zoom, recenter, relight, recolor or redesign. No new hardware, text, keyholes or logos.",
+      "sourceMapping": "Photo explicitly linked to the selected catalog color."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
+      "colorId": 251,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/9a3792dcc44ac9cbbd3e713ded29f1caf5b1fd99_ZziEJvNcKq.webp",
+      "sourceSha256": "0317a82fa314cbd588f5c29b4c9f902d1c86e38e54a258ed53d32cbcb5a5abfd",
+      "generatedFile": "exec-683593e1-97be-45b2-80b2-39f3bccd257f.png",
+      "preview": "interior/korfad-lp-01-251-clean-v1.webp",
+      "review": "Visually compared to the original 2026-09-26, including normalized WebP: lever, rose, shadow and logo removed. Original tone, surface texture, frame and edge seams retained. Plain slab unchanged, no new decoration. Geometry [205,0,389,837], handle [0.137,0.522].",
+      "prompt": "Use case: precise-object-edit.\nAsset type: faithful door product photo for Bona Doors configurator.\nInput: the referenced photograph is the ONLY edit target: Korfad LOFT PLATO LP-01, Арт бетон.\nChange ONLY: remove the silver lever, its square rose, and their local shadow at x≈252–308,y≈425–448. Remove the pale KORFAD word/logo at the very bottom. Fill both removed regions with seamless continuation of the existing mottled surface texture.\nKeep unchanged: exact original color, mottled concrete/corten material, all texture outside the tiny edit areas, slab rectangle, side/top frame and fine edge seams. This is a plain slab with NO decorative strips, grooves or glass. Keep exactly that.\nComposition: same full original 800:837 canvas ratio, original x206–594 door/frame bounds and full-height y0–837 framing, frontal camera, white side margins. Do not crop, zoom, recenter, relight, recolor or redesign. No new hardware, text, keyholes or logos.",
+      "sourceMapping": "Photo explicitly linked to the selected catalog color."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
+      "colorId": 261,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/9a3792dcc44ac9cbbd3e713ded29f1caf5b1fd99_nE1wReebf8.webp",
+      "sourceSha256": "0d45e704445dc49cb6ba55a3cfefa2f3ce31bb3a17a82434e12f718ad0842059",
+      "generatedFile": "exec-f6da14c1-8a70-494a-8df4-ae2ecf2f43ad.png",
+      "preview": "interior/korfad-lp-01-261-clean-v1.webp",
+      "review": "Visually compared to the original 2026-09-26, including normalized WebP: lever, rose, shadow and logo removed. Original tone, surface texture, frame and edge seams retained. Plain slab unchanged, no new decoration. Geometry [205,0,389,837], handle [0.137,0.522].",
+      "prompt": "Use case: precise-object-edit. Asset: faithful photograph of Korfad LOFT PLATO LP-01 / Лайт бетон for a door configurator. The referenced photo is the sole edit target. Remove ONLY the silver lever, square rose and local shadow near x252–308,y425–448, and the KORFAD logo along the bottom edge. Reconstruct these small areas seamlessly from the original light gray mottled concrete. Preserve exact original hue, texture and lighting everywhere else. Keep the flat slab, fine edge seams, frame and top header unchanged. No glass or decorative strips, no recoloring. Retain original 800:837 canvas ratio, door at original x206–594 and y0–837, white side margins. Do not crop, zoom, recenter or redesign. No hardware, keyhole, text or logo.",
+      "sourceMapping": "Photo explicitly linked to the selected catalog color."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
+      "colorId": 268,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/922f532bdb1f0c3af48937097d628fc03cad8e88_vSWY4bKwhd.webp",
+      "sourceSha256": "e0cd8f8f0c5f266b1743c13ee3afb704042521b297f200e1ae9efa78a14fc69c",
+      "generatedFile": "exec-243e7048-2af1-40cd-b078-191e405f4a6f.png",
+      "preview": "interior/korfad-lp-01-268-clean-v1.webp",
+      "review": "Visually compared to the original 2026-09-26, including normalized WebP: lever, rose, shadow and logo removed. Original tone, surface texture, frame and edge seams retained. Plain slab unchanged, no new decoration. Geometry [205,0,389,837], handle [0.137,0.522].",
+      "prompt": "Use case: precise-object-edit. Asset: faithful photograph of Korfad LOFT PLATO LP-01 / Super PET аляска for a door configurator. The referenced photo is the sole edit target. Remove ONLY the silver lever, square rose and local shadow near x252–308,y425–448, and the KORFAD logo along the bottom edge. Reconstruct these small areas seamlessly from the original smooth near-white matte surface. Preserve exact original hue, texture and lighting everywhere else. Keep the flat slab, fine edge seams, frame and top header unchanged. No glass or decorative strips, no recoloring. Retain original 800:837 canvas ratio, door at original x206–594 and y0–837, white side margins. Do not crop, zoom, recenter or redesign. No hardware, keyhole, text or logo.",
+      "sourceMapping": "Photo explicitly linked to the selected catalog color."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
       "colorId": 260,
       "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/9a3792dcc44ac9cbbd3e713ded29f1caf5b1fd99_mrNaHpWptc.webp",
       "sourceSha256": "c42baa1bf1f2720f97f99faa031f7b10a89a3893fbffba49c150812a8498cc40",

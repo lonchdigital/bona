@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-26T18:11:29+00:00",
+    "asOf": "2026-09-26T18:32:48+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
-        "missing-color-linked-photo": 243,
-        "prepared": 663,
+        "missing-color-linked-photo": 242,
+        "prepared": 668,
         "needs-model-clarification": 7,
-        "needs-source-review": 372,
+        "needs-source-review": 368,
         "not-orderable": 30
     },
     "finishes": [
@@ -7417,7 +7417,7 @@
                 "uk": "Сталь кортен Korfad",
                 "ru": "Сталь кортен Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 122,
@@ -7427,7 +7427,7 @@
                 "uk": "Арт бетон Korfad",
                 "ru": "Арт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 122,
@@ -7437,7 +7437,7 @@
                 "uk": "Лофт бетон Korfad",
                 "ru": "Лофт бетон Korfad"
             },
-            "status": "missing-color-linked-photo"
+            "status": "prepared"
         },
         {
             "number": 122,
@@ -7447,7 +7447,7 @@
                 "uk": "Лайт бетон Korfad",
                 "ru": "Лайт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 122,
@@ -7457,7 +7457,7 @@
                 "uk": "Super PET аляска Korfad",
                 "ru": "Super PET аляска Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 123,

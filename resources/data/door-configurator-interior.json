@@ -13976,6 +13976,58 @@
           "image": "interior/korfad-lp-01-260-catalog-v1.webp",
           "preview": "interior/korfad-lp-01-260-clean-v1.webp",
           "colorId": 260
+        },
+        {
+          "id": "color-263",
+          "name": {
+            "uk": "Сталь кортен Korfad",
+            "ru": "Сталь кортен Korfad"
+          },
+          "hex": "#8a4428",
+          "image": "interior/korfad-lp-01-263-catalog-v1.webp",
+          "preview": "interior/korfad-lp-01-263-clean-v1.webp",
+          "colorId": 263
+        },
+        {
+          "id": "color-251",
+          "name": {
+            "uk": "Арт бетон Korfad",
+            "ru": "Арт бетон Korfad"
+          },
+          "hex": "#635041",
+          "image": "interior/korfad-lp-01-251-catalog-v1.webp",
+          "preview": "interior/korfad-lp-01-251-clean-v1.webp",
+          "colorId": 251
+        },
+        {
+          "id": "color-261",
+          "name": {
+            "uk": "Лайт бетон Korfad",
+            "ru": "Лайт бетон Korfad"
+          },
+          "hex": "#b6b1a6",
+          "image": "interior/korfad-lp-01-261-catalog-v1.webp",
+          "preview": "interior/korfad-lp-01-261-clean-v1.webp",
+          "colorId": 261
+        },
+        {
+          "id": "color-268",
+          "name": {
+            "uk": "Super PET аляска Korfad",
+            "ru": "Super PET аляска Korfad"
+          },
+          "hex": "#f2f2ef",
+          "image": "interior/korfad-lp-01-268-catalog-v1.webp",
+          "preview": "interior/korfad-lp-01-268-clean-v1.webp",
+          "colorId": 268
+        },
+        {
+          "id": "color-262",
+          "name": {"uk": "Лофт бетон Korfad", "ru": "Лофт бетон Korfad"},
+          "hex": "#55524f",
+          "image": "interior/korfad-lp-01-262-catalog-v1.webp",
+          "preview": "interior/korfad-lp-01-262-clean-v1.webp",
+          "colorId": 262
         }
       ]
     },
