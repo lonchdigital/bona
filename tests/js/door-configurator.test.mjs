@@ -280,6 +280,17 @@ test('VENECIA VND-05 covers all five finishes with the photographed glass', () =
     }
 });
 
+test('PIANO PND-01 covers all nineteen catalog finishes with the pictured glass strips', () => {
+    const piano = catalog.products.find(product => product.id === 'korfad-piano-pnd-01');
+    assert.equal(piano.colors.find(color => color.colorId === 253)?.hex, '#5a4239', 'walnut swatch uses the source color instead of black placeholder');
+    assert.deepEqual(piano.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 266, 269, 270, 271, 272]);
+    for (const color of piano.colors) {
+        const glass = color.colorId === 269 ? 16031 : [253, 270].includes(color.colorId) ? 16032 : 16033;
+        assert.deepEqual(color.optionIds, [glass], `PND-01/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-piano-pnd-01-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

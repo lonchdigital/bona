@@ -15512,6 +15512,258 @@
           "optionIds": [
             16033
           ]
+        },
+        {
+          "id": "color-252",
+          "name": {
+            "uk": "Венге Korfad",
+            "ru": "Венге Korfad"
+          },
+          "hex": "#412819",
+          "image": "interior/korfad-piano-pnd-01-252-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-252-clean-v1.webp",
+          "colorId": 252,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-253",
+          "name": {
+            "uk": "Горіх Korfad",
+            "ru": "Орех Korfad"
+          },
+          "hex": "#5a4239",
+          "image": "interior/korfad-piano-pnd-01-253-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-253-clean-v1.webp",
+          "colorId": 253,
+          "optionIds": [
+            16032
+          ]
+        },
+        {
+          "id": "color-256",
+          "name": {
+            "uk": "Дуб грей Korfad",
+            "ru": "Дуб грей Korfad"
+          },
+          "hex": "#977a61",
+          "image": "interior/korfad-piano-pnd-01-256-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-256-clean-v1.webp",
+          "colorId": 256,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-257",
+          "name": {
+            "uk": "Дуб марсала Korfad",
+            "ru": "Дуб марсала Korfad"
+          },
+          "hex": "#665247",
+          "image": "interior/korfad-piano-pnd-01-257-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-257-clean-v1.webp",
+          "colorId": 257,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-264",
+          "name": {
+            "uk": "Ясен білий Korfad",
+            "ru": "Ясень белый Korfad"
+          },
+          "hex": "#fafafa",
+          "image": "interior/korfad-piano-pnd-01-264-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-264-clean-v1.webp",
+          "colorId": 264,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-255",
+          "name": {
+            "uk": "Дуб браш Korfad",
+            "ru": "Дуб браш Korfad"
+          },
+          "hex": "#a77952",
+          "image": "interior/korfad-piano-pnd-01-255-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-255-clean-v1.webp",
+          "colorId": 255,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-260",
+          "name": {
+            "uk": "Еш-вайт Korfad",
+            "ru": "Эш-вайт Korfad"
+          },
+          "hex": "#ac9c8b",
+          "image": "interior/korfad-piano-pnd-01-260-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-260-clean-v1.webp",
+          "colorId": 260,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-259",
+          "name": {
+            "uk": "Дуб тобакко Korfad",
+            "ru": "Дуб тобакко Korfad"
+          },
+          "hex": "#d4b599",
+          "image": "interior/korfad-piano-pnd-01-259-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-259-clean-v1.webp",
+          "colorId": 259,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-258",
+          "name": {
+            "uk": "Дуб нордік Korfad",
+            "ru": "Дуб нордик Korfad"
+          },
+          "hex": "#d2c6c3",
+          "image": "interior/korfad-piano-pnd-01-258-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-258-clean-v1.webp",
+          "colorId": 258,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-263",
+          "name": {
+            "uk": "Сталь кортен Korfad",
+            "ru": "Сталь кортен Korfad"
+          },
+          "hex": "#8a4428",
+          "image": "interior/korfad-piano-pnd-01-263-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-263-clean-v1.webp",
+          "colorId": 263,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-251",
+          "name": {
+            "uk": "Арт бетон Korfad",
+            "ru": "Арт бетон Korfad"
+          },
+          "hex": "#635041",
+          "image": "interior/korfad-piano-pnd-01-251-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-251-clean-v1.webp",
+          "colorId": 251,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-262",
+          "name": {
+            "uk": "Лофт бетон Korfad",
+            "ru": "Лофт бетон Korfad"
+          },
+          "hex": "#686660",
+          "image": "interior/korfad-piano-pnd-01-262-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-262-clean-v1.webp",
+          "colorId": 262,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-261",
+          "name": {
+            "uk": "Лайт бетон Korfad",
+            "ru": "Лайт бетон Korfad"
+          },
+          "hex": "#b6b1a6",
+          "image": "interior/korfad-piano-pnd-01-261-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-261-clean-v1.webp",
+          "colorId": 261,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-270",
+          "name": {
+            "uk": "Super PET магнолія Korfad",
+            "ru": "Super PET магнолия Korfad"
+          },
+          "hex": "#dcd7b9",
+          "image": "interior/korfad-piano-pnd-01-270-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-270-clean-v1.webp",
+          "colorId": 270,
+          "optionIds": [
+            16032
+          ]
+        },
+        {
+          "id": "color-271",
+          "name": {
+            "uk": "Super PET сірий Korfad",
+            "ru": "Super PET серый Korfad"
+          },
+          "hex": "#d9d9d9",
+          "image": "interior/korfad-piano-pnd-01-271-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-271-clean-v1.webp",
+          "colorId": 271,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-269",
+          "name": {
+            "uk": "Super PET антрацит Korfad",
+            "ru": "Super PET антрацит Korfad"
+          },
+          "hex": "#424242",
+          "image": "interior/korfad-piano-pnd-01-269-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-269-clean-v1.webp",
+          "colorId": 269,
+          "optionIds": [
+            16031
+          ]
+        },
+        {
+          "id": "color-272",
+          "name": {
+            "uk": "Super PET чорний Korfad",
+            "ru": "Super PET черный Korfad"
+          },
+          "hex": "#161616",
+          "image": "interior/korfad-piano-pnd-01-272-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-272-clean-v1.webp",
+          "colorId": 272,
+          "optionIds": [
+            16033
+          ]
+        },
+        {
+          "id": "color-266",
+          "name": {
+            "uk": "Білий перламутр Korfad",
+            "ru": "Белый перламутр"
+          },
+          "hex": "#eeeae6",
+          "image": "interior/korfad-piano-pnd-01-266-catalog-v1.webp",
+          "preview": "interior/korfad-piano-pnd-01-266-clean-v1.webp",
+          "colorId": 266,
+          "optionIds": [
+            16033
+          ]
         }
       ]
     },
