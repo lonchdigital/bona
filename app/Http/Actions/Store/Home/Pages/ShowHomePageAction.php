@@ -7,6 +7,7 @@ use App\Models\HomePageConfig;
 use App\Services\BlogArticle\BlogArticleService;
 use App\Services\Currency\CurrencyService;
 use App\Services\HomePage\HomePageService;
+use App\Services\Work\WorkService;
 use App\Support\LastModified;
 use Illuminate\Support\Facades\Cache;
 
@@ -16,6 +17,7 @@ class ShowHomePageAction extends BaseAction
         HomePageService $homePageService,
         CurrencyService $currencyService,
         BlogArticleService $blogArticleService,
+        WorkService $workService,
     ) {
         /*
          * Absent on a fresh install, and the page read straight through it —
@@ -38,6 +40,7 @@ class ShowHomePageAction extends BaseAction
                 'specificProductTypes' => $homePageService->getSpecificProductTypes(),
                 'homePopularProducts' => $homePageService->getHomePagePopularProducts(),
                 'homeTestimonials' => $homePageService->getStorefrontTestimonials(),
+                'homeWorks' => $workService->getHomeWorks(),
                 'faqs' => $homePageService->getHomePageFaqs(),
                 'seoText' => $homePageService->getHomePageSeoTextByLanguage(app()->getLocale()),
                 'baseCurrency' => $currencyService->getBaseCurrency(),

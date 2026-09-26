@@ -1,4 +1,4 @@
-@props(['section' => []])
+@props(['section' => [], 'managedWorks' => null])
 
 @php
     $localized = static function ($value) {
@@ -8,7 +8,17 @@
 
         return trim((string) ($value[app()->getLocale()] ?? collect($value)->first(fn ($text) => filled($text)) ?? ''));
     };
-    $works = collect($section['items'] ?? [])->filter(fn ($item) => filled($item['image_url'] ?? null))->sortBy('sort_order')->values();
+    $managed = collect($managedWorks ?? [])->map(fn ($work) => [
+        'title' => (string) $work->name,
+        'text' => (string) $work->intro,
+        'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.work.page', ['workSlug' => $work->slug]),
+        'image_url' => $work->image_url,
+        'sort_order' => $work->sort_order,
+    ])->filter(fn (array $item) => filled($item['image_url']))->values();
+    $works = ($managed->isNotEmpty() ? $managed : collect($section['items'] ?? []))
+        ->filter(fn ($item) => filled($item['image_url'] ?? null))
+        ->sortBy('sort_order')
+        ->values();
     $sectionUrl = trim((string) ($section['link_url'] ?? ''))
         ?: App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page');
 @endphp

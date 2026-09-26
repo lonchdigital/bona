@@ -100,7 +100,7 @@
     <x-store.home-numbers :section="$homeSections['numbers'] ?? []" />
     <x-store.home-ideas :section="$homeSections['ideas'] ?? []" />
     <x-store.home-steps :section="$homeSections['steps'] ?? []" />
-    <x-store.home-works :section="$homeSections['works'] ?? []" />
+    <x-store.home-works :section="$homeSections['works'] ?? []" :managed-works="$homeWorks ?? collect()" />
 
     <x-store.home-reviews :testimonials="$homeTestimonials" :section="$homeSections['reviews'] ?? []" />
     <x-store.home-instagram :feed="$instagramFeed" :section="$homeSections['instagram'] ?? []" />

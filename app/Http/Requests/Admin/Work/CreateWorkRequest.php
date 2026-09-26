@@ -38,7 +38,7 @@ class CreateWorkRequest extends BaseRequest
                 'min:1',
             ],
             'main_image' => [
-                'nullable',
+                'required',
                 'image',
                 'mimes:jpeg,png,jpg',
             ],

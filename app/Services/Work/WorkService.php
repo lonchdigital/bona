@@ -48,6 +48,16 @@ class WorkService extends BaseService
             ->get();
     }
 
+    public function getHomeWorks(int $count = 3): Collection
+    {
+        return Work::published()
+            ->whereNotNull('image_path')
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->limit($count)
+            ->get();
+    }
+
     public function createWork(EditWorkDTO $request): ServiceActionResult
     {
         $creator = $this->getAuthUser();
@@ -56,9 +66,9 @@ class WorkService extends BaseService
 
             $workData = $this->buildWorkData($request) + ['creator_id' => $creator->id];
 
-            $imagePath = self::WORK_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
-            $workData['image_path'] = $imagePath;
-            $this->storeImage($imagePath, $request->mainImage);
+            $imageBasePath = self::WORK_IMAGES_FOLDER.'/'.sha1(microtime(true)).'_'.Str::random(10);
+            $workData['image_path'] = $imageBasePath.'.webp';
+            $this->storeImage($imageBasePath, $request->mainImage, 'webp', 82);
 
             $work = Work::create($workData);
 
@@ -75,9 +85,9 @@ class WorkService extends BaseService
             $workData = $this->buildWorkData($request);
 
             if ($request->mainImage) {
-                $imagePath = self::WORK_IMAGES_FOLDER.'/'.sha1(time()).'_'.Str::random(10).'.jpg';
-                $workData['image_path'] = $imagePath;
-                $this->storeImage($imagePath, $request->mainImage);
+                $imageBasePath = self::WORK_IMAGES_FOLDER.'/'.sha1(microtime(true)).'_'.Str::random(10);
+                $workData['image_path'] = $imageBasePath.'.webp';
+                $this->storeImage($imageBasePath, $request->mainImage, 'webp', 82);
                 $this->deleteImage($work->image_path);
             }
 
@@ -142,9 +152,9 @@ class WorkService extends BaseService
             $uploaded = $image['image'] ?? null;
 
             if ($uploaded instanceof UploadedFile) {
-                $imagePath = self::WORK_IMAGES_FOLDER.'/'.sha1(microtime(true)).'_'.Str::random(10).'.jpg';
-                $this->storeImage($imagePath, $uploaded);
-                $data['image_path'] = $imagePath;
+                $imageBasePath = self::WORK_IMAGES_FOLDER.'/'.sha1(microtime(true)).'_'.Str::random(10);
+                $data['image_path'] = $imageBasePath.'.webp';
+                $this->storeImage($imageBasePath, $uploaded, 'webp', 82);
 
                 if ($imageModel?->image_path) {
                     $imagesToDelete[] = $imageModel->image_path;

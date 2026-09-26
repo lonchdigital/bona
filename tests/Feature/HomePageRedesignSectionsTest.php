@@ -6,11 +6,41 @@ use App\Models\Brand;
 use App\Models\CustomerReview;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Models\Work;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class HomePageRedesignSectionsTest extends TestCase
 {
+    public function test_homepage_works_prefer_published_managed_projects_over_reference_cards(): void
+    {
+        $managedWork = new Work([
+            'name' => ['uk' => 'Реальний проєкт Portofino', 'ru' => 'Реальный проект Portofino'],
+            'intro' => ['uk' => 'Індивідуальні дверні рішення.', 'ru' => 'Индивидуальные дверные решения.'],
+            'slug' => 'realnyi-proiekt-portofino',
+            'image_path' => 'work-images/portofino.webp',
+            'sort_order' => 0,
+        ]);
+
+        $html = view('components.store.home-works', [
+            'managedWorks' => collect([$managedWork]),
+            'section' => [
+                'enabled' => true,
+                'items' => [[
+                    'title' => ['uk' => 'Демонстраційна квартира'],
+                    'text' => ['uk' => 'Демонстраційний опис'],
+                    'url' => '/fake-project',
+                    'image_url' => '/build/fake.jpg',
+                    'sort_order' => 0,
+                ]],
+            ],
+        ])->render();
+
+        $this->assertStringContainsString('Реальний проєкт Portofino', $html);
+        $this->assertStringContainsString('/nashi-roboty/realnyi-proiekt-portofino', $html);
+        $this->assertStringNotContainsString('Демонстраційна квартира', $html);
+    }
+
     public function test_interior_idea_cards_use_their_full_clickable_area(): void
     {
         $html = view('components.store.home-ideas', [
