@@ -250,6 +250,16 @@ test('SANVITO satin SV-01 covers all eighteen finishes without inheriting mirror
     assert.match(black.sourceUrl, /_main\.webp$/);
 });
 
+test('CL-09 covers all eight finishes with full-height white satin diamond-pattern glass', () => {
+    const cl = catalog.products.find(product => product.id === 'korfad-classico-cl-09');
+    assert.deepEqual(cl.colors.map(color => color.colorId).sort((a, b) => a - b), [254, 255, 256, 257, 258, 259, 260, 266]);
+    assert.deepEqual(cl.types, ['classic']);
+    for (const color of cl.colors) {
+        assert.deepEqual(color.optionIds, [16373], `CL-09/${color.colorId}: white satin M1/M4`);
+        assert.ok(color.preview.includes(`korfad-classico-cl-09-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
