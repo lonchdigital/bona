@@ -16,8 +16,9 @@ use InvalidArgumentException;
  * It only fills gaps: a description is written when the stored one is empty
  * or a one-line stub (or the entry sets "replace_content": true), characteristics are added only under names the product
  * does not have yet, FAQ only when the product has none and meta only when it
- * is blank. A reviewed batch can explicitly replace duplicated legacy meta via
- * "replace_meta": true. Otherwise manager-written values stay untouched.
+ * is blank. A reviewed batch can explicitly replace a legacy product name or
+ * duplicated meta via "replace_name": true and "replace_meta": true.
+ * Otherwise manager-written values stay untouched.
  */
 class ProductContentImporter
 {
@@ -47,7 +48,8 @@ class ProductContentImporter
             }
 
             DB::transaction(function () use ($product, $entry, &$updated) {
-                $changed = $this->applyTexts($product, $entry);
+                $changed = $this->applyName($product, $entry);
+                $changed = $this->applyTexts($product, $entry) || $changed;
                 $changed = $this->applyCharacteristics($product, $entry['characteristics'] ?? []) || $changed;
                 $changed = $this->applyFaqs($product, $entry['faqs'] ?? []) || $changed;
                 $changed = $this->applyMeta($product, $entry) || $changed;
@@ -62,6 +64,28 @@ class ProductContentImporter
         }
 
         return ['products' => $updated, 'missing' => $missing];
+    }
+
+    private function applyName(Product $product, array $entry): bool
+    {
+        $changed = false;
+        $replace = ($entry['replace_name'] ?? false) === true;
+
+        foreach (self::LOCALES as $locale) {
+            $value = trim((string) data_get($entry, "name.{$locale}", ''));
+            $stored = (string) $product->getTranslation('name', $locale, false);
+
+            if ($value !== '' && ($replace || blank($stored)) && $stored !== $value) {
+                $product->setTranslation('name', $locale, $value);
+                $changed = true;
+            }
+        }
+
+        if ($changed) {
+            $product->saveQuietly();
+        }
+
+        return $changed;
     }
 
     private function applyTexts(Product $product, array $entry): bool

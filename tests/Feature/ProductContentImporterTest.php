@@ -37,19 +37,30 @@ class ProductContentImporterTest extends TestCase
             'short_content' => '<p>Старий короткий опис менеджера.</p>',
         ]);
         $replacePath = tempnam(sys_get_temp_dir(), 'content').'.json';
-        file_put_contents($replacePath, json_encode([[
-            'slug' => 'replace-me',
-            'replace_content' => true,
-            'replace_short_content' => true,
-            'replace_meta' => true,
-            'content' => ['uk' => '<p>Новий унікальний опис.</p>'],
-            'short_content' => ['uk' => '<p>Новий короткий опис.</p>'],
-            'meta_title' => ['uk' => 'Новий title'],
-        ]], JSON_UNESCAPED_UNICODE));
+        file_put_contents($replacePath, json_encode([
+            [
+                'slug' => 'replace-me',
+                'replace_name' => true,
+                'replace_content' => true,
+                'replace_short_content' => true,
+                'replace_meta' => true,
+                'name' => ['uk' => 'Нова назва', 'ru' => 'Новое название'],
+                'content' => ['uk' => '<p>Новий унікальний опис.</p>'],
+                'short_content' => ['uk' => '<p>Новий короткий опис.</p>'],
+                'meta_title' => ['uk' => 'Новий title'],
+            ],
+            [
+                'slug' => 'dveri-prihovanogo-montazhu-monoblack',
+                'name' => ['uk' => 'Назва, що не має замінити менеджерську'],
+            ],
+        ], JSON_UNESCAPED_UNICODE));
         app(ProductContentImporter::class)->importFile($replacePath);
+        $this->assertSame('Нова назва', $boilerplate->fresh()->getTranslation('name', 'uk'));
+        $this->assertSame('Новое название', $boilerplate->fresh()->getTranslation('name', 'ru'));
         $this->assertSame('<p>Новий унікальний опис.</p>', ProductText::query()->where(['product_id' => $boilerplate->id, 'language' => 'uk'])->value('content'));
         $this->assertSame('<p>Новий короткий опис.</p>', ProductText::query()->where(['product_id' => $boilerplate->id, 'language' => 'uk'])->value('short_content'));
         $this->assertSame('Новий title', $boilerplate->fresh()->getTranslation('meta_title', 'uk'));
+        $this->assertSame('Тестові двері', $written->fresh()->getTranslation('name', 'uk'));
 
         $path = database_path('content/products/2026_09_17_hidden_doors.json');
         $importer = app(ProductContentImporter::class);

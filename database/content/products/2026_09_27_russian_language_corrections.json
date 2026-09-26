@@ -1,0 +1,86 @@
+[
+    {
+        "slug": "luce-p-biliy",
+        "replace_name": true,
+        "name": {
+            "uk": "LUCE P, білий",
+            "ru": "LUCE P, белый"
+        }
+    },
+    {
+        "slug": "mirou-ultra-qdoors-vhidni",
+        "replace_name": true,
+        "name": {
+            "uk": "Мироу Ультра Qdoors вхідні",
+            "ru": "Мироу Ультра Qdoors входные"
+        }
+    },
+    {
+        "slug": "plintus-farbovaniy-provence-mod.-pmp018-2800-100-12mm",
+        "replace_name": true,
+        "name": {
+            "uk": "Плінтус фарбований Provence мод. PMP018 2800*100*12мм",
+            "ru": "Плинтус крашеный Provence мод. PMP018 2800*100*12мм"
+        }
+    },
+    {
+        "slug": "tehnichni-ei-60-2070-1200-shagren-ral-7024",
+        "replace_name": true,
+        "name": {
+            "uk": "Технічні EI 60 2070*1200 шагрень RAL 7024",
+            "ru": "Технические EI 60 2070*1200 шагрень RAL 7024"
+        }
+    },
+    {
+        "slug": "tehnichni-ei-60-2070-1200-shagren-ral-7035",
+        "replace_name": true,
+        "name": {
+            "uk": "Технічні EI 60 2070*1200 шагрень RAL 7035",
+            "ru": "Технические EI 60 2070*1200 шагрень RAL 7035"
+        }
+    },
+    {
+        "slug": "tehnichni-ei-60-2070-870-shagren-ral-7024",
+        "replace_name": true,
+        "name": {
+            "uk": "Технічні EI 60 2070*870 шагрень RAL 7024",
+            "ru": "Технические EI 60 2070*870 шагрень RAL 7024"
+        }
+    },
+    {
+        "slug": "tehnichni-ei-60-2070-870-shagren-ral-7035",
+        "replace_name": true,
+        "name": {
+            "uk": "Технічні EI 60 2070*870 шагрень RAL 7035",
+            "ru": "Технические EI 60 2070*870 шагрень RAL 7035"
+        }
+    },
+    {
+        "slug": "tehnichni-ei-60-2070-960-shagren-ral-7024",
+        "replace_name": true,
+        "name": {
+            "uk": "Технічні EI 60 2070*960 шагрень RAL 7024",
+            "ru": "Технические EI 60 2070*960 шагрень RAL 7024"
+        }
+    },
+    {
+        "slug": "tehnichni-ei-60-2070-960-shagren-ral-7035",
+        "replace_name": true,
+        "name": {
+            "uk": "Технічні EI 60 2070*960 шагрень RAL 7035",
+            "ru": "Технические EI 60 2070*960 шагрень RAL 7035"
+        }
+    },
+    {
+        "slug": "komplekt-komplanarnoyi-lishtvi-inside-na-2-storoni-omega",
+        "replace_meta": true,
+        "meta_title": {
+            "uk": "Компланарна лиштва Omega Inside на 2 сторони | Bona",
+            "ru": "Компланарные наличники Omega Inside на 2 стороны | Bona"
+        },
+        "meta_description": {
+            "uk": "Комплект компланарної лиштви Omega Inside на дві сторони дверного блока. Підбір сумісного погонажу в Одесі та доставка замовлень по Україні.",
+            "ru": "Комплект компланарных наличников Omega Inside на две стороны дверного блока. Подбор совместимого погонажа в Одессе и доставка заказов по Украине."
+        }
+    }
+]
