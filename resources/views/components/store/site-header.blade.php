@@ -53,6 +53,95 @@
             ]),
         ];
     });
+
+    $mobileTypes = $productTypes->values();
+    $mobileDoorTypeOrder = [
+        'interior-doors' => 0,
+        'hidden-doors' => 1,
+        'entrance-doors' => 2,
+        'visible-doors' => 3,
+    ];
+    $isDoorType = static function ($productType) use ($mobileDoorTypeOrder): bool {
+        if (array_key_exists($productType->slug, $mobileDoorTypeOrder)) {
+            return true;
+        }
+
+        return str_ends_with($productType->slug, '-doors')
+            && ! str_contains($productType->slug, 'handle');
+    };
+    $mobileDoorTypes = $mobileTypes
+        ->filter($isDoorType)
+        ->sortBy(fn ($productType) => [
+            $mobileDoorTypeOrder[$productType->slug] ?? 50,
+            $productType->catalogMenuConfiguration?->sort_order ?? $productType->sort_order ?? 0,
+            $productType->id,
+        ])
+        ->values();
+    $mobileNonDoorTypes = $mobileTypes->reject($isDoorType)->values();
+    $mobileSearchText = static function ($catalogItem): string {
+        $translations = method_exists($catalogItem, 'getTranslations')
+            ? $catalogItem->getTranslations('name')
+            : [];
+
+        return Illuminate\Support\Str::lower(Illuminate\Support\Str::ascii(implode(' ', [
+            $catalogItem->slug ?? '',
+            ...array_values($translations),
+        ])));
+    };
+    $mobileFeaturedDefinitions = [
+        ['wall-panel', 'stinov', 'stenov'],
+        ['plintus', 'plinth', 'baseboard', 'skirting'],
+        ['dverni-rucky', 'door-handles', 'door-handle'],
+    ];
+    $mobileCategoryCandidates = $mobileNonDoorTypes->flatMap(fn ($productType) => $productType->categories
+        ->map(fn ($category) => ['productType' => $productType, 'category' => $category]));
+    $mobileFeaturedLinks = collect();
+    $mobileConsumedTypeIds = collect();
+
+    foreach ($mobileFeaturedDefinitions as $patterns) {
+        $matchingType = $mobileNonDoorTypes->first(
+            fn ($productType) => Illuminate\Support\Str::contains($mobileSearchText($productType), $patterns),
+        );
+
+        if ($matchingType) {
+            $mobileFeaturedLinks->push([
+                'label' => $matchingType->name,
+                'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+                    'productTypeSlug' => $matchingType->slug,
+                ]),
+            ]);
+            $mobileConsumedTypeIds->push($matchingType->id);
+            continue;
+        }
+
+        $matchingCategory = $mobileCategoryCandidates->first(
+            fn ($candidate) => Illuminate\Support\Str::contains($mobileSearchText($candidate['category']), $patterns),
+        );
+
+        if ($matchingCategory) {
+            $mobileFeaturedLinks->push([
+                'label' => $matchingCategory['category']->name,
+                'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog-category.page', [
+                    'productTypeSlug' => $matchingCategory['productType']->slug,
+                    'categorySlug' => $matchingCategory['category']->slug,
+                ]),
+            ]);
+            $mobileConsumedTypeIds->push($matchingCategory['productType']->id);
+        }
+    }
+
+    $mobileCatalogLinks = $mobileFeaturedLinks
+        ->concat($mobileNonDoorTypes
+            ->reject(fn ($productType) => $mobileConsumedTypeIds->contains($productType->id))
+            ->map(fn ($productType) => [
+                'label' => $productType->name,
+                'url' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', [
+                    'productTypeSlug' => $productType->slug,
+                ]),
+            ]))
+        ->unique('url')
+        ->values();
+    $mobileDoorTypeNames = $mobileDoorTypes->pluck('name')->filter()->take(3)->implode(' · ');
 @endphp
 
 <div
@@ -112,29 +201,99 @@
                     </a>
                 @endforeach
 
-                <div class="bona-mobile-nav" data-mobile-navigation>
-                    <div class="bona-mobile-nav__catalog">
-                        <span>{{ trans('base.storefront_catalog') }}</span>
-                        @forelse($navigationTypes as $productType)
-                            <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
-                                {{ $productType->name }} <span aria-hidden="true">→</span>
-                            </a>
-                        @empty
-                            <small>{{ trans('base.storefront_catalog_empty') }}</small>
-                        @endforelse
-                        <x-store.configurator-menu-link />
-                        <a class="bona-mobile-nav__all" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}">
-                            {{ trans('base.all_products') }} <span aria-hidden="true">→</span>
-                        </a>
-                    </div>
-                    <div class="bona-mobile-nav__secondary">
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{ trans('base.about_us') }}</a>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{ trans('base.delivery') }}</a>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{ trans('base.blog') }}</a>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{ trans('base.services') }}</a>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{ trans('base.our_works') }}</a>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.door-configurator.page') }}">{{ trans('configurator.nav_label') }}</a>
-                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{ trans('base.contacts') }}</a>
+                <div class="bona-mobile-nav" data-mobile-navigation data-mobile-menu-level="root">
+                    <div class="bona-mobile-nav__viewport">
+                        <div class="bona-mobile-nav__track" data-mobile-menu-track>
+                            <section
+                                class="bona-mobile-nav__panel bona-mobile-nav__panel--root"
+                                aria-label="{{ trans('base.storefront_mobile_catalog_navigation') }}"
+                                data-mobile-menu-panel="root"
+                            >
+                                <p class="bona-mobile-nav__eyebrow">{{ trans('base.storefront_catalog_kicker') }}</p>
+
+                                <div class="bona-mobile-nav__catalog-list">
+                                    @if($mobileDoorTypes->isNotEmpty())
+                                        <button
+                                            class="bona-mobile-nav__entry bona-mobile-nav__entry--parent"
+                                            type="button"
+                                            aria-controls="bona-mobile-door-catalog"
+                                            aria-expanded="false"
+                                            data-mobile-menu-open="doors"
+                                        >
+                                            <span>
+                                                <strong>{{ trans('base.storefront_catalog') }}</strong>
+                                                @if($mobileDoorTypeNames !== '')
+                                                    <small>{{ $mobileDoorTypeNames }}</small>
+                                                @endif
+                                            </span>
+                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+                                        </button>
+                                    @endif
+
+                                    @forelse($mobileCatalogLinks as $catalogLink)
+                                        <a class="bona-mobile-nav__entry" href="{{ $catalogLink['url'] }}">
+                                            <strong>{{ $catalogLink['label'] }}</strong>
+                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+                                        </a>
+                                    @empty
+                                        @if($mobileDoorTypes->isEmpty())
+                                            <small class="bona-mobile-nav__empty">{{ trans('base.storefront_catalog_empty') }}</small>
+                                        @endif
+                                    @endforelse
+                                </div>
+
+                                <div class="bona-mobile-nav__utility">
+                                    <x-store.configurator-menu-link />
+                                    <a class="bona-mobile-nav__all" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}">
+                                        <span>{{ trans('base.all_products') }}</span>
+                                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+                                    </a>
+                                </div>
+
+                                <nav class="bona-mobile-nav__secondary" aria-label="{{ trans('base.storefront_secondary_navigation') }}">
+                                    <p>{{ trans('base.storefront_mobile_information') }}</p>
+                                    <div>
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.about-us') }}">{{ trans('base.about_us') }}</a>
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.delivery-info') }}">{{ trans('base.delivery') }}</a>
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('blog.main.page') }}">{{ trans('base.blog') }}</a>
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.services') }}">{{ trans('base.services') }}</a>
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.works.page') }}">{{ trans('base.our_works') }}</a>
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.contacts') }}">{{ trans('base.contacts') }}</a>
+                                    </div>
+                                </nav>
+                            </section>
+
+                            <section
+                                class="bona-mobile-nav__panel bona-mobile-nav__panel--doors"
+                                id="bona-mobile-door-catalog"
+                                aria-label="{{ trans('base.storefront_catalog') }}"
+                                aria-hidden="true"
+                                data-mobile-menu-panel="doors"
+                                inert
+                            >
+                                <header class="bona-mobile-nav__level-header">
+                                    <button type="button" data-mobile-menu-back>
+                                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H6m5-5-5 5 5 5"></path></svg>
+                                        <span>{{ trans('base.storefront_mobile_back') }}</span>
+                                    </button>
+                                    <p>{{ trans('base.storefront_catalog') }}</p>
+                                </header>
+
+                                <div class="bona-mobile-nav__door-list">
+                                    @foreach($mobileDoorTypes as $productType)
+                                        <a href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.catalog.page', ['productTypeSlug' => $productType->slug]) }}">
+                                            <strong>{{ $productType->name }}</strong>
+                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+                                        </a>
+                                    @endforeach
+                                </div>
+
+                                <a class="bona-mobile-nav__all bona-mobile-nav__all--sublevel" href="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.all-products.page') }}">
+                                    <span>{{ trans('base.all_products') }}</span>
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+                                </a>
+                            </section>
+                        </div>
                     </div>
                 </div>
             </nav>

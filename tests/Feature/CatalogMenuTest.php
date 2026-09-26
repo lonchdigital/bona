@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\CatalogMenu\CatalogMenuService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Tests\Support\MakesShopData;
@@ -298,6 +299,75 @@ class CatalogMenuTest extends TestCase
         $this->assertSame('/product-category/aksessuar/category/dverni-rucky', $ukrainianLink['url']);
         $this->assertSame('Дверные ручки', $russianLink['label']);
         $this->assertSame('/ru/product-category/aksessuar/category/dverni-rucky', $russianLink['url']);
+    }
+
+    public function test_mobile_menu_groups_door_types_and_promotes_key_accessory_categories(): void
+    {
+        $interior = $this->productType([
+            'slug' => 'interior-doors',
+            'name' => ['uk' => 'Міжкімнатні двері', 'ru' => 'Межкомнатные двери'],
+        ]);
+        $hidden = $this->productType([
+            'slug' => 'hidden-doors',
+            'name' => ['uk' => 'Приховані двері', 'ru' => 'Скрытые двери'],
+        ]);
+        $entrance = $this->productType([
+            'slug' => 'entrance-doors',
+            'name' => ['uk' => 'Вхідні двері', 'ru' => 'Входные двери'],
+        ]);
+        $accessories = $this->productType([
+            'slug' => 'aksessuar',
+            'name' => ['uk' => 'Аксесуари', 'ru' => 'Аксессуары'],
+        ]);
+        $wallPanels = $this->category($accessories->id, 'stinovi-paneli', 'Стінові панелі');
+        $wallPanels->setTranslations('name', ['uk' => 'Стінові панелі', 'ru' => 'Стеновые панели'])->save();
+        $skirting = $this->category($accessories->id, 'plintus', 'Плінтус');
+        $skirting->setTranslations('name', ['uk' => 'Плінтус', 'ru' => 'Плинтус'])->save();
+        $handles = $this->category($accessories->id, 'dverni-rucky', 'Дверні ручки');
+        $handles->setTranslations('name', ['uk' => 'Дверні ручки', 'ru' => 'Дверные ручки'])->save();
+
+        $types = collect([$interior, $hidden, $entrance, $accessories])
+            ->each->load(['categories', 'catalogMenuConfiguration']);
+
+        foreach (['uk', 'ru'] as $locale) {
+            app()->setLocale($locale);
+            $html = Blade::render('<x-store.site-header :product-types="$types" />', compact('types'));
+            $document = new \DOMDocument;
+            @$document->loadHTML('<?xml encoding="utf-8" ?>'.$html);
+            $xpath = new \DOMXPath($document);
+            $root = $xpath->query('//*[@data-mobile-menu-panel="root"]')->item(0);
+            $doors = $xpath->query('//*[@data-mobile-menu-panel="doors"]')->item(0);
+
+            $this->assertNotNull($root);
+            $this->assertNotNull($doors);
+            $this->assertSame(1, $xpath->query('.//button[@data-mobile-menu-open="doors"]', $root)->count());
+            $this->assertSame(1, $xpath->query('.//button[@data-mobile-menu-back]', $doors)->count());
+
+            $prefix = $locale === 'uk' ? '' : '/ru';
+            foreach ([$wallPanels, $skirting, $handles] as $category) {
+                $url = $prefix.'/product-category/aksessuar/category/'.$category->slug;
+                $this->assertSame(1, $xpath->query('.//a[@href="'.$url.'"]', $root)->count());
+            }
+
+            foreach ([$interior, $hidden, $entrance] as $type) {
+                $url = $prefix.'/product-category/'.$type->slug;
+                $this->assertSame(0, $xpath->query('.//a[@href="'.$url.'"]', $root)->count());
+                $this->assertSame(1, $xpath->query('.//a[@href="'.$url.'"]', $doors)->count());
+            }
+        }
+    }
+
+    public function test_mobile_menu_interaction_keeps_desktop_menu_markup_untouched(): void
+    {
+        $headerScript = file_get_contents(resource_path('js/store/common/site-header.js'));
+        $stylesheet = file_get_contents(resource_path('scss/storefront/_redesign.scss'));
+
+        $this->assertStringContainsString('const setLevel = (level', $headerScript);
+        $this->assertStringContainsString("event.key === 'Escape' && activeLevel !== 'root'", $headerScript);
+        $this->assertStringContainsString("panel.toggleAttribute('inert', !active)", $headerScript);
+        $this->assertStringContainsString("[data-mobile-menu-level='doors'] &__track", $stylesheet);
+        $this->assertStringContainsString('transform: translateX(-100%);', $stylesheet);
+        $this->assertStringContainsString('@media (max-width: 960px)', $stylesheet);
     }
 
     public function test_custom_menu_item_requires_both_label_and_url(): void

@@ -41,6 +41,16 @@ Bona Doors is a premium, approachable door showroom for homeowners and interior 
 - Use a pale warm-gold catalog-menu entry, a compact gold topbar link between works and contacts, and a footer navigation link. Match UA/RU destinations and avoid duplicate configured footer links.
 - On phones, place the example image after the introduction and before the features/action. Keep all copy legible and the image fully proportioned; no pretend controls or heavy configurator JavaScript on the homepage.
 
+## Mobile catalog navigation (September 2026)
+
+- Keep the desktop mega-menu unchanged. At `960px` and below, replace the flat catalog list with a two-level, full-height navigation flow inside the existing dark header overlay.
+- The first level prioritizes shopping paths: one parent entry for the door catalog, then real non-door catalogue destinations such as wall panels, skirting boards, and door handles, followed by the configurator and all-products links. Never hide a configured storefront product type merely because it is promoted as a desktop header link.
+- The door-catalog parent slides the navigation track horizontally to a second level containing the real configured door product types (including interior, hidden, and entrance doors when available). It is a button, not a fake link. The second level starts with an explicit back control and also offers a link to all products.
+- Preserve Bona's warm editorial restraint: dark brown surface, cream type, thin low-contrast rules, Forum display type for primary catalogue choices, Manrope for utility labels, and restrained warm-gold emphasis. Use no card grid, generic pictograms, gradients, or borrowed brand styling.
+- Motion communicates hierarchy only: a short horizontal slide with no bounce. Respect `prefers-reduced-motion` by removing the transition. Closing the drawer, pressing Escape, or crossing the desktop breakpoint resets the navigation to level one.
+- Keep search and secondary company links available without competing with the catalogue hierarchy. Mobile targets must be at least 44px high; forward/back controls expose `aria-expanded`, `aria-controls`, and useful labels, and focus moves to the destination level then returns to the opener.
+- Use the existing configured product types and categories as the source of truth, with Ukrainian and Russian parity. Long labels must wrap without colliding with arrows or the close control.
+
 ## Admin operational surfaces
 
 - Keep the existing Bootstrap/Overpass admin shell, but make editing screens calm, compact, and task-led rather than decorative.
