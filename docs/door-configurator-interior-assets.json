@@ -4,6 +4,61 @@
   "mode": "built-in imagegen, individual edits",
   "assets": [
     {
+      "slug": "mizhkimnatni-dveri-parma-pm-10-korfad",
+      "colorId": 261,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/7e6831125b12126c915b0a8eeec776d5b03e1fe5_qzg356GHI3.webp",
+      "sourceSha256": "8efd11a1bff4abf8c33cb77553c3e7ab43edd497ec760da0c1a341ac8499363e",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-3c02d7b6-015f-4060-b6f1-f7b9538646e7.png",
+      "preview": "interior/korfad-parma-pm-10-261-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed. Original oak or concrete/corten material, tone, frame, dark perimeter seams and right hinges retained. Four white satin rectangles retain alternating LEFT/RIGHT/LEFT/RIGHT alignment, short adjacent blocks and five full-width solid bands. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 15824; original 259 white satin15824 unchanged.",
+      "prompt": "Use case: precise-object-edit. Image 1 only is the edit target: the exact original Korfad PARMA PM-10 catalog door in catalog color 261. Remove ONLY silver lever, square rose and tiny local shadow at x248..307,y425..448 in source 800x837. Reconstruct original light warm gray concrete speckled texture, no woodgrain behind it; also remove bottom KORFAD logo continuing existing surface. Preserve exact photographed color and material, texture pattern, frame, horizontal panel seams, right hinges, highlights and dark perimeter seams. CRITICAL: preserve all FOUR WHITE satin glass rectangles unchanged, same dimensions and alternating horizontal alignment: first and third against LEFT inner edge, second and fourth against RIGHT inner edge. Retain short solid blocks adjacent to the black inserts and all five full-width solid bands. Do not turn glass black or mirror, no ornament or redesign. Retain full source 800:837 composition, original outerframe x205..594 y0..837 and white side margins. No zoom, recenter, crop, recoloring, holes, new hardware or text. Local cleanup only.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually checked. White satin for251/261, black glass for258/263/262. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-parma-pm-10-korfad",
+      "colorId": 262,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/7e6831125b12126c915b0a8eeec776d5b03e1fe5_Bb7MORAzfe.webp",
+      "sourceSha256": "d3adb07690ee4110f9825e640577842c028f7de347ca59ab503001cdc1914e23",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-3afdef6e-18be-4e52-a1e2-a36503fc99d8.png",
+      "preview": "interior/korfad-parma-pm-10-262-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed. Original oak or concrete/corten material, tone, frame, dark perimeter seams and right hinges retained. Four black glass rectangles retain alternating LEFT/RIGHT/LEFT/RIGHT alignment, short adjacent blocks and five full-width solid bands. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 15825; original 259 white satin15824 unchanged.",
+      "prompt": "Use case: precise-object-edit. Image 1 only is the edit target: the exact original Korfad PARMA PM-10 catalog door in catalog color 262. Remove ONLY silver lever, square rose and tiny local shadow at x248..307,y425..448 in source 800x837. Reconstruct original dark graphite-gray loft-concrete mottled texture, no woodgrain behind it; also remove bottom KORFAD logo continuing existing surface. Preserve exact photographed color and material, texture pattern, frame, horizontal panel seams, right hinges, highlights and dark perimeter seams. CRITICAL: preserve all FOUR pure BLACK glass rectangles unchanged, same dimensions and alternating horizontal alignment: first and third against LEFT inner edge, second and fourth against RIGHT inner edge. Retain short solid blocks adjacent to the black inserts and all five full-width solid bands. Do not turn glass white or mirror, no ornament or redesign. Retain full source 800:837 composition, original outerframe x205..594 y0..837 and white side margins. No zoom, recenter, crop, recoloring, holes, new hardware or text. Local cleanup only.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually checked. White satin for251/261, black glass for258/263/262. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-parma-pm-10-korfad",
+      "colorId": 251,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/22dae6f6fd6cacda2bd35a786a580a4c2a581d9d_hC40Mcvb03.webp",
+      "sourceSha256": "58f7cb4534705c39a3cb69b8776b3d8c1e60d106874e9586be025bdb8365b8e6",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-8f4439f0-0df8-4503-b597-aa4f3e43785b.png",
+      "preview": "interior/korfad-parma-pm-10-251-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed. Original oak or concrete/corten material, tone, frame, dark perimeter seams and right hinges retained. Four white satin rectangles retain alternating LEFT/RIGHT/LEFT/RIGHT alignment, short adjacent blocks and five full-width solid bands. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 15824; original 259 white satin15824 unchanged.",
+      "prompt": "Use case: precise-object-edit. Image 1 only is the edit target: the exact original Korfad PARMA PM-10 catalog door in catalog color 251. Remove ONLY silver lever, square rose and tiny local shadow at x248..307,y425..448 in source 800x837. Reconstruct original warm dark brown art-concrete mottled texture, no woodgrain behind it; also remove bottom KORFAD logo continuing existing surface. Preserve exact photographed color and material, texture pattern, frame, horizontal panel seams, right hinges, highlights and dark perimeter seams. CRITICAL: preserve all FOUR WHITE satin glass rectangles unchanged, same dimensions and alternating horizontal alignment: first and third against LEFT inner edge, second and fourth against RIGHT inner edge. Retain short solid blocks adjacent to the black inserts and all five full-width solid bands. Do not turn glass black or mirror, no ornament or redesign. Retain full source 800:837 composition, original outerframe x205..594 y0..837 and white side margins. No zoom, recenter, crop, recoloring, holes, new hardware or text. Local cleanup only.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually checked. White satin for251/261, black glass for258/263/262. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-parma-pm-10-korfad",
+      "colorId": 263,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/22dae6f6fd6cacda2bd35a786a580a4c2a581d9d_3mlD3frgsX.webp",
+      "sourceSha256": "e2f66389c89cc775b43c269d613c13202b54a989675ba0d37a47606aab6a0ce1",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-7880a31b-9dba-4d36-a653-68cf711a1444.png",
+      "preview": "interior/korfad-parma-pm-10-263-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed. Original oak or concrete/corten material, tone, frame, dark perimeter seams and right hinges retained. Four black glass rectangles retain alternating LEFT/RIGHT/LEFT/RIGHT alignment, short adjacent blocks and five full-width solid bands. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 15825; original 259 white satin15824 unchanged.",
+      "prompt": "Use case: precise-object-edit. Image 1 only is the edit target: the exact original Korfad PARMA PM-10 catalog door in catalog color 263. Remove ONLY silver lever, square rose and tiny local shadow at x248..307,y425..448 in source 800x837. Reconstruct original rust-brown corten steel texture, without woodgrain behind it; also remove bottom KORFAD logo continuing existing surface. Preserve exact photographed color and material, texture pattern, frame, horizontal panel seams, right hinges, highlights and dark perimeter seams. CRITICAL: preserve all FOUR pure BLACK glass rectangles unchanged, same dimensions and alternating horizontal alignment: first and third against LEFT inner edge, second and fourth against RIGHT inner edge. Retain short solid blocks adjacent to the black inserts and all five full-width solid bands. Do not turn glass white or mirror, no ornament or redesign. Retain full source 800:837 composition, original outerframe x205..594 y0..837 and white side margins. No zoom, recenter, crop, recoloring, holes, new hardware or text. Local cleanup only.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually checked. White satin for251/261, black glass for258/263/262. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-parma-pm-10-korfad",
+      "colorId": 258,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/22dae6f6fd6cacda2bd35a786a580a4c2a581d9d_L7SG8henvn.webp",
+      "sourceSha256": "49f92bb84422f824bde0de58bcd05ad0d30ff79b13e827d1b6c66a6d67d2fbfd",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-75343ced-a716-4f89-9122-3dbede625ea0.png",
+      "preview": "interior/korfad-parma-pm-10-258-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed. Original oak or concrete/corten material, tone, frame, dark perimeter seams and right hinges retained. Four black glass rectangles retain alternating LEFT/RIGHT/LEFT/RIGHT alignment, short adjacent blocks and five full-width solid bands. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 15825; original 259 white satin15824 unchanged.",
+      "prompt": "Use case: precise-object-edit. Image 1 only is the edit target: the exact original Korfad PARMA PM-10 catalog door in catalog color 258. Remove ONLY silver lever, square rose and tiny local shadow at x248..307,y425..448 in source 800x837. Reconstruct original light Nordic oak, with horizontal grain on panels and vertical grain on frame behind it; also remove bottom KORFAD logo continuing existing surface. Preserve exact photographed color and material, texture pattern, frame, horizontal panel seams, right hinges, highlights and dark perimeter seams. CRITICAL: preserve all FOUR pure BLACK glass rectangles unchanged, same dimensions and alternating horizontal alignment: first and third against LEFT inner edge, second and fourth against RIGHT inner edge. Retain short solid blocks adjacent to the black inserts and all five full-width solid bands. Do not turn glass white or mirror, no ornament or redesign. Retain full source 800:837 composition, original outerframe x205..594 y0..837 and white side margins. No zoom, recenter, crop, recoloring, holes, new hardware or text. Local cleanup only.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually checked. White satin for251/261, black glass for258/263/262. No recoloring."
+    },
+    {
       "slug": "mizhkimnatni-dveri-classico-cl-07-korfad",
       "colorId": 266,
       "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/78249b1ea5d4240b18adf9c2b16fade74174dac9_toXp39dMsy.webp",

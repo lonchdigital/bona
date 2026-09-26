@@ -218,6 +218,14 @@ test('CL-07 covers eight catalog finishes with the pictured solid panels and whi
     for (const color of cl.colors) assert.deepEqual(color.optionIds, [16348], `CL-07/${color.colorId}: white satin`);
 });
 
+test('PM-10 covers six finishes with glass matched to the photographed material', () => {
+    const pm = catalog.products.find(product => product.id === 'korfad-parma-pm-10');
+    assert.deepEqual(pm.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 258, 259, 261, 262, 263]);
+    for (const color of pm.colors) {
+        assert.deepEqual(color.optionIds, [[251, 259, 261].includes(color.colorId) ? 15824 : 15825], `PM-10/${color.colorId}: pictured glass`);
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

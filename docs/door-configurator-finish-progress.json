@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-26T19:46:22+00:00",
+    "asOf": "2026-09-26T20:11:23+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 241,
-        "prepared": 690,
+        "prepared": 695,
         "needs-model-clarification": 7,
-        "needs-source-review": 347,
+        "needs-source-review": 342,
         "not-orderable": 30
     },
     "finishes": [
@@ -7717,7 +7717,7 @@
                 "uk": "Дуб нордік Korfad",
                 "ru": "Дуб нордик Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 126,
@@ -7727,7 +7727,7 @@
                 "uk": "Сталь кортен Korfad",
                 "ru": "Сталь кортен Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 126,
@@ -7737,7 +7737,7 @@
                 "uk": "Арт бетон Korfad",
                 "ru": "Арт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 126,
@@ -7747,7 +7747,7 @@
                 "uk": "Лофт бетон Korfad",
                 "ru": "Лофт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 126,
@@ -7757,7 +7757,7 @@
                 "uk": "Лайт бетон Korfad",
                 "ru": "Лайт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 127,

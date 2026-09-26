@@ -14489,6 +14489,76 @@
           "optionIds": [
             15824
           ]
+        },
+        {
+          "id": "color-258",
+          "name": {
+            "uk": "Дуб нордік Korfad",
+            "ru": "Дуб нордик Korfad"
+          },
+          "hex": "#d2c6c3",
+          "image": "interior/korfad-parma-pm-10-258-catalog-v1.webp",
+          "preview": "interior/korfad-parma-pm-10-258-clean-v1.webp",
+          "colorId": 258,
+          "optionIds": [
+            15825
+          ]
+        },
+        {
+          "id": "color-263",
+          "name": {
+            "uk": "Сталь кортен Korfad",
+            "ru": "Сталь кортен Korfad"
+          },
+          "hex": "#8a4428",
+          "image": "interior/korfad-parma-pm-10-263-catalog-v1.webp",
+          "preview": "interior/korfad-parma-pm-10-263-clean-v1.webp",
+          "colorId": 263,
+          "optionIds": [
+            15825
+          ]
+        },
+        {
+          "id": "color-251",
+          "name": {
+            "uk": "Арт бетон Korfad",
+            "ru": "Арт бетон Korfad"
+          },
+          "hex": "#635041",
+          "image": "interior/korfad-parma-pm-10-251-catalog-v1.webp",
+          "preview": "interior/korfad-parma-pm-10-251-clean-v1.webp",
+          "colorId": 251,
+          "optionIds": [
+            15824
+          ]
+        },
+        {
+          "id": "color-262",
+          "name": {
+            "uk": "Лофт бетон Korfad",
+            "ru": "Лофт бетон Korfad"
+          },
+          "hex": "#686660",
+          "image": "interior/korfad-parma-pm-10-262-catalog-v1.webp",
+          "preview": "interior/korfad-parma-pm-10-262-clean-v1.webp",
+          "colorId": 262,
+          "optionIds": [
+            15825
+          ]
+        },
+        {
+          "id": "color-261",
+          "name": {
+            "uk": "Лайт бетон Korfad",
+            "ru": "Лайт бетон Korfad"
+          },
+          "hex": "#b6b1a6",
+          "image": "interior/korfad-parma-pm-10-261-catalog-v1.webp",
+          "preview": "interior/korfad-parma-pm-10-261-clean-v1.webp",
+          "colorId": 261,
+          "optionIds": [
+            15824
+          ]
         }
       ]
     },
