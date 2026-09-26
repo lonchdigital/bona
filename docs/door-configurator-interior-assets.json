@@ -4,6 +4,83 @@
   "mode": "built-in imagegen, individual edits",
   "assets": [
     {
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "colorId": 266,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/dea5ad49c5c27c3a6a38b340bca31009af697a95_Ej2IXhbRBt.webp",
+      "sourceSha256": "a437aee777629be769ad6bf1e11f289363def654ca8af4232047a458100c7450",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-28cdbf9b-2547-4190-a3f6-63480797543d.png",
+      "preview": "interior/korfad-classico-cl-02-266-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain or pearl-white paint, carved frame, seams, right hinges and lower solid panel retained. Upper white satin glass with three-column/four-row gray diamond lattice preserved. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 16340 (white satin + M1/M2/M3). Existing shade 254 remains bronze option 16341, unchanged.",
+      "prompt": "Use case: precise-object-edit. Edit target is Image 1 only: the exact original catalog photo of Korfad CLASSICO CL-02, color 266. For a door configurator remove ONLY the silver lever, square rose and their tiny shadow at the left mid-height (x248-309,y425-448 in source 800x837), reconstruct the smooth pearl-white painted surface and small covered glass edge. Remove the KORFAD logo along the bottom; continue existing smooth white painted surface underneath. Keep exact original pearl-white colour, smooth painted material without added woodgrain, carved frame moldings, dark perimeter seams, right hinges and lighting. CRITICAL: leave the entire large upper WHITE satin glass insert and its thin gray/silver diamond lattice unchanged. The original has three diamond columns and four rows of full diamonds; keep exact line count, spacing, endpoints and all glass edges. No gold or floral motifs. Keep the lower solid rectangular wood panel. Retain original full 800:837 canvas ratio, original outer frame x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring, new holes, hardware, text or decoration. Faithful local cleanup, not a redesigned door.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with diamond lattice. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "colorId": 258,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/cb88962580e4f1b4ac0d738aa3c2322da04a569f_r021ghOzCE.webp",
+      "sourceSha256": "7a5ff97e4c44c94b58759dc423e3613e87c23d35114cd2062319e03abbc78d55",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-a8c3544f-c318-42bc-af69-c08319523497.png",
+      "preview": "interior/korfad-classico-cl-02-258-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain or pearl-white paint, carved frame, seams, right hinges and lower solid panel retained. Upper white satin glass with three-column/four-row gray diamond lattice preserved. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 16340 (white satin + M1/M2/M3). Existing shade 254 remains bronze option 16341, unchanged.",
+      "prompt": "Use case: precise-object-edit. Edit target is Image 1 only: the exact original catalog photo of Korfad CLASSICO CL-02, color 258. For a door configurator remove ONLY the silver lever, square rose and their tiny shadow at the left mid-height (x248-309,y425-448 in source 800x837), reconstruct the wood and small covered glass edge. Remove the KORFAD logo along the bottom; continue existing woodgrain underneath. Keep exact original wood colour, grain, carved frame moldings, dark perimeter seams, right hinges and lighting. CRITICAL: leave the entire large upper WHITE satin glass insert and its thin gray/silver diamond lattice unchanged. The original has three diamond columns and four rows of full diamonds; keep exact line count, spacing, endpoints and all glass edges. No gold or floral motifs. Keep the lower solid rectangular wood panel. Retain original full 800:837 canvas ratio, original outer frame x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring, new holes, hardware, text or decoration. Faithful local cleanup, not a redesigned door.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with diamond lattice. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "colorId": 259,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/2df35d1a4d7d5c30d501b3c1b80bb996c4ed001a_un0i9jcl1o.webp",
+      "sourceSha256": "ea4e44d89dd69ba29669cc928808c27845295bc7faf52d669eb64eca5d1449c0",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-f8df3a54-7dda-44ca-a388-04a1a83dc287.png",
+      "preview": "interior/korfad-classico-cl-02-259-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain or pearl-white paint, carved frame, seams, right hinges and lower solid panel retained. Upper white satin glass with three-column/four-row gray diamond lattice preserved. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 16340 (white satin + M1/M2/M3). Existing shade 254 remains bronze option 16341, unchanged.",
+      "prompt": "Use case: precise-object-edit. Edit target is Image 1 only: the exact original catalog photo of Korfad CLASSICO CL-02, color 259. For a door configurator remove ONLY the silver lever, square rose and their tiny shadow at the left mid-height (x248-309,y425-448 in source 800x837), reconstruct the wood and small covered glass edge. Remove the KORFAD logo along the bottom; continue existing woodgrain underneath. Keep exact original wood colour, grain, carved frame moldings, dark perimeter seams, right hinges and lighting. CRITICAL: leave the entire large upper WHITE satin glass insert and its thin gray/silver diamond lattice unchanged. The original has three diamond columns and four rows of full diamonds; keep exact line count, spacing, endpoints and all glass edges. No gold or floral motifs. Keep the lower solid rectangular wood panel. Retain original full 800:837 canvas ratio, original outer frame x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring, new holes, hardware, text or decoration. Faithful local cleanup, not a redesigned door.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with diamond lattice. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "colorId": 260,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/d5b19946bcb6df4a5c3481cbbcf62f7757040b58_nMntPIekwk.webp",
+      "sourceSha256": "fd2f5c5d78ccf47cda23e04ca9d5c0193be8a552ee264294f9189d8f6af8d9f1",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-a80837f1-0a50-40f7-b98b-f0ebef8dea73.png",
+      "preview": "interior/korfad-classico-cl-02-260-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain or pearl-white paint, carved frame, seams, right hinges and lower solid panel retained. Upper white satin glass with three-column/four-row gray diamond lattice preserved. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 16340 (white satin + M1/M2/M3). Existing shade 254 remains bronze option 16341, unchanged.",
+      "prompt": "Use case: precise-object-edit. Edit target is Image 1 only: the exact original catalog photo of Korfad CLASSICO CL-02, color 260. For a door configurator remove ONLY the silver lever, square rose and their tiny shadow at the left mid-height (x248-309,y425-448 in source 800x837), reconstruct the wood and small covered glass edge. Remove the KORFAD logo along the bottom; continue existing woodgrain underneath. Keep exact original wood colour, grain, carved frame moldings, dark perimeter seams, right hinges and lighting. CRITICAL: leave the entire large upper WHITE satin glass insert and its thin gray/silver diamond lattice unchanged. The original has three diamond columns and four rows of full diamonds; keep exact line count, spacing, endpoints and all glass edges. No gold or floral motifs. Keep the lower solid rectangular wood panel. Retain original full 800:837 canvas ratio, original outer frame x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring, new holes, hardware, text or decoration. Faithful local cleanup, not a redesigned door.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with diamond lattice. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "colorId": 255,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/3cf7847e48449be5350ed2fcdcac3e79547839a4_yfq3ciVhir.webp",
+      "sourceSha256": "68125c13cf07b2974f48347da3e34c0e8075b966c57ec5db53759f6e3b83c798",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-fb8998a0-1d03-443f-b514-6904c883a445.png",
+      "preview": "interior/korfad-classico-cl-02-255-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain or pearl-white paint, carved frame, seams, right hinges and lower solid panel retained. Upper white satin glass with three-column/four-row gray diamond lattice preserved. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 16340 (white satin + M1/M2/M3). Existing shade 254 remains bronze option 16341, unchanged.",
+      "prompt": "Use case: precise-object-edit. Edit target is Image 1 only: the exact original catalog photo of Korfad CLASSICO CL-02, color 255. For a door configurator remove ONLY the silver lever, square rose and their tiny shadow at the left mid-height (x248-309,y425-448 in source 800x837), reconstruct the wood and small covered glass edge. Remove the KORFAD logo along the bottom; continue existing woodgrain underneath. Keep exact original wood colour, grain, carved frame moldings, dark perimeter seams, right hinges and lighting. CRITICAL: leave the entire large upper WHITE satin glass insert and its thin gray/silver diamond lattice unchanged. The original has three diamond columns and four rows of full diamonds; keep exact line count, spacing, endpoints and all glass edges. No gold or floral motifs. Keep the lower solid rectangular wood panel. Retain original full 800:837 canvas ratio, original outer frame x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring, new holes, hardware, text or decoration. Faithful local cleanup, not a redesigned door.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with diamond lattice. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "colorId": 257,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/9a7e9d4727013d2b016960e76165d4f4865f72df_hkNPEXUvtB.webp",
+      "sourceSha256": "4b68323031d9f2c53cece6449c0d0403f30758d825570fee926fd90459df3e1f",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-78d7c110-5fbc-4701-9642-7916b21eafc4.png",
+      "preview": "interior/korfad-classico-cl-02-257-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain or pearl-white paint, carved frame, seams, right hinges and lower solid panel retained. Upper white satin glass with three-column/four-row gray diamond lattice preserved. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 16340 (white satin + M1/M2/M3). Existing shade 254 remains bronze option 16341, unchanged.",
+      "prompt": "Use case: precise-object-edit. Edit target is Image 1 only: the exact original catalog photo of Korfad CLASSICO CL-02, color 257. For a door configurator remove ONLY the silver lever, square rose and their tiny shadow at the left mid-height (x248-309,y425-448 in source 800x837), reconstruct the wood and small covered glass edge. Remove the KORFAD logo along the bottom; continue existing woodgrain underneath. Keep exact original wood colour, grain, carved frame moldings, dark perimeter seams, right hinges and lighting. CRITICAL: leave the entire large upper WHITE satin glass insert and its thin gray/silver diamond lattice unchanged. The original has three diamond columns and four rows of full diamonds; keep exact line count, spacing, endpoints and all glass edges. No gold or floral motifs. Keep the lower solid rectangular wood panel. Retain original full 800:837 canvas ratio, original outer frame x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring, new holes, hardware, text or decoration. Faithful local cleanup, not a redesigned door.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with diamond lattice. No recoloring."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "colorId": 256,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/3cf7847e48449be5350ed2fcdcac3e79547839a4_qiBokGvTg1.webp",
+      "sourceSha256": "d9f08bbcf22d52866ac340deb03b8441ca8b8fab633de154eb829434cd62de42",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-c53a211e-721b-49aa-97a6-62d7efa6321a.png",
+      "preview": "interior/korfad-classico-cl-02-256-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain or pearl-white paint, carved frame, seams, right hinges and lower solid panel retained. Upper white satin glass with three-column/four-row gray diamond lattice preserved. Crop [205,0,389,837], handle [0.137,0.522]. Glass option 16340 (white satin + M1/M2/M3). Existing shade 254 remains bronze option 16341, unchanged.",
+      "prompt": "Use case: precise-object-edit. Edit target is Image 1 only: the exact original catalog photo of Korfad CLASSICO CL-02, color 256. For a door configurator remove ONLY the silver lever, square rose and their tiny shadow at the left mid-height (x248-309,y425-448 in source 800x837), reconstruct the wood and small covered glass edge. Remove the KORFAD logo along the bottom; continue existing woodgrain underneath. Keep exact original wood colour, grain, carved frame moldings, dark perimeter seams, right hinges and lighting. CRITICAL: leave the entire large upper WHITE satin glass insert and its thin gray/silver diamond lattice unchanged. The original has three diamond columns and four rows of full diamonds; keep exact line count, spacing, endpoints and all glass edges. No gold or floral motifs. Keep the lower solid rectangular wood panel. Retain original full 800:837 canvas ratio, original outer frame x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring, new holes, hardware, text or decoration. Faithful local cleanup, not a redesigned door.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with diamond lattice. No recoloring."
+    },
+    {
       "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
       "colorId": 266,
       "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/c8c68f7c7012704cf0f54ae291490c4453bcd36b_7CfTO2cmAP.webp",
