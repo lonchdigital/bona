@@ -4,7 +4,7 @@
   "newPrepared": 172,
   "originalInteriorPresets": 6,
   "sourceCatalogModels": 190,
-  "deployment": "Prepared portion deployed 2026-09-26: admin release 178 (533e3a81), safe shade append release 180 (80cebb82), LP-01 palette release 181 (996f6890), WP-01 and CL-05 palettes release 184 (113611e7), CL-02 palette release 187 (e291e5fc), CL-07 palette release 190 (5c6cbd33), PM-10 palette release 194 (bad6d800). 184 doors and 3 handles editable in the existing admin; 695/1315 main interior color pairs published, 701 door variants overall. UA/RU bindings, positive prices and managed media checked. All 6 PM-10 colors verified in public UI with photographed glass options and one black handle. Full release CI: 452 PHP tests / 15505 assertions. Entire interior category is not complete.",
+  "deployment": "Prepared portion deployed 2026-09-26: admin release 178 (533e3a81), safe shade append release 180 (80cebb82), LP-01 palette release 181 (996f6890), WP-01 and CL-05 palettes release 184 (113611e7), CL-02 palette release 187 (e291e5fc), CL-07 palette release 190 (5c6cbd33), PM-10 palette release 194 (bad6d800), SANVITO mirror SV-01 palette release 197 (f84cf947). 184 doors and 3 handles editable in the existing admin; 712/1315 main interior color pairs published, 718 door variants overall. UA/RU bindings, positive prices and managed media checked. All 18 SANVITO mirror colors verified in public UI with silver triple mirror option 16356 and one black handle; all 18 published images decoded. Full release CI: 458 PHP tests / 15731 assertions. Admin editor tested locally, not authenticated production admin. Entire interior category is not complete.",
   "models": [
     {
       "number": 1,
