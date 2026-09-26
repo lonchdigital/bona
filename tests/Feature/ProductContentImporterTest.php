@@ -1067,6 +1067,53 @@ class ProductContentImporterTest extends TestCase
         $this->assertSame('Текст менеджера.', $custom->fresh()->getTranslation('answer', 'ru', false));
     }
 
+    public function test_it_replaces_the_remaining_duplicate_product_meta_and_keeps_every_locale_unique(): void
+    {
+        $path = database_path('content/products/2026_09_26_duplicate_meta_batch_01.json');
+        $entries = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
+        $products = $entries->mapWithKeys(function (array $entry) {
+            $product = $this->makeProduct([
+                'slug' => $entry['slug'],
+                'meta_title' => ['uk' => 'Старий спільний title', 'ru' => 'Старый общий title'],
+                'meta_description' => ['uk' => 'Старий спільний опис', 'ru' => 'Старое общее описание'],
+            ]);
+
+            return [$entry['slug'] => $product];
+        });
+
+        $importer = app(ProductContentImporter::class);
+        $first = $importer->importFile($path);
+        $second = $importer->importFile($path);
+
+        $this->assertCount(55, $entries);
+        $this->assertSame(55, $first['products']);
+        $this->assertSame([], $first['missing']);
+        $this->assertSame(0, $second['products']);
+
+        foreach (['uk', 'ru'] as $locale) {
+            $titles = [];
+            $descriptions = [];
+
+            foreach ($entries as $entry) {
+                $product = $products[$entry['slug']]->fresh();
+                $title = $product->getTranslation('meta_title', $locale, false);
+                $description = $product->getTranslation('meta_description', $locale, false);
+
+                $this->assertSame($entry['meta_title'][$locale], $title);
+                $this->assertSame($entry['meta_description'][$locale], $description);
+                $this->assertLessThanOrEqual(65, mb_strlen($title));
+                $this->assertGreaterThanOrEqual(130, mb_strlen($description));
+                $this->assertLessThanOrEqual(165, mb_strlen($description));
+
+                $titles[] = $title;
+                $descriptions[] = $description;
+            }
+
+            $this->assertCount(55, array_unique($titles));
+            $this->assertCount(55, array_unique($descriptions));
+        }
+    }
+
     public function test_the_standard_korfad_components_migration_repairs_the_duplicated_russian_profile_name(): void
     {
         $profile = $this->makeProduct([
