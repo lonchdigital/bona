@@ -124,7 +124,36 @@ class FilterGroupColorContentTest extends TestCase
         ], false);
         $this->get($legacyPath)->assertStatus(301)->assertRedirect($landingPath);
 
+        $whiteCatalogue = $this->productType([
+            'slug' => 'bele-dvery',
+            'name' => ['uk' => 'Білі двері', 'ru' => 'Белые двери'],
+        ]);
         $white = $this->color('bily', ['uk' => 'Білий', 'ru' => 'Белый']);
+        $whiteDoor = $this->makeProduct([
+            'slug' => 'white-test-door',
+            'product_type_id' => $productType->id,
+            'name' => ['uk' => 'Білі тестові двері', 'ru' => 'Белые тестовые двери'],
+        ]);
+        $whiteDoor->colors()->attach($white->id);
+
+        $this->assertSame(
+            '/product-category/bele-dvery',
+            $urls->productTypeFilterUrl($productType, $white),
+        );
+        $this->assertSame(
+            '/ru/product-category/bele-dvery',
+            $urls->productTypeFilterUrl($productType, $white, 'ru'),
+        );
+
+        $this->get('/product-category/interior-doors/filter/color=bily')
+            ->assertOk()
+            ->assertSee('<link rel="canonical" href="'.url('/product-category/bele-dvery').'">', false);
+        $this->get('/ru/product-category/interior-doors/filter/color=bily')
+            ->assertOk()
+            ->assertSee('<link rel="canonical" href="'.url('/ru/product-category/bele-dvery').'">', false);
+
+        $whiteCatalogue->delete();
+        app()->setLocale('uk');
         $this->assertSame(
             '/product-category/interior-doors/filter/color=bily',
             $urls->productTypeFilterUrl($productType, $white),

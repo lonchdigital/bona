@@ -10,6 +10,19 @@ use Illuminate\Support\Collection;
 
 final class CatalogColorUrlService
 {
+    /**
+     * Some colour searches already have a deliberately curated catalogue with
+     * its own stable URL and product selection. Point colour navigation and
+     * canonicals at that catalogue instead of creating a second SEO landing.
+     *
+     * @var array<string, array<string, string>>
+     */
+    private const DEDICATED_CATALOGUES = [
+        'interior-doors' => [
+            'bily' => 'bele-dvery',
+        ],
+    ];
+
     /** @var array<string, FilterGroup|null> */
     private array $landingGroups = [];
 
@@ -46,16 +59,24 @@ final class CatalogColorUrlService
         Color $color,
         ?string $locale = null,
     ): string {
+        $productTypeSlug = $productType instanceof ProductType ? $productType->slug : $productType;
+        $dedicatedCatalogueSlug = self::DEDICATED_CATALOGUES[$productTypeSlug][$color->slug] ?? null;
+        if ($dedicatedCatalogueSlug && ProductType::query()->where('slug', $dedicatedCatalogueSlug)->exists()) {
+            return $this->localizedRoute('store.catalog.page', [
+                'productTypeSlug' => $dedicatedCatalogueSlug,
+            ], $locale);
+        }
+
         $landingGroup = $this->colorLandingGroup($productType, $color);
         if ($landingGroup) {
             return $this->localizedRoute('store.catalog.filter-group.page', [
-                'productTypeSlug' => $productType instanceof ProductType ? $productType->slug : $productType,
+                'productTypeSlug' => $productTypeSlug,
                 'filterGroupSlug' => $landingGroup->slug,
             ], $locale);
         }
 
         return $this->localizedRoute('store.catalog.filter.page', [
-            'productTypeSlug' => $productType instanceof ProductType ? $productType->slug : $productType,
+            'productTypeSlug' => $productTypeSlug,
             'catalogFiltersString' => 'color='.$color->slug,
         ], $locale);
     }
