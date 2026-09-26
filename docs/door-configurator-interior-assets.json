@@ -4,6 +4,94 @@
   "mode": "built-in imagegen, individual edits",
   "assets": [
     {
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "colorId": 266,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/c8c68f7c7012704cf0f54ae291490c4453bcd36b_7CfTO2cmAP.webp",
+      "sourceSha256": "1727e9749c0c78d0f5dfaf7a84c0407aae14d1b5b5617d0bcb4d2b551aac27ce",
+      "generatedFile": "exec-980e9dec-f9da-407c-a1ef-9c404c116a6e.png",
+      "preview": "interior/korfad-classico-cl-05-266-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Both white satin glass inserts, gold diamond/curved-petal pattern, four small floral motifs and right hinges retained; linked to catalog glass option 16332 (white satin + M1/M2), not bronze option 16333.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the only edit target: Korfad CLASSICO CL-05 original catalog photo, color 266. Remove ONLY the silver lever, rose and local shadow on the left at mid-height, around x248-309 y425-448 on the source 800x837 canvas; restore original underlying surface and tiny glass-edge detail. Remove the bottom KORFAD mark, reconstruct that local surface. Preserve EXACT original smooth pearl-white finish, lighting, raised/recessed panel relief, door and frame size, dark thin perimeter seams and right hinges. Keep BOTH white satin glass inserts absolutely unchanged: upper tall glass with delicate thin gold diamond/curved-petal ornament; middle horizontal glass with FOUR small four-petal flowers. Preserve all gold-line count, shape, ends and positions, all surrounding beveled moldings and bottom solid rectangular panel. Keep full original 800:837 canvas, full-height outer frame at x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring or redesign. No new hardware, holes, logos, text or decorations.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with M1/M2 ornament."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "colorId": 258,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/dfbd61d36c4d5e6d5ff1b97d5604074723263e2c_joFJKYNMqR.webp",
+      "sourceSha256": "c122cc8d088e6c515f133e284e6696bc2e4526aefe54c9bab5caf7b7bfbdf6e8",
+      "generatedFile": "exec-70e92020-c758-4c05-9229-1202e13589cf.png",
+      "preview": "interior/korfad-classico-cl-05-258-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Both white satin glass inserts, gold diamond/curved-petal pattern, four small floral motifs and right hinges retained; linked to catalog glass option 16332 (white satin + M1/M2), not bronze option 16333.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the only edit target: Korfad CLASSICO CL-05 original catalog photo, color 258. Remove ONLY the silver lever, rose and local shadow on the left at mid-height, around x248-309 y425-448 on the source 800x837 canvas; restore original underlying surface and tiny glass-edge detail. Remove the bottom KORFAD mark, reconstruct that local surface. Preserve EXACT original wood tone, distinct knots and grain, lighting, raised/recessed panel relief, door and frame size, dark thin perimeter seams and right hinges. Keep BOTH white satin glass inserts absolutely unchanged: upper tall glass with delicate thin gold diamond/curved-petal ornament; middle horizontal glass with FOUR small four-petal flowers. Preserve all gold-line count, shape, ends and positions, all surrounding beveled moldings and bottom solid rectangular panel. Keep full original 800:837 canvas, full-height outer frame at x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring or redesign. No new hardware, holes, logos, text or decorations.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with M1/M2 ornament."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "colorId": 259,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/de7f4e0bbca2d9205c2ed117dc9d4d1567d08d1d_4GGUdTMO1z.webp",
+      "sourceSha256": "bb2ead536632a075fde5b686be3dea4cdf6ab34bef14898e2c2799ac3713bfaf",
+      "generatedFile": "exec-c9b0a0c6-e2e3-4d93-9db4-3949e3e5b7a0.png",
+      "preview": "interior/korfad-classico-cl-05-259-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Both white satin glass inserts, gold diamond/curved-petal pattern, four small floral motifs and right hinges retained; linked to catalog glass option 16332 (white satin + M1/M2), not bronze option 16333.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the only edit target: Korfad CLASSICO CL-05 original catalog photo, color 259. Remove ONLY the silver lever, rose and local shadow on the left at mid-height, around x248-309 y425-448 on the source 800x837 canvas; restore original underlying surface and tiny glass-edge detail. Remove the bottom KORFAD mark, reconstruct that local surface. Preserve EXACT original wood tone, distinct knots and grain, lighting, raised/recessed panel relief, door and frame size, dark thin perimeter seams and right hinges. Keep BOTH white satin glass inserts absolutely unchanged: upper tall glass with delicate thin gold diamond/curved-petal ornament; middle horizontal glass with FOUR small four-petal flowers. Preserve all gold-line count, shape, ends and positions, all surrounding beveled moldings and bottom solid rectangular panel. Keep full original 800:837 canvas, full-height outer frame at x205..594 y0..837 and white side margins. No crop, zoom, recenter, recoloring or redesign. No new hardware, holes, logos, text or decorations.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with M1/M2 ornament."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "colorId": 260,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/139588d380f2be8beb0974704e2c920c81081725_04Ro70WVOF.webp",
+      "sourceSha256": "a5a5b39271dabc6134e119df261cc5bc71d1c2115604eb2c5812df6114e3c1fb",
+      "generatedFile": "exec-3620985e-b8c9-4355-bf10-abc0fcdcd261.png",
+      "preview": "interior/korfad-classico-cl-05-260-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Both white satin glass inserts, gold diamond/curved-petal pattern, four small floral motifs and right hinges retained; linked to catalog glass option 16332 (white satin + M1/M2), not bronze option 16333.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the sole edit target: Korfad CLASSICO CL-05 catalog color 260. Retouch ONLY the silver handle lever, square rose and small hardware shadow at x248-309 y425-448; reconstruct the wood and the very small glass edge under the lever. Remove the KORFAD logo at the bottom, restoring matching texture. Keep all original hue/material/woodgrain, carved moldings and panel relief, frame, right hinges, fine perimeter seams and illumination. Preserve the exact two white satin glass inserts, thin golden diamond-and-curved-petal design in upper glass, and four small four-petal motifs in the horizontal glass. No changes to the count, shape, endpoints or positions of the gold lines. Keep the bottom solid panel, original 800:837 canvas, original door/frame bounds x205..594 y0..837, white side margins. Do not crop/zoom/reposition/recolor, simplify patterns, add holes/hardware/text. The image is a faithful product representation, not a redesign.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with M1/M2 ornament."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "colorId": 255,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/17e43fdab27f461eb5f1f2bf884987d67d3fd1c0_uAgURCSdfe.webp",
+      "sourceSha256": "a3e6179890ec274e56512defccf838a6a218d17f3506579e26598d3add1807fc",
+      "generatedFile": "exec-d905b9e0-5d47-40a6-889e-56d6ae298821.png",
+      "preview": "interior/korfad-classico-cl-05-255-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Both white satin glass inserts, gold diamond/curved-petal pattern, four small floral motifs and right hinges retained; linked to catalog glass option 16332 (white satin + M1/M2), not bronze option 16333.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the sole edit target: Korfad CLASSICO CL-05 catalog color 255. Retouch ONLY the silver handle lever, square rose and small hardware shadow at x248-309 y425-448; reconstruct the wood and the very small glass edge under the lever. Remove the KORFAD logo at the bottom, restoring matching texture. Keep all original hue/material/woodgrain, carved moldings and panel relief, frame, right hinges, fine perimeter seams and illumination. Preserve the exact two white satin glass inserts, thin golden diamond-and-curved-petal design in upper glass, and four small four-petal motifs in the horizontal glass. No changes to the count, shape, endpoints or positions of the gold lines. Keep the bottom solid panel, original 800:837 canvas, original door/frame bounds x205..594 y0..837, white side margins. Do not crop/zoom/reposition/recolor, simplify patterns, add holes/hardware/text. The image is a faithful product representation, not a redesign.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with M1/M2 ornament."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "colorId": 257,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/b24c3e2c30afc2470994efda77dab5e406cb2096_uSMKjzjZLC.webp",
+      "sourceSha256": "9a345a24fe159c5aff68e10834725e24b04eb8f01efa59f39cab81a29ca5346b",
+      "generatedFile": "exec-9ddee3d2-3cf0-4f01-9602-198f7af359fe.png",
+      "preview": "interior/korfad-classico-cl-05-257-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Both white satin glass inserts, gold diamond/curved-petal pattern, four small floral motifs and right hinges retained; linked to catalog glass option 16332 (white satin + M1/M2), not bronze option 16333.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the sole edit target: original catalog Korfad CLASSICO CL-05, catalog color 257. Remove ONLY the silver lever, its square rose and tiny shadow at left middle (around x248-309 y425-448 in the 800x837 source), reconstructing the underlying frame and any narrow glass-edge details. Remove ONLY the bottom KORFAD logo, continuing the original wood grain underneath. Preserve the exact brown wood tone, grain direction, carved panel moldings, right hinges, perimeter seams and full original geometry. CRITICAL: preserve BOTH white satin glass inserts and every thin gold line of the existing ornament: tall upper glass with diamond/curved-petal motifs and small horizontal glass with FOUR four-petal motifs. Do not redesign, simplify or extend the ornament. Keep the bottom solid recessed wooden panel. Preserve full source 800:837 canvas, original outer door/frame at x205..594 and y0..837, white side margins, original lighting. No crop, zoom, reposition, recolor, new hardware, holes, logos or text. Faithful local retouch only.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with M1/M2 ornament."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "colorId": 256,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/17e43fdab27f461eb5f1f2bf884987d67d3fd1c0_lQKbUhzClx.webp",
+      "sourceSha256": "2fe4a82b9fecde6c03d9728269e7f6891268735c209de7ee9eb2e895501f588e",
+      "generatedFile": "exec-1c1cb9c6-ed71-4dcf-9fea-b82ba05d7648.png",
+      "preview": "interior/korfad-classico-cl-05-256-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Both white satin glass inserts, gold diamond/curved-petal pattern, four small floral motifs and right hinges retained; linked to catalog glass option 16332 (white satin + M1/M2), not bronze option 16333.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the sole edit target: original catalog Korfad CLASSICO CL-05, catalog color 256. Remove ONLY the silver lever, its square rose and tiny shadow at left middle (around x248-309 y425-448 in the 800x837 source), reconstructing the underlying frame and any narrow glass-edge details. Remove ONLY the bottom KORFAD logo, continuing the original wood grain underneath. Preserve the exact brown wood tone, grain direction, carved panel moldings, right hinges, perimeter seams and full original geometry. CRITICAL: preserve BOTH white satin glass inserts and every thin gold line of the existing ornament: tall upper glass with diamond/curved-petal motifs and small horizontal glass with FOUR four-petal motifs. Do not redesign, simplify or extend the ornament. Keep the bottom solid recessed wooden panel. Preserve full source 800:837 canvas, original outer door/frame at x205..594 and y0..837, white side margins, original lighting. No crop, zoom, reposition, recolor, new hardware, holes, logos or text. Faithful local retouch only.",
+      "sourceMapping": "Photo explicitly linked to this catalog color; first gallery image visually confirmed as white satin glass with M1/M2 ornament."
+    },
+    {
+      "slug": "mizhkimnatni-dveri-wood-plato-wp-01-korfad",
+      "colorId": 259,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/b43fe7d028952b54a8f6f599d5e77164ea48a9d0_ipehcMDbig_main.webp",
+      "sourceSha256": "e05f06ac8054956c4ccd8e402ba4518e5d1c427283569f9132224cf821d757f6",
+      "generatedFile": "exec-2a37e3bc-6cfb-4add-9df8-1b58dbe362f8.png",
+      "preview": "interior/korfad-wp-01-259-clean-v1.webp",
+      "review": "Visually compared original and normalized 800×837 WebP 2026-09-26: lever, rose, local shadow and bottom logo removed; original tone, grain, frame, seams and panel geometry retained. Crop [205,0,389,837], handle [0.137,0.522]. Plain oak slab, knots and grain retained; no glass or molding option.",
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target, a catalog photo of Korfad WOOD PLATO WP-01 in Tobacco Oak for a door configurator. Change ONLY these things: remove the silver lever handle, its square rose and their small shadow on the left side at mid-height; reconstruct the matching oak grain underneath. Also remove the KORFAD wordmark at the very bottom and reconstruct that wood. Keep the original warm beige oak colour, distinctive knots and vertical grain, every frame edge, the dark narrow door perimeter seam, lighting and proportions unchanged. Retain the exact front view, full white canvas and placement: the source is 800x837 with the outer door frame around x205..594 and full canvas height. Do not crop, zoom, move the door or extend the frame. Do not add handles, holes, glass, molding, text, logos or extra objects. This is removal/retouching, not a redesign or recoloring.",
+      "sourceMapping": "Inference: unlinked main image matched to Tobacco Oak (259) after comparison with the explicitly linked Nordic Oak (258) image and both catalog swatches. Main is warm beige oak; Nordic is cool gray oak. No recoloring."
+    },
+    {
       "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
       "colorId": 262,
       "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/922f532bdb1f0c3af48937097d628fc03cad8e88_uwOXCn1kVn_main.webp",

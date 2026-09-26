@@ -195,6 +195,15 @@ test('LP-01 covers all seven catalog finishes without inventing glass or molding
     }
 });
 
+test('WP-01 and CL-05 contain their full palettes and CL-05 retains the pictured white satin glass', () => {
+    const wp = catalog.products.find(product => product.id === 'korfad-wp-01');
+    const cl = catalog.products.find(product => product.id === 'korfad-classico-cl-05');
+    assert.deepEqual(wp.colors.map(color => color.colorId).sort((a, b) => a - b), [258, 259]);
+    assert.deepEqual(cl.colors.map(color => color.colorId).sort((a, b) => a - b), [254, 255, 256, 257, 258, 259, 260, 266]);
+    for (const color of wp.colors) assert.deepEqual(color.optionIds || [], []);
+    for (const color of cl.colors) assert.deepEqual(color.optionIds, [16332]);
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

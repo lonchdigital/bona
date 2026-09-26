@@ -13932,6 +13932,17 @@
           "image": "interior/korfad-wp-01-258-catalog-v1.webp",
           "preview": "interior/korfad-wp-01-258-clean-v1.webp",
           "colorId": 258
+        },
+        {
+          "id": "color-259",
+          "name": {
+            "uk": "Дуб тобакко Korfad",
+            "ru": "Дуб тобакко Korfad"
+          },
+          "hex": "#d4b599",
+          "image": "interior/korfad-wp-01-259-catalog-v1.webp",
+          "preview": "interior/korfad-wp-01-259-clean-v1.webp",
+          "colorId": 259
         }
       ]
     },
@@ -14023,7 +14034,10 @@
         },
         {
           "id": "color-262",
-          "name": {"uk": "Лофт бетон Korfad", "ru": "Лофт бетон Korfad"},
+          "name": {
+            "uk": "Лофт бетон Korfad",
+            "ru": "Лофт бетон Korfad"
+          },
           "hex": "#55524f",
           "image": "interior/korfad-lp-01-262-catalog-v1.webp",
           "preview": "interior/korfad-lp-01-262-clean-v1.webp",
@@ -14064,6 +14078,104 @@
           "image": "interior/korfad-classico-cl-05-254-catalog-v1.webp",
           "preview": "interior/korfad-classico-cl-05-254-clean-v1.webp",
           "colorId": 254,
+          "optionIds": [
+            16332
+          ]
+        },
+        {
+          "id": "color-256",
+          "name": {
+            "uk": "Дуб грей Korfad",
+            "ru": "Дуб грей Korfad"
+          },
+          "hex": "#977a61",
+          "image": "interior/korfad-classico-cl-05-256-catalog-v1.webp",
+          "preview": "interior/korfad-classico-cl-05-256-clean-v1.webp",
+          "colorId": 256,
+          "optionIds": [
+            16332
+          ]
+        },
+        {
+          "id": "color-257",
+          "name": {
+            "uk": "Дуб марсала Korfad",
+            "ru": "Дуб марсала Korfad"
+          },
+          "hex": "#665247",
+          "image": "interior/korfad-classico-cl-05-257-catalog-v1.webp",
+          "preview": "interior/korfad-classico-cl-05-257-clean-v1.webp",
+          "colorId": 257,
+          "optionIds": [
+            16332
+          ]
+        },
+        {
+          "id": "color-255",
+          "name": {
+            "uk": "Дуб браш Korfad",
+            "ru": "Дуб браш Korfad"
+          },
+          "hex": "#a77952",
+          "image": "interior/korfad-classico-cl-05-255-catalog-v1.webp",
+          "preview": "interior/korfad-classico-cl-05-255-clean-v1.webp",
+          "colorId": 255,
+          "optionIds": [
+            16332
+          ]
+        },
+        {
+          "id": "color-260",
+          "name": {
+            "uk": "Еш-вайт Korfad",
+            "ru": "Эш-вайт Korfad"
+          },
+          "hex": "#ac9c8b",
+          "image": "interior/korfad-classico-cl-05-260-catalog-v1.webp",
+          "preview": "interior/korfad-classico-cl-05-260-clean-v1.webp",
+          "colorId": 260,
+          "optionIds": [
+            16332
+          ]
+        },
+        {
+          "id": "color-259",
+          "name": {
+            "uk": "Дуб тобакко Korfad",
+            "ru": "Дуб тобакко Korfad"
+          },
+          "hex": "#d4b599",
+          "image": "interior/korfad-classico-cl-05-259-catalog-v1.webp",
+          "preview": "interior/korfad-classico-cl-05-259-clean-v1.webp",
+          "colorId": 259,
+          "optionIds": [
+            16332
+          ]
+        },
+        {
+          "id": "color-258",
+          "name": {
+            "uk": "Дуб нордік Korfad",
+            "ru": "Дуб нордик Korfad"
+          },
+          "hex": "#d2c6c3",
+          "image": "interior/korfad-classico-cl-05-258-catalog-v1.webp",
+          "preview": "interior/korfad-classico-cl-05-258-clean-v1.webp",
+          "colorId": 258,
+          "optionIds": [
+            16332
+          ]
+        },
+        {
+          "id": "color-266",
+          "name": {
+            "uk": "Білий перламутр Korfad",
+            "ru": "Белый перламутр"
+          },
+          "hex": "#eeeae6",
+          "image": "interior/korfad-classico-cl-05-266-catalog-v1.webp",
+          "preview": "interior/korfad-classico-cl-05-266-clean-v1.webp",
+          "colorId": 266,
           "optionIds": [
             16332
           ]
