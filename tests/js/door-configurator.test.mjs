@@ -226,6 +226,16 @@ test('PM-10 covers six finishes with glass matched to the photographed material'
     }
 });
 
+test('SANVITO mirror SV-01 covers eighteen finishes with the photographed silver mirror', () => {
+    const sv = catalog.products.find(product => product.id === 'korfad-sanvito-sv-01-mirror');
+    assert.deepEqual(sv.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 252, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 266, 268, 269, 270, 271, 272]);
+    assert.deepEqual(sv.types, ['mirror']);
+    for (const color of sv.colors) {
+        assert.deepEqual(color.optionIds, [16356], `SANVITO mirror/${color.colorId}: silver triple mirror 8 mm`);
+        assert.ok(color.preview.includes(`korfad-sanvito-sv-01-mirror-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
