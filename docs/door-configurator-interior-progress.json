@@ -4,7 +4,7 @@
   "newPrepared": 172,
   "originalInteriorPresets": 6,
   "sourceCatalogModels": 190,
-  "deployment": "Prepared portion deployed 2026-09-26: admin release 178 (533e3a81), safe shade append release 180 (80cebb82), full LP-01 palette release 181 (996f6890). 184 doors and 3 handles editable in the existing admin; 668/1315 main interior color pairs published. Entire interior category is not complete.",
+  "deployment": "Prepared portion deployed 2026-09-26: admin release 178 (533e3a81), safe shade append release 180 (80cebb82), LP-01 palette release 181 (996f6890), WP-01 and CL-05 palettes release 184 (113611e7). 184 doors and 3 handles editable in the existing admin; 676/1315 main interior color pairs published. Entire interior category is not complete.",
   "models": [
     {
       "number": 1,
