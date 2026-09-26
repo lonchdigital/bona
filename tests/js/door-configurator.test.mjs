@@ -300,6 +300,15 @@ test('VALENTINO VLD-03 covers all six catalog finishes with the photographed gla
     }
 });
 
+test('VALENTINO VLD-01 covers all sixteen catalog finishes with the photographed glass', () => {
+    const valentino = catalog.products.find(product => product.id === 'korfad-valentino-vld-01');
+    assert.deepEqual(valentino.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 252, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 266, 269, 270, 271]);
+    for (const color of valentino.colors) {
+        assert.deepEqual(color.optionIds, [color.colorId === 266 ? 16397 : 16398], `VLD-01/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-valentino-vld-01-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
