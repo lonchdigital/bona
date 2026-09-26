@@ -12,7 +12,7 @@ class AdminsOnly
     public function handle(Request $request, Closure $next): Response
     {
         if (! Auth::user()?->isAdmin()) {
-            return response()->view('404', [], 404);
+            abort(404);
         }
 
         return $next($request);

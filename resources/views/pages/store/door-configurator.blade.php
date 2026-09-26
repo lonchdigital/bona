@@ -39,6 +39,7 @@
 <div class="bona-door-configurator">
     <x-store.content-breadcrumbs :items="[['label' => $title]]" />
     <div class="bona-shell">
+        @if($configuratorPreview ?? false)<p role="status" style="padding:16px;background:#fff3cd;color:#362c12">Перегляд чернетки · видно лише адміністратору · замовлення вимкнене.</p>@endif
         @if(count($configuratorCatalog['products']))
             <div class="bona-door-studio" data-door-studio>
                 @include('pages.store.partials.door-studio')
@@ -46,6 +47,7 @@
             <script type="application/json" id="door-studio-data">{!! json_encode(array_merge($configuratorCatalog, [
                 'locale' => app()->getLocale(), 'assets' => $assetBase, 'ui' => $ui, 'csrf' => csrf_token(),
                 'cartUrl' => App\Helpers\MultiLangRoute::getMultiLangRoute('store.door-configurator.cart'),
+                'preview' => $configuratorPreview ?? false,
             ]), $schemaFlags) !!}</script>
         @else
             <section class="bona-configurator-empty">

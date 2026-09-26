@@ -47,6 +47,10 @@ async function loadJsByPage()
         ? page.slice('localized.'.length)
         : page;
 
+    if (pageToLoad === 'admin.configurator.preview') {
+        pageToLoad = 'store.door-configurator.page';
+    }
+
     if (pageToLoad === 'store.catalog.filter.page') {
         pageToLoad = 'store.catalog.page';
     }

@@ -147,6 +147,10 @@ if grep -Eq 'Pending[[:space:]]*$' <<<"$pending_migrations"; then
     "$PHP_BIN" artisan migrate --force
 fi
 
+# Prepared assets become immutable shared media. Existing admin edits are never
+# overwritten; subsequent releases only import previously unseen models.
+"$PHP_BIN" artisan configurator:import --apply
+
 ln -s "$RELEASE_PATH" "$NEXT_LINK"
 mv -Tf "$NEXT_LINK" "$CURRENT_LINK"
 switched=1

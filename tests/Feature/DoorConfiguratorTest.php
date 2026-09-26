@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\CartProducts;
 use App\Models\Color;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeOptions;
 use App\Services\Product\DoorConfiguratorService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -49,6 +51,24 @@ class DoorConfiguratorTest extends TestCase
             $this->assertStringContainsString('hreflang="ru-UA"', $html);
             $this->assertStringNotContainsString('"@type":"Product"', $html);
         }
+    }
+
+    public function test_added_finish_retains_its_geometry_live_surcharge_and_cart_color(): void
+    {
+        $door = $this->door();
+        $color = Color::create(['id' => 153, 'slug' => 'concrete-gray', 'hex' => '#b9b9b6', 'display_as_image' => false, 'name' => ['uk' => 'Бетон сірий', 'ru' => 'Бетон серый'], 'creator_id' => $this->author()->id]);
+        $door->colors()->attach($color->id, ['price' => 400]);
+        $product = app(DoorConfiguratorService::class)->catalog()['products'][0];
+        $this->assertCount(2, $product['colors']);
+        $finish = collect($product['colors'])->firstWhere('colorId', 153);
+        $this->assertSame([201, 0, 397, 837], $finish['crop']);
+        $this->assertSame([0.164, 0.541], $finish['handle']);
+        $this->assertEquals(5400, $finish['price']);
+        $this->assertSame('interior/new-york-153-clean-v1.webp', $finish['preview']);
+        $this->postJson('/door-configurator/cart', $this->payload(['color' => 'color-153', 'expected_total' => 5400]))->assertOk();
+        $line = CartProducts::where('product_id', $door->id)->firstOrFail();
+        $this->assertSame('153', json_decode($line->attributes, true)['color_id']);
+        $this->assertEquals(400, $line->attributes_price);
     }
 
     public function test_empty_catalog_remains_useful_and_does_not_offer_out_of_stock_products(): void
@@ -122,6 +142,32 @@ class DoorConfiguratorTest extends TestCase
         $this->assertSame([], app(DoorConfiguratorService::class)->catalog()['products']);
     }
 
+    public function test_prepared_glass_variant_uses_live_option_price_and_cart_configuration(): void
+    {
+        $preset = collect(app(DoorConfiguratorService::class)->presets()['products'])->firstWhere('id', 'gorgania-yavoryna');
+        $door = $this->door(['slug' => $preset['slug']]);
+        $colorId = $preset['colors'][0]['colorId'];
+        $color = Color::create(['id' => $colorId, 'slug' => 'white-wood', 'hex' => '#eeeeee', 'display_as_image' => false, 'name' => ['uk' => 'Біле дерево', 'ru' => 'Белое дерево'], 'creator_id' => $this->author()->id]);
+        $door->colors()->attach($color->id, ['price' => 200]);
+        $attribute = ProductAttribute::create(['id' => 10, 'attribute_name' => ['uk' => 'Скло', 'ru' => 'Стекло'], 'slug' => 'glass']);
+        $door->productType->attributes()->attach($attribute->id);
+        $option = ProductAttributeOptions::create(['id' => 17462, 'product_id' => $door->id, 'product_attribute_id' => 10, 'name' => ['uk' => 'чорне', 'ru' => 'черное'], 'price' => 615]);
+        $catalog = app(DoorConfiguratorService::class)->catalog();
+        $this->assertEquals(5815, $catalog['products'][0]['colors'][0]['price']);
+        $this->assertSame('Скло: чорне', $catalog['products'][0]['colors'][0]['details']);
+        $payload = $this->payload(['product' => 'gorgania-yavoryna', 'color' => 'color-'.$colorId, 'expected_total' => 5815, 'optionIds' => []]);
+        $this->postJson('/door-configurator/cart', $payload)->assertOk();
+        $line = CartProducts::first();
+        $this->assertEquals(815, $line->attributes_price);
+        $attributes = json_decode($line->attributes, true);
+        $this->assertSame(17462, json_decode($attributes['product_attribute_10'], true)['id']);
+        $option->update(['price' => 700]);
+        $this->postJson('/door-configurator/cart', array_merge($payload, ['request_id' => (string) Str::uuid()]))->assertStatus(409);
+        $option->delete();
+        $this->assertSame([], app(DoorConfiguratorService::class)->catalog()['products']);
+        $this->postJson('/door-configurator/cart', array_merge($payload, ['request_id' => (string) Str::uuid()]))->assertUnprocessable();
+    }
+
     public function test_colorless_mirror_and_russian_endpoint_use_real_catalog(): void
     {
         $this->seedCurrency();
@@ -143,6 +189,9 @@ class DoorConfiguratorTest extends TestCase
         foreach ($presets['products'] as $product) {
             foreach ($product['colors'] as $color) {
                 $this->assertFileExists(public_path('assets/door-configurator/v1/'.$color['image']));
+                if (isset($color['preview'])) {
+                    $this->assertFileExists(public_path('assets/door-configurator/v1/'.$color['preview']));
+                }
             }
         }
         $uk = require base_path('lang/uk/configurator.php');

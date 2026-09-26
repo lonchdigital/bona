@@ -1,4 +1,9 @@
 // One request/decode per asset, a bounded decoded cache, and at most two background requests.
+export function configuratorAssetUrl(base, file) {
+    // Admin-managed material lives in shared storage; rooms/legacy assets keep their base.
+    return /^\/storage\/door-configurator\/[a-f0-9]{64}\.(webp|png|jpg)$/.test(file) ? file : base + file;
+}
+
 export function createSceneImageLoader({ base, ImageClass = Image, timeoutMs = 20000, maxEntries = 20, schedule = callback => setTimeout(callback, 120) }) {
     const cache = new Map();
     let queue = [], active = 0, scheduled = false;
@@ -44,7 +49,7 @@ export function createSceneImageLoader({ base, ImageClass = Image, timeoutMs = 2
             image.onerror = () => finish(new Error('Image unavailable'));
         });
         cache.set(file, entry);
-        image.src = base + file;
+        image.src = configuratorAssetUrl(base, file);
         return entry.promise;
     }
 

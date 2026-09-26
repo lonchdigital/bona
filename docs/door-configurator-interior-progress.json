@@ -1,0 +1,1324 @@
+{
+  "asOf": "2026-09-23",
+  "scope": "One verified finish per orderable interior-door model first; all finishes are a separate pass.",
+  "newPrepared": 172,
+  "originalInteriorPresets": 6,
+  "sourceCatalogModels": 190,
+  "deployment": "local preparation; not deployed",
+  "models": [
+    {
+      "number": 1,
+      "slug": "mizhkimnatni-dveri-glasso",
+      "name": "Міжкімнатні двері Glasso",
+      "status": "existing-preset"
+    },
+    {
+      "number": 2,
+      "slug": "mizhkimnatni-dveri-artporte-nyu-york",
+      "name": "Міжкімнатні двері Artporte Нью-йорк",
+      "status": "existing-preset"
+    },
+    {
+      "number": 3,
+      "slug": "mizhkimnatni-dveri-artporte-versal",
+      "name": "Міжкімнатні двері Artporte Версаль",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 4,
+      "slug": "mizhkimnatni-dveri-molding-1b",
+      "name": "Міжкімнатні двері Molding 1B",
+      "status": "existing-preset"
+    },
+    {
+      "number": 5,
+      "slug": "mizhkimnatni-dveri-vertical-2v",
+      "name": "Міжкімнатні двері Vertical 2В",
+      "status": "prepared",
+      "preparedColorId": 168
+    },
+    {
+      "number": 6,
+      "slug": "mizhkimnatni-dveri-vertical-1v",
+      "name": "Міжкімнатні двері Vertical 1В",
+      "status": "prepared",
+      "preparedColorId": 168
+    },
+    {
+      "number": 7,
+      "slug": "mizhkimnatni-dveri-artporte-chikago",
+      "name": "Міжкімнатні двері Artporte Чикаго",
+      "status": "prepared",
+      "preparedColorId": 279
+    },
+    {
+      "number": 8,
+      "slug": "mizhkimnatni-dveri-artporte-boston",
+      "name": "Міжкімнатні двері Artporte Бостон",
+      "status": "prepared",
+      "preparedColorId": 21
+    },
+    {
+      "number": 9,
+      "slug": "mizhkimnatni-dveri-artporte-ostin",
+      "name": "Міжкімнатні двері Artporte Остін",
+      "status": "existing-preset"
+    },
+    {
+      "number": 10,
+      "slug": "mizhkimnatni-dveri-elegance-wood",
+      "name": "Міжкімнатні двері Elegance Wood",
+      "status": "needs-catalog-correction",
+      "reason": "Only catalog color is RAL 9003, but main image is oak veneer with mirror; cannot bind wood finish to white purchase option."
+    },
+    {
+      "number": 11,
+      "slug": "mizhkimnatni-dveri-elegance",
+      "name": "Міжкімнатні двері Elegance",
+      "status": "prepared",
+      "preparedColorId": 168
+    },
+    {
+      "number": 12,
+      "slug": "mizhkimnatni-dveri-ultra",
+      "name": "Міжкімнатні двері Ultra",
+      "status": "prepared",
+      "preparedColorId": 168
+    },
+    {
+      "number": 13,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-milan-pg",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Мілан ПГ",
+      "status": "existing-preset"
+    },
+    {
+      "number": 14,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-milan-po",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Мілан ПО",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 15,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-nicca-poo",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Ніцца ПОО",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 16,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-rim-veneciano-pg",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Рим Венеціано ПГ",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 17,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-rim-poo",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Рим ПОО",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 18,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-omega-rim-pg",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Omega Рим ПГ",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 19,
+      "slug": "mizhkimnatni-dveri-aliano-al-06-korfad",
+      "name": "Міжкімнатні двері ALIANO AL-06 Korfad",
+      "status": "prepared",
+      "preparedColorId": 268
+    },
+    {
+      "number": 20,
+      "slug": "mizhkimnatni-dveri-aliano-al-02-korfad",
+      "name": "Міжкімнатні двері ALIANO AL-02 Korfad",
+      "status": "prepared",
+      "preparedColorId": 268
+    },
+    {
+      "number": 21,
+      "slug": "mizhkimnatni-dveri-sanremo-sr-01-korfad",
+      "name": "Міжкімнатні двері SANREMO SR-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 22,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-asati",
+      "name": "Міжкімнатні двері Korfad Exellence Asati",
+      "status": "prepared",
+      "preparedColorId": 312
+    },
+    {
+      "number": 23,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-bonetti",
+      "name": "Міжкімнатні двері Korfad Exellence Bonetti",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 24,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-salin",
+      "name": "Міжкімнатні двері Korfad Exellence Salin",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 25,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s9",
+      "name": "Міжкімнатні двері Omega Серія Lines S9",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 26,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s8",
+      "name": "Міжкімнатні двері Omega Серія Lines S8",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 27,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s7",
+      "name": "Міжкімнатні двері Omega Серія Lines S7",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 28,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s6",
+      "name": "Міжкімнатні двері Omega Серія Lines S6",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 29,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s5",
+      "name": "Міжкімнатні двері Omega Серія Lines S5",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 30,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s4",
+      "name": "Міжкімнатні двері Omega Серія Lines S4",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 31,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s3",
+      "name": "Міжкімнатні двері Omega Серія Lines S3",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 32,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s2",
+      "name": "Міжкімнатні двері Omega Серія Lines S2",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 33,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-s1",
+      "name": "Міжкімнатні двері Omega Серія Lines S1",
+      "status": "prepared",
+      "preparedColorId": 178
+    },
+    {
+      "number": 34,
+      "slug": "mizhkimnatni-dveri-gorgania-gerdan",
+      "name": "Міжкімнатні двері Gorgania Гердан",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 35,
+      "slug": "mizhkimnatni-dveri-gorgania-dukach",
+      "name": "Міжкімнатні двері Gorgania Дукач",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 36,
+      "slug": "mizhkimnatni-dveri-gorgania-shelest",
+      "name": "Міжкімнатні двері Gorgania Шелест",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 37,
+      "slug": "mizhkimnatni-dveri-gorgania-salba",
+      "name": "Міжкімнатні двері Gorgania Салба",
+      "status": "prepared",
+      "preparedColorId": 9
+    },
+    {
+      "number": 38,
+      "slug": "mizhkimnatni-dveri-gorgania-runa",
+      "name": "Міжкімнатні двері Gorgania Руна",
+      "status": "prepared",
+      "preparedColorId": 328
+    },
+    {
+      "number": 39,
+      "slug": "mizhkimnatni-dveri-gorgania-yavorina-plyus",
+      "name": "Міжкімнатні двері Gorgania Яворина плюс",
+      "status": "prepared",
+      "preparedColorId": 328
+    },
+    {
+      "number": 40,
+      "slug": "mizhkimnatni-dveri-gorgania-yavorina",
+      "name": "Міжкімнатні двері Gorgania Яворина",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 41,
+      "slug": "mizhkimnatni-dveri-gorgania-osiy-plyus-zi-sklom",
+      "name": "Міжкімнатні двері Gorgania Осій плюс зі склом",
+      "status": "prepared",
+      "preparedColorId": 328
+    },
+    {
+      "number": 42,
+      "slug": "mizhkimnatni-dveri-gorgania-osiy-plyus",
+      "name": "Міжкімнатні двері Gorgania Осій плюс",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 43,
+      "slug": "mizhkimnatni-dveri-gorgania-osiy",
+      "name": "Міжкімнатні двері Gorgania Осій",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 44,
+      "slug": "mizhkimnatni-dveri-gorgania-stig",
+      "name": "Міжкімнатні двері Gorgania Стіг",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 45,
+      "slug": "mizhkimnatni-dveri-gorgania-krasiya",
+      "name": "Міжкімнатні двері Gorgania Красія",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 46,
+      "slug": "mizhkimnatni-dveri-gorgania-goverla",
+      "name": "Міжкімнатні двері Gorgania Говерла",
+      "status": "prepared",
+      "preparedColorId": 328
+    },
+    {
+      "number": 47,
+      "slug": "mizhkimnatni-dveri-gorgania-grofa",
+      "name": "Міжкімнатні двері Gorgania Грофа",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 48,
+      "slug": "mizhkimnatni-dveri-gorgania-petros",
+      "name": "Міжкімнатні двері Gorgania Петрос",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 49,
+      "slug": "mizhkimnatni-dveri-gorgania-magura",
+      "name": "Міжкімнатні двері Gorgania Магура",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 50,
+      "slug": "mizhkimnatni-dveri-gorgania-beskid",
+      "name": "Міжкімнатні двері Gorgania Бескид",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 51,
+      "slug": "mizhkimnatni-dveri-gorgania-strimba",
+      "name": "Міжкімнатні двері Gorgania Стримба",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 52,
+      "slug": "mizhkimnatni-dveri-gorgania-play-plyus",
+      "name": "Міжкімнатні двері Gorgania Плай плюс",
+      "status": "prepared",
+      "preparedColorId": 327
+    },
+    {
+      "number": 53,
+      "slug": "mizhkimnatni-dveri-gorgania-play",
+      "name": "Міжкімнатні двері Gorgania Плай",
+      "status": "prepared",
+      "preparedColorId": 328
+    },
+    {
+      "number": 54,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-ramira",
+      "name": "Міжкімнатні двері Korfad Exellence Ramira",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 55,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-weston",
+      "name": "Міжкімнатні двері Korfad Exellence Weston",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 56,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-monarch-glass",
+      "name": "Міжкімнатні двері Korfad Exellence Monarch Glass",
+      "status": "prepared",
+      "preparedColorId": 313
+    },
+    {
+      "number": 57,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-brillar",
+      "name": "Міжкімнатні двері Korfad Exellence Brillar",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 58,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-monarch",
+      "name": "Міжкімнатні двері Korfad Exellence Monarch",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 59,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-atlant",
+      "name": "Міжкімнатні двері Korfad Exellence Atlant",
+      "status": "prepared",
+      "preparedColorId": 312
+    },
+    {
+      "number": 60,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-celestia",
+      "name": "Міжкімнатні двері Korfad Exellence Celestia",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 61,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-paulina",
+      "name": "Міжкімнатні двері Korfad Exellence Paulina",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 62,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-roisel",
+      "name": "Міжкімнатні двері Korfad Exellence Roisel",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 63,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-animas",
+      "name": "Міжкімнатні двері Korfad Exellence Animas",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 64,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-sparta",
+      "name": "Міжкімнатні двері Korfad Exellence Sparta",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 65,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-calypso",
+      "name": "Міжкімнатні двері Korfad Exellence Calypso",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 66,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-infinity",
+      "name": "Міжкімнатні двері Korfad Exellence Infinity",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 67,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-wetter",
+      "name": "Міжкімнатні двері Korfad Exellence Wetter",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 68,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-quantum",
+      "name": "Міжкімнатні двері Korfad Exellence Quantum",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 69,
+      "slug": "mizhkimnatni-dveri-korfad-exellence-marion",
+      "name": "Міжкімнатні двері Korfad Exellence Marion",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 70,
+      "slug": "mizhkimnatni-dveri-artporte-milan",
+      "name": "Міжкімнатні двері Artporte Мілан",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 71,
+      "slug": "mizhkimnatni-dveri-artporte-rim",
+      "name": "Міжкімнатні двері Artporte Рим",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 72,
+      "slug": "mizhkimnatni-dveri-artporte-praga",
+      "name": "Міжкімнатні двері Artporte Прага",
+      "status": "prepared",
+      "preparedColorId": 63
+    },
+    {
+      "number": 73,
+      "slug": "mizhkimnatni-dveri-artporte-amsterdam",
+      "name": "Міжкімнатні двері Artporte Амстердам",
+      "status": "prepared",
+      "preparedColorId": 150
+    },
+    {
+      "number": 74,
+      "slug": "mizhkimnatni-dveri-artporte-vertikal-1",
+      "name": "Міжкімнатні двері Artporte Вертикаль 1",
+      "status": "prepared",
+      "preparedColorId": 64
+    },
+    {
+      "number": 75,
+      "slug": "mizhkimnatni-dveri-artporte-h-yuston-2",
+      "name": "Міжкімнатні двері Artporte Х'юстон 2",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 76,
+      "slug": "mizhkimnatni-dveri-parallel",
+      "name": "Міжкімнатні двері Parallel",
+      "status": "prepared",
+      "preparedColorId": 168
+    },
+    {
+      "number": 77,
+      "slug": "mizhkimnatni-dveri-delicate",
+      "name": "Міжкімнатні двері Delicate",
+      "status": "prepared",
+      "preparedColorId": 168
+    },
+    {
+      "number": 78,
+      "slug": "mizhkimnatni-dveri-molding-2b",
+      "name": "Міжкімнатні двері Molding 2B",
+      "status": "prepared",
+      "preparedColorId": 168
+    },
+    {
+      "number": 79,
+      "slug": "mizhkimnatni-dveri-molding-new",
+      "name": "Міжкімнатні двері Molding NEW",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 80,
+      "slug": "mizhkimnatni-dveri-molding",
+      "name": "Міжкімнатні двері Molding",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 81,
+      "slug": "mizhkimnatni-dveri-dublin",
+      "name": "Міжкімнатні двері Dublin",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 82,
+      "slug": "mizhkimnatni-dveri-classic2-new",
+      "name": "Міжкімнатні двері Classic2 NEW",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 83,
+      "slug": "mizhkimnatni-dveri-classic2",
+      "name": "Міжкімнатні двері Classic2",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 84,
+      "slug": "mizhkimnatni-dveri-classic1-new",
+      "name": "Міжкімнатні двері Classic1 NEW",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 85,
+      "slug": "mizhkimnatni-dveri-classic1",
+      "name": "Міжкімнатні двері Classic1",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 86,
+      "slug": "mizhkimnatni-dveri-lines",
+      "name": "Міжкімнатні двері Lines",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 87,
+      "slug": "mizhkimnatni-dveri-standart",
+      "name": "Міжкімнатні двері Standart",
+      "status": "prepared",
+      "preparedColorId": 166
+    },
+    {
+      "number": 88,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-london-po",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Лондон ПО",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 89,
+      "slug": "mizhkimnatni-dveri-dream-ral-9003-status",
+      "name": "Міжкімнатні двері Dream Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 90,
+      "slug": "mizhkimnatni-dveri-dream-glass-ral-9003-status",
+      "name": "Міжкімнатні двері Dream Glass Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 91,
+      "slug": "mizhkimnatni-dveri-grand-2d-2.2-estet-doors",
+      "name": "Міжкімнатні двері Grand 2D 2.2 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 303
+    },
+    {
+      "number": 92,
+      "slug": "mizhkimnatni-dveri-grand-2d-2.1-estet-doors",
+      "name": "Міжкімнатні двері Grand 2D 2.1 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 303
+    },
+    {
+      "number": 93,
+      "slug": "mizhkimnatni-dveri-grand-2d-1.4-estet-doors",
+      "name": "Міжкімнатні двері Grand 2D 1.4 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 303
+    },
+    {
+      "number": 94,
+      "slug": "mizhkimnatni-dveri-grand-2d-1.3-estet-doors",
+      "name": "Міжкімнатні двері Grand 2D 1.3 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 303
+    },
+    {
+      "number": 95,
+      "slug": "mizhkimnatni-dveri-grand-2d-1.2-estet-doors",
+      "name": "Міжкімнатні двері Grand 2D 1.2 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 303
+    },
+    {
+      "number": 96,
+      "slug": "mizhkimnatni-dveri-grand-2d-1.1-estet-doors",
+      "name": "Міжкімнатні двері Grand 2D 1.1 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 303
+    },
+    {
+      "number": 97,
+      "slug": "mizhkimnatni-dveri-grand-1d-2-estet-doors",
+      "name": "Міжкімнатні двері GRAND 1D 2 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 303
+    },
+    {
+      "number": 98,
+      "slug": "mizhkimnatni-dveri-grand-1d-1.32-estet-door",
+      "name": "Міжкімнатні двері GRAND 1D 1.32 Estet Door",
+      "status": "prepared",
+      "preparedColorId": 305
+    },
+    {
+      "number": 99,
+      "slug": "mizhkimnatni-dveri-grand-1d-1.31-estet-doors",
+      "name": "Міжкімнатні двері GRAND 1D 1.31 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 305
+    },
+    {
+      "number": 100,
+      "slug": "mizhkimnatni-dveri-grand-1d-1.22-estet-doors",
+      "name": "Міжкімнатні двері GRAND 1D 1.22 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 305
+    },
+    {
+      "number": 101,
+      "slug": "mizhkimnatni-dveri-grand-1d-1.21-estet-doors",
+      "name": "Міжкімнатні двері GRAND 1D 1.21 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 305
+    },
+    {
+      "number": 102,
+      "slug": "mizhkimnatni-dveri-grand-1d-1.4-estet-doors",
+      "name": "Міжкімнатні двері GRAND 1D 1.4 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 305
+    },
+    {
+      "number": 103,
+      "slug": "mizhkimnatni-dveri-grand-1d-1.1-estet-doors",
+      "name": "Міжкімнатні двері GRAND 1D 1.1 Estet Doors",
+      "status": "prepared",
+      "preparedColorId": 305
+    },
+    {
+      "number": 104,
+      "slug": "mizhkimnatni-dveri-sky-ral-9003-status",
+      "name": "Міжкімнатні двері Sky Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 105,
+      "slug": "mizhkimnatni-dveri-ultra2-glass-satin-30mm-ral-9003-status",
+      "name": "Міжкімнатні двері Ultra2 Glass Satin (30мм) Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 106,
+      "slug": "mizhkimnatni-dveri-ultra-black-glass-120mm-ral-9003-status",
+      "name": "Міжкімнатні двері Ultra-Black Glass (120мм) Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 107,
+      "slug": "mizhkimnatni-dveri-ultra-005-ral-9003-status",
+      "name": "Міжкімнатні двері Ultra-005 Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 108,
+      "slug": "mizhkimnatni-dveri-florenciya-ral-9003-status",
+      "name": "Міжкімнатні двері Флоренція Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 109,
+      "slug": "mizhkimnatni-dveri-fly-ral-9003-status",
+      "name": "Міжкімнатні двері FLY Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 110,
+      "slug": "mizhkimnatni-dveri-sky-moldig-black-ral-9003-status",
+      "name": "Міжкімнатні двері Sky+moldig Black Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 111,
+      "slug": "mizhkimnatni-dveri-geometry-ral-9003-status",
+      "name": "Міжкімнатні двері Geometry Ral 9003 Status",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 112,
+      "slug": "mizhkimnatni-dveri-comeo-porte-plato-ral-9003-z-komplanarnim-pogonazhem",
+      "name": "Міжкімнатні двері Comeo Porte Plato Ral 9003 з компланарним погонажем",
+      "status": "prepared",
+      "preparedColorId": 7
+    },
+    {
+      "number": 113,
+      "slug": "mizhkimnatni-dveri-artporte-sietl",
+      "name": "Міжкімнатні двері Artporte Сіетл",
+      "status": "prepared",
+      "preparedColorId": 165
+    },
+    {
+      "number": 114,
+      "slug": "mizhkimnatni-dveri-aluminium-loft-plato-alp-07-korfad",
+      "name": "Міжкімнатні двері ALUMINIUM LOFT PLATO ALP-07 Korfad",
+      "status": "prepared",
+      "preparedColorId": 263
+    },
+    {
+      "number": 115,
+      "slug": "mizhkimnatni-dveri-aluminium-loft-plato-alp-03-korfad",
+      "name": "Міжкімнатні двері ALUMINIUM LOFT PLATO ALP-03 Korfad",
+      "status": "prepared",
+      "preparedColorId": 263
+    },
+    {
+      "number": 116,
+      "slug": "mizhkimnatni-dveri-aluminium-loft-plato-alp-02-korfad",
+      "name": "Міжкімнатні двері ALUMINIUM LOFT PLATO ALP-02 Korfad",
+      "status": "prepared",
+      "preparedColorId": 263
+    },
+    {
+      "number": 117,
+      "slug": "mizhkimnatni-dveri-aluminium-loft-plato-alp-01-korfad",
+      "name": "Міжкімнатні двері ALUMINIUM LOFT PLATO ALP-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 263
+    },
+    {
+      "number": 118,
+      "slug": "mizhkimnatni-dveri-glass-loft-plato-glp-02-korfad",
+      "name": "Міжкімнатні двері GLASS LOFT PLATO GLP-02 Korfad",
+      "status": "needs-glazing-confirmation",
+      "reason": "The source photo does not establish black Lacobel (15697) versus graphite mirror (15698). Obtain an explicitly labelled photo before enabling purchase."
+    },
+    {
+      "number": 119,
+      "slug": "mizhkimnatni-dveri-glass-loft-plato-glp-01-korfad",
+      "name": "Міжкімнатні двері GLASS LOFT PLATO GLP-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 262
+    },
+    {
+      "number": 120,
+      "slug": "mizhkimnatni-dveri-deco-loft-plato-dlp-01-korfad",
+      "name": "Міжкімнатні двері DECO LOFT PLATO DLP-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 263
+    },
+    {
+      "number": 121,
+      "slug": "mizhkimnatni-dveri-wood-plato-wp-01-korfad",
+      "name": "Міжкімнатні двері WOOD PLATO WP-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 258
+    },
+    {
+      "number": 122,
+      "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
+      "name": "Міжкімнатні двері LOFT PLATO LP-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 123,
+      "slug": "mizhkimnatni-dveri-classico-cl-05-korfad",
+      "name": "Міжкімнатні двері CLASSICO CL-05 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 124,
+      "slug": "mizhkimnatni-dveri-classico-cl-02-korfad",
+      "name": "Міжкімнатні двері CLASSICO CL-02 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 125,
+      "slug": "mizhkimnatni-dveri-classico-cl-07-korfad",
+      "name": "Міжкімнатні двері CLASSICO CL-07 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 126,
+      "slug": "mizhkimnatni-dveri-parma-pm-10-korfad",
+      "name": "Міжкімнатні двері PARMA PM-10 Korfad",
+      "status": "prepared",
+      "preparedColorId": 259
+    },
+    {
+      "number": 127,
+      "slug": "mizhkimnatni-dveri-sanvito-dzerkalo-sv-01-korfad",
+      "name": "Міжкімнатні двері SANVITO дзеркало SV-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 128,
+      "slug": "mizhkimnatni-dveri-sanvito-sv-01-korfad",
+      "name": "Міжкімнатні двері SANVITO SV-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 129,
+      "slug": "mizhkimnatni-dveri-classico-cl-09-korfad",
+      "name": "Міжкімнатні двері CLASSICO CL-09 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 130,
+      "slug": "mizhkimnatni-dveri-classico-cl-08-korfad",
+      "name": "Міжкімнатні двері CLASSICO CL-08 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 131,
+      "slug": "mizhkimnatni-dveri-venecia-deluxe-vnd-05-korfad",
+      "name": "Міжкімнатні двері VENECIA DELUXE VND-05 Korfad",
+      "status": "prepared",
+      "preparedColorId": 255
+    },
+    {
+      "number": 132,
+      "slug": "mizhkimnatni-dveri-venecia-deluxe-vnd-04-korfad",
+      "name": "Міжкімнатні двері VENECIA DELUXE VND-04 Korfad",
+      "status": "not-orderable"
+    },
+    {
+      "number": 133,
+      "slug": "mizhkimnatni-dveri-venecia-deluxe-vnd-02-korfad",
+      "name": "Міжкімнатні двері VENECIA DELUXE VND-02 Korfad",
+      "status": "not-orderable"
+    },
+    {
+      "number": 134,
+      "slug": "mizhkimnatni-dveri-piano-deluxe-pnd-01-korfad",
+      "name": "Міжкімнатні двері PIANO DELUXE PND-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 135,
+      "slug": "mizhkimnatni-dveri-valentino-deluxe-vld-03-korfad",
+      "name": "Міжкімнатні двері VALENTINO DELUXE VLD-03 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 136,
+      "slug": "mizhkimnatni-dveri-valentino-deluxe-vld-01-korfad",
+      "name": "Міжкімнатні двері VALENTINO DELUXE VLD-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 137,
+      "slug": "mizhkimnatni-dveri-scalea-sc-04-korfad",
+      "name": "Міжкімнатні двері SCALEA SC-04 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 138,
+      "slug": "mizhkimnatni-dveri-milano-ml-05-korfad",
+      "name": "Міжкімнатні двері MILANO ML-05 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 139,
+      "slug": "mizhkimnatni-dveri-porto-deluxe-pd-03-korfad",
+      "name": "Міжкімнатні двері PORTO DELUXE PD-03 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 140,
+      "slug": "mizhkimnatni-dveri-porto-deluxe-pd-01-korfad",
+      "name": "Міжкімнатні двері PORTO DELUXE PD-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 252
+    },
+    {
+      "number": 141,
+      "slug": "mizhkimnatni-dveri-porto-pr-12-korfad",
+      "name": "Міжкімнатні двері PORTO PR-12 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 142,
+      "slug": "mizhkimnatni-dveri-porto-pr-10-korfad",
+      "name": "Міжкімнатні двері PORTO PR-10 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 143,
+      "slug": "mizhkimnatni-dveri-porto-pr-08-korfad",
+      "name": "Міжкімнатні двері PORTO PR-08 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 144,
+      "slug": "mizhkimnatni-dveri-porto-pr-05-korfad",
+      "name": "Міжкімнатні двері PORTO PR-05 Korfad",
+      "status": "prepared",
+      "preparedColorId": 252
+    },
+    {
+      "number": 145,
+      "slug": "mezhkomnatnye-dveri-porto-pr-02-korfad",
+      "name": "Міжкімнатні двері PORTO PR-02 Korfad",
+      "status": "prepared",
+      "preparedColorId": 252
+    },
+    {
+      "number": 146,
+      "slug": "mizhkimnatni-dveri-porto-pr-01-korfad",
+      "name": "Міжкімнатні двері PORTO PR-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 254
+    },
+    {
+      "number": 147,
+      "slug": "mizhkimnatni-dveri-florence-fl-05-korfad",
+      "name": "Міжкімнатні двері FLORENCE FL-05 Korfad",
+      "status": "prepared",
+      "preparedColorId": 267
+    },
+    {
+      "number": 148,
+      "slug": "mizhkimnatni-dveri-florence-fl-04-korfad",
+      "name": "Міжкімнатні двері FLORENCE FL-04 Korfad",
+      "status": "prepared",
+      "preparedColorId": 267
+    },
+    {
+      "number": 149,
+      "slug": "mizhkimnatni-dveri-florence-fl-03-korfad",
+      "name": "Міжкімнатні двері FLORENCE FL-03 Korfad",
+      "status": "prepared",
+      "preparedColorId": 265
+    },
+    {
+      "number": 150,
+      "slug": "mizhkimnatni-dveri-florence-fl-02-korfad",
+      "name": "Міжкімнатні двері FLORENCE FL-02 Korfad",
+      "status": "prepared",
+      "preparedColorId": 265
+    },
+    {
+      "number": 151,
+      "slug": "mizhkimnatni-dveri-florence-fl-01-korfad",
+      "name": "Міжкімнатні двері FLORENCE FL-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 265
+    },
+    {
+      "number": 152,
+      "slug": "mizhkimnatni-dveri-aliano-al-07-korfad",
+      "name": "Міжкімнатні двері ALIANO AL-07 Korfad",
+      "status": "prepared",
+      "preparedColorId": 268
+    },
+    {
+      "number": 153,
+      "slug": "mizhkimnatni-dveri-aliano-al-05-korfad",
+      "name": "Міжкімнатні двері ALIANO AL-05 Korfad",
+      "status": "prepared",
+      "preparedColorId": 268
+    },
+    {
+      "number": 154,
+      "slug": "mizhkimnatni-dveri-aliano-al-04-korfad",
+      "name": "Міжкімнатні двері ALIANO AL-04 Korfad",
+      "status": "prepared",
+      "preparedColorId": 268
+    },
+    {
+      "number": 155,
+      "slug": "mizhkimnatni-dveri-aliano-al-03-korfad",
+      "name": "Міжкімнатні двері ALIANO AL-03 Korfad",
+      "status": "prepared",
+      "preparedColorId": 268
+    },
+    {
+      "number": 156,
+      "slug": "mizhkimnatni-dveri-aliano-al-01-korfad",
+      "name": "Міжкімнатні двері ALIANO AL-01 Korfad",
+      "status": "prepared",
+      "preparedColorId": 268
+    },
+    {
+      "number": 157,
+      "slug": "mizhkimnatni-dveri-omega-seriya-allure-nicca-pg",
+      "name": "Міжкімнатні двері Omega Серія Allure Ніцца ПГ",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 158,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-f9",
+      "name": "Міжкімнатні двері Omega Серія Lines F9",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 159,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-f6",
+      "name": "Міжкімнатні двері Omega Серія Lines F6",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 160,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-f5",
+      "name": "Міжкімнатні двері Omega Серія Lines F5",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 161,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-f4",
+      "name": "Міжкімнатні двері Omega Серія Lines F4",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 162,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-f2",
+      "name": "Міжкімнатні двері Omega Серія Lines F2",
+      "status": "prepared",
+      "preparedColorId": 170
+    },
+    {
+      "number": 163,
+      "slug": "mizhkimnatni-dveri-omega-seriya-lines-f1",
+      "name": "Міжкімнатні двері Omega Серія Lines F1",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 164,
+      "slug": "mizhkimnatni-dveri-omega-seriya-art-vision-a5",
+      "name": "Міжкімнатні двері Omega Серія Art Vision А5",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 165,
+      "slug": "mizhkimnatni-dveri-omega-seriya-art-vision-a4",
+      "name": "Міжкімнатні двері Omega Серія Art Vision А4",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 166,
+      "slug": "mizhkimnatni-dveri-omega-seriya-art-vision-a3",
+      "name": "Міжкімнатні двері Omega Серія Art Vision А3",
+      "status": "not-orderable"
+    },
+    {
+      "number": 167,
+      "slug": "mizhkimnatni-dveri-omega-seriya-art-vision-a2",
+      "name": "Міжкімнатні двері Omega Серія Art Vision А2",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 168,
+      "slug": "mizhkimnatni-dveri-omega-seriya-art-vision-a1-shpon",
+      "name": "Міжкімнатні двері Omega Серія Art Vision А1 шпон",
+      "status": "prepared",
+      "preparedColorId": 180
+    },
+    {
+      "number": 169,
+      "slug": "mizhkimnatni-dveri-omega-seriya-art-vision-a1",
+      "name": "Міжкімнатні двері Omega Серія Art Vision А1",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 170,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-florenciya-pg",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Флоренція ПГ",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 171,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-london-pg",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Лондон ПГ",
+      "status": "prepared",
+      "preparedColorId": 169
+    },
+    {
+      "number": 172,
+      "slug": "mizhkimnatni-dveri-omega-seriya-amore-classic-nicca-pg",
+      "name": "Міжкімнатні двері Omega Серія Amore Classic Ніцца ПГ",
+      "status": "existing-preset"
+    },
+    {
+      "number": 173,
+      "slug": "mizhkimnatni-dveri-artporte-parizh",
+      "name": "Міжкімнатні двері Artporte Париж",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 174,
+      "slug": "mizhkimnatni-dveri-artporte-oksford",
+      "name": "Міжкімнатні двері Artporte Оксфорд",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 175,
+      "slug": "mizhkimnatni-dveri-artporte-viden",
+      "name": "Міжкімнатні двері Artporte Відень",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 176,
+      "slug": "mizhkimnatni-dveri-artporte-barselona",
+      "name": "Міжкімнатні двері Artporte Барселона",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 177,
+      "slug": "mizhkimnatni-dveri-artporte-arizona",
+      "name": "Міжкімнатні двері Artporte Арізона",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 178,
+      "slug": "mizhkimnatni-dveri-artporte-london",
+      "name": "Міжкімнатні двері Artporte Лондон",
+      "status": "prepared",
+      "preparedColorId": 155
+    },
+    {
+      "number": 179,
+      "slug": "mizhkimnatni-dveri-artporte-vertikal",
+      "name": "Міжкімнатні двері Artporte Вертикаль",
+      "status": "prepared",
+      "preparedColorId": 159
+    },
+    {
+      "number": 180,
+      "slug": "mizhkimnatni-dveri-artporte-verona",
+      "name": "Міжкімнатні двері Artporte Верона",
+      "status": "prepared",
+      "preparedColorId": 159
+    },
+    {
+      "number": 181,
+      "slug": "mizhkimnatni-dveri-artporte-berlin",
+      "name": "Міжкімнатні двері Artporte Берлін",
+      "status": "prepared",
+      "preparedColorId": 159
+    },
+    {
+      "number": 182,
+      "slug": "mizhkimnatni-dveri-artporte-tokio",
+      "name": "Міжкімнатні двері Artporte Токіо",
+      "status": "prepared",
+      "preparedColorId": 163
+    },
+    {
+      "number": 183,
+      "slug": "mizhkimnatni-dveri-artporte-madrid",
+      "name": "Міжкімнатні двері Artporte Мадрид",
+      "status": "prepared",
+      "preparedColorId": 153
+    },
+    {
+      "number": 184,
+      "slug": "mizhkimnatni-dveri-estet-mk-provans-glass",
+      "name": "Міжкімнатні двері Estet МК Прованс Glass",
+      "status": "not-orderable"
+    },
+    {
+      "number": 185,
+      "slug": "mizhkimnatni-dveri-estet-mk-provans",
+      "name": "Міжкімнатні двері Estet МК Прованс",
+      "status": "not-orderable"
+    },
+    {
+      "number": 186,
+      "slug": "mizhkimnatni-dveri-estet-mk-grand",
+      "name": "Міжкімнатні двері Estet МК Гранд",
+      "status": "not-orderable"
+    },
+    {
+      "number": 187,
+      "slug": "mizhkimnatni-dveri-estet-mk-splint",
+      "name": "Міжкімнатні двері Estet МК Сплінт",
+      "status": "not-orderable"
+    },
+    {
+      "number": 188,
+      "slug": "mizhkimnatni-dveri-estet-mk-diagonal",
+      "name": "Міжкімнатні двері Estet МК Діагональ",
+      "status": "not-orderable"
+    },
+    {
+      "number": 189,
+      "slug": "mizhkimnatni-dveri-estet-mk-gorizontal",
+      "name": "Міжкімнатні двері Estet МК Горизонталь",
+      "status": "not-orderable"
+    },
+    {
+      "number": 190,
+      "slug": "mizhkimnatni-dveri-estet-mk-baza",
+      "name": "Міжкімнатні двері Estet МК База",
+      "status": "not-orderable"
+    }
+  ]
+}

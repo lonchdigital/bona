@@ -69,6 +69,7 @@ use App\Http\Actions\Admin\CustomerReviews\Pages\ShowCustomerReviewsListPageActi
 use App\Http\Actions\Admin\Dashboard\Pages\ShowDashboardPageAction;
 use App\Http\Actions\Admin\Delivery\DeliveryEditAction;
 use App\Http\Actions\Admin\Delivery\Pages\ShowDeliveryEditPageAction;
+use App\Http\Actions\Admin\DoorConfigurator\ConfiguratorAdminController;
 use App\Http\Actions\Admin\HomePage\HomePageEditAction;
 use App\Http\Actions\Admin\HomePage\Pages\ShowHomePageEditPageAction;
 use App\Http\Actions\Admin\Instagram\BeginInstagramOAuthAction;
@@ -185,6 +186,19 @@ Route::prefix('admin')->middleware([
     //    Route::name('admin.dashboard.page')->get('dashboard', ShowDashboardPageAction::class);
     Route::name('admin.dashboard.page')->get('/', ShowDashboardPageAction::class);
     Route::name('admin.log-out')->post('/log-out', LogoutAction::class);
+
+    Route::prefix('door-configurator')->name('admin.configurator.')->controller(ConfiguratorAdminController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/import', 'import')->name('import')->middleware('throttle:5,1');
+        Route::post('/create', 'create')->name('create');
+        Route::get('/{item}', 'edit')->name('edit');
+        Route::post('/{item}', 'save')->name('save');
+        Route::post('/{item}/publish', 'publish')->name('publish');
+        Route::post('/{item}/hide', 'hide')->name('hide');
+        Route::post('/{item}/restore', 'restore')->name('restore');
+        Route::post('/{item}/upload', 'upload')->name('upload')->middleware('throttle:30,1');
+        Route::get('/{item}/preview', 'preview')->name('preview');
+    });
 
     Route::prefix('catalog-menu')->group(function () {
         Route::name('admin.catalog-menu.page')->get('/', ShowCatalogMenuPageAction::class);

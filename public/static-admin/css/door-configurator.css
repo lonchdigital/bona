@@ -1,0 +1,49 @@
+.cfg-admin { max-width: 1520px; color: #30343b; padding-bottom: 48px; }
+.cfg-admin p { max-width: 80ch; }
+.cfg-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+.cfg-header h1 { margin-bottom: 10px; }
+.cfg-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin: 24px 0; }
+.cfg-filters label { margin: 0; flex: 1 1 180px; }
+.cfg-filters button, .cfg-filters > a { margin-bottom: 1px; }
+.cfg-admin label { font-weight: 600; }
+.cfg-admin .form-control { color: #30343b; margin-top: 6px; }
+.cfg-admin .form-control::placeholder { color: #68707a; }
+.cfg-admin small, .cfg-note { color: #555f6b; }
+.cfg-admin a { text-underline-offset: 3px; }
+.cfg-admin :focus-visible { outline: 2px solid #315ca4; outline-offset: 3px; }
+.cfg-admin ::selection { background: #d9e6fb; color: #172b49; }
+.cfg-table { background: #fff; border: 1px solid #d9dde3; border-radius: 8px; }
+.cfg-table td { vertical-align: middle; font-variant-numeric: tabular-nums; }
+.cfg-model { display: flex; align-items: center; gap: 16px; min-width: 270px; }
+.cfg-model img { object-fit: contain; flex: 0 0 56px; }
+.cfg-model small { display: block; margin-top: 5px; }
+.cfg-no-photo { width: 56px; text-align: center; font-size: 12px; }
+.cfg-section { margin: 32px 0; border-top: 1px solid #d9dde3; padding-top: 24px; }
+.cfg-section summary { font-weight: 600; font-size: 17px; cursor: pointer; }
+.cfg-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.cfg-actions form { margin: 0; }
+.cfg-save-bar { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-top: 1px solid #d9dde3; }
+.cfg-variant { border-top: 1px solid #d9dde3; padding: 24px 0; }
+.cfg-variant summary { display: list-item; cursor: pointer; font-size: 17px; font-weight: 600; }
+.cfg-variant[open] summary { margin-bottom: 20px; }
+.cfg-variant-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, 380px); gap: 28px; }
+.cfg-inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+.cfg-coordinates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.cfg-full { grid-column: 1 / -1; }
+.cfg-photos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+.cfg-photos label { min-width: 0; overflow-wrap: anywhere; }
+.cfg-photos img { display: block; width: 100%; height: 140px; object-fit: contain; background: #fff; margin-bottom: 8px; }
+.cfg-photos input { width: 100%; max-width: 100%; font-size: 13px; }
+.cfg-stage { max-width: 100%; height: 330px; object-fit: contain; background: #fff; border: 1px solid #d9dde3; cursor: crosshair; }
+.cfg-check { display: flex; align-items: center; gap: 10px; margin: 12px 0; }
+.cfg-check input { width: 18px; height: 18px; }
+.cfg-order { display: flex; gap: 8px; margin: 18px 0; }
+.cfg-admin [hidden] { display: none !important; }
+@media (max-width: 767px) {
+    .cfg-header { flex-direction: column; gap: 10px; }
+    .cfg-variant-body { grid-template-columns: minmax(0, 1fr); }
+    .cfg-inputs { grid-template-columns: minmax(0, 1fr); }
+    .cfg-coordinates { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cfg-actions .btn { white-space: normal; }
+    .cfg-save-bar { flex-wrap: wrap; }
+}

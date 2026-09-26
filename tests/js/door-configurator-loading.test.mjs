@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const loaderSource = fs.readFileSync('resources/js/store/common/door-configurator-images.js', 'utf8');
-const { createSceneImageLoader } = await import('data:text/javascript;base64,' + Buffer.from(loaderSource).toString('base64'));
+const { createSceneImageLoader, configuratorAssetUrl } = await import('data:text/javascript;base64,' + Buffer.from(loaderSource).toString('base64'));
 const source = fs.readFileSync('resources/js/store/pages/store.door-configurator.page.js', 'utf8');
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
@@ -18,6 +18,41 @@ function loaderFixture(options = {}) {
     }
     return { created, scheduled, loader: createSceneImageLoader({ base: '/assets/', ImageClass: FakeImage, schedule: callback => scheduled.push(callback), ...options }) };
 }
+
+test('managed images resolve from shared storage while legacy rooms retain their asset base', async () => {
+    const shared = '/storage/door-configurator/' + 'a'.repeat(64) + '.webp';
+    assert.equal(configuratorAssetUrl('/assets/', shared), shared);
+    assert.equal(configuratorAssetUrl('/assets/', 'room.webp'), '/assets/room.webp');
+    assert.equal(configuratorAssetUrl('/assets/', 'https://example.com/a.webp'), '/assets/https://example.com/a.webp');
+    const { loader, created } = loaderFixture();
+    const loaded = loader.load(shared);
+    assert.equal(created[0].src, shared);
+    created[0].finish(); await loaded;
+});
+
+test('restored rejected editor input starts dirty with publication disabled and a navigation guard', () => {
+    const editor = fs.readFileSync('public/static-admin/js/door-configurator-editor.js', 'utf8');
+    const context = vm.createContext({ dirty: false, uploading: 0, config: { unsaved: true }, publish: { disabled: false }, save: { disabled: true }, status: {}, render() {} });
+    vm.runInContext(editor.slice(editor.indexOf('function markDirty()'), editor.indexOf('function error(')), context);
+    vm.runInContext(editor.slice(editor.lastIndexOf('render(); save.disabled'), editor.lastIndexOf('})();')), context);
+    assert.equal(context.dirty, true);
+    assert.equal(context.publish.disabled, true);
+    assert.match(context.status.textContent, /незбережені/);
+    assert.match(editor, /beforeunload.*if \(dirty \|\| uploading\)/);
+});
+
+test('authenticated draft preview initializes the same configurator scene as the storefront', async () => {
+    const app = fs.readFileSync('resources/js/store/app.js', 'utf8');
+    let initialized = false;
+    const context = vm.createContext({ page: 'admin.configurator.preview', pages: { './pages/store.door-configurator.page.js': async () => () => { initialized = true; } } });
+    vm.runInContext(app.slice(app.indexOf('async function loadJsByPage()'), app.indexOf('async function init()')), context);
+    await vm.runInContext('loadJsByPage()', context);
+    assert.equal(initialized, true);
+    const { context: scene, $, render, pending } = rendererFixture();
+    scene.config.preview = true;
+    const job = render(); pending.get('room').resolve({}); pending.get('a').resolve({}); await job;
+    assert.equal($('order-selection').disabled, true);
+});
 
 test('image loads deduplicate, wait for decoding and promote preloads to selected priority', async () => {
     const { loader, created } = loaderFixture();
@@ -79,7 +114,7 @@ function rendererFixture() {
         return elements.get(id);
     };
     const context = vm.createContext({
-        $, setTimeout, clearTimeout, committed,
+        $, setTimeout, clearTimeout, committed, config: { preview: false },
         renderVersion: 0, rendered: false, hasScene: false, cartPending: false, sceneStatusTimer: undefined,
         state: { product: 'a', wall: '#ffffff', doorType: 'interior' },
         room: () => ({ id: 'living', image: 'room', door: [0, 0, 500], name: 'Room' }),
@@ -94,6 +129,7 @@ function rendererFixture() {
         preloadNearbyDoors() {},
     });
     vm.runInContext(source.slice(source.indexOf('function syncSceneActions()'), source.indexOf('function toast(')), context);
+    vm.runInContext(source.slice(source.indexOf('function doorGeometry('), source.indexOf('function drawDoor(')), context);
     vm.runInContext(source.slice(source.indexOf('async function renderScene()'), source.indexOf('async function renderDetail(')), context);
     return { $, context, pending, committed, render: () => vm.runInContext('renderScene()', context) };
 }

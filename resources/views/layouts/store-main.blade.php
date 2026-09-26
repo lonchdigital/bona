@@ -225,7 +225,7 @@
 
 </div>
 
-@unless(request()->routeIs('store.door-configurator.page', 'localized.store.door-configurator.page'))
+@unless(request()->routeIs('store.door-configurator.page', 'localized.store.door-configurator.page', 'admin.configurator.preview'))
     <x-store.mobile-bottom-navigation />
 @endunless
 <x-store.comparison-dock />

@@ -29,6 +29,7 @@
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 </head>
 <body class="vertical  light  ">
+<!-- Configurator admin extension: Operate mode. Existing Overpass, Bootstrap forms and catalog-menu navigation stay authoritative. First view is a searchable materials table; edit, preview and explicit publication are separate actions. No new visual identity or room editor. -->
 <div class="wrapper" id="app">
     <nav class="topnav navbar navbar-light d-flex justify-content-between">
         <ul class="nav">
@@ -146,6 +147,12 @@
                     <a class="nav-link pl-3" href="{{ route('admin.catalog-menu.page') }}">
                         <i class="fe fe-menu fe-16"></i>
                         <span class="ml-1 item-text">{{ trans('admin.catalog_menu') }}</span>
+                    </a>
+                </li>
+                <li class="nav-item w-100">
+                    <a class="nav-link pl-3" href="{{ route('admin.configurator.index') }}">
+                        <i class="fe fe-sliders fe-16" aria-hidden="true"></i>
+                        <span class="ml-1 item-text">Конфігуратор дверей</span>
                     </a>
                 </li>
                 <li class="nav-item w-100">

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-26T00:00:00Z",
+  "title": "Bona configurator administration — scoped extension",
+  "extensions": {
+    "breakpoints": [{ "name": "stack-fields", "value": "767px" }],
+    "shadows": [],
+    "motion": []
+  },
+  "components": [
+    {
+      "name": "Variant disclosure",
+      "kind": "custom",
+      "description": "Prepared colour materials, expandable without hiding save/publication semantics.",
+      "html": "<details class=\"ds-variant\"><summary>Білий · матеріали відтінку</summary><p>Фото полотна без ручки та прив’язка до каталогу.</p></details>",
+      "css": ".ds-variant { border-top: 1px solid #d9dde3; padding: 24px 0; font-family: Overpass,sans-serif; color: #30343b; } .ds-variant summary { cursor: pointer; font-size: 17px; font-weight: 600; } .ds-variant[open] summary { margin-bottom: 20px; } .ds-variant summary:focus-visible { outline: 2px solid #315ca4; outline-offset: 3px; }"
+    },
+    {
+      "name": "Labelled field",
+      "kind": "input",
+      "description": "Incumbent field with explicit label and visible keyboard focus.",
+      "html": "<label class=\"ds-field\">Коротка назва · UA<input value=\"Нью-Йорк\"></label>",
+      "css": ".ds-field { display: block; font: 600 14px/1.5 Overpass,sans-serif; color: #30343b; } .ds-field input { display: block; margin-top: 6px; padding: .375rem .75rem; font: 400 14px/1.5 Overpass,sans-serif; color: #30343b; background: #fff; border: 1px solid #dee2e6; border-radius: .25rem; } .ds-field input:focus { border-color: #a8a8a8; box-shadow: 0 0 0 .2rem rgba(105,105,105,.25); } .ds-field input:focus-visible { outline: 2px solid #315ca4; outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "overview": "Existing operational admin, not a new visual identity. Reuse its shell, Bootstrap forms, typography and dark action buttons.",
+    "keyCharacteristics": ["Catalogue-linked materials", "Explicit draft/publication state", "Responsive operational editing"],
+    "rules": [],
+    "dos": ["Do preserve readable explicit labels and the existing admin language."],
+    "donts": ["Don't present unsaved controls as the published version."]
+  }
+}

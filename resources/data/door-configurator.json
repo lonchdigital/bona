@@ -49,6 +49,28 @@
           "hex": "#555756",
           "image": "new-york-anthracite.jpg",
           "colorId": 149
+        },
+        {
+          "id": "color-153",
+          "name": {
+            "uk": "Бетон сірий",
+            "ru": "Бетон серый"
+          },
+          "hex": "#b9b9b6",
+          "image": "interior/new-york-153-catalog-v1.webp",
+          "preview": "interior/new-york-153-clean-v1.webp",
+          "colorId": 153,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.164,
+            0.541
+          ],
+          "handleSide": "left"
         }
       ]
     },
@@ -81,6 +103,182 @@
           "hex": "#ececed",
           "image": "ostin.webp",
           "colorId": 155
+        },
+        {
+          "id": "color-21",
+          "name": {
+            "ru": "Айвори",
+            "uk": "Айворі"
+          },
+          "hex": "#e8e1cc",
+          "image": "interior/ostin-21-catalog-v1.webp",
+          "preview": "interior/ostin-21-clean-v1.webp",
+          "colorId": 21,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-279",
+          "name": {
+            "uk": "Сірий пп",
+            "ru": "Серый пп"
+          },
+          "hex": "#aaaaa8",
+          "image": "interior/ostin-279-catalog-v1.webp",
+          "preview": "interior/ostin-279-clean-v1.webp",
+          "colorId": 279,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-33",
+          "name": {
+            "ru": "Антрацит",
+            "uk": "Антрацит"
+          },
+          "hex": "#4d4e52",
+          "image": "interior/ostin-33-catalog-v1.webp",
+          "preview": "interior/ostin-33-clean-v1.webp",
+          "colorId": 33,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-46",
+          "name": {
+            "ru": "Бетон серый",
+            "uk": "Бетон сірий"
+          },
+          "hex": "#a9aaa6",
+          "image": "interior/ostin-46-catalog-v1.webp",
+          "preview": "interior/ostin-46-clean-v1.webp",
+          "colorId": 46,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-22",
+          "name": {
+            "ru": "Бетон бежевый",
+            "uk": "Бетон бежевий"
+          },
+          "hex": "#bcb1a0",
+          "image": "interior/ostin-22-catalog-v1.webp",
+          "preview": "interior/ostin-22-clean-v1.webp",
+          "colorId": 22,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-61",
+          "name": {
+            "ru": "Дуб грифель",
+            "uk": "Дуб грифель"
+          },
+          "hex": "#62625e",
+          "image": "interior/ostin-61-catalog-v1.webp",
+          "preview": "interior/ostin-61-clean-v1.webp",
+          "colorId": 61,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-65",
+          "name": {
+            "ru": "Дуб шато седой",
+            "uk": "Дуб шато сивий"
+          },
+          "hex": "#96938a",
+          "image": "interior/ostin-65-catalog-v1.webp",
+          "preview": "interior/ostin-65-clean-v1.webp",
+          "colorId": 65,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-68",
+          "name": {
+            "ru": "Сахара лайт",
+            "uk": "Сахара лайт"
+          },
+          "hex": "#b5afa7",
+          "image": "interior/ostin-68-catalog-v1.webp",
+          "preview": "interior/ostin-68-clean-v1.webp",
+          "colorId": 68,
+          "crop": [
+            201,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.163,
+            0.548
+          ],
+          "handleSide": "left"
         }
       ]
     },
@@ -113,6 +311,50 @@
           "hex": "#dddcd9",
           "image": "molding.webp",
           "colorId": 166
+        },
+        {
+          "id": "color-168",
+          "name": {
+            "uk": "Ral 7036",
+            "ru": "Ral 7036"
+          },
+          "hex": "#979392",
+          "image": "interior/molding-168-catalog-v1.webp",
+          "preview": "interior/molding-168-clean-v1.webp",
+          "colorId": 168,
+          "crop": [
+            199,
+            0,
+            399,
+            837
+          ],
+          "handle": [
+            0.193,
+            0.57
+          ],
+          "handleSide": "left"
+        },
+        {
+          "id": "color-301",
+          "name": {
+            "uk": "RAL 1013",
+            "ru": "RAL 1013"
+          },
+          "hex": "#dfd8c9",
+          "image": "interior/molding-301-catalog-v1.webp",
+          "preview": "interior/molding-301-clean-v1.webp",
+          "colorId": 301,
+          "crop": [
+            205,
+            0,
+            397,
+            837
+          ],
+          "handle": [
+            0.192,
+            0.571
+          ],
+          "handleSide": "left"
         }
       ]
     },

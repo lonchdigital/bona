@@ -1,5 +1,5 @@
 import { handleBasket } from '../common/cart';
-import { createSceneImageLoader } from '../common/door-configurator-images';
+import { createSceneImageLoader, configuratorAssetUrl } from '../common/door-configurator-images';
 
 export default function initDoorConfigurator() {
 const root = document.querySelector('[data-door-studio]');
@@ -10,6 +10,7 @@ if (!PRODUCTS.length) return;
 const t = text => config.ui[text] || text;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const ASSETS = config.assets;
+const assetUrl = file => configuratorAssetUrl(ASSETS, file);
 const ROOMS = [
   { id: 'living', name: t("Вітальня"), image: 'room-living-v5.webp', category: 'interior', floor: 728, wall: 702, base: [184, 174, 163], door: [644, 205, 523] },
   { id: 'bedroom', name: t("Спальня"), image: 'room-bedroom-v2.webp', category: 'interior', floor: 756, wall: 726, base: [170, 169, 165], door: [953, 169, 587] },
@@ -34,7 +35,7 @@ const HANDLE_FREE_IMAGES = {
 function previewDoorImage(p, f) {
   // Never fall back to a photo with baked-in hardware for an interchangeable interior handle.
   if (p.category === 'interior') {
-    const image = HANDLE_FREE_IMAGES[f.image];
+    const image = f.preview || HANDLE_FREE_IMAGES[f.image];
     if (!image) throw new Error(t("Для цієї моделі ще не підготовлено зображення без ручки."));
     return image;
   }
@@ -86,16 +87,24 @@ function restoredWall(saved) {
   if (saved?.wall === 'original' && saved.wallPaletteVersion === WALL_PALETTE_VERSION) return 'original';
   return DEFAULT_WALL;
 }
-const DEFAULT = { room: "living", product: PRODUCTS[0].id, color: PRODUCTS[0].colors[0].id, wall: DEFAULT_WALL, wallPaletteVersion: WALL_PALETTE_VERSION, handle: null, doorType: PRODUCTS[0].category, tab: "doors" };
+const DEFAULT_HANDLE = HANDLES.some(handle => handle.id === 'black') ? 'black' : null;
+const HANDLE_SELECTION_VERSION = 1;
+function restoredHandle(saved) {
+  if (HANDLES.some(handle => handle.id === saved?.handle)) return saved.handle;
+  // Upgrade the former empty default once; preserve a deliberate "no handle" choice afterwards.
+  if (saved?.handle === null && saved.handleSelectionVersion === HANDLE_SELECTION_VERSION) return null;
+  return DEFAULT_HANDLE;
+}
+const DEFAULT = { room: PRODUCTS[0].category === 'exterior' ? 'entry' : 'living', product: PRODUCTS[0].id, color: PRODUCTS[0].colors[0].id, wall: DEFAULT_WALL, wallPaletteVersion: WALL_PALETTE_VERSION, handle: config.preview ? HANDLES[0]?.id || null : DEFAULT_HANDLE, handleSelectionVersion: HANDLE_SELECTION_VERSION, doorType: PRODUCTS[0].category, tab: "doors" };
 const STORAGE = "bona-configurator-selection-v1";
 let state = { ...DEFAULT };
 try {
-  const saved = JSON.parse(localStorage.getItem(STORAGE));
+  const saved = config.preview ? null : JSON.parse(localStorage.getItem(STORAGE));
   if (saved && ROOMS.some(r => r.id === saved.room) && PRODUCTS.some(p => p.id === saved.product) && (saved.wall === 'original' || /^#[0-9a-f]{6}$/i.test(saved.wall))) {
-    state = { ...DEFAULT, ...saved, wall: restoredWall(saved), wallPaletteVersion: WALL_PALETTE_VERSION, tab: 'doors' };
+    state = { ...DEFAULT, ...saved, wall: restoredWall(saved), wallPaletteVersion: WALL_PALETTE_VERSION, handle: restoredHandle(saved), handleSelectionVersion: HANDLE_SELECTION_VERSION, tab: 'doors' };
   }
 } catch (_) { /* Private browsing and storage-disabled mode are supported. */ }
-if (!HANDLES.some(h => h.id === state.handle)) state.handle = DEFAULT.handle;
+if (state.handle !== null && !HANDLES.some(h => h.id === state.handle)) state.handle = DEFAULT.handle;
 if (!product().colors.some(c => c.id === state.color)) state.color = product().colors[0].id;
 if (!productsForType(product().category, state.doorType).some(p => p.id === state.product)) state.doorType = product().category;
 
@@ -120,7 +129,7 @@ function product() { return PRODUCTS.find(p => p.id === state.product); }
 function finish() { return product().colors.find(c => c.id === state.color) || product().colors[0]; }
 function handle() { return product().category === 'interior' ? HANDLES.find(h => h.id === state.handle) : undefined; }
 function money(value) { return new Intl.NumberFormat(config.locale === 'ru' ? 'ru-UA' : 'uk-UA').format(value) + ' ₴'; }
-function remember() { try { localStorage.setItem(STORAGE, JSON.stringify(state)); } catch (_) {} }
+function remember() { if (config.preview) return; try { localStorage.setItem(STORAGE, JSON.stringify(state)); } catch (_) {} }
 function checkIcon() { return '<span class="selected-check"><svg aria-hidden="true"><use href="#studio-i-check"/></svg></span>'; }
 function loadImage(file) {
   return imageLoader.load(file);
@@ -140,21 +149,21 @@ function preloadNearbyDoors() {
 }
 function syncSceneActions() {
   $('save').disabled = $('zoom').disabled = !rendered;
-  $('order-selection').disabled = !rendered || cartPending;
+  $('order-selection').disabled = config.preview || !rendered || cartPending;
 }
 function toast(message) { clearTimeout(toastTimer); $('toast').textContent = message; $('toast').classList.add('visible'); toastTimer = setTimeout(() => $('toast').classList.remove('visible'), 4200); }
 
 function initControls() {
   $('rooms').innerHTML = ROOMS.map(r => `<button class="room-option" data-room="${r.id}" aria-pressed="${r.id === state.room}">${esc(r.name)}</button>`).join('');
   $('wall-palette').innerHTML = PALETTE.map(c => `<button class="swatch" style="--swatch:${c.hex}" data-wall="${c.hex}" aria-label="${esc(c.name)}" title="${esc(c.name)}" aria-pressed="${state.wall === c.hex}"></button>`).join('') + `<button class="swatch original-swatch" style="--swatch:#b0afaa" data-wall="original" aria-label="${esc(t("Оригінальний колір кімнати"))}" title="${esc(t("Оригінальний колір кімнати"))}"><span>↺</span></button>`;
-  $('handle-grid').innerHTML = HANDLES.map(h => `<button class="handle-card" data-handle="${h.id}" aria-label="${esc(h.name)}, ${esc(h.finish)}" aria-pressed="${state.handle === h.id}"><img src="${ASSETS + h.image}" alt="" width="100" height="65"><span><strong>${esc(h.name)}</strong><small>${esc(h.finish)}</small><small>${money(h.price)}</small></span>${checkIcon()}</button>`).join('');
+  $('handle-grid').innerHTML = HANDLES.map(h => `<button class="handle-card" data-handle="${h.id}" aria-label="${esc(h.name)}, ${esc(h.finish)}" aria-pressed="${state.handle === h.id}"><img src="${esc(assetUrl(h.image))}" alt="" width="100" height="65"><span><strong>${esc(h.name)}</strong><small>${esc(h.finish)}</small><small>${money(h.price)}</small></span>${checkIcon()}</button>`).join('');
   renderProducts();
   syncUI();
   applyLayout();
 }
 function renderProducts() {
   const available = productsForType(product().category, state.doorType), types = availableDoorTypes();
-  $('door-grid').innerHTML = available.map(p => `<button class="product-card${p.flush ? ' product-card--interior-photo' : ''}" data-product="${p.id}" aria-label="${esc(p.name)}" aria-pressed="${p.id === state.product}"><span class="product-photo"><img src="${ASSETS + (p.id === state.product ? finish().image : p.colors[0].image)}" alt="" width="800" height="837"></span><span class="product-brand">${esc(p.brand)}</span><strong>${esc(p.short)}</strong>${checkIcon()}</button>`).join('');
+  $('door-grid').innerHTML = available.map(p => `<button class="product-card${p.flush ? ' product-card--interior-photo' : ''}" data-product="${p.id}" aria-label="${esc(p.name)}" aria-pressed="${p.id === state.product}"><span class="product-photo"><img src="${esc(assetUrl(p.id === state.product ? finish().image : p.colors[0].image))}" alt="" width="800" height="837" loading="lazy" decoding="async"></span><span class="product-brand">${esc(p.brand)}</span><strong>${esc(p.short)}</strong>${checkIcon()}</button>`).join('');
   $('door-grid').scrollLeft = 0;
   $('door-grid').scrollTop = 0;
   $('door-help').textContent = DOOR_TYPES.find(t => t.id === state.doorType).hint;
@@ -167,7 +176,7 @@ function syncUI() {
   root.querySelectorAll('button[data-product]').forEach(b => {
     const item = PRODUCTS.find(item => item.id === b.dataset.product), active = item.id === p.id;
     b.setAttribute('aria-pressed', active);
-    b.querySelector('img').src = ASSETS + (active ? c.image : item.colors[0].image);
+    b.querySelector('img').src = assetUrl(active ? c.image : item.colors[0].image);
   });
   root.querySelectorAll('button[data-wall]').forEach(b => b.setAttribute('aria-pressed', b.dataset.wall === state.wall));
   root.querySelectorAll('button[data-handle]').forEach(b => { b.setAttribute('aria-pressed', b.dataset.handle === h?.id); b.disabled = false; });
@@ -183,7 +192,7 @@ function syncUI() {
   $('door-finishes').innerHTML = p.colors.length > 1 ? p.colors.map(f => `<button class="swatch" data-finish="${f.id}" style="--swatch:${f.hex}" aria-label="${esc(f.name)}" title="${esc(f.name)}" aria-pressed="${f.id === c.id}"></button>`).join('') : `<span class="finish-single">${esc(t("Ця модель для примірки представлена в одному відтінку."))}</span>`;
   $('selected-name').textContent = p.name;
   $('selected-price').textContent = money(c.price);
-  $('selected-details').textContent = c.name + (interior ? '' : ' · ' + t('штатна ручка'));
+  $('selected-details').textContent = c.name + (c.details ? ' · ' + c.details : '') + (interior ? '' : ' · ' + t('штатна ручка'));
   $('selected-handle-row').hidden = !h;
   $('selected-handle-name').textContent = h ? `${h.name}` : '';
   $('selected-handle-price').textContent = h ? money(h.price) : '';
@@ -316,6 +325,10 @@ function drawHandle(context, x, y, height, h, side) {
   context.beginPath(); context.roundRect(-2, -3, 59, 9, 3); context.fill(); context.stroke();
   context.restore();
 }
+function doorGeometry(p, f) {
+  // Different finish photographs can have different framing and hardware positions.
+  return { ...p, crop: f.crop ?? p.crop, handle: f.handle ?? p.handle, handleSide: f.handleSide ?? p.handleSide, face: f.face ?? p.face };
+}
 function drawDoor(context, p, img, h, x, y, height) {
   const [sx, sy, sw, sh] = p.crop;
   const width = height * sw / sh;
@@ -351,9 +364,10 @@ async function renderScene() {
     const [background, doorImage] = await Promise.all([loadImage(r.image), loadImage(previewDoorImage(p, f))]);
     if (version !== renderVersion) return;
     frameContext.putImageData(tintedRoom(r, background, wall), 0, 0);
-    const width = r.door[2] * p.crop[2] / p.crop[3];
+    const visual = doorGeometry(p, f);
+    const width = r.door[2] * visual.crop[2] / visual.crop[3];
     const x = r.id === 'living' ? (1536 - width) / 2 : r.door[0];
-    drawDoor(frameContext, p, doorImage, h, x, r.door[1], r.door[2]);
+    drawDoor(frameContext, visual, doorImage, h, x, r.door[1], r.door[2]);
     // Commit the complete frame at once. Even a failed render leaves the last scene intact.
     ctx.drawImage(frame, 0, 0);
     $('scene-loading').hidden = true;
@@ -378,8 +392,9 @@ async function renderDetail(loaded) {
   if (version !== renderVersion || !rendered) return false;
   const dc = $('detail-canvas').getContext('2d');
   dc.fillStyle = state.wall === 'original' ? '#b0afaa' : state.wall; dc.fillRect(0, 0, 800, 1000);
-  const height = 900, width = height * p.crop[2] / p.crop[3];
-  drawDoor(dc, p, img, h, (800 - width) / 2, 60, height);
+  const visual = doorGeometry(p, f);
+  const height = 900, width = height * visual.crop[2] / visual.crop[3];
+  drawDoor(dc, visual, img, h, (800 - width) / 2, 60, height);
   $('detail-title').textContent = p.name;
   $('detail-caption').textContent = f.name + ' · ' + (h ? h.name + ', ' + h.finish + '. ' + t('Примірка ручки схематична.') : p.category === 'interior' ? t("Без ручки. Оберіть її у вкладці «Ручки».") : t("Штатна ручка моделі."));
   return true;
@@ -459,7 +474,7 @@ $('save').addEventListener('click', async () => {
 let pendingSelection = null;
 $('order-selection').addEventListener('click', async () => {
  const button = $('order-selection');
- if (button.disabled) return;
+ if (config.preview || button.disabled) return;
  const selection = { product: product().id, color: finish().id, handle: handle()?.id || null };
  const signature = JSON.stringify(selection);
  if (pendingSelection?.signature !== signature) pendingSelection = { signature, id: globalThis.crypto?.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const n = Math.floor(Math.random()*16); return (c === 'x' ? n : (n&3)|8).toString(16); }) };
