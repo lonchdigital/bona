@@ -24,8 +24,8 @@ class BlogArticleContentImporterTest extends TestCase
             'blog_article_id' => $guide->id,
             'type_id' => BlogArticleBlockTypesDataClass::TYPE_QUESTIONS_AND_ANSWERS,
             'content' => ['questions' => collect(range(1, 3))->map(fn (int $index): array => [
-                'question' => ['uk' => "Питання {$index}?"],
-                'answer' => ['uk' => "Відповідь {$index}."],
+                'question' => ['uk' => "Питання {$index}?", 'ru' => "Питання {$index}?"],
+                'answer' => ['uk' => "Відповідь {$index}.", 'ru' => "Відповідь {$index}."],
             ])->all()],
         ]);
 
@@ -51,6 +51,7 @@ class BlogArticleContentImporterTest extends TestCase
                 ->where('type_id', BlogArticleBlockTypesDataClass::TYPE_TEXT)
                 ->firstOrFail();
             $this->assertSame('<p>Оригінальний український текст.</p>', $text->content['uk']);
+            $this->assertNotSame('<p>Оригінальний український текст.</p>', $text->content['ru']);
             $this->assertGreaterThanOrEqual(800, $this->wordCount($text->content['ru']));
 
             $faq = $article->blocks()
@@ -122,7 +123,10 @@ class BlogArticleContentImporterTest extends TestCase
         BlogArticleBlock::query()->create([
             'blog_article_id' => $article->id,
             'type_id' => BlogArticleBlockTypesDataClass::TYPE_TEXT,
-            'content' => ['uk' => '<p>Оригінальний український текст.</p>'],
+            'content' => [
+                'uk' => '<p>Оригінальний український текст.</p>',
+                'ru' => '<p>Оригінальний український текст.</p>',
+            ],
         ]);
 
         return $article;

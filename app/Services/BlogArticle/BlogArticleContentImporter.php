@@ -113,7 +113,12 @@ class BlogArticleContentImporter
         }
 
         $blockContent = $block->content;
-        if (filled(strip_tags((string) ($blockContent['ru'] ?? '')))) {
+        $stored = trim((string) ($blockContent['ru'] ?? ''));
+        $replace = ($content['replace_content'] ?? false) === true;
+        if (filled(strip_tags($stored)) && ! $replace) {
+            return false;
+        }
+        if ($stored === $html) {
             return false;
         }
 
@@ -141,6 +146,7 @@ class BlogArticleContentImporter
             ->first();
         $blockContent = $block?->content ?? ['questions' => []];
         $questions = collect($blockContent['questions'] ?? [])->values();
+        $replace = ($content['replace_faqs'] ?? false) === true;
         $changed = false;
 
         foreach ($faqs as $index => $faq) {
@@ -150,13 +156,28 @@ class BlogArticleContentImporter
             ]);
 
             foreach (['question', 'answer'] as $field) {
-                if (blank(data_get($question, "{$field}.ru"))) {
+                if (($replace || blank(data_get($question, "{$field}.ru")))
+                    && data_get($question, "{$field}.ru") !== $faq[$field]
+                ) {
                     data_set($question, "{$field}.ru", $faq[$field]);
                     $changed = true;
                 }
             }
 
             $questions->put($index, $question);
+        }
+
+        if ($replace) {
+            for ($index = $faqs->count(); $index < $questions->count(); $index++) {
+                $question = $questions->get($index);
+                foreach (['question', 'answer'] as $field) {
+                    if (filled(data_get($question, "{$field}.ru"))) {
+                        data_set($question, "{$field}.ru", '');
+                        $changed = true;
+                    }
+                }
+                $questions->put($index, $question);
+            }
         }
 
         if (! $changed) {

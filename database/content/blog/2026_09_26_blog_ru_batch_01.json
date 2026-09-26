@@ -2,6 +2,8 @@
     {
         "uk_slug": "mizhkimnatni-dveri-gid",
         "ru": {
+            "replace_content": true,
+            "replace_faqs": true,
             "name": "Как выбрать межкомнатные двери: практическое руководство",
             "slug": "kak-vybrat-mezhkomnatnye-dveri",
             "preview_text": "Разбираем выбор межкомнатных дверей без спешки: конструкцию, покрытие, способ открывания, замер, комплектацию и подготовку к монтажу.",
@@ -70,6 +72,8 @@
     {
         "uk_slug": "dveri-danapris-oglyad-brendu",
         "ru": {
+            "replace_content": true,
+            "replace_faqs": true,
             "name": "Двери Danapris: обзор бренда, коллекций и технологий",
             "slug": "dveri-danapris-obzor-brenda",
             "preview_text": "Разбираем ассортимент Danapris: межкомнатные и скрытые двери, варианты отделки, конструктивные особенности и вопросы перед заказом.",
