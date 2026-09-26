@@ -1029,6 +1029,11 @@ class ProductContentImporterTest extends TestCase
         $this->assertComponentBatchImports('2026_09_25_gorgania_components_batch_01.json', 12, 'Gorgania');
     }
 
+    public function test_it_imports_the_remaining_components_batch_and_keeps_every_description_unique(): void
+    {
+        $this->assertComponentBatchImports('2026_09_25_remaining_components_batch_01.json', 13, 'Bona Doors');
+    }
+
     public function test_the_standard_korfad_components_migration_repairs_the_duplicated_russian_profile_name(): void
     {
         $profile = $this->makeProduct([
