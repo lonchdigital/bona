@@ -1122,6 +1122,107 @@ class ProductContentImporterTest extends TestCase
         }
     }
 
+    public function test_it_imports_the_remaining_sliding_door_batches_with_complete_specs(): void
+    {
+        $files = [
+            '2026_09_26_sliding_doors_batch_02.json' => 6,
+            '2026_09_26_sliding_doors_batch_03.json' => 7,
+        ];
+        $entries = collect();
+        $products = collect();
+
+        foreach ($files as $filename => $expectedCount) {
+            $path = database_path("content/products/{$filename}");
+            $batch = collect(json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR));
+
+            $this->assertCount($expectedCount, $batch);
+
+            foreach ($batch as $entry) {
+                $products->put($entry['slug'], $this->makeProduct([
+                    'slug' => $entry['slug'],
+                    'meta_title' => ['uk' => 'Старий спільний title', 'ru' => 'Старый общий title'],
+                    'meta_description' => ['uk' => 'Старий спільний опис', 'ru' => 'Старое общее описание'],
+                ]));
+                $entries->push($entry);
+            }
+
+            $importer = app(ProductContentImporter::class);
+            $first = $importer->importFile($path);
+            $second = $importer->importFile($path);
+
+            $this->assertSame($expectedCount, $first['products']);
+            $this->assertSame([], $first['missing']);
+            $this->assertSame(0, $second['products']);
+        }
+
+        $this->assertCount(13, $entries);
+
+        foreach (['uk', 'ru'] as $locale) {
+            $contentValues = [];
+            $titles = [];
+            $descriptions = [];
+
+            foreach ($entries as $entry) {
+                $product = $products[$entry['slug']]->fresh();
+                $text = ProductText::query()
+                    ->where(['product_id' => $product->id, 'language' => $locale])
+                    ->firstOrFail();
+                $contentWords = count(preg_split(
+                    '/\s+/u',
+                    trim(preg_replace('/\s+/u', ' ', strip_tags($text->content))),
+                    -1,
+                    PREG_SPLIT_NO_EMPTY,
+                ));
+                $allCopyWords = count(preg_split(
+                    '/\s+/u',
+                    trim(preg_replace('/\s+/u', ' ', strip_tags($text->short_content.' '.$text->content))),
+                    -1,
+                    PREG_SPLIT_NO_EMPTY,
+                ));
+                $title = $product->getTranslation('meta_title', $locale, false);
+                $description = $product->getTranslation('meta_description', $locale, false);
+
+                $this->assertNotEmpty($text->short_content);
+                $this->assertSame(1, substr_count($text->content, '<h2>'));
+                $this->assertSame(3, substr_count($text->content, '<h3>'));
+                $this->assertGreaterThanOrEqual(180, $contentWords);
+                $this->assertLessThanOrEqual(300, $contentWords);
+                $this->assertGreaterThanOrEqual(200, $allCopyWords);
+                $this->assertLessThanOrEqual(320, $allCopyWords);
+                $this->assertSame($entry['meta_title'][$locale], $title);
+                $this->assertSame($entry['meta_description'][$locale], $description);
+                $this->assertLessThanOrEqual(65, mb_strlen($title));
+                $this->assertGreaterThanOrEqual(130, mb_strlen($description));
+                $this->assertLessThanOrEqual(165, mb_strlen($description));
+
+                $contentValues[] = $text->content;
+                $titles[] = $title;
+                $descriptions[] = $description;
+            }
+
+            $this->assertCount(13, array_unique($contentValues));
+            $this->assertCount(13, array_unique($titles));
+            $this->assertCount(13, array_unique($descriptions));
+        }
+
+        foreach ($entries as $entry) {
+            $product = $products[$entry['slug']];
+            $characteristics = ProductCharacteristics::query()
+                ->where('product_id', $product->id)
+                ->get();
+            $names = $characteristics->map(
+                fn (ProductCharacteristics $row): string => $row->getTranslation('name', 'uk', false),
+            );
+
+            $this->assertCount(7, $characteristics);
+            $this->assertTrue($names->contains('Тип системи'));
+            $this->assertTrue($names->contains('Максимальна вага полотна'));
+            $this->assertTrue($names->contains('Ширина полотна'));
+            $this->assertTrue($names->contains('Комплектація'));
+            $this->assertSame(4, ProductFaqs::query()->where('product_id', $product->id)->count());
+        }
+    }
+
     public function test_the_gorgania_faq_migration_repairs_only_the_legacy_number_agreement(): void
     {
         $product = $this->makeProduct(['slug' => 'dverna-korobka-teleskop-80-gorgania']);
