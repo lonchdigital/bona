@@ -3,12 +3,16 @@
 namespace App\Services\Catalog;
 
 use App\Models\Color;
+use App\Models\FilterGroup;
 use App\Models\ProductType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
 final class CatalogColorUrlService
 {
+    /** @var array<string, FilterGroup|null> */
+    private array $landingGroups = [];
+
     /**
      * Legacy colour pages used numeric ids while the current catalogue filter
      * contract uses stable slugs. Accept both so every historical URL can be
@@ -42,6 +46,14 @@ final class CatalogColorUrlService
         Color $color,
         ?string $locale = null,
     ): string {
+        $landingGroup = $this->colorLandingGroup($productType, $color);
+        if ($landingGroup) {
+            return $this->localizedRoute('store.catalog.filter-group.page', [
+                'productTypeSlug' => $productType instanceof ProductType ? $productType->slug : $productType,
+                'filterGroupSlug' => $landingGroup->slug,
+            ], $locale);
+        }
+
         return $this->localizedRoute('store.catalog.filter.page', [
             'productTypeSlug' => $productType instanceof ProductType ? $productType->slug : $productType,
             'catalogFiltersString' => 'color='.$color->slug,
@@ -85,6 +97,30 @@ final class CatalogColorUrlService
         return $availableColors->first(
             fn (Color $color): bool => hash_equals((string) $color->slug, $colorFilter),
         );
+    }
+
+    private function colorLandingGroup(ProductType|string $productType, Color $color): ?FilterGroup
+    {
+        $productTypeSlug = $productType instanceof ProductType ? $productType->slug : $productType;
+        $cacheKey = $productTypeSlug.':'.$color->id;
+        if (array_key_exists($cacheKey, $this->landingGroups)) {
+            return $this->landingGroups[$cacheKey];
+        }
+
+        $productTypeId = $productType instanceof ProductType
+            ? $productType->id
+            : ProductType::query()->where('slug', $productTypeSlug)->value('id');
+        if (! $productTypeId) {
+            return $this->landingGroups[$cacheKey] = null;
+        }
+
+        return $this->landingGroups[$cacheKey] = FilterGroup::query()
+            ->where('product_type_id', $productTypeId)
+            ->where(function ($query) use ($color): void {
+                $query->whereJsonContains('filters->color_ids', $color->id)
+                    ->orWhereJsonContains('filters->color_ids', (string) $color->id);
+            })
+            ->first();
     }
 
     /** @param array<string, mixed> $parameters */
