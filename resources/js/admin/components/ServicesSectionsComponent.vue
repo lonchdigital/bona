@@ -1,12 +1,14 @@
 <script>
 import axios from "axios";
 import MultiLanguageInputComponent from "./MultiLanguageInputComponent.vue";
+import HomePageFaqComponent from "./HomePageFaqComponent.vue";
 // import MultiLanguageRichTextEditorComponent from "./MultiLanguageRichTextEditorComponent";
 
 export default {
     components: {
         // MultiLanguageRichTextEditorComponent,
-        MultiLanguageInputComponent
+        MultiLanguageInputComponent,
+        HomePageFaqComponent,
     },
     props: {
         sectionId: {
@@ -49,7 +51,18 @@ export default {
     data () {
         return {
             slideDescription: [],
+            faqsData: Array.isArray(this.section.faqs)
+                ? this.section.faqs.map((faq) => ({...faq}))
+                : [],
         }
+    },
+    methods: {
+        addFaq() {
+            this.faqsData.push({question: {}, answer: {}});
+        },
+        deleteFaq(index) {
+            this.faqsData.splice(index, 1);
+        },
     },
 }
 </script>
@@ -81,6 +94,27 @@ export default {
                         :content="(section.hasOwnProperty('description') && section.description !== null) ? section.description : []"
                         :errors="errors"
                     />
+
+                    <input type="hidden" :name="'sections[' + index + '][faqs_managed]'" value="1">
+                    <p class="mt-4"><strong>{{ $t('admin.questions') }}</strong></p>
+                    <div class="form-group mb-3 art-admin-repeater-four-width">
+                        <home-page-faq-component
+                            v-for="(faq, faqIndex) in faqsData"
+                            :key="faq.id || `service-${index}-faq-${faqIndex}`"
+                            :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
+                            :faq="faq"
+                            :index="faqIndex"
+                            :name-prefix="'sections[' + index + '][faqs]'"
+                            :base-language="baseLanguage"
+                            :selected-language="selectedLanguage"
+                            :available-languages="availableLanguages"
+                            :errors="errors"
+                            @delete-faq="deleteFaq(faqIndex)"
+                        />
+                    </div>
+                    <button type="button" class="btn mb-4 btn-secondary" @click="addFaq">
+                        <span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.question_add') }}
+                    </button>
 
                     <multi-language-input-component
                         :title="$t('admin.service_intro')"

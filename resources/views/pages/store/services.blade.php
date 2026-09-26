@@ -1,7 +1,7 @@
 @extends('layouts.store-main')
 
 @php
-    $servicesTitle = trans('base.services');
+    $servicesTitle = $config->title ?: trans('base.services');
     $servicesDescriptionSource = $config->meta_description
         ?: optional($sections->first())->description;
     $servicesDescription = trim((string) preg_replace(
@@ -9,7 +9,12 @@
         ' ',
         html_entity_decode(strip_tags((string) $servicesDescriptionSource))
     ));
-    $servicesLead = Illuminate\Support\Str::limit($servicesDescription, 240);
+    $servicesLeadSource = $config->intro ?: $servicesDescription;
+    $servicesLead = Illuminate\Support\Str::limit(trim((string) preg_replace(
+        '/\s+/u',
+        ' ',
+        html_entity_decode(strip_tags((string) $servicesLeadSource))
+    )), 300);
     $servicesPageTitle = $config->meta_title ?: $servicesTitle.' — '.trans('base.site_title');
     $homeUrl = App\Helpers\MultiLangRoute::getMultiLangRoute('store.home');
     $schemaFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG;
@@ -131,5 +136,24 @@
                 @endif
             </div>
         </section>
+
+        @if(filled(strip_tags((string) $config->content)))
+            <section class="bona-service-detail__content" aria-labelledby="services-content-title">
+                <div class="bona-shell bona-service-detail__content-grid">
+                    <div class="bona-service-detail__aside">
+                        <span>01</span>
+                        <p>{{ app()->getLocale() === 'ru' ? 'От выбора до установки' : 'Від вибору до встановлення' }}</p>
+                    </div>
+                    <div id="services-content-title" class="bona-content-richtext bona-service-detail__richtext">
+                        {!! $config->content !!}
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <x-store.home-faq
+            :faqs="$faqs"
+            :section="['kicker' => trans('base.faqs_subtitle'), 'title' => trans('base.faqs')]"
+        />
     </div>
 @endsection

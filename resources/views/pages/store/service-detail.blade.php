@@ -98,6 +98,11 @@
             </section>
         @endif
 
+        <x-store.home-faq
+            :faqs="$faqs"
+            :section="['kicker' => trans('base.faqs_subtitle'), 'title' => trans('base.faqs')]"
+        />
+
         <section class="bona-service-detail__cta">
             <div class="bona-shell">
                 <div class="bona-service-detail__cta-panel">

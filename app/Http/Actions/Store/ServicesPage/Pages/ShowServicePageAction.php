@@ -19,6 +19,7 @@ class ShowServicePageAction extends BaseAction
         return view('pages.store.service-detail', [
             'service' => $serviceSlug,
             'otherServices' => $servicesPageService->getOtherServices($serviceSlug),
+            'faqs' => $servicesPageService->getServiceFaqs($serviceSlug),
         ]);
     }
 }

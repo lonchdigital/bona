@@ -10,8 +10,46 @@ class ServicesPageEditRequest extends BaseRequest
     public function rules(): array
     {
         $rules = [
+            'title' => [
+                'nullable',
+                'array',
+            ],
+            'intro' => [
+                'nullable',
+                'array',
+            ],
+            'content' => [
+                'nullable',
+                'array',
+            ],
+            'faqs' => [
+                'nullable',
+                'array',
+            ],
+            'faqs.*.id' => [
+                'nullable',
+                'integer',
+                'exists:faqs,id',
+            ],
+            'faqs_managed' => [
+                'nullable',
+                'boolean',
+            ],
             'sections.*.id' => [
                 'nullable',
+            ],
+            'sections.*.faqs' => [
+                'nullable',
+                'array',
+            ],
+            'sections.*.faqs.*.id' => [
+                'nullable',
+                'integer',
+                'exists:faqs,id',
+            ],
+            'sections.*.faqs_managed' => [
+                'nullable',
+                'boolean',
             ],
             'sections.*.slug' => [
                 'required',
@@ -57,6 +95,26 @@ class ServicesPageEditRequest extends BaseRequest
         }
 
         foreach ($this->availableLanguages as $availableLanguage) {
+            $rules['title.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['intro.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['content.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+            $rules['faqs.*.question.'.$availableLanguage] = [
+                'required',
+                'string',
+            ];
+            $rules['faqs.*.answer.'.$availableLanguage] = [
+                'required',
+                'string',
+            ];
             $rules['meta_title.'.$availableLanguage] = [
                 'nullable',
                 'string',
@@ -92,6 +150,14 @@ class ServicesPageEditRequest extends BaseRequest
             $rules['sections.*.meta_title.'.$availableLanguage] = ['nullable', 'string'];
             $rules['sections.*.meta_description.'.$availableLanguage] = ['nullable', 'string'];
             $rules['sections.*.meta_keywords.'.$availableLanguage] = ['nullable', 'string'];
+            $rules['sections.*.faqs.*.question.'.$availableLanguage] = [
+                'required',
+                'string',
+            ];
+            $rules['sections.*.faqs.*.answer.'.$availableLanguage] = [
+                'required',
+                'string',
+            ];
 
         }
 
@@ -157,10 +223,15 @@ class ServicesPageEditRequest extends BaseRequest
     public function toDTO(): ServicesPageEditDTO
     {
         return new ServicesPageEditDTO(
+            $this->input('title'),
+            $this->input('intro'),
+            $this->input('content'),
             $this->input('meta_title'),
             $this->input('meta_description'),
             $this->input('meta_keywords'),
             $this->input('meta_tags'),
+            $this->validated('faqs'),
+            $this->boolean('faqs_managed'),
             $this->validated('sections'),
         );
     }

@@ -11,7 +11,16 @@ class ServicesConfig extends Model implements Sitemapable
 {
     use HasTranslations;
 
-    public $translatable = ['meta_title', 'meta_description', 'meta_keywords'];
+    public const CONTENT_PAGE_TYPE = 'services';
+
+    public $translatable = [
+        'title',
+        'intro',
+        'content',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+    ];
 
     protected $guarded = [];
 

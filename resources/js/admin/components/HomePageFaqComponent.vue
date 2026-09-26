@@ -33,6 +33,10 @@ export default {
         errors: {
             type: Object,
             default: [],
+        },
+        namePrefix: {
+            type: String,
+            default: 'faqs',
         }
     },
     emits: [
@@ -51,11 +55,11 @@ export default {
         <div class="col">
             <div class="row">
                 <div class="col">
-                    <input type="hidden" v-if="faqId !== null" :name="'faqs[' + index + '][id]'" :value="faqId" >
+                    <input type="hidden" v-if="faqId !== null" :name="namePrefix + '[' + index + '][id]'" :value="faqId" >
 
                     <multi-language-input-component
                         :title="$t('admin.faq_question')"
-                        :name="'faqs[' + index + '][question]'"
+                        :name="namePrefix + '[' + index + '][question]'"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
                         :is-required="true"
@@ -65,7 +69,7 @@ export default {
 
                     <multi-language-text-area-component
                         :title="$t('admin.faq_answer')"
-                        :name="'faqs[' + index + '][answer]'"
+                        :name="namePrefix + '[' + index + '][answer]'"
                         :selected-language="selectedLanguage"
                         :available-languages="availableLanguages"
                         :is-required="true"

@@ -20,6 +20,7 @@ class ShowServicesPageAction extends BaseAction
         return view('pages.store.services', [
             'config' => $config,
             'sections' => $servicesPageService->getServicesPageSections(),
+            'faqs' => $servicesPageService->getPageFaqs(),
         ]);
     }
 }

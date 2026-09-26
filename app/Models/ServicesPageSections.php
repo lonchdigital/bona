@@ -13,6 +13,8 @@ class ServicesPageSections extends Model implements Sitemapable
 {
     use HasTranslations;
 
+    public const CONTENT_PAGE_TYPE_PREFIX = 'service:';
+
     protected $guarded = [];
 
     public $translatable = [
@@ -39,6 +41,11 @@ class ServicesPageSections extends Model implements Sitemapable
 
             return Storage::url($this->section_image_path);
         });
+    }
+
+    public function editorialPageType(): string
+    {
+        return self::CONTENT_PAGE_TYPE_PREFIX.$this->id;
     }
 
     public function toSitemapTag(): Url|string|array

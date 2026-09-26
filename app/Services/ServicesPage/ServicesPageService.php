@@ -2,6 +2,7 @@
 
 namespace App\Services\ServicesPage;
 
+use App\Models\Faqs;
 use App\Models\ServicesConfig;
 use App\Models\ServicesPageSections;
 use App\Services\Base\BaseService;
@@ -20,6 +21,9 @@ class ServicesPageService extends BaseService
 
             $ServicesConfig = $this->getServicesConfig();
             $dataToUpdate = [
+                'title' => $request->title,
+                'intro' => $request->intro,
+                'content' => $request->content,
                 'meta_title' => $request->metaTitle,
                 'meta_description' => $request->metaDescription,
                 'meta_keywords' => $request->metaKeyWords,
@@ -29,7 +33,12 @@ class ServicesPageService extends BaseService
             if ($ServicesConfig) {
                 $ServicesConfig->update($dataToUpdate);
             } else {
-                ServicesConfig::create($dataToUpdate);
+                $ServicesConfig = ServicesConfig::create($dataToUpdate);
+            }
+
+            if ($request->faqsManaged) {
+                $this->syncFaqs(ServicesConfig::CONTENT_PAGE_TYPE, $request->faqs);
+                $ServicesConfig->touch();
             }
 
             $this->syncSections($request->sections);
@@ -41,6 +50,31 @@ class ServicesPageService extends BaseService
     public function getServicesPageSections(): Collection
     {
         return ServicesPageSections::orderBy('sort_order')->orderBy('id')->get();
+    }
+
+    public function getServicesPageSectionsForAdmin(): Collection
+    {
+        return $this->getServicesPageSections()
+            ->map(function (ServicesPageSections $section): array {
+                return array_merge($section->toArray(), [
+                    'faqs' => $this->getFaqsForAdmin($section->editorialPageType()),
+                ]);
+            });
+    }
+
+    public function getPageFaqs(): Collection
+    {
+        return $this->getFaqs(ServicesConfig::CONTENT_PAGE_TYPE);
+    }
+
+    public function getServiceFaqs(ServicesPageSections $service): Collection
+    {
+        return $this->getFaqs($service->editorialPageType());
+    }
+
+    public function getPageFaqsForAdmin(): array
+    {
+        return $this->getFaqsForAdmin(ServicesConfig::CONTENT_PAGE_TYPE);
     }
 
     public function getOtherServices(ServicesPageSections $current, int $limit = 3): Collection
@@ -85,18 +119,23 @@ class ServicesPageService extends BaseService
                 }
 
                 if (isset($section['id']) && $section['id']) {
-                    $existingSlide = $existingSections->where('id', $section['id'])->first();
-                    if (! $existingSlide) {
+                    $serviceSection = $existingSections->where('id', $section['id'])->first();
+                    if (! $serviceSection) {
                         throw new \Exception('Incorrect slide id: '.$section['id']);
                     }
 
                     if (isset($section['image'])) {
-                        $imagesToDelete[] = $existingSlide->section_image_path;
+                        $imagesToDelete[] = $serviceSection->section_image_path;
                     }
 
-                    $existingSlide->update($dataToUpdate);
+                    $serviceSection->update($dataToUpdate);
                 } else {
-                    ServicesPageSections::create($dataToUpdate);
+                    $serviceSection = ServicesPageSections::create($dataToUpdate);
+                }
+
+                if (($section['faqs_managed'] ?? false) === true || ($section['faqs_managed'] ?? null) === '1') {
+                    $this->syncFaqs($serviceSection->editorialPageType(), $section['faqs'] ?? null);
+                    $serviceSection->touch();
                 }
             }
         }
@@ -108,6 +147,7 @@ class ServicesPageService extends BaseService
         $sectionsToDelete = $existingSections->whereNotIn('id', $existingSectionsInRequest);
 
         foreach ($sectionsToDelete as $sectionToDelete) {
+            Faqs::query()->where('page_type', $sectionToDelete->editorialPageType())->delete();
             if (! str_starts_with((string) $sectionToDelete->section_image_path, 'assets/')) {
                 $imagesToDelete[] = $sectionToDelete->section_image_path;
             }
@@ -125,5 +165,25 @@ class ServicesPageService extends BaseService
     public function getServicesConfig(): ?ServicesConfig
     {
         return ServicesConfig::first();
+    }
+
+    private function getFaqs(string $pageType): Collection
+    {
+        return Faqs::query()
+            ->where('page_type', $pageType)
+            ->orderBy('id')
+            ->get();
+    }
+
+    /** @return list<array{id: int, question: array<string, string>, answer: array<string, string>}> */
+    private function getFaqsForAdmin(string $pageType): array
+    {
+        return $this->getFaqs($pageType)
+            ->map(fn (Faqs $faq): array => [
+                'id' => $faq->id,
+                'question' => $faq->getTranslations('question'),
+                'answer' => $faq->getTranslations('answer'),
+            ])
+            ->all();
     }
 }

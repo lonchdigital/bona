@@ -6,6 +6,7 @@ import ImageFileInputComponent from "../components/ImageFileInputComponent.vue";
 import ServicesSectionsComponent from "../components/ServicesSectionsComponent.vue";
 import MultiLanguageRichTextEditorComponent from "../components/MultiLanguageRichTextEditorComponent.vue";
 import TextAreaComponent from "../components/TextAreaComponent.vue";
+import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 import * as transliteration from 'transliteration';
 
 
@@ -15,7 +16,8 @@ export default {
         ImageFileInputComponent,
         ServicesSectionsComponent,
         MultiLanguageRichTextEditorComponent,
-        TextAreaComponent
+        TextAreaComponent,
+        HomePageFaqComponent,
     },
     props: {
         submitRoute: {
@@ -37,6 +39,22 @@ export default {
         pageMetaTitle: {
             type: Object,
             default: {},
+        },
+        pageTitle: {
+            type: Object,
+            default: () => ({}),
+        },
+        pageIntro: {
+            type: Object,
+            default: () => ({}),
+        },
+        pageContent: {
+            type: Object,
+            default: () => ({}),
+        },
+        pageFaqs: {
+            type: Array,
+            default: () => [],
         },
         pageMetaDescription: {
             type: Object,
@@ -64,6 +82,7 @@ export default {
             selectedLanguage: '',
             selectedFieldId: null,
             errors: [],
+            faqsData: this.pageFaqs.map((faq) => ({...faq})),
         }
     },
     created() {
@@ -111,6 +130,12 @@ export default {
             const section = this.sections.splice(index, 1)[0];
             this.sections.splice(nextIndex, 0, section);
         },
+        addFaq() {
+            this.faqsData.push({question: {}, answer: {}});
+        },
+        deleteFaq(index) {
+            this.faqsData.splice(index, 1);
+        },
 
     }
 
@@ -127,6 +152,36 @@ export default {
     >
         <div class="row">
             <div class="col">
+
+                <multi-language-input-component
+                    :title="$t('admin.title')"
+                    name="title"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageTitle"
+                    :errors="errors"
+                />
+
+                <multi-language-input-component
+                    :title="$t('admin.service_intro')"
+                    name="intro"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :init-data="pageIntro"
+                    :errors="errors"
+                />
+
+                <multi-language-rich-text-editor-component
+                    :title="$t('admin.service_page_content')"
+                    name="content"
+                    :selected-language="selectedLanguage"
+                    :available-languages="availableLanguages"
+                    :is-required="false"
+                    :content="pageContent"
+                    :errors="errors"
+                />
 
                 <multi-language-input-component
                     :title="$t('admin.meta_title')"
@@ -165,6 +220,26 @@ export default {
                     :init-data="productMetaTags"
                     :errors="errors"
                 />
+
+                <input type="hidden" name="faqs_managed" value="1">
+                <p class="mt-4"><strong>{{ $t('admin.questions') }}</strong></p>
+                <div class="form-group mb-3 art-admin-repeater-four-width">
+                    <home-page-faq-component
+                        v-for="(faq, index) in faqsData"
+                        :key="faq.id || `services-page-faq-${index}`"
+                        :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
+                        :faq="faq"
+                        :index="index"
+                        :base-language="baseLanguage"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        @delete-faq="deleteFaq(index)"
+                    />
+                </div>
+                <button type="button" class="btn mb-4 btn-secondary" @click="addFaq">
+                    <span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.question_add') }}
+                </button>
 
 
                 <p>
