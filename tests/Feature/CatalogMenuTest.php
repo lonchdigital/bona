@@ -315,6 +315,10 @@ class CatalogMenuTest extends TestCase
             'slug' => 'entrance-doors',
             'name' => ['uk' => 'Вхідні двері', 'ru' => 'Входные двери'],
         ]);
+        $classic = $this->productType([
+            'slug' => 'klassyceskye-dvery',
+            'name' => ['uk' => 'Класичні двері', 'ru' => 'Классические двери'],
+        ]);
         $accessories = $this->productType([
             'slug' => 'aksessuar',
             'name' => ['uk' => 'Аксесуари', 'ru' => 'Аксессуары'],
@@ -326,7 +330,7 @@ class CatalogMenuTest extends TestCase
         $handles = $this->category($accessories->id, 'dverni-rucky', 'Дверні ручки');
         $handles->setTranslations('name', ['uk' => 'Дверні ручки', 'ru' => 'Дверные ручки'])->save();
 
-        $types = collect([$interior, $hidden, $entrance, $accessories])
+        $types = collect([$interior, $hidden, $entrance, $classic, $accessories])
             ->each->load(['categories', 'catalogMenuConfiguration']);
 
         foreach (['uk', 'ru'] as $locale) {
@@ -349,7 +353,7 @@ class CatalogMenuTest extends TestCase
                 $this->assertSame(1, $xpath->query('.//a[@href="'.$url.'"]', $root)->count());
             }
 
-            foreach ([$interior, $hidden, $entrance] as $type) {
+            foreach ([$interior, $hidden, $entrance, $classic] as $type) {
                 $url = $prefix.'/product-category/'.$type->slug;
                 $this->assertSame(0, $xpath->query('.//a[@href="'.$url.'"]', $root)->count());
                 $this->assertSame(1, $xpath->query('.//a[@href="'.$url.'"]', $doors)->count());

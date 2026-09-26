@@ -55,29 +55,6 @@
     });
 
     $mobileTypes = $productTypes->values();
-    $mobileDoorTypeOrder = [
-        'interior-doors' => 0,
-        'hidden-doors' => 1,
-        'entrance-doors' => 2,
-        'visible-doors' => 3,
-    ];
-    $isDoorType = static function ($productType) use ($mobileDoorTypeOrder): bool {
-        if (array_key_exists($productType->slug, $mobileDoorTypeOrder)) {
-            return true;
-        }
-
-        return str_ends_with($productType->slug, '-doors')
-            && ! str_contains($productType->slug, 'handle');
-    };
-    $mobileDoorTypes = $mobileTypes
-        ->filter($isDoorType)
-        ->sortBy(fn ($productType) => [
-            $mobileDoorTypeOrder[$productType->slug] ?? 50,
-            $productType->catalogMenuConfiguration?->sort_order ?? $productType->sort_order ?? 0,
-            $productType->id,
-        ])
-        ->values();
-    $mobileNonDoorTypes = $mobileTypes->reject($isDoorType)->values();
     $mobileSearchText = static function ($catalogItem): string {
         $translations = method_exists($catalogItem, 'getTranslations')
             ? $catalogItem->getTranslations('name')
@@ -88,6 +65,33 @@
             ...array_values($translations),
         ])));
     };
+    $mobileDoorTypeOrder = [
+        'interior-doors' => 0,
+        'hidden-doors' => 1,
+        'entrance-doors' => 2,
+        'visible-doors' => 3,
+    ];
+    $isDoorType = static function ($productType) use ($mobileDoorTypeOrder, $mobileSearchText): bool {
+        if (array_key_exists($productType->slug, $mobileDoorTypeOrder)) {
+            return true;
+        }
+
+        $searchText = $mobileSearchText($productType);
+
+        return (
+            str_ends_with($productType->slug, '-doors')
+            || str_contains($searchText, 'dveri')
+        ) && ! Illuminate\Support\Str::contains($searchText, ['handle', 'ruck']);
+    };
+    $mobileDoorTypes = $mobileTypes
+        ->filter($isDoorType)
+        ->sortBy(fn ($productType) => [
+            $mobileDoorTypeOrder[$productType->slug] ?? 50,
+            $productType->catalogMenuConfiguration?->sort_order ?? $productType->sort_order ?? 0,
+            $productType->id,
+        ])
+        ->values();
+    $mobileNonDoorTypes = $mobileTypes->reject($isDoorType)->values();
     $mobileFeaturedDefinitions = [
         ['wall-panel', 'stinov', 'stenov'],
         ['plintus', 'plinth', 'baseboard', 'skirting'],
