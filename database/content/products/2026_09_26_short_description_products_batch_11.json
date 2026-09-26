@@ -1,6 +1,7 @@
 [
     {
         "slug": "launzh-ak-ultra-qdoors-vhidni",
+        "replace_short_content": true,
         "replace_content": true,
         "replace_meta": true,
         "short_content": {

@@ -86,7 +86,10 @@ class ProductContentImporter
             ) {
                 $values['content'] = $content;
             }
-            if ($short !== '' && blank(strip_tags((string) $text->short_content))) {
+            if ($short !== ''
+                && (blank(strip_tags((string) $text->short_content)) || ($entry['replace_short_content'] ?? false) === true)
+                && (string) $text->short_content !== $short
+            ) {
                 $values['short_content'] = $short;
             }
 

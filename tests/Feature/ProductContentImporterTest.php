@@ -33,16 +33,22 @@ class ProductContentImporterTest extends TestCase
         $boilerplate = $this->makeProduct(['slug' => 'replace-me']);
         $boilerplate->update(['meta_title' => ['uk' => 'Повторюваний title', 'ru' => 'Повторяющийся title']]);
         ProductText::query()->create(['product_id' => $boilerplate->id, 'language' => 'uk', 'content' => $longText]);
+        ProductText::query()->where(['product_id' => $boilerplate->id, 'language' => 'uk'])->update([
+            'short_content' => '<p>Старий короткий опис менеджера.</p>',
+        ]);
         $replacePath = tempnam(sys_get_temp_dir(), 'content').'.json';
         file_put_contents($replacePath, json_encode([[
             'slug' => 'replace-me',
             'replace_content' => true,
+            'replace_short_content' => true,
             'replace_meta' => true,
             'content' => ['uk' => '<p>Новий унікальний опис.</p>'],
+            'short_content' => ['uk' => '<p>Новий короткий опис.</p>'],
             'meta_title' => ['uk' => 'Новий title'],
         ]], JSON_UNESCAPED_UNICODE));
         app(ProductContentImporter::class)->importFile($replacePath);
         $this->assertSame('<p>Новий унікальний опис.</p>', ProductText::query()->where(['product_id' => $boilerplate->id, 'language' => 'uk'])->value('content'));
+        $this->assertSame('<p>Новий короткий опис.</p>', ProductText::query()->where(['product_id' => $boilerplate->id, 'language' => 'uk'])->value('short_content'));
         $this->assertSame('Новий title', $boilerplate->fresh()->getTranslation('meta_title', 'uk'));
 
         $path = database_path('content/products/2026_09_17_hidden_doors.json');
@@ -1435,6 +1441,7 @@ class ProductContentImporterTest extends TestCase
             '2026_09_26_109000_fill_short_description_products_batch_11_content.php',
             '2026_09_26_110000_fill_short_description_products_batch_12_content.php',
             '2026_09_26_111000_fill_short_description_products_batch_13_content.php',
+            '2026_09_26_112000_fix_qdoors_short_description_content.php',
         ] as $migrationFile) {
             $migration = require database_path('migrations/'.$migrationFile);
             $migration->up();
