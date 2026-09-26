@@ -212,6 +212,12 @@ test('CL-02 covers eight finishes with bronze glass only on the original bleache
     }
 });
 
+test('CL-07 covers eight catalog finishes with the pictured solid panels and white satin insert', () => {
+    const cl = catalog.products.find(product => product.id === 'korfad-classico-cl-07');
+    assert.deepEqual(cl.colors.map(color => color.colorId).sort((a, b) => a - b), [254, 255, 256, 257, 258, 259, 260, 266]);
+    for (const color of cl.colors) assert.deepEqual(color.optionIds, [16348], `CL-07/${color.colorId}: white satin`);
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
