@@ -1329,11 +1329,13 @@ class ProductContentImporterTest extends TestCase
         );
     }
 
-    public function test_it_imports_the_second_short_description_product_group_with_complete_unique_copy(): void
+    public function test_it_imports_the_published_short_description_product_groups_with_complete_unique_copy(): void
     {
         $paths = collect([
             database_path('content/products/2026_09_26_short_description_products_batch_02.json'),
             database_path('content/products/2026_09_26_short_description_products_batch_03.json'),
+            database_path('content/products/2026_09_26_short_description_products_batch_04.json'),
+            database_path('content/products/2026_09_26_short_description_products_batch_05.json'),
         ]);
         $entries = $paths->flatMap(
             fn (string $path): array => json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR),
@@ -1352,8 +1354,8 @@ class ProductContentImporterTest extends TestCase
         $first = $paths->map(fn (string $path): array => $importer->importFile($path));
         $second = $paths->map(fn (string $path): array => $importer->importFile($path));
 
-        $this->assertCount(10, $entries);
-        $this->assertSame(10, $first->sum('products'));
+        $this->assertCount(20, $entries);
+        $this->assertSame(20, $first->sum('products'));
         $this->assertSame([], $first->flatMap(fn (array $result): array => $result['missing'])->all());
         $this->assertSame(0, $second->sum('products'));
 
@@ -1396,10 +1398,10 @@ class ProductContentImporterTest extends TestCase
                 $descriptions[] = $description;
             }
 
-            $this->assertCount(10, array_unique($contents));
-            $this->assertCount(10, array_unique($shortDescriptions));
-            $this->assertCount(10, array_unique($titles));
-            $this->assertCount(10, array_unique($descriptions));
+            $this->assertCount(20, array_unique($contents));
+            $this->assertCount(20, array_unique($shortDescriptions));
+            $this->assertCount(20, array_unique($titles));
+            $this->assertCount(20, array_unique($descriptions));
         }
 
         foreach ($entries as $entry) {
@@ -1415,6 +1417,8 @@ class ProductContentImporterTest extends TestCase
         foreach ([
             '2026_09_26_100000_fill_short_description_products_batch_02_content.php',
             '2026_09_26_101000_fill_short_description_products_batch_03_content.php',
+            '2026_09_26_102000_fill_short_description_products_batch_04_content.php',
+            '2026_09_26_103000_fill_short_description_products_batch_05_content.php',
         ] as $migrationFile) {
             $migration = require database_path('migrations/'.$migrationFile);
             $migration->up();
@@ -1422,11 +1426,11 @@ class ProductContentImporterTest extends TestCase
         }
 
         $this->assertSame(
-            70,
+            140,
             ProductCharacteristics::query()->whereIn('product_id', $products->pluck('id'))->count(),
         );
         $this->assertSame(
-            40,
+            80,
             ProductFaqs::query()->whereIn('product_id', $products->pluck('id'))->count(),
         );
     }
