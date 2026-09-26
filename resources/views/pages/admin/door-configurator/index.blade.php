@@ -42,9 +42,9 @@
             </form>@endif
         @endif
     </section>
-    <details class="cfg-section" @if(!$managed || session('import_report')) open @endif><summary>Імпорт готових матеріалів</summary><p class="mt-3">Імпортує ще не додані моделі з підготовленого набору. Уже додані моделі не змінює. Фото зберігаються окремо від релізів, без дублів за вмістом.</p>
-        <form method="post" action="{{ route('admin.configurator.import') }}" class="cfg-actions">@csrf<button class="btn btn-outline-dark" name="mode" value="check">Перевірити імпорт</button><button class="btn btn-dark" name="mode" value="apply">Імпортувати готові моделі</button></form>
-        @if($report = session('import_report'))<p class="mt-3">Нових: {{ $report['created'] }} · Залишено без змін: {{ $report['preserved'] }} · Опубліковано: {{ $report['published'] }}</p>@if($report['warnings'])<details><summary>Потребують уваги ({{ count($report['warnings']) }})</summary><ul>@foreach($report['warnings'] as $warning)<li>{{ $warning }}</li>@endforeach</ul></details>@endif @endif
+    <details class="cfg-section" @if(!$managed || session('import_report')) open @endif><summary>Імпорт готових матеріалів</summary><p class="mt-3">Додає нові готові моделі й відтінки з підготовленого набору. Ручні правки не перезаписує; видалені варіанти не повертає. Нові моделі публікуються після перевірки, а нові відтінки наявних моделей залишаються у чернетках до вашої публікації. Фото зберігаються окремо від релізів, без дублів за вмістом.</p>
+        <form method="post" action="{{ route('admin.configurator.import') }}" class="cfg-actions">@csrf<button class="btn btn-outline-dark" name="mode" value="check">Перевірити імпорт</button><button class="btn btn-dark" name="mode" value="apply">Імпортувати готові матеріали</button></form>
+        @if($report = session('import_report'))<p class="mt-3">Нових моделей: {{ $report['created'] }} · Збережено наявних: {{ $report['preserved'] }} · Опубліковано моделей: {{ $report['published'] }} · Нових відтінків у чернетках: {{ $report['shades_added'] ?? 0 }}</p>@if($report['warnings'])<details><summary>Потребують уваги ({{ count($report['warnings']) }})</summary><ul>@foreach($report['warnings'] as $warning)<li>{{ $warning }}</li>@endforeach</ul></details>@endif @endif
     </details>
     <p class="cfg-note">Простори й палітра стін залишаються поточними. Тут редагуються лише двері, їхні відтінки та ручки.</p>
 </div>

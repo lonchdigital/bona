@@ -4,7 +4,7 @@
   "newPrepared": 172,
   "originalInteriorPresets": 6,
   "sourceCatalogModels": 190,
-  "deployment": "local preparation; not deployed",
+  "deployment": "Prepared portion deployed 2026-09-26 in release 178 (533e3a81): 184 doors and 3 handles, editable in the existing admin. Further shades tracked separately in finish-progress; entire interior category is not complete.",
   "models": [
     {
       "number": 1,

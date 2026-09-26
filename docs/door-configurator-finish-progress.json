@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-25T09:27:03+00:00",
+    "asOf": "2026-09-26T18:11:29+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 243,
-        "prepared": 662,
+        "prepared": 663,
         "needs-model-clarification": 7,
-        "needs-source-review": 373,
+        "needs-source-review": 372,
         "not-orderable": 30
     },
     "finishes": [
@@ -7407,7 +7407,7 @@
                 "uk": "Еш-вайт Korfad",
                 "ru": "Эш-вайт Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 122,

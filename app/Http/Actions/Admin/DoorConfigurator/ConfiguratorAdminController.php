@@ -128,7 +128,7 @@ class ConfiguratorAdminController
     public function import(Request $request, ConfiguratorImporter $importer, DoorConfiguratorService $service)
     {
         $data = $request->validate(['mode' => 'required|in:check,apply']);
-        $report = $importer->run($service->filePresets(), $data['mode'] === 'check', $request->user()->id);
+        $report = $importer->run($service->filePresets(), $data['mode'] === 'check', $request->user()->id, appendShades: true);
 
         return back()->with('import_report', $report)->with('success', $data['mode'] === 'check' ? 'Файли та прив’язки перевірено. Попередній перегляд нічого не змінює; повна перевірка комплектацій виконується під час імпорту.' : 'Готові матеріали імпортовано. Наявні ручні правки збережено.');
     }

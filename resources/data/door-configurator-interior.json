@@ -13965,6 +13965,17 @@
           "image": "interior/korfad-lp-01-254-catalog-v1.webp",
           "preview": "interior/korfad-lp-01-254-clean-v1.webp",
           "colorId": 254
+        },
+        {
+          "id": "color-260",
+          "name": {
+            "uk": "Еш-вайт Korfad",
+            "ru": "Эш-вайт Korfad"
+          },
+          "hex": "#998b7b",
+          "image": "interior/korfad-lp-01-260-catalog-v1.webp",
+          "preview": "interior/korfad-lp-01-260-clean-v1.webp",
+          "colorId": 260
         }
       ]
     },

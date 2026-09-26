@@ -52,6 +52,108 @@ class DoorConfiguratorAdminTest extends TestCase
         return DoorConfiguratorItem::firstOrFail();
     }
 
+    private function nextShade(array $presets, bool $link = true): array
+    {
+        $white = collect(app(DoorConfiguratorService::class)->filePresets()['products'][0]['colors'])->firstWhere('id', 'white');
+        if ($link) {
+            Color::create(['id' => 155, 'slug' => 'white', 'hex' => '#ffffff', 'display_as_image' => false, 'name' => ['uk' => 'Білий', 'ru' => 'Белый'], 'creator_id' => $this->author()->id]);
+            DoorConfiguratorItem::firstOrFail()->product->colors()->attach(155);
+        }
+        $presets['products'][0]['colors'][] = $white;
+
+        return $presets;
+    }
+
+    public function test_incremental_import_preserves_drafts_and_only_publishes_new_shades(): void
+    {
+        [$product, $presets] = $this->material();
+        $importer = app(ConfiguratorImporter::class);
+        $importer->run($presets, false);
+        $item = DoorConfiguratorItem::firstOrFail();
+        $published = $item->published;
+        $draft = $item->draft;
+        $draft['short']['uk'] = 'Ручна чернетка';
+        $draft['colors'][0]['handle'] = [0.3, 0.4];
+        $item = app(ConfiguratorEditor::class)->change($item, 1, 'save', null, $draft, 77);
+        $product->update(['slug' => 'renamed-after-import']);
+        $presets = $this->nextShade($presets);
+        $files = Storage::disk('public')->allFiles();
+        $this->assertSame(1, $importer->run($presets, appendShades: true)['shades_added']);
+        $this->assertSame($files, Storage::disk('public')->allFiles());
+        $this->assertSame(2, $item->fresh()->version);
+        $report = $importer->run($presets, false, appendShades: true, publishShades: true);
+        $item->refresh();
+        $this->assertSame(1, $report['shades_added']);
+        $this->assertSame(1, $report['shades_published']);
+        $this->assertSame('Ручна чернетка', $item->draft['short']['uk']);
+        $this->assertSame($published['short'], $item->published['short']);
+        $this->assertEquals($draft['colors'][0], $item->draft['colors'][0]);
+        $this->assertEquals($published['colors'][0], $item->published['colors'][0]);
+        $this->assertSame(77, $item->sort_order);
+        $this->assertSame(0, $item->published_sort_order);
+        $this->assertSame($presets['products'][0]['crop'], $item->published['colors'][1]['crop']);
+        $this->assertSame(3, $item->version);
+        $this->assertSame(0, $importer->run($presets, false, appendShades: true, publishShades: true)['shades_added']);
+        $this->assertSame(3, $item->fresh()->version);
+        $this->assertSame(1, $item->revisions()->where('action', 'import-shades')->count());
+    }
+
+    public function test_import_never_resurrects_removed_shades_or_hidden_models(): void
+    {
+        [, $presets] = $this->material();
+        $importer = app(ConfiguratorImporter::class);
+        $importer->run($presets, false);
+        $item = DoorConfiguratorItem::firstOrFail();
+        $editor = app(ConfiguratorEditor::class);
+        $draft = $item->draft;
+        $draft['colors'] = [array_replace($draft['colors'][0], ['id' => 'manual-placeholder', 'colorId' => null, 'enabled' => false])];
+        $item = $editor->change($item, 1, 'save', null, $draft);
+        $item = $editor->change($item, 2, 'hide', null);
+        $presets = $this->nextShade($presets);
+        $report = $importer->run($presets, false, appendShades: true, publishShades: true);
+        $this->assertSame(1, $report['shades_added']);
+        $this->assertSame(0, $report['shades_published']);
+        $item->refresh();
+        $this->assertNull($item->published);
+        $this->assertSame([null, 155], array_column($item->draft['colors'], 'colorId'));
+        $original = $item->revisions()->where('action', 'import')->firstOrFail();
+        $item = $editor->change($item, 4, 'restore', null, revisionId: $original->id);
+        $this->assertSame(0, $importer->run($presets, false, appendShades: true)['shades_added']);
+        $this->assertSame([148], array_column($item->fresh()->draft['colors'], 'colorId'));
+    }
+
+    public function test_unlinked_shade_stays_disabled_and_cannot_enter_published_catalog(): void
+    {
+        [, $presets] = $this->material();
+        $importer = app(ConfiguratorImporter::class);
+        $importer->run($presets, false);
+        $presets = $this->nextShade($presets, false);
+        $report = $importer->run($presets, false, appendShades: true, publishShades: true);
+        $item = DoorConfiguratorItem::firstOrFail();
+        $this->assertSame(1, $report['shades_added']);
+        $this->assertSame(0, $report['shades_published']);
+        $this->assertNotEmpty($report['warnings']);
+        $this->assertFalse($item->draft['colors'][1]['enabled']);
+        $this->assertCount(1, $item->published['colors']);
+    }
+
+    public function test_draft_only_import_requires_explicit_publication_and_deduplicates_combinations(): void
+    {
+        [, $presets] = $this->material();
+        $importer = app(ConfiguratorImporter::class);
+        $importer->run($presets, false);
+        $presets = $this->nextShade($presets);
+        $presets['products'][0]['colors'][] = array_replace($presets['products'][0]['colors'][0], ['id' => 'duplicate-color']);
+        $this->assertSame(1, $importer->run($presets, false, appendShades: true)['shades_added']);
+        $item = DoorConfiguratorItem::firstOrFail();
+        $this->assertCount(2, $item->draft['colors']);
+        $this->assertCount(1, $item->published['colors']);
+        $this->assertSame(0, $importer->run($presets, false, appendShades: true, publishShades: true)['shades_published']);
+        $this->assertCount(1, $item->fresh()->published['colors']);
+        $item = app(ConfiguratorEditor::class)->change($item, 2, 'publish', null);
+        $this->assertCount(2, $item->published['colors']);
+    }
+
     public function test_dry_run_writes_nothing_and_import_is_idempotent_with_immutable_media(): void
     {
         [, $presets] = $this->material();

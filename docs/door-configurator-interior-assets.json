@@ -1,8 +1,20 @@
 {
   "date": "2026-09-22",
-  "updatedAt": "2026-09-25",
+  "updatedAt": "2026-09-26",
   "mode": "built-in imagegen, individual edits",
   "assets": [
+    {
+      "slug": "mizhkimnatni-dveri-loft-plato-lp-01-korfad",
+      "colorId": 260,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/01.2025/9a3792dcc44ac9cbbd3e713ded29f1caf5b1fd99_mrNaHpWptc.webp",
+      "sourceSha256": "c42baa1bf1f2720f97f99faa031f7b10a89a3893fbffba49c150812a8498cc40",
+      "generatedFile": "exec-8848540d-8959-4fc1-81a2-ef8f82402854.png",
+      "preview": "interior/korfad-lp-01-260-clean-v1.webp",
+      "review": "Visually checked 2026-09-26 after WebP conversion: handle, rose and bottom logo removed; original taupe vertical texture, frame, outline and right hinges retained. No recoloring. Normalized to 800 × 837; crop [205,0,389,837], handle [0.137,0.522].",
+      "firstPassInstructionSummary": "Remove the original lever, rose and their shadows while preserving original material, framing and geometry. Initial result exec-a935ed72-64ee-4112-8dac-134aed02fc4d.png retained the bottom logo; the final edit removes that logo.",
+      "prompt": "Precise-object-edit. This handle-free door photo is the sole edit target. Remove ONLY the dark KORFAD logo and icon at the very bottom of the door; fill with perfectly continuous matching taupe vertical surface texture. Keep absolutely everything else unchanged: handle-free door, exact color, texture, hinges, frame, original canvas aspect, white margins, positions and scale. No handle, no text, no logo, no crop or redesign.",
+      "sourceMapping": "Photo explicitly linked to selected catalog color 260, Еш-вайт Korfad."
+    },
     {
       "slug": "mizhkimnatni-dveri-vertical-2v",
       "colorId": 168,
