@@ -1034,6 +1034,39 @@ class ProductContentImporterTest extends TestCase
         $this->assertComponentBatchImports('2026_09_25_remaining_components_batch_01.json', 13, 'Bona Doors');
     }
 
+    public function test_the_gorgania_faq_migration_repairs_only_the_legacy_number_agreement(): void
+    {
+        $product = $this->makeProduct(['slug' => 'dverna-korobka-teleskop-80-gorgania']);
+        $legacy = ProductFaqs::query()->create([
+            'product_id' => $product->id,
+            'question' => ['uk' => 'Які кольори доступні?', 'ru' => 'Какие цвета доступны?'],
+            'answer' => [
+                'uk' => 'У чинній картці доступно 12 варіанти. Назву кольору слід звірити з полотном і сусідніми деталями, а відтінок перевірити за зразком.',
+                'ru' => 'В действующей карточке доступно 12 варианта. Название цвета следует сверить с полотном и соседними деталями, а оттенок проверить по образцу.',
+            ],
+        ]);
+        $custom = ProductFaqs::query()->create([
+            'product_id' => $product->id,
+            'question' => ['uk' => 'Інше питання?', 'ru' => 'Другой вопрос?'],
+            'answer' => ['uk' => 'Текст менеджера.', 'ru' => 'Текст менеджера.'],
+        ]);
+
+        $migration = require database_path('migrations/2026_09_26_090100_fix_gorgania_component_faq_number_agreement.php');
+        $migration->up();
+        $migration->up();
+
+        $this->assertSame(
+            'У чинній картці доступно 12 варіантів. Назву кольору слід звірити з полотном і сусідніми деталями, а відтінок перевірити за зразком.',
+            $legacy->fresh()->getTranslation('answer', 'uk', false),
+        );
+        $this->assertSame(
+            'В действующей карточке доступно 12 вариантов. Название цвета следует сверить с полотном и соседними деталями, а оттенок проверить по образцу.',
+            $legacy->fresh()->getTranslation('answer', 'ru', false),
+        );
+        $this->assertSame('Текст менеджера.', $custom->fresh()->getTranslation('answer', 'uk', false));
+        $this->assertSame('Текст менеджера.', $custom->fresh()->getTranslation('answer', 'ru', false));
+    }
+
     public function test_the_standard_korfad_components_migration_repairs_the_duplicated_russian_profile_name(): void
     {
         $profile = $this->makeProduct([
