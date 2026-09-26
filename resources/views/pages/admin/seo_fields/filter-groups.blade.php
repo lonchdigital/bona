@@ -15,6 +15,9 @@
                         :meta-title="{{ json_encode($filterGroup->getTranslations('meta_title')) }}"
                         :meta-description="{{ json_encode($filterGroup->getTranslations('meta_description')) }}"
                         :meta-keywords="{{ json_encode($filterGroup->getTranslations('meta_keywords')) }}"
+                        :seo-title="{{ json_encode($seoTitle) }}"
+                        :seo-text="{{ json_encode($seoText) }}"
+                        :faqs="{{ json_encode($faqs) }}"
                         :product-type-id="{{ $filterGroup->product_type_id }}"
                         :filters="{{ json_encode($filterGroup->filters) }}"
                     @else

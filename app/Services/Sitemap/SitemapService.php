@@ -7,9 +7,11 @@ use App\Models\BlogArticle;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Faqs;
+use App\Models\FilterGroup;
 use App\Models\HomePageConfig;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Models\SeoText;
 use App\Models\ServicesConfig;
 use App\Models\ServicesPageSections;
 use App\Models\StaticPage;
@@ -156,6 +158,25 @@ class SitemapService extends BaseService
 
             foreach ($allLangUrls as $langUrl) {
                 $urls->push($this->withLastModified(Url::create($langUrl), $ProductType->updated_at));
+            }
+        }
+
+        // Curated filter groups are indexable landing pages with their own
+        // copy and canonical URLs, unlike ad-hoc catalogue filter strings.
+        foreach (FilterGroup::with('productType')->get() as $filterGroup) {
+            $editorialLocaleCount = SeoText::query()
+                ->where('page_type', $filterGroup->editorialPageType())
+                ->whereIn('language', ['uk', 'ru'])
+                ->whereNotNull('content')
+                ->where('content', '!=', '')
+                ->distinct()
+                ->count('language');
+            if ($editorialLocaleCount < 2) {
+                continue;
+            }
+
+            foreach ($filterGroup->toSitemapTag() as $langUrl) {
+                $urls->push($this->withLastModified(Url::create($langUrl), $filterGroup->updated_at));
             }
         }
 

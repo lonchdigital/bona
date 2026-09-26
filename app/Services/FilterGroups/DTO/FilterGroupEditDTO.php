@@ -29,5 +29,8 @@ class FilterGroupEditDTO implements BaseDTO
         public readonly ?int $heightFrom,
         public readonly ?int $heightTo,
         public readonly ?array $heightOptions,
+        public readonly ?array $faqs,
+        public readonly ?array $seoTitle,
+        public readonly ?array $seoText,
     ) {}
 }

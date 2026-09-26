@@ -43,6 +43,23 @@ class EditFilterGroupRequest extends BaseRequest
             'custom_field.*.value' => [
                 'nullable',
             ],
+            'faqs' => [
+                'nullable',
+                'array',
+            ],
+            'faqs.*.id' => [
+                'nullable',
+                'integer',
+                'exists:faqs,id',
+            ],
+            'seo_title' => [
+                'nullable',
+                'array',
+            ],
+            'seo_text' => [
+                'nullable',
+                'array',
+            ],
         ];
 
         foreach ($this->availableLanguages as $availableLanguage) {
@@ -68,6 +85,26 @@ class EditFilterGroupRequest extends BaseRequest
 
             $rules['meta_keywords.'.$availableLanguage] = [
                 'required',
+                'string',
+            ];
+
+            $rules['faqs.*.question.'.$availableLanguage] = [
+                'required',
+                'string',
+            ];
+
+            $rules['faqs.*.answer.'.$availableLanguage] = [
+                'required',
+                'string',
+            ];
+
+            $rules['seo_title.'.$availableLanguage] = [
+                'nullable',
+                'string',
+            ];
+
+            $rules['seo_text.'.$availableLanguage] = [
+                'nullable',
                 'string',
             ];
         }
@@ -164,7 +201,7 @@ class EditFilterGroupRequest extends BaseRequest
     {
         $transformedCustomFields = [];
 
-        foreach ($this->input('custom_field') as $customField) {
+        foreach ($this->input('custom_field', []) as $customField) {
             $transformedCustomFields[] = [
                 'id' => (int) $customField['id'],
                 'value' => $customField['value'] ? explode(',', $customField['value']) : null,
@@ -194,6 +231,9 @@ class EditFilterGroupRequest extends BaseRequest
             $this->input('height_from'),
             $this->input('height_to'),
             $this->input('height_options') ? explode(',', $this->input('height_options')) : null,
+            $this->validated('faqs'),
+            $this->input('seo_title'),
+            $this->input('seo_text'),
         );
     }
 }

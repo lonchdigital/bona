@@ -25,6 +25,8 @@ class ShowFilterGroupPageAction extends BaseAction
         FilterGroup $filterGroup,
         CatalogFilterRequest $request
     ) {
+        abort_unless($filterGroup->product_type_id === $productType->id, 404);
+
         $productType->load(['fields', 'fields.options']);
 
         // get services from service container
@@ -36,9 +38,9 @@ class ShowFilterGroupPageAction extends BaseAction
         $currencyService = app()->make(CurrencyService::class);
         $productService = app()->make(ProductService::class);
         //        $wishListService = app()->make(WishListService::class);
-        $filerGroupService = app()->make(FilterGroupService::class);
+        $filterGroupService = app()->make(FilterGroupService::class);
 
-        $groupFilters = $filerGroupService->buildFilterArrayByFilterGroup($filterGroup);
+        $groupFilters = $filterGroupService->buildFilterArrayByFilterGroup($filterGroup);
         unset($groupFilters['per_page']);
         $requestedPage = $request->toDTO()->filters['page'] ?? null;
 
@@ -78,7 +80,7 @@ class ShowFilterGroupPageAction extends BaseAction
         }*/
 
         $productType->meta_tags = $this->handleFollowTag($productType->meta_tags);
-        LastModified::set($productType->updated_at);
+        LastModified::set($filterGroup->updated_at ?? $productType->updated_at);
 
         return view('pages.store.catalog', [
             'filters' => $catalogService->getFiltersByProductType($productType),
@@ -92,8 +94,8 @@ class ShowFilterGroupPageAction extends BaseAction
             'baseCurrency' => $baseCurrency,
             'productsPaginated' => $productsPaginated,
             'productsMaxPrice' => $productService->getProductsMaxPrice($productType),
-            'faqs' => $productService->getProductTypeFaqs($productType->slug),
-            'seoText' => $productService->getProductTypeSeoTextByLanguage($productType->slug, app()->getLocale()),
+            'faqs' => $filterGroupService->getFaqs($filterGroup),
+            'seoText' => $filterGroupService->getSeoTextByLanguage($filterGroup, app()->getLocale()),
             //            'wishListProducts' => $wishListService->getWishListProductsId($wishList),
             'filterGroup' => $filterGroup,
         ]);

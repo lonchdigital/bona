@@ -11,6 +11,7 @@ use App\Services\Admin\ProductType\ProductTypeService;
 use App\Services\Brand\BrandService;
 use App\Services\Color\ColorService;
 use App\Services\Country\CountryService;
+use App\Services\FilterGroups\FilterGroupService;
 
 class ShowFilterGroupEditPageAction extends BaseAction
 {
@@ -20,13 +21,19 @@ class ShowFilterGroupEditPageAction extends BaseAction
         BrandService $brandService,
         CountryService $countryService,
         ColorService $colorService,
+        FilterGroupService $filterGroupService,
     ) {
+        $seoText = $filterGroupService->getSeoTextForAdmin($filterGroup);
+
         return view('pages.admin.seo_fields.filter-groups', [
             'filterGroup' => $filterGroup,
             'brands' => ListResource::collection($brandService->getBrands()),
             'countries' => CollectionResource::collection($countryService->getCountries()),
             'colors' => ListResource::collection($colorService->getColors()),
             'productTypes' => ProductTypeWithFilters::collection($productTypeService->getProductTypesWithAllData()),
+            'faqs' => $filterGroupService->getFaqsForAdmin($filterGroup),
+            'seoTitle' => $seoText['title'],
+            'seoText' => $seoText['content'],
 
         ]);
     }

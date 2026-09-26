@@ -1,7 +1,11 @@
 <script>
 import slug from "slug";
+import HomePageFaqComponent from "../components/HomePageFaqComponent.vue";
 
 export default {
+    components: {
+        HomePageFaqComponent,
+    },
     props: {
         submitRoute: {
             type: String,
@@ -65,6 +69,18 @@ export default {
             type: Object,
             default: {},
         },
+        seoTitle: {
+            type: Object,
+            default: () => ({}),
+        },
+        seoText: {
+            type: Object,
+            default: () => ({}),
+        },
+        faqs: {
+            type: Array,
+            default: () => [],
+        },
         productTypeId: {
             type: Number,
             default: null,
@@ -81,6 +97,7 @@ export default {
             selectedBrandId: null,
             slugData: '',
             groupNameData: {},
+            faqsData: this.faqs.map((faq) => ({...faq})),
             errors: [],
         }
     },
@@ -112,6 +129,15 @@ export default {
         },
         handleFormSubmit(errors) {
             this.errors = errors;
+        },
+        addFaq() {
+            this.faqsData.push({
+                question: {},
+                answer: {},
+            });
+        },
+        deleteFaq(index) {
+            this.faqsData.splice(index, 1);
         },
         getCustomFieldValue(fieldId)
         {
@@ -207,6 +233,49 @@ export default {
                     :init-data="metaKeywords"
                     :errors="errors"
                 />
+
+                <div class="card mt-4 mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">{{ $t('admin.seo_text') }}</h4>
+                        <multi-language-input-component
+                            name="seo_title"
+                            :is-required="false"
+                            :title="$t('admin.seo_title')"
+                            :available-languages="availableLanguages"
+                            :selected-language="selectedLanguage"
+                            :init-data="seoTitle"
+                            :errors="errors"
+                        />
+                        <multi-language-rich-text-editor-component
+                            name="seo_text"
+                            :title="$t('admin.seo_text')"
+                            :selected-language="selectedLanguage"
+                            :available-languages="availableLanguages"
+                            :content="seoText"
+                            :errors="errors"
+                        />
+                    </div>
+                </div>
+
+                <p class="mt-4"><strong>{{ $t('admin.questions') }}</strong></p>
+                <div class="form-group mb-3 art-admin-repeater-four-width">
+                    <home-page-faq-component
+                        v-for="(faq, index) in faqsData"
+                        :key="faq.id || `filter-group-faq-${index}`"
+                        :faq-id="faq.hasOwnProperty('id') ? faq.id : null"
+                        :faq="faq"
+                        :index="index"
+                        :base-language="baseLanguage"
+                        :selected-language="selectedLanguage"
+                        :available-languages="availableLanguages"
+                        :errors="errors"
+                        @delete-faq="deleteFaq(index)"
+                    />
+                </div>
+                <button type="button" class="btn mb-4 btn-secondary" @click="addFaq">
+                    <span class="fe fe-plus-square fe-16 mr-2"></span>{{ $t('admin.question_add') }}
+                </button>
+
                 <select-component
                     :title="$t('admin.product_type')"
                     :options="productTypes"

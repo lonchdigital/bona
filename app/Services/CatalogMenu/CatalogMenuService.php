@@ -5,6 +5,7 @@ namespace App\Services\CatalogMenu;
 use App\Helpers\MultiLangRoute;
 use App\Models\ApplicationConfig;
 use App\Models\CatalogMenuConfiguration;
+use App\Models\FilterGroup;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Services\Catalog\CatalogColorUrlService;
@@ -45,24 +46,28 @@ class CatalogMenuService
                 'translation' => 'base.storefront_door_style_modern',
                 'image' => 'resources/img/storefront/mega-menu/modern-artporte-ostin.webp',
                 'filter' => 'modern',
+                'landing_slug' => 'dveri-modern',
             ],
             [
                 'key' => 'classic',
                 'translation' => 'base.storefront_door_style_classic',
                 'image' => 'resources/img/storefront/mega-menu/classic-omega-milan.webp',
                 'filter' => 'klassyka',
+                'landing_slug' => 'klasychni-dveri',
             ],
             [
                 'key' => 'neoclassic',
                 'translation' => 'base.storefront_door_style_neoclassic',
                 'image' => 'resources/img/storefront/mega-menu/neoclassic-bonadoors-dublin.webp',
                 'filter' => 'neoklassyka',
+                'landing_slug' => 'dveri-neoklasyka',
             ],
             [
                 'key' => 'minimal',
                 'translation' => 'base.storefront_door_style_minimal',
                 'image' => 'resources/img/storefront/mega-menu/minimal-artporte-new-york.webp',
                 'filter' => 'mynymalyzm',
+                'landing_slug' => 'dveri-minimalizm',
             ],
             [
                 'key' => 'hitech',
@@ -72,17 +77,31 @@ class CatalogMenuService
             ],
         ];
 
+        $landingGroups = FilterGroup::query()
+            ->where('product_type_id', $productType->id)
+            ->whereIn('slug', collect($definitions)->pluck('landing_slug')->filter())
+            ->get()
+            ->keyBy('slug');
+
         return collect($definitions)
-            ->map(function (array $definition) use ($productType): array {
+            ->map(function (array $definition) use ($productType, $landingGroups): array {
                 $label = trans($definition['translation']);
-                $url = isset($definition['filter'])
-                    ? MultiLangRoute::getMultiLangRoute('store.catalog.filter.page', [
+                $landingGroup = isset($definition['landing_slug'])
+                    ? $landingGroups->get($definition['landing_slug'])
+                    : null;
+                $url = $landingGroup
+                    ? MultiLangRoute::getMultiLangRoute('store.catalog.filter-group.page', [
                         'productTypeSlug' => $productType->slug,
-                        'catalogFiltersString' => 'styl='.$definition['filter'],
+                        'filterGroupSlug' => $landingGroup->slug,
                     ])
-                    : MultiLangRoute::getMultiLangRoute('store.product.page', [
-                        'productSlug' => $definition['product_slug'],
-                    ]);
+                    : (isset($definition['filter'])
+                        ? MultiLangRoute::getMultiLangRoute('store.catalog.filter.page', [
+                            'productTypeSlug' => $productType->slug,
+                            'catalogFiltersString' => 'styl='.$definition['filter'],
+                        ])
+                        : MultiLangRoute::getMultiLangRoute('store.product.page', [
+                            'productSlug' => $definition['product_slug'],
+                        ]));
 
                 return [
                     'key' => $definition['key'],
