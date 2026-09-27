@@ -309,6 +309,15 @@ test('VALENTINO VLD-01 covers all sixteen catalog finishes with the photographed
     }
 });
 
+test('SCALEA SC-04 covers all nine catalog finishes with the photographed glass', () => {
+    const scalea = catalog.products.find(product => product.id === 'korfad-scalea-sc-04');
+    assert.deepEqual(scalea.colors.map(color => color.colorId).sort((a, b) => a - b), [252, 254, 255, 256, 257, 258, 259, 260, 266]);
+    for (const color of scalea.colors) {
+        assert.deepEqual(color.optionIds, [color.colorId === 254 ? 16415 : 16416], `SC-04/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-scalea-sc-04-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');

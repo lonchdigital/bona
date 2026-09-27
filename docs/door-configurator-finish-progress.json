@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-26T23:45:13+00:00",
+    "asOf": "2026-09-27T00:08:25+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 240,
-        "prepared": 785,
+        "prepared": 793,
         "needs-model-clarification": 7,
-        "needs-source-review": 253,
+        "needs-source-review": 245,
         "not-orderable": 30
     },
     "finishes": [
@@ -8877,7 +8877,7 @@
                 "uk": "Венге Korfad",
                 "ru": "Венге Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 137,
@@ -8887,7 +8887,7 @@
                 "uk": "Дуб грей Korfad",
                 "ru": "Дуб грей Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 137,
@@ -8897,7 +8897,7 @@
                 "uk": "Дуб марсала Korfad",
                 "ru": "Дуб марсала Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 137,
@@ -8907,7 +8907,7 @@
                 "uk": "Дуб браш Korfad",
                 "ru": "Дуб браш Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 137,
@@ -8917,7 +8917,7 @@
                 "uk": "Еш-вайт Korfad",
                 "ru": "Эш-вайт Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 137,
@@ -8927,7 +8927,7 @@
                 "uk": "Дуб тобакко Korfad",
                 "ru": "Дуб тобакко Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 137,
@@ -8937,7 +8937,7 @@
                 "uk": "Дуб нордік Korfad",
                 "ru": "Дуб нордик Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 137,
@@ -8947,7 +8947,7 @@
                 "uk": "Білий перламутр Korfad",
                 "ru": "Белый перламутр"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 138,
