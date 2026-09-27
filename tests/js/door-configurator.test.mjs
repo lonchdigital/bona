@@ -327,6 +327,15 @@ test('MILANO ML-05 covers all ten catalog finishes with the photographed satin g
     }
 });
 
+test('PORTO DELUXE PD-03 covers all eight catalog finishes as solid doors', () => {
+    const porto = catalog.products.find(product => product.id === 'korfad-porto-pd-03');
+    assert.deepEqual(porto.colors.map(color => color.colorId).sort((a, b) => a - b), [254, 255, 256, 257, 258, 259, 260, 266]);
+    for (const color of porto.colors) {
+        assert.deepEqual(color.optionIds, [16431], `PD-03/${color.colorId}: solid door`);
+        assert.ok(color.preview.includes(`korfad-porto-pd-03-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
