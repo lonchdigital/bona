@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-27T00:54:46+00:00",
+    "asOf": "2026-09-27T01:19:08+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 239,
-        "prepared": 809,
+        "prepared": 826,
         "needs-model-clarification": 7,
-        "needs-source-review": 230,
+        "needs-source-review": 213,
         "not-orderable": 30
     },
     "finishes": [
@@ -9147,7 +9147,7 @@
                 "uk": "Дуб грей Korfad",
                 "ru": "Дуб грей Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9157,7 +9157,7 @@
                 "uk": "Дуб марсала Korfad",
                 "ru": "Дуб марсала Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9167,7 +9167,7 @@
                 "uk": "Сіра модрина Korfad",
                 "ru": "Серая модрина"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9177,7 +9177,7 @@
                 "uk": "Ясен білий Korfad",
                 "ru": "Ясень белый Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9187,7 +9187,7 @@
                 "uk": "Дуб браш Korfad",
                 "ru": "Дуб браш Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9197,7 +9197,7 @@
                 "uk": "Еш-вайт Korfad",
                 "ru": "Эш-вайт Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9207,7 +9207,7 @@
                 "uk": "Дуб тобакко Korfad",
                 "ru": "Дуб тобакко Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9217,7 +9217,7 @@
                 "uk": "Дуб нордік Korfad",
                 "ru": "Дуб нордик Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9227,7 +9227,7 @@
                 "uk": "Сталь кортен Korfad",
                 "ru": "Сталь кортен Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9237,7 +9237,7 @@
                 "uk": "Арт бетон Korfad",
                 "ru": "Арт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9247,7 +9247,7 @@
                 "uk": "Лофт бетон Korfad",
                 "ru": "Лофт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9257,7 +9257,7 @@
                 "uk": "Лайт бетон Korfad",
                 "ru": "Лайт бетон Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9267,7 +9267,7 @@
                 "uk": "Super PET магнолія Korfad",
                 "ru": "Super PET магнолия Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9277,7 +9277,7 @@
                 "uk": "Super PET сірий Korfad",
                 "ru": "Super PET серый Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9287,7 +9287,7 @@
                 "uk": "Super PET антрацит Korfad",
                 "ru": "Super PET антрацит Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9297,7 +9297,7 @@
                 "uk": "Super PET чорний Korfad",
                 "ru": "Super PET черный Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 140,
@@ -9307,7 +9307,7 @@
                 "uk": "Білий перламутр Korfad",
                 "ru": "Белый перламутр"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 141,

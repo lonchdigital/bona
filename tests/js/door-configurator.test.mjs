@@ -336,6 +336,15 @@ test('PORTO DELUXE PD-03 covers all eight catalog finishes as solid doors', () =
     }
 });
 
+test('PORTO DELUXE PD-01 covers all eighteen finishes with verified black or bronze glass', () => {
+    const porto = catalog.products.find(product => product.id === 'korfad-porto-pd-01');
+    assert.deepEqual(porto.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 252, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 266, 267, 269, 270, 271, 272]);
+    for (const color of porto.colors) {
+        assert.deepEqual(color.optionIds, [[252, 256, 267, 264, 269].includes(color.colorId) ? 16446 : 16447], `PD-01/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-porto-pd-01-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
