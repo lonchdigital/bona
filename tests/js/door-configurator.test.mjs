@@ -345,6 +345,15 @@ test('PORTO DELUXE PD-01 covers all eighteen finishes with verified black or bro
     }
 });
 
+test('PORTO PR-12 covers all seventeen catalog finishes with verified black or bronze glass', () => {
+    const porto = catalog.products.find(product => product.id === 'korfad-porto-pr-12');
+    assert.deepEqual(porto.colors.map(color => color.colorId).sort((a, b) => a - b), [251, 252, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 266, 268, 269, 270, 271]);
+    for (const color of porto.colors) {
+        assert.deepEqual(color.optionIds, [[257, 255, 259, 261, 266, 268].includes(color.colorId) ? 16464 : 16465], `PR-12/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-porto-pr-12-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
