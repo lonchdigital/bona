@@ -318,6 +318,15 @@ test('SCALEA SC-04 covers all nine catalog finishes with the photographed glass'
     }
 });
 
+test('MILANO ML-05 covers all ten catalog finishes with the photographed satin glass', () => {
+    const milano = catalog.products.find(product => product.id === 'korfad-milano-ml-05');
+    assert.deepEqual(milano.colors.map(color => color.colorId).sort((a, b) => a - b), [252, 254, 255, 256, 257, 258, 259, 260, 264, 266]);
+    for (const color of milano.colors) {
+        assert.deepEqual(color.optionIds, [[259, 260, 266].includes(color.colorId) ? 16423 : 16424], `ML-05/${color.colorId}: photographed glass`);
+        assert.ok(color.preview.includes(`korfad-milano-ml-05-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
