@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\DataClasses\ProductFieldTypeOptionsDataClass;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeOptions;
 use App\Models\ProductCharacteristics;
 use App\Models\ProductField;
 use App\Models\ProductFieldOption;
@@ -543,6 +545,50 @@ class AdminProductManagementTest extends TestCase
             ->assertSee('Міжкімнатні двері Korfad Aliano AL-01')
             ->assertSee('Декори та скління')
             ->assertSee('Чим вирізняється дизайн Aliano AL-01?');
+    }
+
+    public function test_saving_a_product_keeps_the_ids_of_its_attribute_options(): void
+    {
+        $this->seedCurrency();
+        $productType = $this->productType(['slug' => 'doors-with-glass', 'name' => 'Двері зі склом']);
+        $glass = ProductAttribute::create([
+            'attribute_name' => ['uk' => 'Скло', 'ru' => 'Стекло'],
+            'slug' => 'glass-'.$productType->id,
+        ]);
+        $product = $this->makeProduct(['product_type_id' => $productType->id]);
+        $satin = ProductAttributeOptions::create([
+            'product_id' => $product->id,
+            'product_attribute_id' => $glass->id,
+            'name' => ['uk' => 'Сатин', 'ru' => 'Сатин'],
+            'price' => 0,
+        ]);
+
+        $this->actingAs($this->admin())->post(route('admin.product.edit', [
+            'productType' => $productType,
+            'product' => $product,
+        ]), [
+            'name' => $product->getTranslations('name'),
+            'slug' => $product->slug,
+            'created_at' => $product->created_at->format('Y-m-d H:i:s'),
+            'availability_status_id' => 1,
+            'price' => 5200,
+            'currency_id' => 1,
+            'product_short_text' => ['uk' => '', 'ru' => ''],
+            'product_text' => ['uk' => '', 'ru' => ''],
+            'seo_title' => ['uk' => '', 'ru' => ''],
+            'seo_text' => ['uk' => '', 'ru' => ''],
+            'attributes' => [
+                $glass->id => [[
+                    'id' => $satin->id,
+                    'name' => ['uk' => 'Сатин', 'ru' => 'Сатин'],
+                    'price' => 150,
+                ]],
+            ],
+        ])->assertOk()->assertJsonPath('data.success', true);
+
+        // The configurator and carts refer to options by ID, so a save must not re-create them.
+        $this->assertDatabaseCount('product_attribute_options', 1);
+        $this->assertDatabaseHas('product_attribute_options', ['id' => $satin->id, 'price' => 150]);
     }
 
     private function admin(): User

@@ -55,7 +55,7 @@ export default {
 
         <div class="row1">
             <div class="col">
-                <input type="hidden" v-if="attributeId !== null" :name="'characteristics[' + index + '][id]'" :value="attributeId" >
+                <input type="hidden" v-if="attributeId !== null" :name="'attributes['+ attributeOptionId +'][' + index + '][id]'" :value="attributeId" >
 
                 <multi-language-input-component
                     :title="$t('admin.attribute_name')"

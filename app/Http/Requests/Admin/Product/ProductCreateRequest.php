@@ -105,6 +105,10 @@ class ProductCreateRequest extends BaseRequest
             'videos.*.iframe' => [
                 'nullable',
             ],
+            'attributes.*.*.id' => [
+                'nullable',
+                'integer',
+            ],
             'attributes.*.*.price' => [
                 'nullable',
             ],
