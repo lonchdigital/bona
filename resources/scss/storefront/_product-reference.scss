@@ -375,6 +375,8 @@ html.product-dialog-is-open body {
     .product-services__actions .link-heart {
         width: 100%;
         height: auto;
+        background: #fff;
+        color: var(--ink);
 
         svg { width: 18px; height: 18px; }
         .art-heart-outline { display: block; }
@@ -382,13 +384,15 @@ html.product-dialog-is-open body {
 
         &.link-heart-active,
         &.is-active {
-            border-color: var(--ink);
-            background: var(--ink);
-            color: #fff;
+            border-color: var(--gold);
+            background: #fff;
+            color: var(--bona-gold-text);
 
             .art-heart-outline { display: none; }
             .art-heart-filled { display: block; }
         }
+
+        &:disabled { cursor: wait; }
     }
 
     .product-services__actions {

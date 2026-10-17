@@ -343,9 +343,9 @@
                         class="link-heart product-wish-list-button single-product-wish-list{{ $isWishlisted ? ' link-heart-active is-active' : '' }}"
                         id="{{ $product->slug }}"
                         type="button"
-                        aria-label="{{ trans('base.add_to_wish_list') }}"
+                        aria-label="{{ trans($isWishlisted ? 'base.remove_from_wish_list' : 'base.add_to_wish_list') }}"
                         aria-pressed="{{ $isWishlisted ? 'true' : 'false' }}"
-                    ><x-wish-heart /><span>{{ trans('base.add_to_wish_list') }}</span></button>
+                    ><x-wish-heart /><span data-wish-list-label>{{ trans($isWishlisted ? 'base.remove_from_wish_list' : 'base.add_to_wish_list') }}</span></button>
                     <button
                         type="button"
                         aria-label="{{ trans('base.add_to_compare') }}"
