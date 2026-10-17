@@ -32,3 +32,12 @@ lang/php_*.json
 
 # Layouts handed over as plain HTML, kept beside the project for reference
 /bona-html
+
+# Local working material: configurator batches, browser QA, reviews, notes
+/outputs/
+/tools/
+/docs/research/
+/.playwright-mcp/
+/.impeccable/
+/aura-aurelia-no-text.png
+/pravki.txt
