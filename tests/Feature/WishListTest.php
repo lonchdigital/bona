@@ -84,7 +84,7 @@ class WishListTest extends TestCase
         $user = $this->author();
 
         $this->save($product->slug)->assertOk();
-        $this->signIn($user->email);
+        $this->signIn($user->email)->assertRedirect();
 
         $this->assertSame(
             1,
@@ -115,7 +115,7 @@ class WishListTest extends TestCase
 
         // A guest saves something else, then signs in.
         $this->save($savedAsGuest->slug)->assertOk();
-        $this->signIn($user->email);
+        $this->signIn($user->email)->assertRedirect();
 
         $list = WishList::where('owner_id', $user->id)->first();
 

@@ -162,7 +162,7 @@ class WishListService extends BaseService
                 $guestWishList->token = null;
                 $guestWishList->save();
 
-                return;
+                return ServiceActionResult::make(true);
             }
 
             /*
@@ -181,6 +181,8 @@ class WishListService extends BaseService
             // behind, pointing at a list that no longer exists.
             $guestWishList->products()->detach();
             $guestWishList->delete();
+
+            return ServiceActionResult::make(true);
         });
     }
 
