@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Color;
 use App\Models\DoorConfiguratorItem;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeOptions;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Product\ConfiguratorCatalog;
@@ -291,5 +293,25 @@ class DoorConfiguratorAdminTest extends TestCase
         $this->assertNull($item->fresh()->product_id);
         $this->assertEmpty(app(DoorConfiguratorService::class)->catalog()['products']);
         $this->assertNotEmpty(app(ConfiguratorCatalog::class)->issues($item->fresh()));
+    }
+
+    public function test_status_glass_shades_are_relinked_to_their_re_created_glass_options(): void
+    {
+        $product = $this->makeProduct(['slug' => 'mizhkimnatni-dveri-fly-ral-9003-status']);
+        $glass = ProductAttribute::create(['id' => 10, 'attribute_name' => ['uk' => 'Скло', 'ru' => 'Стекло'], 'slug' => 'glass']);
+        $opening = ProductAttribute::create(['attribute_name' => ['uk' => 'Відкривання', 'ru' => 'Открывание'], 'slug' => 'opening']);
+        ProductAttributeOptions::create(['product_id' => $product->id, 'product_attribute_id' => $opening->id, 'name' => ['uk' => 'Сатин', 'ru' => 'Сатин'], 'price' => 0]);
+        $satin = ProductAttributeOptions::create(['product_id' => $product->id, 'product_attribute_id' => $glass->id, 'name' => ['uk' => 'Сатин', 'ru' => 'Сатин'], 'price' => 0]);
+        $shade = ['id' => 'color-7', 'colorId' => 7, 'optionIds' => [6097]];
+        $fly = DoorConfiguratorItem::create(['kind' => 'door', 'key' => 'status-fly', 'product_id' => $product->id,
+            'draft' => ['category' => 'interior', 'colors' => [$shade]], 'published' => ['category' => 'interior', 'colors' => [$shade]]]);
+        $other = DoorConfiguratorItem::create(['kind' => 'door', 'key' => 'status-dream', 'product_id' => $this->makeProduct()->id,
+            'draft' => ['category' => 'interior', 'colors' => [$shade]]]);
+
+        (require database_path('migrations/2026_10_18_000000_relink_status_configurator_glass_options.php'))->up();
+
+        $this->assertSame([$satin->id], $fly->fresh()->draft['colors'][0]['optionIds']);
+        $this->assertSame([$satin->id], $fly->fresh()->published['colors'][0]['optionIds']);
+        $this->assertSame([6097], $other->fresh()->draft['colors'][0]['optionIds']);
     }
 }
