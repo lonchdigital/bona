@@ -21,6 +21,7 @@ yarn-error.log
 /.idea
 /.vscode
 /.release
+/backups/database/
 /resources/img/icon.svg
 lang/php_*.json
 .htaccess

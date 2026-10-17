@@ -1,0 +1,81 @@
+name: Database Backup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-database-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Configure production SSH access
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.PRODUCTION_SSH_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY"
+          test -n "$SSH_KNOWN_HOSTS"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Stream and encrypt production database
+        env:
+          SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
+          SSH_USER: ${{ secrets.PRODUCTION_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.PRODUCTION_DEPLOY_PATH }}
+          PHP_BIN: ${{ secrets.PRODUCTION_PHP_BIN }}
+          BACKUP_PASSPHRASE: ${{ secrets.PRODUCTION_BACKUP_PASSPHRASE }}
+        run: |
+          set -o pipefail
+          test -n "$SSH_HOST"
+          test -n "$SSH_USER"
+          test -n "$DEPLOY_PATH"
+          test -n "$BACKUP_PASSPHRASE"
+          [[ "$DEPLOY_PATH" == /* ]]
+          [[ "$DEPLOY_PATH" != "/" ]]
+          PHP_BIN="${PHP_BIN:-/usr/bin/php8.4}"
+
+          ssh_target="$SSH_USER@$SSH_HOST"
+          remote_script="$DEPLOY_PATH/incoming/database-backup-${GITHUB_RUN_ID}.sh"
+          printf -v remote_script_q '%q' "$remote_script"
+          printf -v deploy_path_q '%q' "$DEPLOY_PATH"
+          printf -v php_bin_q '%q' "$PHP_BIN"
+
+          ssh "$ssh_target" "mkdir -p -- $(printf '%q' "$DEPLOY_PATH/incoming")"
+          scp deploy/database-backup.sh "$ssh_target:$remote_script"
+
+          cleanup() {
+            ssh "$ssh_target" "rm -f -- $remote_script_q" || true
+          }
+          trap cleanup EXIT
+
+          mkdir -p "$RUNNER_TEMP/database-backup"
+          encrypted_path="$RUNNER_TEMP/database-backup/bona-production-${GITHUB_RUN_ID}.sql.gz.enc"
+          ssh "$ssh_target" "PHP_BIN=$php_bin_q bash $remote_script_q $deploy_path_q" \
+            | openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 \
+                -pass env:BACKUP_PASSPHRASE -out "$encrypted_path"
+          test -s "$encrypted_path"
+
+          sha256sum "$encrypted_path" > "$encrypted_path.sha256"
+
+      - name: Upload encrypted backup
+        uses: actions/upload-artifact@v7
+        with:
+          name: bona-database-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/database-backup/*
+          if-no-files-found: error
+          retention-days: 1
