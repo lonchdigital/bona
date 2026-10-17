@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-09-27T01:45:57+00:00",
+    "asOf": "2026-09-27T02:09:24+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 239,
-        "prepared": 842,
+        "prepared": 849,
         "needs-model-clarification": 7,
-        "needs-source-review": 197,
+        "needs-source-review": 190,
         "not-orderable": 30
     },
     "finishes": [
@@ -9497,7 +9497,7 @@
                 "uk": "Венге Korfad",
                 "ru": "Венге Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 142,
@@ -9507,7 +9507,7 @@
                 "uk": "Дуб грей Korfad",
                 "ru": "Дуб грей Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 142,
@@ -9517,7 +9517,7 @@
                 "uk": "Білий перламутр Korfad",
                 "ru": "Белый перламутр"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 143,
@@ -9537,7 +9537,7 @@
                 "uk": "Венге Korfad",
                 "ru": "Венге Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 143,
@@ -9547,7 +9547,7 @@
                 "uk": "Дуб грей Korfad",
                 "ru": "Дуб грей Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 143,
@@ -9557,7 +9557,7 @@
                 "uk": "Дуб марсала Korfad",
                 "ru": "Дуб марсала Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 143,
@@ -9567,7 +9567,7 @@
                 "uk": "Білий перламутр Korfad",
                 "ru": "Белый перламутр"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 144,

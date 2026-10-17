@@ -354,6 +354,24 @@ test('PORTO PR-12 covers all seventeen catalog finishes with verified black or b
     }
 });
 
+test('PORTO PR-10 covers four finishes with the photographed vertical satin glass', () => {
+    const porto = catalog.products.find(product => product.id === 'korfad-porto-pr-10');
+    assert.deepEqual(porto.colors.map(color => color.colorId).sort((a, b) => a - b), [252, 254, 256, 266]);
+    for (const color of porto.colors) {
+        assert.deepEqual(color.optionIds, [color.colorId === 256 ? 16480 : 16481]);
+        assert.ok(color.preview.includes(`korfad-porto-pr-10-${color.colorId}-clean`));
+    }
+});
+
+test('PORTO PR-08 covers five finishes with the photographed horizontal satin glass', () => {
+    const porto = catalog.products.find(product => product.id === 'korfad-porto-pr-08');
+    assert.deepEqual(porto.colors.map(color => color.colorId).sort((a, b) => a - b), [252, 254, 256, 257, 266]);
+    for (const color of porto.colors) {
+        assert.deepEqual(color.optionIds, [color.colorId === 252 ? 16488 : 16489]);
+        assert.ok(color.preview.includes(`korfad-porto-pr-08-${color.colorId}-clean`));
+    }
+});
+
 test('palette v2 moves the old white default and removed olive to warm cashmere once', () => {
     const start = source.indexOf('const DEFAULT_WALL =');
     const end = source.indexOf('const DEFAULT_HANDLE =');
