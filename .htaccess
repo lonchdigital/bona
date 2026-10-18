@@ -395,7 +395,10 @@
     RewriteRule ^15-sale/$ https://bona-doors.com.ua/blog [R=301,L]
     RewriteRule ^shop/avrora/$ https://bona-doors.com.ua/product-category/interior-doors [R=301,L]
 
+    # Blog articles redirect their own trailing slash, so a retired one goes
+    # straight to its target instead of through a second hop.
     RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/(ru/)?blog/[^/]+/$
     RewriteRule ^(.*)/$ /$1 [L,R=301]
 
     RewriteCond %{REQUEST_URI} !^/public/

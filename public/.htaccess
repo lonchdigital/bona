@@ -13,7 +13,7 @@
     # Blog articles redirect their own trailing slash, so a retired one goes
     # straight to its target instead of through a second hop.
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} !^/(ru/)?blog/[^/]+/$
+    RewriteCond %{REQUEST_URI} !^(/public)?/(ru/)?blog/[^/]+/$
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
