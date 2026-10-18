@@ -68,6 +68,21 @@ class BlogArticle extends Model implements Sitemapable
         return $this->hasMany(BlogArticleSlugRedirect::class);
     }
 
+    public function retirements()
+    {
+        return $this->hasMany(BlogArticleRetirement::class);
+    }
+
+    public function activeRetirements()
+    {
+        return $this->hasMany(BlogArticleRetirement::class)->whereNull('restored_at');
+    }
+
+    public function retirementFor(string $locale): ?BlogArticleRetirement
+    {
+        return $this->activeRetirements->firstWhere('locale', $locale);
+    }
+
     public function heroImageUrl(): Attribute
     {
         return Attribute::make(function () {
@@ -106,10 +121,18 @@ class BlogArticle extends Model implements Sitemapable
             ->whereNotNull("name->{$locale}")
             ->where("name->{$locale}", '<>', '')
             ->whereNotNull("slugs->{$locale}")
-            ->where("slugs->{$locale}", '<>', '');
+            ->where("slugs->{$locale}", '<>', '')
+            ->whereDoesntHave('activeRetirements', fn (Builder $retirements) => $retirements->where('locale', $locale));
     }
 
+    /** A version that is written and not taken off the site. */
     public function hasLocaleVersion(string $locale): bool
+    {
+        return $this->hasLocaleContent($locale) && ! $this->retirementFor($locale);
+    }
+
+    /** A version that is written, whether or not it is still on the site. */
+    public function hasLocaleContent(string $locale): bool
     {
         $name = $this->getTranslations('name')[$locale] ?? null;
         $slug = $this->localizedSlugs()[$locale] ?? null;

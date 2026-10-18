@@ -26,9 +26,18 @@ class ShowBlogArticlePageAction extends BaseAction
         abort_unless($resolvedArticle, 404);
 
         $blogArticle = $resolvedArticle['article'];
+
+        // A version Serp Agent took off the site sends every address it had
+        // straight to the final target, never through its current URL.
+        if ($retirement = $blogArticle->retirementFor($locale)) {
+            return $retirement->response();
+        }
+
         abort_unless($blogArticle->hasLocaleVersion($locale), 404);
 
-        if ($resolvedArticle['should_redirect']) {
+        // The web server lets the trailing-slash form of an article through so
+        // that a retired one redirects in one hop; a live one gets its own URL.
+        if ($resolvedArticle['should_redirect'] || str_ends_with(request()->getPathInfo(), '/')) {
             return redirect($blogArticle->urlForLocale($locale), 301);
         }
 

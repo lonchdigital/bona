@@ -30,6 +30,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 |     POST https://<domain>/api/serp-agent/articles
 |
 | Authenticated with "Authorization: Bearer <SERP_AGENT_WEBHOOK_SECRET>".
+| A delivery with "event": "article.retire" takes one language version of
+| a Serp Agent article off the site and answers its address with 301 (or
+| 410 without "redirectTo"); any other delivery publishes or updates.
 | The GET route below is a convenience check for that same secret.
 |
 */

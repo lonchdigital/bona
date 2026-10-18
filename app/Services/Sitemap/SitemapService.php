@@ -194,7 +194,7 @@ class SitemapService extends BaseService
         }
 
         // BlogArticle
-        foreach (BlogArticle::all() as $blogArticle) {
+        foreach (BlogArticle::with('activeRetirements')->get() as $blogArticle) {
             $allLangUrls = $blogArticle->toSitemapTag();
             $articleUrls = collect($allLangUrls)
                 ->map(fn (string $langUrl) => $this->withLastModified(Url::create($langUrl), $blogArticle->updated_at));

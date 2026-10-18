@@ -33,6 +33,7 @@ class SerpAgentArticleService extends BaseService
     public function __construct(
         private readonly SerpAgentHtmlService $htmlService,
         private readonly ApplicationConfigService $applicationConfigService,
+        private readonly SerpAgentArticleRetirementService $retirementService,
     ) {}
 
     /**
@@ -261,6 +262,8 @@ class SerpAgentArticleService extends BaseService
         }
 
         $article->forgetCurrentSlugRedirects();
+
+        $this->retirementService->restore($article, $locale);
 
         $this->syncTextBlock($article, $body, $locale);
 

@@ -3,7 +3,7 @@
 namespace App\Http\Actions\Blog\Pages;
 
 use App\Models\BlogArticle;
-use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class RedirectLegacyBlogArticleUrlAction
 {
@@ -16,10 +16,14 @@ class RedirectLegacyBlogArticleUrlAction
      * the article page and 404 there, keeping a single place that decides what
      * exists.
      */
-    public function __invoke(string $legacyBlogArticleSlug): RedirectResponse
+    public function __invoke(string $legacyBlogArticleSlug): Response
     {
         $locale = app()->getLocale();
         $resolvedArticle = BlogArticle::resolveLocalizedSlug($legacyBlogArticleSlug, $locale);
+
+        if ($retirement = ($resolvedArticle['article'] ?? null)?->retirementFor($locale)) {
+            return $retirement->response();
+        }
 
         abort_unless($resolvedArticle && $resolvedArticle['article']->hasLocaleVersion($locale), 404);
 
