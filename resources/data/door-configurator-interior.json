@@ -17300,6 +17300,160 @@
           "optionIds": [
             16510
           ]
+        },
+        {
+          "id": "color-256",
+          "name": {
+            "uk": "Дуб грей Korfad",
+            "ru": "Дуб грей Korfad"
+          },
+          "hex": "#977a61",
+          "image": "interior/korfad-porto-pr-05-256-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-256-clean-v1.webp",
+          "colorId": 256,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-257",
+          "name": {
+            "uk": "Дуб марсала Korfad",
+            "ru": "Дуб марсала Korfad"
+          },
+          "hex": "#665247",
+          "image": "interior/korfad-porto-pr-05-257-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-257-clean-v1.webp",
+          "colorId": 257,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-267",
+          "name": {
+            "uk": "Сіра модрина Korfad",
+            "ru": "Серая модрина"
+          },
+          "hex": "#bbbbbf",
+          "image": "interior/korfad-porto-pr-05-267-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-267-clean-v1.webp",
+          "colorId": 267,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-264",
+          "name": {
+            "uk": "Ясен білий Korfad",
+            "ru": "Ясень белый Korfad"
+          },
+          "hex": "#fafafa",
+          "image": "interior/korfad-porto-pr-05-264-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-264-clean-v1.webp",
+          "colorId": 264,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-260",
+          "name": {
+            "uk": "Еш-вайт Korfad",
+            "ru": "Эш-вайт Korfad"
+          },
+          "hex": "#ac9c8b",
+          "image": "interior/korfad-porto-pr-05-260-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-260-clean-v1.webp",
+          "colorId": 260,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-259",
+          "name": {
+            "uk": "Дуб тобакко Korfad",
+            "ru": "Дуб тобакко Korfad"
+          },
+          "hex": "#d4b599",
+          "image": "interior/korfad-porto-pr-05-259-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-259-clean-v1.webp",
+          "colorId": 259,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-258",
+          "name": {
+            "uk": "Дуб нордік Korfad",
+            "ru": "Дуб нордик Korfad"
+          },
+          "hex": "#d2c6c3",
+          "image": "interior/korfad-porto-pr-05-258-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-258-clean-v1.webp",
+          "colorId": 258,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-270",
+          "name": {
+            "uk": "Super PET магнолія Korfad",
+            "ru": "Super PET магнолия Korfad"
+          },
+          "hex": "#dcd7b9",
+          "image": "interior/korfad-porto-pr-05-270-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-270-clean-v1.webp",
+          "colorId": 270,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-271",
+          "name": {
+            "uk": "Super PET сірий Korfad",
+            "ru": "Super PET серый Korfad"
+          },
+          "hex": "#d9d9d9",
+          "image": "interior/korfad-porto-pr-05-271-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-271-clean-v1.webp",
+          "colorId": 271,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-269",
+          "name": {
+            "uk": "Super PET антрацит Korfad",
+            "ru": "Super PET антрацит Korfad"
+          },
+          "hex": "#424242",
+          "image": "interior/korfad-porto-pr-05-269-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-269-clean-v1.webp",
+          "colorId": 269,
+          "optionIds": [
+            16510
+          ]
+        },
+        {
+          "id": "color-272",
+          "name": {
+            "uk": "Super PET чорний Korfad",
+            "ru": "Super PET черный Korfad"
+          },
+          "hex": "#161616",
+          "image": "interior/korfad-porto-pr-05-272-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-05-272-clean-v1.webp",
+          "colorId": 272,
+          "optionIds": [
+            16510
+          ]
         }
       ]
     },
