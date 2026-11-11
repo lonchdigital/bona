@@ -37,7 +37,8 @@ def main():
                 continue
             manifest[path] = hashlib.sha256(tar.extractfile(member).read()).hexdigest()
     code = Path('deploy/verify-release-files.php').read_text().removeprefix('<?php')
-    command = shlex.join([php, '-r', code, current, revision])
+    print(f'Checking {len(manifest)} source files at revision {revision}', flush=True)
+    command = shlex.join([php, '-d', 'display_errors=stderr', '-d', 'log_errors=0', '-r', code, current, revision])
     result = subprocess.run(ssh + [command], input=json.dumps(manifest), text=True, capture_output=True)
     print(result.stdout, end='')
     if result.stderr:
