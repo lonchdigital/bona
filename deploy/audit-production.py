@@ -14,6 +14,19 @@ import tarfile
 from pathlib import Path
 
 
+def release_manifest(revision):
+    archive = subprocess.check_output(['git', 'archive', '--format=tar', revision])
+    manifest = {}
+    with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
+        for member in tar:
+            path = member.name
+            if (not member.isfile() or path in ['.env', 'REVISION']
+                    or re.match(r'^(storage|vendor|public/storage|public/build|bootstrap/cache)(/|$)', path)):
+                continue
+            manifest[path] = hashlib.sha256(tar.extractfile(member).read()).hexdigest()
+    return manifest
+
+
 def main():
     target = os.environ['SSH_USER'] + '@' + os.environ['SSH_HOST']
     deploy_path = os.environ['DEPLOY_PATH'].rstrip('/')
@@ -28,14 +41,7 @@ def main():
     if not re.fullmatch(r'[a-f0-9]{40}', revision):
         raise ValueError('Invalid active revision')
     subprocess.run(['git', 'merge-base', '--is-ancestor', revision, 'HEAD'], check=True)
-    archive = subprocess.check_output(['git', 'archive', '--format=tar', revision])
-    manifest = {}
-    with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
-        for member in tar:
-            path = member.name
-            if not member.isfile() or path.startswith('storage/'):
-                continue
-            manifest[path] = hashlib.sha256(tar.extractfile(member).read()).hexdigest()
+    manifest = release_manifest(revision)
     code = Path('deploy/verify-release-files.php').read_text().removeprefix('<?php')
     print(f'Checking {len(manifest)} source files at revision {revision}', flush=True)
     command = shlex.join([php, '-d', 'display_errors=stderr', '-d', 'log_errors=0', '-r', code, current, revision])

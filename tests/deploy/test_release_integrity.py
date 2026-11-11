@@ -1,4 +1,5 @@
 import hashlib
+import importlib.util
 import json
 import subprocess
 import tempfile
@@ -10,6 +11,15 @@ REVISION = 'a' * 40
 
 
 class ReleaseIntegrityTest(unittest.TestCase):
+    def test_git_manifest_excludes_runtime_cache_skeleton(self):
+        spec = importlib.util.spec_from_file_location('audit', CHECKER.with_name('audit-production.py'))
+        audit = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(audit)
+        manifest = audit.release_manifest('HEAD')
+        self.assertIn('app/Services/Instagram/InstagramFeedService.php', manifest)
+        self.assertNotIn('bootstrap/cache/.gitignore', manifest)
+        self.assertNotIn('storage/app/.gitignore', manifest)
+
     def test_detects_drift_and_ignores_only_runtime_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
