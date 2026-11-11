@@ -14,13 +14,15 @@ class InstagramFeedService
 
     public const STALE_CACHE_KEY = 'instagram_feed_stale';
 
+    private const MEDIA_URL_EXPIRY_GRACE_SECONDS = 3600;
+
     public function __construct(private readonly InstagramCredentialStore $credentials) {}
 
     public function getFeed(): ?array
     {
         $cached = Cache::get(self::CACHE_KEY);
 
-        if (is_array($cached)) {
+        if (is_array($cached) && $this->feedHasUsableMediaUrls($cached)) {
             return $cached;
         }
 
@@ -48,7 +50,8 @@ class InstagramFeedService
 
             $feed = collect($response->json('data', []))
                 ->map(fn (array $media): ?array => $this->normalize($media))
-                ->filter()
+                ->filter(fn (?array $media): bool => $media !== null
+                    && $this->mediaUrlIsUsable($media['image_url'] ?? null))
                 ->take(12)
                 ->values()
                 ->all();
@@ -113,7 +116,45 @@ class InstagramFeedService
     {
         $feed = Cache::get(self::STALE_CACHE_KEY);
 
-        return is_array($feed) && $feed !== [] ? $feed : null;
+        if (! is_array($feed)) {
+            return null;
+        }
+
+        $feed = array_values(array_filter(
+            $feed,
+            fn (mixed $media): bool => is_array($media)
+                && $this->mediaUrlIsUsable($media['image_url'] ?? null),
+        ));
+
+        return $feed !== [] ? $feed : null;
+    }
+
+    private function feedHasUsableMediaUrls(array $feed): bool
+    {
+        return $feed !== [] && collect($feed)->every(fn (mixed $media): bool => is_array($media)
+            && $this->mediaUrlIsUsable($media['image_url'] ?? null));
+    }
+
+    private function mediaUrlIsUsable(mixed $url): bool
+    {
+        if (! is_string($url) || $url === '') {
+            return false;
+        }
+
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $query);
+        $expiresAt = $query['oe'] ?? null;
+
+        // Other image hosts and older Instagram URL formats do not expose an
+        // expiry parameter, so only reject URLs whose expiry is explicit.
+        if (! is_string($expiresAt) || $expiresAt === '') {
+            return true;
+        }
+
+        if (! ctype_xdigit($expiresAt)) {
+            return false;
+        }
+
+        return hexdec($expiresAt) > now()->addSeconds(self::MEDIA_URL_EXPIRY_GRACE_SECONDS)->timestamp;
     }
 
     private function logFailure(Response $response): void

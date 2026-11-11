@@ -103,4 +103,44 @@ class InstagramFeedServiceTest extends TestCase
         $this->assertSame('image-1', $feed[0]['id']);
         $this->assertSame('image-12', $feed[11]['id']);
     }
+
+    public function test_it_refreshes_cached_images_before_their_signed_urls_expire(): void
+    {
+        $this->freezeTime();
+        $expiringUrl = 'https://cdn.example.com/image.jpg?oe='.dechex(now()->addMinutes(30)->timestamp);
+        $freshUrl = 'https://cdn.example.com/image.jpg?oe='.dechex(now()->addDay()->timestamp);
+        Cache::put(InstagramFeedService::CACHE_KEY, [[
+            'id' => 'image-1',
+            'image_url' => $expiringUrl,
+        ]], now()->addHour());
+        Http::fake(['graph.instagram.com/*' => Http::response(['data' => [[
+            'id' => 'image-1',
+            'media_type' => 'IMAGE',
+            'media_url' => $freshUrl,
+            'permalink' => 'https://www.instagram.com/p/image-1/',
+        ]]])]);
+
+        $service = app(InstagramFeedService::class);
+        $feed = $service->getFeed();
+
+        $this->assertSame($freshUrl, $feed[0]['image_url']);
+        $this->assertSame($feed, Cache::get(InstagramFeedService::STALE_CACHE_KEY));
+        $this->assertSame($feed, $service->getFeed());
+        Http::assertSentCount(1);
+    }
+
+    public function test_an_api_outage_does_not_restore_expired_images_from_the_stale_feed(): void
+    {
+        $this->freezeTime();
+        $expired = ['id' => 'expired', 'image_url' => 'https://cdn.example.com/old.jpg?oe='.dechex(now()->subMinute()->timestamp)];
+        $valid = ['id' => 'valid', 'image_url' => 'https://cdn.example.com/new.jpg?oe='.dechex(now()->addDay()->timestamp)];
+        Cache::put(InstagramFeedService::STALE_CACHE_KEY, [$expired, $valid], now()->addDays(7));
+        Http::fake(['graph.instagram.com/*' => Http::response([], 503)]);
+
+        $service = app(InstagramFeedService::class);
+        $this->assertSame([$valid], $service->getFeed());
+
+        $this->travel(2)->days();
+        $this->assertNull($service->getFeed());
+    }
 }
