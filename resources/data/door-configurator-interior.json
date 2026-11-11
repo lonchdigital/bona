@@ -17490,6 +17490,104 @@
           "optionIds": [
             16527
           ]
+        },
+        {
+          "id": "color-256",
+          "name": {
+            "uk": "Дуб грей Korfad",
+            "ru": "Дуб грей Korfad"
+          },
+          "hex": "#977a61",
+          "image": "interior/korfad-porto-pr-02-256-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-02-256-clean-v1.webp",
+          "colorId": 256,
+          "optionIds": [
+            16527
+          ]
+        },
+        {
+          "id": "color-264",
+          "name": {
+            "uk": "Ясен білий Korfad",
+            "ru": "Ясень белый Korfad"
+          },
+          "hex": "#fafafa",
+          "image": "interior/korfad-porto-pr-02-264-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-02-264-clean-v1.webp",
+          "colorId": 264,
+          "optionIds": [
+            16528
+          ]
+        },
+        {
+          "id": "color-255",
+          "name": {
+            "uk": "Дуб браш Korfad",
+            "ru": "Дуб браш Korfad"
+          },
+          "hex": "#a77952",
+          "image": "interior/korfad-porto-pr-02-255-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-02-255-clean-v1.webp",
+          "colorId": 255,
+          "optionIds": [
+            16527
+          ]
+        },
+        {
+          "id": "color-260",
+          "name": {
+            "uk": "Еш-вайт Korfad",
+            "ru": "Эш-вайт Korfad"
+          },
+          "hex": "#ac9c8b",
+          "image": "interior/korfad-porto-pr-02-260-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-02-260-clean-v1.webp",
+          "colorId": 260,
+          "optionIds": [
+            16528
+          ]
+        },
+        {
+          "id": "color-259",
+          "name": {
+            "uk": "Дуб тобакко Korfad",
+            "ru": "Дуб тобакко Korfad"
+          },
+          "hex": "#d4b599",
+          "image": "interior/korfad-porto-pr-02-259-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-02-259-clean-v1.webp",
+          "colorId": 259,
+          "optionIds": [
+            16528
+          ]
+        },
+        {
+          "id": "color-258",
+          "name": {
+            "uk": "Дуб нордік Korfad",
+            "ru": "Дуб нордик Korfad"
+          },
+          "hex": "#d2c6c3",
+          "image": "interior/korfad-porto-pr-02-258-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-02-258-clean-v1.webp",
+          "colorId": 258,
+          "optionIds": [
+            16528
+          ]
+        },
+        {
+          "id": "color-266",
+          "name": {
+            "uk": "Білий перламутр Korfad",
+            "ru": "Белый перламутр"
+          },
+          "hex": "#eeeae6",
+          "image": "interior/korfad-porto-pr-02-266-catalog-v1.webp",
+          "preview": "interior/korfad-porto-pr-02-266-clean-v1.webp",
+          "colorId": 266,
+          "optionIds": [
+            16528
+          ]
         }
       ]
     },

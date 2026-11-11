@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-11-10T11:41:18+00:00",
+    "asOf": "2026-11-11T09:10:59+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 239,
-        "prepared": 860,
+        "prepared": 867,
         "needs-model-clarification": 7,
-        "needs-source-review": 179,
+        "needs-source-review": 172,
         "not-orderable": 30
     },
     "finishes": [
@@ -9707,7 +9707,7 @@
                 "uk": "Дуб грей Korfad",
                 "ru": "Дуб грей Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 145,
@@ -9717,7 +9717,7 @@
                 "uk": "Ясен білий Korfad",
                 "ru": "Ясень белый Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 145,
@@ -9727,7 +9727,7 @@
                 "uk": "Дуб браш Korfad",
                 "ru": "Дуб браш Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 145,
@@ -9737,7 +9737,7 @@
                 "uk": "Еш-вайт Korfad",
                 "ru": "Эш-вайт Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 145,
@@ -9747,7 +9747,7 @@
                 "uk": "Дуб тобакко Korfad",
                 "ru": "Дуб тобакко Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 145,
@@ -9757,7 +9757,7 @@
                 "uk": "Дуб нордік Korfad",
                 "ru": "Дуб нордик Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 145,
@@ -9767,7 +9767,7 @@
                 "uk": "Білий перламутр Korfad",
                 "ru": "Белый перламутр"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 146,
