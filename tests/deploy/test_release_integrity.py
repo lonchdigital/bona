@@ -30,6 +30,8 @@ class ReleaseIntegrityTest(unittest.TestCase):
             (root / '.env').write_text('private placeholder must never appear in output')
             (root / 'bootstrap/cache').mkdir(parents=True)
             (root / 'bootstrap/cache/config.php').write_text('runtime placeholder')
+            (root / 'public').mkdir()
+            (root / 'public/sitemap.xml').write_text('<urlset/>')
             manifest = {'app/test.php': hashlib.sha256(b'original').hexdigest()}
 
             def check():

@@ -7,7 +7,7 @@ $manifest = json_decode(stream_get_contents(STDIN), true, 512, JSON_THROW_ON_ERR
 if (! $root || ! preg_match('/^[a-f0-9]{40}$/', $expectedRevision) || ! is_array($manifest)) {
     throw new RuntimeException('Invalid release verification input.');
 }
-$ignored = static fn (string $path): bool => in_array($path, ['.env', 'REVISION'], true)
+$ignored = static fn (string $path): bool => in_array($path, ['.env', 'REVISION', 'public/sitemap.xml'], true)
     || preg_match('#^(storage|vendor|public/storage|public/build|bootstrap/cache)(/|$)#', $path);
 $issues = [];
 $checked = 0;
@@ -20,7 +20,7 @@ foreach ($manifest as $path => $hash) {
         throw new RuntimeException('Unsafe manifest entry.');
     }
     $actual = realpath($root.'/'.$path);
-    if (! $actual || ! str_starts_with($actual, $root.'/') || ! is_file($actual)) {
+    if (is_link($root.'/'.$path) || ! $actual || ! str_starts_with($actual, $root.'/') || ! is_file($actual)) {
         $issues[] = ['kind' => 'missing-or-outside-release', 'path' => $path];
     } elseif (hash_file('sha256', $actual) !== $hash) {
         $issues[] = ['kind' => 'modified', 'path' => $path];

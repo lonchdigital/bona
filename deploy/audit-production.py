@@ -20,7 +20,7 @@ def release_manifest(revision):
     with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
         for member in tar:
             path = member.name
-            if (not member.isfile() or path in ['.env', 'REVISION']
+            if (not member.isfile() or path in ['.env', 'REVISION', 'public/sitemap.xml']
                     or re.match(r'^(storage|vendor|public/storage|public/build|bootstrap/cache)(/|$)', path)):
                 continue
             manifest[path] = hashlib.sha256(tar.extractfile(member).read()).hexdigest()
