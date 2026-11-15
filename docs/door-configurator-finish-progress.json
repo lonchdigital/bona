@@ -1,11 +1,11 @@
 {
-    "asOf": "2026-11-13T10:55:55+00:00",
+    "asOf": "2026-11-15T02:03:19+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 239,
-        "prepared": 883,
+        "prepared": 888,
         "needs-model-clarification": 7,
-        "needs-source-review": 156,
+        "needs-source-review": 151,
         "not-orderable": 30
     },
     "finishes": [
@@ -9967,7 +9967,7 @@
                 "uk": "Біла модрина Korfad",
                 "ru": "Белая модрина"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 148,
@@ -9987,7 +9987,7 @@
                 "uk": "Біла модрина Korfad",
                 "ru": "Белая модрина"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 149,
@@ -10007,7 +10007,7 @@
                 "uk": "Сіра модрина Korfad",
                 "ru": "Серая модрина"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 150,
@@ -10027,7 +10027,7 @@
                 "uk": "Сіра модрина Korfad",
                 "ru": "Серая модрина"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 151,
@@ -10047,7 +10047,7 @@
                 "uk": "Сіра модрина Korfad",
                 "ru": "Серая модрина"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 152,

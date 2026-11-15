@@ -1,8 +1,68 @@
 {
   "date": "2026-09-22",
-  "updatedAt": "2026-11-13",
+  "updatedAt": "2026-11-15",
   "mode": "built-in imagegen, individual edits",
   "assets": [
+    {
+      "slug": "mizhkimnatni-dveri-florence-fl-01-korfad",
+      "colorId": 267,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/1198c018c5d961d076eb9b41f531bd8c3a85fa46_AsbygXTTsZ.webp",
+      "sourceSha256": "f2f71bf54d516845a878aeba149890494da6c8c12b269245f3a4b12a19eed6c2",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-dd057e41-7c84-4d42-8dc8-5b9655a313de.png",
+      "preview": "interior/korfad-florence-fl-01-267-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-15. Original shade,grain direction,frame,bevels,joints,glass layout and two right hinges retained;left lever,rose,local shadow and bottom logo removed. Preserve the tall narrow BLACK glass insert on the LEFT at original x284..322,y79..792 and ALL EIGHT black horizontal seams across the right wood panels at approximately y124,214,302,391,480,570,658,747. Keep the slim vertical wooden divider at x322..335 and all nine right-hand wood panels. Do not whiten the black glass, remove seams, or change the insert side. Glass option16607;crop[205,0,389,837],handle[0.137,0.501]. Existing finish unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful original door photo for a product configurator. Image1 is the sole EDIT TARGET: Міжкімнатні двері FLORENCE FL-01 Korfad, Сіра модрина Korfad. Edit this exact photograph. Remove ONLY the left silver lever, square rose and small local cast shadow around x248..315,y406..440 of the original800x837 image. Restore the original matching surface directly beneath them, preserving panel edges and any glass beneath the lever. Remove ONLY the bottom KORFAD logo around x298..505,y798..836 and restore the original bottom rail texture. Preserve the tall narrow BLACK glass insert on the LEFT at original x284..322,y79..792 and ALL EIGHT black horizontal seams across the right wood panels at approximately y124,214,302,391,480,570,658,747. Keep the slim vertical wooden divider at x322..335 and all nine right-hand wood panels. Do not whiten the black glass, remove seams, or change the insert side. Preserve all other pixels/content: original finish hue, subtle grain and grain direction, material texture, frame, bevels, joints, lighting, white side margins, original framing and two small RIGHT silver hinges. Do not recolor, brighten, darken, smooth the grain, redraw the model, add/remove glass or seams, add handles/keyholes, change perspective, crop, zoom or recenter. Output one faithful cleaned product photograph without text,branding or watermark.",
+      "sourceMapping": "The original is the first photo explicitly linked to this exact catalog color; live product glass options rechecked2026-11-13.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-florence-fl-02-korfad",
+      "colorId": 267,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/1f22e852a56750fad7bc8752e663b8f3077f900c_7L0rU9IXGe.webp",
+      "sourceSha256": "6fd1f1c60384b5c7c3f9d263ce8a71dd0ef86de9ef34ecfcd2f3e963aed1dd4d",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-6e30ae8b-5b14-47b5-b555-8afccac8ea57.png",
+      "preview": "interior/korfad-florence-fl-02-267-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-15. Original shade,grain direction,frame,bevels,joints,glass layout and two right hinges retained;left lever,rose,local shadow and bottom logo removed. Preserve the THREE thin white horizontal satin glass strips near original y190..210,427..446,664..684, plus ALL EIGHT thin black horizontal seams at approximately y169,229,317,406,466,555,644,703. Keep all wood panels between them and their original grain directions. Do not remove the black seams or thicken the white glass. Glass option16590;crop[205,0,389,837],handle[0.137,0.501]. Existing finish unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful original door photo for a product configurator. Image1 is the sole EDIT TARGET: Міжкімнатні двері FLORENCE FL-02 Korfad, Сіра модрина Korfad. Edit this exact photograph. Remove ONLY the left silver lever, square rose and small local cast shadow around x248..315,y406..440 of the original800x837 image. Restore the original matching surface directly beneath them, preserving panel edges and any glass beneath the lever. Remove ONLY the bottom KORFAD logo around x298..505,y798..836 and restore the original bottom rail texture. Preserve the THREE thin white horizontal satin glass strips near original y190..210,427..446,664..684, plus ALL EIGHT thin black horizontal seams at approximately y169,229,317,406,466,555,644,703. Keep all wood panels between them and their original grain directions. Do not remove the black seams or thicken the white glass. Preserve all other pixels/content: original finish hue, subtle grain and grain direction, material texture, frame, bevels, joints, lighting, white side margins, original framing and two small RIGHT silver hinges. Do not recolor, brighten, darken, smooth the grain, redraw the model, add/remove glass or seams, add handles/keyholes, change perspective, crop, zoom or recenter. Output one faithful cleaned product photograph without text,branding or watermark.",
+      "sourceMapping": "The original is the first photo explicitly linked to this exact catalog color; live product glass options rechecked2026-11-13.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-florence-fl-03-korfad",
+      "colorId": 267,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/4fc30650acca8e6681aa99bb720da9c354c88be1_iNPTkgHgke.webp",
+      "sourceSha256": "7a1881af6200406004a26538c1fee2fdd602362f406b417a0109212a7fd5d8c0",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-8c1df844-1083-47b9-8b48-5910aeace15c.png",
+      "preview": "interior/korfad-florence-fl-03-267-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-15. Original shade,grain direction,frame,bevels,joints,glass layout and two right hinges retained;left lever,rose,local shadow and bottom logo removed. Preserve the full-height central pale satin glass insert, including its original slightly darker patterned side bands, the two wide vertical wooden panels on either side, the surrounding rails and every fine joint. No horizontal seams or new glass sections. Glass option16582;crop[205,0,389,837],handle[0.137,0.501]. Existing finish unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful original door photo for a product configurator. Image1 is the sole EDIT TARGET: Міжкімнатні двері FLORENCE FL-03 Korfad, Сіра модрина Korfad. Edit this exact photograph. Remove ONLY the left silver lever, square rose and small local cast shadow around x248..315,y406..440 of the original800x837 image. Restore the original matching surface directly beneath them, preserving panel edges and any glass beneath the lever. Remove ONLY the bottom KORFAD logo around x298..505,y798..836 and restore the original bottom rail texture. Preserve the full-height central pale satin glass insert, including its original slightly darker patterned side bands, the two wide vertical wooden panels on either side, the surrounding rails and every fine joint. No horizontal seams or new glass sections. Preserve all other pixels/content: original finish hue, subtle grain and grain direction, material texture, frame, bevels, joints, lighting, white side margins, original framing and two small RIGHT silver hinges. Do not recolor, brighten, darken, smooth the grain, redraw the model, add/remove glass or seams, add handles/keyholes, change perspective, crop, zoom or recenter. Output one faithful cleaned product photograph without text,branding or watermark.",
+      "sourceMapping": "The original is the first photo explicitly linked to this exact catalog color; live product glass options rechecked2026-11-13.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-florence-fl-04-korfad",
+      "colorId": 265,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/13a5ba229310f403e31f1411785326abbbcb6fd8_gS7zytaSVt.webp",
+      "sourceSha256": "1a7955ee13d7d710283682859e3169fc50f210140b8eaac0febb22d55f088ab6",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-b03fc88d-dbb2-42c6-98f9-18463c4675c2.png",
+      "preview": "interior/korfad-florence-fl-04-265-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-15. Original shade,grain direction,frame,bevels,joints,glass layout and two right hinges retained;left lever,rose,local shadow and bottom logo removed. Preserve exactly SIX horizontal satin glass sections: the broad top and bottom rectangles and the four narrow middle strips. Keep the narrow wooden rails between the middle glass strips and every other wooden panel, in their exact original positions and sizes. Glass option16566;crop[205,0,389,837],handle[0.137,0.501]. Existing finish unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful original door photo for a product configurator. Image1 is the sole EDIT TARGET: Міжкімнатні двері FLORENCE FL-04 Korfad, Біла модрина Korfad. Edit this exact photograph. Remove ONLY the left silver lever, square rose and small local cast shadow around x248..315,y406..440 of the original800x837 image. Restore the original matching surface directly beneath them, preserving panel edges and any glass beneath the lever. Remove ONLY the bottom KORFAD logo around x298..505,y798..836 and restore the original bottom rail texture. Preserve exactly SIX horizontal satin glass sections: the broad top and bottom rectangles and the four narrow middle strips. Keep the narrow wooden rails between the middle glass strips and every other wooden panel, in their exact original positions and sizes. Preserve all other pixels/content: original finish hue, subtle grain and grain direction, material texture, frame, bevels, joints, lighting, white side margins, original framing and two small RIGHT silver hinges. Do not recolor, brighten, darken, smooth the grain, redraw the model, add/remove glass or seams, add handles/keyholes, change perspective, crop, zoom or recenter. Output one faithful cleaned product photograph without text,branding or watermark.",
+      "sourceMapping": "The original is the first photo explicitly linked to this exact catalog color; live product glass options rechecked2026-11-13.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-florence-fl-05-korfad",
+      "colorId": 265,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/1854ccd276e75c268e59881d33313077a6482c0c_MCIrzhKTrb.webp",
+      "sourceSha256": "05b7f253c9d47bac79449950e0ceae3cf09e0a339bc409285788c5b71d00cdee",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-2bdfaeeb-dfa7-41ff-bcdf-dfc3407476c6.png",
+      "preview": "interior/korfad-florence-fl-05-265-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-15. Original shade,grain direction,frame,bevels,joints,glass layout and two right hinges retained;left lever,rose,local shadow and bottom logo removed. Preserve the original horizontal wood panels, all their narrow seams and the pale horizontal satin glass bands embedded among the panels; keep their exact number, positions, sizes and subdued original tint. Do not simplify the center into a single blank panel or add dark seams. Glass option16574;crop[205,0,389,837],handle[0.137,0.501]. Existing finish unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful original door photo for a product configurator. Image1 is the sole EDIT TARGET: Міжкімнатні двері FLORENCE FL-05 Korfad, Біла модрина Korfad. Edit this exact photograph. Remove ONLY the left silver lever, square rose and small local cast shadow around x248..315,y406..440 of the original800x837 image. Restore the original matching surface directly beneath them, preserving panel edges and any glass beneath the lever. Remove ONLY the bottom KORFAD logo around x298..505,y798..836 and restore the original bottom rail texture. Preserve the original horizontal wood panels, all their narrow seams and the pale horizontal satin glass bands embedded among the panels; keep their exact number, positions, sizes and subdued original tint. Do not simplify the center into a single blank panel or add dark seams. Preserve all other pixels/content: original finish hue, subtle grain and grain direction, material texture, frame, bevels, joints, lighting, white side margins, original framing and two small RIGHT silver hinges. Do not recolor, brighten, darken, smooth the grain, redraw the model, add/remove glass or seams, add handles/keyholes, change perspective, crop, zoom or recenter. Output one faithful cleaned product photograph without text,branding or watermark.",
+      "sourceMapping": "The original is the first photo explicitly linked to this exact catalog color; live product glass options rechecked2026-11-13.",
+      "sourceType": "color-linked-photo"
+    },
     {
       "slug": "mizhkimnatni-dveri-porto-pr-01-korfad",
       "colorId": 266,

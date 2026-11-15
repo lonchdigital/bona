@@ -17894,6 +17894,20 @@
           "optionIds": [
             16575
           ]
+        },
+        {
+          "id": "color-265",
+          "name": {
+            "uk": "Біла модрина Korfad",
+            "ru": "Белая модрина"
+          },
+          "hex": "#eeeeee",
+          "image": "interior/korfad-florence-fl-05-265-catalog-v1.webp",
+          "preview": "interior/korfad-florence-fl-05-265-clean-v1.webp",
+          "colorId": 265,
+          "optionIds": [
+            16574
+          ]
         }
       ]
     },
@@ -17927,6 +17941,20 @@
           "image": "interior/korfad-florence-fl-04-267-catalog-v1.webp",
           "preview": "interior/korfad-florence-fl-04-267-clean-v1.webp",
           "colorId": 267,
+          "optionIds": [
+            16566
+          ]
+        },
+        {
+          "id": "color-265",
+          "name": {
+            "uk": "Біла модрина Korfad",
+            "ru": "Белая модрина"
+          },
+          "hex": "#eeeeee",
+          "image": "interior/korfad-florence-fl-04-265-catalog-v1.webp",
+          "preview": "interior/korfad-florence-fl-04-265-clean-v1.webp",
+          "colorId": 265,
           "optionIds": [
             16566
           ]
@@ -17966,6 +17994,20 @@
           "optionIds": [
             16582
           ]
+        },
+        {
+          "id": "color-267",
+          "name": {
+            "uk": "Сіра модрина Korfad",
+            "ru": "Серая модрина"
+          },
+          "hex": "#bbbbbf",
+          "image": "interior/korfad-florence-fl-03-267-catalog-v1.webp",
+          "preview": "interior/korfad-florence-fl-03-267-clean-v1.webp",
+          "colorId": 267,
+          "optionIds": [
+            16582
+          ]
         }
       ]
     },
@@ -18002,6 +18044,20 @@
           "optionIds": [
             16590
           ]
+        },
+        {
+          "id": "color-267",
+          "name": {
+            "uk": "Сіра модрина Korfad",
+            "ru": "Серая модрина"
+          },
+          "hex": "#bbbbbf",
+          "image": "interior/korfad-florence-fl-02-267-catalog-v1.webp",
+          "preview": "interior/korfad-florence-fl-02-267-clean-v1.webp",
+          "colorId": 267,
+          "optionIds": [
+            16590
+          ]
         }
       ]
     },
@@ -18035,6 +18091,20 @@
           "image": "interior/korfad-florence-fl-01-265-catalog-v1.webp",
           "preview": "interior/korfad-florence-fl-01-265-clean-v1.webp",
           "colorId": 265,
+          "optionIds": [
+            16607
+          ]
+        },
+        {
+          "id": "color-267",
+          "name": {
+            "uk": "Сіра модрина Korfad",
+            "ru": "Серая модрина"
+          },
+          "hex": "#bbbbbf",
+          "image": "interior/korfad-florence-fl-01-267-catalog-v1.webp",
+          "preview": "interior/korfad-florence-fl-01-267-clean-v1.webp",
+          "colorId": 267,
           "optionIds": [
             16607
           ]
