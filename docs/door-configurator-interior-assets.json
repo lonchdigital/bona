@@ -1,8 +1,56 @@
 {
   "date": "2026-09-22",
-  "updatedAt": "2026-11-15",
+  "updatedAt": "2026-11-16",
   "mode": "built-in imagegen, individual edits",
   "assets": [
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-05-korfad",
+      "colorId": 272,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/31ecfee6f7958a8307ef7ddc9da7a1320080bf53_cnwxUvRrH2.webp",
+      "sourceSha256": "13055785a7b0e4dd83cded85419c02f88c3c36eaea5608730b6a52000fdb84c8",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-220a7c11-460f-4612-a851-199365c033cc.png",
+      "preview": "interior/korfad-aliano-al-05-272-clean-v1.webp",
+      "review": "Original, native output and final WebP individually reviewed2026-11-16. Exact photographed finish, asymmetrical satin layout, left slim vertical white insert, two large right satin rectangles, solid rail divisions, frame and right hinges preserved; handle/rose/local shadow and logo removed. No separate glass option in current product. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithfully cleaned catalog photograph for a door configurator. Input image1 is the only EDIT TARGET: Korfad ALIANO AL-05, Super PET чорний Korfad, white satin glass. Edit this exact photograph. Remove ONLY the silver lever, square rose and their tiny local cast shadow at x247..310,y423..451 in the original800x837 image. Reconstruct the same original surface underneath; preserve the slim white vertical glass strip where the handle crosses it. Remove ONLY the bottom KORFAD logo at x299..503,y798..836 and reconstruct the original bottom rail. Keep every other feature visually identical. Critical invariants: preserve both white satin glass rectangles x362..515,y81..350 and y521..790; preserve the narrow full-height white vertical strip x284..293,y81..790. Preserve the wide vertical solid rail between that narrow strip and the two glass rectangles, its subtle two-tone subdivisions around x334 andx362, and the central horizontal solid rail x362..515,y351..520 with its fine horizontal joint at y435. Keep the exact original finish hue, subtle gradients, material, every panel, seam, bevel, frame and both small RIGHT silver hinges. Preserve original full-door proportions, centered position, white side margins, lighting and framing. Do not simplify tonal subdivisions, invent seams, alter the glass or recolor anything. Do not zoom, crop or recenter. Output one faithful cleaned photograph without handle, rose, keyhole or bottom branding; do not add any new object.",
+      "sourceMapping": "First photograph directly linked to this exact color in current product gallery, visually reviewed2026-11-16.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-05-korfad",
+      "colorId": 269,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/31ecfee6f7958a8307ef7ddc9da7a1320080bf53_Tr3N03aAEz.webp",
+      "sourceSha256": "0dc185392e106d1d328c55a118a5447a4d40505fc50eca79c9a8a9e52457dced",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-0d1df2ce-2926-4418-9013-68e004a6adb3.png",
+      "preview": "interior/korfad-aliano-al-05-269-clean-v1.webp",
+      "review": "Original, native output and final WebP individually reviewed2026-11-16. Exact photographed finish, asymmetrical satin layout, left slim vertical white insert, two large right satin rectangles, solid rail divisions, frame and right hinges preserved; handle/rose/local shadow and logo removed. No separate glass option in current product. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithfully cleaned catalog photograph for a door configurator. Input image1 is the only EDIT TARGET: Korfad ALIANO AL-05, Super PET антрацит Korfad, white satin glass. Edit this exact photograph. Remove ONLY the silver lever, square rose and their tiny local cast shadow at x247..310,y423..451 in the original800x837 image. Reconstruct the same original surface underneath; preserve the slim white vertical glass strip where the handle crosses it. Remove ONLY the bottom KORFAD logo at x299..503,y798..836 and reconstruct the original bottom rail. Keep every other feature visually identical. Critical invariants: preserve both white satin glass rectangles x362..515,y81..350 and y521..790; preserve the narrow full-height white vertical strip x284..293,y81..790. Preserve the wide vertical solid rail between that narrow strip and the two glass rectangles, its subtle two-tone subdivisions around x334 andx362, and the central horizontal solid rail x362..515,y351..520 with its fine horizontal joint at y435. Keep the exact original finish hue, subtle gradients, material, every panel, seam, bevel, frame and both small RIGHT silver hinges. Preserve original full-door proportions, centered position, white side margins, lighting and framing. Do not simplify tonal subdivisions, invent seams, alter the glass or recolor anything. Do not zoom, crop or recenter. Output one faithful cleaned photograph without handle, rose, keyhole or bottom branding; do not add any new object.",
+      "sourceMapping": "First photograph directly linked to this exact color in current product gallery, visually reviewed2026-11-16.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-05-korfad",
+      "colorId": 271,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/31ecfee6f7958a8307ef7ddc9da7a1320080bf53_OUOwswhkZs.webp",
+      "sourceSha256": "54c7f9e04049452a39a21c3c324eb752bc73879d95c903e85254b2fae10679ff",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-b0d9dc00-035c-469f-9bac-8940b7fd0875.png",
+      "preview": "interior/korfad-aliano-al-05-271-clean-v1.webp",
+      "review": "Original, native output and final WebP individually reviewed2026-11-16. Exact photographed finish, asymmetrical satin layout, left slim vertical white insert, two large right satin rectangles, solid rail divisions, frame and right hinges preserved; handle/rose/local shadow and logo removed. No separate glass option in current product. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithfully cleaned catalog photograph for a door configurator. Input image1 is the only EDIT TARGET: Korfad ALIANO AL-05, Super PET сірий Korfad, white satin glass. Edit this exact photograph. Remove ONLY the silver lever, square rose and their tiny local cast shadow at x247..310,y423..451 in the original800x837 image. Reconstruct the same original surface underneath; preserve the slim white vertical glass strip where the handle crosses it. Remove ONLY the bottom KORFAD logo at x299..503,y798..836 and reconstruct the original bottom rail. Keep every other feature visually identical. Critical invariants: preserve both white satin glass rectangles x362..515,y81..350 and y521..790; preserve the narrow full-height white vertical strip x284..293,y81..790. Preserve the wide vertical solid rail between that narrow strip and the two glass rectangles, its subtle two-tone subdivisions around x334 andx362, and the central horizontal solid rail x362..515,y351..520 with its fine horizontal joint at y435. Keep the exact original finish hue, subtle gradients, material, every panel, seam, bevel, frame and both small RIGHT silver hinges. Preserve original full-door proportions, centered position, white side margins, lighting and framing. Do not simplify tonal subdivisions, invent seams, alter the glass or recolor anything. Do not zoom, crop or recenter. Output one faithful cleaned photograph without handle, rose, keyhole or bottom branding; do not add any new object.",
+      "sourceMapping": "First photograph directly linked to this exact color in current product gallery, visually reviewed2026-11-16.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-05-korfad",
+      "colorId": 270,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/31ecfee6f7958a8307ef7ddc9da7a1320080bf53_WYhOgHdTum_main.webp",
+      "sourceSha256": "5c0f42947cf92c33faddc09e0503cc87fb8d80bbf402231afa0ffcbba88dcf4d",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-5d010566-0837-4908-b46b-8622a154c339.png",
+      "preview": "interior/korfad-aliano-al-05-270-clean-v1.webp",
+      "review": "Original, native output and final WebP individually reviewed2026-11-16. Exact photographed finish, asymmetrical satin layout, left slim vertical white insert, two large right satin rectangles, solid rail divisions, frame and right hinges preserved; handle/rose/local shadow and logo removed. No separate glass option in current product. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithfully cleaned catalog photograph for a door configurator. Input image1 is the only EDIT TARGET: Korfad ALIANO AL-05, Super PET магнолія Korfad, white satin glass. Edit this exact photograph. Remove ONLY the silver lever, square rose and their tiny local cast shadow at x247..310,y423..451 in the original800x837 image. Reconstruct the same original surface underneath; preserve the slim white vertical glass strip where the handle crosses it. Remove ONLY the bottom KORFAD logo at x299..503,y798..836 and reconstruct the original bottom rail. Keep every other feature visually identical. Critical invariants: preserve both white satin glass rectangles x362..515,y81..350 and y521..790; preserve the narrow full-height white vertical strip x284..293,y81..790. Preserve the wide vertical solid rail between that narrow strip and the two glass rectangles, its subtle two-tone subdivisions around x334 andx362, and the central horizontal solid rail x362..515,y351..520 with its fine horizontal joint at y435. Keep the exact original finish hue, subtle gradients, material, every panel, seam, bevel, frame and both small RIGHT silver hinges. Preserve original full-door proportions, centered position, white side margins, lighting and framing. Do not simplify tonal subdivisions, invent seams, alter the glass or recolor anything. Do not zoom, crop or recenter. Output one faithful cleaned photograph without handle, rose, keyhole or bottom branding; do not add any new object.",
+      "sourceMapping": "Main gallery photo colorId0 visually mapped to Magnolia270 after comparing all four explicitly color-linked photographs and Magnolia swatch. This is an inference, not a direct color linkage. Live gallery rechecked2026-11-16.",
+      "sourceType": "main-photo-inference"
+    },
     {
       "slug": "mizhkimnatni-dveri-aliano-al-07-korfad",
       "colorId": 272,
