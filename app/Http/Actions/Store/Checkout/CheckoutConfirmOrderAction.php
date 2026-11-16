@@ -7,13 +7,13 @@ use App\DataClasses\PaymentTypesDataClass;
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Actions\Store\Cart\NeedCart;
 use App\Http\Requests\Store\Checkout\CheckoutConfirmOrderRequest;
-use App\Jobs\ReportSerpAgentConversion;
 use App\Services\Base\ServiceActionResult;
 use App\Services\Cart\CartService;
 use App\Services\Order\OrderAccessUrlService;
 use App\Services\Order\OrderService;
 use App\Services\Payment\PaymentMonoBankService;
 use App\Services\Payment\PaymentService;
+use App\Services\SerpAgent\SerpAgentConversionService;
 use App\Services\Telegram\TelegramNotificationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -30,6 +30,7 @@ class CheckoutConfirmOrderAction extends BaseAction
         PaymentMonoBankService $paymentMonoBankService,
         OrderAccessUrlService $orderAccessUrlService,
         TelegramNotificationService $telegram,
+        SerpAgentConversionService $conversions,
     ) {
         $authUser = $this->getAuthUser();
         $checkout = $request->toDTO();
@@ -84,14 +85,7 @@ class CheckoutConfirmOrderAction extends BaseAction
         $cartService->normalizeLegacyBundles($cart);
         $order = $orderService->createOrderByCart($cart, $checkout, $authUser, $request->sourceUrl());
 
-        // Queued, so a slow or unreachable Serp Agent cannot hold up or break
-        // a paid order.
-        dispatch(ReportSerpAgentConversion::forOrder(
-            $order->id,
-            $request->sourceUrl() ?: $request->fullUrl(),
-            $request->landingUrl(),
-            $order->created_at,
-        ));
+        $conversions->reportAccepted($request, 'checkout');
 
         if ($order->payment_type_id === PaymentTypesDataClass::CARD_PAYMENT) {
             return redirect()->to($orderAccessUrlService->liqPay($order));

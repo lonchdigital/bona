@@ -222,6 +222,7 @@
                             data-phone-error="{{ trans('base.lead_phone_invalid') }}"
                         >
                             @csrf
+                            <input type="hidden" name="form_id" value="measure">
                             <input type="hidden" name="title" value="{{ trans('base.call_measurer') }}">
                             <input type="hidden" name="event" value="submit_form_contacts_measure">
 

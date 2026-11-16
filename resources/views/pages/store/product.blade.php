@@ -486,8 +486,13 @@
     @endif
 
     <div id="order-request" class="art-popup-call-measurer bona-form-dialog">
-        <form action="#" id="order-request-form" method="post" class="art-contact-form art-order-form">
+        <form action="{{ App\Helpers\MultiLangRoute::getMultiLangRoute('store.order.count.doors') }}" id="order-request-form" method="post" class="art-contact-form art-order-form">
             @csrf
+            <input type="hidden" name="form_id" value="order-request">
+            <input type="hidden" name="source_url" value="{{ url()->current() }}">
+            <input type="hidden" name="title" value="{{ trans('base.leave_request') }}">
+            <input type="hidden" name="current_product_title" value="{{ $product->name }}">
+            <input type="hidden" name="current_product_url" value="{{ url()->current() }}">
             <h2 class="title h2">{{ trans('base.leave_request') }}</h2>
             <p>{{ trans('base.call_measurer_description') }}</p>
             <div class="art-fields-row"><input type="text" class="art-light-field name-field" name="name" placeholder="{{ trans('base.name') }}"><input type="tel" class="art-light-field phone-field" name="phone" placeholder="{{ trans('base.phone') }}"></div>

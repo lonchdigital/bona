@@ -1,6 +1,5 @@
 import $ from "jquery";
 import { trackGoogleEvent } from '../../common/cookie-consent';
-import { landingUrl } from '../../common/serp-landing';
 
 
 export function init () {
@@ -91,7 +90,8 @@ function userChooseDoors(data, success, fail, form)
             current_product_title: data['current_product_title'],
             current_product_url: data['current_product_url'],
             source_url: window.location.href,
-            sa_landing: landingUrl()
+            form_id: 'order-request',
+            sa_event: data['sa_event'] || null
         },
         dataType: 'json'
     }).done(function(data) {

@@ -60,6 +60,7 @@
                 data-phone-error="{{ trans('base.lead_phone_invalid') }}"
             >
                 @csrf
+                <input type="hidden" name="form_id" value="{{ $formType }}">
                 {{ $slot }}
 
                 <p class="bona-lead-form__error" data-lead-form-error role="alert" hidden></p>

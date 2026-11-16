@@ -7,6 +7,7 @@
 
                 <form action="#" id="user-choose-doors" method="post" class="art-contact-form">
                     @csrf
+                    <input type="hidden" name="form_id" value="selection">
 
                     <header class="art-light">
                         <div class="text-center">

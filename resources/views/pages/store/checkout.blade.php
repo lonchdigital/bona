@@ -84,6 +84,7 @@
             {{-- Filled from the tracker's sessionStorage: the page the visit
                  started on, which names the article that produced the order. --}}
             <input type="hidden" name="sa_landing" value="">
+            <input type="hidden" name="source_url" value="{{ url()->current() }}">
 
             <div class="bona-checkout-form">
                 @if($checkoutRegisteredEmail)

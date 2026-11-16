@@ -4,13 +4,13 @@ namespace App\Http\Actions\Store\Order;
 
 use App\Http\Actions\Admin\BaseAction;
 use App\Http\Requests\Store\Order\OneClickOrderRequest;
-use App\Jobs\ReportSerpAgentConversion;
 use App\Models\Product;
 use App\Services\Order\OrderService;
+use App\Services\SerpAgent\SerpAgentConversionService;
 
 class CreateOneClickOrderAction extends BaseAction
 {
-    public function __invoke(Product $product, OneClickOrderRequest $request, OrderService $orderService)
+    public function __invoke(Product $product, OneClickOrderRequest $request, OrderService $orderService, SerpAgentConversionService $conversions)
     {
         $dto = $request->toDTO();
 
@@ -22,13 +22,7 @@ class CreateOneClickOrderAction extends BaseAction
             $dto->sourceUrl,
         );
 
-        // Queued: the buyer waits for the order, not for Serp Agent.
-        dispatch(ReportSerpAgentConversion::forOrder(
-            $order->id,
-            $dto->sourceUrl ?: $request->fullUrl(),
-            $request->landingUrl(),
-            $order->created_at,
-        ));
+        $conversions->reportAccepted($request, 'one-click');
 
         return response()->json(['data' => ['success' => true]]);
     }

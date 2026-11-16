@@ -312,6 +312,7 @@ export default {
                 try {
                     const requestData = new FormData(form);
                     requestData.set('source_url', window.location.href);
+                    requestData.set('form_id', form.dataset.leadForm);
 
                     const response = await fetch(form.action, {
                         method: String(form.method || 'post').toUpperCase(),

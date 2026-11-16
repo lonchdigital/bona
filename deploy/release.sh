@@ -133,6 +133,8 @@ cd "$RELEASE_PATH"
 # 503, which Search Console reports as a server error.
 "$PHP_BIN" artisan optimize:clear
 "$PHP_BIN" artisan optimize
+# Read-only diagnostics: no synthetic leads or external verification requests.
+"$PHP_BIN" artisan serp-agent:diagnose || true
 if [[ "$PAYMENT_CONFIG_MODE" == "strict" ]]; then
     "$PHP_BIN" artisan payments:diagnose --strict
 else
