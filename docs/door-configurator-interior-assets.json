@@ -4,6 +4,54 @@
   "mode": "built-in imagegen, individual edits",
   "assets": [
     {
+      "slug": "mizhkimnatni-dveri-aliano-al-01-korfad",
+      "colorId": 272,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/04a10a1fe5aa788b3f7dca114c75853f7cc903bf_1svO68MBoE.webp",
+      "sourceSha256": "5ec7a110a1ba1ce8ee1c22865095be0ce2a6d55af9862f92095d840759ccd4a1",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-ebf1e743-0ad6-4c61-978c-dffb5fb9deab.png",
+      "preview": "interior/korfad-aliano-al-01-272-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal panels,two long glass inserts and narrow centerline,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Photographed white satin16664 or bronze mirror16667 correctly bound;mirror reflections retained. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-01 in Super PET чорний Korfad. Edit this EXACT photo, not a redesign. Remove ONLY the silver horizontal lever, square rose and their local cast shadow at original800x837 coordinates x246..310,y423..451. Restore the matching underlying door finish and the small part of the LEFT glass/mirror insert that was obscured. Remove ONLY bottom KORFAD branding x299..505,y798..836, restoring its existing bottom rail. Preserve TWO WHITE SATIN vertical glass inserts with their subtle gradients and a very narrow white center line. Their positions are x284..327 andx471..516, y81..790; narrow center line aroundx398..401. Preserve exact original colors, glass/mirror material, all reflections outside the tiny handle footprint, and every vertical tonal subdivision/bevel of the solid center panels x327..471. Keep the outer frame, top and bottom rails, fine seams and two right silver hinges unchanged. Preserve full-door proportions, lighting, original centered position, full length and white side margins. No recoloring, glass replacement, invented pattern, altered reflection scene, new grooves, added objects or text. Do not zoom,crop or recenter. One faithful cleaned photo, with no handle/rose/handle shadow/keyhole or bottom branding.",
+      "sourceMapping": "Direct photo index3 linked to color272; live gallery/options verified2026-11-17. White satin16664, matching original prepared268; reflective alternatives not used.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-01-korfad",
+      "colorId": 271,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/efb3f10582eff9f0acb536d0d25c5809eca321de_k8eCww1A1l.webp",
+      "sourceSha256": "45e6c0f1f2f0196b812d1011fdf7d6ac36331b9cec3c518a6c395514f53bd4f7",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-22735da1-7aae-4d7a-9cf9-d44c00845fd1.png",
+      "preview": "interior/korfad-aliano-al-01-271-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal panels,two long glass inserts and narrow centerline,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Photographed white satin16664 or bronze mirror16667 correctly bound;mirror reflections retained. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-01 in Super PET сірий Korfad. Edit this EXACT photo, not a redesign. Remove ONLY the silver horizontal lever, square rose and their local cast shadow at original800x837 coordinates x246..310,y423..451. Restore the matching underlying door finish and the small part of the LEFT glass/mirror insert that was obscured. Remove ONLY bottom KORFAD branding x299..505,y798..836, restoring its existing bottom rail. Preserve TWO BRONZE MIRROR vertical inserts with their photographed warm reflections and a narrow matching bronze center line. Their positions are x284..327 andx471..516, y81..790; narrow center line aroundx398..401. Preserve exact original colors, glass/mirror material, all reflections outside the tiny handle footprint, and every vertical tonal subdivision/bevel of the solid center panels x327..471. Keep the outer frame, top and bottom rails, fine seams and two right silver hinges unchanged. Preserve full-door proportions, lighting, original centered position, full length and white side margins. No recoloring, glass replacement, invented pattern, altered reflection scene, new grooves, added objects or text. Do not zoom,crop or recenter. One faithful cleaned photo, with no handle/rose/handle shadow/keyhole or bottom branding.",
+      "sourceMapping": "Direct photo index0 linked to color271; live gallery/options verified2026-11-17. Bronze mirror16667;grey has only bronze/graphite mirror photos, no linked satin photo. Preserve photographed glass and its1805UAH live surcharge.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-01-korfad",
+      "colorId": 270,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/2b4710a5e1e7c912105232374edcfd92f99f8e11_jR0wgUOx0z.webp",
+      "sourceSha256": "6e7813f368887c91bb697731a00713f94ae0956c8b6941a8dcf84ed15b5e14de",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-499fe40e-5ff2-44b4-af1d-bafded7ed023.png",
+      "preview": "interior/korfad-aliano-al-01-270-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal panels,two long glass inserts and narrow centerline,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Photographed white satin16664 or bronze mirror16667 correctly bound;mirror reflections retained. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-01 in Super PET магнолія Korfad. Edit this EXACT photo, not a redesign. Remove ONLY the silver horizontal lever, square rose and their local cast shadow at original800x837 coordinates x246..310,y423..451. Restore the matching underlying door finish and the small part of the LEFT glass/mirror insert that was obscured. Remove ONLY bottom KORFAD branding x299..505,y798..836, restoring its existing bottom rail. Preserve TWO WHITE SATIN vertical glass inserts with their subtle gradients and a very narrow white center line. Their positions are x284..327 andx471..516, y81..790; narrow center line aroundx398..401. Preserve exact original colors, glass/mirror material, all reflections outside the tiny handle footprint, and every vertical tonal subdivision/bevel of the solid center panels x327..471. Keep the outer frame, top and bottom rails, fine seams and two right silver hinges unchanged. Preserve full-door proportions, lighting, original centered position, full length and white side margins. No recoloring, glass replacement, invented pattern, altered reflection scene, new grooves, added objects or text. Do not zoom,crop or recenter. One faithful cleaned photo, with no handle/rose/handle shadow/keyhole or bottom branding.",
+      "sourceMapping": "Direct photo index2 linked to color270; live gallery/options verified2026-11-17. White satin16664, matching original prepared268; reflective alternatives not used.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-01-korfad",
+      "colorId": 269,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/07.2026/04a10a1fe5aa788b3f7dca114c75853f7cc903bf_MlTTAFOJ8R.webp",
+      "sourceSha256": "40e6a02681a50f1065568dc4f4aa79f6b3a81f1181de363aea7c8ff2a3e074b1",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-dc9cd3f8-fde1-4cb9-a9ab-5e62e56280de.png",
+      "preview": "interior/korfad-aliano-al-01-269-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal panels,two long glass inserts and narrow centerline,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Photographed white satin16664 or bronze mirror16667 correctly bound;mirror reflections retained. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-01 in Super PET антрацит Korfad. Edit this EXACT photo, not a redesign. Remove ONLY the silver horizontal lever, square rose and their local cast shadow at original800x837 coordinates x246..310,y423..451. Restore the matching underlying door finish and the small part of the LEFT glass/mirror insert that was obscured. Remove ONLY bottom KORFAD branding x299..505,y798..836, restoring its existing bottom rail. Preserve TWO WHITE SATIN vertical glass inserts with their subtle gradients and a very narrow white center line. Their positions are x284..327 andx471..516, y81..790; narrow center line aroundx398..401. Preserve exact original colors, glass/mirror material, all reflections outside the tiny handle footprint, and every vertical tonal subdivision/bevel of the solid center panels x327..471. Keep the outer frame, top and bottom rails, fine seams and two right silver hinges unchanged. Preserve full-door proportions, lighting, original centered position, full length and white side margins. No recoloring, glass replacement, invented pattern, altered reflection scene, new grooves, added objects or text. Do not zoom,crop or recenter. One faithful cleaned photo, with no handle/rose/handle shadow/keyhole or bottom branding.",
+      "sourceMapping": "Direct photo index3 linked to color269; live gallery/options verified2026-11-17. White satin16664, matching original prepared268; reflective alternatives not used.",
+      "sourceType": "color-linked-photo"
+    },
+    {
       "slug": "mizhkimnatni-dveri-aliano-al-03-korfad",
       "colorId": 272,
       "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/afd8699101fa7348d8197b493f8e65ad295609f8_NdI4Lo92j9.webp",
