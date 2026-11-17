@@ -18313,6 +18313,62 @@
           "optionIds": [
             16643
           ]
+        },
+        {
+          "id": "color-270",
+          "name": {
+            "uk": "Super PET магнолія Korfad",
+            "ru": "Super PET магнолия Korfad"
+          },
+          "hex": "#dcd7b9",
+          "image": "interior/korfad-aliano-al-04-270-catalog-v1.webp",
+          "preview": "interior/korfad-aliano-al-04-270-clean-v1.webp",
+          "colorId": 270,
+          "optionIds": [
+            16643
+          ]
+        },
+        {
+          "id": "color-271",
+          "name": {
+            "uk": "Super PET сірий Korfad",
+            "ru": "Super PET серый Korfad"
+          },
+          "hex": "#d9d9d9",
+          "image": "interior/korfad-aliano-al-04-271-catalog-v1.webp",
+          "preview": "interior/korfad-aliano-al-04-271-clean-v1.webp",
+          "colorId": 271,
+          "optionIds": [
+            16643
+          ]
+        },
+        {
+          "id": "color-269",
+          "name": {
+            "uk": "Super PET антрацит Korfad",
+            "ru": "Super PET антрацит Korfad"
+          },
+          "hex": "#424242",
+          "image": "interior/korfad-aliano-al-04-269-catalog-v1.webp",
+          "preview": "interior/korfad-aliano-al-04-269-clean-v1.webp",
+          "colorId": 269,
+          "optionIds": [
+            16643
+          ]
+        },
+        {
+          "id": "color-272",
+          "name": {
+            "uk": "Super PET чорний Korfad",
+            "ru": "Super PET черный Korfad"
+          },
+          "hex": "#161616",
+          "image": "interior/korfad-aliano-al-04-272-catalog-v1.webp",
+          "preview": "interior/korfad-aliano-al-04-272-clean-v1.webp",
+          "colorId": 272,
+          "optionIds": [
+            16643
+          ]
         }
       ]
     },

@@ -1,12 +1,12 @@
 {
-    "asOf": "2026-11-16T14:06:10+00:00",
+    "asOf": "2026-11-17T01:56:08+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
         "missing-color-linked-photo": 238,
-        "prepared": 896,
         "needs-model-clarification": 7,
-        "needs-source-review": 144,
-        "not-orderable": 30
+        "needs-source-review": 140,
+        "not-orderable": 30,
+        "prepared": 900
     },
     "finishes": [
         {
@@ -10167,7 +10167,7 @@
                 "uk": "Super PET магнолія Korfad",
                 "ru": "Super PET магнолия Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 154,
@@ -10177,7 +10177,7 @@
                 "uk": "Super PET сірий Korfad",
                 "ru": "Super PET серый Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 154,
@@ -10187,7 +10187,7 @@
                 "uk": "Super PET антрацит Korfad",
                 "ru": "Super PET антрацит Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 154,
@@ -10197,7 +10197,7 @@
                 "uk": "Super PET чорний Korfad",
                 "ru": "Super PET черный Korfad"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 155,
