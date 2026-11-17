@@ -89,7 +89,7 @@ jobs:
         run: npm ci
 
       - name: Audit frontend dependencies
-        run: npm audit --audit-level=high
+        run: node tools/audit-frontend.mjs
 
       - name: Build frontend assets
         run: |
