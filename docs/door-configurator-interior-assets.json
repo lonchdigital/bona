@@ -4,6 +4,54 @@
   "mode": "built-in imagegen, individual edits",
   "assets": [
     {
+      "slug": "mizhkimnatni-dveri-aliano-al-03-korfad",
+      "colorId": 272,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/afd8699101fa7348d8197b493f8e65ad295609f8_NdI4Lo92j9.webp",
+      "sourceSha256": "bb93972c276b6b5aa72677b7bb13aa8cf955aad8949c71abc3dcc1be6a42d90d",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-94f559cc-26b8-4145-bc3a-9f78d6c2385d.png",
+      "preview": "interior/korfad-aliano-al-03-272-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal bands,one long left black glass strip and all7 right horizontal black bars,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Black Lacobel glass option16657. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-03 in Super PET чорний Korfad with BLACK LACOBEL glass. Edit this exact photo; do not redesign the door. Remove ONLY the silver lever, square rose and their small local shadow at original800x837 coordinates x246..310,y423..451, restoring the matching underlying finish. Where the handle crosses the left black vertical glass strip, reconstruct the strip continuously at its original width. Remove ONLY bottom KORFAD branding x299..505,y798..836, reconstructing the original bottom rail. Keep every other feature visually identical. Preserve ONE narrow full-height black vertical glass strip x284..294,y81..790 and ALL SEVEN black horizontal glass bars on the RIGHT, spanning x362..515 near y166,256,346,436,526,616,706. Preserve the broad vertical tonal subdivisions between x294 andx363: do not flatten or simplify their gradients and bevels. Retain original finish hue, light/shade, solid panels, every fine seam, outer frame, and TWO small silver hinges at the RIGHT. Keep door full-length, original proportions, centered composition and white side margins. No white glass, recoloring, brightening, added lines, zooming, cropping, recentering, text, hardware, keyholes or new objects. Output a faithful cleaned photograph with no lever/rose/local hardware shadow or bottom branding.",
+      "sourceMapping": "Direct photo index1 linked to color272; live gallery and option16657 rechecked2026-11-17. Black Lacobel matches existing268. For black272 the first photo is white satin, so select second black-glass photo.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-03-korfad",
+      "colorId": 269,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/b8b75740e6c86b2b8d79381be0b41371e19ea89c_rqEUvRDNYD.webp",
+      "sourceSha256": "4f418cccb19d78b7fa2729a22ebe08aa6baf3690d28b5d31bfee525a54b25767",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-5e08a586-b4f1-40c6-b451-c422bbb8d8b8.png",
+      "preview": "interior/korfad-aliano-al-03-269-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal bands,one long left black glass strip and all7 right horizontal black bars,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Black Lacobel glass option16657. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-03 in Super PET антрацит Korfad with BLACK LACOBEL glass. Edit this exact photo; do not redesign the door. Remove ONLY the silver lever, square rose and their small local shadow at original800x837 coordinates x246..310,y423..451, restoring the matching underlying finish. Where the handle crosses the left black vertical glass strip, reconstruct the strip continuously at its original width. Remove ONLY bottom KORFAD branding x299..505,y798..836, reconstructing the original bottom rail. Keep every other feature visually identical. Preserve ONE narrow full-height black vertical glass strip x284..294,y81..790 and ALL SEVEN black horizontal glass bars on the RIGHT, spanning x362..515 near y166,256,346,436,526,616,706. Preserve the broad vertical tonal subdivisions between x294 andx363: do not flatten or simplify their gradients and bevels. Retain original finish hue, light/shade, solid panels, every fine seam, outer frame, and TWO small silver hinges at the RIGHT. Keep door full-length, original proportions, centered composition and white side margins. No white glass, recoloring, brightening, added lines, zooming, cropping, recentering, text, hardware, keyholes or new objects. Output a faithful cleaned photograph with no lever/rose/local hardware shadow or bottom branding.",
+      "sourceMapping": "Direct photo index0 linked to color269; live gallery and option16657 rechecked2026-11-17. Black Lacobel matches existing268. For black272 the first photo is white satin, so select second black-glass photo.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-03-korfad",
+      "colorId": 271,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/afd8699101fa7348d8197b493f8e65ad295609f8_SqsYJ4I5aZ.webp",
+      "sourceSha256": "84c253fdc27baa48d65100fbc7d0fb7fc536a2b54fa82fecf5215bbc0e315d50",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-f30d33e0-5701-4ead-b572-596232aefb2d.png",
+      "preview": "interior/korfad-aliano-al-03-271-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal bands,one long left black glass strip and all7 right horizontal black bars,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Black Lacobel glass option16657. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-03 in Super PET сірий Korfad with BLACK LACOBEL glass. Edit this exact photo; do not redesign the door. Remove ONLY the silver lever, square rose and their small local shadow at original800x837 coordinates x246..310,y423..451, restoring the matching underlying finish. Where the handle crosses the left black vertical glass strip, reconstruct the strip continuously at its original width. Remove ONLY bottom KORFAD branding x299..505,y798..836, reconstructing the original bottom rail. Keep every other feature visually identical. Preserve ONE narrow full-height black vertical glass strip x284..294,y81..790 and ALL SEVEN black horizontal glass bars on the RIGHT, spanning x362..515 near y166,256,346,436,526,616,706. Preserve the broad vertical tonal subdivisions between x294 andx363: do not flatten or simplify their gradients and bevels. Retain original finish hue, light/shade, solid panels, every fine seam, outer frame, and TWO small silver hinges at the RIGHT. Keep door full-length, original proportions, centered composition and white side margins. No white glass, recoloring, brightening, added lines, zooming, cropping, recentering, text, hardware, keyholes or new objects. Output a faithful cleaned photograph with no lever/rose/local hardware shadow or bottom branding.",
+      "sourceMapping": "Direct photo index0 linked to color271; live gallery and option16657 rechecked2026-11-17. Black Lacobel matches existing268. For black272 the first photo is white satin, so select second black-glass photo.",
+      "sourceType": "color-linked-photo"
+    },
+    {
+      "slug": "mizhkimnatni-dveri-aliano-al-03-korfad",
+      "colorId": 270,
+      "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/afd8699101fa7348d8197b493f8e65ad295609f8_wXppZngRAf.webp",
+      "sourceSha256": "4337e934e6692d1b6a04a61fe97aaf14423ca3b2886a22e667a01819a8b80d33",
+      "generatedFile": "/Users/yehornovakov/.codex/generated_images/01a04c67-d797-7643-81a8-11e0789ed02e/exec-50756126-f047-419e-81db-defac4e52ee2.png",
+      "preview": "interior/korfad-aliano-al-03-270-clean-v1.webp",
+      "review": "Original, built-in output and final WebP individually reviewed2026-11-17. Original finish,frame,vertical tonal bands,one long left black glass strip and all7 right horizontal black bars,right hinges and framing retained;left lever/rose/local shadow and bottom logo removed. Black Lacobel glass option16657. Existing268 unchanged.",
+      "prompt": "Use case: precise-object-edit. Asset type: faithful cleaned product photograph for a door configurator. Image1 is the sole EDIT TARGET: Korfad ALIANO AL-03 in Super PET магнолія Korfad with BLACK LACOBEL glass. Edit this exact photo; do not redesign the door. Remove ONLY the silver lever, square rose and their small local shadow at original800x837 coordinates x246..310,y423..451, restoring the matching underlying finish. Where the handle crosses the left black vertical glass strip, reconstruct the strip continuously at its original width. Remove ONLY bottom KORFAD branding x299..505,y798..836, reconstructing the original bottom rail. Keep every other feature visually identical. Preserve ONE narrow full-height black vertical glass strip x284..294,y81..790 and ALL SEVEN black horizontal glass bars on the RIGHT, spanning x362..515 near y166,256,346,436,526,616,706. Preserve the broad vertical tonal subdivisions between x294 andx363: do not flatten or simplify their gradients and bevels. Retain original finish hue, light/shade, solid panels, every fine seam, outer frame, and TWO small silver hinges at the RIGHT. Keep door full-length, original proportions, centered composition and white side margins. No white glass, recoloring, brightening, added lines, zooming, cropping, recentering, text, hardware, keyholes or new objects. Output a faithful cleaned photograph with no lever/rose/local hardware shadow or bottom branding.",
+      "sourceMapping": "Direct photo index0 linked to color270; live gallery and option16657 rechecked2026-11-17. Black Lacobel matches existing268. For black272 the first photo is white satin, so select second black-glass photo.",
+      "sourceType": "color-linked-photo"
+    },
+    {
       "slug": "mizhkimnatni-dveri-aliano-al-04-korfad",
       "colorId": 272,
       "sourceUrl": "https://bona-doors.com.ua/storage/product-images/12.2024/1e09a054ec0d25721ac2d40beb0599f261c75e31_9Gvvhgydun.webp",
