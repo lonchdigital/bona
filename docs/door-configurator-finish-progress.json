@@ -1,12 +1,12 @@
 {
-    "asOf": "2026-11-17T13:21:26.140051+00:00",
+    "asOf": "2026-11-17T18:36:45+00:00",
     "source": "public catalog snapshot 2026-09-22",
     "counts": {
-        "missing-color-linked-photo": 238,
+        "missing-color-linked-photo": 237,
+        "prepared": 917,
         "needs-model-clarification": 7,
-        "needs-source-review": 132,
-        "not-orderable": 30,
-        "prepared": 908
+        "needs-source-review": 124,
+        "not-orderable": 30
     },
     "finishes": [
         {
@@ -10317,7 +10317,7 @@
                 "uk": "Ral 3015",
                 "ru": "Ral 3015"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10327,7 +10327,7 @@
                 "uk": "Ral 5024",
                 "ru": "Ral 5024"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10337,7 +10337,7 @@
                 "uk": "Ral 6019",
                 "ru": "Ral 6019"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10347,7 +10347,7 @@
                 "uk": "Ral 7037",
                 "ru": "Ral 7037"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10357,7 +10357,7 @@
                 "uk": "Ral 7040",
                 "ru": "Ral 7040"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10367,7 +10367,7 @@
                 "uk": "Ral 7047",
                 "ru": "Ral 7047"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10377,7 +10377,7 @@
                 "uk": "Ral 1014",
                 "ru": "Ral 1014"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10387,7 +10387,7 @@
                 "uk": "Слонова кістка Кемікал К003",
                 "ru": "Слоновая кость Кемикал К003"
             },
-            "status": "needs-source-review"
+            "status": "prepared"
         },
         {
             "number": 157,
@@ -10397,7 +10397,7 @@
                 "ru": "Белый",
                 "uk": "Білий"
             },
-            "status": "missing-color-linked-photo"
+            "status": "prepared"
         },
         {
             "number": 158,
