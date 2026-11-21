@@ -75,7 +75,7 @@ jobs:
       - name: Install and audit frontend dependencies
         run: |
           npm ci
-          node tools/audit-frontend.mjs
+          npm audit --audit-level=high
 
       - name: Build production assets
         run: |
